@@ -1,0 +1,4 @@
+glob:*.o
+glob:*.cof
+glob:*.map
+glob:*.hex
