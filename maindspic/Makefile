@@ -1,7 +1,7 @@
 TARGET = main
 
 # repertoire des modules
-AVERSIVE_DIR = ../../libs/aversive4dspic
+AVERSIVE_DIR = ../libs/aversive4dspic
 
 SRC  = $(TARGET).c cmdline.c commands_ax12.c commands_gen.c 
 SRC += commands_cs.c commands_mainboard.c commands_traj.c commands.c
