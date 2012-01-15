@@ -53,14 +53,16 @@ int main(void)
 	int16_t robot_y;
 	int16_t robot_a_deg;
 	double  robot_a;
-	int16_t opp_x;
-	int16_t opp_y;
+	int16_t opp1_x;
+	int16_t opp1_y;
+	int16_t opp2_x;
+	int16_t opp2_y;
 	int16_t dst_x;
 	int16_t dst_y;
    
 #ifdef HOST_VERSION
-	if (argc != 8) {
-		printf("bad args\n");
+	if (argc != 10) {
+		printf("bad args (argc = %d)\n", argc);
 		return -1;
 	}
 	robot_x = atoi(argv[1]);
@@ -69,8 +71,10 @@ int main(void)
 	robot_a = (((double)robot_a_deg*M_PI)/3.14159);
 	dst_x = atoi(argv[4]);
 	dst_y = atoi(argv[5]);
-	opp_x = atoi(argv[6]);
-	opp_y = atoi(argv[7]);
+	opp1_x = atoi(argv[6]);
+	opp1_y = atoi(argv[7]);
+	opp2_x = atoi(argv[8]);
+	opp2_y = atoi(argv[9]);
 #endif
    
 	/* LOGS */
@@ -81,13 +85,13 @@ int main(void)
 	error_register_debug(mylog);
 	
 	/* set playground boundingbox */
-	strat_set_bounding_box();
+	strat_set_bounding_box(AREA_BBOX_4X4);
 
 	/* goto and avoid */
 	DEBUG(E_USER_STRAT, "robot at: %d %d %d", robot_x, robot_y, robot_a_deg);
 	goto_and_avoid(dst_x, dst_y,
 					   robot_x, robot_y, robot_a,
-					   opp_x, opp_y);
+					   opp1_x, opp1_y, opp2_x, opp2_y);
 
 	return 0;
 }

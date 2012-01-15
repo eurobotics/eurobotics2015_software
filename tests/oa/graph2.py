@@ -32,79 +32,85 @@ def build_path(ptlist):
     x, y = zip(*poly.vertices)
     return x,y
 
-def graph(filename, stx, sty, sta, enx, eny, opx, opy):
-    cmd = "./main %d %d %d %d %d %d %d"%(stx, sty, sta, enx, eny, opx, opy)
+def draw_bottle(x, y):
+    bottle = [ Rectangle((x-100, y), 200, 22*3) ]    
+    bottle += [ Rectangle((x-11, y), 22, -22*2) ]
+    return bottle   
+    
+def graph(filename, stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y):
+    cmd = "./main %d %d %d %d %d %d %d %d %d"%(stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y)
     o,i = popen2.popen2(cmd)
     i.close()
-    s = o.read(10000000)
+    s = o.read(100000000)
     o.close()
 
     open(filename + ".txt", "w").write(s)
 
-    if len(s) == 10000000:
+    if len(s) == 100000000:
         gloupix()
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    # area
-    x,y = build_poly([(0,0), (3000,0), (3000,2100), (0,2100)])
-    ax.plot(x, y, 'g-')
+    # total area limits
+    x,y = build_poly([(0,0), (3000,0), (3000,2000), (0,2000)])
+    ax.plot(x, y, 'k-')
     
-    x,y = build_poly([(945,495), (2055,495), (2055,1575), (945,1575)])
-    ax.plot(x, y, 'g--')
+    # play area limits
+    x,y = build_poly([(400+260,260), (3000-400-260,260), (3000-400-260,2000-260-44), (400+260,2000-260-44)])
+    ax.plot(x, y, 'c--')
      
+    # sea
+    sea = [ Rectangle((0,0), 3000, 2000) ]
+        
     # black lines
-    black_elements = [ Rectangle((400, 0), 50, 2100) ] 
-    black_elements += [ Rectangle((2550, 0), 50, 2100) ] 
+    lines = [ Rectangle((500,450), 150, 20) ]
+    lines += [ Rectangle((3000-500,450), -150, 20) ]
+    lines += [ Rectangle((500+150-20,450+20), 20, 2000-(450+20)) ]
+    lines += [ Rectangle((3000-(500+150-20),450+20), -20, 2000-(450+20)) ]
+        
+    # bottles
+    red_bottles = draw_bottle(640, 2000)
+    red_bottles += draw_bottle(3000-640-477, 2000)
+    purple_bottles = draw_bottle(640+477, 2000)
+    purple_bottles += draw_bottle(3000-640, 2000)
+        
+    # isles
+    isles = [Circle((1100, 1000), 200)]   
+    isles += [Circle((1100+800, 1000), 200)]
+    isles += [Circle((1500, 1000), 150/2)]
+    isles += [Wedge((1500, 0), 300, 0, 180)]
     
-    # physical limits
-    black_elements += [ Rectangle((0, 400), 400, 22) ]  
-    black_elements += [ Rectangle((2600, 400), 400, 22) ]
-    
-    black_elements += [ Rectangle((450, 1850), 22, 250) ]
-    black_elements += [ Rectangle((1128, 1850), 22, 250) ]
-    
-    black_elements += [ Rectangle((2528, 1850), 22, 250) ]
-    black_elements += [ Rectangle((1850, 1850), 22, 250) ]
-    
-    black_elements += [ Rectangle((472, 1980), 656, 120) ]
-    black_elements += [ Rectangle((1872, 1980), 656, 120) ]
- 
-    black_elements += [ Circle((975, 525), 50) ]
-    black_elements += [ Circle((975, 1225), 50) ]
+    # isles patch
+    isles_patch = [Wedge((1500, 1000-750), 550, 45, 135)]
+    isles_patch += [Wedge((1500, 1000+750), 550, 180+45, 180+135)]
+     
+    # beaches
+    beaches = [Circle((1100, 1000), 300)]   
+    beaches += [Circle((1100+800, 1000), 300)]
+    beaches += [Wedge((1500, 0), 400, 0, 180)]
+    beaches_patch = [Rectangle((1100, 1000-264.7), 800, 264.7*2)]
+       
+    # ships
+    ships = [ Polygon([(0,500), (400,500), (350,2000), (0,2000)]) ]
+    ships += [ Polygon([(3000-400,500), (3000,500), (3000,2000), (3000-350, 2000)]) ]
 
-    black_elements += [ Circle((2025, 525), 50) ]
-    black_elements += [ Circle((2025, 1225), 50) ]
+    # barrier
+    barriers = [ Rectangle((0, 500), 400, 18, ls = 'solid') ]
+    barriers += [ Rectangle((3000, 500), -400, 18, ls = 'solid') ]
 
-    black_elements += [ Circle((1325, 1925), 50) ]
-    black_elements += [ Circle((1675, 1925), 50) ]
-
-    
-    # green areas
-    green_areas = [ Rectangle((0, 422), 400, 1678) ]
-    green_areas += [ Rectangle((2600, 422), 400, 1678) ]
+    # holds
+    holds = [ Rectangle((0, 2000), 340, -610, ls='solid') ]
+    holds += [ Rectangle((3000, 2000), -340, -610,ls='solid') ]
+        
+    # totems
+    totems = [ Rectangle((1100-125, 1000-125), 250, 250) ]
+    totems += [ Rectangle((1100+800-125, 1000-125), 250, 250) ]
    
-    # start areas
-    blue_slots = [ Rectangle((0, 0), 400, 400) ]
-    red_slots = [ Rectangle((2600, 0), 400, 400) ]     
-      
-    # slots
-    color = 'blue'
-    for i in range(0,6):
-    
-      if color == 'red':
-         color = 'blue'
-      else:
-         color = 'red'
-         
-      for j in range(0,6):
-         if color == 'red':
-            color = 'blue'
-            red_slots += [ Rectangle((450+(i*350), j*350), 350, 350) ]
-         else:
-            color = 'red'
-            blue_slots += [ Rectangle((450+(i*350), j*350), 350, 350) ]
+    # start areas (captain bedroom)
+    start_area_red = [ Rectangle((0, 0), 500, 500) ]
+    start_area_purple = [ Rectangle((2500, 0), 500, 500) ]     
+     
          
     poly = None
     poly_wait_pts = 0
@@ -132,7 +138,12 @@ def graph(filename, stx, sty, sta, enx, eny, opx, opy):
             poly_wait_pts = int(m.groups()[0])
             poly = []
 
-        m = re.match("oponent at: (-?\d+) (-?\d+)", l)
+        m = re.match("oponent 1 at: (-?\d+) (-?\d+)", l)
+        if m:
+            poly_wait_pts = 4
+            poly = []
+
+        m = re.match("oponent 2 at: (-?\d+) (-?\d+)", l)
         if m:
             poly_wait_pts = 4
             poly = []
@@ -158,21 +169,48 @@ def graph(filename, stx, sty, sta, enx, eny, opx, opy):
             print((int(m.groups()[0])))
     
 
+    
+    p = PatchCollection(sea, cmap=matplotlib.cm.jet, alpha=1,  color='lightblue')
+    ax.add_collection(p)
+    
+    p = PatchCollection(ships, cmap=matplotlib.cm.jet, alpha=1,  color='brown')
+    ax.add_collection(p)
+       
+    p = PatchCollection(holds, cmap=matplotlib.cm.jet, alpha=0.5,  color='grey')
+    ax.add_collection(p)
+
+    p = PatchCollection(lines, cmap=matplotlib.cm.jet, alpha=1,  color='black')
+    ax.add_collection(p)
+
+    p = PatchCollection(beaches_patch, cmap=matplotlib.cm.jet, alpha=1,  color='yellow')
+    ax.add_collection(p)
+
+    p = PatchCollection(isles_patch, cmap=matplotlib.cm.jet, alpha=1,  color='lightblue')
+    ax.add_collection(p)
+    
+    p = PatchCollection(beaches, cmap=matplotlib.cm.jet, alpha=1,  color='yellow')
+    ax.add_collection(p)
+
+    p = PatchCollection(isles, cmap=matplotlib.cm.jet, alpha=1,  color='green')
+    ax.add_collection(p)
+
+    p = PatchCollection(totems, cmap=matplotlib.cm.jet, alpha=1,  color='brown')
+    ax.add_collection(p)
+    
+    p = PatchCollection(start_area_purple, cmap=matplotlib.cm.jet, alpha=1,  color='purple')
+    ax.add_collection(p)
+
+    p = PatchCollection(start_area_red, cmap=matplotlib.cm.jet, alpha=1,  color='red')
+    ax.add_collection(p)   
+    
+    p = PatchCollection(red_bottles, cmap=matplotlib.cm.jet, alpha=1,  color='red')
+    ax.add_collection(p)   
+    
+    p = PatchCollection(purple_bottles, cmap=matplotlib.cm.jet, alpha=1,  color='purple')
+    ax.add_collection(p)   
+   
     p = PatchCollection(patches, cmap=matplotlib.cm.jet, alpha=0.4)
     ax.add_collection(p)
-    
-    p = PatchCollection(green_areas, cmap=matplotlib.cm.jet, alpha=0.4,  color='green')
-    ax.add_collection(p)
-    
-    p = PatchCollection(red_slots, cmap=matplotlib.cm.jet, alpha=0.4,  color='red')
-    ax.add_collection(p)
-
-    p = PatchCollection(blue_slots, cmap=matplotlib.cm.jet, alpha=0.4,  color='blue')
-    ax.add_collection(p)
-    
-    p = PatchCollection(black_elements, cmap=matplotlib.cm.jet, alpha=0.4,  color='black')
-    ax.add_collection(p)
-
 
     x,y = build_path(path)
     ax.plot(x, y, 'bo-')
@@ -184,39 +222,56 @@ def graph(filename, stx, sty, sta, enx, eny, opx, opy):
     #plt.show()
     fig.savefig(filename)
 
-# args are: startx, starty, starta, endx, endy, oppx, oppy
+# args are: startx, starty, starta, endx, endy, opp1x, opp1y, opp2x, opp2y
+#graph("single.png", 250, 250, 0, 2000, 1600, -1500, 0, -1500, 0)
 
-# paths to one slot from all others
-random.seed(5)
-for i in range(1,6):
-   for j in range(1,5):
-      x = 2
-      y = 1
-      name = "slot_%d%d_to_%d%d.png"%(x-1,y-1,i+1,j)
-      startx = 625 + (x-1)*350
-      starty = 175 + y*350
-      endx = 625 + i*350
-      endy = 175 + j*350
-      #oppx = 625 + int(random.randint(2,5))*350
-      #oppy = 175 + int(random.randint(2,4))*350
-      oppx = -1000
-      oppy = 0
-      print (name, startx, starty, 0, endx, endy, oppx, oppy)
-      graph(name, startx, starty, 0, endx, endy, oppx, oppy)
+# go in playground area
+graph("go_in_area_1.png", 250, 250, 0, 2300, 1600, -1500, 0, -1500, 0)
+graph("go_in_area_2.png", 250, 1000, 0, 2300, 1000, -1500, 0, -1500, 0)
+graph("go_in_area_3.png", 250, 1000, 0, 2300, 260, -1500, 0, -1500, 0)
+graph("go_in_area_4.png", 1000, 250, 0, 2300, 260, -1500, 0, -1500, 0)
+graph("go_in_area_5.png", 1500, 240, 0, 680, 1600, -1500, 0, -1500, 0)
+graph("go_in_area_6.png", 2300, 240, 0, 2000, 1400, -1500, 0, -1500, 0)
+
+# op2_at_ship
+graph("op2_at_ship_1.png", 1500, 350, 0, 1500, 1600, -1000, 0, 400, 700)
+graph("op2_at_ship_2.png", 1500, 350, 0, 1500, 1600, -1000, 0, 400, 1000)
+graph("op2_at_ship_3.png", 1500, 350, 0, 1500, 1600, -1000, 0, 400, 1200)
+graph("op2_at_ship_4.png", 1500, 350, 0, 1500, 1600, -1000, 0, 500, 1600)
+
+
+# random
+#random.seed(5)
+#for i in range(1,6):
+#   for j in range(1,5):
+#      x = 2
+#      y = 1
+#      name = "random_%d%d_to_%d%d.png"%(x-1,y-1,i+1,j)
+#      startx = 625 + (x-1)*350
+#      starty = 175 + y*350
+#      endx = 625 + i*350
+#      endy = 175 + j*350
+#      #oppx = 625 + int(random.randint(2,5))*350
+#      #oppy = 175 + int(random.randint(2,4))*350
+#      oppx = -1000
+#      oppy = 0
+#      print (name, startx, starty, 0, endx, endy, oppx, oppy)
+#      graph(name, startx, starty, 0, endx, endy, oppx, oppy)
 
 # in opponent
-graph("in_opponent_00.png", 1500, 1050, 0, 2000, 1500, 1400, 900)
-graph("in_opponent_01.png", 1500, 1050, 0, 1000, 500, 1400, 900)
+#graph("in_opponent_00.png", 1500, 1050, 0, 2000, 1500, 1400, 900, 1400, 900)
 
 #random.seed(0)
 #for i in range(100):
-#    stx = 150+450*int(random.randint(0,6))
-#    sty = 722+250*int(random.randint(0,5))
-#    enx = 150+450*int(random.randint(0,6))
-#    eny = 722+250*int(random.randint(0,5))
-#    opx = random.randint(-50, 3050)
-#    opy = random.randint(-50, 2050)
+#    stx = 680 + 250*int(random.randint(0,6))
+#    sty = 300 + 250*int(random.randint(0,6))
+#    enx = 680 + 250*int(random.randint(0,6))
+#    eny = 300 + 250*int(random.randint(0,6))
+#    op1x = 680 + 250*int(random.randint(0,6))
+#    op1y = 300 + 250*int(random.randint(0,6))
+#    op2x = 680 + 250*int(random.randint(0,6))
+#    op2y = 300 + 250*int(random.randint(0,6))
 #    name = "random%d.png"%(i)
-#    print (name, stx, sty, 0, enx, eny, opx, opy)
-#    graph(name, stx, sty, 0, enx, eny, opx, opy)
+#    print (name, stx, sty, 0, enx, eny, op1x, op1y, op2x, op2y)
+#    graph(name, stx, sty, 0, enx, eny, op1x, op1y, op2x, op2y)
    
