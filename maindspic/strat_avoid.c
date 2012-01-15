@@ -804,7 +804,8 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 	int16_t opp1_w, opp1_l;
 	int16_t opp2_w, opp2_l;
 #ifndef HOST_VERSION
-	int16_t opp_x, opp_y;
+	int16_t opp1_x, opp1_y;
+	int16_t opp2_x, opp2_y;
 #endif	
 
 	point_t p_dst, robot_pt;
@@ -837,7 +838,10 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 	
 	/* opponent info */
 #ifndef HOST_VERSION	
-	get_opponent_xy(&opp_x, &opp_y);
+	get_opponent_xy(&opp1_x, &opp1_y);
+	/* TODO: get second opponent */
+	opp2_x = I2C_OPPONENT_NOT_THERE;
+	opp2_y = I2C_OPPONENT_NOT_THERE;
 #endif
 
 	opp1_w = O_WIDTH;
