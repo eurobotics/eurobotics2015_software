@@ -231,7 +231,7 @@ uint8_t x_is_more_than(int16_t x)
 	int16_t posx;
 	
 	posx = position_get_x_s16(&mainboard.pos);
-	if (mainboard.our_color == I2C_COLOR_BLUE) {
+	if (mainboard.our_color == I2C_COLOR_RED) {
 		if (posx > x)
 			return 1;
 		else
@@ -254,7 +254,7 @@ uint8_t opp_x_is_more_than(int16_t x)
 	if(get_opponent_xy(&x_opp, &y_opp) == -1)
 		return 1;
 
-	if (mainboard.our_color == I2C_COLOR_BLUE) {
+	if (mainboard.our_color == I2C_COLOR_RED) {
 		if (x_opp > x)
 			return 1;
 		else
@@ -335,10 +335,10 @@ uint8_t get_color(void)
 /* get the color of the opponent robot */
 uint8_t get_opponent_color(void)
 {
-	if (mainboard.our_color == I2C_COLOR_RED)
-		return I2C_COLOR_BLUE;
-	else
+	if (mainboard.our_color == I2C_COLOR_PURPLE)
 		return I2C_COLOR_RED;
+	else
+		return I2C_COLOR_PURPLE;
 }
 
 /* get the xy pos of the opponent robot */
@@ -430,7 +430,7 @@ uint8_t opponent_is_in_area(int16_t x_up, int16_t y_up,
 	if(opp_there == -1)
 		return 0;
 
-	if (mainboard.our_color == I2C_COLOR_BLUE) {
+	if (mainboard.our_color == I2C_COLOR_RED) {
 		if ((opp_x > x_up && opp_x < x_down)
 			&& (opp_y < y_up && opp_y > y_down) )
 			return 1;
@@ -440,67 +440,6 @@ uint8_t opponent_is_in_area(int16_t x_up, int16_t y_up,
 			 && (opp_y < y_up && opp_y > y_down) )
 			return 1;
 	}
-	return 0;
-}
-
-
-/* return 1 if opponent is in slot (i,j) */
-uint8_t opponent_is_in_slot(int8_t i, int8_t j)
-{
-	int8_t opp_there, opp_i, opp_j;
-	int16_t opp_x, opp_y;
-
-	opp_there = get_opponent_xy(&opp_x, &opp_y);
-
-	if(opp_there == -1)
-		return 0;
-
-	get_slot_index(opp_x, opp_y, &opp_i, &opp_j);
-	
-	if(i == opp_i && j == opp_j)
-		return 1;
-	else
-		return 0;
-}
-
-uint8_t opponent_is_near_to_slot(int8_t i, int8_t j)
-{
-	int8_t opp_there, opp_i, opp_j;
-	int16_t opp_x, opp_y;
-
-	opp_there = get_opponent_xy(&opp_x, &opp_y);
-
-	if(opp_there == -1)
-		return 0;
-
-	get_slot_index(opp_x, opp_y, &opp_i, &opp_j);
-	
-	if( (ABS(i-opp_i) < 2)
-		&& (ABS(j-opp_j) < 2) ) {
-		return 1;
-	}
-
-	return 0;
-}
-
-
-uint8_t opponent_is_near_to_target_slot(int8_t i, int8_t j)
-{
-	int8_t opp_there, opp_i, opp_j;
-	int16_t opp_x, opp_y;
-
-	opp_there = get_opponent_xy(&opp_x, &opp_y);
-
-	if(opp_there == -1)
-		return 0;
-
-	get_slot_index(opp_x, opp_y, &opp_i, &opp_j);
-	
-	if( (ABS(i-opp_i) < 2) && (ABS(j-opp_j) < 2)
-		&& (i == opp_i || j == opp_j) ) {
-		return 1;
-	}
-
 	return 0;
 }
 
@@ -521,200 +460,10 @@ uint8_t opponent_is_infront_side(uint8_t side)
 }
 
 
-uint8_t opponent_is_in_near_slots(void)
-{
-	int8_t opp_there;
-	int16_t opp_d, opp_a;
-
-	opp_there = get_opponent_da(&opp_d, &opp_a);
-
-	if(opp_there == -1)
-		return 0;
-
-	if (opp_d < 400)
-		return 1;
-
-	return 0;
-}
-
-uint8_t token_catched(uint8_t side)
-{
-	return slavedspic.ts[side].token_catched;
-}
-
-
-/* return the score of a token on side */ 
-uint8_t token_side_score(uint8_t side)
-{
-	if(side == SIDE_FRONT) {
-		if(sensor_get(S_TOKEN_FRONT_TOWER2H))
-			return TOWER2H_SCORE;
-		else if(sensor_get(S_TOKEN_FRONT_TOWER1H))
-			return TOWER1H_SCORE;
-		else if(sensor_get(S_TOKEN_FRONT_FIGURE))
-			return FIGURE_SCORE;
-		else if(slavedspic.ts[SIDE_FRONT].token_catched)
-			return PION_SCORE;
-	}
-	else if(side == SIDE_REAR) {
-		if(sensor_get(S_TOKEN_REAR_TOWER2H))
-			return TOWER2H_SCORE;
-		else if(sensor_get(S_TOKEN_REAR_TOWER1H))
-			return TOWER1H_SCORE;
-		else if(sensor_get(S_TOKEN_REAR_FIGURE))
-			return FIGURE_SCORE;
-		else if(slavedspic.ts[SIDE_REAR].token_catched)
-			return PION_SCORE;			
-	}
-
-	return 0;
-}
-
-/* return 1 if there is a token on side and has the lower priority */
-uint8_t token_side_is_lower_score(uint8_t side)
-{
-	/* no token catched */
-	if(!token_catched(side))
-		return 0;
-
-	/* check if is the lower or equal */
-	if(side == SIDE_FRONT) {
-		if(token_side_score(SIDE_FRONT) <= token_side_score(SIDE_REAR))
-			return 1;
-	}
-	else if(side == SIDE_REAR) {
-		if(token_side_score(SIDE_REAR) <= token_side_score(SIDE_FRONT))
-			return 1;
-	}
-
-	/* isn't the lowest */
-	return 0;
-}
-
-uint8_t belts_blocked(uint8_t side)
-{
-	return slavedspic.ts[side].belts_blocked;
-}
-
-uint8_t token_inside(uint8_t side)
-{
-	return (slavedspic.ts[side].state == 0);
-}
-
-
-/* turn to pickup token, return side used to pickup */
-/* suppose that there is at least one side empty */
-uint8_t strat_turnto_pickup_token(struct trajectory*traj, double x_abs_mm, double y_abs_mm)
-{
-	double d_rel;
-	double a_rel_rad;
-
-	/* get angle to token xy */
-	abs_xy_to_rel_da(x_abs_mm, y_abs_mm, &d_rel, &a_rel_rad);
-
-	if(ABS(a_rel_rad) < (M_PI/2)) {
-		if(!token_catched(SIDE_FRONT)) {
-			trajectory_turnto_xy(traj, x_abs_mm, y_abs_mm);
-			return SIDE_FRONT;
-		}
-		else if(!token_catched(SIDE_REAR)){
-			trajectory_turnto_xy_behind(traj, x_abs_mm, y_abs_mm);
-			return SIDE_REAR;
-		}
-		/* XXX never should be reached */
-		return SIDE_FRONT;
-	}	
-	else {
-		if(!token_catched(SIDE_REAR)) {
-			trajectory_turnto_xy_behind(traj, x_abs_mm, y_abs_mm);
-			return SIDE_REAR;
-		}
-		else if(!token_catched(SIDE_FRONT)) {
-			trajectory_turnto_xy(traj, x_abs_mm, y_abs_mm);
-			return SIDE_FRONT;
-		}
-		/* XXX never should be reached */
-		return SIDE_FRONT;
-	}
-}
-
-/* turn to place token automaticaly, return side used to place */
-/* suppose that there is at least one token catched */
-uint8_t strat_turnto_place_token(struct trajectory*traj, double x_abs_mm, double y_abs_mm, uint8_t go)
-{
-	double d_rel;
-	double a_rel_rad;
-
-	/* get angle to token xy */
-	abs_xy_to_rel_da(x_abs_mm, y_abs_mm, &d_rel, &a_rel_rad);
-
-	if(go == GO_FORWARD) {
-		if(ABS(a_rel_rad) < (M_PI/2)) {
-			if(token_catched(SIDE_FRONT)) {
-				trajectory_turnto_xy(traj, x_abs_mm, y_abs_mm);
-				return SIDE_FRONT;
-			}
-			else if(token_catched(SIDE_REAR)) {
-				trajectory_turnto_xy_behind(traj, x_abs_mm, y_abs_mm);
-				return SIDE_REAR;
-			}
-			/* XXX never should be reached */
-			return SIDE_FRONT;
-		}	
-		else {
-			if(token_catched(SIDE_REAR)) {
-				trajectory_turnto_xy_behind(traj, x_abs_mm, y_abs_mm);
-				return SIDE_REAR;
-			}
-			else if(token_catched(SIDE_FRONT)) {
-				trajectory_turnto_xy(traj, x_abs_mm, y_abs_mm);
-				return SIDE_FRONT;
-			}
-			/* XXX never should be reached */
-			return SIDE_REAR;
-		}
-	}
-	else {
-		if(ABS(a_rel_rad) < (M_PI/2)) {
-			if(token_catched(SIDE_FRONT)) {
-				trajectory_turnto_xy_behind(traj, x_abs_mm, y_abs_mm);
-				return SIDE_FRONT;
-			}
-			else if(token_catched(SIDE_REAR)) {
-				trajectory_turnto_xy(traj, x_abs_mm, y_abs_mm);
-				return SIDE_REAR;
-			}
-			/* XXX never should be reached */
-			return SIDE_FRONT;
-		}	
-		else {
-			if(token_catched(SIDE_REAR)) {
-				trajectory_turnto_xy(traj, x_abs_mm, y_abs_mm);
-				return SIDE_REAR;
-			}
-			else if(token_catched(SIDE_FRONT)) {
-				trajectory_turnto_xy_behind(traj, x_abs_mm, y_abs_mm);
-				return SIDE_FRONT;
-			}
-			/* XXX never should be reached */
-			return SIDE_REAR;
-		}
-	}
-}
-
-/* go straight forward with no side dependence (d is in mm) */
-void strat_d_rel_side(struct trajectory*traj, double d_mm, uint8_t side)
-{
-	if(side == SIDE_FRONT)
-		trajectory_d_rel(&mainboard.traj, d_mm);
-	else
-		trajectory_d_rel(&mainboard.traj, -d_mm);
-}
-
 /* return 1 if the opponent is near */
 void wait_until_opponent_is_far(void)
 {
-//#ifdef HOMOLOGATION
+#ifdef HOMOLOGATION
 	int16_t opp_x, opp_y, opp_d, opp_a;
 
 	if (get_opponent_xyda(&opp_x, &opp_y, &opp_d, &opp_a) == -1)
@@ -730,59 +479,12 @@ void wait_until_opponent_is_far(void)
 	
 		} while(opp_d < 600);
 	}
-//#endif
-}
-
-/* apply flags to slot */
-void strat_set_slot_flags(int16_t x, int16_t y, uint16_t flags)
-{
-	int8_t i, j;
-
-	/* slot index */
-	i = (int8_t)(x/SLOT_SIZE);
-	j = (int8_t)(y/SLOT_SIZE);
-
-	/* saturators */
-	if(i >= NB_SLOT_X)
-		i = (NB_SLOT_X-1);
-	if(j >= NB_SLOT_Y)
-		j = (NB_SLOT_Y-1);
-
-	/* apply flags */
-	strat_infos.slot[i][j].flags |= flags;
-
-}
-
-/* apply flags to slot */
-void strat_clear_slot_flags(int16_t x, int16_t y, uint16_t flags)
-{
-	int8_t i, j;
-
-	/* slot index */
-	i = (int8_t)(x/SLOT_SIZE);
-	j = (int8_t)(y/SLOT_SIZE);
-
-	/* saturators */
-	if(i >= NB_SLOT_X)
-		i = (NB_SLOT_X-1);
-	if(j >= NB_SLOT_Y)
-		j = (NB_SLOT_Y-1);
-
-	/* apply flags */
-	strat_infos.slot[i][j].flags &= ~(flags);
+#endif
 }
 
 
 
-/* get index (i,j) of slot from (x,y) coordinates */
-void get_slot_index(int16_t x, int16_t y, int8_t *i, int8_t *j)
-{
-	*i = (int8_t)(x/SLOT_SIZE);
-	*j = (int8_t)(y/SLOT_SIZE);
 
-	/* saturators */
-	if(*i >= NB_SLOT_X)
-		*i = (NB_SLOT_X-1);
-	if(*j >= NB_SLOT_Y)
-		*j = (NB_SLOT_Y-1);
-}
+
+
+

@@ -46,15 +46,15 @@
 
 /* convert coords according to our color */
 #define COLOR_Y(y)     (y)
-#define COLOR_X(x)     ((mainboard.our_color==I2C_COLOR_BLUE)? (x) : (AREA_X-(x)))
+#define COLOR_X(x)     ((mainboard.our_color==I2C_COLOR_RED)? (x) : (AREA_X-(x)))
 
-#define COLOR_A_REL(a) ((mainboard.our_color==I2C_COLOR_BLUE)? (a) : (-a))
-#define COLOR_A_ABS(a) ((mainboard.our_color==I2C_COLOR_BLUE)? (a) : (180-a))
+#define COLOR_A_REL(a) ((mainboard.our_color==I2C_COLOR_RED)? (a) : (-a))
+#define COLOR_A_ABS(a) ((mainboard.our_color==I2C_COLOR_RED)? (a) : (180-a))
 
-#define COLOR_SIGN(x)  ((mainboard.our_color==I2C_COLOR_BLUE)? (x) : (-x))
-#define COLOR_INVERT(x)((mainboard.our_color==I2C_COLOR_BLUE)? (x) : (!x))
+#define COLOR_SIGN(x)  ((mainboard.our_color==I2C_COLOR_RED)? (x) : (-x))
+#define COLOR_INVERT(x)((mainboard.our_color==I2C_COLOR_RED)? (x) : (!x))
 
-#define COLOR_I(x)	  ((mainboard.our_color==I2C_COLOR_BLUE)? (x) :  ((NB_SLOT_X-1)-x))
+#define COLOR_I(x)	  ((mainboard.our_color==I2C_COLOR_RED)? (x) :  ((NB_SLOT_X-1)-x))
 
 #define START_X 200
 #define START_Y COLOR_Y(200)
@@ -153,8 +153,8 @@ struct slot_info {
 	int16_t y;
 
 	uint8_t color;
-#define SLOT_BLUE			I2C_COLOR_BLUE
-#define SLOT_RED			I2C_COLOR_RED
+#define SLOT_BLUE			I2C_COLOR_RED
+#define SLOT_RED			I2C_COLOR_PURPLE
 #define SLOT_GREEN_BLUE	I2C_COLOR_MAX
 #define SLOT_GREEN_RED	(I2C_COLOR_MAX+1)
 
@@ -305,117 +305,6 @@ void strat_exit(void);
 uint8_t strat_main(void);
 uint8_t strat_beginning(void);
 void strat_event(void *dummy);
-
-
-/*********************************************
- * in strat_tokens.c 
- ********************************************/
-
-/* update number of token inside */
-uint8_t strat_get_num_tokens(void);
-
-/* pick up a token */
-/* use it in short distance ranges */
-uint8_t strat_pickup_token(int16_t x, int16_t y, uint8_t side);
-
-/* pick up token chossing side automaticaly */
-/* we suppose that at least one side is empty */
-uint8_t strat_pickup_token_auto(int16_t x, int16_t y, uint8_t *side);
-
-/* place a token */	
-/* use it in near range distance */
-uint8_t strat_place_token(int16_t x, int16_t y, uint8_t side, uint8_t go);
-
-/* place token automaticaly */
-/* we suppose that there is at least one token catched */
-uint8_t strat_place_token_auto(int16_t x, int16_t y, uint8_t *side, uint8_t go);
-
-/* push a token in order to get out an opponent token from slot */
-uint8_t strat_push_slot_token(int8_t i, int8_t j);
-
-/* pickup near slots on an area 3x3 with center the robot */
-#define MODE_PICKUP	1
-#define MODE_PUSH		2
-#define MODE_ALL		3
-uint8_t strat_pickup_or_push_near_slots(uint8_t mode);
-
-/* place tokens on near 3x3 area slots, return 0 if there aren't more slots */
-uint8_t strat_place_near_slots(uint8_t only_one, uint8_t token_score);
-
-/* pickup and place near tokens in 3x3 area where is the robot */
-//uint8_t strat_pickup_and_place_near_slots(void);
-
-/* enable/disable look for towers */
-void strat_look_for_towers_enable(void);
-void strat_look_for_towers_disable(void);
-
-/* look for tower of 2 or 3 levels, if find any tower, it's added to infos */
-void strat_look_for_towers(void);
-
-/* return 1 if a new tower is added succesfully */ 
-uint8_t strat_info_add_tower(int16_t x, int16_t y, int16_t w);
-
-/* return 1 if an exist tower is deleted succesfully */
-uint8_t strat_info_del_tower(int8_t i, int8_t j);
-
-/* enable/disable look for figures */
-void strat_look_for_figures_enable(void);
-void strat_look_for_figures_disable(void);
-
-/* try to find figures from line 1 */
-void strat_look_for_figures(void);
-
-/* get a valid ij tower coordenade */
-uint8_t strat_get_best_tower_ij(int8_t *i, int8_t *j);
-
-/* get slot to pickup a token at ij position */
-void strat_get_slot_to_place(int8_t i, int8_t j, int8_t *i_place, int8_t *j_place);
-
-
-/**************************************************
- * in strat_static.c 
- *************************************************/
-uint8_t strat_harvest_line1(void);
-uint8_t strat_harvest_line2(void);
-uint8_t strat_harvest_green_area(void);
-
-#define TYPE_PION		0
-#define TYPE_FIGURE	1
-uint8_t strat_pickup_green_token(uint8_t type, uint8_t color);
-
-/* harvest green area ending with two figures inside */
-uint8_t strat_harvest_green_area_smart(uint8_t color);
-
-/**************************************************
- * in strat_navigation.c 
- *************************************************/
-
-/* strat of Spanish Cup */
-uint8_t strat_bonus_point(void);
-
-/* update robot or opponent slot position */
-#define TYPE_ROBOT		0
-#define TYPE_OPPONENT	1
-#define GRID_MARGIN 		10
-
-void strat_update_slot_position(uint8_t type, int16_t margin, 
-									     int8_t x_line_init, int8_t x_line_end,
-									     int8_t y_line_init, int8_t y_line_end);
-
-/* update opponent zone infos */
-void strat_update_zones(void);
-
-uint8_t strat_play_with_opp(void);
-uint8_t strat_big_final(void);
-
-///* work on a zone */
-//uint8_t strat_work_on_zone(zone_t * z);
-//
-///* little tasks or not ;) */
-//uint8_t strat_place_figure_near_opp_home(void);
-//uint8_t strat_place_on_near_opp_safe_slot(void);
-//uint8_t strat_place_on_opp_safe_slot(void);
-//uint8_t strat_pickup_bonus_near_wall(void);
 
 
 /* add here more strat functions in files */

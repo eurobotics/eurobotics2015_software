@@ -1065,33 +1065,6 @@ uint8_t goto_and_avoid_backward(int16_t x, int16_t y, uint8_t flags_intermediate
 	return __goto_and_avoid(x, y, flags_intermediate, flags_final, GO_AVOID_BACKWARD);
 }
 
-/* go to a x,y point with empty side */
-uint8_t goto_and_avoid_empty_side(int16_t x, int16_t y, uint8_t flags_intermediate,
-			       uint8_t flags_final)
-{
-
-	if(!token_catched(SIDE_FRONT) && !token_catched(SIDE_REAR))
-		return __goto_and_avoid(x, y, flags_intermediate, flags_final, GO_AVOID_AUTO);
-	else if(!token_catched(SIDE_FRONT))
-		return __goto_and_avoid(x, y, flags_intermediate, flags_final, GO_AVOID_FORWARD);
-	else /* if(!token_catched(SIDE_REAR)) */
-		return __goto_and_avoid(x, y, flags_intermediate, flags_final, GO_AVOID_BACKWARD);
-
-}
-
-/* go to a x,y point with empty or busy side */
-uint8_t goto_and_avoid_busy_side(int16_t x, int16_t y, uint8_t flags_intermediate,
-			       uint8_t flags_final)
-{
-	if(token_catched(SIDE_FRONT) && token_catched(SIDE_REAR))
-		return __goto_and_avoid(x, y, flags_intermediate, flags_final, GO_AVOID_AUTO);
-	else if(token_catched(SIDE_FRONT))
-		return __goto_and_avoid(x, y, flags_intermediate, flags_final, GO_AVOID_FORWARD);
-	else /* if(token_catched(SIDE_REAR)) */
-		return __goto_and_avoid(x, y, flags_intermediate, flags_final, GO_AVOID_BACKWARD);
-}
-
-
 #endif
 
 
