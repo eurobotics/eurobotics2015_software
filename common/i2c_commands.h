@@ -34,9 +34,9 @@
 #define I2C_GPIOS_01_ADDR 		0x20
 #define I2C_GPIOS_23_ADDR 		0x21
 
-#define I2C_COLOR_RED 	0
-#define I2C_COLOR_BLUE	1
-#define I2C_COLOR_MAX	2
+#define I2C_COLOR_PURPLE 	0
+#define I2C_COLOR_RED		1
+#define I2C_COLOR_MAX		2
 
 
 #define I2C_SIDE_REAR	0

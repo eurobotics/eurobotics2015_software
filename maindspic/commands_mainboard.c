@@ -304,11 +304,11 @@ static void cmd_start_parsed(void *parsed_result, void *data)
 	}
 	
 	if (!strcmp_P(res->color, PSTR("blue"))) {
-		mainboard.our_color = I2C_COLOR_BLUE;
+		mainboard.our_color = I2C_COLOR_RED;
 		//beacon_cmd_color();
 	}
 	else if (!strcmp_P(res->color, PSTR("red"))) {
-		mainboard.our_color = I2C_COLOR_RED;
+		mainboard.our_color = I2C_COLOR_PURPLE;
 		//beacon_cmd_color();
 	}
 
@@ -352,18 +352,18 @@ struct cmd_color_result {
 static void cmd_color_parsed(void *parsed_result, void *data)
 {
 	struct cmd_color_result *res = (struct cmd_color_result *) parsed_result;
-	if (!strcmp_P(res->color, PSTR("blue"))) {
-		mainboard.our_color = I2C_COLOR_BLUE;
-	}
-	else if (!strcmp_P(res->color, PSTR("red"))) {
+	if (!strcmp_P(res->color, PSTR("red"))) {
 		mainboard.our_color = I2C_COLOR_RED;
+	}
+	else if (!strcmp_P(res->color, PSTR("purple"))) {
+		mainboard.our_color = I2C_COLOR_PURPLE;
 	}
 	printf_P(PSTR("Done\r\n"));
 }
 
 prog_char str_color_arg0[] = "color";
 parse_pgm_token_string_t cmd_color_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_color_result, arg0, str_color_arg0);
-prog_char str_color_color[] = "blue#red";
+prog_char str_color_color[] = "red#purple";
 parse_pgm_token_string_t cmd_color_color = TOKEN_STRING_INITIALIZER(struct cmd_color_result, color, str_color_color);
 
 prog_char help_color[] = "Set our color";
@@ -379,7 +379,7 @@ parse_pgm_inst_t cmd_color = {
 };
 
 
-
+#ifdef notyet
 
 /**********************************************************/
 /* slavedspic */
@@ -834,7 +834,7 @@ static void cmd_lasers_parsed(void *parsed_result, void *data)
 //		} while (!cmdline_keypressed());
 		
 		mirrors_set_mode(MODE_LOOK_FOR_TOWERS);
-		strat_look_for_towers_enable();
+		//strat_look_for_towers_enable();
 	}
 
 	else if ( !strcmp_P(res->arg1, PSTR("figures")))
@@ -845,8 +845,8 @@ static void cmd_lasers_parsed(void *parsed_result, void *data)
 	else if ( !strcmp_P(res->arg1, PSTR("init")))
 	{
 		mirrors_set_mode(MODE_HIDE_MIRRORS);
-		strat_look_for_figures_disable();
-		strat_look_for_towers_disable();
+		//strat_look_for_figures_disable();
+		//strat_look_for_towers_disable();
 		lasers_set_off();
 	}
 
@@ -869,6 +869,7 @@ parse_pgm_inst_t cmd_lasers = {
 	},
 };
 
+#endif /* notyet */
 
 /**********************************************************/
 /* Interact */

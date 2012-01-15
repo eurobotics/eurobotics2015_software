@@ -96,51 +96,9 @@ uint8_t opponent_is_behind_side(uint8_t side);
 uint8_t opponent_is_infront_side(uint8_t side);
 uint8_t opponent_is_in_area(int16_t x_up, int16_t y_up,
 									 int16_t x_down, int16_t y_down);
-uint8_t opponent_is_in_slot(int8_t i, int8_t j);
-uint8_t opponent_is_in_near_slots(void);
-uint8_t opponent_is_near_to_slot(int8_t i, int8_t j);
-uint8_t opponent_is_near_to_target_slot(int8_t i, int8_t j);
-
-
-uint8_t token_catched(uint8_t side);
-uint8_t token_inside(uint8_t side);
-uint8_t belts_blocked(uint8_t side);
-
-/* return the score of a token on side */
-uint8_t token_side_score(uint8_t side);
-
-/* return 1 if there is a token on side and has the lower priority */
-uint8_t token_side_is_lower_score(uint8_t side);
-
-
-///* goto with the empty side, prepared to catch token, return goto side */
-//uint8_t strat_goto_empty_side_xy_abs(struct trajectory *traj, double x_abs_mm, double y_abs_mm);
-
-///* goto with the empty side and with belts in mode take, return goto side */
-//uint8_t strat_goto_harvesting_xy_abs(struct trajectory *traj, double x_abs_mm, double y_abs_mm);
-
-/* turn to pickup token, return side in front of token */
-/* suppose that there is at least one side empty */
-uint8_t strat_turnto_pickup_token(struct trajectory *traj, double x_abs_mm, double y_abs_mm);
-
-/* turn to place token automaticaly, return side used to place token */
-/* suppose that there is at least one token catched */
-uint8_t strat_turnto_place_token(struct trajectory *traj, double x_abs_mm, double y_abs_mm, uint8_t go);
-
-/* go straight forward with no side dependence (d is in mm) */
-void strat_d_rel_side(struct trajectory *traj, double d_mm, uint8_t side);
 
 /* return 1 if the opponent is near */
 /* only compile with HOMOLOGATION define */
 void wait_until_opponent_is_far(void);
-
-
-/* apply flags to slot */
-void strat_set_slot_flags(int16_t x, int16_t y, uint16_t flags);
-void strat_clear_slot_flags(int16_t x, int16_t y, uint16_t flags);
-
-
-/* get index (i,j) of slot from (x,y) coordinates */
-void get_slot_index(int16_t x, int16_t y, int8_t *i, int8_t *j);
 
 #endif

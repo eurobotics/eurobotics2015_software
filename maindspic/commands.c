@@ -90,12 +90,16 @@ extern parse_pgm_inst_t cmd_opponent;
 extern parse_pgm_inst_t cmd_opponent_set;
 extern parse_pgm_inst_t cmd_start;
 extern parse_pgm_inst_t cmd_color;
+
+#ifdef notyet
 extern parse_pgm_inst_t cmd_slavedspic;
 extern parse_pgm_inst_t cmd_slavedspic_ts;
 extern parse_pgm_inst_t cmd_slavedspic_mirror;
 extern parse_pgm_inst_t cmd_beacon;
 extern parse_pgm_inst_t cmd_sensor_robot;
 extern parse_pgm_inst_t cmd_lasers;
+#endif
+
 //extern parse_pgm_inst_t cmd_interact;
 //extern parse_pgm_inst_t cmd_rs;
 //extern parse_pgm_inst_t cmd_i2cdebug;
@@ -113,7 +117,7 @@ extern parse_pgm_inst_t cmd_traj_speed;
 extern parse_pgm_inst_t cmd_traj_speed_show;
 
 #ifdef COMPILE_CODE /*---------------------------------------------------------------------------------------------*/
-//#endif /* COMPILE_CODE ---------------------------------------------------------------------------------------------*/
+#endif /* COMPILE_CODE ---------------------------------------------------------------------------------------------*/
 extern parse_pgm_inst_t cmd_trajectory;
 extern parse_pgm_inst_t cmd_trajectory_show;
 extern parse_pgm_inst_t cmd_rs_gains;
@@ -125,19 +129,22 @@ extern parse_pgm_inst_t cmd_pt_list_append;
 extern parse_pgm_inst_t cmd_pt_list_del;
 extern parse_pgm_inst_t cmd_pt_list_show;
 extern parse_pgm_inst_t cmd_strat_conf3;
-#endif /* COMPILE_CODE ---------------------------------------------------------------------------------------------*/
+//#endif /* COMPILE_CODE ---------------------------------------------------------------------------------------------*/
 
 extern parse_pgm_inst_t cmd_goto1;
 extern parse_pgm_inst_t cmd_goto2;
 extern parse_pgm_inst_t cmd_goto3;
 extern parse_pgm_inst_t cmd_position;
 extern parse_pgm_inst_t cmd_position_set;
+
+#ifdef notyet
 extern parse_pgm_inst_t cmd_strat_infos;
 extern parse_pgm_inst_t cmd_strat_conf;
 extern parse_pgm_inst_t cmd_strat_conf2;
 
 extern parse_pgm_inst_t cmd_subtraj1;
 extern parse_pgm_inst_t cmd_subtraj2;
+#endif
 
 #endif /* COMPILE_COMMANDS_TRAJ */
 
@@ -190,12 +197,16 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_opponent_set,
 	(parse_pgm_inst_t *)&cmd_start,
 	(parse_pgm_inst_t *)&cmd_color,
+
+#ifdef notyet
 	(parse_pgm_inst_t *)&cmd_slavedspic,
 	(parse_pgm_inst_t *)&cmd_slavedspic_ts,
 	(parse_pgm_inst_t *)&cmd_slavedspic_mirror,
 	(parse_pgm_inst_t *)&cmd_beacon,
 	(parse_pgm_inst_t *)&cmd_sensor_robot,
 	(parse_pgm_inst_t *)&cmd_lasers,
+#endif
+
 //	(parse_pgm_inst_t *)&cmd_interact,
 //	(parse_pgm_inst_t *)&cmd_rs,
 //	(parse_pgm_inst_t *)&cmd_i2cdebug,
@@ -208,8 +219,6 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_traj_speed,
 	(parse_pgm_inst_t *)&cmd_traj_speed_show,
 
-#ifdef COMPILE_CODE /*---------------------------------------------------------------------------------------------*/
-//#endif /* COMPILE_CODE ---------------------------------------------------------------------------------------------*/
 	(parse_pgm_inst_t *)&cmd_trajectory,
 	(parse_pgm_inst_t *)&cmd_trajectory_show,
 	(parse_pgm_inst_t *)&cmd_rs_gains,
@@ -220,6 +229,7 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_pt_list_append,
 	(parse_pgm_inst_t *)&cmd_pt_list_del,
 	(parse_pgm_inst_t *)&cmd_pt_list_show,
+#ifdef COMPILE_CODE /*---------------------------------------------------------------------------------------------*/
 	(parse_pgm_inst_t *)&cmd_strat_conf3,
 #endif /* COMPILE_CODE ---------------------------------------------------------------------------------------------*/
 
@@ -227,12 +237,15 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_goto2,
 	(parse_pgm_inst_t *)&cmd_position,
 	(parse_pgm_inst_t *)&cmd_position_set,
+
+#ifdef notyet
 	(parse_pgm_inst_t *)&cmd_strat_infos,
 	(parse_pgm_inst_t *)&cmd_strat_conf,
 	(parse_pgm_inst_t *)&cmd_strat_conf2,
 
 	(parse_pgm_inst_t *)&cmd_subtraj1,
 	(parse_pgm_inst_t *)&cmd_subtraj2,
+#endif
 
 #endif /* COMPILE_COMMANDS_TRAJ */
 

@@ -37,13 +37,6 @@ int8_t goto_and_avoid_forward(int16_t x, int16_t y,
 			      uint8_t flags_intermediate,
 			      uint8_t flags_final);
 
-/* go to a x,y point with empty side */
-uint8_t goto_and_avoid_empty_side(int16_t x, int16_t y, uint8_t flags_intermediate,
-			       uint8_t flags_final);
-
-/* go to a x,y point with busy side */
-uint8_t goto_and_avoid_busy_side(int16_t x, int16_t y, uint8_t flags_intermediate,
-			       uint8_t flags_final);
 #else			      
 int8_t goto_and_avoid(int16_t x, int16_t y,
 					   	int16_t robot_x, int16_t robot_y, double robot_a,

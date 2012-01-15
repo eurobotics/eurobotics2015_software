@@ -466,12 +466,6 @@ static void do_sensors(void *dummy)
 	do_adc(NULL);
 	do_boolean_sensors(NULL);
 	sensor_obstacle_update();
-
-	/* look for opponent towers */
-	strat_look_for_towers();
-
-	/* look for green zone figures */
-	strat_look_for_figures();
 }
 
 void sensor_init(void)

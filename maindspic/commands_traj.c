@@ -133,7 +133,7 @@ parse_pgm_inst_t cmd_traj_speed_show = {
 };
 
 #ifdef COMPILE_CODE /*---------------------------------------------------------------------------------------------*/
-//#endif /* COMPILE_CODE ---------------------------------------------------------------------------------------------*/
+#endif /* COMPILE_CODE ---------------------------------------------------------------------------------------------*/
 
 /**********************************************************/
 /* trajectory window configuration */
@@ -489,7 +489,7 @@ parse_pgm_inst_t cmd_pt_list_show = {
 	},
 };
 
-#endif /* COMPILE_CODE ---------------------------------------------------------------------------------------------*/
+//#endif /* COMPILE_CODE ---------------------------------------------------------------------------------------------*/
 
 
 /**********************************************************/
@@ -543,16 +543,6 @@ static void cmd_goto_parsed(void * parsed_result, void * data)
 		if (err != END_TRAJ && err != END_NEAR)
 			strat_hardstop();
 	}
-	else if (!strcmp_P(res->arg1, PSTR("avoid_empty"))) {
-		err = goto_and_avoid_empty_side(res->arg2, res->arg3, TRAJ_FLAGS_NO_NEAR, TRAJ_FLAGS_NO_NEAR);
-		if (err != END_TRAJ && err != END_NEAR)
-			strat_hardstop();
-	}
-	else if (!strcmp_P(res->arg1, PSTR("avoid_busy"))) {
-		err = goto_and_avoid_busy_side(res->arg2, res->arg3, TRAJ_FLAGS_NO_NEAR, TRAJ_FLAGS_NO_NEAR);
-		if (err != END_TRAJ && err != END_NEAR)
-			strat_hardstop();
-	}
 	else if (!strcmp_P(res->arg1, PSTR("xy_abs_fow"))) {
 		trajectory_goto_forward_xy_abs(&mainboard.traj, res->arg2, res->arg3);
 	}
@@ -596,7 +586,7 @@ parse_pgm_inst_t cmd_goto1 = {
 	},
 };
 
-prog_char str_goto_arg1_b[] = "xy_rel#xy_abs#xy_abs_fow#xy_abs_back#da_rel#a_to_xy#avoid#avoid_bw#a_behind_xy#avoid_empty#avoid_busy";
+prog_char str_goto_arg1_b[] = "xy_rel#xy_abs#xy_abs_fow#xy_abs_back#da_rel#a_to_xy#avoid#avoid_bw#a_behind_xy";
 parse_pgm_token_string_t cmd_goto_arg1_b = TOKEN_STRING_INITIALIZER(struct cmd_goto_result, arg1, str_goto_arg1_b);
 parse_pgm_token_num_t cmd_goto_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_goto_result, arg3, INT32);
 
@@ -698,12 +688,12 @@ static void cmd_position_parsed(void * parsed_result, void * data)
 	else if (!strcmp_P(res->arg1, PSTR("set"))) {
 		position_set(&mainboard.pos, res->arg2, res->arg3, res->arg4);
 	}
-	else if (!strcmp_P(res->arg1, PSTR("autoset_blue"))) {
-		mainboard.our_color = I2C_COLOR_BLUE;
-		auto_position();
-	}
 	else if (!strcmp_P(res->arg1, PSTR("autoset_red"))) {
 		mainboard.our_color = I2C_COLOR_RED;
+		auto_position();
+	}
+	else if (!strcmp_P(res->arg1, PSTR("autoset_purple"))) {
+		mainboard.our_color = I2C_COLOR_PURPLE;
 		auto_position();
 	}
 
@@ -716,7 +706,7 @@ static void cmd_position_parsed(void * parsed_result, void * data)
 
 prog_char str_position_arg0[] = "position";
 parse_pgm_token_string_t cmd_position_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_position_result, arg0, str_position_arg0);
-prog_char str_position_arg1[] = "show#reset#autoset_red#autoset_blue";
+prog_char str_position_arg1[] = "show#reset#autoset_red#autoset_purple";
 parse_pgm_token_string_t cmd_position_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_position_result, arg1, str_position_arg1);
 
 prog_char help_position[] = "Show/reset (x,y,a) position";
@@ -753,6 +743,7 @@ parse_pgm_inst_t cmd_position_set = {
 	},
 };
 
+#ifdef notyet
 
 /**********************************************************/
 /* strat configuration */
@@ -1179,3 +1170,5 @@ parse_pgm_inst_t cmd_subtraj2 = {
 		NULL,
 	},
 };
+
+#endif /* notyet */
