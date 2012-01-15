@@ -25,7 +25,16 @@
 
 /* area */
 #define AREA_X 3000
-#define AREA_Y 2100
+#define AREA_Y 2000
+
+/* obstacle clerance */
+#define OBS_CLERANCE   260.0
+
+/* totems */
+#define TOTEM_1_X    1100
+#define TOTEM_2_X    1900
+#define TOTEM_1_Y    AREA_Y/2
+#define TOTEM_2_Y    TOTEM_1_Y
 
 /* infos about strat */
 #define NB_SLOT_X				8
@@ -52,7 +61,7 @@
 #define START_A COLOR_A(45)
 
 #define CENTER_X 1500
-#define CENTER_Y 1050
+#define CENTER_Y 1000
 
 #define SIDE_REAR		I2C_SIDE_REAR
 #define SIDE_FRONT 	I2C_SIDE_FRONT 
@@ -123,7 +132,7 @@ struct conf {
 
 };
 
-/* token scores */
+/* scores */
 #define NOPLACE_SCORE	 0
 #define PION_SCORE		10
 #define FIGURE_SCORE		20
@@ -413,7 +422,9 @@ uint8_t strat_big_final(void);
 
 #else
 
-void strat_set_bounding_box(void);
+#define AREA_BBOX_6X5	0
+#define AREA_BBOX_4X4	1
+void strat_set_bounding_box(uint8_t type);
 
 #endif /* HOST_VERSION */
 

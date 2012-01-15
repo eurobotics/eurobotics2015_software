@@ -97,8 +97,8 @@
 #define VIRTUAL_TRACK_MM EXT_TRACK_MM
 
 /* robot dimensions */
-#define ROBOT_LENGTH 340.0 //354.79
-#define ROBOT_WIDTH 	313.0
+#define ROBOT_LENGTH    340.0 //354.79
+#define ROBOT_WIDTH 	   313.0
 
 /* Some calculus:
  * it is a 3600 imps -> 14400 because we see 1/4 period
@@ -266,12 +266,16 @@ static inline void set_uart_mux(uint8_t channel)
 
 	if(channel == BEACON_CHANNEL){
 		_U2RXR 	= 9;	/* U2RX <- RP9(RB9)  <- BEACON_UART_RX */
-		_TRISB9 	= 1;	/* U2RX is input								*/	  	_RP25R 	= 5;	/* U2TX -> RP25(RC9) -> BEACON_UART_TX */		_TRISC9	= 0;	/* U2TX is output								*/
+		_TRISB9 	= 1;	/* U2RX is input								*/
+	  	_RP25R 	= 5;	/* U2TX -> RP25(RC9) -> BEACON_UART_TX */
+		_TRISC9	= 0;	/* U2TX is output								*/
 	}
 	else
 	{
 		_U2RXR 	= 2;	/* U2RX <- RP2(RB2) <- SLAVE_UART_TX	*/
-		_TRISB2 	= 1;	/* U2RX is input								*/	  	_RP3R 	= 5;	/* U2TX -> RP3(RB3) -> SLAVE_UART_RX	*/		_TRISB3	= 0;	/* U2TX is output								*/
+		_TRISB2 	= 1;	/* U2RX is input								*/
+	  	_RP3R 	= 5;	/* U2TX -> RP3(RB3) -> SLAVE_UART_RX	*/
+		_TRISB3	= 0;	/* U2TX is output								*/
 	}
 
 	IRQ_UNLOCK(flags);

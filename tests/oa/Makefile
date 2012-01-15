@@ -2,13 +2,13 @@ TARGET = main
 
 # repertoire des modules
 #AVERSIVE_DIR = ../../../libs/aversive_b_zer0_9oct09
-AVERSIVE_DIR = ../../../libs/aversive4dspic
+AVERSIVE_DIR = ../../libs/aversive4dspic
 
 SRC  = $(TARGET).c
 
 ASRC = 
 
-#CFLAGS += -Wall -Werror
+CFLAGS += -Wall -Werror
 
 ########################################
 

@@ -27,7 +27,6 @@
  *  strat_avoid.h,v 1.4 2009/05/27 20:04:07 zer0 Exp.
  */
 
-
 #ifndef HOST_VERSION
 int8_t goto_and_avoid(int16_t x, int16_t y, uint8_t flags_intermediate,
 		      uint8_t flags_final);
@@ -46,8 +45,9 @@ uint8_t goto_and_avoid_empty_side(int16_t x, int16_t y, uint8_t flags_intermedia
 uint8_t goto_and_avoid_busy_side(int16_t x, int16_t y, uint8_t flags_intermediate,
 			       uint8_t flags_final);
 #else			      
-int8_t goto_and_avoid(int16_t dst_x, int16_t dst_y,
+int8_t goto_and_avoid(int16_t x, int16_t y,
 					   	int16_t robot_x, int16_t robot_y, double robot_a,
-					   	int16_t opp_x, int16_t opp_y);
+					   	int16_t opp1_x, int16_t opp1_y, 
+					   	int16_t opp2_x, int16_t opp2_y);
 #endif
 					   				      
