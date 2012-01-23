@@ -88,6 +88,9 @@
 #define O_LENGTH 340
 #endif
 
+#define ROBOT_2ND_WIDTH  245
+#define ROBOT_2ND_LENGTH 340
+
 #define CENTER_X 1500
 #define CENTER_Y 1000
 
@@ -115,6 +118,8 @@ int16_t g_opp1_x;
 int16_t g_opp1_y;
 int16_t g_opp2_x;
 int16_t g_opp2_y;
+int16_t g_robot_2nd_x;
+int16_t g_robot_2nd_y;
 #endif
 
 #ifdef HOST_VERSION
@@ -202,44 +207,62 @@ void set_rotated_poly(poly_t *pol, const point_t *robot_pt,
 }
 
 /* set poly that represent the opponent */
-void set_opponent_1_poly(poly_t *pol, const point_t *robot_pt, int16_t w, int16_t l)
+void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16_t w, int16_t l)
 {
-	int16_t x, y;
-	
-#ifndef HOST_VERSION
-	get_opponent_xy(&x, &y);
-#else
-	x = g_opp1_x;
-	y = g_opp1_y;
-#endif	
+#define OPP1      0
+#define OPP2      1
+#define ROBOT_2ND 2
 
-	DEBUG(E_USER_STRAT, "oponent 1 at: %d %d", x, y);
+	int16_t x=0, y=0;
+	int8_t *name = NULL;
+	int8_t opp1[] = "opponent 1";
+	int8_t opp2[] = "opponent 2";
+	int8_t robot_2nd[] = "robot 2nd";
+
+#ifndef HOST_VERSION
+   if(type == OPP1) {
+	   get_opponent_xy(&x, &y);
+	   name = opp1;
+	}
+	else if(type == OPP2) {
+	   /* TODO: get second oponent xy */
+	   x = I2C_OPPONENT_NOT_THERE;
+	   y = I2C_OPPONENT_NOT_THERE;
+	   name = opp2;
+	}
+	else if(type == ROBOT_2ND) {
+		/* TODO: get second robot xy */
+	   x = I2C_OPPONENT_NOT_THERE;
+	   y = I2C_OPPONENT_NOT_THERE;
+	   name = robot_2nd;
+	}
+#else
+   if(type == OPP1) {
+	   x = g_opp1_x;
+	   y = g_opp1_y;
+	   name = opp1;
+	}
+	else if(type == OPP2) {
+	   /* TODO: get second oponent xy */
+	   x = g_opp2_x;
+	   y = g_opp2_y;
+	   name = opp2;
+	}
+	else if(type == ROBOT_2ND) {
+		/* TODO: get second robot xy */
+	   x = g_robot_2nd_x;
+	   y = g_robot_2nd_y;
+	   name = robot_2nd;
+	}
+#endif	
+	else
+	   ERROR(E_USER_STRAT, "ERROR at %s", __FUNCTION__);
+
+	DEBUG(E_USER_STRAT, "%s at: %d %d", name, x, y);
 	
 	/* place poly even if invalid, because it's -1000 */
 	set_rotated_poly(pol, robot_pt, w, l, x, y); 
 }
-
-/* set poly that represent the opponent */
-void set_opponent_2_poly(poly_t *pol, const point_t *robot_pt, int16_t w, int16_t l)
-{
-	int16_t x, y;
-	
-#ifndef HOST_VERSION
-   /* TODO: get second oponent xy */
-	//get_opponent_xy(&x, &y);
-	x = I2C_OPPONENT_NOT_THERE;
-	y = I2C_OPPONENT_NOT_THERE;
-#else
-	x = g_opp2_x;
-	y = g_opp2_y;
-#endif	
-
-	DEBUG(E_USER_STRAT, "oponent 2 at: %d %d", x, y);
-	
-	/* place poly even if invalid, because it's -1000 */
-	set_rotated_poly(pol, robot_pt, w, l, x, y); 
-}
-
 
 /* set point of a rhombus, used for slot polys */
 uint8_t set_rhombus_pts(point_t *pt,
@@ -494,24 +517,26 @@ static int8_t go_in_area(point_t *robot_pt)
  * robot_pt is the current position of the robot, it will be
  * updated.
  */
-static int8_t escape_from_poly(point_t *robot_pt,
+static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t robot_2nd_y,
 										int16_t opp1_x, int16_t opp1_y, 
 										int16_t opp2_x, int16_t opp2_y, 
-										poly_t *pol_opp1, poly_t *pol_opp2, poly_t *pol_totems)
+										poly_t *pol_opp1, poly_t *pol_opp2, poly_t *pol_totems,
+										poly_t *pol_robot_2nd)
 {
 #define TOTEM_1_LIMIT_X    (TOTEM_1_X + 300)
 #define TOTEM_2_LIMIT_X    (TOTEM_2_X - 300)
 
    int16_t totems_x, totems_y; 
-	uint8_t in_opp1 = 0, in_opp2 = 0, in_totems = 0;
+	uint8_t in_opp1 = 0, in_opp2 = 0, in_totems = 0, in_robot_2nd = 0;
 	double escape_dx = 0, escape_dy = 0;
 	double opp1_dx = 0, opp1_dy = 0;
 	double opp2_dx = 0, opp2_dy = 0;
 	double totems_dx = 0, totems_dy = 0;
+	double robot_2nd_dx = 0, robot_2nd_dy = 0;
 	double len;
 
 	point_t dst_pt;
-	point_t intersect_opp1_pt, intersect_opp2_pt, intersect_totems_pt;
+	point_t intersect_opp1_pt, intersect_opp2_pt, intersect_totems_pt, intersect_robot_2nd_pt;
 
 
 	/* check if we are in any poly */
@@ -524,7 +549,10 @@ static int8_t escape_from_poly(point_t *robot_pt,
 	if (is_in_poly(robot_pt, pol_totems) == 1)
 		in_totems = 1;
    
-	if (in_opp1 == 0 && in_opp2 == 0 && in_totems == 0) {
+ 	if (is_in_poly(robot_pt, pol_robot_2nd) == 1)
+		in_robot_2nd = 1;
+ 
+	if (in_opp1 == 0 && in_opp2 == 0 && in_totems == 0 && in_robot_2nd == 0) {
 		NOTICE(E_USER_STRAT, "no need to escape");
 		return 0;
 	}
@@ -532,8 +560,9 @@ static int8_t escape_from_poly(point_t *robot_pt,
 	NOTICE(E_USER_STRAT, "in_opp1=%d", in_opp1);
 	NOTICE(E_USER_STRAT, "in_opp2=%d", in_opp2);
 	NOTICE(E_USER_STRAT, "in_totems=%d", in_totems);
+	NOTICE(E_USER_STRAT, "in_robot_2nd=%d", in_robot_2nd);
 	
-	/* determine totems coordinates */
+	/* determine totems center coordinates */
 	if(robot_pt->x < TOTEM_1_LIMIT_X) {
 	   totems_x = TOTEM_1_X;
 	   totems_y = TOTEM_1_Y;
@@ -602,6 +631,25 @@ static int8_t escape_from_poly(point_t *robot_pt,
 		escape_dy += totems_dy;
 	}
 	
+	if (distance_between(robot_pt->x, robot_pt->y, robot_2nd_x, robot_2nd_y) < ESCAPE_POLY_THRES) {
+		robot_2nd_dx = robot_pt->x - robot_2nd_x;
+		robot_2nd_dy = robot_pt->y - robot_2nd_y;
+		NOTICE(E_USER_STRAT, " robot is near robot_2nd: vect=%2.2f,%2.2f",
+		       robot_2nd_dx, robot_2nd_dy);
+		len = norm(robot_2nd_dx, robot_2nd_dy);
+		if (len != 0) {
+			robot_2nd_dx /= len;
+			robot_2nd_dy /= len;
+		}
+		else {
+			robot_2nd_dx = 1.0;
+			robot_2nd_dy = 0.0;
+		}
+		escape_dx += robot_2nd_dx;
+		escape_dy += robot_2nd_dy;
+	}
+	
+	
 	/* normalize escape vector */
 	len = norm(escape_dx, escape_dy);
 	if (len != 0) {
@@ -623,6 +671,11 @@ static int8_t escape_from_poly(point_t *robot_pt,
 			/* rotate 90° */
 			escape_dx = totems_dy;
 			escape_dy = totems_dx;
+		}
+		else if (pol_robot_2nd != NULL) {
+			/* rotate 90° */
+			escape_dx = robot_2nd_dy;
+			escape_dy = robot_2nd_dx;
 		}
 		else { /* should not happen */
 			escape_dx = 1.0;
@@ -689,7 +742,8 @@ static int8_t escape_from_poly(point_t *robot_pt,
 
          /* XXX check that destination point is not in an other poly */
 			if (is_point_in_poly(pol_opp1, dst_pt.x, dst_pt.y) != 1 &&
-			    is_point_in_poly(pol_totems, dst_pt.x, dst_pt.y) != 1 ){
+			    is_point_in_poly(pol_totems, dst_pt.x, dst_pt.y) != 1 &&
+			    is_point_in_poly(pol_robot_2nd, dst_pt.x, dst_pt.y) != 1 ) {
 
             /* check if destination point is in playground */
 				if (!is_in_boundingbox(&dst_pt))
@@ -723,7 +777,8 @@ static int8_t escape_from_poly(point_t *robot_pt,
 
          /* XXX check that destination point is not in an other poly */
 			if (is_point_in_poly(pol_opp1, dst_pt.x, dst_pt.y) != 1 &&
-			    is_point_in_poly(pol_opp2, dst_pt.x, dst_pt.y) != 1 ){
+			    is_point_in_poly(pol_opp2, dst_pt.x, dst_pt.y) != 1 &&
+			    is_point_in_poly(pol_robot_2nd, dst_pt.x, dst_pt.y) != 1 ) {
 
             /* check if destination point is in playground */
 				if (!is_in_boundingbox(&dst_pt))
@@ -743,6 +798,41 @@ static int8_t escape_from_poly(point_t *robot_pt,
 			}
 		}
 	}
+	
+	if (in_robot_2nd) {
+		if (is_crossing_poly(*robot_pt, dst_pt, &intersect_robot_2nd_pt,
+				     pol_robot_2nd) == 1) {
+				     
+			/* we add 2 cm to be sure we are out of th polygon */
+			dst_pt.x = intersect_robot_2nd_pt.x + escape_dx * 2;
+			dst_pt.y = intersect_robot_2nd_pt.y + escape_dy * 2;
+
+			NOTICE(E_USER_STRAT, "dst point %"PRId32",%"PRId32,
+			       dst_pt.x, dst_pt.y);
+
+         /* XXX check that destination point is not in an other poly */
+			if (is_point_in_poly(pol_opp1, dst_pt.x, dst_pt.y) != 1 &&
+			    is_point_in_poly(pol_opp2, dst_pt.x, dst_pt.y) != 1 &&
+			    is_point_in_poly(pol_totems, dst_pt.x, dst_pt.y) != 1 ){
+
+            /* check if destination point is in playground */
+				if (!is_in_boundingbox(&dst_pt))
+					return -1;
+				
+				NOTICE(E_USER_STRAT, "GOTO %"PRId32",%"PRId32"",
+				       dst_pt.x, dst_pt.y);
+
+				/* XXX comment for virtual scape from poly */
+#ifndef HOST_VERSION
+				strat_goto_xy_force(dst_pt.x, dst_pt.y);
+#endif
+				robot_pt->x = dst_pt.x;
+				robot_pt->y = dst_pt.y;
+				
+				return 0;
+			}
+		}
+	}	
 
 	/* should not happen */
 	return -1;
@@ -783,6 +873,7 @@ static int8_t __goto_and_avoid(int16_t x, int16_t y,
 #else
 int8_t goto_and_avoid(int16_t x, int16_t y,
 					   	int16_t robot_x, int16_t robot_y, double robot_a,
+					   	int16_t robot_2nd_x, int16_t robot_2nd_y,
 					   	int16_t opp1_x, int16_t opp1_y, 
 					   	int16_t opp2_x, int16_t opp2_y)
 
@@ -797,7 +888,7 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 #endif
 
 	point_t *p;
-	poly_t *pol_opp1, *pol_opp2;
+	poly_t *pol_opp1, *pol_opp2, *pol_robot_2nd;
 	poly_t *pol_totems;
 	int8_t ret;
 
@@ -806,6 +897,7 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 #ifndef HOST_VERSION
 	int16_t opp1_x, opp1_y;
 	int16_t opp2_x, opp2_y;
+	int16_t robot_2nd_x, robot_2nd_y;
 #endif	
 
 	point_t p_dst, robot_pt;
@@ -825,6 +917,8 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 	g_opp1_y = opp1_y;
 	g_opp2_x = opp2_x;
 	g_opp2_y = opp2_y;
+	g_robot_2nd_x = robot_2nd_x;
+	g_robot_2nd_y = robot_2nd_y;
 #endif
 
  retry:
@@ -842,6 +936,10 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 	/* TODO: get second opponent */
 	opp2_x = I2C_OPPONENT_NOT_THERE;
 	opp2_y = I2C_OPPONENT_NOT_THERE;
+	
+	/* TODO: get second robot */
+	robot_2nd_x = I2C_OPPONENT_NOT_THERE;
+	robot_2nd_y = I2C_OPPONENT_NOT_THERE;
 #endif
 
 	opp1_w = O_WIDTH;
@@ -865,12 +963,13 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
    pol_totems = oa_new_poly(8);
    set_totems_poly(pol_totems);
   
-	/* add opponent poly */
+	/* add opponent polyS */
 	pol_opp1 = oa_new_poly(4);
-	set_opponent_1_poly(pol_opp1, &robot_pt, O_WIDTH, O_LENGTH);
+	set_opponent_poly(OPP1, pol_opp1, &robot_pt, O_WIDTH, O_LENGTH);
 	pol_opp2 = oa_new_poly(4);
-	set_opponent_2_poly(pol_opp2, &robot_pt, O_WIDTH, O_LENGTH);
-																				
+	set_opponent_poly(OPP2, pol_opp2, &robot_pt, O_WIDTH, O_LENGTH);
+	pol_robot_2nd = oa_new_poly(4);
+	set_opponent_poly(ROBOT_2ND, pol_robot_2nd, &robot_pt, ROBOT_2ND_WIDTH, ROBOT_2ND_LENGTH);
 
 	/* if we are not in the limited area, try to go in it. */
 	ret = go_in_area(&robot_pt);
@@ -899,15 +998,20 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 		NOTICE(E_USER_STRAT, " dst is in opp 2");
 		return END_ERROR;
 	}
+ 	if (is_point_in_poly(pol_robot_2nd, x, y)) {
+		NOTICE(E_USER_STRAT, " dst is in robot 2nd");
+		return END_ERROR;
+	}
 
 	/* now start to avoid */
 	while (opp1_w && opp1_l && opp2_w && opp2_l) {
 
       /* escape from polys */
 		/* XXX robot_pt is not updated if it fails */		
-		ret = escape_from_poly(&robot_pt,
+		ret = escape_from_poly(&robot_pt, robot_2nd_x, robot_2nd_y,
 				                opp1_x, opp1_y, opp2_x, opp2_y, 
-				                pol_opp1, pol_opp2, pol_totems);
+				                pol_opp1, pol_opp2, pol_totems,
+				                pol_robot_2nd);
 		
 
       /* XXX uncomment in order to skip escape from poly */
@@ -968,7 +1072,7 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 			opp1_w /= 2;
 
 			NOTICE(E_USER_STRAT, "reducing opponent 1 %d %d", opp1_w, opp1_l);
-			set_opponent_1_poly(pol_opp1, &robot_pt, opp1_w, opp1_l);
+			set_opponent_poly(OPP1, pol_opp1, &robot_pt, opp1_w, opp1_l);
 		}
 		else if (distance_between(robot_pt.x, robot_pt.y, opp2_x, opp2_y) < REDUCE_POLY_THRES ) {
 			if (opp2_w == 0) {
@@ -978,9 +1082,12 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 			opp2_w /= 2;
 
 			NOTICE(E_USER_STRAT, "reducing opponent 2 %d %d", opp2_w, opp2_l);
-			set_opponent_2_poly(pol_opp2, &robot_pt, opp2_w, opp2_l);
+			set_opponent_poly(OPP2, pol_opp2, &robot_pt, opp2_w, opp2_l);
 		}
 		else {
+		
+		   /* XXX don't try to reduce robot 2nd */
+		
 			NOTICE(E_USER_STRAT, "oa_process() returned %d", len);
 			return END_ERROR;
 		}
