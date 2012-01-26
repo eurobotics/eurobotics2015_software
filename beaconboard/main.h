@@ -20,6 +20,9 @@
  *  Javier Baliñas Santos <javier@arc-robots.org>
  */
 
+/* NUMBER OF ROBOTS TO TRACK */
+#define TWO_OPPONENTS
+#define ROBOT_2ND
 
 #define BRAKE_ON()      do { _LATC6 = 0; _LATC7	= 0; } while(0)
 #define BRAKE_OFF()     do { Nop(); } while(0)
@@ -83,6 +86,11 @@ struct beaconboard
 
 	/* robot play color */
 	uint8_t our_color;
+
+	/* beacon running watchdog */
+	uint8_t watchdog;
+#define WATCHDOG_NB_TIMES	10
+
 };
 
 extern struct beaconboard beaconboard;
