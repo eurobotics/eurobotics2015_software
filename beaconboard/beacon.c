@@ -118,7 +118,7 @@ static volatile int32_t
 count_edge_ov[IR_SENSOR_MAX][EDGE_MAX] = {{0, 0}, {0 ,0}};	/* overflow flag   */
 static volatile int8_t 
 valid_pulse[IR_SENSOR_MAX] = {0, 0};	/* new valid measures available */								
-static int32_t invalid_count = 0;		/* timeout of pulse measure */
+static int32_t invalid_count[IR_SENSOR_MAX] = {0, 0};		/* timeout of pulse measure */
 
 
 /* initialize beacon */
@@ -126,10 +126,15 @@ void beacon_init(void)
 {
 	/* clear data structures */
 	memset(&beacon, 0, sizeof(struct beacon));
-	beacon.opponent_x = I2C_OPPONENT_NOT_THERE;
+	beacon.opponent1_x = I2C_OPPONENT_NOT_THERE;
+#ifdef TWO_OPPONENTS
+	beacon.opponent2_x = I2C_OPPONENT_NOT_THERE;
+#endif
+#ifdef ROBOT_2ND
+	beacon.robot_2nd_x = I2C_OPPONENT_NOT_THERE;
+#endif
 	
 	/* default values */		
-
 	beaconboard.our_color = I2C_COLOR_RED;
 
 
@@ -326,6 +331,9 @@ void beacon_reset_pos(void)
 /* start turn and measures */
 void beacon_start(void)
 {
+	/* init watchdog */
+	beaconboard.watchdog = WATCHDOG_NB_TIMES; 
+
 	/* enable beacon_calc event flag */
 	beaconboard.flags |= DO_BEACON;
 
@@ -348,7 +356,13 @@ void beacon_stop(void)
 	pwm_mc_set(BEACON_PWM, 0);
 
 	/* no opponent there */
-	beacon.opponent_x = I2C_OPPONENT_NOT_THERE;
+	beacon.opponent1_x = I2C_OPPONENT_NOT_THERE;
+#ifdef TWO_OPPONENTS
+	beacon.opponent2_x = I2C_OPPONENT_NOT_THERE;
+#endif
+#ifdef ROBOT_2ND
+	beacon.robot_2nd_x = I2C_OPPONENT_NOT_THERE;
+#endif
 }
 
 /**********************************************************************
@@ -506,6 +520,11 @@ void sensor_calc(uint8_t sensor)
 	int32_t local_robot_a = 0;
 #endif
 	
+#ifdef TWO_OPPONENTS
+int16_t delta_x, delta_y;
+int16_t d_opp1, d_opp2;
+#endif
+
 	int32_t result_x = 0;
 	int32_t result_y = 0;
 	
@@ -645,40 +664,145 @@ void sensor_calc(uint8_t sensor)
 
 	
 	/* reset timeout */
-	invalid_count = 0;
+	invalid_count[sensor] = 0;
+
+	if(sensor == IR_SENSOR_180_DEG)
+	{	
 	
-	/* update results */	
-	IRQ_LOCK(flags);			
-	beacon.opponent_x = result_x;
-	beacon.opponent_y = result_y;
-	beacon.opponent_angle = local_angle;
-	beacon.opponent_dist = local_dist;
-	IRQ_UNLOCK(flags);
+	#ifndef TWO_OPPONENTS
+		/* update results */	
+		IRQ_LOCK(flags);			
+		beacon.opponent1_x = result_x;
+		beacon.opponent1_y = result_y;
+		beacon.opponent1_angle = local_angle;
+		beacon.opponent1_dist = local_dist;
+		IRQ_UNLOCK(flags);
+	
+		/* final results */
+		BEACON_NOTICE("opp1: a = %.3ld / d = %.4ld / x = %.4ld / y = %.4ld",
+						 beacon.opponent1_angle, beacon.opponent1_dist,
+						 beacon.opponent1_x, beacon.opponent1_y);
+		return;
+	
+	#else /* TWO OPPONENTS */
+	
+		/* estimate the number of opponent by minimun squares root */
+		delta_x = result_x - beacon.opponent1_x;
+		delta_y = result_y - beacon.opponent1_y;
+		d_opp1 = sqrt(delta_x*delta_x + delta_y*delta_y);
+	
+		delta_x = result_x - beacon.opponent2_x;
+		delta_y = result_y - beacon.opponent2_y;
+		d_opp2 = sqrt(delta_x*delta_x + delta_y*delta_y);
+	
+		if(d_opp1 < d_opp2) {
+	
+			/* update results */	
+			IRQ_LOCK(flags);			
+			beacon.opponent1_x = result_x;
+			beacon.opponent1_y = result_y;
+			beacon.opponent1_angle = local_angle;
+			beacon.opponent1_dist = local_dist;
+			IRQ_UNLOCK(flags);
+		
+			/* final results */
+			BEACON_NOTICE("opp1: a = %.3ld / d = %.4ld / x = %.4ld / y = %.4ld",
+							 beacon.opponent1_angle, beacon.opponent1_dist,
+							 beacon.opponent1_x, beacon.opponent1_y);
+	
+			/* reset tracking counter */
+			beacon.opponent1_tracking_counts = 0;
+		}
+		else {
+	
+			/* update results */	
+			IRQ_LOCK(flags);			
+			beacon.opponent2_x = result_x;
+			beacon.opponent2_y = result_y;
+			beacon.opponent2_angle = local_angle;
+			beacon.opponent2_dist = local_dist;
+			IRQ_UNLOCK(flags);
+		
+			/* final results */
+			BEACON_NOTICE("opp2: a = %.3ld / d = %.4ld / x = %.4ld / y = %.4ld",
+							 beacon.opponent2_angle, beacon.opponent2_dist,
+							 beacon.opponent2_x, beacon.opponent2_y);
+		
+			/* reset tracking counter */
+			beacon.opponent2_tracking_counts = 0;
+	
+		}
+	
+		/* traking wathdog */
+		if(beacon.opponent1_tracking_counts < 25)
+			beacon.opponent1_tracking_counts++;
+		else
+			beacon.opponent1_x = I2C_OPPONENT_NOT_THERE;
 
-	/* final results */
-	BEACON_NOTICE("opp: a = %.3ld / d = %.4ld / x = %.4ld / y = %.4ld",
-					 beacon.opponent_angle, beacon.opponent_dist,
-					 beacon.opponent_x, beacon.opponent_y);
+		if(beacon.opponent2_tracking_counts < 25)
+			beacon.opponent2_tracking_counts++;
+		else
+			beacon.opponent2_x = I2C_OPPONENT_NOT_THERE;	
+	
+	#endif
+	
+	}
+	else /* IR_SENSOR_0_DEG */
+	{
+		/* update results */	
+		IRQ_LOCK(flags);			
+		beacon.robot_2nd_x = result_x;
+		beacon.robot_2nd_y = result_y;
+		beacon.robot_2nd_angle = local_angle;
+		beacon.robot_2nd_dist = local_dist;
+		IRQ_UNLOCK(flags);
+	
+		/* final results */
+		BEACON_NOTICE("robot_2nd: a = %.3ld / d = %.4ld / x = %.4ld / y = %.4ld",
+						 beacon.robot_2nd_angle, beacon.robot_2nd_dist,
+						 beacon.robot_2nd_x, beacon.robot_2nd_y);
+		return;
+	}
 
-	return;
+error:
+	/* 0.5 second timeout */
+	if (invalid_count[sensor] < 25)
+		invalid_count[sensor]++;
+	else {
 
-	error:
-		/* 0.5 second timeout */
-		if (invalid_count < 25)
-			invalid_count++;
+		if(sensor == IR_SENSOR_180_DEG) {
+			IRQ_LOCK(flags);
+			beacon.opponent1_x = I2C_OPPONENT_NOT_THERE;
+#ifdef TWO_OPPONENTS
+			beacon.opponent2_x = I2C_OPPONENT_NOT_THERE;
+#endif
+			IRQ_UNLOCK(flags);
+
+			BEACON_NOTICE("opponent/s not there");
+		}
+#ifdef ROBOT_2ND
 		else {
 			IRQ_LOCK(flags);
-			beacon.opponent_x = I2C_OPPONENT_NOT_THERE;
+			beacon.robot_2nd_x = I2C_OPPONENT_NOT_THERE;
 			IRQ_UNLOCK(flags);
-			
-			BEACON_NOTICE("opponent not there");
-		}	
+
+			BEACON_NOTICE("robot_2nd not there");
+		}
+#endif		
+	}	
 }
 
 /* beacon calculus event */
 void beacon_calc(void *dummy)
 {
 	if (beaconboard.flags & DO_BEACON){
+
+		/* watchdog, in case of robot emergency stop */
+		if(beaconboard.watchdog-- == 0) {
+			beacon_stop();
+			BEACON_ERROR("Pulling watchdog TIMEOUT");
+		}
+
 		//sensor_calc(IR_SENSOR_0_DEG);
 		sensor_calc(IR_SENSOR_180_DEG);
 	}	
