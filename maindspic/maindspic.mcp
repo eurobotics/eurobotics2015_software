@@ -166,6 +166,9 @@ file_138=.
 file_139=.
 file_140=.
 file_141=.
+file_142=.
+file_143=.
+file_144=.
 [GENERATED_FILES]
 file_000=no
 file_001=no
@@ -309,6 +312,9 @@ file_138=no
 file_139=no
 file_140=no
 file_141=no
+file_142=no
+file_143=no
+file_144=no
 [OTHER_FILES]
 file_000=no
 file_001=no
@@ -452,6 +458,9 @@ file_138=yes
 file_139=yes
 file_140=yes
 file_141=yes
+file_142=yes
+file_143=yes
+file_144=yes
 [FILE_INFO]
 file_000=..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c
 file_001=..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c
@@ -595,6 +604,9 @@ file_138=commands_gen.c
 file_139=commands_mainboard.c
 file_140=commands_traj.c
 file_141=C:\Program Files (x86)\Microchip\MPLAB C30\support\dsPIC33F\h\p33FJ128MC804.h
+file_142=strat_navigation.c
+file_143=strat_static.c
+file_144=strat_tokens.c
 [SUITE_INFO]
 suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 suite_state=

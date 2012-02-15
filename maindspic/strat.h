@@ -307,6 +307,8 @@ uint8_t strat_beginning(void);
 void strat_event(void *dummy);
 
 
+/* */
+
 /* add here more strat functions in files */
 
 #else
