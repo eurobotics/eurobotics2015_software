@@ -1,7 +1,7 @@
 [HEADER]
 magic_cookie={66E99B07-E706-4689-9E80-9B2582898A13}
 file_version=1.0
-device=dsPIC33FJ128MC804
+device=dsPIC33FJ64MC804
 [PATH_INFO]
 BuildDirPolicy=BuildDirIsProjectDir
 dir_src=.
@@ -141,8 +141,6 @@ file_113=__configs
 file_114=dac_mc
 file_115=blocking_detection_manager
 file_116=.
-file_117=.
-file_118=.
 [GENERATED_FILES]
 file_000=no
 file_001=no
@@ -261,8 +259,6 @@ file_113=no
 file_114=no
 file_115=no
 file_116=no
-file_117=no
-file_118=no
 [OTHER_FILES]
 file_000=no
 file_001=no
@@ -381,8 +377,6 @@ file_113=no
 file_114=no
 file_115=no
 file_116=yes
-file_117=yes
-file_118=yes
 [FILE_INFO]
 file_000=..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c
 file_001=..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c
@@ -501,8 +495,6 @@ file_113=pwm_servo_config.h
 file_114=..\libs\aversive4dspic\modules\hardware\dspic\dac_mc\dac_mc.h
 file_115=..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.h
 file_116=commands_cs.c
-file_117=..\..\..\eurobot2010\mplab\euRobotics\slavedspic\commands_gen.c
-file_118=..\..\..\eurobot2010\mplab\euRobotics\slavedspic\commands.c
 [SUITE_INFO]
 suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 suite_state=

@@ -56,7 +56,7 @@ struct slavedspic slavedspic;
 
 extern uint8_t i2c_watchdog_cnt;
 
-#define EUROBOT_2011_BOARD
+#undef EUROBOT_2011_BOARD
 #ifdef EUROBOT_2011_BOARD
 #warning COMPILATION FOR EUROBOT 2011 BOARD!!
 #endif
@@ -236,9 +236,13 @@ int main(void)
 	/* TIMER */
 	timer_init();
 
-	/* PWM_MC */	pwm_mc_channel_init(&gen.pwm_mc_mod1_ch2,	                    PWM_MC_MODE_BIPOLAR|PWM_MC_MODE_SIGN_INVERTED, 	                    1, 2, NULL, 0, NULL, 0);
-//	pwm_mc_channel_init(&gen.pwm_mc_mod2_ch1,//	                    PWM_MC_MODE_BIPOLAR, //	                    2, 1, NULL, 0, NULL, 0);
-	pwm_mc_init(&gen.pwm_mc_mod1_ch2, 3000, 							CH2_COMP&PDIS1H&PDIS1L&PEN2H&PEN2L&PDIS3H&PDIS3L);//	pwm_mc_init(&gen.pwm_mc_mod2_ch1, 3000, //							CH1_COMP&PEN1H&PEN1L);//	//	pwm_mc_set(&gen.pwm_mc_mod2_ch1, 0);	pwm_mc_set(&gen.pwm_mc_mod1_ch2, 0);
+	/* PWM_MC */#if notyet
+	pwm_mc_channel_init(&gen.pwm_mc_mod1_ch2,	                    PWM_MC_MODE_BIPOLAR|PWM_MC_MODE_SIGN_INVERTED, 	                    1, 2, NULL, 0, NULL, 0);
+	pwm_mc_init(&gen.pwm_mc_mod1_ch2, 3000, 							CH2_COMP&PDIS1H&PDIS1L&PEN2H&PEN2L&PDIS3H&PDIS3L);
+	pwm_mc_set(&gen.pwm_mc_mod1_ch2, 0);#endif
+
+	pwm_mc_channel_init(&gen.pwm_mc_mod2_ch1,	                    PWM_MC_MODE_BIPOLAR, 	                    2, 1, NULL, 0, NULL, 0);
+	pwm_mc_init(&gen.pwm_mc_mod2_ch1, 19000, 							CH1_COMP&PEN1H&PEN1L);	pwm_mc_set(&gen.pwm_mc_mod2_ch1, 0);
 
 	/* DO FLAGS */
 	/* note: cs is enabled after calibration */
