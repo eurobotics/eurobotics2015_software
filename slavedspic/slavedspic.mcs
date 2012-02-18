@@ -4,7 +4,7 @@ Version=1.0
 [File000]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\cirbuf_get_tail.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -17,7 +17,7 @@ DebugOptions=
 [File001]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\cirbuf.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -30,7 +30,7 @@ DebugOptions=
 [File002]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\cirbuf_add_buf_head.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -43,7 +43,7 @@ DebugOptions=
 [File003]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\cirbuf_add_buf_tail.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -56,7 +56,7 @@ DebugOptions=
 [File004]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\cirbuf_add_head.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -69,7 +69,7 @@ DebugOptions=
 [File005]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\cirbuf_add_tail.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -82,7 +82,7 @@ DebugOptions=
 [File006]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\cirbuf_align.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -95,7 +95,7 @@ DebugOptions=
 [File007]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\cirbuf_del_buf_head.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -108,7 +108,7 @@ DebugOptions=
 [File008]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\cirbuf_del_buf_tail.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -121,7 +121,7 @@ DebugOptions=
 [File009]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\cirbuf_del_head.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -134,7 +134,7 @@ DebugOptions=
 [File010]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\cirbuf_del_tail.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -147,7 +147,7 @@ DebugOptions=
 [File011]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\cirbuf_get_buf_head.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -160,7 +160,7 @@ DebugOptions=
 [File012]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\cirbuf_get_buf_tail.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -173,7 +173,7 @@ DebugOptions=
 [File013]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\cirbuf_get_head.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -186,7 +186,7 @@ DebugOptions=
 [File014]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\uart_setconf.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -199,7 +199,7 @@ DebugOptions=
 [File015]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\uart.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -212,7 +212,7 @@ DebugOptions=
 [File016]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\uart_dev_io.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -225,7 +225,7 @@ DebugOptions=
 [File017]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\uart_recv.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -238,7 +238,7 @@ DebugOptions=
 [File018]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\uart_recv_nowait.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -251,7 +251,7 @@ DebugOptions=
 [File019]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\uart_send.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -264,7 +264,7 @@ DebugOptions=
 [File020]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\uart_send_nowait.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -277,7 +277,7 @@ DebugOptions=
 [File021]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\oscillator.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -290,7 +290,7 @@ DebugOptions=
 [File022]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\parse.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -303,7 +303,7 @@ DebugOptions=
 [File023]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\parse_num.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -316,7 +316,7 @@ DebugOptions=
 [File024]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\parse_string.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -329,7 +329,7 @@ DebugOptions=
 [File025]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\rdline.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -342,7 +342,7 @@ DebugOptions=
 [File026]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\vt100.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -355,7 +355,7 @@ DebugOptions=
 [File027]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\scheduler.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -368,7 +368,7 @@ DebugOptions=
 [File028]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\scheduler_add.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -381,7 +381,7 @@ DebugOptions=
 [File029]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\scheduler_del.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -394,7 +394,7 @@ DebugOptions=
 [File030]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\scheduler_dump.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -407,7 +407,7 @@ DebugOptions=
 [File031]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\scheduler_interrupt.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -420,7 +420,7 @@ DebugOptions=
 [File032]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\time.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -433,7 +433,7 @@ DebugOptions=
 [File033]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\error.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -446,7 +446,7 @@ DebugOptions=
 [File034]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\uart_events.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -459,7 +459,7 @@ DebugOptions=
 [File035]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\ax12.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -472,7 +472,7 @@ DebugOptions=
 [File036]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\commands_ax12.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -485,7 +485,7 @@ DebugOptions=
 [File037]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\commands_gen.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -498,7 +498,7 @@ DebugOptions=
 [File038]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\main.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -511,7 +511,7 @@ DebugOptions=
 [File039]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\cmdline.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -524,7 +524,7 @@ DebugOptions=
 [File040]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\commands.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -537,7 +537,7 @@ DebugOptions=
 [File041]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\ax12_user.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -550,7 +550,7 @@ DebugOptions=
 [File042]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\sensor.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -563,7 +563,7 @@ DebugOptions=
 [File043]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\i2c_slave_lite.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -576,7 +576,7 @@ DebugOptions=
 [File044]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\i2c_protocol.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -589,7 +589,7 @@ DebugOptions=
 [File045]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\traps.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -602,7 +602,7 @@ DebugOptions=
 [File046]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\actuator.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -615,7 +615,7 @@ DebugOptions=
 [File047]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\state.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -628,7 +628,7 @@ DebugOptions=
 [File048]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\commands_slavedspic.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -641,7 +641,7 @@ DebugOptions=
 [File049]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\encoders_dspic.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -654,7 +654,7 @@ DebugOptions=
 [File050]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\pwm_mc.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -667,7 +667,7 @@ DebugOptions=
 [File051]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\pwm_servo.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -680,7 +680,7 @@ DebugOptions=
 [File052]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\pid.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -693,7 +693,7 @@ DebugOptions=
 [File053]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\quadramp.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -706,7 +706,7 @@ DebugOptions=
 [File054]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\control_system_manager.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -719,7 +719,7 @@ DebugOptions=
 [File055]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\cs.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -732,7 +732,7 @@ DebugOptions=
 [File056]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\dac_mc.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -745,7 +745,7 @@ DebugOptions=
 [File057]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\compiled_files\blocking_detection_manager.o
 Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
@@ -758,7 +758,7 @@ DebugOptions=
 [File058]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\.\output_files\slavedspic.cof
 Folder=Output
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={433C3D55-811D-409D-A6BF-159CF9355B42}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-ld.exe
@@ -771,7 +771,7 @@ DebugOptions=
 [File059]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\slavedspic\.\output_files\slavedspic.hex
 Folder=Output
-DeviceName=dsPIC33FJ128MC804
+DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 LanguageToolID={433C3D55-811D-409D-A6BF-159CF9355B42}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-ld.exe
