@@ -29,7 +29,9 @@
 #include <aversive/pgmspace.h>
 #include <aversive/wait.h>
 #include <aversive/error.h>
-
+#include <encoders_dspic.h>
+#include <dac_mc.h>#include <pwm_mc.h>
+#include <pwm_servo.h>
 #include <ax12.h>
 #include <uart.h>
 #include <i2c_slave_lite.h>
@@ -46,6 +48,7 @@
 #include "state.h"
 #include "actuator.h"
 #include "i2c_protocol.h"
+#include "cs.h"
 #include "main.h"
 
 struct genboard gen;
@@ -53,6 +56,10 @@ struct slavedspic slavedspic;
 
 extern uint8_t i2c_watchdog_cnt;
 
+#define EUROBOT_2011_BOARD
+#ifdef EUROBOT_2011_BOARD
+#warning COMPILATION FOR EUROBOT 2011 BOARD!!
+#endif
 
 void do_led_blink(__attribute__((unused)) void *dummy){
 #if 1 /* simple blink */
@@ -174,7 +181,7 @@ void io_pins_init(void)
   	_RP7R 	= 3;	// U1TX -> RP7 -> SLAVE_UART_TX
 	_TRISB7	= 0;	// U1TX is output
 
-#ifdef OLD_SERVO_AX12	
+#ifndef EUROBOT_2011_BOARD	
 	_U2RXR 	= 9;	// U2RX <- RP9 <- SERVOS_AX12_UART
   	_RP9R 	= 5;	// U2TX -> RP9 -> SERVOS_AX12_UART
 	_TRISB9	= 0;	// U2TX is output
@@ -216,25 +223,47 @@ int main(void)
 	error_register_notice(mylog);
 	error_register_debug(mylog);
 
+#if 0
+	/* ENCODERS */
+	encoders_dspic_init();
 	/* I2C */
 	i2c_init(I2C_SLAVEDSPIC_ADDR);
 	i2c_register_read_event(i2c_read_event);
 	i2c_register_write_event(i2c_write_event);
 	i2c_protocol_init();
+#endif
 
 	/* TIMER */
 	timer_init();
 
-	/* DO FLAGS */
-	slavedspic.flags = 0;
+	/* PWM_MC */	pwm_mc_channel_init(&gen.pwm_mc_mod1_ch2,	                    PWM_MC_MODE_BIPOLAR|PWM_MC_MODE_SIGN_INVERTED, 	                    1, 2, NULL, 0, NULL, 0);
+//	pwm_mc_channel_init(&gen.pwm_mc_mod2_ch1,//	                    PWM_MC_MODE_BIPOLAR, //	                    2, 1, NULL, 0, NULL, 0);
+	pwm_mc_init(&gen.pwm_mc_mod1_ch2, 3000, 							CH2_COMP&PDIS1H&PDIS1L&PEN2H&PEN2L&PDIS3H&PDIS3L);//	pwm_mc_init(&gen.pwm_mc_mod2_ch1, 3000, //							CH1_COMP&PEN1H&PEN1L);//	//	pwm_mc_set(&gen.pwm_mc_mod2_ch1, 0);	pwm_mc_set(&gen.pwm_mc_mod1_ch2, 0);
 
+	/* DO FLAGS */
+	/* note: cs is enabled after calibration */
+	slavedspic.flags = DO_ENCODERS | DO_POWER | DO_BD;
+
+#if 0
+	/* DAC_MC */
+	dac_mc_channel_init(&gen.dac_mc_left, 1, CHANNEL_L,							  DAC_MC_MODE_SIGNED, &LATA, 10, NULL, 0);
+	dac_mc_set(&gen.dac_mc_left, 0);
+	/* servos */
+	pwm_servo_init(&gen.pwm_servo_oc1, 1, 800, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc2, 2, 800, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc3, 3, 800, 2400);
+	pwm_servo_enable();
+#endif
 	/* SCHEDULER */
 	scheduler_init();
 
 	scheduler_add_periodical_event_priority(do_led_blink, NULL, 
 						100000L / SCHEDULER_UNIT, 
 						LED_PRIO);
-
+#if 0
+	scheduler_add_periodical_event_priority(do_cs, NULL, 
+						CS_PERIOD / SCHEDULER_UNIT, 
+						CS_PRIO);
 	scheduler_add_periodical_event_priority(do_i2c_watchdog, NULL, 
 						8000L / SCHEDULER_UNIT, 
 						I2C_POLL_PRIO);
@@ -242,31 +271,31 @@ int main(void)
 	scheduler_add_periodical_event_priority(do_sensors, NULL, 
 						10000L / SCHEDULER_UNIT, 
 						SENSOR_PRIO);
-
+#endif
 	/* TIME */
 	time_init(TIME_PRIO);
-
+#if 0
 	/* SERVOS AX12 */
 	ax12_user_init();
-
+#endif
 	/* enable interrupt */
 	sei();
 
 	/* wait some ms */
 	wait_ms(500);
-
+#if 0
 	/* ACTUATORS */
 	actuator_init();
 
 	/* STATE MACHINE */
 	state_init();
-
+#endif
 	printf("\r\n");
 	printf("Siempre falta tiempo para hacer pruebas. \r\n");
 
 	/* LOGS */
- 	//gen.logs[0] = E_USER_ST_MACH;
-	//gen.log_level = 5;
+ 	gen.logs[0] = E_USER_ST_MACH;
+	gen.log_level = 5;
 	
 	/* init cmdline */
 	cmdline_init();
@@ -274,7 +303,7 @@ int main(void)
 	/* main loop */
 	while(1)
 	{
-		state_machines();
+		//state_machines();
 		cmdline_interact_nowait();
 	}
 

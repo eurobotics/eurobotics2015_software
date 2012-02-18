@@ -30,8 +30,8 @@
 #define SENSOR4       3
 #define SENSOR5       4
 #define SENSOR6       5
-//#define SENSOR7       6	/* XXX broken pin */
-#define SENSOR_MAX    6
+#define SENSOR7       6
+#define SENSOR_MAX    7
 
 void sensor_init(void);
 

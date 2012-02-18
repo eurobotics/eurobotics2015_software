@@ -1,5 +1,6 @@
 /*  
- *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2010)
+ *  Copyright Droids Corporation, Microb Technology, Eirbot (2005),
+ *  Robotics Association of Coslada, Eurobotics Engineering (2010)
  * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,18 +16,27 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Revision : $Id$
+ *  Revision : $Id: encoders_microb_config.h,v 1.3.4.1 2006/11/26 21:06:04 zer0 Exp $
  *
- *  Javier BaliÃ±as Santos <javier@arc-robots.org>
  */
 
+/*  Robotics Association of Coslada, Eurobotics Engineering (2010)
+ *  Javier Baliñas Santos <javier@arc-robots.org>
+ *	
+ *  Code ported to families of microcontrollers dsPIC, with quadrature encoder HW module,
+ *  from encoders_microb_config.h,v 1.3.4.1 2006/11/26 21:06:04 zer0 Exp.
+ *
+ */
+ 
+#ifndef _ENCODERS_DSPIC_CONFIG_H_
+#define _ENCODERS_DSPIC_CONFIG_H_
 
-#ifndef _OSCILLATOR_CONFIG_H_
-#define _OSCILLATOR_CONFIG_H_
+/* number of the encoders used  */
+#define ENCODERS_DSPIC_NUMBER 2
 
-/* ***************************  PIC24F  *****************************/
-/* PLL x4 configuration */
-//#define PLLX4 1
+
+#define ENCODERS_DSPIC1_ENABLED
+#define ENCODERS_DSPIC2_ENABLED
 
 #endif
 
