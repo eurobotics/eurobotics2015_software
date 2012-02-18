@@ -1,7 +1,7 @@
 TARGET = main
 
 # repertoire des modules
-AVERSIVE_DIR = ../../libs/aversive4dspic
+AVERSIVE_DIR = ../libs/aversive4dspic
 
 CFLAGS += -Werror -Wextra
 LDFLAGS = -T ../common/avr6.x

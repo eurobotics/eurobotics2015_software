@@ -120,18 +120,18 @@ struct cmd_color_result {
 static void cmd_color_parsed(void *parsed_result, __attribute__((unused)) void *data)
 {
 	struct cmd_color_result *res = (struct cmd_color_result *) parsed_result;
-	if (!strcmp_P(res->color, PSTR("red"))) {
-		slavedspic.our_color = I2C_COLOR_RED;
+	if (!strcmp_P(res->color, PSTR("purple"))) {
+		slavedspic.our_color = I2C_COLOR_PURPLE;
 	}
-	else if (!strcmp_P(res->color, PSTR("blue"))) {
-		slavedspic.our_color = I2C_COLOR_BLUE;
+	else if (!strcmp_P(res->color, PSTR("red"))) {
+		slavedspic.our_color = I2C_COLOR_RED;
 	}
 	printf_P(PSTR("Done\r\n"));
 }
 
 prog_char str_color_arg0[] = "color";
 parse_pgm_token_string_t cmd_color_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_color_result, arg0, str_color_arg0);
-prog_char str_color_color[] = "red#blue";
+prog_char str_color_color[] = "purple#red";
 parse_pgm_token_string_t cmd_color_color = TOKEN_STRING_INITIALIZER(struct cmd_color_result, color, str_color_color);
 
 prog_char help_color[] = "Set our color";
@@ -146,101 +146,6 @@ parse_pgm_inst_t cmd_color = {
 	},
 };
 
-/**********************************************************/
-/* belts */
-
-/* this structure is filled when cmd_belts is parsed successfully */
-struct cmd_belts_result {
-	fixed_string_t arg0;
-	fixed_string_t arg1;
-	fixed_string_t arg2;
-	uint16_t arg3;
-};
-
-/* function called when cmd_belts is parsed successfully */
-static void cmd_belts_parsed(void *parsed_result, __attribute__((unused)) void *data)
-{
-	struct cmd_belts_result *res = (struct cmd_belts_result *) parsed_result;
-
-	uint8_t side, mode, sensor;
-	microseconds time_us;
-
-	/* side */
-	if (!strcmp(res->arg1, "rear")){
-		side = BELTS_SIDE_REAR;
-		sensor = S_REAR_TOKEN_STOP;
-	}
-	else{
-		side = BELTS_SIDE_FRONT;
-		sensor = S_FRONT_TOKEN_STOP;
-	}
-
-	/* mode */
-	if (!strcmp(res->arg2, "in"))
-		mode = BELTS_MODE_IN;
-	else if (!strcmp(res->arg2, "out"))
-		mode = BELTS_MODE_OUT;
-	else if (!strcmp(res->arg2, "left"))
-		mode = BELTS_MODE_LEFT;
-	else
-		mode = BELTS_MODE_RIGHT;
-	
-	/* execute */
-	time_us = time_get_us2();
-	belts_mode_set(side, mode, res->arg3);
-
-	/* test performance */
-#if 0
-	printf("press a key for end ...\n\r");
-	do{
-		printf("load = %d\n\r", (uint16_t)belts_load_get(side));
-		
-		/* stop if final carrier is reached */
-		if(sensor_get(sensor) && (mode==BELTS_MODE_IN))
-			belts_set_mode(side, BELTS_MODE_OUT, 0);
-		
-		wait_ms(50);
-	}while(!cmdline_keypressed());
-#else
-	printf("press a key for end ...\n\r");
-	if(mode==BELTS_MODE_IN){
-		while(!cmdline_keypressed() && !sensor_get(sensor));
-		time_us = time_get_us2() - time_us;
-		printf("input time = %d ms\n\r", (int16_t)(time_us/1000));
-	}
-	else if(mode==BELTS_MODE_OUT)
-		WAIT_COND_OR_TIMEOUT(cmdline_keypressed(), 700);
-	else
-		while(!cmdline_keypressed());			
-#endif
-
-	/* stop belts */
-	belts_mode_set(side, BELTS_MODE_OUT, 0);
-	printf("done\r\n");
-}
-
-prog_char str_belts_arg0[] = "belts";
-parse_pgm_token_string_t cmd_belts_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_belts_result, arg0, str_belts_arg0);
-prog_char str_belts_arg1[] = "rear#front";
-parse_pgm_token_string_t cmd_belts_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_belts_result, arg1, str_belts_arg1);
-prog_char str_belts_arg2[] = "in#out#left#right";
-parse_pgm_token_string_t cmd_belts_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_belts_result, arg2, str_belts_arg2);
-parse_pgm_token_num_t cmd_belts_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_belts_result, arg3, UINT16);
-
-
-prog_char help_belts[] = "manage belts";
-parse_pgm_inst_t cmd_belts = {
-	.f = cmd_belts_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_belts,
-	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_belts_arg0, 
-		(prog_void *)&cmd_belts_arg1, 
-		(prog_void *)&cmd_belts_arg2, 
-		(prog_void *)&cmd_belts_arg3, 
-		NULL,
-	},
-};
 
 
 /**********************************************************/
@@ -256,6 +161,7 @@ struct cmd_state1_result {
 static void cmd_state1_parsed(void *parsed_result,
 			      __attribute__((unused)) void *data)
 {
+#ifdef notyet
 	struct cmd_state1_result *res = parsed_result;
 	struct i2c_cmd_slavedspic_set_mode command;
 
@@ -292,7 +198,7 @@ static void cmd_state1_parsed(void *parsed_result,
 
 		state_set_mode(&command);
 	}
-
+#endif
 }
 
 prog_char str_state1_arg0[] = "state";
@@ -328,6 +234,7 @@ struct cmd_state2_result {
 static void cmd_state2_parsed(void *parsed_result,
 			      __attribute__((unused)) void *data)
 {
+#ifdef notyet
 	struct cmd_state2_result *res = parsed_result;
 	struct i2c_cmd_slavedspic_set_mode command;
 
@@ -352,6 +259,7 @@ static void cmd_state2_parsed(void *parsed_result,
 	command.ts.speed_div4 = res->arg3;
 	
 	state_set_mode(&command);
+#endif
 }
 
 prog_char str_state2_arg0[] = "state";
@@ -392,6 +300,7 @@ struct cmd_state3_result {
 static void cmd_state3_parsed(void *parsed_result,
 			      __attribute__((unused)) void *data)
 {
+#ifdef notyet
 	struct cmd_state3_result *res = parsed_result;
 	struct i2c_cmd_slavedspic_set_mode command;
 
@@ -410,6 +319,7 @@ static void cmd_state3_parsed(void *parsed_result,
 	state_set_mode(&command);
 
 	printf("done\n\r");
+#endif
 }
 
 prog_char str_state3_arg0[] = "state";
@@ -474,8 +384,8 @@ struct cmd_state_debug_result {
 static void cmd_state_debug_parsed(void *parsed_result,
 				   __attribute__((unused)) void *data)
 {
-	struct cmd_state_debug_result *res = parsed_result;
-	state_debug = res->on;
+	//struct cmd_state_debug_result *res = parsed_result;
+	//state_debug = res->on;
 }
 
 prog_char str_state_debug_arg0[] = "state_debug";

@@ -55,7 +55,7 @@ static struct sensor_filter sensor_filter[SENSOR_MAX] = {
 	[SENSOR4] 	= { 1, 0, 0, 1, 0, 1 },
 	[SENSOR5]	= { 1, 0, 0, 1, 0, 1 },
 	[SENSOR6]	= { 1, 0, 0, 1, 0, 1 },
-//	[SENSOR7] 	= { 1, 0, 0, 1, 0, 1 },
+	[SENSOR7] 	= { 1, 0, 0, 1, 0, 1 },
 };
 
 /* value of filtered sensors */
@@ -87,8 +87,8 @@ static uint16_t sensor_read(void)
  * SENSOR3: RB2
  * SENSOR4: RA8
  * SENSOR5: RC3
- * SENSOR6: RB4
- * SENSOR7: RC2 	 XXX broken pin
+ * SENSOR6: RB4	 XXX servos AX12 in 2011 board
+ * SENSOR7: RC2 	 XXX broken pin in 2011 board
  */
 
 	uint16_t tmp = 0;
@@ -97,10 +97,10 @@ static uint16_t sensor_read(void)
 	tmp |= (uint16_t)((PORTB & (_BV(2)))>> 2)<< 2;
 	tmp |= (uint16_t)((PORTA & (_BV(8)))>> 8)<< 3;
 	tmp |= (uint16_t)((PORTC & (_BV(3)))>> 3)<< 4;
-#ifdef OLD_SERVO_AX12
-//	tmp |= (uint16_t)((PORTB & (_BV(4)))>> 4)<< 5; /* NEW SERVO AX12 */
+#ifndef EUROBOT_2011_BOARD
+	tmp |= (uint16_t)((PORTB & (_BV(4)))>> 4)<< 5;
+	tmp |= (uint16_t)((PORTC & (_BV(2)))>> 2)<< 6;
 #endif
-	//tmp |= (uint16_t)((PORTC & (_BV(2)))>> 2)<< 6;
 
 	/* add more sensors here */
 	

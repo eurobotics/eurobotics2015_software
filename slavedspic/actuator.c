@@ -42,7 +42,7 @@
  * other scheduler process that uses the servos ax12.
  */
 
-
+#if 0
 /* put in/out a token or nice token turn right/left ;) */
 void belts_mode_set(uint8_t side, uint8_t mode, uint16_t speed)
 {
@@ -132,9 +132,11 @@ void mirror_pos_set(uint8_t side, uint16_t pos)
 		slavedspic.mirror_cmd_pos_left = pos;
 	}
 }
+#endif
 
 void actuator_init(void)
 {
+#ifdef notyet
 	/* global ax12 servos init, set free running mode */	ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_TORQUE_ENABLE, 0x00);	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_CW_ANGLE_LIMIT_L, 0x00);	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_CCW_ANGLE_LIMIT_L, 0x00);
 	ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_ALARM_SHUTDOWN, 0x24);	ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_ALARM_LED, 0x24);
 	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_MOVING_SPEED_L, 0);
@@ -144,4 +146,5 @@ void actuator_init(void)
 	ax12_user_write_int(&gen.ax12, AX12_RIGHT_MIRROR, AA_MOVING_SPEED_L, 0x3FF);
 
 	ax12_user_write_byte(&gen.ax12, AX12_LEFT_MIRROR, AA_TORQUE_ENABLE, 0xFF);	ax12_user_write_int(&gen.ax12, AX12_LEFT_MIRROR, AA_CW_ANGLE_LIMIT_L, 0x00);	ax12_user_write_int(&gen.ax12, AX12_LEFT_MIRROR, AA_CCW_ANGLE_LIMIT_L, 0x3FF);
-	ax12_user_write_int(&gen.ax12, AX12_LEFT_MIRROR, AA_MOVING_SPEED_L, 0x3FF);}
+	ax12_user_write_int(&gen.ax12, AX12_LEFT_MIRROR, AA_MOVING_SPEED_L, 0x3FF);#endif
+}
