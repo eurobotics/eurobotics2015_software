@@ -42,8 +42,12 @@ struct beacon {
 	int32_t opponent2_x;
 	int32_t opponent2_y;
 
-	uint8_t opponent1_tracking_counts;
-	uint8_t opponent2_tracking_counts;
+	uint8_t tracking_opp1_counts;
+	uint8_t tracking_opp2_counts;
+	int32_t tracking_opp1_x;
+	int32_t tracking_opp1_y;
+	int32_t tracking_opp2_x;
+	int32_t tracking_opp2_y;
 #endif
 #ifdef ROBOT_2ND
 	int32_t robot_2nd_angle;
