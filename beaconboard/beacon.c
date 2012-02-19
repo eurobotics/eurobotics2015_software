@@ -129,6 +129,8 @@ void beacon_init(void)
 	beacon.opponent1_x = I2C_OPPONENT_NOT_THERE;
 #ifdef TWO_OPPONENTS
 	beacon.opponent2_x = I2C_OPPONENT_NOT_THERE;
+	beacon.tracking_opp1_x = beacon.tracking_opp1_y = I2C_OPPONENT_NOT_THERE;
+	beacon.tracking_opp2_x = beacon.tracking_opp2_y = I2C_OPPONENT_NOT_THERE;
 #endif
 #ifdef ROBOT_2ND
 	beacon.robot_2nd_x = I2C_OPPONENT_NOT_THERE;
@@ -524,6 +526,9 @@ void sensor_calc(uint8_t sensor)
 	
 #ifdef TWO_OPPONENTS
 int16_t d_opp1, d_opp2;
+uint8_t tracking_update = 0;
+#define OPPONENT_1	1
+#define OPPONENT_2	2
 #endif
 
 	int32_t result_x = 0;
@@ -686,64 +691,84 @@ int16_t d_opp1, d_opp2;
 		return;
 	
 	#else /* TWO OPPONENTS */
+
+#define TRACKING_WINDOW_mm	200
 	
 		/* distance from new xy to opponents xy */
-		d_opp1 = distance_between(result_x, result_y, beacon.opponent1_x, beacon.opponent1_y);
-		d_opp2 = distance_between(result_x, result_y, beacon.opponent2_x, beacon.opponent2_y);
+		d_opp1 = distance_between(result_x, result_y, beacon.tracking_opp1_x, beacon.tracking_opp1_y);
+		d_opp2 = distance_between(result_x, result_y, beacon.tracking_opp2_x, beacon.tracking_opp2_y);
 
-		if((d_opp1 < d_opp2 && d_opp1 < 200) ) { //|| (beacon.opponent1_x == I2C_OPPONENT_NOT_THERE)) {
-	
-			/* update results */	
+		/* mimimun distance inside a window */
+		if(d_opp1 <= d_opp2) {
+			 if(d_opp1 < TRACKING_WINDOW_mm) 
+				tracking_update = OPPONENT_1;
+		}
+		else {
+			if(d_opp2 < TRACKING_WINDOW_mm)
+				tracking_update = OPPONENT_2;
+		}
+
+		/* initialization or not in window */
+		if(tracking_update == 0) {
+
+			/* initial state or lost both opponents */
+			if(beacon.opponent1_x == I2C_OPPONENT_NOT_THERE) {
+				tracking_update = OPPONENT_1;
+				BEACON_DEBUG("Opponent 1 intialized");
+			}
+			else if(beacon.opponent2_x == I2C_OPPONENT_NOT_THERE) {
+				tracking_update = OPPONENT_2;
+				BEACON_DEBUG("Opponent 2 intialized");
+			}	
+			else {
+				BEACON_DEBUG("Point out of windows");
+
+				if(d_opp1 < d_opp2) tracking_update = OPPONENT_1;
+				else tracking_update = OPPONENT_2;
+			}
+		}
+
+		/* update results */
+		if(tracking_update == OPPONENT_1) {
 			IRQ_LOCK(flags);			
-			beacon.opponent1_x = result_x;
-			beacon.opponent1_y = result_y;
+			beacon.opponent1_x = beacon.tracking_opp1_x = result_x;
+			beacon.opponent1_y = beacon.tracking_opp1_y = result_y;
 			beacon.opponent1_angle = local_angle;
 			beacon.opponent1_dist = local_dist;
 			IRQ_UNLOCK(flags);
-		
-			/* final results */
-			//BEACON_NOTICE("opp1: a = %.3ld / d = %.4ld / x = %.4ld / y = %.4ld",
-			//				 beacon.opponent1_angle, beacon.opponent1_dist,
-			//				 beacon.opponent1_x, beacon.opponent1_y);
 	
-			/* reset tracking counter */
-			beacon.opponent1_tracking_counts = 0;
+			/* reset tracking watchdog counter */
+			beacon.tracking_opp1_counts = 0;
 		}
-		else if(d_opp1 < 200) {
-	
-			/* update results */	
+		else if(tracking_update == OPPONENT_2) {
 			IRQ_LOCK(flags);			
-			beacon.opponent2_x = result_x;
-			beacon.opponent2_y = result_y;
+			beacon.opponent2_x = beacon.tracking_opp2_x = result_x;
+			beacon.opponent2_y = beacon.tracking_opp2_y = result_y;
 			beacon.opponent2_angle = local_angle;
 			beacon.opponent2_dist = local_dist;
 			IRQ_UNLOCK(flags);
-		
-			/* final results */
-			//BEACON_NOTICE("opp2: a = %.3ld / d = %.4ld / x = %.4ld / y = %.4ld",
-			//				 beacon.opponent2_angle, beacon.opponent2_dist,
-			//				 beacon.opponent2_x, beacon.opponent2_y);
-		
-			/* reset tracking counter */
-			beacon.opponent2_tracking_counts = 0;
-	
+				
+			/* reset tracking watchdog counter */
+			beacon.tracking_opp2_counts = 0;
 		}
-	
+
 		/* traking wathdog */
-		if(beacon.opponent1_tracking_counts < 25)
-			beacon.opponent1_tracking_counts++;
-		else
+		if(beacon.tracking_opp1_counts < 25)
+			beacon.tracking_opp1_counts++;
+		else {
+			BEACON_DEBUG("Opponent 1 not there");
 			beacon.opponent1_x = I2C_OPPONENT_NOT_THERE;
+		}
 
-		if(beacon.opponent2_tracking_counts < 25)
-			beacon.opponent2_tracking_counts++;
-		else
+		if(beacon.tracking_opp2_counts < 25)
+			beacon.tracking_opp2_counts++;
+		else {
+			BEACON_DEBUG("Opponent 2 not there");
 			beacon.opponent2_x = I2C_OPPONENT_NOT_THERE;	
-	
-
-		BEACON_NOTICE("opp1(%.3d, %.3ld, %.4ld, %.4ld) opp2(%.3d, %.3ld, %.4ld, %.4ld)",
-							d_opp1, beacon.opponent1_angle, beacon.opponent1_dist, beacon.opponent1_x,
-							d_opp2, beacon.opponent2_angle, beacon.opponent2_dist, beacon.opponent2_x);
+		}	
+		BEACON_NOTICE("opp1(%.3d, %.3ld, %.4ld, %.4ld, %.4ld) opp2(%.3d, %.3ld, %.4ld, %.4ld, %.4ld)",
+							d_opp1, beacon.opponent1_angle, beacon.opponent1_dist, beacon.opponent1_x, beacon.opponent1_y,
+							d_opp2, beacon.opponent2_angle, beacon.opponent2_dist, beacon.opponent2_x, beacon.opponent2_y);
 	
 	#endif
 	
@@ -763,15 +788,18 @@ int16_t d_opp1, d_opp2;
 		BEACON_NOTICE("robot_2nd: a = %.3ld / d = %.4ld / x = %.4ld / y = %.4ld",
 						 beacon.robot_2nd_angle, beacon.robot_2nd_dist,
 						 beacon.robot_2nd_x, beacon.robot_2nd_y);
-		return;
 	}
 #endif
 
+	return;
+
 error:
+
 	/* 0.5 second timeout */
-	if (invalid_count[sensor] < 25)
+	if (invalid_count[sensor] < 25*10)
 		invalid_count[sensor]++;
 	else {
+		invalid_count[sensor] = 0;
 
 		if(sensor == IR_SENSOR_180_DEG) {
 			IRQ_LOCK(flags);
@@ -793,6 +821,7 @@ error:
 		}
 #endif		
 	}	
+
 }
 
 /* beacon calculus event */
