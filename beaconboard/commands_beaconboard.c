@@ -196,6 +196,11 @@ static void cmd_beacon_parsed(void *parsed_result, void *data)
 	struct cmd_beacon_result *res = (struct cmd_beacon_result *) parsed_result;
 	if (!strcmp_P(res->arg1, PSTR("on"))) {
 		beacon_start();
+		beaconboard.watchdog_enable = 0;
+	}
+	else if (!strcmp_P(res->arg1, PSTR("watchdog_on"))) {
+		beacon_start();
+		beaconboard.watchdog_enable = 1;
 	}
 	else if (!strcmp_P(res->arg1, PSTR("off"))) {
 		beacon_stop();
@@ -206,7 +211,7 @@ static void cmd_beacon_parsed(void *parsed_result, void *data)
 
 prog_char str_beacon_arg0[] = "beacon";
 parse_pgm_token_string_t cmd_beacon_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_beacon_result, arg0, str_beacon_arg0);
-prog_char str_beacon_arg1[] = "on#off";
+prog_char str_beacon_arg1[] = "on#watchdog_on#off";
 parse_pgm_token_string_t cmd_beacon_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_beacon_result, arg1, str_beacon_arg1);
 
 prog_char help_beacon[] = "Enable/Disable Beacon (on/off)";

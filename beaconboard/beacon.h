@@ -20,6 +20,9 @@
  *  Javier Baliñas Santos <javier@arc-robots.org>
  */
 
+#define TWO_OPPONENTS
+#undef ROBOT_2ND
+
 struct beacon {
 	int32_t beacon_speed;
 	uint8_t angle_offset;
