@@ -354,6 +354,8 @@ void beacon_stop(void)
 	beaconboard.speed.on = 0;
 	cs_set_consign(&beaconboard.speed.cs, 0);
 	pwm_mc_set(BEACON_PWM, 0);
+	wait_ms(1000);
+	pid_reset(&beaconboard.speed.pid);
 
 	/* no opponent there */
 	beacon.opponent1_x = I2C_OPPONENT_NOT_THERE;
@@ -521,7 +523,6 @@ void sensor_calc(uint8_t sensor)
 #endif
 	
 #ifdef TWO_OPPONENTS
-int16_t delta_x, delta_y;
 int16_t d_opp1, d_opp2;
 #endif
 
@@ -686,16 +687,11 @@ int16_t d_opp1, d_opp2;
 	
 	#else /* TWO OPPONENTS */
 	
-		/* estimate the number of opponent by minimun squares root */
-		delta_x = result_x - beacon.opponent1_x;
-		delta_y = result_y - beacon.opponent1_y;
-		d_opp1 = sqrt(delta_x*delta_x + delta_y*delta_y);
-	
-		delta_x = result_x - beacon.opponent2_x;
-		delta_y = result_y - beacon.opponent2_y;
-		d_opp2 = sqrt(delta_x*delta_x + delta_y*delta_y);
-	
-		if(d_opp1 < d_opp2) {
+		/* distance from new xy to opponents xy */
+		d_opp1 = distance_between(result_x, result_y, beacon.opponent1_x, beacon.opponent1_y);
+		d_opp2 = distance_between(result_x, result_y, beacon.opponent2_x, beacon.opponent2_y);
+
+		if((d_opp1 < d_opp2 && d_opp1 < 200) ) { //|| (beacon.opponent1_x == I2C_OPPONENT_NOT_THERE)) {
 	
 			/* update results */	
 			IRQ_LOCK(flags);			
@@ -706,14 +702,14 @@ int16_t d_opp1, d_opp2;
 			IRQ_UNLOCK(flags);
 		
 			/* final results */
-			BEACON_NOTICE("opp1: a = %.3ld / d = %.4ld / x = %.4ld / y = %.4ld",
-							 beacon.opponent1_angle, beacon.opponent1_dist,
-							 beacon.opponent1_x, beacon.opponent1_y);
+			//BEACON_NOTICE("opp1: a = %.3ld / d = %.4ld / x = %.4ld / y = %.4ld",
+			//				 beacon.opponent1_angle, beacon.opponent1_dist,
+			//				 beacon.opponent1_x, beacon.opponent1_y);
 	
 			/* reset tracking counter */
 			beacon.opponent1_tracking_counts = 0;
 		}
-		else {
+		else if(d_opp1 < 200) {
 	
 			/* update results */	
 			IRQ_LOCK(flags);			
@@ -724,9 +720,9 @@ int16_t d_opp1, d_opp2;
 			IRQ_UNLOCK(flags);
 		
 			/* final results */
-			BEACON_NOTICE("opp2: a = %.3ld / d = %.4ld / x = %.4ld / y = %.4ld",
-							 beacon.opponent2_angle, beacon.opponent2_dist,
-							 beacon.opponent2_x, beacon.opponent2_y);
+			//BEACON_NOTICE("opp2: a = %.3ld / d = %.4ld / x = %.4ld / y = %.4ld",
+			//				 beacon.opponent2_angle, beacon.opponent2_dist,
+			//				 beacon.opponent2_x, beacon.opponent2_y);
 		
 			/* reset tracking counter */
 			beacon.opponent2_tracking_counts = 0;
@@ -744,9 +740,15 @@ int16_t d_opp1, d_opp2;
 		else
 			beacon.opponent2_x = I2C_OPPONENT_NOT_THERE;	
 	
+
+		BEACON_NOTICE("opp1(%.3d, %.3ld, %.4ld, %.4ld) opp2(%.3d, %.3ld, %.4ld, %.4ld)",
+							d_opp1, beacon.opponent1_angle, beacon.opponent1_dist, beacon.opponent1_x,
+							d_opp2, beacon.opponent2_angle, beacon.opponent2_dist, beacon.opponent2_x);
+	
 	#endif
 	
 	}
+#ifdef ROBOT_2ND
 	else /* IR_SENSOR_0_DEG */
 	{
 		/* update results */	
@@ -763,6 +765,7 @@ int16_t d_opp1, d_opp2;
 						 beacon.robot_2nd_x, beacon.robot_2nd_y);
 		return;
 	}
+#endif
 
 error:
 	/* 0.5 second timeout */
@@ -798,12 +801,15 @@ void beacon_calc(void *dummy)
 	if (beaconboard.flags & DO_BEACON){
 
 		/* watchdog, in case of robot emergency stop */
-		if(beaconboard.watchdog-- == 0) {
+		if(beaconboard.watchdog_enable && (beaconboard.watchdog-- == 0)) {
+			beaconboard.watchdog_enable = 0;
 			beacon_stop();
 			BEACON_ERROR("Pulling watchdog TIMEOUT");
 		}
 
-		//sensor_calc(IR_SENSOR_0_DEG);
+#ifdef ROBOT_2ND
+		sensor_calc(IR_SENSOR_0_DEG);
+#endif
 		sensor_calc(IR_SENSOR_180_DEG);
 	}	
 }

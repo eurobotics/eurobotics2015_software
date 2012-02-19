@@ -88,6 +88,7 @@ struct beaconboard
 	uint8_t our_color;
 
 	/* beacon running watchdog */
+	uint8_t watchdog_enable;
 	uint8_t watchdog;
 #define WATCHDOG_NB_TIMES	10
 
