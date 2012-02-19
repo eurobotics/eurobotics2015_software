@@ -19,7 +19,7 @@
  *
  */
 
-/*   *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011) *  Javier Baliñas Santos <javier@arc-robots.org> * *  Code ported to family of microcontrollers dsPIC from *  state.c,v 1.4 2009/05/27 20:04:07 zer0 Exp. */
+/*   *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2012) *  Javier Baliñas Santos <javier@arc-robots.org> * *  Code ported to family of microcontrollers dsPIC from *  state.c,v 1.4 2009/05/27 20:04:07 zer0 Exp. */
 
 
 #include <math.h>
@@ -50,6 +50,8 @@
 #define STMCH_DEBUG(args...) DEBUG(E_USER_ST_MACH, args)
 #define STMCH_NOTICE(args...) NOTICE(E_USER_ST_MACH, args)
 #define STMCH_ERROR(args...) ERROR(E_USER_ST_MACH, args)
+
+#ifdef notyet
 
 /* shorter aliases for this file */
 #define INIT				I2C_SLAVEDSPIC_MODE_INIT
@@ -364,23 +366,24 @@ static void state_do_token_systems(void)
 	token_system_manage(&slavedspic.ts[I2C_SIDE_FRONT]);
 	token_system_manage(&slavedspic.ts[I2C_SIDE_REAR]);
 }
+#endif
 
 /* state machines */
 void state_machines(void)
 {
-	state_do_init();
-	state_do_token_systems();
-	state_do_mirror_pos();
+	//state_do_init();
+	//state_do_token_systems();
+	//state_do_mirror_pos();
 }
 
 void state_init(void)
 {
-	mainboard_command.mode = INIT;
+	//mainboard_command.mode = INIT;
 
-	token_system_init(&slavedspic.ts[I2C_SIDE_FRONT], BELTS_SIDE_FRONT, 
-							S_FRONT_TOKEN_STOP, S_FRONT_TOKEN_CATCHED);
+	//token_system_init(&slavedspic.ts[I2C_SIDE_FRONT], BELTS_SIDE_FRONT, 
+	//						S_FRONT_TOKEN_STOP, S_FRONT_TOKEN_CATCHED);
 
-	token_system_init(&slavedspic.ts[I2C_SIDE_REAR], BELTS_SIDE_REAR, 
-							S_REAR_TOKEN_STOP, S_REAR_TOKEN_CATCHED);
+	//token_system_init(&slavedspic.ts[I2C_SIDE_REAR], BELTS_SIDE_REAR, 
+	//						S_REAR_TOKEN_STOP, S_REAR_TOKEN_CATCHED);
 }
 

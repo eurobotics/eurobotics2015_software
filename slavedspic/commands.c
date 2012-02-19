@@ -26,14 +26,40 @@
 #include <aversive/pgmspace.h>
 #include <parse.h>
 
+#define COMPILE_COMMANDS_CS
+
 /* commands_gen.c */
 extern parse_pgm_inst_t cmd_reset;
 //extern parse_pgm_inst_t cmd_bootloader;
+extern parse_pgm_inst_t cmd_encoders;
+extern parse_pgm_inst_t cmd_pwm_mc;
+extern parse_pgm_inst_t cmd_pwm_servo;
+extern parse_pgm_inst_t cmd_pwm_servo_show_range;
+extern parse_pgm_inst_t cmd_dac_mc;
 extern parse_pgm_inst_t cmd_sensor;
 extern parse_pgm_inst_t cmd_log;
 extern parse_pgm_inst_t cmd_log_show;
 extern parse_pgm_inst_t cmd_log_type;
 extern parse_pgm_inst_t cmd_scheduler;
+
+
+/* commands_cs.c */#ifdef COMPILE_COMMANDS_CS
+#include "./commands_cs.c"
+extern parse_pgm_inst_t cmd_gain;
+extern parse_pgm_inst_t cmd_gain_show;
+extern parse_pgm_inst_t cmd_speed;
+extern parse_pgm_inst_t cmd_speed_show;
+extern parse_pgm_inst_t cmd_derivate_filter;
+extern parse_pgm_inst_t cmd_derivate_filter_show;
+extern parse_pgm_inst_t cmd_consign;
+extern parse_pgm_inst_t cmd_maximum;
+extern parse_pgm_inst_t cmd_maximum_show;
+extern parse_pgm_inst_t cmd_quadramp;
+extern parse_pgm_inst_t cmd_quadramp_show;
+extern parse_pgm_inst_t cmd_cs_status;
+extern parse_pgm_inst_t cmd_blocking_i;
+extern parse_pgm_inst_t cmd_blocking_i_show;
+#endif /* COMPILE_COMMANDS_CS */
 
 /* commands_ax12.c */
 //extern parse_pgm_inst_t cmd_baudrate;
@@ -47,7 +73,6 @@ extern parse_pgm_inst_t cmd_ax12_dump_stats;
 /* commands_slavedspic.c */
 extern parse_pgm_inst_t cmd_event;
 extern parse_pgm_inst_t cmd_color;
-extern parse_pgm_inst_t cmd_belts;
 extern parse_pgm_inst_t cmd_state_debug;
 extern parse_pgm_inst_t cmd_state1;
 extern parse_pgm_inst_t cmd_state2;
@@ -62,11 +87,34 @@ parse_pgm_ctx_t main_ctx[] = {
 	/* commands_gen.c */
 	(parse_pgm_inst_t *)&cmd_reset,
 	//(parse_pgm_inst_t *)&cmd_bootloader,
+	(parse_pgm_inst_t *)&cmd_encoders,
+	(parse_pgm_inst_t *)&cmd_pwm_mc,
+	(parse_pgm_inst_t *)&cmd_pwm_servo,
+	(parse_pgm_inst_t *)&cmd_pwm_servo_show_range,
+	(parse_pgm_inst_t *)&cmd_dac_mc,
 	(parse_pgm_inst_t *)&cmd_sensor,
 	(parse_pgm_inst_t *)&cmd_log,
 	(parse_pgm_inst_t *)&cmd_log_show,
 	(parse_pgm_inst_t *)&cmd_log_type,
 	(parse_pgm_inst_t *)&cmd_scheduler,
+
+#ifdef COMPILE_COMMANDS_CS
+	/* commands_cs.c */
+	(parse_pgm_inst_t *)&cmd_gain,
+	(parse_pgm_inst_t *)&cmd_gain_show,
+	(parse_pgm_inst_t *)&cmd_speed,
+	(parse_pgm_inst_t *)&cmd_speed_show,
+	(parse_pgm_inst_t *)&cmd_consign,
+	(parse_pgm_inst_t *)&cmd_derivate_filter,
+	(parse_pgm_inst_t *)&cmd_derivate_filter_show,
+	(parse_pgm_inst_t *)&cmd_maximum,
+	(parse_pgm_inst_t *)&cmd_maximum_show,
+	(parse_pgm_inst_t *)&cmd_quadramp,
+	(parse_pgm_inst_t *)&cmd_quadramp_show,
+	(parse_pgm_inst_t *)&cmd_cs_status,
+	(parse_pgm_inst_t *)&cmd_blocking_i,
+	(parse_pgm_inst_t *)&cmd_blocking_i_show,
+#endif /* COMPILE_COMMANDS_CS */
 
 	/* commands_ax12.c */
 	//(parse_pgm_inst_t *)&cmd_baudrate,
@@ -80,7 +128,6 @@ parse_pgm_ctx_t main_ctx[] = {
 	/* commands_slavedspic.c */
 	(parse_pgm_inst_t *)&cmd_event,
 	(parse_pgm_inst_t *)&cmd_color,
-	(parse_pgm_inst_t *)&cmd_belts,
 	(parse_pgm_inst_t *)&cmd_state_debug,
 	(parse_pgm_inst_t *)&cmd_state1,
 	(parse_pgm_inst_t *)&cmd_state2,	

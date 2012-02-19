@@ -132,9 +132,8 @@ void io_pins_init(void)
 	_LATB11 	= 0;
 
 	/* servos */
-	/* XXX use as GPO's see lasers section below */
-	/*_RP22R = 0b10010; OC1 -> RP22(RC6) -> MAIN_SERVO_PWM_1 */
-	/*_RP23R = 0b10011; OC2 -> RP23(RC7) -> MAIN_SERVO_PWM_2 */
+	_RP22R = 0b10010; /* OC1 -> RP22(RC6) -> MAIN_SERVO_PWM_1 */
+	_RP23R = 0b10011; /* OC2 -> RP23(RC7) -> MAIN_SERVO_PWM_2 */
 	_TRISC6 	= 0;
 	_TRISC7	= 0;
 	
@@ -152,8 +151,6 @@ void io_pins_init(void)
 	/* lasers */
 	AD1PCFGL &= ~(_BV(7));	/* AN7 <- MAIN_LASER_1 */
 	AD1PCFGL &= ~(_BV(6));	/* AN6 <- MAIN_LASER_2 */
-	_ODCC7 	= 1;				/* lasers enable is open collector */
-	_LATC7 	= 0;				/* lasers off */
 			
 	/* i2c */
 	/* XXX open collector */
@@ -292,11 +289,6 @@ int main(void)
 
 	/* wait to init of slavedspic */
 	wait_ms(2000);
-
-	/* init mirrors */
-	//mirrors_set_mode(MODE_HIDE_MIRRORS);
-	//time_wait_ms(500);
-	//mirrors_set_mode(MODE_LOOK_FOR_FIGURES);
 	
 	/* say hello */
 	printf("\r\n");

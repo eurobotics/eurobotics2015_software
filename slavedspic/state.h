@@ -24,6 +24,8 @@
 #ifndef _STATE_H_
 #define _STATE_H_
 
+#ifdef notyet
+
 typedef struct {
 #define TS_STATE_IDLE				0
 #define TS_STATE_TAKE				1
@@ -59,7 +61,7 @@ int8_t state_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd);
 
 /* get mode */
 uint8_t state_get_mode(void);
-
+#endif
 /* run state machines */
 void state_machines(void);
 

@@ -34,6 +34,17 @@
 #define BEACON_NOTICE(args...) NOTICE(E_USER_BEACON, args)
 #define BEACON_ERROR(args...) ERROR(E_USER_BEACON, args)
 
+/* 180 deg. sensor adjusts - Opponent detection:
+	Angle: at 10 cm of a vertical white paper, external ring (low point tangent) at 102 mm high.
+	Power: with the angle adjusted, no detection at 39 cm with a vertical white paper.
+*/
+
+/* 0 deg. Sensor adjusts -  Second robot detection:
+	Angle: at 10 cm of a vertical white paper, external ring (low point tangent) at 95.5 mm high.
+	Power: with the angle adjusted, no detection at 39 cm with a vertical white paper.
+*/
+
+
 /* size measure params */
 #define MEASURE_MAX	4600
 #define MEASURE_MIN 	1600

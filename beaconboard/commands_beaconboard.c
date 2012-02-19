@@ -146,17 +146,17 @@ struct cmd_color_result {
 static void cmd_color_parsed(void *parsed_result, void *data)
 {
 	struct cmd_color_result *res = (struct cmd_color_result *) parsed_result;
-	if (!strcmp_P(res->color, PSTR("red"))) {
+	if (!strcmp_P(res->color, PSTR("purple"))) {
+		beaconboard.our_color = I2C_COLOR_PURPLE;
+	}
+	else if (!strcmp_P(res->color, PSTR("red"))) {
 		beaconboard.our_color = I2C_COLOR_RED;
 	}
-	else if (!strcmp_P(res->color, PSTR("blue"))) {
-		beaconboard.our_color = I2C_COLOR_BLUE;
-	}
 	else if (!strcmp_P(res->color, PSTR("show"))) {
-		if(beaconboard.our_color == I2C_COLOR_RED)
-			printf("color is RED\n\r");
+		if(beaconboard.our_color == I2C_COLOR_PURPLE)
+			printf("color is PURPLE\n\r");
 		else
-			printf("color is BLUE\n\r");
+			printf("color is RED\n\r");
 		
 	}
 	printf_P(PSTR("Done\r\n"));
@@ -164,7 +164,7 @@ static void cmd_color_parsed(void *parsed_result, void *data)
 
 prog_char str_color_arg0[] = "color";
 parse_pgm_token_string_t cmd_color_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_color_result, arg0, str_color_arg0);
-prog_char str_color_color[] = "red#blue#show";
+prog_char str_color_color[] = "purple#red#show";
 parse_pgm_token_string_t cmd_color_color = TOKEN_STRING_INITIALIZER(struct cmd_color_result, color, str_color_color);
 
 prog_char help_color[] = "Set our color";
@@ -196,6 +196,11 @@ static void cmd_beacon_parsed(void *parsed_result, void *data)
 	struct cmd_beacon_result *res = (struct cmd_beacon_result *) parsed_result;
 	if (!strcmp_P(res->arg1, PSTR("on"))) {
 		beacon_start();
+		beaconboard.watchdog_enable = 0;
+	}
+	else if (!strcmp_P(res->arg1, PSTR("watchdog_on"))) {
+		beacon_start();
+		beaconboard.watchdog_enable = 1;
 	}
 	else if (!strcmp_P(res->arg1, PSTR("off"))) {
 		beacon_stop();
@@ -206,7 +211,7 @@ static void cmd_beacon_parsed(void *parsed_result, void *data)
 
 prog_char str_beacon_arg0[] = "beacon";
 parse_pgm_token_string_t cmd_beacon_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_beacon_result, arg0, str_beacon_arg0);
-prog_char str_beacon_arg1[] = "on#off";
+prog_char str_beacon_arg1[] = "on#watchdog_on#off";
 parse_pgm_token_string_t cmd_beacon_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_beacon_result, arg1, str_beacon_arg1);
 
 prog_char help_beacon[] = "Enable/Disable Beacon (on/off)";
@@ -243,37 +248,85 @@ struct cmd_opponent_result {
 static void cmd_opponent_parsed(void * parsed_result, void *data)
 {
 	struct cmd_opponent_result *res = parsed_result;
-	int32_t opponent_x, opponent_y, opponent_dist, opponent_angle;
+	int32_t opponent1_x, opponent1_y, opponent1_dist, opponent1_angle;
+#ifdef TWO_OPPONENTS
+	int32_t opponent2_x, opponent2_y, opponent2_dist, opponent2_angle;
+#endif
+#ifdef ROBOT_2ND
+	int32_t robot_2nd_x, robot_2nd_y, robot_2nd_dist, robot_2nd_angle;
+#endif
 	uint8_t flags;
 //	static int16_t i=0;
-	uint16_t checksum;
+	uint16_t checksum=0;
+
+	/* reset watchdog */
+	beaconboard.watchdog = WATCHDOG_NB_TIMES;
 	
+	/* get robot and opponents position */
 	IRQ_LOCK(flags);
 	beacon.robot_x = (int32_t)res->robot_x;
 	beacon.robot_y = (int32_t)res->robot_y;
 	beacon.robot_a = (int32_t)res->robot_a;
 	
-	opponent_x = beacon.opponent_x;
-	opponent_y = beacon.opponent_y;
-	opponent_angle = beacon.opponent_angle;
-	opponent_dist = beacon.opponent_dist;
+	opponent1_x = beacon.opponent1_x;
+	opponent1_y = beacon.opponent1_y;
+	opponent1_angle = beacon.opponent1_angle;
+	opponent1_dist = beacon.opponent1_dist;
+
+#ifdef TWO_OPPONENTS
+	opponent2_x = beacon.opponent2_x;
+	opponent2_y = beacon.opponent2_y;
+	opponent2_angle = beacon.opponent2_angle;
+	opponent2_dist = beacon.opponent2_dist;
+#endif
+#ifdef ROBOT_2ND
+	robot_2nd_x = beacon.robot_2nd_x;
+	robot_2nd_y = beacon.robot_2nd_y;
+	robot_2nd_angle = beacon.robot_2nd_angle;
+	robot_2nd_dist = beacon.robot_2nd_dist;
+#endif
+
 	IRQ_UNLOCK(flags);
 
 
 	/* get actual value of (x,y) */
-	if(opponent_x != I2C_OPPONENT_NOT_THERE){
+	if(opponent1_x != I2C_OPPONENT_NOT_THERE){
 		/* calculate (x,y) coordenates relative to (0,0) */
-		beacon_angle_dist_to_x_y(opponent_angle, opponent_dist, &opponent_x, &opponent_y);
+		beacon_angle_dist_to_x_y(opponent1_angle, opponent1_dist, &opponent1_x, &opponent1_y);
 	}
 
+#ifdef TWO_OPPONENTS
+	if(opponent2_x != I2C_OPPONENT_NOT_THERE){
+		/* calculate (x,y) coordenates relative to (0,0) */
+		beacon_angle_dist_to_x_y(opponent2_angle, opponent2_dist, &opponent2_x, &opponent2_y);
+	}
+#endif
+#ifdef ROBOT_2ND
+	if(robot_2nd_x != I2C_OPPONENT_NOT_THERE){
+		/* calculate (x,y) coordenates relative to (0,0) */
+		beacon_angle_dist_to_x_y(robot_2nd_angle, robot_2nd_dist, &robot_2nd_x, &robot_2nd_y);
+	}
+#endif
 
 	/* calculate checksum */
-	checksum  = (uint16_t)opponent_x;
-	checksum += (uint16_t)opponent_y;
-	checksum += (uint16_t)opponent_angle;
-	checksum += (uint16_t)opponent_dist;
+	checksum = (uint16_t)(checksum + opponent1_x);
+	checksum = (uint16_t)(checksum + opponent1_y);
+	checksum = (uint16_t)(checksum + opponent1_angle);
+	checksum = (uint16_t)(checksum + opponent1_dist);
 
-	
+#ifdef TWO_OPPONENTS
+	checksum = (uint16_t)(checksum + opponent2_x);
+	checksum = (uint16_t)(checksum + opponent2_y);
+	checksum = (uint16_t)(checksum + opponent2_angle);
+	checksum = (uint16_t)(checksum + opponent2_dist);
+#endif
+#ifdef ROBOT_2ND
+	checksum = (uint16_t)(checksum + robot_2nd_x);
+	checksum = (uint16_t)(checksum + robot_2nd_y);
+	checksum = (uint16_t)(checksum + robot_2nd_angle);
+	checksum = (uint16_t)(checksum + robot_2nd_dist);
+#endif
+
 //	/* debug */
 //	opponent_x = i;
 //	opponent_y = i;
@@ -295,14 +348,35 @@ static void cmd_opponent_parsed(void * parsed_result, void *data)
 	uart_send(CMDLINE_UART,'o');
 
 	/* send data */
-	uart_send(CMDLINE_UART,(uint8_t)(opponent_x & 0x00FF));
-	uart_send(CMDLINE_UART,(uint8_t)((opponent_x>>8) & 0x00FF));
-	uart_send(CMDLINE_UART,(uint8_t)(opponent_y & 0x00FF));
-	uart_send(CMDLINE_UART,(uint8_t)((opponent_y>>8) & 0x00FF));
-	uart_send(CMDLINE_UART,(uint8_t)(opponent_angle & 0x00FF));
-	uart_send(CMDLINE_UART,(uint8_t)((opponent_angle>>8) & 0x00FF));
-	uart_send(CMDLINE_UART,(uint8_t)(opponent_dist & 0x00FF));
-	uart_send(CMDLINE_UART,(uint8_t)((opponent_dist>>8) & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)( opponent1_x & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)((opponent1_x>>8) & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)( opponent1_y & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)((opponent1_y>>8) & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)( opponent1_angle & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)((opponent1_angle>>8) & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)( opponent1_dist & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)((opponent1_dist>>8) & 0x00FF));
+
+#ifdef TWO_OPPONENTS
+	uart_send(CMDLINE_UART,(uint8_t)( opponent2_x & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)((opponent2_x>>8) & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)( opponent2_y & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)((opponent2_y>>8) & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)( opponent2_angle & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)((opponent2_angle>>8) & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)( opponent2_dist & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)((opponent2_dist>>8) & 0x00FF));
+#endif
+#ifdef ROBOT_2ND
+	uart_send(CMDLINE_UART,(uint8_t)( robot_2nd_x & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)((robot_2nd_x>>8) & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)( robot_2nd_y & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)((robot_2nd_y>>8) & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)( robot_2nd_angle & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)((robot_2nd_angle>>8) & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)( robot_2nd_dist & 0x00FF));
+	uart_send(CMDLINE_UART,(uint8_t)((robot_2nd_dist>>8) & 0x00FF));
+#endif
 
 	/* send checksum */
 	uart_send(CMDLINE_UART,(int8_t)(checksum & 0x00FF));

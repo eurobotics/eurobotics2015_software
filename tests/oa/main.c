@@ -57,11 +57,13 @@ int main(void)
 	int16_t opp1_y;
 	int16_t opp2_x;
 	int16_t opp2_y;
+	int16_t robot_2nd_x;
+	int16_t robot_2nd_y;
 	int16_t dst_x;
 	int16_t dst_y;
    
 #ifdef HOST_VERSION
-	if (argc != 10) {
+	if (argc != 12) {
 		printf("bad args (argc = %d)\n", argc);
 		return -1;
 	}
@@ -75,6 +77,8 @@ int main(void)
 	opp1_y = atoi(argv[7]);
 	opp2_x = atoi(argv[8]);
 	opp2_y = atoi(argv[9]);
+	robot_2nd_x = atoi(argv[10]);
+	robot_2nd_y = atoi(argv[11]);	
 #endif
    
 	/* LOGS */
@@ -91,6 +95,7 @@ int main(void)
 	DEBUG(E_USER_STRAT, "robot at: %d %d %d", robot_x, robot_y, robot_a_deg);
 	goto_and_avoid(dst_x, dst_y,
 					   robot_x, robot_y, robot_a,
+					   robot_2nd_x, robot_2nd_y,
 					   opp1_x, opp1_y, opp2_x, opp2_y);
 
 	return 0;
