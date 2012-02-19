@@ -106,7 +106,7 @@ static void ax12_send_callback(char c)
 	if (ax12_state == AX12_STATE_READ) {
 		/* disable TX when last byte is pushed. */
 		if (CIRBUF_IS_EMPTY(&g_tx_fifo[1])){
-#ifdef OLD_SERVO_AX12			_TRISB9 = 1;	// U2RX/TX pin is input
+#ifndef EUROBOT_2011_BOARD			_TRISB9 = 1;	// U2RX/TX pin is input
 #else
 			_TRISB4 = 1;	// U2RX/TX pin is input
 #endif		}	
@@ -148,7 +148,7 @@ static void ax12_switch_uart(uint8_t state)
 		IRQ_LOCK(flags);
 		ax12_nsent=0;
 		// Empty the RX buffer		// Case of two follow writes, in RX buffer		// is the status packet		while (uart_recv_nowait(1) != -1);
-#ifdef OLD_SERVO_AX12
+#ifndef EUROBOT_2011_BOARD
 		_TRISB9	= 0;	// U2RX/TX pin is output		_ODCB9 	= 1;	// open collector on#else
 		_TRISB4	= 0;	// U2RX/TX pin is output		_ODCB4 	= 1;	// open collector on
 #endif		
@@ -160,7 +160,7 @@ static void ax12_switch_uart(uint8_t state)
 		IRQ_LOCK(flags);
 
 		if (CIRBUF_IS_EMPTY(&g_tx_fifo[1])){
-#ifdef OLD_SERVO_AX12			_TRISB9 = 1;	// U2RX/TX pin is input
+#ifndef EUROBOT_2011_BOARD			_TRISB9 = 1;	// U2RX/TX pin is input
 #else
 			_TRISB4 = 1;	// U2RX/TX pin is input
 #endif

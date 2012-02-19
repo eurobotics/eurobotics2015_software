@@ -37,8 +37,8 @@ def draw_bottle(x, y):
     bottle += [ Rectangle((x-11, y), 22, -22*2) ]
     return bottle   
     
-def graph(filename, stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y):
-    cmd = "./main %d %d %d %d %d %d %d %d %d"%(stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y)
+def graph(filename, stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x, robot_2nd_y):
+    cmd = "./main %d %d %d %d %d %d %d %d %d %d %d"%(stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x, robot_2nd_y)
     o,i = popen2.popen2(cmd)
     i.close()
     s = o.read(100000000)
@@ -138,12 +138,17 @@ def graph(filename, stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y):
             poly_wait_pts = int(m.groups()[0])
             poly = []
 
-        m = re.match("oponent 1 at: (-?\d+) (-?\d+)", l)
+        m = re.match("opponent 1 at: (-?\d+) (-?\d+)", l)
         if m:
             poly_wait_pts = 4
             poly = []
 
-        m = re.match("oponent 2 at: (-?\d+) (-?\d+)", l)
+        m = re.match("opponent 2 at: (-?\d+) (-?\d+)", l)
+        if m:
+            poly_wait_pts = 4
+            poly = []
+            
+        m = re.match("robot 2nd at: (-?\d+) (-?\d+)", l)
         if m:
             poly_wait_pts = 4
             poly = []
@@ -222,56 +227,59 @@ def graph(filename, stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y):
     #plt.show()
     fig.savefig(filename)
 
-# args are: startx, starty, starta, endx, endy, opp1x, opp1y, opp2x, opp2y
+# args are: startx, starty, starta, endx, endy, opp1x, opp1y, opp2x, opp2y, robot_2nd_x, robot_2nd_y
 #graph("single.png", 250, 250, 0, 2000, 1600, -1500, 0, -1500, 0)
 
+def random_target_xy():
+   x = random.choice([660, 1100, 1900, 2340])
+   if x <= 660 or x >= 2340:
+      y = random.choice([260, 500, 1000, 1500, 1696])
+   else:
+      y = random.choice([260, 500, 1500, 1696])
+   return x,y
+   
+def random_robot_2nd_xy():
+   x = random.choice([250, 660, 1100, 1500, 1900, 2340, 2750])
+   if x <= 660 or x >= 2340:
+      y = random.choice([260, 500, 1000, 1500, 1696])
+   else:
+      y = random.choice([260, 500])
+   return x,y
+
 # go in playground area
-graph("go_in_area_1.png", 250, 250, 0, 2300, 1600, -1500, 0, -1500, 0)
-graph("go_in_area_2.png", 250, 1000, 0, 2300, 1000, -1500, 0, -1500, 0)
-graph("go_in_area_3.png", 250, 1000, 0, 2300, 260, -1500, 0, -1500, 0)
-graph("go_in_area_4.png", 1000, 250, 0, 2300, 260, -1500, 0, -1500, 0)
-graph("go_in_area_5.png", 1500, 240, 0, 680, 1600, -1500, 0, -1500, 0)
-graph("go_in_area_6.png", 2300, 240, 0, 2000, 1400, -1500, 0, -1500, 0)
+print("go_in_area_1.png", 250, 250, 0, 2300, 1600, -1500, 0, -1500, 0, -1500, 0)
+graph("go_in_area_1.png", 250, 250, 0, 2300, 1600, -1500, 0, -1500, 0, -1500, 0)
+print("go_in_area_2.png", 250, 1000, 0, 2300, 1000, -1500, 0, -1500, 0, -1500, 0)
+graph("go_in_area_2.png", 250, 1000, 0, 2300, 1000, -1500, 0, -1500, 0, -1500, 0)
+print("go_in_area_3.png", 250, 1000, 0, 2300, 260, -1500, 0, -1500, 0, -1500, 0)
+graph("go_in_area_3.png", 250, 1000, 0, 2300, 260, -1500, 0, -1500, 0, -1500, 0)
+print("go_in_area_4.png", 1000, 250, 0, 2300, 260, -1500, 0, -1500, 0, -1500, 0)
+graph("go_in_area_4.png", 1000, 250, 0, 2300, 260, -1500, 0, -1500, 0, -1500, 0)
+print("go_in_area_5.png", 1500, 240, 0, 680, 1600, -1500, 0, -1500, 0, -1500, 0)
+graph("go_in_area_5.png", 1500, 240, 0, 680, 1600, -1500, 0, -1500, 0, -1500, 0)
+print("go_in_area_6.png", 2300, 240, 0, 2000, 1400, -1500, 0, -1500, 0, -1500, 0)
+graph("go_in_area_6.png", 2300, 240, 0, 2000, 1400, -1500, 0, -1500, 0, -1500, 0)
 
 # op2_at_ship
-graph("op2_at_ship_1.png", 1500, 350, 0, 1500, 1600, -1000, 0, 400, 700)
-graph("op2_at_ship_2.png", 1500, 350, 0, 1500, 1600, -1000, 0, 400, 1000)
-graph("op2_at_ship_3.png", 1500, 350, 0, 1500, 1600, -1000, 0, 400, 1200)
-graph("op2_at_ship_4.png", 1500, 350, 0, 1500, 1600, -1000, 0, 500, 1600)
+print("op2_at_ship_1.png", 1500, 350, 0, 1500, 1600, -1000, 0, 400, 700, -1500, 0)
+graph("op2_at_ship_1.png", 1500, 350, 0, 1500, 1600, -1000, 0, 400, 700, -1500, 0)
+print("op2_at_ship_2.png", 1500, 350, 0, 1500, 1600, -1000, 0, 400, 1000, -1500, 0)
+graph("op2_at_ship_2.png", 1500, 350, 0, 1500, 1600, -1000, 0, 400, 1000, -1500, 0)
+print("op2_at_ship_3.png", 1500, 350, 0, 1500, 1600, -1000, 0, 400, 1200, -1500, 0)
+graph("op2_at_ship_3.png", 1500, 350, 0, 1500, 1600, -1000, 0, 400, 1200, -1500, 0)
+print("op2_at_ship_4.png", 1500, 350, 0, 1500, 1600, -1000, 0, 500, 1600, -1500, 0)
+graph("op2_at_ship_4.png", 1500, 350, 0, 1500, 1600, -1000, 0, 500, 1600, -1500, 0)
 
 
 # random
-#random.seed(5)
-#for i in range(1,6):
-#   for j in range(1,5):
-#      x = 2
-#      y = 1
-#      name = "random_%d%d_to_%d%d.png"%(x-1,y-1,i+1,j)
-#      startx = 625 + (x-1)*350
-#      starty = 175 + y*350
-#      endx = 625 + i*350
-#      endy = 175 + j*350
-#      #oppx = 625 + int(random.randint(2,5))*350
-#      #oppy = 175 + int(random.randint(2,4))*350
-#      oppx = -1000
-#      oppy = 0
-#      print (name, startx, starty, 0, endx, endy, oppx, oppy)
-#      graph(name, startx, starty, 0, endx, endy, oppx, oppy)
-
-# in opponent
-#graph("in_opponent_00.png", 1500, 1050, 0, 2000, 1500, 1400, 900, 1400, 900)
-
 random.seed(0)
-for i in range(100):
-    stx = 680 + 250*int(random.randint(0,6))
-    sty = 300 + 250*int(random.randint(0,6))
-    enx = 680 + 250*int(random.randint(0,6))
-    eny = 300 + 250*int(random.randint(0,6))
-    op1x = 680 + 250*int(random.randint(0,6))
-    op1y = 300 + 250*int(random.randint(0,6))
-    op2x = 680 + 250*int(random.randint(0,6))
-    op2y = 300 + 250*int(random.randint(0,6))
+for i in range(200):
+    stx,sty = random_target_xy()
+    enx,eny = random_target_xy()
+    op1x,op1y = random_target_xy()
+    op2x,op2y = random_target_xy()
+    robot_2nd_x,robot_2nd_y = random_robot_2nd_xy()
     name = "random%d.png"%(i)
-    print (name, stx, sty, 0, enx, eny, op1x, op1y, op2x, op2y)
-    graph(name, stx, sty, 0, enx, eny, op1x, op1y, op2x, op2y)
+    print (name, stx, sty, 0, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x, robot_2nd_y)
+    graph(name, stx, sty, 0, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x, robot_2nd_y)
    

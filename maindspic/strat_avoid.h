@@ -40,6 +40,7 @@ int8_t goto_and_avoid_forward(int16_t x, int16_t y,
 #else			      
 int8_t goto_and_avoid(int16_t x, int16_t y,
 					   	int16_t robot_x, int16_t robot_y, double robot_a,
+					   	int16_t robot2nd_x, int16_t robot2nd_y,
 					   	int16_t opp1_x, int16_t opp1_y, 
 					   	int16_t opp2_x, int16_t opp2_y);
 #endif
