@@ -33,7 +33,7 @@
 #include <parse.h>
 
 #define COMPILE_COMMANDS_GEN
-//#define COMPILE_COMMANDS_CS
+#define COMPILE_COMMANDS_CS
 #define COMPILE_COMMANDS_MAINBOARD
 #define COMPILE_COMMANDS_TRAJ
 //#define COMPILE_CODE
@@ -90,9 +90,9 @@ extern parse_pgm_inst_t cmd_opponent;
 extern parse_pgm_inst_t cmd_opponent_set;
 extern parse_pgm_inst_t cmd_start;
 extern parse_pgm_inst_t cmd_color;
+extern parse_pgm_inst_t cmd_slavedspic;
 
 #ifdef notyet
-extern parse_pgm_inst_t cmd_slavedspic;
 extern parse_pgm_inst_t cmd_slavedspic_ts;
 extern parse_pgm_inst_t cmd_slavedspic_mirror;
 extern parse_pgm_inst_t cmd_beacon;

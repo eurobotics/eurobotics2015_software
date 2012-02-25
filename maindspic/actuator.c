@@ -39,10 +39,11 @@ void dac_set_and_save(void *dac, int32_t val)
 	
 	/* save value */
 	/* XXX DAC CHANNEL R has an offset of -2000 points */
+
 	if (dac == LEFT_MOTOR)
 		mainboard.dac_l = val;
 	else if (dac == RIGHT_MOTOR){
-		val += 2000;
+		//val += 2000;
 		mainboard.dac_r = val;
 	}
 

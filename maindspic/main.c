@@ -206,7 +206,6 @@ int main(void)
 	/* init flags */
 	mainboard.flags = DO_ENCODERS | DO_RS | DO_BD
 							| DO_POS | DO_POWER;
-
 	
 	beaconboard.opponent_x = I2C_OPPONENT_NOT_THERE;
 
