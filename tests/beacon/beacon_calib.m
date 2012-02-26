@@ -34,7 +34,8 @@ legend('error (cm)')
 %x_eval = 10500:-8:3852; % index = 831- (x_medida-3852)/8)
 
 % evaluate a x range and get y
-x_eval = 4600:-8:1600;
+%x_eval = 4600:-8:1600;
+x_eval = x_eval_ini:-x_eval_delta:x_eval_end;
 y_eval = polyval(p,(x_eval-mu)./sigma);
 
 % round to integer values

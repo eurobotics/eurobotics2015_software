@@ -22,4 +22,4 @@
 
 
 /* get distance (cm) from calib array */
-uint16_t get_dist_array(int32_t size, int32_t period);
+uint16_t get_dist_array(uint8_t sensor, int32_t size, int32_t period);
