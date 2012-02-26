@@ -20,8 +20,10 @@
  *  Javier Baliñas Santos <javier@arc-robots.org>
  */
 
-#define TWO_OPPONENTS
-#undef ROBOT_2ND
+/* IR sensor management */
+#define IR_SENSOR_0_DEG		0
+#define IR_SENSOR_180_DEG	1
+#define IR_SENSOR_MAX		2
 
 struct beacon {
 	int32_t beacon_speed;
