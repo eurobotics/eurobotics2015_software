@@ -2,32 +2,6 @@
 MagicCookie={0b13fe8c-dfe0-40eb-8900-6712719559a7}
 Version=1.0
 [File000]
-Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\cirbuf_get_tail.o
-Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
-LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
-LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
-PPAD=$(BINDIR)|.\output_files||$(TMPDIR)|.\compiled_files||$(AINDIR)||$(INCDIR)|.;..\libs\aversive4dspic\include;..\libs\aversive4dspic\include\aversive;..\libs\aversive4dspic\include\aversive\dspic;..\libs\aversive4dspic\modules\base\cirbuf;..\libs\aversive4dspic\modules\base\scheduler;..\libs\aversive4dspic\modules\base\math\fixed_point;..\libs\aversive4dspic\modules\base\math\geometry;..\libs\aversive4dspic\modules\base\math\vect2;..\libs\aversive4dspic\modules\base\time;..\libs\aversive4dspic\modules\debug;..\libs\aversive4dspic\modules\debug\error;..\libs\aversive4dspic\modules\debug\diagnostic;..\libs\aversive4dspic\modules\comm\dspic\uart;..\libs\aversive4dspic\modules\ihm\parse;..\libs\aversive4dspic\modules\ihm\rdline;..\libs\aversive4dspic\modules\ihm\vt100;..\libs\aversive4dspic\modules\hardware\dspic\oscillator;..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc;..\libs\aversive4dspic\modules\hardware\dspic\dac_mc;..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo;..\libs\aversive4dspic\modules\devices\control_system\filters\pid;..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic;..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp;..\libs\aversive4dspic\modules\devices\control_system\control_system_manager;..\libs\aversive4dspic\modules\devices\robot\robot_system;..\libs\aversive4dspic\modules\devices\robot\trajectory_manager;..\libs\aversive4dspic\modules\devices\robot\position_manager;..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager;..\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_align.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_head.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_setconf.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_dev_io.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv_nowait.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send_nowait.c|..\libs\aversive4dspic\modules\hardware\dspic\oscillator\oscillator.c|..\libs\aversive4dspic\modules\ihm\parse\parse.c|..\libs\aversive4dspic\modules\ihm\parse\parse_num.c|..\libs\aversive4dspic\modules\ihm\parse\parse_string.c|..\libs\aversive4dspic\modules\ihm\rdline\rdline.c|..\libs\aversive4dspic\modules\ihm\vt100\vt100.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_add.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_del.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_dump.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_interrupt.c|..\libs\aversive4dspic\modules\base\time\time.c|..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp\quadramp.c|..\libs\aversive4dspic\modules\devices\control_system\control_system_manager\control_system_manager.c|..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic\encoders_dspic.c|..\libs\aversive4dspic\modules\debug\error\error.c|..\libs\aversive4dspic\modules\devices\control_system\filters\pid\pid.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_events.c|main.c|cmdline.c|commands.c|cs.c|actuator.c|..\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance\obstacle_avoidance.c|..\libs\aversive4dspic\modules\devices\robot\position_manager\position_manager.c|..\libs\aversive4dspic\modules\devices\robot\robot_system\angle_distance.c|..\libs\aversive4dspic\modules\devices\robot\robot_system\robot_system.c|..\libs\aversive4dspic\modules\devices\robot\trajectory_manager\trajectory_manager.c|..\libs\aversive4dspic\modules\base\math\geometry\vect_base.c|..\libs\aversive4dspic\modules\base\math\geometry\lines.c|..\libs\aversive4dspic\modules\base\math\geometry\polygon.c|..\libs\aversive4dspic\modules\base\math\vect2\vect2.c|..\libs\aversive4dspic\modules\base\math\fixed_point\f64_double.c|..\libs\aversive4dspic\modules\base\math\fixed_point\f64_mul.c|..\libs\aversive4dspic\modules\base\math\fixed_point\f64_msb_mul.c|..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.c|..\libs\aversive4dspic\modules\hardware\dspic\dac_mc\dac_mc.c|sensor.c|strat_utils.c|strat.c|strat_avoid.c|strat_base.c|..\libs\aversive4dspic\modules\base\math\fixed_point\f64_print.c|..\common\traps.c|i2c_protocol.c|i2c_mem.c|beacon.c|..\libs\aversive4dspic\modules\base\math\fixed_point\f64_int.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-g -Wall -mlarge-code -Os
-TraceCmdString=
-DebugOptions=
-[File001]
-Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\cirbuf.o
-Folder=Intermediary
-DeviceName=dsPIC33FJ128MC804
-LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
-LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
-PPAD=$(BINDIR)|.\output_files||$(TMPDIR)|.\compiled_files||$(AINDIR)||$(INCDIR)|.;..\libs\aversive4dspic\include;..\libs\aversive4dspic\include\aversive;..\libs\aversive4dspic\include\aversive\dspic;..\libs\aversive4dspic\modules\base\cirbuf;..\libs\aversive4dspic\modules\base\scheduler;..\libs\aversive4dspic\modules\base\math\fixed_point;..\libs\aversive4dspic\modules\base\math\geometry;..\libs\aversive4dspic\modules\base\math\vect2;..\libs\aversive4dspic\modules\base\time;..\libs\aversive4dspic\modules\debug;..\libs\aversive4dspic\modules\debug\error;..\libs\aversive4dspic\modules\debug\diagnostic;..\libs\aversive4dspic\modules\comm\dspic\uart;..\libs\aversive4dspic\modules\ihm\parse;..\libs\aversive4dspic\modules\ihm\rdline;..\libs\aversive4dspic\modules\ihm\vt100;..\libs\aversive4dspic\modules\hardware\dspic\oscillator;..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc;..\libs\aversive4dspic\modules\hardware\dspic\dac_mc;..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo;..\libs\aversive4dspic\modules\devices\control_system\filters\pid;..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic;..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp;..\libs\aversive4dspic\modules\devices\control_system\control_system_manager;..\libs\aversive4dspic\modules\devices\robot\robot_system;..\libs\aversive4dspic\modules\devices\robot\trajectory_manager;..\libs\aversive4dspic\modules\devices\robot\position_manager;..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager;..\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_align.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_head.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_setconf.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_dev_io.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv_nowait.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send_nowait.c|..\libs\aversive4dspic\modules\hardware\dspic\oscillator\oscillator.c|..\libs\aversive4dspic\modules\ihm\parse\parse.c|..\libs\aversive4dspic\modules\ihm\parse\parse_num.c|..\libs\aversive4dspic\modules\ihm\parse\parse_string.c|..\libs\aversive4dspic\modules\ihm\rdline\rdline.c|..\libs\aversive4dspic\modules\ihm\vt100\vt100.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_add.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_del.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_dump.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_interrupt.c|..\libs\aversive4dspic\modules\base\time\time.c|..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp\quadramp.c|..\libs\aversive4dspic\modules\devices\control_system\control_system_manager\control_system_manager.c|..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic\encoders_dspic.c|..\libs\aversive4dspic\modules\debug\error\error.c|..\libs\aversive4dspic\modules\devices\control_system\filters\pid\pid.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_events.c|main.c|cmdline.c|commands.c|cs.c|actuator.c|..\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance\obstacle_avoidance.c|..\libs\aversive4dspic\modules\devices\robot\position_manager\position_manager.c|..\libs\aversive4dspic\modules\devices\robot\robot_system\angle_distance.c|..\libs\aversive4dspic\modules\devices\robot\robot_system\robot_system.c|..\libs\aversive4dspic\modules\devices\robot\trajectory_manager\trajectory_manager.c|..\libs\aversive4dspic\modules\base\math\geometry\vect_base.c|..\libs\aversive4dspic\modules\base\math\geometry\lines.c|..\libs\aversive4dspic\modules\base\math\geometry\polygon.c|..\libs\aversive4dspic\modules\base\math\vect2\vect2.c|..\libs\aversive4dspic\modules\base\math\fixed_point\f64_double.c|..\libs\aversive4dspic\modules\base\math\fixed_point\f64_mul.c|..\libs\aversive4dspic\modules\base\math\fixed_point\f64_msb_mul.c|..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.c|..\libs\aversive4dspic\modules\hardware\dspic\dac_mc\dac_mc.c|sensor.c|strat_utils.c|strat.c|strat_avoid.c|strat_base.c|..\libs\aversive4dspic\modules\base\math\fixed_point\f64_print.c|..\common\traps.c|i2c_protocol.c|i2c_mem.c|beacon.c|..\libs\aversive4dspic\modules\base\math\fixed_point\f64_int.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-g -Wall -mlarge-code -Os
-TraceCmdString=
-DebugOptions=
-[File002]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\cirbuf_add_buf_head.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -40,7 +14,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File003]
+[File001]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\cirbuf_add_buf_tail.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -53,7 +27,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File004]
+[File002]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\cirbuf_add_head.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -66,7 +40,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File005]
+[File003]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\cirbuf_add_tail.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -79,7 +53,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File006]
+[File004]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\cirbuf_align.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -92,7 +66,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File007]
+[File005]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\cirbuf_del_buf_head.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -105,7 +79,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File008]
+[File006]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\cirbuf_del_buf_tail.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -118,7 +92,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File009]
+[File007]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\cirbuf_del_head.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -131,7 +105,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File010]
+[File008]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\cirbuf_del_tail.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -144,7 +118,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File011]
+[File009]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\cirbuf_get_buf_head.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -157,7 +131,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File012]
+[File010]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\cirbuf_get_buf_tail.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -170,7 +144,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File013]
+[File011]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\cirbuf_get_head.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -183,7 +157,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File014]
+[File012]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\uart_setconf.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -196,7 +170,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File015]
+[File013]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\uart.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -209,7 +183,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File016]
+[File014]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\uart_dev_io.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -222,7 +196,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File017]
+[File015]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\uart_recv.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -235,7 +209,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File018]
+[File016]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\uart_recv_nowait.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -248,7 +222,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File019]
+[File017]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\uart_send.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -261,7 +235,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File020]
+[File018]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\uart_send_nowait.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -274,7 +248,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File021]
+[File019]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\oscillator.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -287,7 +261,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File022]
+[File020]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\parse.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -300,7 +274,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File023]
+[File021]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\parse_num.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -313,7 +287,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File024]
+[File022]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\parse_string.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -326,7 +300,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File025]
+[File023]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\rdline.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -339,7 +313,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File026]
+[File024]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\vt100.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -352,7 +326,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File027]
+[File025]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\scheduler.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -365,7 +339,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File028]
+[File026]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\scheduler_add.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -378,7 +352,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File029]
+[File027]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\scheduler_del.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -391,7 +365,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File030]
+[File028]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\scheduler_dump.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -404,7 +378,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File031]
+[File029]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\scheduler_interrupt.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -417,7 +391,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File032]
+[File030]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\time.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -430,7 +404,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File033]
+[File031]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\quadramp.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -443,7 +417,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File034]
+[File032]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\control_system_manager.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -456,7 +430,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File035]
+[File033]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\encoders_dspic.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -469,7 +443,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File036]
+[File034]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\error.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -482,7 +456,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File037]
+[File035]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\pid.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -495,7 +469,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File038]
+[File036]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\uart_events.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -508,7 +482,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File039]
+[File037]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\main.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -521,7 +495,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File040]
+[File038]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\cmdline.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -534,7 +508,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File041]
+[File039]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\commands.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -547,7 +521,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -mlarge-data -Os
 TraceCmdString=
 DebugOptions=
-[File042]
+[File040]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\cs.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -560,7 +534,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File043]
+[File041]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\actuator.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -573,7 +547,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File044]
+[File042]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\obstacle_avoidance.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -586,7 +560,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File045]
+[File043]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\position_manager.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -599,7 +573,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File046]
+[File044]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\angle_distance.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -612,7 +586,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File047]
+[File045]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\robot_system.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -625,7 +599,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File048]
+[File046]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\trajectory_manager.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -638,7 +612,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File049]
+[File047]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\vect_base.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -651,7 +625,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File050]
+[File048]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\lines.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -664,7 +638,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File051]
+[File049]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\polygon.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -677,7 +651,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File052]
+[File050]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\vect2.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -690,7 +664,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File053]
+[File051]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\f64_double.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -703,7 +677,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File054]
+[File052]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\f64_mul.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -716,7 +690,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File055]
+[File053]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\f64_msb_mul.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -729,7 +703,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File056]
+[File054]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\blocking_detection_manager.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -742,7 +716,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File057]
+[File055]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\dac_mc.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -755,7 +729,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File058]
+[File056]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\sensor.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -768,7 +742,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File059]
+[File057]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\strat_utils.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -781,7 +755,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File060]
+[File058]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\strat.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -794,7 +768,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File061]
+[File059]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\strat_avoid.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -807,7 +781,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File062]
+[File060]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\strat_base.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -820,7 +794,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File063]
+[File061]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\f64_print.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -833,7 +807,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File064]
+[File062]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\traps.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -846,7 +820,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File065]
+[File063]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\i2c_protocol.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -859,7 +833,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File066]
+[File064]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\i2c_mem.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -872,7 +846,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File067]
+[File065]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\beacon.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -885,7 +859,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File068]
+[File066]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\compiled_files\f64_int.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ128MC804
@@ -898,7 +872,7 @@ SuiteArgsString=
 ToolArgsString=-g -Wall -mlarge-code -Os
 TraceCmdString=
 DebugOptions=
-[File069]
+[File067]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\.\output_files\maindspic.cof
 Folder=Output
 DeviceName=dsPIC33FJ128MC804
@@ -911,7 +885,7 @@ SuiteArgsString=
 ToolArgsString=--heap=0 -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem --cref --warn-section-align -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
 TraceCmdString=
 DebugOptions=
-[File070]
+[File068]
 Location=D:\Datos\Proyectos\Eurobotics\eurobot2012\software\maindspic\.\output_files\maindspic.hex
 Folder=Output
 DeviceName=dsPIC33FJ128MC804
