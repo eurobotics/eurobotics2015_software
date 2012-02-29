@@ -73,6 +73,7 @@ extern parse_pgm_inst_t cmd_ax12_dump_stats;
 /* commands_slavedspic.c */
 extern parse_pgm_inst_t cmd_event;
 extern parse_pgm_inst_t cmd_color;
+extern parse_pgm_inst_t cmd_lift;
 extern parse_pgm_inst_t cmd_state_debug;
 extern parse_pgm_inst_t cmd_state1;
 extern parse_pgm_inst_t cmd_state2;
@@ -128,6 +129,7 @@ parse_pgm_ctx_t main_ctx[] = {
 	/* commands_slavedspic.c */
 	(parse_pgm_inst_t *)&cmd_event,
 	(parse_pgm_inst_t *)&cmd_color,
+	(parse_pgm_inst_t *)&cmd_lift,
 	(parse_pgm_inst_t *)&cmd_state_debug,
 	(parse_pgm_inst_t *)&cmd_state1,
 	(parse_pgm_inst_t *)&cmd_state2,	

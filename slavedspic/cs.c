@@ -100,15 +100,15 @@ void slavedspic_cs_init(void)
 	/* ---- CS */
 	/* PID */
 	pid_init(&slavedspic.lift.pid);
-	pid_set_gains(&slavedspic.lift.pid, 800, 10, 1000); //1500, 40, 15	000);
-	pid_set_maximums(&slavedspic.lift.pid, 0, 60000, 60000);
+	pid_set_gains(&slavedspic.lift.pid, 3000, 16, 10000);
+	pid_set_maximums(&slavedspic.lift.pid, 0, 500000, 60000);
 	pid_set_out_shift(&slavedspic.lift.pid, 8);
-	pid_set_derivate_filter(&slavedspic.lift.pid, 4);
+	pid_set_derivate_filter(&slavedspic.lift.pid, 1);
 
 	/* QUADRAMP */
 	quadramp_init(&slavedspic.lift.qr);
-	quadramp_set_1st_order_vars(&slavedspic.lift.qr, 300, 300); 	/* 4000 set speed */
-	quadramp_set_2nd_order_vars(&slavedspic.lift.qr, 100, 100); 		/* 10 set accel */
+	//quadramp_set_1st_order_vars(&slavedspic.lift.qr, 300, 300); 	/* 4000 set speed */
+	//quadramp_set_2nd_order_vars(&slavedspic.lift.qr, 100, 100); 		/* 10 set accel */
 
 	/* CS */
 	cs_init(&slavedspic.lift.cs);
