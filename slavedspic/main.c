@@ -223,9 +223,13 @@ int main(void)
 	error_register_notice(mylog);
 	error_register_debug(mylog);
 
-#if 0
+
 	/* ENCODERS */
-	encoders_dspic_init();
+	encoders_dspic_init();
+
+	/* CS */
+	slavedspic_cs_init();
+#if 0
 	/* I2C */
 	i2c_init(I2C_SLAVEDSPIC_ADDR);
 	i2c_register_read_event(i2c_read_event);
@@ -248,10 +252,10 @@ int main(void)
 	/* note: cs is enabled after calibration */
 	slavedspic.flags = DO_ENCODERS | DO_POWER | DO_BD;
 
-#if 0
+
 	/* DAC_MC */
 	dac_mc_channel_init(&gen.dac_mc_left, 1, CHANNEL_L,							  DAC_MC_MODE_SIGNED, &LATA, 10, NULL, 0);
-	dac_mc_set(&gen.dac_mc_left, 0);
+	dac_mc_set(&gen.dac_mc_left, 0);#if 0
 	/* servos */
 	pwm_servo_init(&gen.pwm_servo_oc1, 1, 800, 2400);
 	pwm_servo_init(&gen.pwm_servo_oc2, 2, 800, 2400);
@@ -264,10 +268,11 @@ int main(void)
 	scheduler_add_periodical_event_priority(do_led_blink, NULL, 
 						100000L / SCHEDULER_UNIT, 
 						LED_PRIO);
-#if 0
+
 	scheduler_add_periodical_event_priority(do_cs, NULL, 
 						CS_PERIOD / SCHEDULER_UNIT, 
 						CS_PRIO);
+#if 0
 	scheduler_add_periodical_event_priority(do_i2c_watchdog, NULL, 
 						8000L / SCHEDULER_UNIT, 
 						I2C_POLL_PRIO);

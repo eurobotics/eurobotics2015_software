@@ -48,7 +48,7 @@
 							} while(0)
 
 /* EUROBOT 2012 defines */
-#define LIFT_ENCODER			((void *)1)#define LIFT_DAC_MC			((void *)&gen.dac_mc)
+#define LIFT_ENCODER						((void *)1)#define LIFT_DAC_MC						((void *)&gen.dac_mc_left)
 
 #define TURBINE_POWER_PIN				RELE_OUT_PIN
 #define TURBINE_SPEED_PWM_SERVO		&gen.pwm_servo_oc1

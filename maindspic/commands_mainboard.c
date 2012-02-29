@@ -379,7 +379,7 @@ parse_pgm_inst_t cmd_color = {
 };
 
 
-#ifdef notyet
+
 
 /**********************************************************/
 /* slavedspic */
@@ -489,6 +489,8 @@ parse_pgm_inst_t cmd_slavedspic = {
 		NULL,
 	},
 };
+
+#ifdef notyet
 
 /**********************************************************/
 /* slavedspic_ts */

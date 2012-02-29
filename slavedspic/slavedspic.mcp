@@ -140,7 +140,8 @@ file_112=__mains
 file_113=__configs
 file_114=dac_mc
 file_115=blocking_detection_manager
-file_116=.
+file_116=__configs
+file_117=.
 [GENERATED_FILES]
 file_000=no
 file_001=no
@@ -259,6 +260,7 @@ file_113=no
 file_114=no
 file_115=no
 file_116=no
+file_117=no
 [OTHER_FILES]
 file_000=no
 file_001=no
@@ -376,7 +378,8 @@ file_112=no
 file_113=no
 file_114=no
 file_115=no
-file_116=yes
+file_116=no
+file_117=yes
 [FILE_INFO]
 file_000=..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c
 file_001=..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c
@@ -494,7 +497,8 @@ file_112=cs.h
 file_113=pwm_servo_config.h
 file_114=..\libs\aversive4dspic\modules\hardware\dspic\dac_mc\dac_mc.h
 file_115=..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.h
-file_116=commands_cs.c
+file_116=..\..\..\eurobot2010\mplab\euRobotics\slavedspic\pid_config.h
+file_117=commands_cs.c
 [SUITE_INFO]
 suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 suite_state=

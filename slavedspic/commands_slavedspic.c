@@ -69,14 +69,26 @@ static void cmd_event_parsed(void *parsed_result, __attribute__((unused)) void *
 		else if (!strcmp_P(res->arg2, PSTR("off")))
 			slavedspic.flags &= bit;
 		else { /* show */
-			//printf_P(PSTR("encoders is %s\r\n"), 
-			//	 (DO_ENCODERS & slavedspic.flags) ? "on":"off");
+			printf_P(PSTR("encoders is %s\r\n"), 
+				 (DO_ENCODERS & slavedspic.flags) ? "on":"off");
+			printf_P(PSTR("cs is %s\r\n"), 
+				 (DO_CS & slavedspic.flags) ? "on":"off");
+			printf_P(PSTR("bd is %s\r\n"), 
+				 (DO_BD & slavedspic.flags) ? "on":"off");
+			printf_P(PSTR("power is %s\r\n"), 
+				 (DO_POWER & slavedspic.flags) ? "on":"off");
 		}
 		return;
 	}
 
-	//if (!strcmp_P(res->arg1, PSTR("encoders")))
-	//	bit = DO_ENCODERS;
+	if (!strcmp_P(res->arg1, PSTR("encoders")))
+		bit = DO_ENCODERS;
+	if (!strcmp_P(res->arg1, PSTR("cs")))
+		bit = DO_CS;
+	if (!strcmp_P(res->arg1, PSTR("bd")))
+		bit = DO_BD;
+	if (!strcmp_P(res->arg1, PSTR("power")))
+		bit = DO_POWER;
 
 	if (!strcmp_P(res->arg2, PSTR("on")))
 		slavedspic.flags |= bit;
@@ -89,7 +101,7 @@ static void cmd_event_parsed(void *parsed_result, __attribute__((unused)) void *
 
 prog_char str_event_arg0[] = "event";
 parse_pgm_token_string_t cmd_event_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_event_result, arg0, str_event_arg0);
-prog_char str_event_arg1[] = "all";
+prog_char str_event_arg1[] = "all#encoders#cs#bd#power";
 parse_pgm_token_string_t cmd_event_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_event_result, arg1, str_event_arg1);
 prog_char str_event_arg2[] = "on#off#show";
 parse_pgm_token_string_t cmd_event_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_event_result, arg2, str_event_arg2);
