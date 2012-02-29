@@ -86,7 +86,7 @@
 #define CS_PRIO            100
 #define I2C_POLL_PRIO       20
 
-#define CS_PERIOD 5000L
+#define CS_PERIOD 2000L
 
 #define NB_LOGS 4
 
