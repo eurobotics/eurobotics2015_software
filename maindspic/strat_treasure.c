@@ -72,9 +72,12 @@
 	} while(0)
 
 
+uint8_t strat_store_goldbar(uint8_t where);
+
+
 uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar, uint8_t store_coins)
 {
-   uint8_t err, stored;
+   uint8_t err;
 	uint16_t old_spdd, old_spda;
 
 	/* save speed */
@@ -110,7 +113,7 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar, uint
 
    /*Go a little backward*/
 	trajectory_d_rel(&mainboard.traj, -50);
-	err = wait_traj_end(END_INTR|END_TRAJ|END_BLOCKING);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 
    /*Put cart up*/
 	printf_P(PSTR("Put cart up. Press a key...\r\n"));
@@ -136,7 +139,7 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar, uint
 
    /*Go a little backward*/
 	trajectory_d_rel(&mainboard.traj, -100);
-	err = wait_traj_end(END_INTR|END_TRAJ|END_BLOCKING);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 
    /*Store goldbar*/
    if(store_goldbar)
@@ -160,7 +163,7 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar, uint
    if(store_coins)
    {
       /*store_coins may be: 0, 1, 2 (times)*/
-      strat_store_coins(store_coins);
+      //strat_store_coins(store_coins);
    }
 
    end:
@@ -181,6 +184,11 @@ uint8_t strat_pickup_coins_floor(int16_t x, int16_t y, uint8_t store)
    trajectory_turnto_xy(&mainboard.traj,x,y);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
    
+   /*Open lower arms*/
+   /*Wait until they are open*/
+	printf_P(PSTR("Open lower arms. Press a key...\r\n"));
+	while(!cmdline_keypressed());
+
    /*Go forward to near the coin*/
 	trajectory_d_rel(&mainboard.traj, 100);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
@@ -189,19 +197,14 @@ uint8_t strat_pickup_coins_floor(int16_t x, int16_t y, uint8_t store)
 		ERROUT(END_OBSTACLE);
 	}
 
-   /*Open lower arms*/
-   /*Wait until they are open*/
-	printf_P(PSTR("Open lower arms. Press a key...\r\n"));
-	while(!cmdline_keypressed());
-
    /*Go forward until we have the coins inside the robot*/
    /*If we are taking the coin near to the ship there is no space and we turn*/
-   if(x==TOKEN_OUR_COIN_3_X || x==TOKEN_OPP_COIN_3_X) {
+   if(x==RED_FLOOR_COIN_3_X || x==PURPLE_FLOOR_COIN_3_X) {
    	trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(-90));
 	   err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
    }
 
-	trajectory_goto_xy(&mainboard.traj, x+50, y);
+	trajectory_goto_xy_abs(&mainboard.traj, x+50, y);
 	err = WAIT_COND_OR_TRAJ_END(x_is_more_than(x-50), TRAJ_FLAGS_SMALL_DIST);
 
    /*close lower arms*/
@@ -212,7 +215,7 @@ uint8_t strat_pickup_coins_floor(int16_t x, int16_t y, uint8_t store)
    if(store)
    {
       /*store_coins may be: 0, 1, 2 (times)*/
-      strat_store_coins(store_coins);
+      //strat_store_coins(store_coins);
    }
 
 	/* go backward to safe distance from token */
@@ -230,7 +233,7 @@ uint8_t strat_pickup_coins_floor(int16_t x, int16_t y, uint8_t store)
 
 uint8_t strat_pickup_goldbar_floor(int16_t x, int16_t y, uint8_t store)
 {
-   uint8_t err, stored;
+   uint8_t err;
 	uint16_t old_spdd, old_spda;
 
 	/* save speed */
@@ -247,7 +250,7 @@ uint8_t strat_pickup_goldbar_floor(int16_t x, int16_t y, uint8_t store)
 
    /*Go forward until we have the gold bar inside the robot*/
 	trajectory_d_rel(&mainboard.traj, 300);
-	err = WAIT_COND_OR_TRAJ_END(token_catched(), TRAJ_FLAGS_SMALL_DIST);
+	//err = WAIT_COND_OR_TRAJ_END(token_catched(), TRAJ_FLAGS_SMALL_DIST);
    
 
    /*Close lower arms*/
@@ -263,12 +266,17 @@ uint8_t strat_pickup_goldbar_floor(int16_t x, int16_t y, uint8_t store)
    if(store)
    {
       /*store_goldbar may be: 0, FRONT, BACK*/
-      strat_store_goldbar(store_goldbar);
+      strat_store_goldbar(store);
    }
 
    /*put cart up*/
+	printf_P(PSTR("Put cart up. Press a key...\r\n"));
+	while(!cmdline_keypressed());
    /*wait until cart is up*/
+
    /*close lower arms*/
+	printf_P(PSTR("Close lower arms. Press a key...\r\n"));
+	while(!cmdline_keypressed());
 
 	/*go backward to safe distance from token */
 	strat_set_speed(500, SPEED_ANGLE_FAST);
@@ -283,9 +291,9 @@ uint8_t strat_pickup_goldbar_floor(int16_t x, int16_t y, uint8_t store)
 }
 
 
-uint8_t strat_send_message_bottle(int16_t x, int16_t y, uint8_t bottle_is_at_right)
+uint8_t strat_send_message_bottle(int16_t x, int16_t y)
 {
-   uint8_t err;
+   uint8_t err, bottle_is_at_right;
 	uint16_t old_spdd, old_spda;
 
 	/* save speed */
@@ -293,15 +301,16 @@ uint8_t strat_send_message_bottle(int16_t x, int16_t y, uint8_t bottle_is_at_rig
 
    /*Turn until position in front of the bottle (depending on which point we use to to send message
    we turn to abs 180 or 0 deg*/
-   bottle_is_at_right ? trajectory_a_abs(&mainboard.traj,180) : trajectory_a_abs(&mainboard.traj,0);
+   bottle_is_at_right = (position_get_x_s16(&mainboard.pos) > x);
+   bottle_is_at_right ? trajectory_a_abs(&mainboard.traj,COLOR_A_ABS(180)) : trajectory_a_abs(&mainboard.traj,COLOR_A_ABS(0));
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
    
    /*go to the bottle*/
-	trajectory_d_abs(&mainboard.traj, x);
+	trajectory_d_rel(&mainboard.traj, abs(x-position_get_x_s16(&mainboard.pos)));
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 
    /*Turn until we have bottle behind*/
-   trajectory_a_abs(&mainboard.traj,-90);
+   trajectory_a_abs(&mainboard.traj,COLOR_A_ABS(-90));
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 
    /*change to slow speed*/
@@ -335,7 +344,7 @@ uint8_t strat_save_treasure_in_deck_front(int16_t x, int16_t y)
 	strat_get_speed(&old_spdd, &old_spda);
 
    /*Turn to abs 180 or 0 deg*/
-   trajectory_turnto_xy(&mainboard.traj,COLOR_A_ABS(180));
+   trajectory_a_abs(&mainboard.traj,COLOR_A_ABS(180));
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
    
    /*Open arms*/
@@ -343,7 +352,7 @@ uint8_t strat_save_treasure_in_deck_front(int16_t x, int16_t y)
 	while(!cmdline_keypressed());
 
    /*go to the ship*/
-	trajectory_d_abs(&mainboard.traj, x);
+	trajectory_d_rel(&mainboard.traj, abs(x-position_get_x_s16(&mainboard.pos)));
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 
    
@@ -377,7 +386,7 @@ uint8_t strat_save_treasure_in_deck_back(int16_t x, int16_t y)
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 
    /*go to the ship*/
-	trajectory_d_abs(&mainboard.traj, x);
+	trajectory_d_rel(&mainboard.traj, -abs(x-position_get_x_s16(&mainboard.pos)));
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 
    /*Slave in mode empty*/
@@ -474,11 +483,13 @@ uint8_t strat_save_treasure_in_hold_back(int16_t x, int16_t y)
 
 uint8_t strat_raise_window(uint8_t window)
 {
+   return 1;
 }
 
 
 uint8_t strat_steal_treasure_hold()
 {
+   return 1;
 }
 
 
@@ -488,10 +499,16 @@ uint8_t strat_store_goldbar(uint8_t where)
       case STORE_FRONT:
       default:
          /*Put cart down to let gold bar in the floor*/
+      	printf_P(PSTR("Turn cart to let gold bar in the floor. Press a key...\r\n"));
+      	while(!cmdline_keypressed());
+      	printf_P(PSTR("Put cart down. Press a key...\r\n"));
+      	while(!cmdline_keypressed());
          break;
 
       case STORE_BACK:
          /*Turn cart to let gold bar inside the robot*/
+      	printf_P(PSTR("Turn cart to let gold bar inside the robot. Press a key...\r\n"));
+      	while(!cmdline_keypressed());
          break;
 
       case DONT_STORE:
@@ -499,3 +516,4 @@ uint8_t strat_store_goldbar(uint8_t where)
    }
    return 1;
 }
+

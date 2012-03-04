@@ -30,11 +30,36 @@
 /* obstacle clerance */
 #define OBS_CLERANCE   260.0
 
-/* totems */
 #define TOTEM_1_X               1100
 #define TOTEM_2_X               1900
 #define TOTEM_1_Y               AREA_Y/2
 #define TOTEM_2_Y               TOTEM_1_Y
+#define RED_FLOOR_COIN_1_X      2000 
+#define RED_FLOOR_COIN_1_Y      500 
+#define RED_FLOOR_COIN_2_X      2150 
+#define RED_FLOOR_COIN_2_Y      1000 
+#define RED_FLOOR_COIN_3_X      2550 
+#define RED_FLOOR_COIN_3_Y      1700 
+#define PURPLE_FLOOR_COIN_1_X   1000 
+#define PURPLE_FLOOR_COIN_1_Y   500 
+#define PURPLE_FLOOR_COIN_2_X   850 
+#define PURPLE_FLOOR_COIN_2_Y   1000 
+#define PURPLE_FLOOR_COIN_3_X   450
+#define PURPLE_FLOOR_COIN_3_Y   1700  
+#define BOTTLE_Y                2000 
+#define RED_BOTTLE_1_X          2360   
+#define RED_BOTTLE_2_X          1117   
+#define PURPLE_BOTTLE_1_X       640  
+#define PURPLE_BOTTLE_2_X       1883  
+#define FLOOR_COINS_GROUP_X     1500
+#define FLOOR_COINS_GROUP_Y     1700
+#define MIDDLE_FLOOR_GOLDBAR_X  1353
+#define MIDDLE_FLOOR_GOLDBAR_Y  1500
+#define PURPLE_FLOOR_GOLDBAR_X  420
+#define PURPLE_FLOOR_GOLDBAR_Y  785
+#define RED_FLOOR_GOLDBAR_X     2580
+#define RED_FLOOR_GOLDBAR_Y     785
+
 #define D_EMPTY_TOTEM	        30
 
 /* infos about strat */
@@ -104,33 +129,36 @@
 #define PLACE_D_SAFE				  140
 
 /* zones */
-#define ZONE_OUR_TOTEM_SIDE_1			      0
-#define ZONE_OUR_TOTEM_SIDE_2			      1
-#define ZONE_OUR_FLOOR_COIN_1			      2
-#define ZONE_OUR_FLOOR_COIN_2			      3
-#define ZONE_OUR_FLOOR_COIN_3			      4
-#define ZONE_FLOOR_COINS_GROUP	         5
-#define ZONE_OUR_FLOOR_GOLDBAR	       	6
-#define ZONE_MIDDLE_FLOOR_GOLDBAR	      7
-#define ZONE_OUR_BOTTLE_1	               8
-#define ZONE_OUR_BOTTLE_2	               9
-#define ZONE_OUR_MAP	                     10
-#define ZONE_OPP_TOTEM_SIDE_1			      11
-#define ZONE_OPP_TOTEM_SIDE_2			      12
-#define ZONE_OPP_FLOOR_COIN_1			      13
-#define ZONE_OPP_FLOOR_COIN_2			      14
-#define ZONE_OPP_FLOOR_COIN_3			      15
-#define ZONE_OPP_FLOOR_GOLDBAR	       	16
+#define ZONE_TOTEM_1_SIDE_1			      0
+#define ZONE_TOTEM_1_SIDE_2       	      1
+#define ZONE_TOTEM_2_SIDE_1			      2
+#define ZONE_TOTEM_2_SIDE_2			      3
+#define ZONE_RED_FLOOR_COIN_1			      4
+#define ZONE_RED_FLOOR_COIN_2  	         5
+#define ZONE_RED_FLOOR_COIN_3 	       	6
+#define ZONE_RED_FLOOR_GOLDBAR   	      7
+#define ZONE_PURPLE_FLOOR_COIN_1	         8
+#define ZONE_PURPLE_FLOOR_COIN_2	         9
+#define ZONE_PURPLE_FLOOR_COIN_3	         10
+#define ZONE_PURPLE_FLOOR_GOLDBAR			11
+#define ZONE_RED_BOTTLE_1			         12
+#define ZONE_RED_BOTTLE_2   			      13
+#define ZONE_PURPLE_BOTTLE_1			      14
+#define ZONE_PURPLE_BOTTLE_2			      15
+#define ZONE_RED_MAP          	       	16
+#define ZONE_PURPLE_MAP          	      17
+#define ZONE_FLOOR_COINS_GROUP          	18
+#define ZONE_MIDDLE_FLOOR_GOLDBAR         19
 
-#define ZONE_SHIP_OPP_DECK	               17
-#define ZONE_SHIP_OPP_LOADING_DECK        18
 /* place zones */
-#define ZONE_SHIP_OUR_CAPTAINS_BEDRROM	   19
-#define ZONE_SHIP_OUR_DECK	               20
-#define ZONE_SHIP_OUR_LOADING_DECK        21
+#define ZONE_SHIP_RED_CAPTAINS_BEDRROM	   20
+#define ZONE_SHIP_RED_HOLD	               21
+#define ZONE_SHIP_RED_DECK                22
 
 /* everything else */
-#define ZONE_SEA                          22
+#define ZONE_SHIP_PURPLE_CAPTAINS_BEDRROM 23
+#define ZONE_SHIP_PURPLE_HOLD             24
+#define ZONE_SHIP_PURPLE_DECK             25
 
 /*Store goldbars and coins*/
 #define STORE_FRONT                       1
@@ -209,13 +237,11 @@ struct strat_infos {
 	struct bbox area_bbox;
 
 	/* points areas */
-	struct strat_zones zones[23];
-
+	strat_zones zones[26];
 	/* our zone position */
 	uint8_t current_zone;
-
 	/* opponent slot position */
-	uint8_t opp_current_zone;
+	uint8_t opp_last_zone;
 
 	/* opponent stadistics */
 	uint32_t opp_time_zone_ms;
