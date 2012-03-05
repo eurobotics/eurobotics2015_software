@@ -107,8 +107,8 @@ void slavedspic_cs_init(void)
 
 	/* QUADRAMP */
 	quadramp_init(&slavedspic.lift.qr);
-	//quadramp_set_1st_order_vars(&slavedspic.lift.qr, 300, 300); 	/* 4000 set speed */
-	//quadramp_set_2nd_order_vars(&slavedspic.lift.qr, 100, 100); 		/* 10 set accel */
+	quadramp_set_1st_order_vars(&slavedspic.lift.qr, LIFT_SPEED, LIFT_SPEED); 	/* 4000 set speed */
+	quadramp_set_2nd_order_vars(&slavedspic.lift.qr, LIFT_ACCEL, LIFT_ACCEL); 		/* 10 set accel */
 
 	/* CS */
 	cs_init(&slavedspic.lift.cs);

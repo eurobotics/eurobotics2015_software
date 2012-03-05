@@ -49,36 +49,42 @@
 
 /* EUROBOT 2012 defines */
 #define LIFT_ENCODER						((void *)1)#define LIFT_DAC_MC						((void *)&gen.dac_mc_left)
+#define LIFT_SPEED						0
+#define LIFT_ACCEL						0
+#define LIFT_K_IMP_MM					1.0
+#define LIFT_CALIB_IMP_MAX				0
+#define LIFT_HEIGH_MAX_mm				50
+#define LIFT_HEIGH_MIN_mm				250
 
 #define TURBINE_POWER_PIN				RELE_OUT_PIN
 #define TURBINE_SPEED_PWM_SERVO		&gen.pwm_servo_oc1
-#define TURBINE_ANGLE_PWM_SERVO		&gen.pwm_servo_oc2#define TRAY1_PWM_SERVO					&gen.pwm_servo_oc3
-#define TRAY2_PWM_SERVO					/* controlled by maindspic */#define TRAY3_PWM_MC						&gen.pwm_mc_mod2_ch1
+#define TURBINE_ANGLE_PWM_SERVO		&gen.pwm_servo_oc2
+#define TRAY1_PWM_SERVO					&gen.pwm_servo_oc3
+#define TRAY2_PWM_SERVO					&gen.pwm_servo_oc4#define TRAY3_PWM_MC						&gen.pwm_mc_mod2_ch1
 
-#define AX12_FRONT_ARM_UP_R		1
-#define AX12_FRONT_ARM_UP_L		2
-#define AX12_FRONT_ARM_DOWN_R		3
-#define AX12_FRONT_ARM_DOWN_L		4
-#define AX12_REAR_ARM_R				5
-#define AX12_REAR_ARM_L				6
-#define AX12_REAR_LID				7
-#define AX12_REAR_FINGER			8
+#define AX12_MOUTH_UP_R		1
+#define AX12_MOUTH_UP_L		2
+#define AX12_MOUTH_DOWN_R	3
+#define AX12_MOUTH_DOWN_L	4
+#define AX12_LEFT_ARM		5
+#define AX12_RIGHT_ARM		6
+#define AX12_BOOT				7
+#define AX12_HOOK				8
 
 #define S_BELOW_TURBINE_1	SENSOR1
 #define S_BELOW_TURBINE_2	SENSOR2
 #define S_BELOW_TURBINE_3	SENSOR3
 #define S_BELOW_TURBINE_4	SENSOR4
-#define S_BELOW_TURBINE_5	SENSOR5
-#define S_BELOW_TURBINE_6	SENSOR6
-#define S_BELOW_TURBINE_7	SENSOR7
 
 
 /** ERROR NUMS */
-#define E_USER_I2C_PROTO       195
-#define E_USER_SENSOR          196
-#define E_USER_ST_MACH         197
-#define E_USER_CS              198
-#define E_USER_AX12            199
+#define E_USER_I2C_PROTO   195
+#define E_USER_SENSOR      196
+#define E_USER_ST_MACH     197
+#define E_USER_CS          198
+#define E_USER_AX12        199
+#define E_USER_ACTUATORS   200
+
 
 #define LED_PRIO           170
 #define TIME_PRIO          160
@@ -102,6 +108,7 @@ struct genboard {
 	struct pwm_servo pwm_servo_oc1;
 	struct pwm_servo pwm_servo_oc2;
 	struct pwm_servo pwm_servo_oc3;
+	struct pwm_servo pwm_servo_oc4;
 
 	/* ax12 interface */
 	AX12 ax12;
@@ -114,6 +121,7 @@ struct genboard {
 
 struct cs_block {
 	uint8_t on;
+	uint8_t calibrated;
   	struct cs cs;
   	struct pid_filter pid;
 	struct quadramp_filter qr;
@@ -133,7 +141,8 @@ struct slavedspic {
 	/* control systems */
   	struct cs_block lift;
 
-	/* TODO: add eurobot 2012 variables */
+	/* TODO: add eurobot 2012 variables */	
+
 
 	/* infos */
 	uint8_t our_color;

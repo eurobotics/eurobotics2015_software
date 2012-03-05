@@ -250,6 +250,10 @@ static void cmd_pwm_servo_parsed(void *parsed_result, void *show_range)
 			printf("oc2 range = [0 ; %d]\r\n", gen.pwm_servo_oc2.range);
 		else if (!strcmp_P(res->arg1, PSTR("oc3")))
 			printf("oc3 range = [0 ; %d]\r\n", gen.pwm_servo_oc3.range);
+#ifdef EUROBOT_2012_BOARD
+		else if (!strcmp_P(res->arg1, PSTR("oc4")))
+			printf("oc4 range = [0 ; %d]\r\n", gen.pwm_servo_oc4.range);
+#endif
 	}
 	else{
 		if (!strcmp_P(res->arg1, PSTR("oc1")))
@@ -258,7 +262,11 @@ static void cmd_pwm_servo_parsed(void *parsed_result, void *show_range)
 			pwm_servo_ptr = &gen.pwm_servo_oc2;
 		else if (!strcmp_P(res->arg1, PSTR("oc3")))
 			pwm_servo_ptr = &gen.pwm_servo_oc3;
-	
+#ifdef EUROBOT_2012_BOARD
+		else if (!strcmp_P(res->arg1, PSTR("oc4")))
+			pwm_servo_ptr = &gen.pwm_servo_oc4;
+#endif	
+
 		if (pwm_servo_ptr)
 			pwm_servo_set(pwm_servo_ptr, res->arg2);
 	
