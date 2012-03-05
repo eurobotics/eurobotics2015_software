@@ -44,6 +44,7 @@
 #include "state.h"
 #include "i2c_protocol.h"
 #include "actuator.h"
+#include "cs.h"
 #include "main.h"
 
 extern uint16_t state_debug;
@@ -63,20 +64,32 @@ static void cmd_event_parsed(void *parsed_result, __attribute__((unused)) void *
 	struct cmd_event_result * res = parsed_result;
 	
 	if (!strcmp_P(res->arg1, PSTR("all"))) {
-		bit = 0;
+		bit = 0xFF;
 		if (!strcmp_P(res->arg2, PSTR("on")))
 			slavedspic.flags |= bit;
 		else if (!strcmp_P(res->arg2, PSTR("off")))
-			slavedspic.flags &= bit;
+			slavedspic.flags &= (~bit);
 		else { /* show */
-			//printf_P(PSTR("encoders is %s\r\n"), 
-			//	 (DO_ENCODERS & slavedspic.flags) ? "on":"off");
+			printf_P(PSTR("encoders is %s\r\n"), 
+				 (DO_ENCODERS & slavedspic.flags) ? "on":"off");
+			printf_P(PSTR("cs is %s\r\n"), 
+				 (DO_CS & slavedspic.flags) ? "on":"off");
+			printf_P(PSTR("bd is %s\r\n"), 
+				 (DO_BD & slavedspic.flags) ? "on":"off");
+			printf_P(PSTR("power is %s\r\n"), 
+				 (DO_POWER & slavedspic.flags) ? "on":"off");
 		}
 		return;
 	}
 
-	//if (!strcmp_P(res->arg1, PSTR("encoders")))
-	//	bit = DO_ENCODERS;
+	if (!strcmp_P(res->arg1, PSTR("encoders")))
+		bit = DO_ENCODERS;
+	if (!strcmp_P(res->arg1, PSTR("cs")))
+		bit = DO_CS;
+	if (!strcmp_P(res->arg1, PSTR("bd")))
+		bit = DO_BD;
+	if (!strcmp_P(res->arg1, PSTR("power")))
+		bit = DO_POWER;
 
 	if (!strcmp_P(res->arg2, PSTR("on")))
 		slavedspic.flags |= bit;
@@ -89,7 +102,7 @@ static void cmd_event_parsed(void *parsed_result, __attribute__((unused)) void *
 
 prog_char str_event_arg0[] = "event";
 parse_pgm_token_string_t cmd_event_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_event_result, arg0, str_event_arg0);
-prog_char str_event_arg1[] = "all";
+prog_char str_event_arg1[] = "all#encoders#cs#bd#power";
 parse_pgm_token_string_t cmd_event_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_event_result, arg1, str_event_arg1);
 prog_char str_event_arg2[] = "on#off#show";
 parse_pgm_token_string_t cmd_event_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_event_result, arg2, str_event_arg2);
@@ -147,6 +160,49 @@ parse_pgm_inst_t cmd_color = {
 };
 
 
+/**********************************************************/
+/* lift */
+
+/* this structure is filled when cmd_lift is parsed successfully */
+struct cmd_lift_result {
+	fixed_string_t arg0;
+	int32_t arg1;
+};
+
+/* function called when cmd_lift is parsed successfully */
+static void cmd_lift_parsed(__attribute__((unused)) void *parsed_result,
+			    __attribute__((unused)) void *data)
+{
+	struct cmd_lift_result *res = (struct cmd_lift_result *) parsed_result;
+	microseconds t1, t2;
+
+	cs_set_consign(&slavedspic.lift.cs, res->arg1);
+
+	t1 = time_get_us2();
+	while (cs_get_consign(&slavedspic.lift.cs) != cs_get_filtered_consign(&slavedspic.lift.cs)) {
+		t2 = time_get_us2();
+		if (t2 - t1 > 20000) {
+			dump_cs_debug("lift", &slavedspic.lift.cs);
+			t1 = t2;
+		}
+	}
+}
+
+prog_char str_lift_arg0[] = "lift";
+parse_pgm_token_string_t cmd_lift_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_lift_result, arg0, str_lift_arg0);
+parse_pgm_token_num_t cmd_lift_arg1 = TOKEN_NUM_INITIALIZER(struct cmd_lift_result, arg1, INT32);
+
+prog_char help_lift[] = "set lift height and angle";
+parse_pgm_inst_t cmd_lift = {
+	.f = cmd_lift_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_lift,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_lift_arg0, 
+		(prog_void *)&cmd_lift_arg1,
+		NULL,
+	},
+};
 
 /**********************************************************/
 /* State1 */

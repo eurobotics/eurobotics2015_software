@@ -220,7 +220,7 @@ void maindspic_cs_init(void)
 	/* ---- CS angle */
 	/* PID */
 	pid_init(&mainboard.angle.pid);
-	pid_set_gains(&mainboard.angle.pid, 300, 3, 3000);
+	pid_set_gains(&mainboard.angle.pid, 360, 3, 3000);
 	pid_set_maximums(&mainboard.angle.pid, 0, 30000, 65000);
 	pid_set_out_shift(&mainboard.angle.pid, 6);	
 	pid_set_derivate_filter(&mainboard.angle.pid, 1);
@@ -247,7 +247,7 @@ void maindspic_cs_init(void)
 	/* ---- CS distance */
 	/* PID */
 	pid_init(&mainboard.distance.pid);
-	pid_set_gains(&mainboard.distance.pid, 300, 3, 3000);
+	pid_set_gains(&mainboard.distance.pid, 360, 3, 3000);
 	pid_set_maximums(&mainboard.distance.pid, 0, 30000, 65000);
 	pid_set_out_shift(&mainboard.distance.pid, 6);
 	pid_set_derivate_filter(&mainboard.distance.pid, 1);
@@ -255,7 +255,7 @@ void maindspic_cs_init(void)
 	/* QUADRAMP */
 	quadramp_init(&mainboard.distance.qr);
 	quadramp_set_1st_order_vars(&mainboard.distance.qr, 4000, 4000); 	/* set speed */
-	quadramp_set_2nd_order_vars(&mainboard.distance.qr, 50, 50); 	/* set accel */
+	quadramp_set_2nd_order_vars(&mainboard.distance.qr, 35, 35); 	/* set accel */
 
 	/* CS */
 	cs_init(&mainboard.distance.cs);

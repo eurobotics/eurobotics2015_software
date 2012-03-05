@@ -25,4 +25,5 @@
 void slavedspic_cs_init(void);
 void do_cs(__attribute__((unused)) void *dummy);
 void dump_cs(const char *name, struct cs *cs);
+void dump_cs_debug(const char *name, struct cs *cs);
 void dump_pid(const char *name, struct pid_filter *pid);
