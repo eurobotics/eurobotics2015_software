@@ -30,19 +30,42 @@
 
 void dac_set_and_save(void *dac, int32_t val)
 {
-	/* we need to do the saturation here, before saving the
-	 * value */
-	if (val > 65535)
-		val = 65535;
-	if (val < -65535)
-		val = -65535;
+#ifdef EUROBOT2011_BOARD
+//#define RIGHT_MOTOR_OFFSET 2000 
+#define LEFT_MOTOR_OFFSET  0
+#else
+#define RIGHT_MOTOR_OFFSET	0 
+//#define LEFT_MOTOR_OFFSET  3500
+#define LEFT_MOTOR_OFFSET  0
+#endif
+
+#define RIGHT_MOTOR_MAX		(65535-LEFT_MOTOR_OFFSET)
+#define LEFT_MOTOR_MAX		(65535-RIGHT_MOTOR_OFFSET)
 	
-	/* save value */
-	/* XXX DAC CHANNEL R has an offset of -2000 points */
-	if (dac == LEFT_MOTOR)
+	if (dac == LEFT_MOTOR) {
+		/* apply offset */
+		//val = val > 0? (val + LEFT_MOTOR_OFFSET):(val - LEFT_MOTOR_OFFSET);
+
+		/* we need to do the saturation here, before saving the value */
+		if (val > LEFT_MOTOR_MAX)
+			val = LEFT_MOTOR_MAX;
+		if (val < -LEFT_MOTOR_MAX)
+			val = -LEFT_MOTOR_MAX;
+
+		/* save value */
 		mainboard.dac_l = val;
+	}
 	else if (dac == RIGHT_MOTOR){
-		val += 2000;
+		/* apply offset */
+		//val = val > 0? (val + RIGHT_MOTOR_OFFSET):(val - RIGHT_MOTOR_OFFSET);
+
+		/* we need to do the saturation here, before saving the value */
+		if (val > RIGHT_MOTOR_MAX)
+			val = RIGHT_MOTOR_MAX;
+		if (val < -RIGHT_MOTOR_MAX)
+			val = -RIGHT_MOTOR_MAX;
+
+		/* save value */
 		mainboard.dac_r = val;
 	}
 

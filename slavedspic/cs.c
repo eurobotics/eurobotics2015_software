@@ -97,34 +97,35 @@ void dump_pid(const char *name, struct pid_filter *pid)
 
 void slavedspic_cs_init(void)
 {
-#ifdef notyet
-	/* ---- CS arm */
+	/* ---- CS */
 	/* PID */
 	pid_init(&slavedspic.lift.pid);
-	pid_set_gains(&slavedspic.lift.pid, 1500, 40, 15000);
-	pid_set_maximums(&slavedspic.lift.pid, 0, 10000, 60000);
-	pid_set_out_shift(&slavedspic.lift.pid, 6);
-	pid_set_derivate_filter(&slavedspic.lift.pid, 4);
+	pid_set_gains(&slavedspic.lift.pid, 3000, 16, 10000);
+	pid_set_maximums(&slavedspic.lift.pid, 0, 500000, 60000);
+	pid_set_out_shift(&slavedspic.lift.pid, 8);
+	pid_set_derivate_filter(&slavedspic.lift.pid, 1);
 
 	/* QUADRAMP */
 	quadramp_init(&slavedspic.lift.qr);
-	quadramp_set_1st_order_vars(&slavedspic.lift.qr, 4000, 4000); 	/* set speed */
-	quadramp_set_2nd_order_vars(&slavedspic.lift.qr, 10, 10); 		/* set accel */
+	quadramp_set_1st_order_vars(&slavedspic.lift.qr, LIFT_SPEED, LIFT_SPEED); 	/* 4000 set speed */
+	quadramp_set_2nd_order_vars(&slavedspic.lift.qr, LIFT_ACCEL, LIFT_ACCEL); 		/* 10 set accel */
 
 	/* CS */
 	cs_init(&slavedspic.lift.cs);
 	cs_set_consign_filter(&slavedspic.lift.cs, quadramp_do_filter, &slavedspic.lift.qr);
 	cs_set_correct_filter(&slavedspic.lift.cs, pid_do_filter, &slavedspic.lift.pid);
-	cs_set_process_in(&slavedspic.lift.cs, dac_mc_set, ARM_DAC);
-	cs_set_process_out(&slavedspic.lift.cs, encoders_dspic_get_value, ARM_ENCODER);
+	cs_set_process_in(&slavedspic.lift.cs, dac_mc_set, LIFT_DAC_MC);
+	cs_set_process_out(&slavedspic.lift.cs, encoders_dspic_get_value, LIFT_ENCODER);
 	cs_set_consign(&slavedspic.lift.cs, 0);
 
 	/* Blocking detection */
 	bd_init(&slavedspic.lift.bd);
-	bd_set_speed_threshold(&slavedspic.lift.bd, 150);
-	bd_set_current_thresholds(&slavedspic.lift.bd, 500, 8000, 1000000, 40);
+	//bd_set_speed_threshold(&slavedspic.lift.bd, 150);
+	//bd_set_current_thresholds(&slavedspic.lift.bd, 500, 8000, 1000000, 40);
+	bd_set_speed_threshold(&slavedspic.lift.bd, 100);
+	bd_set_current_thresholds(&slavedspic.lift.bd, 20, 8000, 1000000, 50);
+
 
 	/* set on!! */
 	slavedspic.lift.on = 1;
-#endif
 }

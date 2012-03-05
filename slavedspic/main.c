@@ -130,7 +130,9 @@ void io_pins_init(void)
 	_TRISB10 = 1;		// SENSOR2
 	_TRISB2 	= 1;		// SENSOR3
 	_TRISA8 	= 1;		// SENSOR4
+#ifndef EUROBOT_2012_BOARD
 	_TRISC3 	= 1;		// SENSOR5
+#endif
 	_TRISB4 	= 1;		// SENSOR6
 	_TRISC2 	= 1;		// SENSOR7
 
@@ -146,9 +148,9 @@ void io_pins_init(void)
 	_LATC7  = 0;
 
 	/* other power outputs */
-	_TRISA9 = 0;	// SLAVE_RELE_OUT
-	_ODCA9  = 1;	// is open drain
-	_LATA9  = 1;	// initialy Vload = 0
+	_TRISC8 = 0;	// SLAVE_RELE_OUT
+	_ODCC8  = 1;	// is open drain
+	_LATC8  = 1;	// initialy Vload = 0
 
 	_TRISA4 = 0;	// SLAVE_MOST_OUT
 	_ODCA4  = 1; 	// is open drain
@@ -164,6 +166,9 @@ void io_pins_init(void)
 	_RP17R = 0b10010; // OC1 -> RP17(RC1) -> SLAVE_SERVO_PWM_1
 	_RP16R = 0b10011; // OC2 -> RP16(RC0) -> SLAVE_SERVO_PWM_2
 	_RP3R  = 0b10100; // OC3 -> RP3(RB3)  -> SLAVE_SERVO_PWM_3
+#ifdef EUROBOT_2012_BOARD
+	_RP19R = 0b10101; // OC4 -> RP19(RC3) -> SLAVE_SENSOR_5
+#endif
 		
 	/* encoders */
 	_QEA1R 	= 21;	// QEA1 <- RP21 <- SLAVE_ENC_CHA
@@ -223,9 +228,13 @@ int main(void)
 	error_register_notice(mylog);
 	error_register_debug(mylog);
 
-#if 0
+
 	/* ENCODERS */
-	encoders_dspic_init();
+	encoders_dspic_init();
+
+	/* CS */
+	slavedspic_cs_init();
+#if 0
 	/* I2C */
 	i2c_init(I2C_SLAVEDSPIC_ADDR);
 	i2c_register_read_event(i2c_read_event);
@@ -236,52 +245,48 @@ int main(void)
 	/* TIMER */
 	timer_init();
 
-	/* PWM_MC */#if notyet
-	pwm_mc_channel_init(&gen.pwm_mc_mod1_ch2,	                    PWM_MC_MODE_BIPOLAR|PWM_MC_MODE_SIGN_INVERTED, 	                    1, 2, NULL, 0, NULL, 0);
-	pwm_mc_init(&gen.pwm_mc_mod1_ch2, 3000, 							CH2_COMP&PDIS1H&PDIS1L&PEN2H&PEN2L&PDIS3H&PDIS3L);
-	pwm_mc_set(&gen.pwm_mc_mod1_ch2, 0);#endif
-
-	pwm_mc_channel_init(&gen.pwm_mc_mod2_ch1,	                    PWM_MC_MODE_BIPOLAR, 	                    2, 1, NULL, 0, NULL, 0);
+	/* PWM_MC */	pwm_mc_channel_init(&gen.pwm_mc_mod2_ch1,	                    PWM_MC_MODE_BIPOLAR, 	                    2, 1, NULL, 0, NULL, 0);
 	pwm_mc_init(&gen.pwm_mc_mod2_ch1, 19000, 							CH1_COMP&PEN1H&PEN1L);	pwm_mc_set(&gen.pwm_mc_mod2_ch1, 0);
 
 	/* DO FLAGS */
 	/* note: cs is enabled after calibration */
 	slavedspic.flags = DO_ENCODERS | DO_POWER | DO_BD;
 
-#if 0
+
 	/* DAC_MC */
-	dac_mc_channel_init(&gen.dac_mc_left, 1, CHANNEL_L,							  DAC_MC_MODE_SIGNED, &LATA, 10, NULL, 0);
+	dac_mc_channel_init(&gen.dac_mc_left, 1, CHANNEL_L,							  DAC_MC_MODE_SIGN_INVERTED, &LATA, 10, NULL, 0);
 	dac_mc_set(&gen.dac_mc_left, 0);
 	/* servos */
 	pwm_servo_init(&gen.pwm_servo_oc1, 1, 800, 2400);
 	pwm_servo_init(&gen.pwm_servo_oc2, 2, 800, 2400);
 	pwm_servo_init(&gen.pwm_servo_oc3, 3, 800, 2400);
+	//pwm_servo_init(&gen.pwm_servo_oc4, 4, 800, 2400);
 	pwm_servo_enable();
-#endif
+
 	/* SCHEDULER */
 	scheduler_init();
 
 	scheduler_add_periodical_event_priority(do_led_blink, NULL, 
 						100000L / SCHEDULER_UNIT, 
 						LED_PRIO);
-#if 0
+
 	scheduler_add_periodical_event_priority(do_cs, NULL, 
 						CS_PERIOD / SCHEDULER_UNIT, 
 						CS_PRIO);
+#if 0
 	scheduler_add_periodical_event_priority(do_i2c_watchdog, NULL, 
 						8000L / SCHEDULER_UNIT, 
 						I2C_POLL_PRIO);
-
+#endif
 	scheduler_add_periodical_event_priority(do_sensors, NULL, 
 						10000L / SCHEDULER_UNIT, 
 						SENSOR_PRIO);
-#endif
 	/* TIME */
 	time_init(TIME_PRIO);
-#if 0
+
 	/* SERVOS AX12 */
 	ax12_user_init();
-#endif
+
 	/* enable interrupt */
 	sei();
 
@@ -299,10 +304,15 @@ int main(void)
 
 	/* LOGS */
  	gen.logs[0] = E_USER_ST_MACH;
+	gen.logs[1] = E_USER_CS;
 	gen.log_level = 5;
 	
 	/* init cmdline */
 	cmdline_init();
+
+
+	_LATC8  = 0;	// initialy Vload = 0
+
 
 	/* main loop */
 	while(1)

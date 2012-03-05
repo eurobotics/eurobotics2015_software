@@ -79,11 +79,6 @@
 #define IR_SENSOR_0_DEG_PIN() 	(!(_RC4))
 #define IR_SENSOR_180_DEG_PIN() 	(!(_RC5))
 
-/* IR sensor management */
-#define IR_SENSOR_0_DEG		0
-#define IR_SENSOR_180_DEG	1
-#define IR_SENSOR_MAX		2
-
 #define EDGE_RISING		0
 #define EDGE_FALLING 	1
 #define EDGE_MAX 			2
@@ -525,18 +520,15 @@ void sensor_calc(uint8_t sensor)
 #endif
 	
 #ifdef TWO_OPPONENTS
-int16_t d_opp1, d_opp2;
-uint8_t tracking_update = 0;
+	int16_t d_opp1, d_opp2;
+	uint8_t tracking_update = 0;
 #define OPPONENT_1	1
 #define OPPONENT_2	2
 #endif
 
 	int32_t result_x = 0;
 	int32_t result_y = 0;
-	
 	uint8_t flags;
-
-
 
 	/* calculate/update turn period if valid*/
 	if(valid_period){
@@ -604,10 +596,10 @@ uint8_t tracking_update = 0;
 	count_middle_filtered = (int32_t)(count_middle_filtered*0.5 + count_middle*0.5);
 
 
-	/* debug counts */
+	/* debug counts, uncomment for calibrate */
 	//BEACON_DEBUG("period = %.5ld / size = %.5ld / middle = %.5ld (x0.1)",
-					// local_count_period_filtered/10, count_size_filtered/10, count_middle_filtered/10);
-					// local_count_period/10, count_size/10, count_middle/10);
+					 //local_count_period_filtered/10, count_size_filtered/10, count_middle_filtered/10);
+					 //local_count_period/10, count_size/10, count_middle/10);
 
 	/* if pulse width is out of range return */
 /*		if(count_size > 5000){
@@ -623,8 +615,8 @@ uint8_t tracking_update = 0;
 		local_angle = get_angle(count_middle, local_count_period, 0);
 
 	/* calculate distance in mm */
-	local_dist = get_dist_array(count_size, local_count_period);
-	//local_dist = get_dist_array(count_size_filtered, local_count_period_filtered);
+	local_dist = get_dist_array(sensor, count_size, local_count_period);
+	//local_dist = get_dist_array(sensor, count_size_filtered, local_count_period_filtered);
 
 
 	/* debug angle and distance */
@@ -668,13 +660,11 @@ uint8_t tracking_update = 0;
 
 #endif /* BEACON_MODE_EXTERNAL */
 
-	
 	/* reset timeout */
 	invalid_count[sensor] = 0;
 
 	if(sensor == IR_SENSOR_180_DEG)
 	{	
-	
 	#ifndef TWO_OPPONENTS
 		/* update results */	
 		IRQ_LOCK(flags);			
@@ -694,6 +684,12 @@ uint8_t tracking_update = 0;
 
 #define TRACKING_WINDOW_mm	200
 	
+		/* XXX case of reflexive beacon on in our secondary robot.
+			Solution: discard if position very similar to robot_2nd??
+		 */
+		//if(distance_between(result_x, result_y, beacon.robot_2nd_x, beacon.robot_2nd_y) < TRACKING_WINDOW_mm)
+		//	return;
+
 		/* distance from new xy to opponents xy */
 		d_opp1 = distance_between(result_x, result_y, beacon.tracking_opp1_x, beacon.tracking_opp1_y);
 		d_opp2 = distance_between(result_x, result_y, beacon.tracking_opp2_x, beacon.tracking_opp2_y);
@@ -752,30 +748,40 @@ uint8_t tracking_update = 0;
 			beacon.tracking_opp2_counts = 0;
 		}
 
-		/* traking wathdog */
-		if(beacon.tracking_opp1_counts < 25)
+		/* traking watchdog */
+		if(beacon.tracking_opp1_counts < 10)
 			beacon.tracking_opp1_counts++;
 		else {
-			BEACON_DEBUG("Opponent 1 not there");
+			//BEACON_DEBUG("opponent 1 not there");
 			beacon.opponent1_x = I2C_OPPONENT_NOT_THERE;
 		}
 
-		if(beacon.tracking_opp2_counts < 25)
+		if(beacon.tracking_opp2_counts < 10)
 			beacon.tracking_opp2_counts++;
 		else {
-			BEACON_DEBUG("Opponent 2 not there");
+			//BEACON_DEBUG("opponent 2 not there");
 			beacon.opponent2_x = I2C_OPPONENT_NOT_THERE;	
 		}	
-		BEACON_NOTICE("opp1(%.3d, %.3ld, %.4ld, %.4ld, %.4ld) opp2(%.3d, %.3ld, %.4ld, %.4ld, %.4ld)",
-							d_opp1, beacon.opponent1_angle, beacon.opponent1_dist, beacon.opponent1_x, beacon.opponent1_y,
-							d_opp2, beacon.opponent2_angle, beacon.opponent2_dist, beacon.opponent2_x, beacon.opponent2_y);
-	
+		//BEACON_NOTICE("opp1(%.3d, %.3ld, %.4ld, %.4ld, %.4ld) opp2(%.3d, %.3ld, %.4ld, %.4ld, %.4ld)",
+		//					d_opp1, beacon.opponent1_angle, beacon.opponent1_dist, beacon.opponent1_x, beacon.opponent1_y,
+		//					d_opp2, beacon.opponent2_angle, beacon.opponent2_dist, beacon.opponent2_x, beacon.opponent2_y);
+
+		BEACON_NOTICE("opponent_1 (%.3ld, %.4ld, %.4ld, %.4ld) "
+						  "opponent_2 (%.3ld, %.4ld, %.4ld, %.4ld) "
+						  "robot_2nd  (%.3ld, %.4ld, %.4ld, %.4ld) ",
+						  beacon.opponent1_angle, beacon.opponent1_dist, beacon.opponent1_x, beacon.opponent1_y,
+						  beacon.opponent2_angle, beacon.opponent2_dist, beacon.opponent2_x, beacon.opponent2_y,
+						  beacon.robot_2nd_angle, beacon.robot_2nd_dist, beacon.robot_2nd_x, beacon.robot_2nd_y);	
 	#endif
 	
 	}
 #ifdef ROBOT_2ND
 	else /* IR_SENSOR_0_DEG */
 	{
+		/* XXX: case opponent robots have a reflected tape on beacon sensor place, like our secondary robot.
+			Solution: dicard if it's not in secondary robot working area??? 
+		 */
+
 		/* update results */	
 		IRQ_LOCK(flags);			
 		beacon.robot_2nd_x = result_x;
@@ -785,9 +791,17 @@ uint8_t tracking_update = 0;
 		IRQ_UNLOCK(flags);
 	
 		/* final results */
-		BEACON_NOTICE("robot_2nd: a = %.3ld / d = %.4ld / x = %.4ld / y = %.4ld",
-						 beacon.robot_2nd_angle, beacon.robot_2nd_dist,
-						 beacon.robot_2nd_x, beacon.robot_2nd_y);
+		//BEACON_NOTICE("robot_2nd: a = %.3ld / d = %.4ld / x = %.4ld / y = %.4ld",
+		//				 beacon.robot_2nd_angle, beacon.robot_2nd_dist,
+		//				 beacon.robot_2nd_x, beacon.robot_2nd_y);
+
+		BEACON_NOTICE("opponent_1 (%.3ld, %.4ld, %.4ld, %.4ld) "
+						  "opponent_2 (%.3ld, %.4ld, %.4ld, %.4ld) "
+						  "robot_2nd  (%.3ld, %.4ld, %.4ld, %.4ld) ",
+						  beacon.opponent1_angle, beacon.opponent1_dist, beacon.opponent1_x, beacon.opponent1_y,
+						  beacon.opponent2_angle, beacon.opponent2_dist, beacon.opponent2_x, beacon.opponent2_y,
+						  beacon.robot_2nd_angle, beacon.robot_2nd_dist, beacon.robot_2nd_x, beacon.robot_2nd_y);
+
 	}
 #endif
 
@@ -796,7 +810,7 @@ uint8_t tracking_update = 0;
 error:
 
 	/* 0.5 second timeout */
-	if (invalid_count[sensor] < 25*10)
+	if (invalid_count[sensor] < 25)
 		invalid_count[sensor]++;
 	else {
 		invalid_count[sensor] = 0;
@@ -809,7 +823,7 @@ error:
 #endif
 			IRQ_UNLOCK(flags);
 
-			BEACON_NOTICE("opponent/s not there");
+			//BEACON_NOTICE("opponent/s not there");
 		}
 #ifdef ROBOT_2ND
 		else {
@@ -817,7 +831,7 @@ error:
 			beacon.robot_2nd_x = I2C_OPPONENT_NOT_THERE;
 			IRQ_UNLOCK(flags);
 
-			BEACON_NOTICE("robot_2nd not there");
+			//BEACON_NOTICE("robot_2nd not there");
 		}
 #endif		
 	}	

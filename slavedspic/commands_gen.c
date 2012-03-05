@@ -250,6 +250,10 @@ static void cmd_pwm_servo_parsed(void *parsed_result, void *show_range)
 			printf("oc2 range = [0 ; %d]\r\n", gen.pwm_servo_oc2.range);
 		else if (!strcmp_P(res->arg1, PSTR("oc3")))
 			printf("oc3 range = [0 ; %d]\r\n", gen.pwm_servo_oc3.range);
+#ifdef EUROBOT_2012_BOARD
+		else if (!strcmp_P(res->arg1, PSTR("oc4")))
+			printf("oc4 range = [0 ; %d]\r\n", gen.pwm_servo_oc4.range);
+#endif
 	}
 	else{
 		if (!strcmp_P(res->arg1, PSTR("oc1")))
@@ -258,7 +262,11 @@ static void cmd_pwm_servo_parsed(void *parsed_result, void *show_range)
 			pwm_servo_ptr = &gen.pwm_servo_oc2;
 		else if (!strcmp_P(res->arg1, PSTR("oc3")))
 			pwm_servo_ptr = &gen.pwm_servo_oc3;
-	
+#ifdef EUROBOT_2012_BOARD
+		else if (!strcmp_P(res->arg1, PSTR("oc4")))
+			pwm_servo_ptr = &gen.pwm_servo_oc4;
+#endif	
+
 		if (pwm_servo_ptr)
 			pwm_servo_set(pwm_servo_ptr, res->arg2);
 	
@@ -399,45 +407,6 @@ parse_pgm_inst_t cmd_sensor = {
 	},
 };
 
-/**********************************************************/
-/* Rele and solenoid outputs */
-
-/* this structure is filled when cmd_rele is parsed successfully */
-struct cmd_rele_result {
-	fixed_string_t arg0;
-	fixed_string_t arg1;
-};
-
-/* function called when cmd_rele is parsed successfully */
-static void cmd_rele_parsed(void *parsed_result, __attribute__((unused)) void *data)
-{
-	struct cmd_rele_result *res = parsed_result;
-
-	if (!strcmp_P(res->arg1, "on"))
-		RELE_OUT_PIN = 0;
-	else if (!strcmp_P(res->arg1, "off"))
-		RELE_OUT_PIN = 1;
-
-	/* show */
-	printf("Rele is %s\n\r", RELE_OUT_PIN? "off":"on");
-}
-
-prog_char str_rele_arg0[] = "rele";
-parse_pgm_token_string_t cmd_rele_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_rele_result, arg0, str_rele_arg0);
-prog_char str_rele_arg1[] = "on#off#show";
-parse_pgm_token_string_t cmd_rele_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_rele_result, arg1, str_rele_arg1);
-
-prog_char help_rele[] = "Set rele on/off";
-parse_pgm_inst_t cmd_rele = {
-	.f = cmd_rele_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_rele,
-	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_rele_arg0, 
-		(prog_void *)&cmd_rele_arg1, 
-		NULL,
-	},
-};
 
 /**********************************************************/
 /* Log */

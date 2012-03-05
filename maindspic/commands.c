@@ -33,7 +33,7 @@
 #include <parse.h>
 
 #define COMPILE_COMMANDS_GEN
-//#define COMPILE_COMMANDS_CS
+#define COMPILE_COMMANDS_CS
 #define COMPILE_COMMANDS_MAINBOARD
 #define COMPILE_COMMANDS_TRAJ
 //#define COMPILE_CODE
@@ -90,9 +90,9 @@ extern parse_pgm_inst_t cmd_opponent;
 extern parse_pgm_inst_t cmd_opponent_set;
 extern parse_pgm_inst_t cmd_start;
 extern parse_pgm_inst_t cmd_color;
+extern parse_pgm_inst_t cmd_slavedspic;
 
 #ifdef notyet
-extern parse_pgm_inst_t cmd_slavedspic;
 extern parse_pgm_inst_t cmd_slavedspic_ts;
 extern parse_pgm_inst_t cmd_slavedspic_mirror;
 extern parse_pgm_inst_t cmd_beacon;
@@ -197,12 +197,13 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_opponent_set,
 	(parse_pgm_inst_t *)&cmd_start,
 	(parse_pgm_inst_t *)&cmd_color,
+	(parse_pgm_inst_t *)&cmd_slavedspic,
 
 #ifdef notyet
-	(parse_pgm_inst_t *)&cmd_slavedspic,
 	(parse_pgm_inst_t *)&cmd_slavedspic_ts,
 	(parse_pgm_inst_t *)&cmd_slavedspic_mirror,
 	(parse_pgm_inst_t *)&cmd_beacon,
+
 	(parse_pgm_inst_t *)&cmd_sensor_robot,
 	(parse_pgm_inst_t *)&cmd_lasers,
 #endif
