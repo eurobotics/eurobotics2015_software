@@ -146,9 +146,9 @@ void io_pins_init(void)
 	_LATC7  = 0;
 
 	/* other power outputs */
-	_TRISC8 = 0;	// SLAVE_RELE_OUT
-	_ODCC8  = 1;	// is open drain
-	_LATC8  = 1;	// initialy Vload = 0
+	_TRISA9 = 0;	// SLAVE_RELE_OUT
+	_ODCA9  = 1;	// is open drain
+	_LATA9  = 1;	// initialy Vload = 0
 
 	_TRISA4 = 0;	// SLAVE_MOST_OUT
 	_ODCA4  = 1; 	// is open drain

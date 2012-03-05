@@ -41,7 +41,7 @@
 #define LED1_OFF() 		sbi(LATC, 9)
 #define LED1_TOGGLE() 	LED_TOGGLE(LATC, 9)
 
-#define RELE_OUT_PIN		_LATC8#define DRIVER_OUT_PIN	_LATA4
+#define RELE_OUT_PIN		_LATA9#define DRIVER_OUT_PIN	_LATA4
 
 #define BRAKE_ON()	do{					\								_LATA7 = 0; 	\							} while(0)
 #define BRAKE_OFF()	do{					\								_LATA7 = 1;		\
