@@ -37,6 +37,7 @@ extern parse_pgm_inst_t cmd_pwm_servo;
 extern parse_pgm_inst_t cmd_pwm_servo_show_range;
 extern parse_pgm_inst_t cmd_dac_mc;
 extern parse_pgm_inst_t cmd_sensor;
+extern parse_pgm_inst_t cmd_rele;
 extern parse_pgm_inst_t cmd_log;
 extern parse_pgm_inst_t cmd_log_show;
 extern parse_pgm_inst_t cmd_log_type;
@@ -94,6 +95,7 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_pwm_servo_show_range,
 	(parse_pgm_inst_t *)&cmd_dac_mc,
 	(parse_pgm_inst_t *)&cmd_sensor,
+	(parse_pgm_inst_t *)&cmd_rele,
 	(parse_pgm_inst_t *)&cmd_log,
 	(parse_pgm_inst_t *)&cmd_log_show,
 	(parse_pgm_inst_t *)&cmd_log_type,
