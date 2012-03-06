@@ -148,9 +148,9 @@ void io_pins_init(void)
 	_LATC7  = 0;
 
 	/* other power outputs */
-	_TRISC8 = 0;	// SLAVE_RELE_OUT
-	_ODCC8  = 1;	// is open drain
-	_LATC8  = 1;	// initialy Vload = 0
+	_TRISA9 = 0;	// SLAVE_RELE_OUT
+	_ODCA9  = 1;	// is open drain
+	_LATA9  = 1;	// initialy Vload = 0
 
 	_TRISA4 = 0;	// SLAVE_MOST_OUT
 	_ODCA4  = 1; 	// is open drain
@@ -254,7 +254,7 @@ int main(void)
 
 
 	/* DAC_MC */
-	dac_mc_channel_init(&gen.dac_mc_left, 1, CHANNEL_L,							  DAC_MC_MODE_SIGN_INVERTED, &LATA, 10, NULL, 0);
+	dac_mc_channel_init(&gen.dac_mc_left, 1, CHANNEL_L,							  DAC_MC_MODE_SIGNED, &LATA, 10, NULL, 0);
 	dac_mc_set(&gen.dac_mc_left, 0);
 	/* servos */
 	pwm_servo_init(&gen.pwm_servo_oc1, 1, 800, 2400);
@@ -309,10 +309,6 @@ int main(void)
 	
 	/* init cmdline */
 	cmdline_init();
-
-
-	_LATC8  = 0;	// initialy Vload = 0
-
 
 	/* main loop */
 	while(1)
