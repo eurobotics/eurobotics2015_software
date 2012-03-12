@@ -100,7 +100,7 @@ void slavedspic_cs_init(void)
 	/* ---- CS */
 	/* PID */
 	pid_init(&slavedspic.lift.pid);
-	pid_set_gains(&slavedspic.lift.pid, 3000, 16, 10000);
+	pid_set_gains(&slavedspic.lift.pid, 5000, 50, 20000);
 	pid_set_maximums(&slavedspic.lift.pid, 0, 500000, 60000);
 	pid_set_out_shift(&slavedspic.lift.pid, 8);
 	pid_set_derivate_filter(&slavedspic.lift.pid, 1);

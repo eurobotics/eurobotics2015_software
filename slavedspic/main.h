@@ -49,8 +49,8 @@
 
 /* EUROBOT 2012 defines */
 #define LIFT_ENCODER						((void *)1)#define LIFT_DAC_MC						((void *)&gen.dac_mc_left)
-#define LIFT_SPEED						0
-#define LIFT_ACCEL						0
+#define LIFT_SPEED						100
+#define LIFT_ACCEL						1
 #define LIFT_K_IMP_MM					1.0
 #define LIFT_CALIB_IMP_MAX				0
 #define LIFT_HEIGH_MAX_mm				50
