@@ -1,5 +1,5 @@
 /*  
- *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
+ *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2012)
  * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Baliñas Santos <javier@arc-robots.org>
+ *  Javier Baliñas Santos <javier@arc-robots.org> and Silvia Santano
  */
 
 #include <stdio.h>
@@ -94,6 +94,8 @@ struct strat_infos strat_infos = {
 	.zones[ZONE_PURPLE_MAP]=              { 1500, 500,  1000,      0  , 1400,  400,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
 
    /*XXX To pickup floor coins group the init position should depend on which color we are playing*/
+   /*If we play purple = (1100, 1700)
+   /*If we play red    = (1900, 1700) */
 	.zones[ZONE_FLOOR_COINS_GROUP]=       { 1780, 1950, 1220,   1450  , 1100,  1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
 	.zones[ZONE_MIDDLE_FLOOR_GOLDBAR]=    { 1780, 1156, 1220,   1550  , 1500,  1500, ZONE_PRIO_2, ZONE_WITH_TREASURE },
 	

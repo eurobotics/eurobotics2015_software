@@ -1,5 +1,5 @@
 /*  
- *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
+ *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2012)
  * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Baliñas Santos <javier@arc-robots.org>
+ *  Javier Baliñas Santos <javier@arc-robots.org> and Silvia Santano
  */
 
 /*Elements handler file*/
@@ -72,8 +72,6 @@
 	} while(0)
 
 
-uint8_t strat_store_goldbar(uint8_t where);
-
 
 uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar, uint8_t store_coins)
 {
@@ -93,12 +91,13 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar, uint
 	while(!cmdline_keypressed());
    /*Wait until they are open*/
 
-   /*Cart in mode pickup goldbar*/
-	printf_P(PSTR("Cart in mode pickup goldbar. Press a key...\r\n"));
+   /*lift in mode pickup goldbar*/
+	printf_P(PSTR("lift in mode pickup goldbar. Press a key...\r\n"));
 	while(!cmdline_keypressed());
 
    /*Go forward until first line of coins*/
 	trajectory_d_rel(&mainboard.traj, 100);
+   //strat_goto_xy_force
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
    
    /*Close lower arms*/
@@ -107,16 +106,18 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar, uint
 
    /*Go forward until blocking with totem*/
 	trajectory_d_rel(&mainboard.traj, 300);
+   //strat_goto_xy_force
 	err = wait_traj_end(END_INTR|END_TRAJ|END_BLOCKING);
 	if (err != END_BLOCKING)
 			ERROUT(err);
 
    /*Go a little backward*/
 	trajectory_d_rel(&mainboard.traj, -50);
+   //strat_goto_xy_force
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 
-   /*Put cart up*/
-	printf_P(PSTR("Put cart up. Press a key...\r\n"));
+   /*Put lift up*/
+	printf_P(PSTR("Put lift up. Press a key...\r\n"));
 	while(!cmdline_keypressed());
 
    /*Close upper arms*/
@@ -128,8 +129,8 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar, uint
 	while(!cmdline_keypressed());
    /*Wait until they are open*/
 
-   /*Cart in mode pickup goldbar*/
-	printf_P(PSTR("Cart in mode pickup goldbar. Press a key...\r\n"));
+   /*lift in mode pickup goldbar*/
+	printf_P(PSTR("lift in mode pickup goldbar. Press a key...\r\n"));
 	while(!cmdline_keypressed());
 
    /*Pickup goldbar*/
@@ -139,6 +140,7 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar, uint
 
    /*Go a little backward*/
 	trajectory_d_rel(&mainboard.traj, -100);
+   //strat_goto_xy_force
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 
    /*Store goldbar*/
@@ -148,8 +150,8 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar, uint
       strat_store_goldbar(store_goldbar);
    }
    
-   /*Put cart up*/
-   /*wait until cart is up*/
+   /*Put lift up*/
+   /*wait until lift is up*/
    /*close arms*/
 
 	/* go backward to safe position*/
@@ -162,7 +164,7 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar, uint
    /*Store coins*/
    if(store_coins)
    {
-      /*store_coins may be: 0, 1, 2 (times)*/
+      /*store_coins may be: 0, 1, 2 (times we move the lift up)*/
       //strat_store_coins(store_coins);
    }
 
@@ -269,10 +271,10 @@ uint8_t strat_pickup_goldbar_floor(int16_t x, int16_t y, uint8_t store)
       strat_store_goldbar(store);
    }
 
-   /*put cart up*/
-	printf_P(PSTR("Put cart up. Press a key...\r\n"));
+   /*put lift up*/
+	printf_P(PSTR("Put lift up. Press a key...\r\n"));
 	while(!cmdline_keypressed());
-   /*wait until cart is up*/
+   /*wait until lift is up*/
 
    /*close lower arms*/
 	printf_P(PSTR("Close lower arms. Press a key...\r\n"));
@@ -487,7 +489,7 @@ uint8_t strat_raise_window(uint8_t window)
 }
 
 
-uint8_t strat_steal_treasure_hold()
+uint8_t strat_steal_treasure_hold(void)
 {
    return 1;
 }
@@ -498,16 +500,16 @@ uint8_t strat_store_goldbar(uint8_t where)
    switch(where){
       case STORE_FRONT:
       default:
-         /*Put cart down to let gold bar in the floor*/
-      	printf_P(PSTR("Turn cart to let gold bar in the floor. Press a key...\r\n"));
+         /*Put lift down to let gold bar in the floor*/
+      	printf_P(PSTR("Turn lift to let gold bar in the floor. Press a key...\r\n"));
       	while(!cmdline_keypressed());
-      	printf_P(PSTR("Put cart down. Press a key...\r\n"));
+      	printf_P(PSTR("Put lift down. Press a key...\r\n"));
       	while(!cmdline_keypressed());
          break;
 
       case STORE_BACK:
-         /*Turn cart to let gold bar inside the robot*/
-      	printf_P(PSTR("Turn cart to let gold bar inside the robot. Press a key...\r\n"));
+         /*Turn lift to let gold bar inside the robot*/
+      	printf_P(PSTR("Turn lift to let gold bar inside the robot. Press a key...\r\n"));
       	while(!cmdline_keypressed());
          break;
 
