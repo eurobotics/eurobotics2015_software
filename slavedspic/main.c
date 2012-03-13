@@ -23,14 +23,18 @@
 #include <stdio.h>
 #include <string.h>
 
+
+
 #include <configuration_bits_config.h>
 
 #include <aversive.h>
 #include <aversive/pgmspace.h>
 #include <aversive/wait.h>
 #include <aversive/error.h>
-#include <encoders_dspic.h>
-#include <dac_mc.h>#include <pwm_mc.h>
+#include <encoders_dspic.h>
+
+#include <dac_mc.h>
+#include <pwm_mc.h>
 #include <pwm_servo.h>
 #include <ax12.h>
 #include <uart.h>
@@ -233,7 +237,8 @@ int main(void)
 	encoders_dspic_init();
 
 	/* CS */
-	slavedspic_cs_init();
+	slavedspic_cs_init();
+
 #if 0
 	/* I2C */
 	i2c_init(I2C_SLAVEDSPIC_ADDR);
@@ -245,8 +250,14 @@ int main(void)
 	/* TIMER */
 	timer_init();
 
-	/* PWM_MC */	pwm_mc_channel_init(&gen.pwm_mc_mod2_ch1,	                    PWM_MC_MODE_BIPOLAR, 	                    2, 1, NULL, 0, NULL, 0);
-	pwm_mc_init(&gen.pwm_mc_mod2_ch1, 19000, 							CH1_COMP&PEN1H&PEN1L);	pwm_mc_set(&gen.pwm_mc_mod2_ch1, 0);
+	/* PWM_MC */
+	pwm_mc_channel_init(&gen.pwm_mc_mod2_ch1,
+	                    PWM_MC_MODE_BIPOLAR, 
+	                    2, 1, NULL, 0, NULL, 0);
+	pwm_mc_init(&gen.pwm_mc_mod2_ch1, 19000, 
+							CH1_COMP&PEN1H&PEN1L);
+	pwm_mc_set(&gen.pwm_mc_mod2_ch1, 0);
+
 
 	/* DO FLAGS */
 	/* note: cs is enabled after calibration */
@@ -254,8 +265,10 @@ int main(void)
 
 
 	/* DAC_MC */
-	dac_mc_channel_init(&gen.dac_mc_left, 1, CHANNEL_L,							  DAC_MC_MODE_SIGNED | DAC_MC_MODE_SIGN_INVERTED, &LATA, 10, NULL, 0);
-	dac_mc_set(&gen.dac_mc_left, 0);
+	dac_mc_channel_init(&gen.dac_mc_left, 1, CHANNEL_L,
+							  DAC_MC_MODE_SIGNED | DAC_MC_MODE_SIGN_INVERTED, &LATA, 10, NULL, 0);
+	dac_mc_set(&gen.dac_mc_left, 0);
+
 	/* servos */
 	pwm_servo_init(&gen.pwm_servo_oc1, 1, 800, 2400);
 	pwm_servo_init(&gen.pwm_servo_oc2, 2, 800, 2400);
