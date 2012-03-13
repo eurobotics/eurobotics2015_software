@@ -1,5 +1,5 @@
 /*  
- *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
+ *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2012)
  * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Baliñas Santos <javier@arc-robots.org>
+ *  Javier Baliñas Santos <javier@arc-robots.org> and Silvia Santano
  */
 
 #include <stdio.h>
@@ -71,89 +71,41 @@ struct strat_infos strat_infos = {
 		.flags = 0,
 	},
 
-	/* grid slots 
-	.slot[X][Y] = { .x,	.y ,  	.color,       		.prio,   					.flags, 			.flags_poly},  */
-	.slot[0][0] = { 200,	200,		SLOT_BLUE,			SLOT_PRIO_GREEN,			0, 				0, },
-	.slot[0][1] = { 200,	690,		SLOT_GREEN_BLUE,	SLOT_PRIO_GREEN,			SLOT_BUSY, 		0, },
-	.slot[0][2] = { 200,	970,		SLOT_GREEN_BLUE,	SLOT_PRIO_GREEN,			SLOT_BUSY, 		0, },
-	.slot[0][3] = { 200,	1250,		SLOT_GREEN_BLUE,	SLOT_PRIO_GREEN,			SLOT_BUSY, 		0, },
-	.slot[0][4] = { 200,	1530,		SLOT_GREEN_BLUE,	SLOT_PRIO_GREEN,			SLOT_BUSY, 		0, },
-	.slot[0][5] = { 200,	1810,		SLOT_GREEN_BLUE,	SLOT_PRIO_GREEN,			SLOT_BUSY, 		0, },
+   /*zones[W] =                          { x_up, y_up, x_down, y_down, init_x,init_y, prio,     flags };                            */
+   .zones[ZONE_TOTEM_1_SIDE_1]=          { 1400, 1000, 700,    500   , 1100,  500,   ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_TOTEM_1_SIDE_2]=          { 1400, 1500, 700,    1000  , 1100,  1500,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_TOTEM_2_SIDE_1]=          { 2300, 1000, 1600,   500   , 1900,  500,   ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_TOTEM_2_SIDE_2]=          { 2300, 1500, 1600,   1000  , 1900,  1500,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	
+	.zones[ZONE_RED_FLOOR_COIN_1]=        { 1400, 650,  700,    250   , 2000,  200,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_RED_FLOOR_COIN_2]=        { 2450, 1200, 2100,   800   , 2500,  1000, ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_RED_FLOOR_COIN_3]=        { 2650, 1850, 2250,   1550  , 2250,  1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_RED_FLOOR_GOLDBAR]=       { 2700, 1000, 2300,   600   , 2300,  785,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_PURPLE_FLOOR_COIN_1]=     { 2300, 650,  1600,   250   , 1000,  200,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_PURPLE_FLOOR_COIN_2]=     { 550,  1200, 900,    800   , 500,   1000, ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_PURPLE_FLOOR_COIN_3]=     { 350,  1850, 750,   1550   , 750,   1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_PURPLE_FLOOR_GOLDBAR]=    { 300,  1000, 700,    600   , 700,   785,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
 
-	.slot[1][0] = { 625,	175,		SLOT_RED, 			SLOT_PRIO_CORNER,			0, 				0, },
-	.slot[1][1] = { 625,	525,		SLOT_BLUE,			SLOT_PRIO_NEAR_GREEN,	0, 				0, },
-	.slot[1][2] = { 625,	875,		SLOT_RED,			SLOT_PRIO_NEAR_GREEN,	0, 				0, },
-	.slot[1][3] = { 625,	1225,		SLOT_BLUE,			SLOT_PRIO_NEAR_GREEN,	0, 				0, },
-	.slot[1][4] = { 625,	1575,		SLOT_RED,			SLOT_PRIO_CORNER,			0, 				0, },
-	.slot[1][5] = { 625,	1865+10,	SLOT_BLUE,			SLOT_PRIO_SAFE,			SLOT_SAFE,		0, },
+	.zones[ZONE_RED_BOTTLE_1]=            { 2550, 2000, 2170,   1600  , 2360,  1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_RED_BOTTLE_2]=            { 1307, 2000, 927,    1600  , 1117,  1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_PURPLE_BOTTLE_1]=         { 830,  2000, 450,    1600  , 640,   1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_PURPLE_BOTTLE_2]=         { 2073, 2000, 1693,   1600  , 1883,  1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_RED_MAP]=                 { 2000, 500,  1500,      0  , 1600,  400,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_PURPLE_MAP]=              { 1500, 500,  1000,      0  , 1400,  400,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
 
-	.slot[2][0] = { 975,	175,		SLOT_BLUE, 			SLOT_PRIO_WALL,			0, 				0, },
-	.slot[2][1] = { 975,	525,		SLOT_RED,			SLOT_PRIO_BONUS,			0, 				0, },
-	.slot[2][2] = { 975,	875,		SLOT_BLUE,			SLOT_PRIO_PATH,			0, 				0, },
-	.slot[2][3] = { 975,	1225,		SLOT_RED,			SLOT_PRIO_BONUS,			0, 				0, },
-	.slot[2][4] = { 975,	1575,		SLOT_BLUE,			SLOT_PRIO_NEAR_SAFE,		0, 				0,	},
-	.slot[2][5] = { 975, 1865+10,	SLOT_RED,			SLOT_PRIO_SAFE,			SLOT_SAFE, 		0, },
-
-	.slot[3][0] = { 1325, 175,		SLOT_RED, 			SLOT_PRIO_WALL,			0, 				0, },
-	.slot[3][1] = { 1325, 525,		SLOT_BLUE,			SLOT_PRIO_PATH,			0, 				0, },
-	.slot[3][2] = { 1325, 875,		SLOT_RED,			SLOT_PRIO_CENTER,			0,					0, },
-	.slot[3][3] = { 1325, 1225,	SLOT_BLUE,			SLOT_PRIO_CENTER,			0, 				0, },
-	.slot[3][4] = { 1325, 1575,	SLOT_RED,			SLOT_PRIO_PATH,			0, 				0, },
-	.slot[3][5] = { 1325, 1925,	SLOT_BLUE,			SLOT_PRIO_BONUS_WALL,	0, 				0, },
-
-	.slot[4][0] = { 1675, 175,		SLOT_BLUE, 			SLOT_PRIO_WALL,			0, 				0, },
-	.slot[4][1] = { 1675, 525,		SLOT_RED,			SLOT_PRIO_PATH,			0, 				0, },
-	.slot[4][2] = { 1675, 875,		SLOT_BLUE,			SLOT_PRIO_CENTER,			0, 				0, },
-	.slot[4][3] = { 1675, 1225,	SLOT_RED,			SLOT_PRIO_CENTER,			0, 				0, },
-	.slot[4][4] = { 1675, 1575,	SLOT_BLUE,			SLOT_PRIO_PATH,			0, 				0, },
-	.slot[4][5] = { 1675, 1925,	SLOT_RED,			SLOT_PRIO_BONUS_WALL,	0, 				0, },
-
-	.slot[5][0] = { 2025, 175,		SLOT_RED, 			SLOT_PRIO_WALL,			0, 				0, },
-	.slot[5][1] = { 2025, 525,		SLOT_BLUE,			SLOT_PRIO_BONUS,			0, 				0, },
-	.slot[5][2] = { 2025, 875,		SLOT_RED,			SLOT_PRIO_PATH,			0, 				0, },
-	.slot[5][3] = { 2025, 1225,	SLOT_BLUE,			SLOT_PRIO_BONUS,			0, 				0, },
-	.slot[5][4] = { 2025, 1575,	SLOT_RED,			SLOT_PRIO_NEAR_SAFE,		0, 				0, },
-	.slot[5][5] = { 2025, 1865+10,SLOT_BLUE,			SLOT_PRIO_SAFE,			SLOT_SAFE, 		0, },
-
-	.slot[6][0] = { 2375, 175,		SLOT_BLUE, 			SLOT_PRIO_CORNER,			0, 				0, },
-	.slot[6][1] = { 2375, 525,		SLOT_RED,			SLOT_PRIO_NEAR_GREEN,	0, 				0, },
-	.slot[6][2] = { 2375, 875,		SLOT_BLUE,			SLOT_PRIO_NEAR_GREEN,	0, 				0, },
-	.slot[6][3] = { 2375, 1225,	SLOT_RED,			SLOT_PRIO_NEAR_GREEN,	0, 				0, },
-	.slot[6][4] = { 2375, 1575,	SLOT_BLUE,			SLOT_PRIO_CORNER,			0, 				0, },
-	.slot[6][5] = { 2375, 1865+10,SLOT_RED,			SLOT_PRIO_SAFE,			SLOT_SAFE, 		0, },
-
-	.slot[7][0] = { 2800, 200,		SLOT_RED,			SLOT_PRIO_GREEN,			0, 				0, },
-	.slot[7][1] = { 2800, 690,		SLOT_GREEN_RED,	SLOT_PRIO_GREEN,			SLOT_BUSY, 		0, },
-	.slot[7][2] = { 2800, 970,		SLOT_GREEN_RED,	SLOT_PRIO_GREEN,			SLOT_BUSY, 		0, },
-	.slot[7][3] = { 2800, 1250,	SLOT_GREEN_RED,	SLOT_PRIO_GREEN,			SLOT_BUSY, 		0, },
-	.slot[7][4] = { 2800, 1530,	SLOT_GREEN_RED,	SLOT_PRIO_GREEN,			SLOT_BUSY, 		0, },
-	.slot[7][5] = { 2800, 1810,	SLOT_GREEN_RED,	SLOT_PRIO_GREEN,			SLOT_BUSY, 		0, },
-
-	/* grid lines */
-	.grid_line_x = { 0, 450, 800, 1150, 1500, 1850, 2200, 2550, 3000 },
-	.grid_line_y = { 0, 350, 700, 1050, 1400, 1750, 2100 },
-
-#ifdef ZONES_HAS_FNCS
-	/* zones[] = x, y, x_up, y_up, x_down, y_down, num_visits, total_time_ms, do_before, do_after */
-	.zones[ZONE_OPP_NEAR_HOME] = { 2025, 525, 	1500, 1050, 2550, 0, 		1, 0,
-											 strat_place_figure_near_opp_home, NULL },
-	.zones[ZONE_OPP_NEAR_SAFE] = { 2025, 1400, 	1500, 1750, 2550, 1050, 	1, 0,
-											 strat_place_on_near_opp_safe_slot, strat_place_on_opp_safe_slot },
-	.zones[ZONE_NEAR_HOME] 		= { 975, 525, 		450, 1050, 1500, 0, 			0, 0,
-											 NULL, NULL },
-	.zones[ZONE_NEAR_SAFE] 		= { 975, 1400, 	450, 1750, 1500, 1050, 		0, 0,
-											 NULL, NULL },
-	.zones[ZONE_WALL_BONUS] 	= { 1675, 1575, 	1150, 2100, 1850, 1750, 	0, 0,
-											 strat_pickup_bonus_near_wall, NULL },
-#else
-	/* zones[] = x, y, x_up, y_up, x_down, y_down, num_visits, total_time_ms, do_before, do_after */
-	.zones[ZONE_OPP_NEAR_HOME] = { 1500, 1050, 2550, 0, 			0, 0 },
-	.zones[ZONE_OPP_NEAR_SAFE] = { 1500, 2100, 2550, 1050, 		0, 0 },
-	.zones[ZONE_NEAR_HOME] 		= { 450,  1050, 1500, 0, 			0, 0 },
-	.zones[ZONE_NEAR_SAFE] 		= { 450,  2100, 1500, 1050, 		0, 0 },
-	.zones[ZONE_WALL_BONUS] 	= { 1150, 2100, 1850, 1750-175, 	0, 0 },
-
-#endif
+   /*XXX To pickup floor coins group the init position should depend on which color we are playing*/
+   /*If we play purple = (1100, 1700)
+   /*If we play red    = (1900, 1700) */
+	.zones[ZONE_FLOOR_COINS_GROUP]=       { 1780, 1950, 1220,   1450  , 1100,  1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_MIDDLE_FLOOR_GOLDBAR]=    { 1780, 1156, 1220,   1550  , 1500,  1500, ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	
+   /* ship zones */
+   .zones[ZONE_SHIP_RED_CAPTAINS_BEDRROM]=      { 3000,     500,    2500,       0     , 2100 ,  250,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
+   .zones[ZONE_SHIP_RED_DECK]=                  { 3000,     1400,   2600,     500     , 2250,   950,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_SHIP_RED_HOLD]=                  { 3000,     2000,   2600,     1400    , 2250,   1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
+   .zones[ZONE_SHIP_PURPLE_CAPTAINS_BEDRROM]=   { 500,      500,    0,          0     , 900,    250,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_SHIP_PURPLE_DECK]=               { 400,      1400,   0,         500    , 750,    950,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_SHIP_PURPLE_HOLD]=               { 400,      2000,   0,        1400    , 750,    1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
 };
 
 

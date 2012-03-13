@@ -1,5 +1,5 @@
 /*  
- *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2010)
+ *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2012)
  * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Baliñas Santos <javier@arc-robots.org>
+ *  Javier Baliñas Santos <javier@arc-robots.org> and Silvia Santano
  */
 
 #ifndef _STRAT_H_
@@ -30,11 +30,38 @@
 /* obstacle clerance */
 #define OBS_CLERANCE   260.0
 
-/* totems */
-#define TOTEM_1_X    1100
-#define TOTEM_2_X    1900
-#define TOTEM_1_Y    AREA_Y/2
-#define TOTEM_2_Y    TOTEM_1_Y
+/* position of the tokens */
+#define TOTEM_1_X               1100
+#define TOTEM_2_X               1900
+#define TOTEM_1_Y               AREA_Y/2
+#define TOTEM_2_Y               TOTEM_1_Y
+#define RED_FLOOR_COIN_1_X      2000 
+#define RED_FLOOR_COIN_1_Y      500 
+#define RED_FLOOR_COIN_2_X      2150 
+#define RED_FLOOR_COIN_2_Y      1000 
+#define RED_FLOOR_COIN_3_X      2550 
+#define RED_FLOOR_COIN_3_Y      1700 
+#define PURPLE_FLOOR_COIN_1_X   1000 
+#define PURPLE_FLOOR_COIN_1_Y   500 
+#define PURPLE_FLOOR_COIN_2_X   850 
+#define PURPLE_FLOOR_COIN_2_Y   1000 
+#define PURPLE_FLOOR_COIN_3_X   450
+#define PURPLE_FLOOR_COIN_3_Y   1700  
+#define BOTTLE_Y                2000 
+#define RED_BOTTLE_1_X          2360   
+#define RED_BOTTLE_2_X          1117   
+#define PURPLE_BOTTLE_1_X       640  
+#define PURPLE_BOTTLE_2_X       1883  
+#define FLOOR_COINS_GROUP_X     1500
+#define FLOOR_COINS_GROUP_Y     1700
+#define MIDDLE_FLOOR_GOLDBAR_X  1353
+#define MIDDLE_FLOOR_GOLDBAR_Y  1500
+#define PURPLE_FLOOR_GOLDBAR_X  420
+#define PURPLE_FLOOR_GOLDBAR_Y  785
+#define RED_FLOOR_GOLDBAR_X     2580
+#define RED_FLOOR_GOLDBAR_Y     785
+
+#define D_EMPTY_TOTEM	        30
 
 /* infos about strat */
 #define NB_SLOT_X				8
@@ -72,8 +99,6 @@
 #define GO_FORWARD	0
 #define GO_BACKWARD	1
 
-#define TOKEN_DIAMETER	200
-
 /* useful traj flags */
 #define TRAJ_SUCCESS(f) 				(f & (END_TRAJ|END_NEAR))
 
@@ -94,10 +119,50 @@
 #define SPEED_DIST_FAST 		4000
 #define SPEED_ANGLE_FAST 		4000
 #endif
+
 #define SPEED_DIST_SLOW 		1000
 #define SPEED_ANGLE_SLOW 		1000
 #define SPEED_DIST_VERY_SLOW 	1000
 #define SPEED_ANGLE_VERY_SLOW 1000
+#define PICKUP_SPEED		      1000 
+
+#define PICKUP_CAUGHT_TIME	  	  100
+#define PLACE_D_SAFE				  140
+
+/* zones */
+#define ZONE_TOTEM_1_SIDE_1			      0
+#define ZONE_TOTEM_1_SIDE_2       	      1
+#define ZONE_TOTEM_2_SIDE_1			      2
+#define ZONE_TOTEM_2_SIDE_2			      3
+#define ZONE_RED_FLOOR_COIN_1			      4
+#define ZONE_RED_FLOOR_COIN_2  	         5
+#define ZONE_RED_FLOOR_COIN_3 	       	6
+#define ZONE_RED_FLOOR_GOLDBAR   	      7
+#define ZONE_PURPLE_FLOOR_COIN_1	         8
+#define ZONE_PURPLE_FLOOR_COIN_2	         9
+#define ZONE_PURPLE_FLOOR_COIN_3	         10
+#define ZONE_PURPLE_FLOOR_GOLDBAR			11
+#define ZONE_RED_BOTTLE_1			         12
+#define ZONE_RED_BOTTLE_2   			      13
+#define ZONE_PURPLE_BOTTLE_1			      14
+#define ZONE_PURPLE_BOTTLE_2			      15
+#define ZONE_RED_MAP          	       	16
+#define ZONE_PURPLE_MAP          	      17
+#define ZONE_FLOOR_COINS_GROUP          	18
+#define ZONE_MIDDLE_FLOOR_GOLDBAR         19
+
+/* place zones */
+#define ZONE_SHIP_RED_CAPTAINS_BEDRROM	   20
+#define ZONE_SHIP_RED_HOLD	               21
+#define ZONE_SHIP_RED_DECK                22
+#define ZONE_SHIP_PURPLE_CAPTAINS_BEDRROM 23
+#define ZONE_SHIP_PURPLE_HOLD             24
+#define ZONE_SHIP_PURPLE_DECK             25
+
+/* Store goldbars and coins or not and where */
+#define STORE_FRONT                       1
+#define STORE_BACK                        2
+#define DONT_STORE                        0
 
 /************************************************************* 
  * Strat data structures 
@@ -116,109 +181,24 @@ struct conf {
 
 /* depends on flags the robot
  * do one things or anothers */
-
 	uint8_t flags;
-#define LINE1_TOKENS_ON_BONUS_OLD		1
-#define LINE1_TOKENS_NEAR_WALL			2
-#define LINE1_OPP_TOKEN_BEFORE_PLACE	4
-#define LINE1_OPP_TOKEN_AFTER_PLACE		8
-#define GREEN_OPP_ZONE_FIRST			  16
-//#define STRAT_CONF_PLACE_ONLYEXT		  16
-
+   #define ZONE_IS_CLOSE		         1
+   #define ZONE_IS_CLOSE_TO_OPP			2
 
 	/* thresholds */
 	uint8_t th_place_prio;
 	uint8_t th_token_score;
-
 };
 
 /* scores */
-#define NOPLACE_SCORE	 0
-#define PION_SCORE		10
-#define FIGURE_SCORE		20
-#define TOWER1H_SCORE	40
-#define TOWER2H_SCORE	60
-#define PLACE_ALL_SCORE	70
+#define BLACKCOIN_SCORE 0
+#define WHITECOIN_SCORE 1
+#define BOTTLE_SCORE 5
+#define MAP_SCORE 5
+#define GOLDBAR_SCORE 3
 
-
-/* slot dimensions */
-#define SLOT_SIZE 		350
-#define SLOT_SIZE_HALF	175
-#define SLOT_DIAGONAL	495
-#define SLOT_GREEN_SIZE 280
-
-/* slot of token */
-struct slot_info {
-	int16_t x;
-	int16_t y;
-
-	uint8_t color;
-#define SLOT_BLUE			I2C_COLOR_RED
-#define SLOT_RED			I2C_COLOR_PURPLE
-#define SLOT_GREEN_BLUE	I2C_COLOR_MAX
-#define SLOT_GREEN_RED	(I2C_COLOR_MAX+1)
-
-	
-	uint8_t prio;
-#define SLOT_PRIO_0		0
-#define SLOT_PRIO_1		10
-#define SLOT_PRIO_2		20
-#define SLOT_PRIO_3		30
-#define SLOT_PRIO_4		40
-#define SLOT_PRIO_5		50
-#define SLOT_PRIO_6		60
-#define SLOT_PRIO_7		70
-#define SLOT_PRIO_MAX	80
-#define SLOT_PRIOR_INC	10
-
-/* strat areas priorities */
-#define SLOT_PRIO_GREEN			SLOT_PRIO_0	
-#define SLOT_PRIO_CENTER		SLOT_PRIO_1
-#define SLOT_PRIO_PATH			SLOT_PRIO_2
-#define SLOT_PRIO_NEAR_GREEN	SLOT_PRIO_3
-#define SLOT_PRIO_NEAR_SAFE	SLOT_PRIO_4
-#define SLOT_PRIO_WALL			SLOT_PRIO_5
-#define SLOT_PRIO_CORNER		(SLOT_PRIO_WALL + 5)
-#define SLOT_PRIO_SAFE			SLOT_PRIO_6
-#define SLOT_PRIO_BONUS_WALL	SLOT_PRIO_7
-#define SLOT_PRIO_BONUS			SLOT_PRIO_MAX
-
-
-	uint16_t flags;
-//#define SLOT_BONUS			1
-#define SLOT_SAFE				2
-#define SLOT_AVOID			4
-#define SLOT_CHECKED			8
-#define SLOT_BUSY				16
-#define SLOT_FIGURE			32
-#define SLOT_OPPONENT		64
-#define SLOT_ROBOT			128
-
-	uint8_t flags_poly;
-#define SLOT_POLY_SQUARE	1
-
-};
 
 typedef struct {
-	int8_t i;
-	int8_t j;
-}slot_index_t;
-
-
-#define NB_TOWER_MAX	6
-typedef struct {
-	int8_t i;
-	int8_t j;
-	int16_t x;
-	int16_t y;
-	int16_t w;
-	int8_t c;		
-} tower_t;
-
-typedef struct {
-//	/* work pt */
-//	int16_t x;
-//	int16_t y;
 
 	/* boundinbox */
 	int16_t x_up;
@@ -226,58 +206,45 @@ typedef struct {
 	int16_t x_down;
 	int16_t y_down;
 
-	/* stadistics */
-	uint8_t num_visits;
-	uint32_t total_time_ms;
+   /*init points*/
+	int16_t init_x;
+	int16_t init_y;
+	
+	uint8_t prio;
+   #define ZONE_PRIO_0		0
+   #define ZONE_PRIO_1		10
+   #define ZONE_PRIO_2		20
+   #define ZONE_PRIO_3		30
+   #define ZONE_PRIO_4		40
+   #define ZONE_PRIO_MAX	100
 
-#ifdef ZONES_HAS_FNCS
-	/* taskt to do before and after work */
-	uint8_t (*do_before)(void);
-	uint8_t (*do_after)(void);
-#endif
-} zone_t;
+	uint16_t flags;
+   #define ZONE_WITH_TREASURE		2
+   #define ZONE_AVOID		    	4
+   #define ZONE_CHECKED		    	8
+   #define ZONE_CHECKED_OPP		16
+   #define ZONE_OPPONENT	   	32
+   #define ZONE_OPPONENT_2	   	64
+   #define ZONE_ROBOT    	   	128
+   #define ZONE_SEC_ROBOT	   	256
+} strat_zones;
+
 
 struct strat_infos {
 	uint8_t dump_enabled;
 	struct conf conf;
 	struct bbox area_bbox;
 
-	/* playing areas */
-	struct slot_info slot[NB_SLOT_X][NB_SLOT_Y];
-
-	/* grid lines */
-	uint16_t grid_line_x[NB_GRID_LINES_X];
-	uint16_t grid_line_y[NB_GRID_LINES_Y];
-
-	/* our slot position */
-	slot_index_t slot_actual;
-	slot_index_t slot_before;
-
-	/* opponent slot position */
-	slot_index_t opp_slot_actual;
-	slot_index_t opp_slot_before;
-
-	/* towers found */
-	uint8_t num_towers;
-	tower_t towers[NB_TOWER_MAX];
-
-	/* "pickup and place" zones */
-#define ZONE_OPP_NEAR_HOME	0
-#define ZONE_OPP_NEAR_SAFE	1
-#define ZONE_NEAR_HOME		2
-#define ZONE_NEAR_SAFE		3
-#define ZONE_WALL_BONUS		4
-#define NB_ZONES_MAX			5
-
-	zone_t zones[NB_ZONES_MAX];
+	/* points areas */
+	strat_zones zones[26];
+	/* our zone position */
+	uint8_t current_zone;
+	/* opponent zone position */
+	uint8_t opp_current_zone;
 
 	/* opponent stadistics */
-	uint8_t opp_actual_zone;
-	uint8_t opp_before_zone;
 	uint32_t opp_time_zone_ms;
-
 };
-
 extern struct strat_infos strat_infos;
 
 
@@ -307,7 +274,21 @@ uint8_t strat_beginning(void);
 void strat_event(void *dummy);
 
 
-/* */
+
+/********************************************
+ * in strat_treasure.c 
+ *******************************************/
+uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar, uint8_t store_coins);
+uint8_t strat_pickup_coins_floor(int16_t x, int16_t y, uint8_t store);
+uint8_t strat_pickup_goldbar_floor(int16_t x, int16_t y, uint8_t store);
+uint8_t strat_send_message_bottle(int16_t x, int16_t y);
+uint8_t strat_save_treasure_in_deck_front(int16_t x, int16_t y);
+uint8_t strat_save_treasure_in_deck_back(int16_t x, int16_t y);
+uint8_t strat_save_treasure_in_hold_back(int16_t x, int16_t y);
+uint8_t strat_raise_window(uint8_t window);
+uint8_t strat_steal_treasure_hold(void);
+uint8_t strat_store_goldbar(uint8_t where);
+
 
 /* add here more strat functions in files */
 
