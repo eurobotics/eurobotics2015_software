@@ -1,5 +1,5 @@
 /*  
- *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2010)
+ *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2012)
  * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Baliñas Santos <javier@arc-robots.org>
+ *  Javier Baliñas Santos <javier@arc-robots.org> and Silvia Santano
  */
 
 #ifndef _STRAT_H_
@@ -30,6 +30,7 @@
 /* obstacle clerance */
 #define OBS_CLERANCE   260.0
 
+/* position of the tokens */
 #define TOTEM_1_X               1100
 #define TOTEM_2_X               1900
 #define TOTEM_1_Y               AREA_Y/2
@@ -154,13 +155,11 @@
 #define ZONE_SHIP_RED_CAPTAINS_BEDRROM	   20
 #define ZONE_SHIP_RED_HOLD	               21
 #define ZONE_SHIP_RED_DECK                22
-
-/* everything else */
 #define ZONE_SHIP_PURPLE_CAPTAINS_BEDRROM 23
 #define ZONE_SHIP_PURPLE_HOLD             24
 #define ZONE_SHIP_PURPLE_DECK             25
 
-/*Store goldbars and coins*/
+/* Store goldbars and coins or not and where */
 #define STORE_FRONT                       1
 #define STORE_BACK                        2
 #define DONT_STORE                        0
@@ -183,8 +182,8 @@ struct conf {
 /* depends on flags the robot
  * do one things or anothers */
 	uint8_t flags;
-#define ZONE_IS_CLOSE		         1
-#define ZONE_IS_CLOSE_TO_OPP			2
+   #define ZONE_IS_CLOSE		         1
+   #define ZONE_IS_CLOSE_TO_OPP			2
 
 	/* thresholds */
 	uint8_t th_place_prio;
@@ -212,22 +211,22 @@ typedef struct {
 	int16_t init_y;
 	
 	uint8_t prio;
-#define ZONE_PRIO_0		0
-#define ZONE_PRIO_1		10
-#define ZONE_PRIO_2		20
-#define ZONE_PRIO_3		30
-#define ZONE_PRIO_4		40
-#define ZONE_PRIO_MAX	100
+   #define ZONE_PRIO_0		0
+   #define ZONE_PRIO_1		10
+   #define ZONE_PRIO_2		20
+   #define ZONE_PRIO_3		30
+   #define ZONE_PRIO_4		40
+   #define ZONE_PRIO_MAX	100
 
 	uint16_t flags;
-#define ZONE_WITH_TREASURE		2
-#define ZONE_AVOID		    	4
-#define ZONE_CHECKED		    	8
-#define ZONE_CHECKED_OPP		16
-#define ZONE_OPPONENT	   	32
-#define ZONE_OPPONENT_2	   	64
-#define ZONE_ROBOT    	   	128
-#define ZONE_SEC_ROBOT	   	256
+   #define ZONE_WITH_TREASURE		2
+   #define ZONE_AVOID		    	4
+   #define ZONE_CHECKED		    	8
+   #define ZONE_CHECKED_OPP		16
+   #define ZONE_OPPONENT	   	32
+   #define ZONE_OPPONENT_2	   	64
+   #define ZONE_ROBOT    	   	128
+   #define ZONE_SEC_ROBOT	   	256
 } strat_zones;
 
 
@@ -240,8 +239,8 @@ struct strat_infos {
 	strat_zones zones[26];
 	/* our zone position */
 	uint8_t current_zone;
-	/* opponent slot position */
-	uint8_t opp_last_zone;
+	/* opponent zone position */
+	uint8_t opp_current_zone;
 
 	/* opponent stadistics */
 	uint32_t opp_time_zone_ms;
@@ -273,6 +272,22 @@ void strat_exit(void);
 uint8_t strat_main(void);
 uint8_t strat_beginning(void);
 void strat_event(void *dummy);
+
+
+
+/********************************************
+ * in strat_treasure.c 
+ *******************************************/
+uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar, uint8_t store_coins);
+uint8_t strat_pickup_coins_floor(int16_t x, int16_t y, uint8_t store);
+uint8_t strat_pickup_goldbar_floor(int16_t x, int16_t y, uint8_t store);
+uint8_t strat_send_message_bottle(int16_t x, int16_t y);
+uint8_t strat_save_treasure_in_deck_front(int16_t x, int16_t y);
+uint8_t strat_save_treasure_in_deck_back(int16_t x, int16_t y);
+uint8_t strat_save_treasure_in_hold_back(int16_t x, int16_t y);
+uint8_t strat_raise_window(uint8_t window);
+uint8_t strat_steal_treasure_hold(void);
+uint8_t strat_store_goldbar(uint8_t where);
 
 
 /* add here more strat functions in files */
