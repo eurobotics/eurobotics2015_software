@@ -272,9 +272,13 @@ int main(void)
 	/* servos */
 	pwm_servo_init(&gen.pwm_servo_oc1, 1, 800, 2400);
 	pwm_servo_init(&gen.pwm_servo_oc2, 2, 800, 2400);
-	pwm_servo_init(&gen.pwm_servo_oc3, 3, 800, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc3, 3, 800, 2800);
 	pwm_servo_init(&gen.pwm_servo_oc4, 4, 800, 2400);
 	pwm_servo_enable();
+	pwm_servo_set(&gen.pwm_servo_oc1, 0);
+	pwm_servo_set(&gen.pwm_servo_oc2, 0);
+	pwm_servo_set(&gen.pwm_servo_oc3, 0);
+	pwm_servo_set(&gen.pwm_servo_oc4, 0);
 
 	/* SCHEDULER */
 	scheduler_init();
@@ -305,10 +309,10 @@ int main(void)
 
 	/* wait some ms */
 	wait_ms(500);
-#if 0
+
 	/* ACTUATORS */
 	actuator_init();
-
+#if 0
 	/* STATE MACHINE */
 	state_init();
 #endif
@@ -317,7 +321,7 @@ int main(void)
 
 	/* LOGS */
  	gen.logs[0] = E_USER_ST_MACH;
-	gen.logs[1] = E_USER_CS;
+	gen.logs[1] = E_USER_ACTUATORS;
 	gen.log_level = 5;
 	
 	/* init cmdline */

@@ -30,6 +30,8 @@
 #include <ax12.h>
 #include <pid.h>#include <quadramp.h>#include <control_system_manager.h>#include <blocking_detection_manager.h>
 
+#include "actuator.h"
+
 #define EUROBOT_2012_BOARD
 
 #define LED_TOGGLE(port, bit) do {		\
@@ -43,8 +45,12 @@
 #define LED1_OFF() 		sbi(LATC, 9)
 #define LED1_TOGGLE() 	LED_TOGGLE(LATC, 9)
 
-#define RELE_OUT_PIN		_LATA9#define DRIVER_OUT_PIN	_LATA4
-
+#define RELE_OUT_PIN			_LATA9
+#define RELE_OUT_PIN_ON		0
+#define RELE_OUT_PIN_OFF	1
+#define DRIVER_OUT_PIN		_LATA4
+#define DRIVER_OUT_PIN_ON	0
+#define DIVER_OUT_PIN_OFF	1
 #define BRAKE_ON()	do{					\								_LATA7 = 0; 	\							} while(0)
 #define BRAKE_OFF()	do{					\								_LATA7 = 1;		\
 							} while(0)
@@ -53,25 +59,25 @@
 #define LIFT_ENCODER						((void *)1)#define LIFT_DAC_MC						((void *)&gen.dac_mc_left)
 #define LIFT_SPEED						100
 #define LIFT_ACCEL						1
-#define LIFT_K_IMP_MM					1.0
+#define LIFT_K_IMP_mm					1.0
 #define LIFT_CALIB_IMP_MAX				0
-#define LIFT_HEIGH_MAX_mm				50
-#define LIFT_HEIGH_MIN_mm				250
+#define LIFT_HEIGHT_MAX_mm				50
+#define LIFT_HEIGHT_MIN_mm				250
 
 #define TURBINE_POWER_PIN				RELE_OUT_PIN
-#define TURBINE_SPEED_PWM_SERVO		&gen.pwm_servo_oc1
-#define TURBINE_ANGLE_PWM_SERVO		&gen.pwm_servo_oc2
-#define TRAY1_PWM_SERVO					&gen.pwm_servo_oc3
-#define TRAY2_PWM_SERVO					&gen.pwm_servo_oc4#define TRAY3_PWM_MC						&gen.pwm_mc_mod2_ch1
+#define TURBINE_SPEED_PWM_SERVO		&gen.pwm_servo_oc4
+#define TURBINE_ANGLE_PWM_SERVO		&gen.pwm_servo_oc3
+#define PWM_SERVO_TRAY_RECEPTION		&gen.pwm_servo_oc2	
+#define PWM_SERVO_TRAY_STORE  		&gen.pwm_servo_oc1#define PWM_MC_TRAY_BOOT				&gen.pwm_mc_mod2_ch1
 
-#define AX12_FINGERS_TOTEM_R		4
-#define AX12_FINGERS_TOTEM_L		7
-#define AX12_FINGERS_FLOOR_R		2
-#define AX12_FINGERS_FLOOR_L		8
-#define AX12_ARM_R					3
-#define AX12_ARM_L					1
-#define AX12_BOOT						5
-#define AX12_HOOK						6
+#define AX12_ID_FINGERS_TOTEM_R		4
+#define AX12_ID_FINGERS_TOTEM_L		7
+#define AX12_ID_FINGERS_FLOOR_R		2
+#define AX12_ID_FINGERS_FLOOR_L		8
+#define AX12_ID_ARM_R					3
+#define AX12_ID_ARM_L					1
+#define AX12_ID_BOOT						5
+#define AX12_ID_HOOK						6
 
 #define S_BELOW_TURBINE_1	SENSOR1
 #define S_BELOW_TURBINE_2	SENSOR2
@@ -143,8 +149,19 @@ struct slavedspic {
 	/* control systems */
   	struct cs_block lift;
 
-	/* TODO: add eurobot 2012 variables */	
+	/* actuators */
+	turbine_t turbine;
+	fingers_t fingers_totem;
+	fingers_t fingers_floor;
+	arm_t arm_left;
+	arm_t arm_right;
+	boot_t boot;
+	hook_t hook;
+	tray_t tray_reception;
+	tray_t tray_store;
+	tray_t tray_boot;
 
+	/* TODO: add eurobot 2012 variables */	
 
 	/* infos */
 	uint8_t our_color;

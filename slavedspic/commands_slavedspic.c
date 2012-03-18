@@ -176,10 +176,10 @@ static void cmd_lift_parsed(__attribute__((unused)) void *parsed_result,
 	struct cmd_lift_result *res = (struct cmd_lift_result *) parsed_result;
 	microseconds t1, t2;
 
-	cs_set_consign(&slavedspic.lift.cs, res->arg1);
+	lift_set_height(res->arg1);
 
 	t1 = time_get_us2();
-	while (cs_get_consign(&slavedspic.lift.cs) != cs_get_filtered_consign(&slavedspic.lift.cs)) {
+	while (!lift_check_height_reached()) {
 		t2 = time_get_us2();
 		if (t2 - t1 > 20000) {
 			dump_cs_debug("lift", &slavedspic.lift.cs);
@@ -192,7 +192,7 @@ prog_char str_lift_arg0[] = "lift";
 parse_pgm_token_string_t cmd_lift_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_lift_result, arg0, str_lift_arg0);
 parse_pgm_token_num_t cmd_lift_arg1 = TOKEN_NUM_INITIALIZER(struct cmd_lift_result, arg1, INT32);
 
-prog_char help_lift[] = "set lift height and angle";
+prog_char help_lift[] = "set lift height";
 parse_pgm_inst_t cmd_lift = {
 	.f = cmd_lift_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
@@ -200,6 +200,356 @@ parse_pgm_inst_t cmd_lift = {
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_lift_arg0, 
 		(prog_void *)&cmd_lift_arg1,
+		NULL,
+	},
+};
+
+/**********************************************************/
+/* turbine */
+
+/* this structure is filled when cmd_turbine is parsed successfully */
+struct cmd_turbine_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+	int16_t arg2;
+};
+
+/* function called when cmd_turbine is parsed successfully */
+static void cmd_turbine_parsed(__attribute__((unused)) void *parsed_result,
+			    __attribute__((unused)) void *data)
+{
+	struct cmd_turbine_result *res = (struct cmd_turbine_result *) parsed_result;
+	
+	if(data) {
+		if (!strcmp_P(res->arg1, PSTR("on")))
+			turbine_power_on(&slavedspic.turbine);
+		else if (!strcmp_P(res->arg1, PSTR("off")))
+			turbine_power_off(&slavedspic.turbine);		
+	}
+	else {
+		if (!strcmp_P(res->arg1, PSTR("angle")))
+			turbine_set_angle(&slavedspic.turbine, res->arg2, 100);
+		else if (!strcmp_P(res->arg1, PSTR("blow")))
+			turbine_set_blow_speed(&slavedspic.turbine, res->arg2);
+	}
+
+	/* show */
+	printf("angle = %d\n", turbine_get_angle(&slavedspic.turbine));
+	printf("blow = %d\n", turbine_get_blow_speed(&slavedspic.turbine));	
+
+}
+
+prog_char str_turbine_arg0[] = "turbine";
+parse_pgm_token_string_t cmd_turbine_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_turbine_result, arg0, str_turbine_arg0);
+prog_char str_turbine_arg1[] = "angle#blow";
+parse_pgm_token_string_t cmd_turbine_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_turbine_result, arg1, str_turbine_arg1);
+parse_pgm_token_num_t cmd_turbine_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_turbine_result, arg2, INT16);
+
+prog_char help_turbine[] = "set turbine angle and blow";
+parse_pgm_inst_t cmd_turbine = {
+	.f = cmd_turbine_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_turbine,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_turbine_arg0, 
+		(prog_void *)&cmd_turbine_arg1,
+		(prog_void *)&cmd_turbine_arg2,
+		NULL,
+	},
+};
+
+/**********************************************************/
+/* turbine show/on/off */
+
+prog_char str_turbine_show_arg1[] = "on#off#show";
+parse_pgm_token_string_t cmd_turbine_show_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_turbine_result, arg1, str_turbine_show_arg1);
+
+prog_char help_turbine_show[] = "set turbine angle and blow";
+parse_pgm_inst_t cmd_turbine_show = {
+	.f = cmd_turbine_parsed,  /* function to call */
+	.data = (void *)1,      /* 2nd arg of func */
+	.help_str = help_turbine_show,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_turbine_arg0, 
+		(prog_void *)&cmd_turbine_show_arg1,
+		NULL,
+	},
+};
+
+/**********************************************************/
+/* fingers */
+
+/* this structure is filled when cmd_fingers is parsed successfully */
+struct cmd_fingers_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+	fixed_string_t arg2;
+};
+
+/* function called when cmd_fingers is parsed successfully */
+static void cmd_fingers_parsed(__attribute__((unused)) void *parsed_result,
+			    __attribute__((unused)) void *data)
+{
+	struct cmd_fingers_result *res = (struct cmd_fingers_result *) parsed_result;
+	uint8_t mode;
+	fingers_t *fingers = 0;
+	
+	if (!strcmp_P(res->arg1, PSTR("totem")))
+		fingers = &slavedspic.fingers_totem;
+	else if (!strcmp_P(res->arg1, PSTR("floor")))
+		fingers = &slavedspic.fingers_floor;
+
+	mode = fingers->mode;
+
+	if (!strcmp_P(res->arg2, PSTR("hug")))
+		mode = FINGERS_MODE_HUG;
+	else if (!strcmp_P(res->arg2, PSTR("open")))
+		mode = FINGERS_MODE_OPEN;
+	else if (!strcmp_P(res->arg2, PSTR("close")))
+		mode = FINGERS_MODE_CLOSE;
+	else if (!strcmp_P(res->arg2, PSTR("hold")))
+		mode = FINGERS_MODE_HOLD;
+	else if (!strcmp_P(res->arg2, PSTR("pushin")))
+		mode = FINGERS_MODE_PUSHIN;
+		
+
+	fingers_set_mode(fingers, mode);
+	while(!fingers_check_mode_done(fingers));
+	printf("done\n");
+
+}
+
+prog_char str_fingers_arg0[] = "fingers";
+parse_pgm_token_string_t cmd_fingers_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_fingers_result, arg0, str_fingers_arg0);
+prog_char str_fingers_arg1[] = "totem#floor";
+parse_pgm_token_string_t cmd_fingers_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_fingers_result, arg1, str_fingers_arg1);
+prog_char str_fingers_arg2[] = "hug#open#hold#close#pushin";
+parse_pgm_token_string_t cmd_fingers_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_fingers_result, arg2, str_fingers_arg2);
+
+prog_char help_fingers[] = "set fingers mode";
+parse_pgm_inst_t cmd_fingers = {
+	.f = cmd_fingers_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_fingers,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_fingers_arg0, 
+		(prog_void *)&cmd_fingers_arg1,
+		(prog_void *)&cmd_fingers_arg2,
+		NULL,
+	},
+};
+
+/**********************************************************/
+/* arm */
+
+/* this structure is filled when cmd_arm is parsed successfully */
+struct cmd_arm_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+	fixed_string_t arg2;
+};
+
+/* function called when cmd_arm is parsed successfully */
+static void cmd_arm_parsed(__attribute__((unused)) void *parsed_result,
+			    __attribute__((unused)) void *data)
+{
+	struct cmd_arm_result *res = (struct cmd_arm_result *) parsed_result;
+	uint8_t mode;
+	arm_t *arm = 0;
+
+	if (!strcmp_P(res->arg1, PSTR("right")))
+		arm = &slavedspic.arm_right;
+	else if (!strcmp_P(res->arg1, PSTR("left")))
+		arm = &slavedspic.arm_left;	
+
+	mode = arm->mode;
+
+	if (!strcmp_P(res->arg2, PSTR("hide")))
+		mode = ARM_MODE_HIDE;
+	else if (!strcmp_P(res->arg2, PSTR("show")))
+		mode = ARM_MODE_SHOW;
+	else if (!strcmp_P(res->arg2, PSTR("goldbar")))
+		mode = ARM_MODE_PUSH_GOLDBAR;
+	else if (!strcmp_P(res->arg2, PSTR("floor")))
+		mode = ARM_MODE_PUSH_FLOOR;
+		
+	arm_set_mode(arm, mode);
+	while(!arm_check_mode_done(arm));
+	printf("done\n");
+
+}
+
+prog_char str_arm_arg0[] = "arm";
+parse_pgm_token_string_t cmd_arm_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_arm_result, arg0, str_arm_arg0);
+prog_char str_arm_arg1[] = "left#right";
+parse_pgm_token_string_t cmd_arm_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_arm_result, arg1, str_arm_arg1);
+prog_char str_arm_arg2[] = "hide#show#goldbar#floor";
+parse_pgm_token_string_t cmd_arm_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_arm_result, arg2, str_arm_arg2);
+
+prog_char help_arm[] = "set arm mode";
+parse_pgm_inst_t cmd_arm = {
+	.f = cmd_arm_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_arm,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_arm_arg0, 
+		(prog_void *)&cmd_arm_arg1,
+		(prog_void *)&cmd_arm_arg2,
+		NULL,
+	},
+};
+
+/**********************************************************/
+/* tray */
+
+/* this structure is filled when cmd_tray is parsed successfully */
+struct cmd_tray_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+	fixed_string_t arg2;
+};
+
+/* function called when cmd_tray is parsed successfully */
+static void cmd_tray_parsed(__attribute__((unused)) void *parsed_result,
+			    __attribute__((unused)) void *data)
+{
+	struct cmd_tray_result *res = (struct cmd_tray_result *) parsed_result;
+	uint8_t mode;
+	tray_t *tray = 0;
+
+	if (!strcmp_P(res->arg1, PSTR("reception")))
+		tray = &slavedspic.tray_reception;
+	else if (!strcmp_P(res->arg1, PSTR("store")))
+		tray = &slavedspic.tray_store;	
+	else if (!strcmp_P(res->arg1, PSTR("boot")))
+		tray = &slavedspic.tray_boot;	
+
+	mode = tray->mode;
+
+	if (!strcmp_P(res->arg2, PSTR("up")))
+		mode = TRAY_MODE_UP;
+	else if (!strcmp_P(res->arg2, PSTR("down")))
+		mode = TRAY_MODE_DOWN;
+	else if (!strcmp_P(res->arg2, PSTR("vibrate")))
+		mode = TRAY_MODE_VIBRATE;
+		
+	tray_set_mode(tray, mode);
+	printf("done\n");
+}
+
+prog_char str_tray_arg0[] = "tray";
+parse_pgm_token_string_t cmd_tray_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_tray_result, arg0, str_tray_arg0);
+prog_char str_tray_arg1[] = "reception#store#boot";
+parse_pgm_token_string_t cmd_tray_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_tray_result, arg1, str_tray_arg1);
+prog_char str_tray_arg2[] = "up#down#vibrate";
+parse_pgm_token_string_t cmd_tray_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_tray_result, arg2, str_tray_arg2);
+
+prog_char help_tray[] = "set tray mode";
+parse_pgm_inst_t cmd_tray = {
+	.f = cmd_tray_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_tray,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_tray_arg0, 
+		(prog_void *)&cmd_tray_arg1,
+		(prog_void *)&cmd_tray_arg2,
+		NULL,
+	},
+};
+
+/**********************************************************/
+/* boot */
+
+/* this structure is filled when cmd_boot is parsed successfully */
+struct cmd_boot_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+};
+
+/* function called when cmd_boot is parsed successfully */
+static void cmd_boot_parsed(__attribute__((unused)) void *parsed_result,
+			    __attribute__((unused)) void *data)
+{
+	struct cmd_boot_result *res = (struct cmd_boot_result *) parsed_result;
+	uint8_t mode;
+
+	mode = slavedspic.boot.mode;
+
+	if (!strcmp_P(res->arg1, PSTR("open")))
+		mode = BOOT_MODE_OPEN;
+	else if (!strcmp_P(res->arg1, PSTR("hold")))
+		mode = BOOT_MODE_HOLD;	
+	else if (!strcmp_P(res->arg1, PSTR("close")))
+		mode = BOOT_MODE_CLOSE;
+		
+	boot_set_mode(&slavedspic.boot, mode);
+	while(!boot_check_mode_done(&slavedspic.boot));
+	printf("done\n");
+}
+
+prog_char str_boot_arg0[] = "boot";
+parse_pgm_token_string_t cmd_boot_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_boot_result, arg0, str_boot_arg0);
+prog_char str_boot_arg1[] = "open#hold#close";
+parse_pgm_token_string_t cmd_boot_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_boot_result, arg1, str_boot_arg1);
+
+prog_char help_boot[] = "set boot mode";
+parse_pgm_inst_t cmd_boot = {
+	.f = cmd_boot_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_boot,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_boot_arg0, 
+		(prog_void *)&cmd_boot_arg1,
+		NULL,
+	},
+};
+
+
+/**********************************************************/
+/* hook */
+
+/* this structure is filled when cmd_hook is parsed successfully */
+struct cmd_hook_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+};
+
+/* function called when cmd_hook is parsed successfully */
+static void cmd_hook_parsed(__attribute__((unused)) void *parsed_result,
+			    __attribute__((unused)) void *data)
+{
+	struct cmd_hook_result *res = (struct cmd_hook_result *) parsed_result;
+	uint8_t mode;
+
+	mode = slavedspic.hook.mode;
+
+	if (!strcmp_P(res->arg1, PSTR("hide")))
+		mode = HOOK_MODE_HIDE;
+	else if (!strcmp_P(res->arg1, PSTR("show")))
+		mode = HOOK_MODE_SHOW;	
+	else if (!strcmp_P(res->arg1, PSTR("fuckyou")))
+		mode = HOOK_MODE_FUCKYOU;
+	else if (!strcmp_P(res->arg1, PSTR("open_hold")))
+		mode = HOOK_MODE_OPEN_HOLD;
+		
+	hook_set_mode(&slavedspic.hook, mode);
+	while(!hook_check_mode_done(&slavedspic.hook));
+	printf("done\n");
+}
+
+prog_char str_hook_arg0[] = "hook";
+parse_pgm_token_string_t cmd_hook_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_hook_result, arg0, str_hook_arg0);
+prog_char str_hook_arg1[] = "hide#show#fuckyou#open_hold";
+parse_pgm_token_string_t cmd_hook_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_hook_result, arg1, str_hook_arg1);
+
+prog_char help_hook[] = "set hook mode";
+parse_pgm_inst_t cmd_hook = {
+	.f = cmd_hook_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_hook,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_hook_arg0, 
+		(prog_void *)&cmd_hook_arg1,
 		NULL,
 	},
 };
