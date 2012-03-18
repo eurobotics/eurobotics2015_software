@@ -30,6 +30,8 @@
 #include <ax12.h>
 #include <pid.h>#include <quadramp.h>#include <control_system_manager.h>#include <blocking_detection_manager.h>
 
+#define EUROBOT_2012_BOARD
+
 #define LED_TOGGLE(port, bit) do {		\
 		if (port & _BV(bit))		\
 			port &= ~_BV(bit);	\
@@ -62,14 +64,14 @@
 #define TRAY1_PWM_SERVO					&gen.pwm_servo_oc3
 #define TRAY2_PWM_SERVO					&gen.pwm_servo_oc4#define TRAY3_PWM_MC						&gen.pwm_mc_mod2_ch1
 
-#define AX12_MOUTH_UP_R		1
-#define AX12_MOUTH_UP_L		2
-#define AX12_MOUTH_DOWN_R	3
-#define AX12_MOUTH_DOWN_L	4
-#define AX12_LEFT_ARM		5
-#define AX12_RIGHT_ARM		6
-#define AX12_BOOT				7
-#define AX12_HOOK				8
+#define AX12_FINGERS_TOTEM_R		4
+#define AX12_FINGERS_TOTEM_L		7
+#define AX12_FINGERS_FLOOR_R		2
+#define AX12_FINGERS_FLOOR_L		8
+#define AX12_ARM_R					3
+#define AX12_ARM_L					1
+#define AX12_BOOT						5
+#define AX12_HOOK						6
 
 #define S_BELOW_TURBINE_1	SENSOR1
 #define S_BELOW_TURBINE_2	SENSOR2

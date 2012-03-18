@@ -44,7 +44,7 @@
 
 #define AX12_ERROR(args...) ERROR(E_USER_AX12, args)
 #define AX12_NOTICE(args...) NOTICE(E_USER_AX12, args)
-#define AX12_MAX_TRIES 3
+#define AX12_MAX_TRIES 5
 
 /*
  * Cmdline interface for AX12. Use the PC to command a daisy-chain of
