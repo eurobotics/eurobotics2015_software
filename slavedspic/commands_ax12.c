@@ -159,7 +159,7 @@ static void cmd_ax12_stress_parsed(void *parsed_result, __attribute__((unused)) 
 	t = (time_get_us2() - t) / 1000;
 	printf_P(PSTR("Test done in %d ms\r\n"), (int)t);
 
-	/* test 3 servos */
+	/* test 8 servos */
 	t = time_get_us2();
 	nb_errs = 0;
 	id = 1;
@@ -167,8 +167,9 @@ static void cmd_ax12_stress_parsed(void *parsed_result, __attribute__((unused)) 
 		if (AX12_write_int(&gen.ax12, id, AA_GOAL_POSITION_L, 500))
 			nb_errs ++;
 		id ++;
-		if (id > 3)
+		if (id > 8)
 			id = 1;
+		wait_ms(2);
 	}
 
 	printf_P(PSTR("%d errors / 100\r\n"), nb_errs);

@@ -134,11 +134,11 @@ void io_pins_init(void)
 	_TRISB10 = 1;		// SENSOR2
 	_TRISB2 	= 1;		// SENSOR3
 	_TRISA8 	= 1;		// SENSOR4
-#ifndef EUROBOT_2012_BOARD
 	_TRISC3 	= 1;		// SENSOR5
-#endif
 	_TRISB4 	= 1;		// SENSOR6
+#ifndef EUROBOT_2012_BOARD
 	_TRISC2 	= 1;		// SENSOR7
+#endif
 
 	/* dc motors */
 	_TRISB12 = 0;	// SLAVE_MOT_2_INA
@@ -171,7 +171,7 @@ void io_pins_init(void)
 	_RP16R = 0b10011; // OC2 -> RP16(RC0) -> SLAVE_SERVO_PWM_2
 	_RP3R  = 0b10100; // OC3 -> RP3(RB3)  -> SLAVE_SERVO_PWM_3
 #ifdef EUROBOT_2012_BOARD
-	_RP19R = 0b10101; // OC4 -> RP19(RC3) -> SLAVE_SENSOR_5
+	_RP18R = 0b10101; // OC4 -> RP18(RC2) -> SLAVE_SENSOR_7
 #endif
 		
 	/* encoders */
@@ -273,7 +273,7 @@ int main(void)
 	pwm_servo_init(&gen.pwm_servo_oc1, 1, 800, 2400);
 	pwm_servo_init(&gen.pwm_servo_oc2, 2, 800, 2400);
 	pwm_servo_init(&gen.pwm_servo_oc3, 3, 800, 2400);
-	//pwm_servo_init(&gen.pwm_servo_oc4, 4, 800, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc4, 4, 800, 2400);
 	pwm_servo_enable();
 
 	/* SCHEDULER */
