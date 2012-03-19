@@ -76,6 +76,7 @@ extern parse_pgm_inst_t cmd_event;
 extern parse_pgm_inst_t cmd_color;
 extern parse_pgm_inst_t cmd_lift;
 extern parse_pgm_inst_t cmd_turbine;
+extern parse_pgm_inst_t cmd_turbine_show;
 extern parse_pgm_inst_t cmd_fingers;
 extern parse_pgm_inst_t cmd_arm;
 extern parse_pgm_inst_t cmd_tray;
@@ -139,6 +140,7 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_color,
 	(parse_pgm_inst_t *)&cmd_lift,
 	(parse_pgm_inst_t *)&cmd_turbine,
+	(parse_pgm_inst_t *)&cmd_turbine_show,
 	(parse_pgm_inst_t *)&cmd_fingers,
 	(parse_pgm_inst_t *)&cmd_arm,
 	(parse_pgm_inst_t *)&cmd_tray,

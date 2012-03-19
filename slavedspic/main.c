@@ -270,14 +270,14 @@ int main(void)
 	dac_mc_set(&gen.dac_mc_left, 0);
 
 	/* servos */
-	pwm_servo_init(&gen.pwm_servo_oc1, 1, 800, 2400);
-	pwm_servo_init(&gen.pwm_servo_oc2, 2, 800, 2400);
-	pwm_servo_init(&gen.pwm_servo_oc3, 3, 800, 2800);
-	pwm_servo_init(&gen.pwm_servo_oc4, 4, 800, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc1, 1, 500, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc2, 2, 600, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc3, 3, 600, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc4, 4, 700, 2400);
 	pwm_servo_enable();
-	pwm_servo_set(&gen.pwm_servo_oc1, 0);
+	pwm_servo_set(&gen.pwm_servo_oc1, 200);
 	pwm_servo_set(&gen.pwm_servo_oc2, 0);
-	pwm_servo_set(&gen.pwm_servo_oc3, 0);
+	pwm_servo_set(&gen.pwm_servo_oc3, 670);
 	pwm_servo_set(&gen.pwm_servo_oc4, 0);
 
 	/* SCHEDULER */
