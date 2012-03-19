@@ -176,19 +176,24 @@ static void cmd_lift_parsed(__attribute__((unused)) void *parsed_result,
 	struct cmd_lift_result *res = (struct cmd_lift_result *) parsed_result;
 	microseconds t1, t2;
 
-	lift_set_height(res->arg1);
-
-	t1 = time_get_us2();
-	while (!lift_check_height_reached()) {
-		t2 = time_get_us2();
-		if (t2 - t1 > 20000) {
-			dump_cs_debug("lift", &slavedspic.lift.cs);
-			t1 = t2;
+	if (!strcmp_P(res->arg0, PSTR("lift"))) {
+		lift_set_height(res->arg1);
+	
+		t1 = time_get_us2();
+		while (!lift_check_height_reached()) {
+			t2 = time_get_us2();
+			if (t2 - t1 > 20000) {
+				dump_cs_debug("lift", &slavedspic.lift.cs);
+				t1 = t2;
+			}
 		}
 	}
+	if (!strcmp_P(res->arg0, PSTR("lift_calibrate")))
+		lift_calibrate();
+
 }
 
-prog_char str_lift_arg0[] = "lift";
+prog_char str_lift_arg0[] = "lift#lift_calibrate";
 parse_pgm_token_string_t cmd_lift_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_lift_result, arg0, str_lift_arg0);
 parse_pgm_token_num_t cmd_lift_arg1 = TOKEN_NUM_INITIALIZER(struct cmd_lift_result, arg1, INT32);
 
@@ -483,7 +488,7 @@ static void cmd_boot_parsed(__attribute__((unused)) void *parsed_result,
 		mode = BOOT_MODE_CLOSE;
 		
 	boot_set_mode(&slavedspic.boot, mode);
-	while(!boot_check_mode_done(&slavedspic.boot));
+	//while(!boot_check_mode_done(&slavedspic.boot));
 	printf("done\n\r");
 }
 
@@ -533,7 +538,7 @@ static void cmd_hook_parsed(__attribute__((unused)) void *parsed_result,
 		mode = HOOK_MODE_OPEN_HOLD;
 		
 	hook_set_mode(&slavedspic.hook, mode);
-	while(!hook_check_mode_done(&slavedspic.hook));
+	//while(!hook_check_mode_done(&slavedspic.hook));
 	printf("done\n\r");
 }
 

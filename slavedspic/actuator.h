@@ -26,11 +26,19 @@
 
 #include <aversive.h>#include <aversive/error.h>
 
+#define LIFT_SPEED						100
+#define LIFT_ACCEL						1
+#define LIFT_K_IMP_mm					-1.0
+#define LIFT_CALIB_IMP_MAX				0
+#define LIFT_HEIGHT_MAX_mm				42000
+#define LIFT_HEIGHT_MIN_mm				500
+
 #define TURBINE_POS_ANGLE_MAX			1080
 #define TURBINE_POS_ANGLE_MIN			10
 #define TURBINE_POS_ANGLE_ZERO 		670
 #define TURBINE_POS_ANGLE_90			130
 #define TURBINE_K_POS_DEG		 		(double)((TURBINE_POS_ANGLE_90 - TURBINE_POS_ANGLE_ZERO)  / 90.0)
+#define TURBINE_BLOW_SPEED_OFF		200
 
 #define POS_FINGER_TOTEM_R_HUG		738
 #define POS_FINGER_TOTEM_R_OPEN		POS_FINGER_TOTEM_R_HUG
@@ -66,14 +74,14 @@
 #define POS_ARM_L_PUSH_GOLDBAR	491
 #define POS_ARM_L_PUSH_FLOOR		522
 
-#define POS_BOOT_OPEN			667
+#define POS_BOOT_OPEN			700
 #define POS_BOOT_HOLD			759
-#define POS_BOOT_CLOSE			814
+#define POS_BOOT_CLOSE			835
 
 #define POS_HOOK_HIDE			140
 #define POS_HOOK_SHOW			950
 #define POS_HOOK_FUCKYOU		500
-#define POS_HOOK_OPEN_HOLD		650
+#define POS_HOOK_OPEN_HOLD		720
 
 #define POS_TRAY_RECEPTION_UP		1000	
 #define POS_TRAY_RECEPTION_DOWN	140
@@ -100,10 +108,10 @@ void lift_hard_stop(void);
 void lift_calibrate(void);
 
 /* set height in mm */
-void lift_set_height(int16_t height_mm);
+void lift_set_height(int32_t height_mm);
 
 /* return heigh in mm */
-int16_t lift_get_height(void);
+int32_t lift_get_height(void);
 
 /* return 1 if height reached, -1 if blocking and zero if no ends yet */
 int8_t lift_check_height_reached(void);

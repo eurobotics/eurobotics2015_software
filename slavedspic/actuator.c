@@ -56,7 +56,7 @@ void lift_calibrate(void)
 {
 #define AUTOPOS_SPEED			50
 #define AUTOPOS_ACCEL			1
-#define AUTOPOS_BIG_DIST_mm	400
+#define AUTOPOS_BIG_DIST_mm	50000
 #define AUTOPOS_BD_TIMEOUT_ms	5000
 
 	int8_t ret;	int16_t kp, ki, kd;
@@ -71,7 +71,8 @@ void lift_calibrate(void)
 	ACTUATORS_DEBUG("Down speed and acceleration");
 	/* goto zero with cs */
 	slavedspic.flags |= DO_CS;
-	cs_set_consign(&slavedspic.lift.cs, (int32_t)(AUTOPOS_BIG_DIST_mm * LIFT_K_IMP_mm));
+	//cs_set_consign(&slavedspic.lift.cs, (int32_t)(AUTOPOS_BIG_DIST_mm * LIFT_K_IMP_mm));
+	cs_set_consign(&slavedspic.lift.cs, (int32_t)(AUTOPOS_BIG_DIST_mm));
 	ACTUATORS_DEBUG("Goto zero");	
 
 	/* wait end blocking */
@@ -98,7 +99,7 @@ void lift_calibrate(void)
 	return;}
 
 /* set height in mm */
-void lift_set_height(int16_t height_mm)
+void lift_set_height(int32_t height_mm)
 {
 	/* check calibration flag */
 	if(!slavedspic.lift.calibrated) {
@@ -117,9 +118,9 @@ void lift_set_height(int16_t height_mm)
 }
 
 /* return heigh in mm */
-int16_t lift_get_height(void)
+int32_t lift_get_height(void)
 {
-	return (int16_t)(encoders_dspic_get_value(LIFT_ENCODER)/LIFT_K_IMP_mm);
+	return (int32_t)(encoders_dspic_get_value(LIFT_ENCODER)/LIFT_K_IMP_mm);
 }
 
 /* return 1 if height reached, -1 if blocking and zero if no ends yet */
@@ -149,8 +150,6 @@ void turbine_set_angle(turbine_t *turbine, int16_t angle_deg, uint16_t wait_ms)
 
 	/* position */
 	angle_pos = TURBINE_POS_ANGLE_ZERO + (angle_deg * TURBINE_K_POS_DEG);
-
-	printf("angle_pos: %d = %d + (%d * %f)\n\r", angle_pos, TURBINE_POS_ANGLE_ZERO, angle_deg, TURBINE_K_POS_DEG);
 
 	/* saturate to range */
 	if(angle_pos > TURBINE_POS_ANGLE_MAX)
@@ -568,6 +567,11 @@ void actuator_init(void)
 	ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_TORQUE_ENABLE, 0xFF);	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_CW_ANGLE_LIMIT_L, 0x00);	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_CCW_ANGLE_LIMIT_L, 0x3FF);
 	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_MOVING_SPEED_L, 0x3FF);#endif
 
+	/* init ax12 */
+	ax12_user_write_int(&gen.ax12, AX12_ID_FINGERS_FLOOR_L, AA_MOVING_SPEED_L, 350);
+	ax12_user_write_int(&gen.ax12, AX12_ID_BOOT, AA_MOVING_SPEED_L, 300);
+	ax12_user_write_int(&gen.ax12, AX12_ID_HOOK, AA_MOVING_SPEED_L, 300);
+
 	/* init structures */
 	slavedspic.fingers_totem.type = FINGERS_TYPE_TOTEM;
 	slavedspic.fingers_floor.type = FINGERS_TYPE_FLOOR;
@@ -578,4 +582,30 @@ void actuator_init(void)
 	slavedspic.tray_reception.type = TRAY_TYPE_RECEPTION;
 	slavedspic.tray_store.type = TRAY_TYPE_STORE;
 	slavedspic.tray_boot.type = TRAY_TYPE_BOOT;
+
+	/* start positions */
+	fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_OPEN);
+	fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_OPEN);
+	fingers_check_mode_done(&slavedspic.fingers_totem);
+
+	turbine_set_angle(&slavedspic.turbine, 0, 500);
+	turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);
+	turbine_power_on(&slavedspic.turbine);
+
+	arm_set_mode(&slavedspic.arm_left, ARM_MODE_HIDE);
+	arm_set_mode(&slavedspic.arm_right, ARM_MODE_HIDE);
+
+	hook_set_mode(&slavedspic.hook, HOOK_MODE_HIDE);
+	boot_set_mode(&slavedspic.boot, BOOT_MODE_CLOSE);
+
+	tray_set_mode(&slavedspic.tray_reception, TRAY_MODE_DOWN);
+	tray_set_mode(&slavedspic.tray_store, TRAY_MODE_DOWN);
+	tray_set_mode(&slavedspic.tray_boot, TRAY_MODE_DOWN);
+
+	/* lift calibration */
+	lift_calibrate();
+	lift_set_height(LIFT_HEIGHT_MIN_mm);
+
+	fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_CLOSE);
+	fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_CLOSE);
 }
