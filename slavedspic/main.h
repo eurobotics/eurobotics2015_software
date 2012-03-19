@@ -57,12 +57,6 @@
 
 /* EUROBOT 2012 defines */
 #define LIFT_ENCODER						((void *)1)#define LIFT_DAC_MC						((void *)&gen.dac_mc_left)
-#define LIFT_SPEED						100
-#define LIFT_ACCEL						1
-#define LIFT_K_IMP_mm					1.0
-#define LIFT_CALIB_IMP_MAX				0
-#define LIFT_HEIGHT_MAX_mm				50
-#define LIFT_HEIGHT_MIN_mm				250
 
 #define TURBINE_POWER_PIN				RELE_OUT_PIN
 #define TURBINE_SPEED_PWM_SERVO		&gen.pwm_servo_oc4

@@ -304,6 +304,12 @@ int main(void)
 	/* SERVOS AX12 */
 	ax12_user_init();
 
+	/* LOGS */
+ 	gen.logs[0] = E_USER_ST_MACH;
+	gen.logs[1] = E_USER_ACTUATORS;
+	gen.logs[2] = E_USER_CS;
+	gen.log_level = 5;
+
 	/* enable interrupt */
 	sei();
 
@@ -318,11 +324,6 @@ int main(void)
 #endif
 	printf("\r\n");
 	printf("Siempre falta tiempo para hacer pruebas. \r\n");
-
-	/* LOGS */
- 	gen.logs[0] = E_USER_ST_MACH;
-	gen.logs[1] = E_USER_ACTUATORS;
-	gen.log_level = 5;
 	
 	/* init cmdline */
 	cmdline_init();
