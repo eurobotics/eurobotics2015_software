@@ -133,7 +133,7 @@ int8_t lift_check_height_reached(void)
 /**** turbine funcions *********************************************************/
 
 void turbine_power_on(turbine_t *turbine) {
-	turbine->power = TURBINE_POWER_OFF;
+	turbine->power = TURBINE_POWER_ON;
 	TURBINE_POWER_PIN = turbine->power;
 }
 void turbine_power_off(turbine_t *turbine) {
@@ -141,15 +141,26 @@ void turbine_power_off(turbine_t *turbine) {
 	TURBINE_POWER_PIN = turbine->power;
 }
 
-void turbine_set_angle(turbine_t *turbine, uint16_t angle_deg, uint16_t wait_ms)
+void turbine_set_angle(turbine_t *turbine, int16_t angle_deg, uint16_t wait_ms)
 {
 	uint16_t angle_pos;
 
+	/* XXX check lift heigh */
+
 	/* position */
-	angle_pos = TURBINE_POS_ANGLE_ZERO + (uint16_t)(angle_deg * TURBINE_K_POS_DEG);
+	angle_pos = TURBINE_POS_ANGLE_ZERO + (angle_deg * TURBINE_K_POS_DEG);
+
+	printf("angle_pos: %d = %d + (%d * %f)\n\r", angle_pos, TURBINE_POS_ANGLE_ZERO, angle_deg, TURBINE_K_POS_DEG);
+
+	/* saturate to range */
+	if(angle_pos > TURBINE_POS_ANGLE_MAX)
+		angle_pos = TURBINE_POS_ANGLE_MAX;
+	if(angle_pos < TURBINE_POS_ANGLE_MIN)
+		angle_pos = TURBINE_POS_ANGLE_MIN;
 
 	/* set and save consign */
-	turbine->angle_pos = pwm_servo_set(TURBINE_ANGLE_PWM_SERVO, turbine->angle_pos);
+	turbine->angle_pos = pwm_servo_set(TURBINE_ANGLE_PWM_SERVO, angle_pos);
+	/* update angle */
 	turbine->angle_deg = (turbine->angle_pos - TURBINE_POS_ANGLE_ZERO) / TURBINE_K_POS_DEG;
 
 	/* wait to reach the position */
@@ -299,9 +310,6 @@ uint8_t arm_set_mode(arm_t *arm, uint8_t mode)
 	else
 		ax12_id = AX12_ID_ARM_L;
 		
-
-	ACTUATORS_DEBUG("ax12_id = %d", ax12_id);
-
 	/* set ax12 possitions depends on mode and type */
 	if(mode >= ARM_MODE_MAX) {
 		ACTUATORS_ERROR("Unknow %s ARM MODE", arm->type == ARM_TYPE_RIGHT? "RIGHT":"LEFT");
@@ -310,8 +318,6 @@ uint8_t arm_set_mode(arm_t *arm, uint8_t mode)
 
 	arm->mode = mode;
 	arm->ax12_pos = arm_ax12_pos[arm->type][arm->mode];
-
-	ACTUATORS_DEBUG("mode = %d, pos = %d", arm->mode, arm->ax12_pos);
 	
 	/* apply to ax12 */
 	err = ax12_user_write_int(&gen.ax12, ax12_id, AA_GOAL_POSITION_L, arm->ax12_pos);
@@ -464,20 +470,17 @@ uint8_t hook_check_mode_done(hook_t *hook)
 void tray_store_vibrate(void * data)
 {
 	tray_t *tray = (tray_t *)data;
-	static uint16_t counts = 0;
+	//static uint16_t counts = 0;
 
-	if(counts++ < SPEED_TRAY_STORE_VIBRATE)
-		return;
-	counts = 0;
+	//if(counts++ < TRAY_STORE_PERIOD_PRESCALER)
+	//	return;
 
-	if(tray->mode == TRAY_MODE_UP) {
-		tray->servo_pos = pwm_servo_set(PWM_SERVO_TRAY_STORE, POS_TRAY_RECEPTION_DOWN);
-		tray->mode = TRAY_MODE_DOWN;
-	}
-	else {
-		tray->servo_pos = pwm_servo_set(PWM_SERVO_TRAY_STORE, POS_TRAY_RECEPTION_UP);
-		tray->mode = TRAY_MODE_UP;
-	}
+	//counts = 0;
+
+	if(tray->servo_pos == POS_TRAY_STORE_UP)
+		tray->servo_pos = pwm_servo_set(PWM_SERVO_TRAY_STORE, POS_TRAY_STORE_DOWN);
+	else
+		tray->servo_pos = pwm_servo_set(PWM_SERVO_TRAY_STORE, POS_TRAY_STORE_UP);
 }
 
 void tray_set_mode(tray_t *tray, uint8_t mode)
@@ -485,6 +488,7 @@ void tray_set_mode(tray_t *tray, uint8_t mode)
 	uint8_t pos_saturated = 0;
 
 	if(tray->type == TRAY_TYPE_RECEPTION) {
+#if notyet
 		switch(mode) {
 			case TRAY_MODE_DOWN:
 				tray->servo_pos = pwm_servo_set(PWM_SERVO_TRAY_RECEPTION, POS_TRAY_RECEPTION_DOWN);
@@ -505,6 +509,7 @@ void tray_set_mode(tray_t *tray, uint8_t mode)
 		}
 		if(pos_saturated)
 			ACTUATORS_ERROR("Reception Tray position saturated");
+#endif
 	}
 	else if(tray->type == TRAY_TYPE_STORE) {
 
@@ -522,7 +527,9 @@ void tray_set_mode(tray_t *tray, uint8_t mode)
 				pos_saturated = tray->servo_pos != POS_TRAY_STORE_UP? 1:0;
 				break;
 			case TRAY_MODE_VIBRATE:
-				tray->event_handler = scheduler_add_periodical_event(tray_store_vibrate, NULL, (uint16_t)SPEED_TRAY_STORE_VIBRATE);
+				tray->event_handler = scheduler_add_periodical_event(tray_store_vibrate,
+									 		(void *)(&slavedspic.tray_store), 
+											TRAY_STORE_VIBRATE_PERIOD_us / SCHEDULER_UNIT);
 				break;
 			default:
 				ACTUATORS_ERROR("Unknow STORE TRAY MODE");
@@ -540,7 +547,7 @@ void tray_set_mode(tray_t *tray, uint8_t mode)
 				ACTUATORS_ERROR("BOOT TRAY MODE does not exist");
 				break;
 			case TRAY_MODE_VIBRATE:
-				pwm_mc_set(PWM_MC_TRAY_BOOT, SPEED_TRAY_BOOT_VIBRATE);
+				pwm_mc_set(PWM_MC_TRAY_BOOT, TRAY_BOOT_VIBRATE_PWM);
 				break;
 			default:
 				ACTUATORS_ERROR("Unknow BOOT TRAY MODE");
@@ -564,7 +571,11 @@ void actuator_init(void)
 	/* init structures */
 	slavedspic.fingers_totem.type = FINGERS_TYPE_TOTEM;
 	slavedspic.fingers_floor.type = FINGERS_TYPE_FLOOR;
+
 	slavedspic.arm_left.type = ARM_TYPE_LEFT;
 	slavedspic.arm_right.type = ARM_TYPE_RIGHT;
 
+	slavedspic.tray_reception.type = TRAY_TYPE_RECEPTION;
+	slavedspic.tray_store.type = TRAY_TYPE_STORE;
+	slavedspic.tray_boot.type = TRAY_TYPE_BOOT;
 }

@@ -234,8 +234,8 @@ static void cmd_turbine_parsed(__attribute__((unused)) void *parsed_result,
 	}
 
 	/* show */
-	printf("angle = %d\n", turbine_get_angle(&slavedspic.turbine));
-	printf("blow = %d\n", turbine_get_blow_speed(&slavedspic.turbine));	
+	printf("angle = %d (%d)\n\r", turbine_get_angle(&slavedspic.turbine), slavedspic.turbine.angle_pos);
+	printf("blow = %d\n\r", turbine_get_blow_speed(&slavedspic.turbine));	
 
 }
 
@@ -315,7 +315,7 @@ static void cmd_fingers_parsed(__attribute__((unused)) void *parsed_result,
 
 	fingers_set_mode(fingers, mode);
 	while(!fingers_check_mode_done(fingers));
-	printf("done\n");
+	printf("done\n\r");
 
 }
 
@@ -375,7 +375,7 @@ static void cmd_arm_parsed(__attribute__((unused)) void *parsed_result,
 		
 	arm_set_mode(arm, mode);
 	while(!arm_check_mode_done(arm));
-	printf("done\n");
+	printf("done\n\r");
 
 }
 
@@ -434,7 +434,7 @@ static void cmd_tray_parsed(__attribute__((unused)) void *parsed_result,
 		mode = TRAY_MODE_VIBRATE;
 		
 	tray_set_mode(tray, mode);
-	printf("done\n");
+	printf("done\n\r");
 }
 
 prog_char str_tray_arg0[] = "tray";
@@ -484,7 +484,7 @@ static void cmd_boot_parsed(__attribute__((unused)) void *parsed_result,
 		
 	boot_set_mode(&slavedspic.boot, mode);
 	while(!boot_check_mode_done(&slavedspic.boot));
-	printf("done\n");
+	printf("done\n\r");
 }
 
 prog_char str_boot_arg0[] = "boot";
@@ -534,7 +534,7 @@ static void cmd_hook_parsed(__attribute__((unused)) void *parsed_result,
 		
 	hook_set_mode(&slavedspic.hook, mode);
 	while(!hook_check_mode_done(&slavedspic.hook));
-	printf("done\n");
+	printf("done\n\r");
 }
 
 prog_char str_hook_arg0[] = "hook";

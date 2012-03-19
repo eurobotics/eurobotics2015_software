@@ -276,7 +276,7 @@ static void cmd_pwm_servo_parsed(void *parsed_result, void *show_range)
 
 prog_char str_pwm_servo_arg0[] = "pwm_servo";
 parse_pgm_token_string_t cmd_pwm_servo_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_pwm_servo_result, arg0, str_pwm_servo_arg0);
-prog_char str_pwm_servo_arg1[] = "oc1#oc2#oc3";
+prog_char str_pwm_servo_arg1[] = "oc1#oc2#oc3#oc4";
 parse_pgm_token_string_t cmd_pwm_servo_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_pwm_servo_result, arg1, str_pwm_servo_arg1);
 parse_pgm_token_num_t cmd_pwm_servo_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_pwm_servo_result, arg2, INT16);
 

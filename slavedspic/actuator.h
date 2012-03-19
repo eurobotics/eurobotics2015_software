@@ -26,6 +26,12 @@
 
 #include <aversive.h>#include <aversive/error.h>
 
+#define TURBINE_POS_ANGLE_MAX			1080
+#define TURBINE_POS_ANGLE_MIN			10
+#define TURBINE_POS_ANGLE_ZERO 		670
+#define TURBINE_POS_ANGLE_90			130
+#define TURBINE_K_POS_DEG		 		(double)((TURBINE_POS_ANGLE_90 - TURBINE_POS_ANGLE_ZERO)  / 90.0)
+
 #define POS_FINGER_TOTEM_R_HUG		738
 #define POS_FINGER_TOTEM_R_OPEN		POS_FINGER_TOTEM_R_HUG
 #define POS_FINGER_TOTEM_R_HOLD		492
@@ -69,15 +75,19 @@
 #define POS_HOOK_FUCKYOU		500
 #define POS_HOOK_OPEN_HOLD		650
 
-#define POS_TRAY_RECEPTION_UP		800
-#define POS_TRAY_RECEPTION_DOWN	-60
+#define POS_TRAY_RECEPTION_UP		1000	
+#define POS_TRAY_RECEPTION_DOWN	140
 
-#define POS_TRAY_STORE_UP			200
-#define POS_TRAY_STORE_DOWN		-160
+#define POS_TRAY_STORE_UP			400	
+#define POS_TRAY_STORE_DOWN		20  	
 
-#define EVENT_PERIOD_TRAY_STORE	50000 	/* period in us */
-#define SPEED_TRAY_STORE_VIBRATE	(100000L/EVENT_PERIOD_TRAY_STORE) 	/* period in us */
-#define SPEED_TRAY_BOOT_VIBRATE	2000		/* pwm */
+#define TRAY_BOOT_VIBRATE_PWM				(2000)
+#define TRAY_STORE_VIBRATE_PERIOD_us	(300000L) 
+#define TRAY_STORE_PERIOD_EVENT_us		(50000) 	
+#define TRAY_STORE_PERIOD_PRESCALER		(uint16_t)(TRAY_STORE_VIBRATE_PERIOD_us / TRAY_STORE_PERIOD_EVENT_us)
+
+	
+
 
 /* init actuators */
 void actuator_init(void);
@@ -108,10 +118,6 @@ typedef struct {
 
 	uint16_t angle_deg;
 	uint16_t angle_pos;
-#define TURBINE_POS_ANGLE_ZERO 	600
-#define TURBINE_POS_ANGLE_90		-20
-#define TURBINE_K_POS_DEG		 	(TURBINE_POS_ANGLE_ZERO - TURBINE_POS_ANGLE_90 / 90.0)
-
 	uint16_t blow_speed;
 
 } turbine_t;
@@ -119,7 +125,7 @@ typedef struct {
 void turbine_power_on(turbine_t *turbine);
 void turbine_power_off(turbine_t *turbine);
 
-void turbine_set_angle(turbine_t *turbine, uint16_t angle_deg, uint16_t wait_ms);
+void turbine_set_angle(turbine_t *turbine, int16_t angle_deg, uint16_t wait_ms);
 void turbine_set_blow_speed(turbine_t *turbine, uint16_t speed);
 
 uint16_t turbine_get_angle(turbine_t *turbine);
@@ -228,7 +234,6 @@ typedef struct {
 
 	uint16_t servo_pos;
 	int16_t motor_pwm;
-
 	int8_t event_handler;
 
 } tray_t;
