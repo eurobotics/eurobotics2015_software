@@ -73,10 +73,10 @@
 #define AX12_ID_BOOT						5
 #define AX12_ID_HOOK						6
 
-#define S_TURBINE_LINE_A1	SENSOR1
-#define S_TURBINE_LINE_A2	SENSOR2
-#define S_TURBINE_LINE_B1	SENSOR3
-#define S_TURBINE_LINE_B2	SENSOR4
+#define S_TURBINE_LINE_A1	SENSOR5
+#define S_TURBINE_LINE_A2	SENSOR5
+#define S_TURBINE_LINE_B1	SENSOR2
+#define S_TURBINE_LINE_B2	SENSOR1
 #define S_TURBINE_LINE_A 	((1 << S_TURBINE_LINE_A1) & (1 << S_TURBINE_LINE_A2)) 
 #define S_TURBINE_LINE_B 	((1 << S_TURBINE_LINE_B1) & (1 << S_TURBINE_LINE_B2)) 
 
@@ -126,6 +126,7 @@ struct genboard {
 struct cs_block {
 	uint8_t on;
 	uint8_t calibrated;
+	uint8_t blocking;
   	struct cs cs;
   	struct pid_filter pid;
 	struct quadramp_filter qr;
@@ -163,16 +164,10 @@ struct slavedspic {
 	uint8_t store_mode;
 	uint8_t dump_mode;
 
-	uint8_t fingers_floor_blocked;
-	uint8_t fingers_totem_blocked;
-	uint8_t arm_right_blocked;
-	uint8_t arm_left_blocked;
-	uint8_t lift_blocked;
-
-	uint8_t object_catched;
-
-	uint8_t nb_totems;
-	uint8_t nb_coins;
+	uint8_t nb_goldbars_in_boot;
+	uint8_t nb_golbarrs_in_mouth;
+	uint8_t nb_coins_in_boot;
+	uint8_t nb_coins_in_mouth;
 
 	/* infos */
 	uint8_t our_color;

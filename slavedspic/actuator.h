@@ -110,6 +110,9 @@ void actuator_init(void);
 
 /**** lift functions ********************************************************/
 
+/* stop without rampe */
+void lift_hard_stop(void);
+
 /* calibrate initial position */
 void lift_calibrate(void);
 
@@ -119,8 +122,11 @@ void lift_set_height(int32_t height_mm);
 /* return heigh in mm */
 int32_t lift_get_height(void);
 
-/* return 1 if height reached, -1 if blocking and zero if no ends yet */
+/* return END_TRAJ or END_BLOCKING */
 int8_t lift_check_height_reached(void);
+
+/* return END_TRAJ or END_BLOCKING */
+uint8_t lift_wait_end();
 
 /**** turbine funcions *********************************************************/
 
@@ -129,7 +135,12 @@ typedef struct {
 	uint8_t power;
 #define TURBINE_POWER_ON 					RELE_OUT_PIN_ON
 #define TURBINE_POWER_OFF 					RELE_OUT_PIN_OFF
-#define TURBINE_ANGLE_SPEED_CONTROL_us	25000
+#define TURBINE_ANGLE_SPEED_CONTROL_us	20000
+
+#define TURBINE_ANGLE_SPEED_FAST			1000
+#define TURBINE_ANGLE_SPEED_SLOW			10
+
+#define TURBINE_BLOW_SPEED_FAST			1000
 
 	uint16_t angle_pos;
 	uint16_t angle_consign;
@@ -143,7 +154,7 @@ typedef struct {
 void turbine_power_on(turbine_t *turbine);
 void turbine_power_off(turbine_t *turbine);
 
-void turbine_set_angle(turbine_t *turbine, int16_t angle_deg, uint16_t wait_ms);
+void turbine_set_angle(turbine_t *turbine, int16_t angle_deg, uint16_t angle_speed);
 int8_t turbine_check_angle_reached(turbine_t *turbine);
 
 void turbine_set_blow_speed(turbine_t *turbine, uint16_t speed);
@@ -176,13 +187,17 @@ typedef struct {
 
 	uint16_t ax12_pos_l;
 	uint16_t ax12_pos_r;
+	uint8_t blocking;
 } fingers_t;
 
 /* set finger position depends on mode */
 int8_t fingers_set_mode(fingers_t *fingers, uint8_t mode, int16_t pos_offset);
 
-/* return 1 if mode is done, -1 if error */
+/* return END_TRAJ or END_BLOCKING */
 int8_t fingers_check_mode_done(fingers_t *fingers);
+
+/* return END_TRAJ or END_BLOCKING */
+uint8_t fingers_wait_end(fingers_t *fingers);
 
 /**** arms funcions *********************************************************/
 typedef struct {
@@ -200,14 +215,17 @@ typedef struct {
 
 	uint16_t ax12_pos;
 	microseconds time_us;
+	uint8_t blocking;
 } arm_t;
 
 /* set finger position depends on mode */
 uint8_t arm_set_mode(arm_t *arm, uint8_t mode, int16_t pos_offset);
 
-/* return 1 if mode is done */
+/* return END_TRAJ or END_BLOCKING */
 int8_t arm_check_mode_done(arm_t *arm);
 
+/* return END_TRAJ or END_BLOCKING */
+uint8_t arm_wait_end(arm_t *arm);
 
 /**** boot funcions *********************************************************/
 typedef struct {

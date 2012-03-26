@@ -174,9 +174,11 @@ static void cmd_lift_parsed(__attribute__((unused)) void *parsed_result,
 			    __attribute__((unused)) void *data)
 {
 	struct cmd_lift_result *res = (struct cmd_lift_result *) parsed_result;
-	microseconds t1, t2;
+	struct i2c_cmd_slavedspic_set_mode command;
+	//microseconds t1, t2;
 
 	if (!strcmp_P(res->arg0, PSTR("lift"))) {
+#if 0
 		lift_set_height(res->arg1);
 	
 		t1 = time_get_us2();
@@ -187,8 +189,14 @@ static void cmd_lift_parsed(__attribute__((unused)) void *parsed_result,
 				t1 = t2;
 			}
 		}
+#else
+	command.mode = I2C_SLAVEDSPIC_MODE_LIFT_HEIGHT;
+	command.lift.height = res->arg1;
+	state_set_mode(&command);
+#endif
+
 	}
-	if (!strcmp_P(res->arg0, PSTR("lift_calibrate")))
+	else if (!strcmp_P(res->arg0, PSTR("lift_calibrate")))
 		lift_calibrate();
 
 }
@@ -224,7 +232,8 @@ static void cmd_turbine_parsed(__attribute__((unused)) void *parsed_result,
 			    __attribute__((unused)) void *data)
 {
 	struct cmd_turbine_result *res = (struct cmd_turbine_result *) parsed_result;
-	
+	struct i2c_cmd_slavedspic_set_mode command;	
+
 	if(data) {
 		if (!strcmp_P(res->arg1, PSTR("on")))
 			turbine_power_on(&slavedspic.turbine);
@@ -232,6 +241,7 @@ static void cmd_turbine_parsed(__attribute__((unused)) void *parsed_result,
 			turbine_power_off(&slavedspic.turbine);		
 	}
 	else {
+#if 0
 		if (!strcmp_P(res->arg1, PSTR("angle"))) {
 			turbine_set_angle(&slavedspic.turbine, res->arg2, slavedspic.turbine.angle_speed);
 			while(!turbine_check_angle_reached(&slavedspic.turbine));
@@ -240,6 +250,22 @@ static void cmd_turbine_parsed(__attribute__((unused)) void *parsed_result,
 			slavedspic.turbine.angle_speed = res->arg2;
 		else if (!strcmp_P(res->arg1, PSTR("blow")))
 			turbine_set_blow_speed(&slavedspic.turbine, res->arg2);
+#else
+		if (!strcmp_P(res->arg1, PSTR("angle"))) {
+			command.mode = I2C_SLAVEDSPIC_MODE_TURBINE_ANGLE;
+			command.turbine.angle_deg = res->arg2;
+			command.turbine.angle_speed =  slavedspic.turbine.angle_speed;
+			state_set_mode(&command);			
+		}
+		else if (!strcmp_P(res->arg1, PSTR("speed_angle"))) {
+			slavedspic.turbine.angle_speed = res->arg2;			
+		}
+		else if (!strcmp_P(res->arg1, PSTR("blow"))) {
+			command.mode = I2C_SLAVEDSPIC_MODE_TURBINE_BLOW;
+			command.turbine.blow_speed = res->arg2;
+			state_set_mode(&command);
+		}
+#endif
 	}
 
 	/* show */
@@ -293,6 +319,7 @@ struct cmd_fingers_result {
 	fixed_string_t arg0;
 	fixed_string_t arg1;
 	fixed_string_t arg2;
+	int16_t arg3;
 };
 
 /* function called when cmd_fingers is parsed successfully */
@@ -300,9 +327,11 @@ static void cmd_fingers_parsed(__attribute__((unused)) void *parsed_result,
 			    __attribute__((unused)) void *data)
 {
 	struct cmd_fingers_result *res = (struct cmd_fingers_result *) parsed_result;
-	uint8_t mode;
-	fingers_t *fingers = 0;
+	struct i2c_cmd_slavedspic_set_mode command;	
+	//uint8_t mode;
+	//fingers_t *fingers = 0;
 	
+#if 0
 	if (!strcmp_P(res->arg1, PSTR("totem")))
 		fingers = &slavedspic.fingers_totem;
 	else if (!strcmp_P(res->arg1, PSTR("floor")))
@@ -323,9 +352,30 @@ static void cmd_fingers_parsed(__attribute__((unused)) void *parsed_result,
 		
 
 	fingers_set_mode(fingers, mode, 0);
-	while(!fingers_check_mode_done(fingers));
+	fingers_wait_end(fingers);
 	printf("done\n\r");
 
+#else
+	if (!strcmp_P(res->arg1, PSTR("totem")))
+		command.fingers.type = I2C_FINGERS_TYPE_TOTEM;
+	else
+		command.fingers.type = I2C_FINGERS_TYPE_FLOOR;
+
+	if (!strcmp_P(res->arg2, PSTR("hug")))
+		command.fingers.mode = I2C_FINGERS_MODE_HUG;
+	else if (!strcmp_P(res->arg2, PSTR("open")))
+		command.fingers.mode = I2C_FINGERS_MODE_OPEN;
+	else if (!strcmp_P(res->arg2, PSTR("close")))
+		command.fingers.mode = I2C_FINGERS_MODE_CLOSE;
+	else if (!strcmp_P(res->arg2, PSTR("hold")))
+		command.fingers.mode = I2C_FINGERS_MODE_HOLD;
+	else
+		command.fingers.mode = I2C_FINGERS_MODE_PUSHIN;
+
+	command.mode = I2C_SLAVEDSPIC_MODE_FINGERS;
+	command.fingers.offset = res->arg3;
+	state_set_mode(&command);
+#endif
 }
 
 prog_char str_fingers_arg0[] = "fingers";
@@ -334,6 +384,8 @@ prog_char str_fingers_arg1[] = "totem#floor";
 parse_pgm_token_string_t cmd_fingers_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_fingers_result, arg1, str_fingers_arg1);
 prog_char str_fingers_arg2[] = "hug#open#hold#close#pushin";
 parse_pgm_token_string_t cmd_fingers_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_fingers_result, arg2, str_fingers_arg2);
+parse_pgm_token_num_t cmd_fingers_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_fingers_result, arg3, INT16);
+
 
 prog_char help_fingers[] = "set fingers mode";
 parse_pgm_inst_t cmd_fingers = {
@@ -344,6 +396,7 @@ parse_pgm_inst_t cmd_fingers = {
 		(prog_void *)&cmd_fingers_arg0, 
 		(prog_void *)&cmd_fingers_arg1,
 		(prog_void *)&cmd_fingers_arg2,
+		(prog_void *)&cmd_fingers_arg3,
 		NULL,
 	},
 };
@@ -356,6 +409,7 @@ struct cmd_arm_result {
 	fixed_string_t arg0;
 	fixed_string_t arg1;
 	fixed_string_t arg2;
+	int16_t arg3;
 };
 
 /* function called when cmd_arm is parsed successfully */
@@ -363,9 +417,11 @@ static void cmd_arm_parsed(__attribute__((unused)) void *parsed_result,
 			    __attribute__((unused)) void *data)
 {
 	struct cmd_arm_result *res = (struct cmd_arm_result *) parsed_result;
-	uint8_t mode;
-	arm_t *arm = 0;
+	struct i2c_cmd_slavedspic_set_mode command;
+	//uint8_t mode;
+	//arm_t *arm = 0;
 
+#if 0
 	if (!strcmp_P(res->arg1, PSTR("right")))
 		arm = &slavedspic.arm_right;
 	else if (!strcmp_P(res->arg1, PSTR("left")))
@@ -383,9 +439,28 @@ static void cmd_arm_parsed(__attribute__((unused)) void *parsed_result,
 		mode = ARM_MODE_PUSH_FLOOR;
 		
 	arm_set_mode(arm, mode, 0);
-	while(!arm_check_mode_done(arm));
+	arm_wait_end(arm);
 	printf("done\n\r");
 
+#else
+	if (!strcmp_P(res->arg1, PSTR("right")))
+		command.arm.type = I2C_ARM_TYPE_RIGHT;
+	else 
+		command.arm.type = I2C_ARM_TYPE_LEFT;
+
+	if (!strcmp_P(res->arg2, PSTR("hide")))
+		command.arm.mode = ARM_MODE_HIDE;
+	else if (!strcmp_P(res->arg2, PSTR("show")))
+		command.arm.mode = ARM_MODE_SHOW;
+	else if (!strcmp_P(res->arg2, PSTR("goldbar")))
+		command.arm.mode = ARM_MODE_PUSH_GOLDBAR;
+	else
+		command.arm.mode = ARM_MODE_PUSH_FLOOR;
+
+	command.mode = I2C_SLAVEDSPIC_MODE_ARM;
+	command.arm.offset = res->arg3;
+	state_set_mode(&command);
+#endif
 }
 
 prog_char str_arm_arg0[] = "arm";
@@ -394,6 +469,7 @@ prog_char str_arm_arg1[] = "left#right";
 parse_pgm_token_string_t cmd_arm_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_arm_result, arg1, str_arm_arg1);
 prog_char str_arm_arg2[] = "hide#show#goldbar#floor";
 parse_pgm_token_string_t cmd_arm_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_arm_result, arg2, str_arm_arg2);
+parse_pgm_token_num_t cmd_arm_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_arm_result, arg3, INT16);
 
 prog_char help_arm[] = "set arm mode";
 parse_pgm_inst_t cmd_arm = {
@@ -404,6 +480,7 @@ parse_pgm_inst_t cmd_arm = {
 		(prog_void *)&cmd_arm_arg0, 
 		(prog_void *)&cmd_arm_arg1,
 		(prog_void *)&cmd_arm_arg2,
+		(prog_void *)&cmd_arm_arg3,
 		NULL,
 	},
 };
@@ -423,9 +500,11 @@ static void cmd_tray_parsed(__attribute__((unused)) void *parsed_result,
 			    __attribute__((unused)) void *data)
 {
 	struct cmd_tray_result *res = (struct cmd_tray_result *) parsed_result;
-	uint8_t mode;
-	tray_t *tray = 0;
+	struct i2c_cmd_slavedspic_set_mode command;
+	//uint8_t mode;
+	//tray_t *tray = 0;
 
+#if 0
 	if (!strcmp_P(res->arg1, PSTR("reception")))
 		tray = &slavedspic.tray_reception;
 	else if (!strcmp_P(res->arg1, PSTR("store")))
@@ -444,6 +523,27 @@ static void cmd_tray_parsed(__attribute__((unused)) void *parsed_result,
 		
 	tray_set_mode(tray, mode);
 	printf("done\n\r");
+
+#else
+
+	if (!strcmp_P(res->arg1, PSTR("reception")))
+		command.tray.type = I2C_TRAY_TYPE_RECEPTION;
+	else if (!strcmp_P(res->arg1, PSTR("store")))
+		command.tray.type = I2C_TRAY_TYPE_STORE;	
+	else
+		command.tray.type = I2C_TRAY_TYPE_BOOT;
+
+	if (!strcmp_P(res->arg2, PSTR("up")))
+		command.tray.mode = I2C_TRAY_MODE_UP;
+	else if (!strcmp_P(res->arg2, PSTR("down")))
+		command.tray.mode = I2C_TRAY_MODE_DOWN;
+	else
+		command.tray.mode = I2C_TRAY_MODE_VIBRATE;
+
+	command.mode = I2C_SLAVEDSPIC_MODE_TRAY;
+	state_set_mode(&command);
+
+#endif
 }
 
 prog_char str_tray_arg0[] = "tray";
@@ -480,8 +580,10 @@ static void cmd_boot_parsed(__attribute__((unused)) void *parsed_result,
 			    __attribute__((unused)) void *data)
 {
 	struct cmd_boot_result *res = (struct cmd_boot_result *) parsed_result;
-	uint8_t mode;
+	struct i2c_cmd_slavedspic_set_mode command;
+	//uint8_t mode;
 
+#if 0
 	mode = slavedspic.boot.mode;
 
 	if (!strcmp_P(res->arg1, PSTR("full_open")))
@@ -494,6 +596,19 @@ static void cmd_boot_parsed(__attribute__((unused)) void *parsed_result,
 	boot_set_mode(&slavedspic.boot, mode);
 	//while(!boot_check_mode_done(&slavedspic.boot));
 	printf("done\n\r");
+
+#else
+	if (!strcmp_P(res->arg1, PSTR("full_open")))
+		command.boot.mode = I2C_BOOT_MODE_OPEN_FULL;
+	else if (!strcmp_P(res->arg1, PSTR("hold_open")))
+		command.boot.mode = I2C_BOOT_MODE_OPEN_HOLD;	
+	else
+		command.boot.mode = I2C_BOOT_MODE_CLOSE;
+
+	command.mode = I2C_SLAVEDSPIC_MODE_BOOT;
+	state_set_mode(&command);
+
+#endif
 }
 
 prog_char str_boot_arg0[] = "boot";
@@ -528,8 +643,10 @@ static void cmd_hook_parsed(__attribute__((unused)) void *parsed_result,
 			    __attribute__((unused)) void *data)
 {
 	struct cmd_hook_result *res = (struct cmd_hook_result *) parsed_result;
-	uint8_t mode;
+	struct i2c_cmd_slavedspic_set_mode command;
+	//uint8_t mode;
 
+#if 0
 	mode = slavedspic.hook.mode;
 
 	if (!strcmp_P(res->arg1, PSTR("hide")))
@@ -544,6 +661,20 @@ static void cmd_hook_parsed(__attribute__((unused)) void *parsed_result,
 	hook_set_mode(&slavedspic.hook, mode);
 	//while(!hook_check_mode_done(&slavedspic.hook));
 	printf("done\n\r");
+
+#else
+	if (!strcmp_P(res->arg1, PSTR("hide")))
+		command.hook.mode = I2C_HOOK_MODE_HIDE;
+	else if (!strcmp_P(res->arg1, PSTR("show")))
+		command.hook.mode = I2C_HOOK_MODE_SHOW;	
+	else if (!strcmp_P(res->arg1, PSTR("fuckyou")))
+		command.hook.mode = I2C_HOOK_MODE_FUCKYOU;
+	else
+		command.hook.mode = I2C_HOOK_MODE_OPEN_HOLD;
+
+	command.mode = I2C_SLAVEDSPIC_MODE_HOOK;
+	state_set_mode(&command);
+#endif
 }
 
 prog_char str_hook_arg0[] = "hook";
