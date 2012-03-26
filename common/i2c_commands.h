@@ -63,15 +63,30 @@ struct i2c_gpios_status {
 struct i2c_slavedspic_status{
 	struct i2c_cmd_hdr hdr;
 
-	uint8_t state_harvest;
-	uint8_t state_store;
-	uint8_t state_dump;
+#define I2C_SLAVEDSPIC_STATUS_BUSY		1
+#define I2C_SLAVEDSPIC_STATUS_READY		0
 
+	/* actuators blocking */
 	uint8_t fingers_floor_blocked;
 	uint8_t fingers_totem_blocked;
+	uint8_t arm_right_blocked;
+	uint8_t arm_left_blocked;
+	uint8_t lift_blocked;
 
-	uint8_t treasure_on_mouth;
-	uint8_t treasure_on_boot;
+	/* sensors */
+	uint8_t object_catched;
+
+	/* infos */
+	uint8_t status;
+	uint8_t harvest_mode;
+	uint8_t store_mode;
+	uint8_t dump_mode;
+
+	uint8_t nb_goldbars_in_boot;
+	uint8_t nb_golbarrs_in_mouth;
+	uint8_t nb_coins_in_boot;
+	uint8_t nb_coins_in_mouth;
+
 };
 
 
@@ -95,7 +110,7 @@ struct i2c_cmd_slavedspic_set_mode {
 #define I2C_SLAVEDSPIC_MODE_INIT				0x01
 #define I2C_SLAVEDSPIC_MODE_POWER_OFF		0x02
 #define I2C_SLAVEDSPIC_MODE_FINGERS			0x03
-#define I2C_SLAVEDSPIC_MODE_ARMS				0x04
+#define I2C_SLAVEDSPIC_MODE_ARM				0x04
 #define I2C_SLAVEDSPIC_MODE_HOOK				0x05
 #define I2C_SLAVEDSPIC_MODE_BOOT				0x06
 #define I2C_SLAVEDSPIC_MODE_TRAY				0x07
@@ -120,7 +135,7 @@ struct i2c_cmd_slavedspic_set_mode {
 #define I2C_FINGERS_MODE_CLOSE	FINGERS_MODE_CLOSE
 #define I2C_FINGERS_MODE_PUSHIN	FINGERS_MODE_PUSHIN
 
-			uint8_t offset;
+			int16_t offset;
 		} fingers;
 
 		struct {
@@ -134,7 +149,7 @@ struct i2c_cmd_slavedspic_set_mode {
 #define I2C_ARM_MODE_PUSH_GOLDBAR	ARM_MODE_PUSH_GOLDBAR
 #define I2C_ARM_MODE_PUSH_FLOOR		ARM_MODE_PUSH_FLOOR
 
-			uint8_t offset;
+			int16_t offset;
 		} arm;
 
 		struct {
@@ -144,7 +159,7 @@ struct i2c_cmd_slavedspic_set_mode {
 		struct {
 			int8_t angle_deg;
 			uint8_t angle_speed;
-			uint8_t blow_speed;
+			uint16_t blow_speed;
 		} turbine;
 		
 		struct {
@@ -181,23 +196,24 @@ struct i2c_cmd_slavedspic_set_mode {
 			uint8_t mode;
 #define I2C_HARVEST_MODE_PREPARE_TOTEM				0
 #define I2C_HARVEST_MODE_PREPARE_GOLDBAR_TOTEM	1
-#define I2C_HARVEST_MODE_PREPARE_GOLDBAR_SEA		2
+#define I2C_HARVEST_MODE_PREPARE_GOLDBAR_FLOOR	2
 #define I2C_HARVEST_MODE_PREPARE_COINS_TOTEM		3
-#define I2C_HARVEST_MODE_PREPARE_COINS_SEA		4
+#define I2C_HARVEST_MODE_PREPARE_COINS_FLOOR		4
 #define I2C_HARVEST_MODE_COINS_ISLE					5
-#define I2C_HARVEST_MODE_COINS_SEA					6
+#define I2C_HARVEST_MODE_COINS_FLOOR				6
 #define I2C_HARVEST_MODE_COINS_TOTEM				7
 #define I2C_HARVEST_MODE_GOLDBAR_TOTEM				8
-#define I2C_HARVEST_MODE_GOLDBAR_SEA				9
+#define I2C_HARVEST_MODE_GOLDBAR_FLOOR				9
 
 		} harvest;
 
 		struct {
 			uint8_t mode;
-#define I2C_STORE_MODE_TOTEM_IN_MOUTH	0
-#define I2C_STORE_MODE_TOTEM_IN_BOOT	1
-#define I2C_STORE_MODE_COINS_IN_MOUTH	2
-#define I2C_STORE_MODE_COINS_IN_BOOT	3
+#define I2C_STORE_MODE_GOLDBAR_IN_MOUTH		0
+#define I2C_STORE_MODE_GOLDBAR_IN_BOOT			1
+#define I2C_STORE_MODE_COINS_IN_MOUTH			2
+#define I2C_STORE_MODE_MOUTH_COINS_IN_BOOT	3
+#define I2C_STORE_MODE_MOUTH_GOLDBAR_IN_BOOT	4
 
 			uint8_t times;
 		} store;

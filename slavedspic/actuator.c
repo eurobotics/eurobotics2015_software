@@ -65,7 +65,7 @@ void lift_calibrate(void)
 	/* save and set PID constants */
 	kp = pid_get_gain_P(&slavedspic.lift.pid);
 	ki = pid_get_gain_I(&slavedspic.lift.pid);
-	kd = pid_get_gain_D(&slavedspic.lift.pid);	pid_set_gains(&slavedspic.lift.pid, 2000, 0, 5000);
+	kd = pid_get_gain_D(&slavedspic.lift.pid);	pid_set_gains(&slavedspic.lift.pid,  500, 0, 0);
 	/* set low speed, and hi acceleration for fast response */
 	quadramp_set_1st_order_vars(&slavedspic.lift.qr, AUTOPOS_SPEED, AUTOPOS_SPEED);
 	quadramp_set_2nd_order_vars(&slavedspic.lift.qr, AUTOPOS_ACCEL, AUTOPOS_ACCEL);
@@ -92,6 +92,7 @@ void lift_calibrate(void)
 	quadramp_set_1st_order_vars(&slavedspic.lift.qr, LIFT_SPEED, LIFT_SPEED);
 	quadramp_set_2nd_order_vars(&slavedspic.lift.qr, LIFT_ACCEL, LIFT_ACCEL);
 	pid_set_gains(&slavedspic.lift.pid, kp, ki, kd);
+
 	ACTUATORS_DEBUG("Restored speed, acceleration and PID");
 	ACTUATORS_DEBUG("%s ends", __FUNCTION__);
 
@@ -116,6 +117,7 @@ void lift_set_height(int32_t height_mm)
 
 	/* apply consign */
 	cs_set_consign(&slavedspic.lift.cs, (int32_t)(height_mm * LIFT_K_IMP_mm));
+	slavedspic.lift.blocking = 0;
 }
 
 /* return heigh in mm */
@@ -127,11 +129,23 @@ int32_t lift_get_height(void)
 /* return 1 if height reached, -1 if blocking and zero if no ends yet */
 int8_t lift_check_height_reached(void)
 {
-	/* test consign end */	if(cs_get_consign(&slavedspic.lift.cs) == cs_get_filtered_consign(&slavedspic.lift.cs)){		return ACTUATOR_END;	}
-	/* test blocking */	if(bd_get(&slavedspic.lift.bd)) {		lift_hard_stop();		pid_reset(&slavedspic.lift.pid);		bd_reset(&slavedspic.lift.bd);		ACTUATORS_ERROR("Lift ENDS BLOCKING");		return ACTUATOR_BLOCKING;	}
+	/* test consign end */	if(cs_get_consign(&slavedspic.lift.cs) == cs_get_filtered_consign(&slavedspic.lift.cs)){		return END_TRAJ;	}
+	/* test blocking */	if(bd_get(&slavedspic.lift.bd)) {		lift_hard_stop();		pid_reset(&slavedspic.lift.pid);		bd_reset(&slavedspic.lift.bd);
+		slavedspic.lift.blocking = 1;		ACTUATORS_ERROR("Lift ENDS BLOCKING");		return END_BLOCKING;	}
 
 	return 0;}
 
+/* return END_TRAJ or END_BLOCKING */
+uint8_t lift_wait_end()
+{
+	uint8_t ret = 0;
+
+	/* wait end */
+	while(!ret)
+		ret = lift_check_height_reached();
+
+	return ret;
+}
 /**** turbine funcions *********************************************************/
 
 /* power on the turbine controllers */
@@ -295,6 +309,17 @@ int8_t fingers_set_mode(fingers_t *fingers, uint8_t mode, int16_t pos_offset)
 	fingers->ax12_pos_l = fingers_ax12_pos_l[fingers->type][fingers->mode] + pos_offset;
 	fingers->ax12_pos_r = fingers_ax12_pos_r[fingers->type][fingers->mode] - pos_offset;
 
+	/* set speed */
+	if(fingers->type == FINGERS_TYPE_TOTEM && fingers->mode == FINGERS_MODE_CLOSE) {
+		ax12_user_write_int(&gen.ax12, ax12_left_id, AA_MOVING_SPEED_L, 300);
+		ax12_user_write_int(&gen.ax12, ax12_right_id, AA_MOVING_SPEED_L, 300);
+	}
+	else if(fingers->type == FINGERS_TYPE_TOTEM) {
+		ax12_user_write_int(&gen.ax12, ax12_left_id, AA_MOVING_SPEED_L, 0x3FF);
+		ax12_user_write_int(&gen.ax12, ax12_right_id, AA_MOVING_SPEED_L, 0x3FF);
+	}
+
+
 	/* saturate to position range */
 	if(fingers->ax12_pos_l > fingers_ax12_pos_l[fingers->type][FINGERS_MODE_L_POS_MAX])
 		fingers->ax12_pos_l = fingers_ax12_pos_l[fingers->type][FINGERS_MODE_L_POS_MAX];
@@ -312,13 +337,14 @@ int8_t fingers_set_mode(fingers_t *fingers, uint8_t mode, int16_t pos_offset)
 	if(err1) return err1;
 	if(err2) return err2;
 
-	/* update time for timeout */
+	/* update time for timeout and reset blocking */
 	fingers->time_us = time_get_us2();
+	fingers->blocking = 0;
 
 	return 0;
 }
 
-/* return 1 if mode is done */
+/* return END_TRAJ or END_BLOCKING */
 int8_t fingers_check_mode_done(fingers_t *fingers)
 {
 	static microseconds us = 0;
@@ -357,12 +383,24 @@ int8_t fingers_check_mode_done(fingers_t *fingers)
 	/* ax12 blocking timeout */
 	if(time_get_us2() - fingers->time_us > AX12_BLOCKING_TIMEOUT_us) {
 		ax12_user_write_int(&gen.ax12, ax12_left_id, AA_GOAL_POSITION_L, ax12_pos_l);		ax12_user_write_int(&gen.ax12, ax12_right_id, AA_GOAL_POSITION_L, ax12_pos_r);
+		fingers->blocking = 1;
 		return END_BLOCKING;
 	}
 
 	return 0;
 }
 
+/* return END_TRAJ or END_BLOCKING */
+uint8_t fingers_wait_end(fingers_t *fingers)
+{
+	uint8_t ret = 0;
+
+	/* wait end */
+	while(!ret)
+		ret = fingers_check_mode_done(fingers);
+
+	return ret;
+}
 
 /**** arms funcions *********************************************************/
 uint16_t arm_ax12_pos[ARM_TYPE_MAX][ARM_MODE_MAX] = {
@@ -404,13 +442,14 @@ uint8_t arm_set_mode(arm_t *arm, uint8_t mode, int16_t pos_offset)
 	err = ax12_user_write_int(&gen.ax12, ax12_id, AA_GOAL_POSITION_L, arm->ax12_pos);
 	if(err) 	return err;
 
-	/* update time for timeout */
+	/* update time for timeout and reset blocking */
 	arm->time_us = time_get_us2();
+	arm->blocking = 0;
 
 	return 0;
 }
 
-/* return 1 if mode is done */
+/* return END_TRAJ or END_BLOCKING */
 int8_t arm_check_mode_done(arm_t *arm)
 {
 	static microseconds us = 0;
@@ -441,12 +480,24 @@ int8_t arm_check_mode_done(arm_t *arm)
 	/* ax12 blocking timeout */
 	if(time_get_us2() - arm->time_us > AX12_BLOCKING_TIMEOUT_us) {
 		ax12_user_write_int(&gen.ax12, ax12_id, AA_GOAL_POSITION_L, ax12_pos);
+		arm->blocking = 1;
 		return END_BLOCKING;
 	}
 
 	return 0;
 }
 
+/* return END_TRAJ or END_BLOCKING */
+uint8_t arm_wait_end(arm_t *arm)
+{
+	uint8_t ret = 0;
+
+	/* wait end */
+	while(!ret)
+		ret = arm_check_mode_done(arm);
+
+	return ret;
+}
 
 /**** boot funcions *********************************************************/
 uint16_t boot_ax12_pos[BOOT_MODE_MAX] = {
@@ -500,8 +551,6 @@ uint8_t boot_check_mode_done(boot_t *boot)
 	
 	return 0;
 }
-
-uint8_t 
 
 /**** hook funcions *********************************************************/
 
@@ -693,6 +742,4 @@ void actuator_init(void)
 	lift_calibrate();
 	lift_set_height(LIFT_HEIGHT_MIN_mm);
 
-	//fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_CLOSE, 0);
-	//fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_CLOSE, 0);
 }

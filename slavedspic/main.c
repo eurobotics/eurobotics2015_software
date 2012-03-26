@@ -318,10 +318,10 @@ int main(void)
 
 	/* ACTUATORS */
 	actuator_init();
-#if 0
+
 	/* STATE MACHINE */
 	state_init();
-#endif
+
 	printf("\r\n");
 	printf("Siempre falta tiempo para hacer pruebas. \r\n");
 	
@@ -331,7 +331,7 @@ int main(void)
 	/* main loop */
 	while(1)
 	{
-		//state_machines();
+		state_machines();
 		cmdline_interact_nowait();
 	}
 

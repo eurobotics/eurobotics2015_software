@@ -51,10 +51,10 @@ struct sensor_filter {
 static struct sensor_filter sensor_filter[SENSOR_MAX] = {
 	[SENSOR1] 	= { 11, 0, 8, 10, 0, 1 },
 	[SENSOR2] 	= { 11, 0, 8, 10, 0, 1 },
-	[SENSOR3] 	= { 11, 0, 8, 10, 0, 1 },
+	[SENSOR3] 	= { 11, 0, 8, 10, 0, 0 },
 	[SENSOR4] 	= { 11, 0, 8, 10, 0, 1 },
 	[SENSOR5]	= { 11, 0, 8, 10, 0, 1 },
-	[SENSOR6]	= { 11, 0, 8, 10, 0, 1 },
+	[SENSOR6]	= { 11, 0, 8, 10, 0, 0 },
 	//[SENSOR7] 	= { 1, 0, 0, 1, 0, 1 },
 };
 
