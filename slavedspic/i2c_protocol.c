@@ -58,7 +58,7 @@ void i2c_led_control(uint8_t l, uint8_t state)
 
 static int8_t i2c_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd)
 {
-	//state_set_mode(cmd);
+	state_set_mode(cmd);
 	return 0;
 }
 

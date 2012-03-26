@@ -49,13 +49,13 @@ struct sensor_filter {
 };
 
 static struct sensor_filter sensor_filter[SENSOR_MAX] = {
-	[SENSOR1] 	= { 10, 0, 8, 9, 0, 1 },
-	[SENSOR2] 	= { 1, 0, 0, 1, 0, 1 },
-	[SENSOR3] 	= { 10, 0, 8, 9, 0, 1 },
-	[SENSOR4] 	= { 1, 0, 0, 1, 0, 1 },
-	[SENSOR5]	= { 1, 0, 0, 1, 0, 1 },
-	[SENSOR6]	= { 1, 0, 0, 1, 0, 1 },
-	[SENSOR7] 	= { 1, 0, 0, 1, 0, 1 },
+	[SENSOR1] 	= { 11, 0, 8, 10, 0, 1 },
+	[SENSOR2] 	= { 11, 0, 8, 10, 0, 1 },
+	[SENSOR3] 	= { 11, 0, 8, 10, 0, 1 },
+	[SENSOR4] 	= { 11, 0, 8, 10, 0, 1 },
+	[SENSOR5]	= { 11, 0, 8, 10, 0, 1 },
+	[SENSOR6]	= { 11, 0, 8, 10, 0, 1 },
+	//[SENSOR7] 	= { 1, 0, 0, 1, 0, 1 },
 };
 
 /* value of filtered sensors */
@@ -88,7 +88,7 @@ static uint16_t sensor_read(void)
  * SENSOR4: RA8
  * SENSOR5: RC3
  * SENSOR6: RB4	 XXX servos AX12 in 2011 board
- * SENSOR7: RC2 	 XXX broken pin in 2011 board
+ * SENSOR7: RC2 	 XXX broken pin in 2011 board, pwm servo on 2012 board
  */
 
 	uint16_t tmp = 0;
@@ -99,7 +99,9 @@ static uint16_t sensor_read(void)
 	tmp |= (uint16_t)((PORTC & (_BV(3)))>> 3)<< 4;
 #ifndef EUROBOT_2011_BOARD
 	tmp |= (uint16_t)((PORTB & (_BV(4)))>> 4)<< 5;
+#ifndef EUROBOT_2011_BOARD
 	tmp |= (uint16_t)((PORTC & (_BV(2)))>> 2)<< 6;
+#endif
 #endif
 
 	/* add more sensors here */
@@ -149,3 +151,7 @@ void do_sensors(__attribute__((unused)) void *dummy)
 }
 
 
+/* return true if object is cached by turbine */
+uint8_t sensor_object_is_catched(void) {
+	return ((sensor_get_all() & S_TURBINE_LINE_A) && (sensor_get_all() & S_TURBINE_LINE_B));
+}

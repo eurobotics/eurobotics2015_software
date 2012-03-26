@@ -73,10 +73,12 @@
 #define AX12_ID_BOOT						5
 #define AX12_ID_HOOK						6
 
-#define S_BELOW_TURBINE_1	SENSOR1
-#define S_BELOW_TURBINE_2	SENSOR2
-#define S_BELOW_TURBINE_3	SENSOR3
-#define S_BELOW_TURBINE_4	SENSOR4
+#define S_TURBINE_LINE_A1	SENSOR1
+#define S_TURBINE_LINE_A2	SENSOR2
+#define S_TURBINE_LINE_B1	SENSOR3
+#define S_TURBINE_LINE_B2	SENSOR4
+#define S_TURBINE_LINE_A 	((1 << S_TURBINE_LINE_A1) & (1 << S_TURBINE_LINE_A2)) 
+#define S_TURBINE_LINE_B 	((1 << S_TURBINE_LINE_B1) & (1 << S_TURBINE_LINE_B2)) 
 
 
 /** ERROR NUMS */
@@ -155,7 +157,22 @@ struct slavedspic {
 	tray_t tray_store;
 	tray_t tray_boot;
 
-	/* TODO: add eurobot 2012 variables */	
+	/* infos */
+	uint8_t status;
+	uint8_t harvest_mode;
+	uint8_t store_mode;
+	uint8_t dump_mode;
+
+	uint8_t fingers_floor_blocked;
+	uint8_t fingers_totem_blocked;
+	uint8_t arm_right_blocked;
+	uint8_t arm_left_blocked;
+	uint8_t lift_blocked;
+
+	uint8_t object_catched;
+
+	uint8_t nb_totems;
+	uint8_t nb_coins;
 
 	/* infos */
 	uint8_t our_color;

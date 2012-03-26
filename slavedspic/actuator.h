@@ -25,6 +25,7 @@
 #define _ACTUATOR_H_
 
 #include <aversive.h>#include <aversive/error.h>
+#include <time.h>
 
 #define LIFT_SPEED						100
 #define LIFT_ACCEL						1
@@ -45,12 +46,17 @@
 #define POS_FINGER_TOTEM_R_HOLD		492
 #define POS_FINGER_TOTEM_R_CLOSE		384
 #define POS_FINGER_TOTEM_R_PUSHIN	290
+#define POS_FINGER_TOTEM_R_MAX		POS_FINGER_TOTEM_R_HUG
+#define POS_FINGER_TOTEM_R_MIN		POS_FINGER_TOTEM_R_PUSHIN
 
 #define POS_FINGER_TOTEM_L_HUG		463
 #define POS_FINGER_TOTEM_L_OPEN		POS_FINGER_TOTEM_L_HUG
 #define POS_FINGER_TOTEM_L_HOLD		704
 #define POS_FINGER_TOTEM_L_CLOSE		809
 #define POS_FINGER_TOTEM_L_PUSHIN	893
+#define POS_FINGER_TOTEM_L_MAX		POS_FINGER_TOTEM_L_PUSHIN
+#define POS_FINGER_TOTEM_L_MIN		POS_FINGER_TOTEM_L_HUG
+
 
 #define POS_FINGER_FLOOR_R_HUG		807
 #define POS_FINGER_FLOOR_R_OPEN		602
@@ -64,6 +70,7 @@
 #define POS_FINGER_FLOOR_L_CLOSE		805
 #define POS_FINGER_FLOOR_L_PUSHIN	882
 
+
 #define POS_ARM_R_HIDE				533
 #define POS_ARM_R_SHOW				294
 #define POS_ARM_R_PUSH_GOLDBAR	278
@@ -74,8 +81,8 @@
 #define POS_ARM_L_PUSH_GOLDBAR	491
 #define POS_ARM_L_PUSH_FLOOR		522
 
-#define POS_BOOT_OPEN			700
-#define POS_BOOT_HOLD			759
+#define POS_BOOT_OPEN_FULL		700 /* TODO set position */
+#define POS_BOOT_OPEN_HOLD		700
 #define POS_BOOT_CLOSE			835
 
 #define POS_HOOK_HIDE			140
@@ -94,7 +101,8 @@
 #define TRAY_STORE_PERIOD_EVENT_us		(50000) 	
 #define TRAY_STORE_PERIOD_PRESCALER		(uint16_t)(TRAY_STORE_VIBRATE_PERIOD_us / TRAY_STORE_PERIOD_EVENT_us)
 
-	
+#define END_TRAJ		1
+#define END_BLOCKING	2
 
 
 /* init actuators */
@@ -102,8 +110,6 @@ void actuator_init(void);
 
 /**** lift functions ********************************************************/
 
-/* stop without rampe */
-void lift_hard_stop(void);
 /* calibrate initial position */
 void lift_calibrate(void);
 
@@ -121,11 +127,15 @@ int8_t lift_check_height_reached(void);
 /* turbine structure */
 typedef struct {
 	uint8_t power;
-#define TURBINE_POWER_ON 	RELE_OUT_PIN_ON
-#define TURBINE_POWER_OFF 	RELE_OUT_PIN_OFF
+#define TURBINE_POWER_ON 					RELE_OUT_PIN_ON
+#define TURBINE_POWER_OFF 					RELE_OUT_PIN_OFF
+#define TURBINE_ANGLE_SPEED_CONTROL_us	25000
 
-	uint16_t angle_deg;
 	uint16_t angle_pos;
+	uint16_t angle_consign;
+	uint16_t angle_speed;
+	int8_t 	angle_event_handler;
+
 	uint16_t blow_speed;
 
 } turbine_t;
@@ -134,6 +144,8 @@ void turbine_power_on(turbine_t *turbine);
 void turbine_power_off(turbine_t *turbine);
 
 void turbine_set_angle(turbine_t *turbine, int16_t angle_deg, uint16_t wait_ms);
+int8_t turbine_check_angle_reached(turbine_t *turbine);
+
 void turbine_set_blow_speed(turbine_t *turbine, uint16_t speed);
 
 uint16_t turbine_get_angle(turbine_t *turbine);
@@ -155,22 +167,29 @@ typedef struct {
 #define FINGERS_MODE_PUSHIN	4
 #define FINGERS_MODE_MAX		5
 
+#define FINGERS_MODE_R_POS_MAX	FINGERS_MODE_HUG
+#define FINGERS_MODE_R_POS_MIN	FINGERS_MODE_PUSHIN
+#define FINGERS_MODE_L_POS_MAX	FINGERS_MODE_PUSHIN
+#define FINGERS_MODE_L_POS_MIN	FINGERS_MODE_HUG
+
+	microseconds time_us;
+
 	uint16_t ax12_pos_l;
 	uint16_t ax12_pos_r;
 } fingers_t;
 
 /* set finger position depends on mode */
-int8_t fingers_set_mode(fingers_t *fingers, uint8_t mode);
+int8_t fingers_set_mode(fingers_t *fingers, uint8_t mode, int16_t pos_offset);
 
-/* return 1 if mode is done */
-uint8_t fingers_check_mode_done(fingers_t *fingers);
+/* return 1 if mode is done, -1 if error */
+int8_t fingers_check_mode_done(fingers_t *fingers);
 
 /**** arms funcions *********************************************************/
 typedef struct {
 	uint8_t type;
-#define ARM_TYPE_RIGHT	I2C_SIDE_RIGHT
-#define ARM_TYPE_LEFT	I2C_SIDE_LEFT
-#define ARM_TYPE_MAX		I2C_SIDE_MAX	
+#define ARM_TYPE_RIGHT	0
+#define ARM_TYPE_LEFT	1
+#define ARM_TYPE_MAX		2	
 
 	uint8_t mode;
 #define ARM_MODE_HIDE				0
@@ -180,22 +199,23 @@ typedef struct {
 #define ARM_MODE_MAX					4
 
 	uint16_t ax12_pos;
+	microseconds time_us;
 } arm_t;
 
 /* set finger position depends on mode */
-uint8_t arm_set_mode(arm_t *arm, uint8_t mode);
+uint8_t arm_set_mode(arm_t *arm, uint8_t mode, int16_t pos_offset);
 
 /* return 1 if mode is done */
-uint8_t arm_check_mode_done(arm_t *arm);
+int8_t arm_check_mode_done(arm_t *arm);
 
 
 /**** boot funcions *********************************************************/
 typedef struct {
 	uint8_t mode;
-#define BOOT_MODE_OPEN		0
-#define BOOT_MODE_HOLD		1
-#define BOOT_MODE_CLOSE		2
-#define BOOT_MODE_MAX		3
+#define BOOT_MODE_OPEN_FULL		0
+#define BOOT_MODE_OPEN_HOLD		1
+#define BOOT_MODE_CLOSE				2
+#define BOOT_MODE_MAX				3
 
 	uint16_t ax12_pos;
 } boot_t;
