@@ -43,8 +43,9 @@
 #define ACTUATORS_ERROR(args...) 	ERROR(E_USER_ACTUATORS, args)
 
 /* AX12 stuff */
-#define AX12_PULLING_TIME_us	5000L
+#define AX12_PULLING_TIME_us		5000L
 #define AX12_WINDOW_POSITION		15
+#define AX12_BLOCKING_TIMEOUT_us	1500000L
 
 
 /**** lift functions ********************************************************/
@@ -126,29 +127,60 @@ int32_t lift_get_height(void)
 /* return 1 if height reached, -1 if blocking and zero if no ends yet */
 int8_t lift_check_height_reached(void)
 {
-	/* test consign end */	if(cs_get_consign(&slavedspic.lift.cs) == cs_get_filtered_consign(&slavedspic.lift.cs)){		return 1;	}
-	/* test blocking */	if(bd_get(&slavedspic.lift.bd)) {		lift_hard_stop();		pid_reset(&slavedspic.lift.pid);		bd_reset(&slavedspic.lift.bd);		ACTUATORS_ERROR("Lift ENDS BLOCKING");		return -1;	}
+	/* test consign end */	if(cs_get_consign(&slavedspic.lift.cs) == cs_get_filtered_consign(&slavedspic.lift.cs)){		return ACTUATOR_END;	}
+	/* test blocking */	if(bd_get(&slavedspic.lift.bd)) {		lift_hard_stop();		pid_reset(&slavedspic.lift.pid);		bd_reset(&slavedspic.lift.bd);		ACTUATORS_ERROR("Lift ENDS BLOCKING");		return ACTUATOR_BLOCKING;	}
 
 	return 0;}
 
 /**** turbine funcions *********************************************************/
 
+/* power on the turbine controllers */
 void turbine_power_on(turbine_t *turbine) {
 	turbine->power = TURBINE_POWER_ON;
 	TURBINE_POWER_PIN = turbine->power;
 }
+
+/* power off the turbine controllers */
 void turbine_power_off(turbine_t *turbine) {
 	turbine->power = TURBINE_POWER_OFF;
 	TURBINE_POWER_PIN = turbine->power;
 }
 
-void turbine_set_angle(turbine_t *turbine, int16_t angle_deg, uint16_t wait_ms)
+/* move servo with angle speed control */
+void turbine_angle_speed_control(void * data)
+{
+	turbine_t *turbine = (turbine_t *)data;
+	uint16_t angle_pos = turbine->angle_pos;
+
+	/* next angle position */
+	if(turbine->angle_consign > turbine->angle_pos) {
+		angle_pos = turbine->angle_pos + turbine->angle_speed;
+		if(angle_pos >= turbine->angle_consign)
+			angle_pos = turbine->angle_consign;
+	}
+	else {
+		angle_pos = turbine->angle_pos - turbine->angle_speed;
+		if(angle_pos <= turbine->angle_consign)
+			angle_pos = turbine->angle_consign;
+	}
+
+	/* apply at servo */
+	turbine->angle_pos = pwm_servo_set(TURBINE_ANGLE_PWM_SERVO, angle_pos);
+
+	/* kill event if angle is equal to consign */
+	if(angle_pos == turbine->angle_consign)
+		scheduler_del_event(turbine->angle_event_handler);
+}
+
+/* set angle consing */
+void turbine_set_angle(turbine_t *turbine, int16_t angle_deg, uint16_t angle_speed)
 {
 	uint16_t angle_pos;
 
-	/* XXX check lift heigh */
+	/* delete event */
+	scheduler_del_event(turbine->angle_event_handler);
 
-	/* position */
+	/* position consing */
 	angle_pos = TURBINE_POS_ANGLE_ZERO + (angle_deg * TURBINE_K_POS_DEG);
 
 	/* saturate to range */
@@ -157,24 +189,51 @@ void turbine_set_angle(turbine_t *turbine, int16_t angle_deg, uint16_t wait_ms)
 	if(angle_pos < TURBINE_POS_ANGLE_MIN)
 		angle_pos = TURBINE_POS_ANGLE_MIN;
 
+#ifdef OLD_VERSION
 	/* set and save consign */
-	turbine->angle_pos = pwm_servo_set(TURBINE_ANGLE_PWM_SERVO, angle_pos);
-	/* update angle */
-	turbine->angle_deg = (turbine->angle_pos - TURBINE_POS_ANGLE_ZERO) / TURBINE_K_POS_DEG;
+	if(angle_pos >= turbine->angle_pos)
+		for(i=turbine->angle_pos; i<=angle_pos; i=i+5) {
+			turbine->angle_pos = pwm_servo_set(TURBINE_ANGLE_PWM_SERVO, i);
+			time_wait_ms(20);
+		}
+	else
+		//for(i=turbine->angle_pos; i>=angle_pos; i=i-5) {
+			//turbine->angle_pos = pwm_servo_set(TURBINE_ANGLE_PWM_SERVO, i);
+			turbine->angle_pos = pwm_servo_set(TURBINE_ANGLE_PWM_SERVO, angle_pos);
+		//	time_wait_ms(20);
+		//}
+
+
 
 	/* wait to reach the position */
 	if(wait_ms)
 		time_wait_ms(wait_ms);
+#endif
+
+	/* manage servo on event */
+	turbine->angle_consign = angle_pos;
+	turbine->angle_speed = angle_speed;
+	turbine->angle_event_handler = scheduler_add_periodical_event(turbine_angle_speed_control,
+									 		(void *)(turbine), TURBINE_ANGLE_SPEED_CONTROL_us / SCHEDULER_UNIT);
+
 }
 
+/* return true if angle consign is reached */
+int8_t turbine_check_angle_reached(turbine_t *turbine) {
+	return (turbine->angle_pos == turbine->angle_consign);
+}
+
+/* set speed of blow speed of turbines */
 void turbine_set_blow_speed(turbine_t *turbine, uint16_t speed) {
 	turbine->blow_speed = pwm_servo_set(TURBINE_SPEED_PWM_SERVO, speed);
 }
 
+/* return the blow speed of turbines */
 uint16_t turbine_get_angle(turbine_t *turbine) {
-	return turbine->angle_deg;
+	return ((turbine->angle_pos - TURBINE_POS_ANGLE_ZERO) / TURBINE_K_POS_DEG);
 }
 
+/* return the angle in deg of turbines */
 uint16_t turbine_get_blow_speed(turbine_t *turbine) {
 	return turbine->blow_speed;
 }
@@ -212,7 +271,7 @@ uint16_t fingers_ax12_pos_r[FINGERS_TYPE_MAX][FINGERS_MODE_MAX] = {
 };
 
 /* set finger position depends on mode */
-int8_t fingers_set_mode(fingers_t *fingers, uint8_t mode)
+int8_t fingers_set_mode(fingers_t *fingers, uint8_t mode, int16_t pos_offset)
 {
 	uint8_t ax12_left_id, ax12_right_id, err1, err2;
 
@@ -233,20 +292,34 @@ int8_t fingers_set_mode(fingers_t *fingers, uint8_t mode)
 	}
 
 	fingers->mode = mode;
-	fingers->ax12_pos_l = fingers_ax12_pos_l[fingers->type][fingers->mode];
-	fingers->ax12_pos_r = fingers_ax12_pos_r[fingers->type][fingers->mode];
-	
+	fingers->ax12_pos_l = fingers_ax12_pos_l[fingers->type][fingers->mode] + pos_offset;
+	fingers->ax12_pos_r = fingers_ax12_pos_r[fingers->type][fingers->mode] - pos_offset;
+
+	/* saturate to position range */
+	if(fingers->ax12_pos_l > fingers_ax12_pos_l[fingers->type][FINGERS_MODE_L_POS_MAX])
+		fingers->ax12_pos_l = fingers_ax12_pos_l[fingers->type][FINGERS_MODE_L_POS_MAX];
+	if(fingers->ax12_pos_l < fingers_ax12_pos_l[fingers->type][FINGERS_MODE_L_POS_MIN])
+		fingers->ax12_pos_l = fingers_ax12_pos_l[fingers->type][FINGERS_MODE_L_POS_MIN];
+
+	if(fingers->ax12_pos_r > fingers_ax12_pos_r[fingers->type][FINGERS_MODE_R_POS_MAX])
+		fingers->ax12_pos_r = fingers_ax12_pos_r[fingers->type][FINGERS_MODE_R_POS_MAX];
+	if(fingers->ax12_pos_r < fingers_ax12_pos_r[fingers->type][FINGERS_MODE_R_POS_MIN])
+		fingers->ax12_pos_r = fingers_ax12_pos_r[fingers->type][FINGERS_MODE_R_POS_MIN];
+
 	/* apply to ax12 */
 	err1 = ax12_user_write_int(&gen.ax12, ax12_left_id, AA_GOAL_POSITION_L, fingers->ax12_pos_l);	err2 = ax12_user_write_int(&gen.ax12, ax12_right_id, AA_GOAL_POSITION_L, fingers->ax12_pos_r);
 
 	if(err1) return err1;
 	if(err2) return err2;
 
+	/* update time for timeout */
+	fingers->time_us = time_get_us2();
+
 	return 0;
 }
 
 /* return 1 if mode is done */
-uint8_t fingers_check_mode_done(fingers_t *fingers)
+int8_t fingers_check_mode_done(fingers_t *fingers)
 {
 	static microseconds us = 0;
 	uint16_t ax12_pos_l = 0, ax12_pos_r = 0;
@@ -279,8 +352,14 @@ uint8_t fingers_check_mode_done(fingers_t *fingers)
 	/* check if positions are inside window */
 	if(ABS(fingers->ax12_pos_l - ax12_pos_l) < AX12_WINDOW_POSITION 
 		&& ABS(fingers->ax12_pos_l - ax12_pos_l) < AX12_WINDOW_POSITION)	
-		return 1;
+		return END_TRAJ;
 	
+	/* ax12 blocking timeout */
+	if(time_get_us2() - fingers->time_us > AX12_BLOCKING_TIMEOUT_us) {
+		ax12_user_write_int(&gen.ax12, ax12_left_id, AA_GOAL_POSITION_L, ax12_pos_l);		ax12_user_write_int(&gen.ax12, ax12_right_id, AA_GOAL_POSITION_L, ax12_pos_r);
+		return END_BLOCKING;
+	}
+
 	return 0;
 }
 
@@ -299,7 +378,7 @@ uint16_t arm_ax12_pos[ARM_TYPE_MAX][ARM_MODE_MAX] = {
 };
 
 /* set finger position depends on mode */
-uint8_t arm_set_mode(arm_t *arm, uint8_t mode)
+uint8_t arm_set_mode(arm_t *arm, uint8_t mode, int16_t pos_offset)
 {
 	uint8_t ax12_id, err;
 
@@ -316,17 +395,23 @@ uint8_t arm_set_mode(arm_t *arm, uint8_t mode)
 	}
 
 	arm->mode = mode;
-	arm->ax12_pos = arm_ax12_pos[arm->type][arm->mode];
+	if(arm->type == ARM_TYPE_RIGHT)
+		arm->ax12_pos = arm_ax12_pos[arm->type][arm->mode] + pos_offset;
+	else
+		arm->ax12_pos = arm_ax12_pos[arm->type][arm->mode] - pos_offset;
 	
 	/* apply to ax12 */
 	err = ax12_user_write_int(&gen.ax12, ax12_id, AA_GOAL_POSITION_L, arm->ax12_pos);
 	if(err) 	return err;
 
+	/* update time for timeout */
+	arm->time_us = time_get_us2();
+
 	return 0;
 }
 
 /* return 1 if mode is done */
-uint8_t arm_check_mode_done(arm_t *arm)
+int8_t arm_check_mode_done(arm_t *arm)
 {
 	static microseconds us = 0;
 	uint16_t ax12_pos;
@@ -351,17 +436,23 @@ uint8_t arm_check_mode_done(arm_t *arm)
 
 	/* check if position is inside window */
 	if(ABS(arm->ax12_pos - ax12_pos) < AX12_WINDOW_POSITION)	
-		return 1;
+		return END_TRAJ;
 	
+	/* ax12 blocking timeout */
+	if(time_get_us2() - arm->time_us > AX12_BLOCKING_TIMEOUT_us) {
+		ax12_user_write_int(&gen.ax12, ax12_id, AA_GOAL_POSITION_L, ax12_pos);
+		return END_BLOCKING;
+	}
+
 	return 0;
 }
 
 
 /**** boot funcions *********************************************************/
 uint16_t boot_ax12_pos[BOOT_MODE_MAX] = {
-	[BOOT_MODE_OPEN] 	= POS_BOOT_OPEN,
-	[BOOT_MODE_HOLD] 	= POS_BOOT_HOLD,
-	[BOOT_MODE_CLOSE]	= POS_BOOT_CLOSE,
+	[BOOT_MODE_OPEN_FULL] 	= POS_BOOT_OPEN_FULL,
+	[BOOT_MODE_OPEN_HOLD] 	= POS_BOOT_OPEN_HOLD,
+	[BOOT_MODE_CLOSE]			= POS_BOOT_CLOSE,
 };
 
 /* set finger position depends on mode */
@@ -380,7 +471,8 @@ uint8_t boot_set_mode(boot_t *boot, uint8_t mode)
 	
 	/* apply to ax12 */
 	err = ax12_user_write_int(&gen.ax12, AX12_ID_BOOT, AA_GOAL_POSITION_L, boot->ax12_pos);
-	if(err) 	return err;
+	if(err) 	
+		return err;
 
 	return 0;
 }
@@ -404,11 +496,12 @@ uint8_t boot_check_mode_done(boot_t *boot)
 
 	/* check if position is inside window */
 	if(ABS(boot->ax12_pos - ax12_pos) < AX12_WINDOW_POSITION)	
-		return 1;
+		return END_TRAJ;
 	
 	return 0;
 }
 
+uint8_t 
 
 /**** hook funcions *********************************************************/
 
@@ -469,12 +562,6 @@ uint8_t hook_check_mode_done(hook_t *hook)
 void tray_store_vibrate(void * data)
 {
 	tray_t *tray = (tray_t *)data;
-	//static uint16_t counts = 0;
-
-	//if(counts++ < TRAY_STORE_PERIOD_PRESCALER)
-	//	return;
-
-	//counts = 0;
 
 	if(tray->servo_pos == POS_TRAY_STORE_UP)
 		tray->servo_pos = pwm_servo_set(PWM_SERVO_TRAY_STORE, POS_TRAY_STORE_DOWN);
@@ -584,16 +671,16 @@ void actuator_init(void)
 	slavedspic.tray_boot.type = TRAY_TYPE_BOOT;
 
 	/* start positions */
-	fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_OPEN);
-	fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_OPEN);
+	fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_OPEN, 0);
+	fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_OPEN, 0);
 	fingers_check_mode_done(&slavedspic.fingers_totem);
 
 	turbine_set_angle(&slavedspic.turbine, 0, 500);
 	turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);
 	turbine_power_on(&slavedspic.turbine);
 
-	arm_set_mode(&slavedspic.arm_left, ARM_MODE_HIDE);
-	arm_set_mode(&slavedspic.arm_right, ARM_MODE_HIDE);
+	arm_set_mode(&slavedspic.arm_left, ARM_MODE_HIDE, 0);
+	arm_set_mode(&slavedspic.arm_right, ARM_MODE_HIDE, 0);
 
 	hook_set_mode(&slavedspic.hook, HOOK_MODE_HIDE);
 	boot_set_mode(&slavedspic.boot, BOOT_MODE_CLOSE);
@@ -606,6 +693,6 @@ void actuator_init(void)
 	lift_calibrate();
 	lift_set_height(LIFT_HEIGHT_MIN_mm);
 
-	fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_CLOSE);
-	fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_CLOSE);
+	//fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_CLOSE, 0);
+	//fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_CLOSE, 0);
 }

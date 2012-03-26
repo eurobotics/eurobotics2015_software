@@ -51,28 +51,26 @@
 #define STMCH_NOTICE(args...) NOTICE(E_USER_ST_MACH, args)
 #define STMCH_ERROR(args...) ERROR(E_USER_ST_MACH, args)
 
-#ifdef notyet
-
 /* shorter aliases for this file */
 #define INIT				I2C_SLAVEDSPIC_MODE_INIT
-#define TOKEN_TAKE		I2C_SLAVEDSPIC_MODE_TOKEN_TAKE
-#define TOKEN_EJECT		I2C_SLAVEDSPIC_MODE_TOKEN_EJECT
-#define TOKEN_STOP		I2C_SLAVEDSPIC_MODE_TOKEN_STOP
-#define TOKEN_SHOW		I2C_SLAVEDSPIC_MODE_TOKEN_SHOW
-#define TOKEN_PUSH_L		I2C_SLAVEDSPIC_MODE_TOKEN_PUSH_L
-#define TOKEN_PUSH_R		I2C_SLAVEDSPIC_MODE_TOKEN_PUSH_R
-#define TOKEN_OUT			I2C_SLAVEDSPIC_MODE_TOKEN_OUT
-#define MIRROR_POS		I2C_SLAVEDSPIC_MODE_MIRROR_POS
+#define POWER_OFF			I2C_SLAVEDSPIC_MODE_POWER_OFF
+#define FINGERS			I2C_SLAVEDSPIC_MODE_FINGERS
+#define ARMS				I2C_SLAVEDSPIC_MODE_ARMS
+#define HOOK				I2C_SLAVEDSPIC_MODE_HOOK
+#define BOOT				I2C_SLAVEDSPIC_MODE_BOOT
+#define TRAY				I2C_SLAVEDSPIC_MODE_TRAY
+#define TURBINE_ANGLE	I2C_SLAVEDSPIC_MODE_TURBINE_ANGLE
+#define TURBINE_BLOW		I2C_SLAVEDSPIC_MODE_TURBINE_BLOW
+#define LIFT_HEIGHT		I2C_SLAVEDSPIC_MODE_LIFT_HEIGHT
+
+#define HARVEST			I2C_SLAVEDSPIC_MODE_HARVEST
+#define STORE				I2C_SLAVEDSPIC_MODE_STORE
+#define DUMP				I2C_SLAVEDSPIC_MODE_DUMP
 
 static struct i2c_cmd_slavedspic_set_mode mainboard_command;
 static volatile uint8_t prev_state;
 static volatile uint8_t mode_changed = 0;
 uint8_t state_debug = 0;
-
-/* local values of mirror cmd */
-static uint8_t mirror_side;
-static uint16_t mirror_pos;
-
 
 /* set a new state, return 0 on success */
 int8_t state_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd)
@@ -81,57 +79,11 @@ int8_t state_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd)
 	memcpy(&mainboard_command, cmd, sizeof(mainboard_command));
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, mainboard_command.mode);
 
-	/* state machines based modes */
-	if (mainboard_command.mode == TOKEN_TAKE) {
-		slavedspic.ts[mainboard_command.ts.side].state_rqst = TS_STATE_TAKE;
-		slavedspic.ts[mainboard_command.ts.side].speed_rqst =
-			 (uint16_t)(((uint16_t)mainboard_command.ts.speed_div4<<2)|0x0003);
-		slavedspic.ts[mainboard_command.ts.side].state_changed = 1;
+	/* XXX power off mode */
+	if (mainboard_command.mode == POWER_OFF) {
 	}
-	else if (mainboard_command.mode == TOKEN_EJECT) {
-		slavedspic.ts[mainboard_command.ts.side].state_rqst = TS_STATE_EJECT;
-		slavedspic.ts[mainboard_command.ts.side].speed_rqst =
-			 (uint16_t)(((uint16_t)mainboard_command.ts.speed_div4<<2)|0x0003);
-		slavedspic.ts[mainboard_command.ts.side].state_changed = 1;	
-	}
-	else if (mainboard_command.mode == TOKEN_STOP) {
-		slavedspic.ts[mainboard_command.ts.side].state_rqst = TS_STATE_STOP;
-		slavedspic.ts[mainboard_command.ts.side].speed_rqst = 0;
-		slavedspic.ts[mainboard_command.ts.side].state_changed = 1;	
-	}
-	else if (mainboard_command.mode == TOKEN_PUSH_L) {
-		slavedspic.ts[mainboard_command.ts.side].state_rqst = TS_STATE_PUSH_L;
-		slavedspic.ts[mainboard_command.ts.side].speed_rqst =
-			 (uint16_t)(((uint16_t)mainboard_command.ts.speed_div4<<2)|0x0003);
-		slavedspic.ts[mainboard_command.ts.side].state_changed = 1;
-	}
-	else if (mainboard_command.mode == TOKEN_PUSH_R) {
-		slavedspic.ts[mainboard_command.ts.side].state_rqst = TS_STATE_PUSH_R;
-		slavedspic.ts[mainboard_command.ts.side].speed_rqst =
-			 (uint16_t)(((uint16_t)mainboard_command.ts.speed_div4<<2)|0x0003);
-		slavedspic.ts[mainboard_command.ts.side].state_changed = 1;
-	}
-	else if (mainboard_command.mode == TOKEN_OUT) {
-		slavedspic.ts[mainboard_command.ts.side].state_rqst = TS_STATE_OUT;
-		slavedspic.ts[mainboard_command.ts.side].speed_rqst =
-			 (uint16_t)(((uint16_t)mainboard_command.ts.speed_div4<<2)|0x0003);
-		slavedspic.ts[mainboard_command.ts.side].state_changed = 1;
-	}
-	else if (mainboard_command.mode == MIRROR_POS) {
-
-		/* mode_changed */
-		mode_changed = 1;
-
-		/* save side */
-		mirror_side = mainboard_command.mirror.side;
-
-		/* save position */
-		mirror_pos = ((uint16_t)mainboard_command.mirror.pos_h << 8);
-		mirror_pos |= (0x00FF & (uint16_t)mainboard_command.mirror.pos_l);
-	}
-	/* one shoot mode */
-	else
-		mode_changed = 1;
+	
+	mode_changed = 1;
 
 	return 0;
 }
@@ -172,213 +124,495 @@ static void state_do_init(void)
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
 }
 
-/* mirror pos mode */
-static void state_do_mirror_pos(void)
-{
-	if (!state_check_update(MIRROR_POS))
+/* set fingers mode */
+void state_do_fingers_mode(void)
+{		
+	static int8_t done_floor = 1;
+	static int8_t done_totem = 1;
+
+	/* pull fingers blocking if they hasn't done yet */
+	if(!done_floor) {
+		done_floor = fingers_check_mode_done(&slavedspic.fingers_floor);
+		slavedspic.fingers_floor_blocked = (done_floor == -1? 1 : 0);
+	}
+	if(!done_totem) {
+		done_totem = fingers_check_mode_done(&slavedspic.fingers_totem);
+		slavedspic.fingers_totem_blocked = (done_totem == -1? 1 : 0);
+	}
+
+	/* return if no update */
+	if (!state_check_update(FINGERS))
 		return;
 
-	/* set position of mirror */
-	mirror_pos_set(mirror_side, mirror_pos);
+	/* set fingers mode */
+	if(mainboard_command.fingers.type == I2C_FINGERS_TYPE_FLOOR) {
+		if(fingers_set_mode(&slavedspic.fingers_floor, mainboard_command.fingers.mode, mainboard_command.fingers.offset))
+			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
+
+		done_floor = 0;
+	}	
+	else if(mainboard_command.fingers.type == I2C_FINGERS_TYPE_TOTEM) {
+		if(fingers_set_mode(&slavedspic.fingers_totem, mainboard_command.fingers.mode, mainboard_command.fingers.offset))
+			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
+
+		done_totem = 0;
+	}
 
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
 }
 
-/* token system init */
-void token_system_init(token_system_t *ts, uint8_t belts_side,
-								uint8_t sensor_stop, uint8_t sensor_catched)
+/* set arms mode */
+void state_do_arms_mode(void)
 {
-	ts->state = TS_STATE_IDLE;
-	ts->speed = 0;
-	ts->state_changed = 0;
-	ts->state_rqst = 0;
-	ts->speed_rqst = 0;
-	ts->token_catched = 0;
-	ts->belts_blocked = 0;
-	ts->belts_side = belts_side;
-	ts->sensor_stop = sensor_stop;
-	ts->sensor_catched = sensor_catched;
+	static int8_t done_left = 1;
+	static int8_t done_right = 1;
 
-	/* apply to belts */
-	belts_mode_set(ts->belts_side, BELTS_MODE_OUT, ts->speed);
-}
-
-/* manage a token system */
-void token_system_manage(token_system_t *ts)
-{
-#define BELTS_LOAD_TH 						1020
-#define BELTS_BLOCKED_SAMPLE_TIME_US	10000
-#define BELTS_BLOCKING_TIMES_TH			50
-
-	static uint8_t flag_catched = 0;
-//	static microseconds time_us = 0;
-//	static uint8_t blocking_times = 0;
-
-#ifdef SENSOR_STOP_TIME
-	static microseconds us = 0;
-#endif
-
-	/* update state */
-	if(ts->state_changed){
-		ts->state_changed = 0;
-		ts->state = ts->state_rqst;
-		ts->speed = ts->speed_rqst;
-		STMCH_DEBUG("%s mode=%d", __FUNCTION__, ts->state);
+	/* pull fingers blocking if they hasn't done yet */
+	if(!done_right) {
+		done_right = arm_check_mode_done(&slavedspic.arm_right);
+		slavedspic.arm_right_blocked = (done_right == -1? 1 : 0);
+	}
+	if(!done_left) {
+		done_left = arm_check_mode_done(&slavedspic.arm_left);
+		slavedspic.arm_left_blocked = (done_left == -1? 1 : 0);
 	}
 
-	/* XXX update info */
-	ts->token_catched = sensor_get(ts->sensor_catched);
+	/* return if no update */
+	if (!state_check_update(ARMS))
+		return;
 
-	/* ejecute state */
-	switch(ts->state){
-		case TS_STATE_IDLE:
-			break;
+	/* set fingers mode */
+	if(mainboard_command.arm.type == I2C_ARM_TYPE_RIGHT) {
+		if(arm_set_mode(&slavedspic.arm_right, mainboard_command.arm.mode, mainboard_command.arm.offset))
+			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
 
-		case TS_STATE_TAKE:
-			//if(!sensor_get(ts->sensor_stop)){
-				belts_mode_set(ts->belts_side, BELTS_MODE_IN, ts->speed);
+		done_right = 0;
+	}	
+	else if(mainboard_command.arm.type == I2C_ARM_TYPE_LEFT) {
+		if(arm_set_mode(&slavedspic.arm_left, mainboard_command.arm.mode, mainboard_command.arm.offset))
+			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
 
-				STMCH_DEBUG("waiting %s stop...",
-								ts->belts_side==I2C_SIDE_REAR?"REAR":"FRONT");
+		done_left = 0;
+	}
+}
 
-				ts->state = TS_STATE_WAITING_STOP;
-			//}
-			//else
-			//	ts->state = TS_STATE_IDLE;
-			//break;
+/* set lift heigh */
+void state_do_lift_height(void)
+{
+	if (!state_check_update(LIFT_HEIGHT))
+		return;
 
-		case TS_STATE_WAITING_STOP:
+	lift_set_height(mainboard_command.lift.height);
+	while (!lift_check_height_reached());
 
-//			/* XXX update info */
-//			ts->token_catched = sensor_get(ts->sensor_catched);
+	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
+}
 
-			if(ts->token_catched && flag_catched==0){
-				flag_catched = 1;
-#ifdef SENSOR_STOP_TIME
-				us = time_get_us2();
-#endif
-				STMCH_DEBUG("token %s catched!",
-								ts->belts_side==I2C_SIDE_REAR?"REAR":"FRONT");
-			}
+/* set turbine angle */
+void state_do_turbine_angle(void)
+{
+	if (!state_check_update(TURBINE_ANGLE))
+		return;
 
-			/* stop belts when sensor */
-#ifdef SENSOR_STOP_TIME
-			if((time_get_us2() - us > 500000L) && (flag_catched == 1)) {
-#else
-			if(sensor_get(ts->sensor_stop)){
-#endif
-				belts_mode_set(ts->belts_side, BELTS_MODE_OUT, 0);
+	turbine_set_angle(&slavedspic.turbine, 
+							mainboard_command.turbine.angle_deg, mainboard_command.turbine.angle_speed);
 
-				STMCH_DEBUG("token %s stoped!",
-								ts->belts_side==I2C_SIDE_REAR?"REAR":"FRONT");
-				
-				flag_catched = 0;
-				ts->state = TS_STATE_IDLE;
-			}
+	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
+}
 
-#ifdef BELT_BLOCKING
-			/* stop belts when blocked */
-			if(ABS(time_get_us() - time_us) > BELTS_BLOCKED_SAMPLE_TIME_US)	
-			{
-				time_us = time_get_us();	
+/* set turbine blow speed */
+void state_do_turbine_blow(void)
+{
+	if (!state_check_update(TURBINE_BLOW))
+		return;
+
+	turbine_set_blow_speed(&slavedspic.turbine, mainboard_command.turbine.blow_speed);
+
+	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
+}
+
+/* set hook mode */
+void state_do_hook_mode(void)
+{
+	if (!state_check_update(HOOK))
+		return;
+
+	hook_set_mode(&slavedspic.hook, mainboard_command.hook.mode);
+
+	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
+}
+
+/* set boot mode */
+void state_do_boot_mode(void)
+{
+	if (!state_check_update(BOOT))
+		return;
+
+	boot_set_mode(&slavedspic.boot, mainboard_command.boot.mode);
+
+	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
+}
+
+/* set tray mode */
+void state_do_tray_mode(void)
+{
+	if (!state_check_update(TRAY))
+		return;
+
+	if(mainboard_command.tray.type == I2C_TRAY_TYPE_RECEPTION)
+		tray_set_mode(&slavedspic.tray_reception, mainboard_command.tray.mode);
+	else if(mainboard_command.tray.type == I2C_TRAY_TYPE_STORE)
+		tray_set_mode(&slavedspic.tray_store, mainboard_command.tray.mode);
+	else if(mainboard_command.tray.type == I2C_TRAY_TYPE_BOOT)
+		tray_set_mode(&slavedspic.tray_boot, mainboard_command.tray.mode);
+
+	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
+}
 
 
-				//STMCH_ERROR("left load %d", belts_load_get(ts->belts_side));
-				if(belts_load_get(ts->belts_side)>=BELTS_LOAD_TH) {
-					
-					blocking_times ++;
-						
-					STMCH_ERROR("%s belts BLOCKED!!",
-						 				 ts->belts_side==I2C_SIDE_REAR?"REAR":"FRONT");
-				
-					/* belts blocked after N times */
-					if(blocking_times > BELTS_BLOCKING_TIMES_TH) {
-						blocking_times = 0;	
-						
-		
-						belts_mode_set(ts->belts_side, BELTS_MODE_OUT, 0);
-						ts->belts_blocked = 1;
-						ts->state = TS_STATE_IDLE;
-					}
-				}
-				else
-					blocking_times = 0;
-			}
-			else
-				ts->belts_blocked = 0;
-#endif
-			break;
+/* set harvest mode */
+void state_do_harvest_mode(void)
+{
+#define LIFT_HEIGHT_INFRONT_GOLDBAR_TOTEM 	10000
+#define LIFT_HEIGHT_OVER_TOTEM					10000
+#define LIFT_HEIGHT_OVER_GOLDBAR_FLOOR			10000
+#define LIFT_HEIGHT_OVER_COINS_FLOOR			10000
+#define LIFT_HEIGHT_NEAR_GOLDBAR_FLOOR			10000
+#define LIFT_HEIGHT_NEAR_COINS_FLOOR			10000
 
-		case TS_STATE_EJECT:
-			belts_mode_set(ts->belts_side, BELTS_MODE_OUT, ts->speed);
+#define TRIES_HARVEST_GOLDBAR_SEA_MAX	3
 
-			STMCH_DEBUG("waiting %s free...",
-							ts->belts_side==I2C_SIDE_REAR?"REAR":"FRONT");
-
-			ts->state = TS_STATE_WAITING_FREE;
-			break;
+	uint8_t err = 0;
 	
-		case TS_STATE_WAITING_FREE:
-//			/* XXX update info */
-//			ts->token_catched = sensor_get(ts->sensor_catched);
+	if (!state_check_update(HARVEST))
+		return;
 
-			/* stop belts when sensor */
-			if(!ts->token_catched){
-				belts_mode_set(ts->belts_side, BELTS_MODE_OUT, 0);
+	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
 
-				STMCH_DEBUG("token %s free!",
-								ts->belts_side==I2C_SIDE_REAR?"REAR":"FRONT");		
-				ts->state = TS_STATE_IDLE;
-			}
+	/* notice status and update mode*/
+	slavedspic.status = I2C_SLAVEDSPIC_STATUS_BUSY;
+	slavedspic.harvest_mode = mainboard_command.harvest.mode;
+
+	switch(slavedspic.harvest_mode)
+	{
+		case I2C_HARVEST_MODE_PREPARE_TOTEM:
+			
+			/* open all fingers */
+			fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_OPEN, 0);
+			fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_HUG, 0);
+			
+			err = wait_fingers_end(&slavedspic.fingers_totem);
+			if(err & END_BLOCKING)
+				break;
+
+			err = wait_fingers_end(&slavedspic.fingers_floor);
+			if(err & END_BLOCKING)
+				break;
+
+			/* turbine in front of goldbar totem */
+			turbine_set_angle(&slavedspic.turbine, 90, ANGLE_SPEED_FAST);
+			lift_set_height(LIFT_HEIGHT_INFRONT_GOLDBAR_TOTEM);
+			err = wait_fingers_end();
+			if(err & END_BLOCKING)
+				break;
+
 			break;
 
-		case TS_STATE_STOP:
-			belts_mode_set(ts->belts_side, BELTS_MODE_OUT, 0);
-			ts->state = TS_STATE_IDLE;
+		case I2C_HARVEST_MODE_PREPARE_GOLDBAR_TOTEM:
+
+			/* open totem fingers & close floor fingers */
+			fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_OPEN, 0);
+			fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_CLOSE, 0);
+
+			err = wait_fingers_end(&slavedspic.fingers_totem);
+			if(err & END_BLOCKING)
+				break;
+
+			err = wait_fingers_end(&slavedspic.fingers_floor);
+			if(err & END_BLOCKING)
+				break;
+
+			/* turbine in front of goldbar totem */
+			turbine_set_angle(&slavedspic.turbine, 90, ANGLE_SPEED_FAST);
+			lift_set_height(LIFT_HEIGHT_INFRONT_GOLDBAR_TOTEM);
+			err = wait_lift_end();
+			if(err & END_BLOCKING)
+				break;
+			
+			break;
+
+		case I2C_HARVEST_MODE_PREPARE_GOLDBAR_SEA:
+
+			/* open all fingers */
+			fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_OPEN, 0);
+			fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_OPEN, 0);
+			
+			err = wait_fingers_end(&slavedspic.fingers_totem);
+			if(err & END_BLOCKING)
+				break;
+
+			err = wait_fingers_end(&slavedspic.fingers_floor);
+			if(err & END_BLOCKING)
+				break;
+
+			/* turbine looking to the floor */
+			turbine_set_angle(&slavedspic.turbine, 0, ANGLE_SPEED_FAST);
+
+			/* lift over a goldbar height */
+			lift_set_height(LIFT_HEIGHT_OVER_GOLDBAR_SEA);
+			err = wait_lift_end();
+			if(err & END_BLOCKING)
+				break;
+			
 			break;
 			
-		case TS_STATE_PUSH_L:
-		case TS_STATE_SHOW:
-			belts_mode_set(ts->belts_side, BELTS_MODE_RIGHT, ts->speed);
-			ts->state = TS_STATE_IDLE;
+		case I2C_HARVEST_MODE_PREPARE_COINS_TOTEM:
+
+			/* hold fingers floor & open fingers totem */
+			fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_OPEN, 0);
+			fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_HOLD, 0);
+
+			err = wait_fingers_end(&slavedspic.fingers_totem);
+			if(err & END_BLOCKING)
+				break;
+
+			err = wait_fingers_end(&slavedspic.fingers_floor);
+			if(err & END_BLOCKING)
+				break;
+
+			/* lift over totem */
+			turbine_set_angle(&slavedspic.turbine, 90, ANGLE_SPEED_FAST);
+			lift_set_height(LIFT_HEIGHT_OVER_TOTEM_TOTEM);
+			err = wait_lift_end();
+			if(err & END_BLOCKING)
+				break;
+			
 			break;
 
-		case TS_STATE_PUSH_R:
-			belts_mode_set(ts->belts_side, BELTS_MODE_LEFT, ts->speed);
-			ts->state = TS_STATE_IDLE;
+		case I2C_HARVEST_MODE_PREPARE_COINS_FLOOR:
+
+			/* open all fingers */
+			fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_OPEN, 0);
+			fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_OPEN, 0);
+
+			err = wait_fingers_end(&slavedspic.fingers_totem);
+			if(err & END_BLOCKING)
+				break;
+
+			err = wait_fingers_end(&slavedspic.fingers_floor);
+			if(err & END_BLOCKING)
+				break;
+
+			/* turbine looking down and over a coin heigh */
+			turbine_set_angle(&slavedspic.turbine, 90, ANGLE_SPEED_FAST);
+			lift_set_height(LIFT_HEIGHT_OVER_COINS_SEA);
+			err = wait_lift_end();
+			if(err & END_BLOCKING)
+				break;
+
 			break;
 
-		case TS_STATE_OUT:
-			belts_mode_set(ts->belts_side, BELTS_MODE_OUT, ts->speed);
-			ts->state = TS_STATE_IDLE;
+		case I2C_HARVEST_MODE_COINS_ISLE:
+
+			/* close fingers floor */
+			fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_CLOSE, 0);
+
+			err = wait_fingers_end(&slavedspic.fingers_floor);
+			if(err & END_BLOCKING)
+				break;
+
+			break;
+
+		case I2C_HARVEST_MODE_COINS_FLOOR:
+
+			/* all fingers on hold mode */
+			fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_HOLD, 0);
+			fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_HOLD, 0);
+
+			err = wait_fingers_end(&slavedspic.fingers_totem);
+			if(err & END_BLOCKING)
+				break;
+
+			err = wait_fingers_end(&slavedspic.fingers_floor);
+			if(err & END_BLOCKING)
+				break;
+
+			break;
+
+		case I2C_HARVEST_MODE_COINS_TOTEM:
+
+			/* fingers floor holding coins */
+			fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_CLOSE, 0);
+
+			err = wait_fingers_end(&slavedspic.fingers_totem);
+			if(err & END_BLOCKING)
+				break;
+
+			break;
+
+		case I2C_HARVEST_MODE_GOLDBAR_TOTEM:
+
+			/* turbine sucking up */
+			turbine_set_blow_speed(&slavedspic.turbine, TURBINE_SUCKUP_SPEED);
+
+			break;
+
+		case I2C_HARVEST_MODE_GOLDBAR_FLOOR:
+
+			/* turbine sucking up */
+			turbine_set_blow_speed(&slavedspic.turbine, TURBINE_SUCKUP_SPEED);
+			time_wait_ms(400);
+
+			while(!sensor_object_is_catched() && tries < TRIES_HARVEST_GOLDBAR_SEA_MAX) 
+			{		
+				/* go down until sensor detects the goldbar */
+				lift_set_height(LIFT_HEIGHT_NEAR_GOLDBAR_FLOOR);
+
+				while(!err && sensor_object_is_catched())
+					err = lift_check_height_reached();
+	
+				/* XXX hard stop ? */
+				lift_hard_stop();
+	
+				/* go a bit up */
+				lift_set_height(LIFT_HEIGHT_OVER_GOLDBAR_FLOOR);
+			
+				err = wait_lift_end();
+				if(err & END_BLOCKING)
+					break;
+
+				/* next trie ? */
+				tries ++;
+			}
 			break;
 
 		default:
-			belts_mode_set(ts->belts_side, BELTS_MODE_OUT, 0);
-			ts->state = TS_STATE_IDLE;
 			break;
 	}
+
+	if(err & END_BLOCKING)
+		STMCH_DEBUG("HARVEST mode ends with BLOCKING");
+
+	/* notice status and update mode*/
+	slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
+
 }
 
-static void state_do_token_systems(void)
+/* set store mode */
+void state_do_store_mode(void)
 {
-	/* manage systems */
-	token_system_manage(&slavedspic.ts[I2C_SIDE_FRONT]);
-	token_system_manage(&slavedspic.ts[I2C_SIDE_REAR]);
+	uint8_t err = 0;
+	
+	if (!state_check_update(STORE))
+		return;
+
+	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
+
+	/* notice status and update mode*/
+	slavedspic.status = I2C_SLAVEDSPIC_STATUS_BUSY;
+	slavedspic.store_mode = mainboard_command.store.mode;
+
+	switch(slavedspic.harvest_mode)
+	{
+		case I2C_STORE_MODE_TOTEM_IN_MOUTH:
+
+			/* totem fingers mode open */
+
+			/* lift over (coins + goldbar) height */
+
+			/* turbine looking down */
+
+			/* all fingers mode hold */
+
+			/* turbine off */
+
+			/* wait no object catched */
+
+			break;
+
+		case I2C_STORE_MODE_TOTEM_IN_BOOT:
+
+			/* totem fingers mode open */
+
+			/* lift in front of store input */
+
+			/* turn turbine for put totem into store system */
+
+			/* all fingers mode hold */
+
+			/* turbine off */
+
+			/* wait no object cached */
+
+			/* turbine looking down */
+
+			/* goto safe height */
+
+			break;
+
+		case I2C_STORE_MODE_COINS_IN_MOUTH:
+
+			/* turbine looking down */
+
+			/* all fingers on hold mode */
+
+			break;
+
+		case I2C_STORE_MODE_COINS_IN_BOOT:
+
+			/* while found coins on mouth or N times */
+
+			/* turbine looking down */
+
+			 
+
+			break;
+
+		default:
+			break;
+	}
+
+	if(err & END_BLOCKING)
+		STMCH_DEBUG("HARVEST mode ends with BLOCKING");
+
+	/* notice status and update mode*/
+	slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
 }
-#endif
+
+/* set dump mode */
+void state_do_dump_mode(void)
+{
+	if (!state_check_update(DUMP))
+		return;
+
+	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
+}
+
 
 /* state machines */
 void state_machines(void)
 {
-	//state_do_init();
-	//state_do_token_systems();
-	//state_do_mirror_pos();
+	state_do_init();
+
+	/* actuator level */
+	state_do_fingers_mode();
+	state_do_arms_mode();
+	state_do_lift_height();
+	state_do_turbine_angle();
+	state_do_turbine_blow();
+	state_do_hook_mode();
+	state_do_boot_mode();
+	state_do_tray_mode();
+
+	/* actuators abstraction level */
+	state_do_harvest_mode();
+	state_do_store_mode();
+	state_do_dump_mode();
 }
 
 void state_init(void)
 {
-	//mainboard_command.mode = INIT;
+	mainboard_command.mode = INIT;
 
 	//token_system_init(&slavedspic.ts[I2C_SIDE_FRONT], BELTS_SIDE_FRONT, 
 	//						S_FRONT_TOKEN_STOP, S_FRONT_TOKEN_CATCHED);

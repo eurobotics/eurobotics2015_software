@@ -232,21 +232,25 @@ static void cmd_turbine_parsed(__attribute__((unused)) void *parsed_result,
 			turbine_power_off(&slavedspic.turbine);		
 	}
 	else {
-		if (!strcmp_P(res->arg1, PSTR("angle")))
-			turbine_set_angle(&slavedspic.turbine, res->arg2, 100);
+		if (!strcmp_P(res->arg1, PSTR("angle"))) {
+			turbine_set_angle(&slavedspic.turbine, res->arg2, slavedspic.turbine.angle_speed);
+			while(!turbine_check_angle_reached(&slavedspic.turbine));
+		}
+		else if (!strcmp_P(res->arg1, PSTR("speed_angle")))
+			slavedspic.turbine.angle_speed = res->arg2;
 		else if (!strcmp_P(res->arg1, PSTR("blow")))
 			turbine_set_blow_speed(&slavedspic.turbine, res->arg2);
 	}
 
 	/* show */
-	printf("angle = %d (%d)\n\r", turbine_get_angle(&slavedspic.turbine), slavedspic.turbine.angle_pos);
+	printf("angle = %d (%d, %d)\n\r", turbine_get_angle(&slavedspic.turbine), slavedspic.turbine.angle_pos, slavedspic.turbine.angle_speed);
 	printf("blow = %d\n\r", turbine_get_blow_speed(&slavedspic.turbine));	
 
 }
 
 prog_char str_turbine_arg0[] = "turbine";
 parse_pgm_token_string_t cmd_turbine_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_turbine_result, arg0, str_turbine_arg0);
-prog_char str_turbine_arg1[] = "angle#blow";
+prog_char str_turbine_arg1[] = "angle#speed_angle#blow";
 parse_pgm_token_string_t cmd_turbine_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_turbine_result, arg1, str_turbine_arg1);
 parse_pgm_token_num_t cmd_turbine_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_turbine_result, arg2, INT16);
 
@@ -318,7 +322,7 @@ static void cmd_fingers_parsed(__attribute__((unused)) void *parsed_result,
 		mode = FINGERS_MODE_PUSHIN;
 		
 
-	fingers_set_mode(fingers, mode);
+	fingers_set_mode(fingers, mode, 0);
 	while(!fingers_check_mode_done(fingers));
 	printf("done\n\r");
 
@@ -378,7 +382,7 @@ static void cmd_arm_parsed(__attribute__((unused)) void *parsed_result,
 	else if (!strcmp_P(res->arg2, PSTR("floor")))
 		mode = ARM_MODE_PUSH_FLOOR;
 		
-	arm_set_mode(arm, mode);
+	arm_set_mode(arm, mode, 0);
 	while(!arm_check_mode_done(arm));
 	printf("done\n\r");
 
@@ -480,10 +484,10 @@ static void cmd_boot_parsed(__attribute__((unused)) void *parsed_result,
 
 	mode = slavedspic.boot.mode;
 
-	if (!strcmp_P(res->arg1, PSTR("open")))
-		mode = BOOT_MODE_OPEN;
-	else if (!strcmp_P(res->arg1, PSTR("hold")))
-		mode = BOOT_MODE_HOLD;	
+	if (!strcmp_P(res->arg1, PSTR("full_open")))
+		mode = BOOT_MODE_OPEN_FULL;
+	else if (!strcmp_P(res->arg1, PSTR("hold_open")))
+		mode = BOOT_MODE_OPEN_HOLD;	
 	else if (!strcmp_P(res->arg1, PSTR("close")))
 		mode = BOOT_MODE_CLOSE;
 		
@@ -494,7 +498,7 @@ static void cmd_boot_parsed(__attribute__((unused)) void *parsed_result,
 
 prog_char str_boot_arg0[] = "boot";
 parse_pgm_token_string_t cmd_boot_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_boot_result, arg0, str_boot_arg0);
-prog_char str_boot_arg1[] = "open#hold#close";
+prog_char str_boot_arg1[] = "full_open#hold_open#close";
 parse_pgm_token_string_t cmd_boot_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_boot_result, arg1, str_boot_arg1);
 
 prog_char help_boot[] = "set boot mode";
