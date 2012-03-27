@@ -77,8 +77,8 @@
 #define S_TURBINE_LINE_A2	SENSOR5
 #define S_TURBINE_LINE_B1	SENSOR2
 #define S_TURBINE_LINE_B2	SENSOR1
-#define S_TURBINE_LINE_A 	((1 << S_TURBINE_LINE_A1) & (1 << S_TURBINE_LINE_A2)) 
-#define S_TURBINE_LINE_B 	((1 << S_TURBINE_LINE_B1) & (1 << S_TURBINE_LINE_B2)) 
+#define S_TURBINE_LINE_A 	((1 << S_TURBINE_LINE_A1) & (1 << S_TURBINE_LINE_A2)) /* more close */
+#define S_TURBINE_LINE_B 	((1 << S_TURBINE_LINE_B1) & (1 << S_TURBINE_LINE_B2)) /* more far */
 
 
 /** ERROR NUMS */

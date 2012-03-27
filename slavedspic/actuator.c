@@ -65,7 +65,7 @@ void lift_calibrate(void)
 	/* save and set PID constants */
 	kp = pid_get_gain_P(&slavedspic.lift.pid);
 	ki = pid_get_gain_I(&slavedspic.lift.pid);
-	kd = pid_get_gain_D(&slavedspic.lift.pid);	pid_set_gains(&slavedspic.lift.pid,  500, 0, 0);
+	kd = pid_get_gain_D(&slavedspic.lift.pid);	pid_set_gains(&slavedspic.lift.pid,  5000, 0, 0);
 	/* set low speed, and hi acceleration for fast response */
 	quadramp_set_1st_order_vars(&slavedspic.lift.qr, AUTOPOS_SPEED, AUTOPOS_SPEED);
 	quadramp_set_2nd_order_vars(&slavedspic.lift.qr, AUTOPOS_ACCEL, AUTOPOS_ACCEL);
@@ -164,35 +164,42 @@ void turbine_power_off(turbine_t *turbine) {
 void turbine_angle_speed_control(void * data)
 {
 	turbine_t *turbine = (turbine_t *)data;
-	uint16_t angle_pos = turbine->angle_pos;
+	int16_t angle_pos;
+	uint8_t flags;
 
 	/* next angle position */
-	if(turbine->angle_consign > turbine->angle_pos) {
+	if(turbine->angle_consign >= turbine->angle_pos) {
 		angle_pos = turbine->angle_pos + turbine->angle_speed;
 		if(angle_pos >= turbine->angle_consign)
 			angle_pos = turbine->angle_consign;
 	}
 	else {
 		angle_pos = turbine->angle_pos - turbine->angle_speed;
-		if(angle_pos <= turbine->angle_consign)
+		if(angle_pos <= (int16_t)turbine->angle_consign)
 			angle_pos = turbine->angle_consign;
 	}
 
 	/* apply at servo */
-	turbine->angle_pos = pwm_servo_set(TURBINE_ANGLE_PWM_SERVO, angle_pos);
+	turbine->angle_pos = pwm_servo_set(TURBINE_ANGLE_PWM_SERVO, (uint16_t)angle_pos);
 
 	/* kill event if angle is equal to consign */
-	if(angle_pos == turbine->angle_consign)
+	if(angle_pos == turbine->angle_consign) {
+		IRQ_LOCK(flags);
 		scheduler_del_event(turbine->angle_event_handler);
+		IRQ_UNLOCK(flags);
+	}
 }
 
 /* set angle consing */
 void turbine_set_angle(turbine_t *turbine, int16_t angle_deg, uint16_t angle_speed)
 {
 	uint16_t angle_pos;
+	uint8_t flags;
 
 	/* delete event */
+	IRQ_LOCK(flags);
 	scheduler_del_event(turbine->angle_event_handler);
+	IRQ_UNLOCK(flags);
 
 	/* position consing */
 	angle_pos = TURBINE_POS_ANGLE_ZERO + (angle_deg * TURBINE_K_POS_DEG);
@@ -225,8 +232,10 @@ void turbine_set_angle(turbine_t *turbine, int16_t angle_deg, uint16_t angle_spe
 #endif
 
 	/* manage servo on event */
+	IRQ_LOCK(flags);
 	turbine->angle_consign = angle_pos;
 	turbine->angle_speed = angle_speed;
+	IRQ_UNLOCK(flags);
 	turbine->angle_event_handler = scheduler_add_periodical_event(turbine_angle_speed_control,
 									 		(void *)(turbine), TURBINE_ANGLE_SPEED_CONTROL_us / SCHEDULER_UNIT);
 

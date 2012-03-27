@@ -158,7 +158,7 @@ struct i2c_cmd_slavedspic_set_mode {
 
 		struct {
 			int8_t angle_deg;
-			uint8_t angle_speed;
+			uint16_t angle_speed;
 			uint16_t blow_speed;
 		} turbine;
 		
@@ -227,9 +227,8 @@ struct i2c_cmd_slavedspic_set_mode {
 #define I2C_DUMP_MODE_BOOT						3
 #define I2C_DUMP_MODE_BOOT_BLOWING			4
 #define I2C_DUMP_MODE_MOUTH_BLOWING			5
-#define I2C_DUMP_MODE_MOUTH_CAPTAIN			6
-#define I2C_DUMP_MODE_END_BOOT				7
-#define I2C_DUMP_MODE_END_MOUTH				8
+#define I2C_DUMP_MODE_END_BOOT				6
+#define I2C_DUMP_MODE_END_MOUTH				7
 
 		} dump;
 
