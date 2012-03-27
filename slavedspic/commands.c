@@ -82,10 +82,13 @@ extern parse_pgm_inst_t cmd_arm;
 extern parse_pgm_inst_t cmd_tray;
 extern parse_pgm_inst_t cmd_boot;
 extern parse_pgm_inst_t cmd_hook;
-extern parse_pgm_inst_t cmd_state_debug;
-extern parse_pgm_inst_t cmd_state1;
-extern parse_pgm_inst_t cmd_state2;
-extern parse_pgm_inst_t cmd_state3;
+extern parse_pgm_inst_t cmd_harvest;
+extern parse_pgm_inst_t cmd_store;
+extern parse_pgm_inst_t cmd_dump;
+//extern parse_pgm_inst_t cmd_state_debug;
+//extern parse_pgm_inst_t cmd_state1;
+//extern parse_pgm_inst_t cmd_state2;
+//extern parse_pgm_inst_t cmd_state3;
 //extern parse_pgm_inst_t cmd_state_machine;
 //extern parse_pgm_inst_t cmd_test;
 
@@ -146,10 +149,13 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_tray,
 	(parse_pgm_inst_t *)&cmd_boot,
 	(parse_pgm_inst_t *)&cmd_hook,
-	(parse_pgm_inst_t *)&cmd_state_debug,
-	(parse_pgm_inst_t *)&cmd_state1,
-	(parse_pgm_inst_t *)&cmd_state2,	
-	(parse_pgm_inst_t *)&cmd_state3,
+	(parse_pgm_inst_t *)&cmd_harvest,
+	(parse_pgm_inst_t *)&cmd_store,
+	(parse_pgm_inst_t *)&cmd_dump,
+	//(parse_pgm_inst_t *)&cmd_state_debug,
+	//(parse_pgm_inst_t *)&cmd_state1,
+	//(parse_pgm_inst_t *)&cmd_state2,	
+	//(parse_pgm_inst_t *)&cmd_state3,
 	//(parse_pgm_inst_t *)&cmd_state_machine,
 	//(parse_pgm_inst_t *)&cmd_test,
 
