@@ -211,9 +211,7 @@ struct i2c_cmd_slavedspic_set_mode {
 			uint8_t mode;
 #define I2C_STORE_MODE_GOLDBAR_IN_MOUTH		0
 #define I2C_STORE_MODE_GOLDBAR_IN_BOOT			1
-#define I2C_STORE_MODE_COINS_IN_MOUTH			2
-#define I2C_STORE_MODE_MOUTH_COINS_IN_BOOT	3
-#define I2C_STORE_MODE_MOUTH_GOLDBAR_IN_BOOT	4
+#define I2C_STORE_MODE_MOUTH_IN_BOOT			2
 
 			uint8_t times;
 		} store;

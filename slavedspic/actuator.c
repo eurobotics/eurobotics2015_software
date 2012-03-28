@@ -252,8 +252,8 @@ void turbine_set_blow_speed(turbine_t *turbine, uint16_t speed) {
 }
 
 /* return the blow speed of turbines */
-uint16_t turbine_get_angle(turbine_t *turbine) {
-	return ((turbine->angle_pos - TURBINE_POS_ANGLE_ZERO) / TURBINE_K_POS_DEG);
+int16_t turbine_get_angle(turbine_t *turbine) {
+	return (int16_t)(((int16_t)turbine->angle_pos - (int16_t)TURBINE_POS_ANGLE_ZERO) / TURBINE_K_POS_DEG);
 }
 
 /* return the angle in deg of turbines */
@@ -733,7 +733,7 @@ void actuator_init(void)
 	fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_OPEN, 0);
 	fingers_check_mode_done(&slavedspic.fingers_totem);
 
-	turbine_set_angle(&slavedspic.turbine, 0, 500);
+	turbine_set_angle(&slavedspic.turbine, 0, TURBINE_ANGLE_SPEED_FAST);
 	turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);
 	turbine_power_on(&slavedspic.turbine);
 

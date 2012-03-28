@@ -165,7 +165,7 @@ struct slavedspic {
 	uint8_t dump_mode;
 
 	uint8_t nb_goldbars_in_boot;
-	uint8_t nb_golbarrs_in_mouth;
+	uint8_t nb_goldbars_in_mouth;
 	uint8_t nb_coins_in_boot;
 	uint8_t nb_coins_in_mouth;
 

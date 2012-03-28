@@ -40,6 +40,7 @@
 #define TURBINE_POS_ANGLE_90			130
 #define TURBINE_K_POS_DEG		 		(double)((TURBINE_POS_ANGLE_90 - TURBINE_POS_ANGLE_ZERO)  / 90.0)
 #define TURBINE_BLOW_SPEED_OFF		200
+#define TURBINE_ANGLE_ZERO				0
 
 #define POS_FINGER_TOTEM_R_HUG		738
 #define POS_FINGER_TOTEM_R_OPEN		POS_FINGER_TOTEM_R_HUG
@@ -159,7 +160,7 @@ int8_t turbine_check_angle_reached(turbine_t *turbine);
 
 void turbine_set_blow_speed(turbine_t *turbine, uint16_t speed);
 
-uint16_t turbine_get_angle(turbine_t *turbine);
+int16_t turbine_get_angle(turbine_t *turbine);
 uint16_t turbine_get_blow_speed(turbine_t *turbine);
 
 /**** fingers funcions *********************************************************/

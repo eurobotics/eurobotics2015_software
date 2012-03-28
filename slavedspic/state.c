@@ -339,7 +339,7 @@ void state_do_harvest_mode(void)
 			time_wait_ms(100);	
 
 			/* turbine looking to the floor */
-			turbine_set_angle(&slavedspic.turbine, 0, TURBINE_ANGLE_SPEED_FAST);
+			turbine_set_angle(&slavedspic.turbine, TURBINE_ANGLE_ZERO, TURBINE_ANGLE_SPEED_FAST);
 
 			/* lift over a goldbar height */
 			lift_set_height(LIFT_HEIGHT_OVER_GOLDBAR_FLOOR);
@@ -390,7 +390,7 @@ void state_do_harvest_mode(void)
 			time_wait_ms(100);
 
 			/* turbine looking down and over a coin heigh */
-			turbine_set_angle(&slavedspic.turbine, 0, TURBINE_ANGLE_SPEED_FAST);
+			turbine_set_angle(&slavedspic.turbine, TURBINE_ANGLE_ZERO, TURBINE_ANGLE_SPEED_FAST);
 			lift_set_height(LIFT_HEIGHT_OVER_COINS_FLOOR);
 			err = lift_wait_end();
 			if(err & END_BLOCKING)
@@ -458,8 +458,8 @@ void state_do_harvest_mode(void)
 			}
 
 			/* uncomment for debug */
-			time_wait_ms(800);
-			turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);								
+			//time_wait_ms(800);
+			//turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);								
 
 			break;
 
@@ -520,8 +520,12 @@ void state_do_harvest_mode(void)
 			}
 
 			/* uncomment for debug */
-			time_wait_ms(1000);
-			turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);								
+			//time_wait_ms(1000);
+			//turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);								
+
+			/* all fingers mode hold */
+			fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_HOLD, 0);
+			fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_HOLD, 0);
 
 			break;
 
@@ -537,16 +541,217 @@ void state_do_harvest_mode(void)
 
 }
 
-/* set store mode */
-void state_do_store_mode(void)
-{
-#define LIFT_HEIGHT_OVER_GOLDBAR_AND_COINS	10000
-#define LIFT_HEIGHT_INFRONT_STORE				10000
-#define LIFT_HEIGHT_SAFE							10000
-#define LIFT_HEIGHT_OVER_LOTOF_COINS			10000
+/* store constants */
+#define LIFT_HEIGHT_OVER_GOLDBAR_AND_COINS	20000
+#define LIFT_HEIGHT_STORE_GOLDBAR_1				2000
+#define LIFT_HEIGHT_STORE_GOLDBAR_2				4000
+#define LIFT_HEIGHT_STORE_COINS					5000
+#define LIFT_HEIGHT_SAFE							20000
+#define LIFT_HEIGHT_OVER_LOTOF_COINS			32000
 
 #define STORE_TIMES_MAX		10
 
+
+/* store a goldbar in mouth */
+uint8_t store_goldbar_in_mouth(void)
+{
+	uint8_t err = 0;
+
+	/* XXX */
+	if(turbine_get_angle(&slavedspic.turbine) > 20 )
+	{
+		/* totem fingers mode open */
+		fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_OPEN, 0);
+
+		err = fingers_wait_end(&slavedspic.fingers_totem);
+		if(err & END_BLOCKING)
+			goto end;
+	}
+	else {
+		/* turbine off */
+		turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);
+
+		/* all fingers mode hold */
+		fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_HOLD, 0);
+		fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_HOLD, 0);
+	}
+
+	/* lift over (coins + goldbar) height */
+	lift_set_height(LIFT_HEIGHT_OVER_GOLDBAR_AND_COINS);
+	err = lift_wait_end();
+	if(err & END_BLOCKING)
+		goto end;
+				
+	/* turbine looking down */
+	turbine_set_angle(&slavedspic.turbine, TURBINE_ANGLE_ZERO, TURBINE_ANGLE_SPEED_FAST);
+	
+
+	/* XXX */
+	if(turbine_get_angle(&slavedspic.turbine) > 20 )
+	{
+		/* XXX */
+		time_wait_ms(100);
+
+		/* all fingers mode hold */
+		fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_HOLD, 0);
+		fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_HOLD, 0);
+
+		/* check if totem is still catched */
+		if(sensor_get_all() == 0) {
+			turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);
+			STMCH_DEBUG("Catched goldbar lost! :(");
+			goto end;
+		}
+
+		/* turbine off */
+		turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);
+	}
+
+	/* wait no object catched */
+	if(WAIT_COND_OR_TIMEOUT((sensor_get_all() == 0), 1000)) {
+		slavedspic.nb_goldbars_in_mouth ++;
+		STMCH_DEBUG("Goldbar stored in mouth :)");
+	}
+
+end:
+	return err;
+}
+
+/* store a goldbar in boot, return END_TRAJ or END_BLOCKING */
+uint8_t store_goldbar_in_boot(void)
+{
+	uint8_t err = 0;
+	uint16_t sensors_saved = 0;
+	int16_t turbine_angle;
+
+	/* check goldbar */
+	if(sensor_get_all() == 0) {
+		STMCH_DEBUG("There is no Goldbar :(");
+		//turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);
+		//break;
+	}
+
+	/* store tray down */
+	tray_set_mode(&slavedspic.tray_store, TRAY_MODE_DOWN);
+
+	/* XXX */
+	turbine_angle = turbine_get_angle(&slavedspic.turbine);
+	if(turbine_angle > 20 ) {
+
+		/* totem fingers mode open */
+		fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_OPEN, 0);
+		err = fingers_wait_end(&slavedspic.fingers_totem);
+		if(err & END_BLOCKING)
+			goto end;	
+	}
+
+	/* lift in front of store input */
+	lift_set_height(LIFT_HEIGHT_STORE_GOLDBAR_1);
+
+	/* XXX */
+	time_wait_ms(100);				
+
+	/* turn turbine for put totem into store system */
+	turbine_set_angle(&slavedspic.turbine, TURBINE_ANGLE_ZERO, TURBINE_ANGLE_SPEED_FAST);
+
+	err = lift_wait_end();
+	if(err & END_BLOCKING)
+		goto end;
+
+	/* all fingers mode hold */
+	fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_HOLD, 0);
+	fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_HOLD, 0);
+
+	/* turn turbine for put totem into store system */
+	turbine_set_angle(&slavedspic.turbine, -45, TURBINE_ANGLE_SPEED_FAST);
+
+	/* XXX */
+	time_wait_ms(100);	
+
+	/* check sensors */
+	sensors_saved = sensor_get_all();
+	if(sensors_saved == 0) {
+		STMCH_DEBUG("Goldbar lost :(");
+		//turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);	
+	}
+
+	/* lift in front of store input */
+	lift_set_height(LIFT_HEIGHT_STORE_GOLDBAR_2);
+	err = lift_wait_end();
+	if(err & END_BLOCKING)
+		goto end;
+
+	/* turn turbine for put totem into store system */
+	turbine_set_angle(&slavedspic.turbine, -85, TURBINE_ANGLE_SPEED_FAST);
+
+	/* XXX */
+	time_wait_ms(100);
+
+	/* turbine off */
+	turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);
+
+	/* wait no object cached */
+	if(WAIT_COND_OR_TIMEOUT((sensor_get_all() != sensors_saved), 1000)) {
+		slavedspic.nb_goldbars_in_boot ++;
+		STMCH_DEBUG("Goldbar stored in boot :) (%d)", slavedspic.nb_goldbars_in_boot);
+	}
+	else {
+		/* XXX comment if no debug */
+		slavedspic.nb_goldbars_in_boot ++; 
+		STMCH_DEBUG("Seems goldbar NOT stored in boot :S (%d)", slavedspic.nb_goldbars_in_boot);
+	}
+
+	/* XXX */
+	time_wait_ms(400);
+
+	/* turn turbine for put totem into store system */
+	turbine_set_angle(&slavedspic.turbine, -45, TURBINE_ANGLE_SPEED_FAST);
+
+	/* XXX */
+	time_wait_ms(100);
+
+	/* lift in front of store input */
+	lift_set_height(LIFT_HEIGHT_STORE_GOLDBAR_1);
+	err = lift_wait_end();
+	if(err & END_BLOCKING)
+		goto end;
+
+	/* XXX turbine will block if lift go down */
+	if(slavedspic.nb_goldbars_in_boot >= 4) 
+		goto end_4th_goldbar;
+
+	/* turn turbine for put totem into store system */
+	turbine_set_angle(&slavedspic.turbine, TURBINE_ANGLE_ZERO, TURBINE_ANGLE_SPEED_FAST);
+
+	/* XXX */
+	time_wait_ms(100);
+
+	/* store tray up */
+	if(slavedspic.nb_goldbars_in_boot < 4)
+		tray_set_mode(&slavedspic.tray_store, TRAY_MODE_UP);
+
+	/* goto safe height */
+	lift_set_height(LIFT_HEIGHT_SAFE);
+	err = lift_wait_end();
+	if(err & END_BLOCKING)
+		goto end;
+
+end_4th_goldbar:
+	err = fingers_wait_end(&slavedspic.fingers_totem);
+	if(err & END_BLOCKING)
+		goto end;
+
+	err = fingers_wait_end(&slavedspic.fingers_floor);
+	if(err & END_BLOCKING)
+		goto end;
+
+end:
+	return err;
+}
+
+/* set store mode */
+void state_do_store_mode(void)
+{
 	uint8_t err = 0;
 	uint8_t store_times, cnt_times = 0;
 	
@@ -560,122 +765,23 @@ void state_do_store_mode(void)
 	slavedspic.store_mode = mainboard_command.store.mode;
 	store_times =  mainboard_command.store.times;
 
-	switch(slavedspic.harvest_mode)
+	switch(slavedspic.store_mode)
 	{
+
 		case I2C_STORE_MODE_GOLDBAR_IN_MOUTH:
-
-			/* totem fingers mode open */
-			fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_OPEN, 0);
-			err = fingers_wait_end(&slavedspic.fingers_totem);
-			if(err & END_BLOCKING)
-					break;
-
-			/* lift over (coins + goldbar) height */
-			lift_set_height(LIFT_HEIGHT_OVER_GOLDBAR_AND_COINS);
-			err = lift_wait_end();
-			if(err & END_BLOCKING)
-					break;
-			
-			/* turbine looking down */
-			turbine_set_angle(&slavedspic.turbine, 0, TURBINE_ANGLE_SPEED_SLOW);
-			time_wait_ms(500);
-
-			/* all fingers mode hold */
-			fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_HOLD, 0);
-			fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_HOLD, 0);
-
-			/* turbine off */
-			turbine_set_blow_speed(&slavedspic.turbine, 0);
-
-			/* wait no object catched */
-			WAIT_COND_OR_TIMEOUT(!sensor_object_is_catched(), 100);
-
+			err = store_goldbar_in_mouth();
 			break;
 
 		case I2C_STORE_MODE_GOLDBAR_IN_BOOT:
-
-			/* totem fingers mode open */
-			fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_OPEN, 0);
-			err = fingers_wait_end(&slavedspic.fingers_totem);
-			if(err & END_BLOCKING)
-					break;
-
-			/* lift in front of store input */
-			lift_set_height(LIFT_HEIGHT_INFRONT_STORE);
-			err = lift_wait_end();
-			if(err & END_BLOCKING)
-					break;
-
-			/* turn turbine for put totem into store system */
-			turbine_set_angle(&slavedspic.turbine, -85, TURBINE_ANGLE_SPEED_SLOW);
-			time_wait_ms(800);
-
-			/* all fingers mode hold */
-			fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_HOLD, 0);
-			fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_HOLD, 0);
-
-			err = fingers_wait_end(&slavedspic.fingers_totem);
-			if(err & END_BLOCKING)
-					break;
-
-			err = fingers_wait_end(&slavedspic.fingers_floor);
-			if(err & END_BLOCKING)
-					break;
-
-			/* turbine off */
-			turbine_set_blow_speed(&slavedspic.turbine, 0);
-
-			/* wait no object cached */
-			WAIT_COND_OR_TIMEOUT(!sensor_object_is_catched(), 500);
-
-			/* turbine looking down */
-			turbine_set_angle(&slavedspic.turbine, 0, TURBINE_ANGLE_SPEED_SLOW);
-			time_wait_ms(500);
-
-			/* store tray up */
-			if(slavedspic.nb_goldbars_in_boot < 3)
-				tray_set_mode(&slavedspic.tray_store, TRAY_MODE_UP);
-
-			/* goto safe height */
-			lift_set_height(LIFT_HEIGHT_SAFE);
-			err = lift_wait_end();
-			if(err & END_BLOCKING)
-					break;
-
+			/* XXX only 3 goldbars */
+			if(slavedspic.nb_goldbars_in_boot >= 3) 
+				err = store_goldbar_in_mouth();
+			else
+				err = store_goldbar_in_boot();
+			
 			break;
 
-		case I2C_STORE_MODE_COINS_IN_MOUTH:
-
-			/* turbine looking down */
-			turbine_set_angle(&slavedspic.turbine, 0, TURBINE_ANGLE_SPEED_FAST);
-
-			/* all fingers on hold mode */
-			fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_HOLD, 0);
-			fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_HOLD, 0);
-
-			err = fingers_wait_end(&slavedspic.fingers_totem);
-			if(err & END_BLOCKING)
-					break;
-
-			err = fingers_wait_end(&slavedspic.fingers_floor);
-			if(err & END_BLOCKING)
-					break;
-
-			/* lift over a lot of coins */
-			lift_set_height(LIFT_HEIGHT_OVER_LOTOF_COINS);
-			err = lift_wait_end();
-			if(err & END_BLOCKING)
-					break;
-
-			/* turbine off */
-			turbine_set_blow_speed(&slavedspic.turbine, 0);
-
-			/* wait no object catched */
-			WAIT_COND_OR_TIMEOUT(!sensor_object_is_catched(), 500);
-
-			break;
-
-		case I2C_STORE_MODE_MOUTH_COINS_IN_BOOT:
+		case I2C_STORE_MODE_MOUTH_IN_BOOT:
 
 			/* while found coins on mouth or N times */
 			while(1) 
@@ -688,42 +794,52 @@ void state_do_store_mode(void)
 				if(cnt_times > STORE_TIMES_MAX)
 					break;
 
+				/* turbine looking down */
+
 				/* tubine suck up on */			
 				turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_FAST);
 
 				/* store tray down */
 				tray_set_mode(&slavedspic.tray_store, TRAY_MODE_DOWN);
 
-				/* go down */
-				lift_set_height(LIFT_HEIGHT_NEAR_GOLDBAR_FLOOR);
+				/* go near coins */
+				lift_set_height(LIFT_HEIGHT_NEAR_COINS);
+
+				/* reduce the speed when near */
+				while(lift_get_height() < (LIFT_HEIGHT_NEAR_COINS - 5000));
+				quadramp_set_1st_order_vars(&slavedspic.lift.qr, 10, 10);
 
 				/* wait end traj or object catched */
-				while(!err && sensor_object_is_catched())
+				while(!err && sensor_get_all() == 0)
 					err = lift_check_height_reached();
-	
+
 				/* XXX hard stop ? */
 				lift_hard_stop();
+				quadramp_set_1st_order_vars(&slavedspic.lift.qr, LIFT_SPEED, LIFT_SPEED);
 
-				/* exit if no object catched */
-				if(sensor_object_is_catched()) {
-					turbine_set_blow_speed(&slavedspic.turbine, 0);
+				/* XXX wait for catch the coins */
+				time_wait_ms(200);
+
+				/* exit if no object catched */	
+				if(sensor_get_all() == 0) {
+					turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);
 					lift_set_height(LIFT_HEIGHT_SAFE);
 					err = lift_wait_end();
 					break;
 				}
 
 				/* go up, in front of store */
-				lift_set_height(LIFT_HEIGHT_INFRONT_STORE);
+				lift_set_height(LIFT_HEIGHT_STORE_COINS);
 				err = lift_wait_end();
 				if(err & END_BLOCKING)
 						break;
 
-				/* tubine suck up on */			
-				turbine_set_blow_speed(&slavedspic.turbine, 0);
+				/* tubine suck up off */			
+				turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);
 
 				/* turn to store */
 				turbine_set_angle(&slavedspic.turbine, -85, TURBINE_ANGLE_SPEED_FAST);
-				time_wait_ms(200);
+				time_wait_ms(100);
 
 				/* reception tray up */
 				tray_set_mode(&slavedspic.tray_reception, TRAY_MODE_UP);
@@ -737,7 +853,7 @@ void state_do_store_mode(void)
 				time_wait_ms(200);
 
 				/* turbine looking down */
-				turbine_set_angle(&slavedspic.turbine, 0, TURBINE_ANGLE_SPEED_FAST);
+				turbine_set_angle(&slavedspic.turbine, TURBINE_ANGLE_ZERO, TURBINE_ANGLE_SPEED_FAST);
 				time_wait_ms(100);
 			}
 
