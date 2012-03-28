@@ -774,12 +774,8 @@ static void cmd_store_parsed(void *parsed_result,
 		command.store.mode = I2C_STORE_MODE_GOLDBAR_IN_MOUTH;
 	else if (!strcmp(res->arg1, "goldbar_boot"))
 		command.store.mode = I2C_STORE_MODE_GOLDBAR_IN_BOOT;
-	else if (!strcmp(res->arg1, "coins_mouth"))
-		command.store.mode = I2C_STORE_MODE_COINS_IN_MOUTH;
-	else if (!strcmp(res->arg1, "mouth_coins_boot"))
-		command.store.mode = I2C_STORE_MODE_MOUTH_COINS_IN_BOOT;
-	else if (!strcmp(res->arg1, "mouth_goldbar_boot"))
-		command.store.mode = I2C_STORE_MODE_MOUTH_GOLDBAR_IN_BOOT;
+	else if (!strcmp(res->arg1, "mouth_in_boot"))
+		command.store.mode = I2C_STORE_MODE_MOUTH_IN_BOOT;
 
 	command.mode = I2C_SLAVEDSPIC_MODE_STORE;
 	state_set_mode(&command);
@@ -787,7 +783,7 @@ static void cmd_store_parsed(void *parsed_result,
 
 prog_char str_store_arg0[] = "store";
 parse_pgm_token_string_t cmd_store_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_store_result, arg0, str_store_arg0);
-prog_char str_store_arg1[] = "goldbar_mouth#goldbar_boot#coins_mouth#mouth_coins_boot#mouth_goldbar_boot";
+prog_char str_store_arg1[] = "goldbar_mouth#goldbar_boot#mouth_in_boot";
 parse_pgm_token_string_t cmd_store_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_store_result, arg1, str_store_arg1);
 
 
