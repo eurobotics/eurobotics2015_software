@@ -91,6 +91,7 @@ uint8_t lasers_get_state(void)
 }
 
 
+#if 0
 
 /* manage mirrors position */
 
@@ -172,3 +173,4 @@ void mirrors_set_mode(uint8_t mode)
 	mirror_update_pos = 1;
 }
 
+#endif

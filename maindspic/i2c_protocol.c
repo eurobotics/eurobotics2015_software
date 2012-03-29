@@ -398,6 +398,7 @@ void i2c_read_event(uint8_t * buf, uint16_t size)
 			if (size != sizeof (*ans))
 				goto *p_error_recv;
 	
+#if 0
 			/* token systems status */
 			slavedspic.ts[I2C_SIDE_REAR].state 			 = ans->ts[I2C_SIDE_REAR].state;
 			slavedspic.ts[I2C_SIDE_REAR].belts_blocked = ans->ts[I2C_SIDE_REAR].belts_blocked;
@@ -406,7 +407,7 @@ void i2c_read_event(uint8_t * buf, uint16_t size)
 			slavedspic.ts[I2C_SIDE_FRONT].state 		  = ans->ts[I2C_SIDE_FRONT].state;
 			slavedspic.ts[I2C_SIDE_FRONT].belts_blocked = ans->ts[I2C_SIDE_FRONT].belts_blocked;
 			slavedspic.ts[I2C_SIDE_FRONT].token_catched = ans->ts[I2C_SIDE_FRONT].token_catched;
-	
+#endif
 			break;
 		}
 	
@@ -524,7 +525,7 @@ int8_t i2c_led_control(uint8_t addr, uint8_t led, uint8_t state)
 	return i2c_send_command(addr, (uint8_t*)&buf, sizeof(buf));
 }
 
-
+#if 0
 int8_t i2c_slavedspic_mode_init(void)
 {
 	struct i2c_cmd_slavedspic_set_mode buf;
@@ -649,7 +650,7 @@ int8_t i2c_slavedspic_mode_mirror_pos(uint8_t side, uint16_t pos)
 	/* send command and return */
 	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
 }
-
+#endif
 
 /*******************************************************************************
  * Debug functions

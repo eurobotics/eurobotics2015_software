@@ -23,7 +23,6 @@
 #ifndef _ACTUATOR_H_
 #define _ACTUATOR_H_
 
-
 #include <stdint.h>
 
 /* used by cs, correct offset and save values */

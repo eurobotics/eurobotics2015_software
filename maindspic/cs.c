@@ -183,6 +183,8 @@ void dump_pid(const char *name, struct pid_filter *pid)
 		 pid_get_value_out(pid));
 }
 
+//void dac_set_and_save(void *dac, int32_t val);
+
 /* cs init */
 void maindspic_cs_init(void)
 {
@@ -193,9 +195,9 @@ void maindspic_cs_init(void)
 
 	/* increase gain to decrease dist, increase left and it will turn more left */
 	rs_set_left_ext_encoder(&mainboard.rs, encoders_dspic_get_value, 
-				LEFT_ENCODER, IMP_COEF * 0.996); //0.998);//0.999083
+				LEFT_ENCODER, IMP_COEF * 1.0); // 2011 0.996); //0.998);//0.999083
 	rs_set_right_ext_encoder(&mainboard.rs, encoders_dspic_get_value, 
-				 RIGHT_ENCODER, IMP_COEF * -1.004);//-1.002);//1.003087
+				 RIGHT_ENCODER, IMP_COEF * -1.0); // 2011 -1.004);//-1.002);//1.003087
 
 	/* rs will use external encoders */
 	rs_set_flags(&mainboard.rs, RS_USE_EXT);
@@ -227,8 +229,10 @@ void maindspic_cs_init(void)
 
 	/* QUADRAMP */
 	quadramp_init(&mainboard.angle.qr);
-	quadramp_set_1st_order_vars(&mainboard.angle.qr, 4000, 4000); 	/* set speed */
-	quadramp_set_2nd_order_vars(&mainboard.angle.qr, 80, 80); 		/* set accel */
+	//quadramp_set_1st_order_vars(&mainboard.angle.qr, 4000, 4000); 	/* set speed */
+	//quadramp_set_2nd_order_vars(&mainboard.angle.qr, 80, 80); 		/* set accel */
+	quadramp_set_1st_order_vars(&mainboard.angle.qr, 1000, 1000); 	/* set speed */
+	quadramp_set_2nd_order_vars(&mainboard.angle.qr, 5, 5); 		/* set accel */
 
 
 	/* CS */
@@ -254,8 +258,10 @@ void maindspic_cs_init(void)
 
 	/* QUADRAMP */
 	quadramp_init(&mainboard.distance.qr);
-	quadramp_set_1st_order_vars(&mainboard.distance.qr, 4000, 4000); 	/* set speed */
-	quadramp_set_2nd_order_vars(&mainboard.distance.qr, 35, 35); 	/* set accel */
+	//quadramp_set_1st_order_vars(&mainboard.distance.qr, 4000, 4000); 	/* set speed */
+	//quadramp_set_2nd_order_vars(&mainboard.distance.qr, 35, 35); 	/* set accel */
+	quadramp_set_1st_order_vars(&mainboard.distance.qr, 1000, 1000); 	/* set speed */
+	quadramp_set_2nd_order_vars(&mainboard.distance.qr, 5, 5); 	/* set accel */
 
 	/* CS */
 	cs_init(&mainboard.distance.cs);

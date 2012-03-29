@@ -30,7 +30,7 @@
 #ifndef _I2C_COMMANDS_H_
 #define _I2C_COMMANDS_H_
 
-#include "../slavedspic/actuator.h"
+//#include "../slavedspic/actuator.h"
 
 #define I2C_SLAVEDSPIC_ADDR 	0x10
 #define I2C_GPIOS_01_ADDR 		0x20
