@@ -393,6 +393,7 @@ struct cmd_slavedspic_result {
 /* function called when cmd_slavedspic is parsed successfully */
 static void cmd_slavedspic_parsed(void *parsed_result, void *data)
 {
+#ifdef notyet
 	struct cmd_slavedspic_result *res = parsed_result;
 	static uint8_t led_flag = 0;
 	int16_t c;
@@ -471,6 +472,7 @@ static void cmd_slavedspic_parsed(void *parsed_result, void *data)
 
 	printf("done \r\n");
 	return;	
+#endif
 }
 
 prog_char str_slavedspic_arg0[] = "slavedspic";

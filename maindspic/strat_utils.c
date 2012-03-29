@@ -445,18 +445,24 @@ uint8_t opponent_is_in_area(int16_t x_up, int16_t y_up,
 
 uint8_t opponent_is_behind_side(uint8_t side)
 {
+#if 0
 	if(side == SIDE_FRONT)
 		return opponent_is_behind();
 	else
 		return opponent_is_infront();
+#endif
+	return 0;
 }
 
 uint8_t opponent_is_infront_side(uint8_t side)
 {
+#if 0
 	if(side == SIDE_REAR)
 		return opponent_is_behind();
 	else
 		return opponent_is_infront();
+#endif
+	return 0;
 }
 
 

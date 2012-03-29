@@ -90,15 +90,15 @@
 
 /* distance between encoders weels,
  * decrease track to decrease angle */
-//#define EXT_TRACK_MM 292.0
-#define EXT_TRACK_MM 293.57360825271
-//#define EXT_TRACK_MM 290.37650894
+#define EXT_TRACK_MM 292.8
+//#define EXT_TRACK_MM 293.57360825271 /* 2011 */
+//#define EXT_TRACK_MM 290.37650894 /* 2010 */
 
 #define VIRTUAL_TRACK_MM EXT_TRACK_MM
 
 /* robot dimensions */
 #define ROBOT_LENGTH    340.0 //354.79
-#define ROBOT_WIDTH 	   313.0
+#define ROBOT_WIDTH 	   330.0
 
 /* Some calculus:
  * it is a 3600 imps -> 14400 because we see 1/4 period
@@ -107,7 +107,8 @@
 
 /* increase it to go further */
 #define IMP_ENCODERS 		3600.0
-#define WHEEL_DIAMETER_MM 	(55.0/0.989123953)// 0.988333287)//0.993077287)
+//#define WHEEL_DIAMETER_MM 	(55.0/0.989123953)// 0.988333287)//0.993077287) /* 2011 */
+#define WHEEL_DIAMETER_MM 	(55.0)// 0.988333287)//0.993077287)
 
 
 #define WHEEL_PERIM_MM 	(WHEEL_DIAMETER_MM * M_PI)
@@ -223,12 +224,7 @@ struct mainboard
 /* state of slavedspic, synchronized through i2c */
 struct slavedspic 
 {
-#define TOKEN_SYSTEM_SPEED	255
-	struct {
-		uint8_t state;
-		uint8_t belts_blocked;
-		uint8_t token_catched;
-	}ts[I2C_SIDE_MAX];
+
 };
 
 /* state of beaconboard, synchronized through i2c */
