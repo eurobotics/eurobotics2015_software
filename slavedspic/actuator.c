@@ -728,27 +728,4 @@ void actuator_init(void)
 	slavedspic.tray_store.type = TRAY_TYPE_STORE;
 	slavedspic.tray_boot.type = TRAY_TYPE_BOOT;
 
-	/* start positions */
-	fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_OPEN, 0);
-	fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_OPEN, 0);
-	fingers_check_mode_done(&slavedspic.fingers_totem);
-
-	turbine_set_angle(&slavedspic.turbine, 0, TURBINE_ANGLE_SPEED_FAST);
-	turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);
-	turbine_power_on(&slavedspic.turbine);
-
-	arm_set_mode(&slavedspic.arm_left, ARM_MODE_HIDE, 0);
-	arm_set_mode(&slavedspic.arm_right, ARM_MODE_HIDE, 0);
-
-	hook_set_mode(&slavedspic.hook, HOOK_MODE_HIDE);
-	boot_set_mode(&slavedspic.boot, BOOT_MODE_CLOSE);
-
-	tray_set_mode(&slavedspic.tray_reception, TRAY_MODE_DOWN);
-	tray_set_mode(&slavedspic.tray_store, TRAY_MODE_DOWN);
-	tray_set_mode(&slavedspic.tray_boot, TRAY_MODE_DOWN);
-
-	/* lift calibration */
-	lift_calibrate();
-	lift_set_height(LIFT_HEIGHT_MIN_mm);
-
 }
