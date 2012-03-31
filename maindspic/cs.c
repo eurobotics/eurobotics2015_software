@@ -193,7 +193,7 @@ void maindspic_cs_init(void)
 	rs_set_left_pwm(&mainboard.rs, dac_set_and_save, LEFT_MOTOR);
 	rs_set_right_pwm(&mainboard.rs,  dac_set_and_save, RIGHT_MOTOR);
 
-#define Ed	1.014
+#define Ed	1.013175
 #define Cl	(2.0/(Ed + 1.0))
 #define Cr  (2.0 /((1.0 / Ed) + 1.0))
 
@@ -208,7 +208,7 @@ void maindspic_cs_init(void)
 
 	/* POSITION MANAGER */
 	position_init(&mainboard.pos);
-	position_set_physical_params(&mainboard.pos, VIRTUAL_TRACK_MM, DIST_IMP_MM * 0.987654321);
+	position_set_physical_params(&mainboard.pos, VIRTUAL_TRACK_MM, DIST_IMP_MM * 0.986923267);
 	position_set_related_robot_system(&mainboard.pos, &mainboard.rs);
 	position_set_centrifugal_coef(&mainboard.pos, 0.0); // 0.000016
 	position_use_ext(&mainboard.pos);
@@ -233,10 +233,10 @@ void maindspic_cs_init(void)
 
 	/* QUADRAMP */
 	quadramp_init(&mainboard.angle.qr);
-	//quadramp_set_1st_order_vars(&mainboard.angle.qr, 4000, 4000); 	/* set speed */
-	//quadramp_set_2nd_order_vars(&mainboard.angle.qr, 80, 80); 		/* set accel */
-	quadramp_set_1st_order_vars(&mainboard.angle.qr, 1000, 1000); 	/* set speed */
-	quadramp_set_2nd_order_vars(&mainboard.angle.qr, 5, 5); 		/* set accel */
+	quadramp_set_1st_order_vars(&mainboard.angle.qr, 4000, 4000); 	/* set speed */
+	quadramp_set_2nd_order_vars(&mainboard.angle.qr, 40, 40); 		/* set accel */
+	//quadramp_set_1st_order_vars(&mainboard.angle.qr, 1000, 1000); 	/* set speed */
+	//quadramp_set_2nd_order_vars(&mainboard.angle.qr, 5, 5); 		/* set accel */
 
 
 	/* CS */
@@ -262,10 +262,10 @@ void maindspic_cs_init(void)
 
 	/* QUADRAMP */
 	quadramp_init(&mainboard.distance.qr);
-	//quadramp_set_1st_order_vars(&mainboard.distance.qr, 4000, 4000); 	/* set speed */
-	//quadramp_set_2nd_order_vars(&mainboard.distance.qr, 35, 35); 	/* set accel */
-	quadramp_set_1st_order_vars(&mainboard.distance.qr, 1000, 1000); 	/* set speed */
-	quadramp_set_2nd_order_vars(&mainboard.distance.qr, 5, 5); 	/* set accel */
+	quadramp_set_1st_order_vars(&mainboard.distance.qr, 4000, 4000); 	/* set speed */
+	quadramp_set_2nd_order_vars(&mainboard.distance.qr, 35, 35); 	/* set accel */
+	//quadramp_set_1st_order_vars(&mainboard.distance.qr, 1000, 1000); 	/* set speed */
+	//quadramp_set_2nd_order_vars(&mainboard.distance.qr, 5, 5); 	/* set accel */
 
 	/* CS */
 	cs_init(&mainboard.distance.cs);
