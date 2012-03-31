@@ -97,7 +97,7 @@
 #define VIRTUAL_TRACK_MM EXT_TRACK_MM
 
 /* robot dimensions */
-#define ROBOT_LENGTH    340.0 //354.79
+#define ROBOT_LENGTH    281.5
 #define ROBOT_WIDTH 	   330.0
 
 /* Some calculus:

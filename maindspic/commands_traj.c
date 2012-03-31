@@ -618,7 +618,7 @@ struct cmd_position_result {
 };
 
 #define AUTOPOS_SPEED_FAST 	500
-#define ROBOT_DIS2_WALL 		(int16_t)((ROBOT_LENGTH/2)+17)
+#define ROBOT_DIS2_WALL 		(int16_t)(119)
 static void auto_position(void)
 {
 	uint8_t err;
@@ -640,7 +640,7 @@ static void auto_position(void)
 	strat_reset_pos(0, COLOR_Y(ROBOT_DIS2_WALL), 90);
 	
 	/* prepare to x axis */
-	trajectory_d_rel(&mainboard.traj, 40); //35
+	trajectory_d_rel(&mainboard.traj, 195); //35
 	err = wait_traj_end(END_INTR|END_TRAJ);
 	if (err == END_INTR)
 		goto intr;
@@ -651,7 +651,7 @@ static void auto_position(void)
 		goto intr;
 
 	/* goto blocking to x axis */
-	trajectory_d_rel(&mainboard.traj, -500);
+	trajectory_d_rel(&mainboard.traj, -800);
 	err = wait_traj_end(END_INTR|END_TRAJ|END_BLOCKING);
 	if (err == END_INTR)
 		goto intr;
@@ -661,7 +661,7 @@ static void auto_position(void)
 	strat_reset_pos(COLOR_X(ROBOT_DIS2_WALL), DO_NOT_SET_POS, COLOR_A_ABS(0));
 
 	/* goto start position */
-	trajectory_d_rel(&mainboard.traj, 400-(ROBOT_DIS2_WALL*2));
+	trajectory_d_rel(&mainboard.traj, 500-(ROBOT_LENGTH));
 	err = wait_traj_end(END_INTR|END_TRAJ);
 	if (err == END_INTR)
 		goto intr;

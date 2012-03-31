@@ -165,10 +165,10 @@ void set_rotated_poly(poly_t *pol, const point_t *robot_pt,
 
 {
 	double tmp_x, tmp_y;
-	double a_rad;
+	double a_rad = 0.0;
 
 	/* calcule relative angle to robot */
-	a_rad = atan2(y - robot_pt->y, x - robot_pt->x);
+	a_rad = atan2((double)(y - robot_pt->y), (double)(x - robot_pt->x));
 
 	DEBUG(E_USER_STRAT, "%s() x,y=%d,%d a_rad=%2.2f", 
 	      __FUNCTION__, x, y, a_rad);
@@ -227,13 +227,13 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 	else if(type == OPP2) {
 	   /* TODO: get second oponent xy */
 	   x = I2C_OPPONENT_NOT_THERE;
-	   y = I2C_OPPONENT_NOT_THERE;
+	   y = 0;
 	   name = opp2;
 	}
 	else if(type == ROBOT_2ND) {
 		/* TODO: get second robot xy */
 	   x = I2C_OPPONENT_NOT_THERE;
-	   y = I2C_OPPONENT_NOT_THERE;
+	   y = 0;
 	   name = robot_2nd;
 	}
 #else
