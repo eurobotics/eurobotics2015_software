@@ -856,7 +856,6 @@ parse_pgm_inst_t cmd_dump = {
 };
 
 
-#ifdef notyet
 
 /**********************************************************/
 /* State2 */
@@ -877,36 +876,18 @@ static void cmd_state2_parsed(void *parsed_result,
 	struct cmd_state2_result *res = parsed_result;
 	struct i2c_cmd_slavedspic_set_mode command;
 
+	if (!strcmp(res->arg1, "init"))
+		command.mode = I2C_SLAVEDSPIC_MODE_INIT;
+	else if (!strcmp(res->arg1, "power_off"))
+		command.mode = I2C_SLAVEDSPIC_MODE_POWER_OFF;
 
-	if (!strcmp(res->arg1, "rear")) {
-		command.ts.side = I2C_SIDE_REAR;
-	}
-	else if (!strcmp(res->arg1, "front"))
-		command.ts.side = I2C_SIDE_FRONT;
-
-	if (!strcmp(res->arg2, "take"))
-		command.mode = I2C_SLAVEDSPIC_MODE_TOKEN_TAKE;
-	else if (!strcmp(res->arg2, "eject"))
-		command.mode = I2C_SLAVEDSPIC_MODE_TOKEN_EJECT;
-	else if (!strcmp(res->arg2, "show"))
-		command.mode = I2C_SLAVEDSPIC_MODE_TOKEN_SHOW;
-	else if (!strcmp(res->arg2, "push_r"))
-		command.mode = I2C_SLAVEDSPIC_MODE_TOKEN_PUSH_R;
-	else if (!strcmp(res->arg2, "push_l"))
-		command.mode = I2C_SLAVEDSPIC_MODE_TOKEN_PUSH_L;
-
-	command.ts.speed_div4 = res->arg3;
-	
 	state_set_mode(&command);
 }
 
 prog_char str_state2_arg0[] = "state";
 parse_pgm_token_string_t cmd_state2_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_state2_result, arg0, str_state2_arg0);
-prog_char str_state2_arg1[] = "rear#front";
+prog_char str_state2_arg1[] = "init#power_off";
 parse_pgm_token_string_t cmd_state2_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_state2_result, arg1, str_state2_arg1);
-prog_char str_state2_arg2[] = "take#eject#show#push_l#push_r";
-parse_pgm_token_string_t cmd_state2_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_state2_result, arg2, str_state2_arg2);
-parse_pgm_token_num_t cmd_state2_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_state2_result, arg3, UINT8);
 
 prog_char help_state2[] = "set slavedspic mode";
 parse_pgm_inst_t cmd_state2 = {
@@ -915,9 +896,7 @@ parse_pgm_inst_t cmd_state2 = {
 	.help_str = help_state2,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_state2_arg0, 
-		(prog_void *)&cmd_state2_arg1, 
-		(prog_void *)&cmd_state2_arg2,
-		(prog_void *)&cmd_state2_arg3,
+		(prog_void *)&cmd_state2_arg1,
 		NULL,
 	},
 };
@@ -930,7 +909,7 @@ parse_pgm_inst_t cmd_state2 = {
 struct cmd_state3_result {
 	fixed_string_t arg0;
 	fixed_string_t arg1;
-	uint16_t arg2;
+	uint8_t arg2;
 	
 };
 
@@ -938,33 +917,36 @@ struct cmd_state3_result {
 static void cmd_state3_parsed(void *parsed_result,
 			      __attribute__((unused)) void *data)
 {
-#ifdef notyet
 	struct cmd_state3_result *res = parsed_result;
 	struct i2c_cmd_slavedspic_set_mode command;
 
+	command.set_infos.nb_goldbars_in_boot = slavedspic.nb_goldbars_in_boot;
+	command.set_infos.nb_goldbars_in_mouth = slavedspic.nb_goldbars_in_mouth;
+	command.set_infos.nb_coins_in_boot = slavedspic.nb_coins_in_boot;
+	command.set_infos.nb_coins_in_mouth = slavedspic.nb_coins_in_mouth;
 
-	if (!strcmp(res->arg1, "mright")) {
-		command.mirror.side = I2C_MIRROR_SIDE_RIGHT;
+	if (!strcmp(res->arg1, "nb_goldbars_in_boot")) {
+		command.set_infos.nb_goldbars_in_boot = res->arg2;
 	}
-	else if (!strcmp(res->arg1, "mleft"))
-		command.mirror.side = I2C_MIRROR_SIDE_LEFT;
+	else if (!strcmp(res->arg1, "nb_goldbars_in_mouth")) {
+		command.set_infos.nb_goldbars_in_mouth = res->arg2;
+	}
+	else if (!strcmp(res->arg1, "nb_coins_in_boot")) {
+		command.set_infos.nb_coins_in_boot = res->arg2;
+	}
+	else if (!strcmp(res->arg1, "nb_coins_in_mouth")) {
+		command.set_infos.nb_coins_in_mouth = res->arg2;
+	}
 
-	command.mirror.pos_h = (uint8_t)(res->arg2 >> 8);
-	command.mirror.pos_l = (uint8_t)(0x00FF & res->arg2);
-
-	command.mode = I2C_SLAVEDSPIC_MODE_MIRROR_POS;
-
+	command.mode = I2C_SLAVEDSPIC_MODE_SET_INFOS;
 	state_set_mode(&command);
-
-	printf("done\n\r");
-#endif
 }
 
-prog_char str_state3_arg0[] = "state";
+prog_char str_state3_arg0[] = "set_infos";
 parse_pgm_token_string_t cmd_state3_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_state3_result, arg0, str_state3_arg0);
-prog_char str_state3_arg1[] = "mright#mleft";
+prog_char str_state3_arg1[] = "nb_goldbars_in_boot#nb_goldbars_in_mouth#nb_coins_in_boot#nb_coins_in_mouth";
 parse_pgm_token_string_t cmd_state3_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_state3_result, arg1, str_state3_arg1);
-parse_pgm_token_num_t cmd_state3_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_state3_result, arg2, UINT16);
+parse_pgm_token_num_t cmd_state3_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_state3_result, arg2, UINT8);
 
 prog_char help_state3[] = "set slavedspic mode";
 parse_pgm_inst_t cmd_state3 = {
@@ -979,7 +961,7 @@ parse_pgm_inst_t cmd_state3 = {
 	},
 };
 
-
+#ifdef notyet
 /**********************************************************/
 /* State_Machine */
 

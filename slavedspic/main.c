@@ -319,9 +319,6 @@ int main(void)
 	/* ACTUATORS */
 	actuator_init();
 
-	/* STATE MACHINE */
-	state_init();
-
 	printf("\r\n");
 	printf("Siempre falta tiempo para hacer pruebas. \r\n");
 	

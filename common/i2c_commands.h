@@ -121,6 +121,7 @@ struct i2c_cmd_slavedspic_set_mode {
 #define I2C_SLAVEDSPIC_MODE_HARVEST			0x0B
 #define I2C_SLAVEDSPIC_MODE_STORE			0x0C
 #define I2C_SLAVEDSPIC_MODE_DUMP				0x0D
+#define I2C_SLAVEDSPIC_MODE_SET_INFOS		0x0E
 	uint8_t mode;
 	union{
 		struct {
@@ -229,6 +230,14 @@ struct i2c_cmd_slavedspic_set_mode {
 #define I2C_DUMP_MODE_END_MOUTH				7
 
 		} dump;
+
+		struct {
+			uint8_t nb_goldbars_in_boot;
+			uint8_t nb_goldbars_in_mouth;
+			uint8_t nb_coins_in_boot;
+			uint8_t nb_coins_in_mouth;
+
+		} set_infos;
 
 		/* add more here */
 	};

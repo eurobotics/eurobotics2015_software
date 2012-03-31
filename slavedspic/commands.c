@@ -26,7 +26,7 @@
 #include <aversive/pgmspace.h>
 #include <parse.h>
 
-#define COMPILE_COMMANDS_CS
+//#define COMPILE_COMMANDS_CS
 
 /* commands_gen.c */
 extern parse_pgm_inst_t cmd_reset;
@@ -87,8 +87,8 @@ extern parse_pgm_inst_t cmd_store;
 extern parse_pgm_inst_t cmd_dump;
 //extern parse_pgm_inst_t cmd_state_debug;
 //extern parse_pgm_inst_t cmd_state1;
-//extern parse_pgm_inst_t cmd_state2;
-//extern parse_pgm_inst_t cmd_state3;
+extern parse_pgm_inst_t cmd_state2;
+extern parse_pgm_inst_t cmd_state3;
 //extern parse_pgm_inst_t cmd_state_machine;
 //extern parse_pgm_inst_t cmd_test;
 
@@ -154,8 +154,8 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_dump,
 	//(parse_pgm_inst_t *)&cmd_state_debug,
 	//(parse_pgm_inst_t *)&cmd_state1,
-	//(parse_pgm_inst_t *)&cmd_state2,	
-	//(parse_pgm_inst_t *)&cmd_state3,
+	(parse_pgm_inst_t *)&cmd_state2,	
+	(parse_pgm_inst_t *)&cmd_state3,
 	//(parse_pgm_inst_t *)&cmd_state_machine,
 	//(parse_pgm_inst_t *)&cmd_test,
 
