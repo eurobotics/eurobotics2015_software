@@ -90,7 +90,7 @@
 
 /* distance between encoders weels,
  * decrease track to decrease angle */
-#define EXT_TRACK_MM 289.38755213061 //292.8
+#define EXT_TRACK_MM 292.74161502079 //292.8
 //#define EXT_TRACK_MM 293.57360825271 /* 2011 */
 //#define EXT_TRACK_MM 290.37650894 /* 2010 */
 
