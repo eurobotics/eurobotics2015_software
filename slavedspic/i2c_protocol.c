@@ -116,15 +116,28 @@ void i2c_read_event(uint8_t cmd_byte, uint8_t *buf)
 			struct i2c_slavedspic_status *cmd = void_cmd;
 			
 			(*cmd).hdr.cmd = I2C_ANS_SLAVEDSPIC_STATUS;
-			
-//			(*cmd).ts[I2C_SIDE_REAR].state = slavedspic.ts[I2C_SIDE_REAR].state;
-//			(*cmd).ts[I2C_SIDE_REAR].belts_blocked = slavedspic.ts[I2C_SIDE_REAR].belts_blocked;
-//			(*cmd).ts[I2C_SIDE_REAR].token_catched = slavedspic.ts[I2C_SIDE_REAR].token_catched;
-//
-//			(*cmd).ts[I2C_SIDE_FRONT].state = slavedspic.ts[I2C_SIDE_FRONT].state;
-//			(*cmd).ts[I2C_SIDE_FRONT].belts_blocked = slavedspic.ts[I2C_SIDE_FRONT].belts_blocked;
-//			(*cmd).ts[I2C_SIDE_FRONT].token_catched = slavedspic.ts[I2C_SIDE_FRONT].token_catched;
+
+			/* actuators blocking flags */
+			(*cmd).fingers_floor_blocked = slavedspic.fingers_floor.blocking;
+			(*cmd).fingers_totem_blocked = slavedspic.fingers_totem.blocking;
+			(*cmd).arm_right_blocked = slavedspic.arm_right.blocking;
+			(*cmd).arm_left_blocked = slavedspic.arm_left.blocking;
+			(*cmd).lift_blocked = slavedspic.lift.blocking;
 		
+			/* sensors */
+			(*cmd).turbine_sensors = sensor_get_all();
+		
+			/* infos */
+			(*cmd).status = slavedspic.status;
+		
+			(*cmd).harvest_mode = slavedspic.harvest_mode;
+			(*cmd).store_mode = slavedspic.store_mode;
+			(*cmd).dump_mode = slavedspic.dump_mode;
+		
+			(*cmd).nb_goldbars_in_boot = slavedspic.nb_goldbars_in_boot;
+			(*cmd).nb_goldbars_in_mouth = slavedspic.nb_goldbars_in_mouth;
+			(*cmd).nb_coins_in_boot = slavedspic.nb_coins_in_boot;
+			(*cmd).nb_coins_in_mouth = slavedspic.nb_coins_in_mouth;
 
 			/* XXX watchdog time */
 			i2c_watchdog_cnt = 5;

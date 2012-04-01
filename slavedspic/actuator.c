@@ -45,7 +45,7 @@
 /* AX12 stuff */
 #define AX12_PULLING_TIME_us		5000L
 #define AX12_WINDOW_POSITION		15
-#define AX12_BLOCKING_TIMEOUT_us	1500000L
+#define AX12_BLOCKING_TIMEOUT_us	1000000L
 
 
 /**** lift functions ********************************************************/
@@ -386,7 +386,7 @@ int8_t fingers_check_mode_done(fingers_t *fingers)
 
 	/* check if positions are inside window */
 	if(ABS(fingers->ax12_pos_l - ax12_pos_l) < AX12_WINDOW_POSITION 
-		&& ABS(fingers->ax12_pos_l - ax12_pos_l) < AX12_WINDOW_POSITION)	
+		&& ABS(fingers->ax12_pos_r - ax12_pos_r) < AX12_WINDOW_POSITION)	
 		return END_TRAJ;
 	
 	/* ax12 blocking timeout */
@@ -713,7 +713,7 @@ void actuator_init(void)
 	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_MOVING_SPEED_L, 0x3FF);#endif
 
 	/* init ax12 */
-	ax12_user_write_int(&gen.ax12, AX12_ID_FINGERS_FLOOR_L, AA_MOVING_SPEED_L, 350);
+	//ax12_user_write_int(&gen.ax12, AX12_ID_FINGERS_FLOOR_L, AA_MOVING_SPEED_L, 350);
 	ax12_user_write_int(&gen.ax12, AX12_ID_BOOT, AA_MOVING_SPEED_L, 300);
 	ax12_user_write_int(&gen.ax12, AX12_ID_HOOK, AA_MOVING_SPEED_L, 300);
 

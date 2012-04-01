@@ -83,10 +83,25 @@ int8_t state_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd)
 	/* XXX power off mode */
 	if (mainboard_command.mode == POWER_OFF) {
 
-		/* lift */
 		/* turbine */
+		turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);
+		turbine_power_off(&slavedspic.turbine);
+
 		/* servos */
+		tray_set_mode(&slavedspic.tray_reception, TRAY_MODE_DOWN);
+		tray_set_mode(&slavedspic.tray_store, TRAY_MODE_DOWN);
+		tray_set_mode(&slavedspic.tray_boot, TRAY_MODE_DOWN);
+
+		/* lift */
+		slavedspic.lift.on = 0;
+		dac_mc_set(&gen.dac_mc_left, 0);
+		BRAKE_ON();
+
 		/* ax12 */
+		ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_TORQUE_ENABLE, 0x00);
+
+		wait_ms(100);
+		pwm_servo_disable();
 	}
 	else
 		mode_changed = 1;
@@ -415,6 +430,8 @@ void state_do_harvest_mode(void)
 			if(err & END_BLOCKING)
 				break;
 
+			slavedspic.nb_coins_in_mouth += 3;
+
 			break;
 
 		case I2C_HARVEST_MODE_COINS_FLOOR:
@@ -431,6 +448,8 @@ void state_do_harvest_mode(void)
 			if(err & END_BLOCKING)
 				break;
 
+			slavedspic.nb_coins_in_mouth += 4;
+
 			break;
 
 		case I2C_HARVEST_MODE_COINS_TOTEM:
@@ -441,6 +460,8 @@ void state_do_harvest_mode(void)
 			err = fingers_wait_end(&slavedspic.fingers_totem);
 			if(err & END_BLOCKING)
 				break;
+
+			slavedspic.nb_coins_in_mouth += 4;
 
 			break;
 
@@ -691,7 +712,7 @@ uint8_t store_goldbar_in_boot(void)
 
 	/* wait no object cached */
 	if(WAIT_COND_OR_TIMEOUT((sensor_get_all() != sensors_saved), 1000)) {
-		slavedspic.nb_goldbars_in_boot ++;
+		//slavedspic.nb_goldbars_in_boot ++;
 		STMCH_DEBUG("Goldbar stored in boot :) (%d)", slavedspic.nb_goldbars_in_boot);
 	}
 	else {
@@ -827,7 +848,7 @@ uint8_t store_coins_in_boot(void)
 
 	/* wait no object cached */
 	if(WAIT_COND_OR_TIMEOUT(0, 500)) {
-		slavedspic.nb_coins_in_boot += 2;
+		//slavedspic.nb_coins_in_boot += 2;
 		STMCH_DEBUG("Coins stored in boot :) (%d)", slavedspic.nb_coins_in_boot);
 	}
 	else {
@@ -983,6 +1004,9 @@ void state_do_dump_mode(void)
 		return;
 
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
+
+	/* notice status and update mode*/
+	slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
 }
 
 /* set infos */
@@ -993,10 +1017,14 @@ void state_do_set_infos(void)
 
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
 
-	slavedspic.nb_goldbars_in_boot = mainboard_command.set_infos.nb_goldbars_in_boot;
-	slavedspic.nb_goldbars_in_mouth = mainboard_command.set_infos.nb_goldbars_in_mouth;
-	slavedspic.nb_coins_in_boot = mainboard_command.set_infos.nb_coins_in_boot;
-	slavedspic.nb_coins_in_mouth = mainboard_command.set_infos.nb_coins_in_mouth;
+	if(mainboard_command.set_infos.nb_goldbars_in_boot >= 0)
+		slavedspic.nb_goldbars_in_boot = mainboard_command.set_infos.nb_goldbars_in_boot;
+	if(mainboard_command.set_infos.nb_goldbars_in_mouth >= 0)
+		slavedspic.nb_goldbars_in_mouth = mainboard_command.set_infos.nb_goldbars_in_mouth;
+	if(mainboard_command.set_infos.nb_coins_in_boot >= 0)
+		slavedspic.nb_coins_in_boot = mainboard_command.set_infos.nb_coins_in_boot;
+	if(mainboard_command.set_infos.nb_coins_in_mouth >= 0)
+		slavedspic.nb_coins_in_mouth = mainboard_command.set_infos.nb_coins_in_mouth;
 
 	STMCH_DEBUG("nb_goldbars_in_boot = %d", slavedspic.nb_goldbars_in_boot);
 	STMCH_DEBUG("nb_goldbars_in_mouth = %d", slavedspic.nb_goldbars_in_mouth);
@@ -1032,14 +1060,23 @@ void state_init(void)
 {
 	mainboard_command.mode = INIT;
 
+	pwm_servo_enable();
+	BRAKE_OFF();
+	slavedspic.lift.on = 1;
+	ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_TORQUE_ENABLE, 0xFF);
+
+	time_wait_ms(100);
+
 	/* start positions */
 	fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_OPEN, 0);
 	fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_OPEN, 0);
-	fingers_check_mode_done(&slavedspic.fingers_totem);
+	fingers_wait_end(&slavedspic.fingers_totem);
 
 	turbine_set_angle(&slavedspic.turbine, 0, TURBINE_ANGLE_SPEED_FAST);
 	turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);
 	turbine_power_on(&slavedspic.turbine);
+
+	time_wait_ms(500);
 
 	arm_set_mode(&slavedspic.arm_left, ARM_MODE_HIDE, 0);
 	arm_set_mode(&slavedspic.arm_right, ARM_MODE_HIDE, 0);
