@@ -239,13 +239,11 @@ int main(void)
 	/* CS */
 	slavedspic_cs_init();
 
-#if 0
 	/* I2C */
 	i2c_init(I2C_SLAVEDSPIC_ADDR);
 	i2c_register_read_event(i2c_read_event);
 	i2c_register_write_event(i2c_write_event);
 	i2c_protocol_init();
-#endif
 
 	/* TIMER */
 	timer_init();
@@ -290,11 +288,11 @@ int main(void)
 	scheduler_add_periodical_event_priority(do_cs, NULL, 
 						CS_PERIOD / SCHEDULER_UNIT, 
 						CS_PRIO);
-#if 0
+
 	scheduler_add_periodical_event_priority(do_i2c_watchdog, NULL, 
 						8000L / SCHEDULER_UNIT, 
 						I2C_POLL_PRIO);
-#endif
+
 	scheduler_add_periodical_event_priority(do_sensors, NULL, 
 						10000L / SCHEDULER_UNIT, 
 						SENSOR_PRIO);
@@ -305,10 +303,10 @@ int main(void)
 	ax12_user_init();
 
 	/* LOGS */
- 	gen.logs[0] = E_USER_ST_MACH;
-	gen.logs[1] = E_USER_ACTUATORS;
-	gen.logs[2] = E_USER_CS;
-	gen.log_level = 5;
+ 	//gen.logs[0] = E_USER_ST_MACH;
+	//gen.logs[1] = E_USER_ACTUATORS;
+	//gen.logs[2] = E_USER_CS;
+	//gen.log_level = 5;
 
 	/* enable interrupt */
 	sei();

@@ -761,6 +761,7 @@ parse_pgm_inst_t cmd_harvest = {
 struct cmd_store_result {
 	fixed_string_t arg0;
 	fixed_string_t arg1;
+	uint8_t arg2;
 };
 
 /* function called when cmd_store is parsed successfully */
@@ -777,6 +778,7 @@ static void cmd_store_parsed(void *parsed_result,
 	else if (!strcmp(res->arg1, "mouth_in_boot"))
 		command.store.mode = I2C_STORE_MODE_MOUTH_IN_BOOT;
 
+	command.store.times = res->arg2;
 	command.mode = I2C_SLAVEDSPIC_MODE_STORE;
 	state_set_mode(&command);
 }
@@ -785,9 +787,10 @@ prog_char str_store_arg0[] = "store";
 parse_pgm_token_string_t cmd_store_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_store_result, arg0, str_store_arg0);
 prog_char str_store_arg1[] = "goldbar_mouth#goldbar_boot#mouth_in_boot";
 parse_pgm_token_string_t cmd_store_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_store_result, arg1, str_store_arg1);
+parse_pgm_token_num_t cmd_store_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_store_result, arg2, UINT8);
 
 
-prog_char help_store[] = "store something in somewhere";
+prog_char help_store[] = "store something in somewhere (n times)";
 parse_pgm_inst_t cmd_store = {
 	.f = cmd_store_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
@@ -795,6 +798,7 @@ parse_pgm_inst_t cmd_store = {
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_store_arg0, 
 		(prog_void *)&cmd_store_arg1, 
+		(prog_void *)&cmd_store_arg2, 
 		NULL,
 	},
 };
@@ -876,17 +880,43 @@ static void cmd_state2_parsed(void *parsed_result,
 	struct cmd_state2_result *res = parsed_result;
 	struct i2c_cmd_slavedspic_set_mode command;
 
-	if (!strcmp(res->arg1, "init"))
+	if (!strcmp(res->arg1, "init")) {
 		command.mode = I2C_SLAVEDSPIC_MODE_INIT;
-	else if (!strcmp(res->arg1, "power_off"))
+		state_set_mode(&command);
+	}	
+	else if (!strcmp(res->arg1, "power_off")) {
 		command.mode = I2C_SLAVEDSPIC_MODE_POWER_OFF;
+		state_set_mode(&command);
+	}
+	else if (!strcmp(res->arg1, "status")) {
 
-	state_set_mode(&command);
+		/* actuators blocking flags */
+		printf("fingers_floor_blocked = %d\r\n", slavedspic.fingers_floor.blocking);
+		printf("fingers_totem_blocked = %d\r\n", slavedspic.fingers_totem.blocking);
+		printf("arm_right_blocked = %d\r\n", slavedspic.arm_right.blocking);
+		printf("arm_left_blocked = %d\r\n", slavedspic.arm_left.blocking);
+		printf("lift_blocked = %d\r\n", slavedspic.lift.blocking);
+	
+		/* sensors */
+		printf("turbine_sensors = %d\r\n", sensor_get_all());
+	
+		/* infos */
+		printf("status = %s\r\n", slavedspic.status == I2C_SLAVEDSPIC_STATUS_BUSY? "BUSY":"READY");
+	
+		printf("harvest_mode = %d\r\n", slavedspic.harvest_mode);
+		printf("store_mode = %d\r\n", slavedspic.store_mode);
+		printf("dump_mode = %d\r\n", slavedspic.dump_mode);
+	
+		printf("nb_goldbars_in_boot = %d\r\n", slavedspic.nb_goldbars_in_boot);
+		printf("nb_goldbars_in_mouth = %d\r\n", slavedspic.nb_goldbars_in_mouth);
+		printf("nb_coins_in_boot = %d\r\n", slavedspic.nb_coins_in_boot);
+		printf("nb_coins_in_mouth = %d\r\n", slavedspic.nb_coins_in_mouth);
+	}
 }
 
 prog_char str_state2_arg0[] = "state";
 parse_pgm_token_string_t cmd_state2_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_state2_result, arg0, str_state2_arg0);
-prog_char str_state2_arg1[] = "init#power_off";
+prog_char str_state2_arg1[] = "init#power_off#status";
 parse_pgm_token_string_t cmd_state2_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_state2_result, arg1, str_state2_arg1);
 
 prog_char help_state2[] = "set slavedspic mode";
@@ -909,7 +939,7 @@ parse_pgm_inst_t cmd_state2 = {
 struct cmd_state3_result {
 	fixed_string_t arg0;
 	fixed_string_t arg1;
-	uint8_t arg2;
+	int8_t arg2;
 	
 };
 
@@ -920,10 +950,10 @@ static void cmd_state3_parsed(void *parsed_result,
 	struct cmd_state3_result *res = parsed_result;
 	struct i2c_cmd_slavedspic_set_mode command;
 
-	command.set_infos.nb_goldbars_in_boot = slavedspic.nb_goldbars_in_boot;
-	command.set_infos.nb_goldbars_in_mouth = slavedspic.nb_goldbars_in_mouth;
-	command.set_infos.nb_coins_in_boot = slavedspic.nb_coins_in_boot;
-	command.set_infos.nb_coins_in_mouth = slavedspic.nb_coins_in_mouth;
+	command.set_infos.nb_goldbars_in_boot = -1;
+	command.set_infos.nb_goldbars_in_mouth = -1;
+	command.set_infos.nb_coins_in_boot = -1;
+	command.set_infos.nb_coins_in_mouth = -1;
 
 	if (!strcmp(res->arg1, "nb_goldbars_in_boot")) {
 		command.set_infos.nb_goldbars_in_boot = res->arg2;
@@ -946,7 +976,7 @@ prog_char str_state3_arg0[] = "set_infos";
 parse_pgm_token_string_t cmd_state3_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_state3_result, arg0, str_state3_arg0);
 prog_char str_state3_arg1[] = "nb_goldbars_in_boot#nb_goldbars_in_mouth#nb_coins_in_boot#nb_coins_in_mouth";
 parse_pgm_token_string_t cmd_state3_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_state3_result, arg1, str_state3_arg1);
-parse_pgm_token_num_t cmd_state3_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_state3_result, arg2, UINT8);
+parse_pgm_token_num_t cmd_state3_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_state3_result, arg2, INT8);
 
 prog_char help_state3[] = "set slavedspic mode";
 parse_pgm_inst_t cmd_state3 = {

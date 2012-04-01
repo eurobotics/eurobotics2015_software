@@ -164,10 +164,10 @@ struct slavedspic {
 	uint8_t store_mode;
 	uint8_t dump_mode;
 
-	uint8_t nb_goldbars_in_boot;
-	uint8_t nb_goldbars_in_mouth;
-	uint8_t nb_coins_in_boot;
-	uint8_t nb_coins_in_mouth;
+	int8_t nb_goldbars_in_boot;
+	int8_t nb_goldbars_in_mouth;
+	int8_t nb_coins_in_boot;
+	int8_t nb_coins_in_mouth;
 
 	/* infos */
 	uint8_t our_color;

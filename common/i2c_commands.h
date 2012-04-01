@@ -63,9 +63,6 @@ struct i2c_gpios_status {
 struct i2c_slavedspic_status{
 	struct i2c_cmd_hdr hdr;
 
-#define I2C_SLAVEDSPIC_STATUS_BUSY		1
-#define I2C_SLAVEDSPIC_STATUS_READY		0
-
 	/* actuators blocking */
 	uint8_t fingers_floor_blocked;
 	uint8_t fingers_totem_blocked;
@@ -74,19 +71,21 @@ struct i2c_slavedspic_status{
 	uint8_t lift_blocked;
 
 	/* sensors */
-	uint8_t object_catched;
+	uint8_t turbine_sensors;
 
 	/* infos */
 	uint8_t status;
+#define I2C_SLAVEDSPIC_STATUS_BUSY		1
+#define I2C_SLAVEDSPIC_STATUS_READY		0
+
 	uint8_t harvest_mode;
 	uint8_t store_mode;
 	uint8_t dump_mode;
 
-	uint8_t nb_goldbars_in_boot;
-	uint8_t nb_golbarrs_in_mouth;
-	uint8_t nb_coins_in_boot;
-	uint8_t nb_coins_in_mouth;
-
+	int8_t nb_goldbars_in_boot;
+	int8_t nb_goldbars_in_mouth;
+	int8_t nb_coins_in_boot;
+	int8_t nb_coins_in_mouth;
 };
 
 
@@ -232,10 +231,10 @@ struct i2c_cmd_slavedspic_set_mode {
 		} dump;
 
 		struct {
-			uint8_t nb_goldbars_in_boot;
-			uint8_t nb_goldbars_in_mouth;
-			uint8_t nb_coins_in_boot;
-			uint8_t nb_coins_in_mouth;
+			int8_t nb_goldbars_in_boot;
+			int8_t nb_goldbars_in_mouth;
+			int8_t nb_coins_in_boot;
+			int8_t nb_coins_in_mouth;
 
 		} set_infos;
 
