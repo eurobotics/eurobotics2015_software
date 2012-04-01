@@ -63,6 +63,10 @@ extern parse_pgm_inst_t cmd_blocking_i_show;
 #endif /* COMPILE_COMMANDS_CS */
 
 /* commands_ax12.c */
+#ifdef COMPILE_COMMANDS_AX12
+
+#include "./commands_ax12.c"
+
 //extern parse_pgm_inst_t cmd_baudrate;
 extern parse_pgm_inst_t cmd_uint16_read;
 extern parse_pgm_inst_t cmd_uint16_write;
@@ -70,6 +74,7 @@ extern parse_pgm_inst_t cmd_uint8_read;
 extern parse_pgm_inst_t cmd_uint8_write;
 extern parse_pgm_inst_t cmd_ax12_stress;
 extern parse_pgm_inst_t cmd_ax12_dump_stats;
+#endif /* COMPILE_COMMANDS_AX12 */
 
 /* commands_slavedspic.c */
 extern parse_pgm_inst_t cmd_event;
@@ -129,6 +134,7 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_blocking_i_show,
 #endif /* COMPILE_COMMANDS_CS */
 
+#ifdef COMPILE_COMMANDS_AX12
 	/* commands_ax12.c */
 	//(parse_pgm_inst_t *)&cmd_baudrate,
 	(parse_pgm_inst_t *)&cmd_uint16_read,
@@ -137,6 +143,8 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_uint8_write,
 	(parse_pgm_inst_t *)&cmd_ax12_stress,
 	(parse_pgm_inst_t *)&cmd_ax12_dump_stats,
+
+#endif
 
 	/* commands_slavedspic.c */
 	(parse_pgm_inst_t *)&cmd_event,

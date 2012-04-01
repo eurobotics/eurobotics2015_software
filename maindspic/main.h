@@ -99,6 +99,8 @@
 /* robot dimensions */
 #define ROBOT_LENGTH    281.5
 #define ROBOT_WIDTH 	   330.0
+#define ROBOT_CENTER_TO_FRONT 162.5
+#define ROBOT_CENTER_TO_BACK 119.0
 
 /* Some calculus:
  * it is a 3600 imps -> 14400 because we see 1/4 period
@@ -224,7 +226,27 @@ struct mainboard
 /* state of slavedspic, synchronized through i2c */
 struct slavedspic 
 {
+	/* actuators blocking */
+	uint8_t fingers_floor_blocked;
+	uint8_t fingers_totem_blocked;
+	uint8_t arm_right_blocked;
+	uint8_t arm_left_blocked;
+	uint8_t lift_blocked;
 
+	/* sensors */
+	uint8_t turbine_sensors;
+
+	/* infos */
+	uint8_t status;
+
+	uint8_t harvest_mode;
+	uint8_t store_mode;
+	uint8_t dump_mode;
+
+	int8_t nb_goldbars_in_boot;
+	int8_t nb_goldbars_in_mouth;
+	int8_t nb_coins_in_boot;
+	int8_t nb_coins_in_mouth;
 };
 
 /* state of beaconboard, synchronized through i2c */

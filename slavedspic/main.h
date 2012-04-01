@@ -93,8 +93,8 @@
 #define LED_PRIO           170
 #define TIME_PRIO          160
 #define SENSOR_PRIO        120
+#define I2C_POLL_PRIO      110
 #define CS_PRIO            100
-#define I2C_POLL_PRIO       20
 
 #define CS_PERIOD 2000L
 

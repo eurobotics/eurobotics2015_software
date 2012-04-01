@@ -35,6 +35,7 @@
 #define TOTEM_2_X               1900
 #define TOTEM_1_Y               AREA_Y/2
 #define TOTEM_2_Y               TOTEM_1_Y
+#define TOTEM_WIDE              250
 #define RED_FLOOR_COIN_1_X      2000 
 #define RED_FLOOR_COIN_1_Y      500 
 #define RED_FLOOR_COIN_2_X      2150 
@@ -122,8 +123,8 @@
 
 #define SPEED_DIST_SLOW 		1000
 #define SPEED_ANGLE_SLOW 		1000
-#define SPEED_DIST_VERY_SLOW 	1000
-#define SPEED_ANGLE_VERY_SLOW 1000
+#define SPEED_DIST_VERY_SLOW 	500
+#define SPEED_ANGLE_VERY_SLOW 500
 #define PICKUP_SPEED		      1000 
 
 #define PICKUP_CAUGHT_TIME	  	  100
@@ -278,16 +279,15 @@ void strat_event(void *dummy);
 /********************************************
  * in strat_treasure.c 
  *******************************************/
-uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar, uint8_t store_coins);
-uint8_t strat_pickup_coins_floor(int16_t x, int16_t y, uint8_t store);
+uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar);
+uint8_t strat_pickup_coins_floor(int16_t x, int16_t y);
 uint8_t strat_pickup_goldbar_floor(int16_t x, int16_t y, uint8_t store);
 uint8_t strat_send_message_bottle(int16_t x, int16_t y);
-uint8_t strat_save_treasure_in_deck_front(int16_t x, int16_t y);
+uint8_t strat_save_treasure_generic(int16_t x, int16_t y);
 uint8_t strat_save_treasure_in_deck_back(int16_t x, int16_t y);
 uint8_t strat_save_treasure_in_hold_back(int16_t x, int16_t y);
 uint8_t strat_raise_window(uint8_t window);
 uint8_t strat_steal_treasure_hold(void);
-uint8_t strat_store_goldbar(uint8_t where);
 
 
 /* add here more strat functions in files */

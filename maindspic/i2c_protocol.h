@@ -45,17 +45,37 @@ void i2c_write_event(uint16_t size);
 /* dummy slavedspic led control */
 int8_t i2c_led_control(uint8_t addr, uint8_t led, uint8_t state);
 
-/* token systems control */
+
+/*Actuators mode commands 2012*/
 int8_t i2c_slavedspic_mode_init(void);
-int8_t i2c_slavedspic_mode_token_take(uint8_t side);
+int8_t i2c_slavedspic_mode_init(void);
+int8_t i2c_slavedspic_mode_power_off(void);
+int8_t i2c_slavedspic_mode_fingers(uint8_t type, uint8_t mode, int16_t offset);
+int8_t i2c_slavedspic_mode_arm(uint8_t type, uint8_t mode, int16_t offset);
+int8_t i2c_slavedspic_mode_lift_height(uint32_t height);
+int8_t i2c_slavedspic_mode_hook(uint8_t mode);
+int8_t i2c_slavedspic_mode_boot(uint8_t mode);
+int8_t i2c_slavedspic_mode_tray(uint8_t type, uint8_t mode);
+int8_t i2c_slavedspic_mode_turbine_angle(int8_t angle_deg, uint16_t angle_speed);
+int8_t i2c_slavedspic_mode_turbine_blow(int8_t blow_speed);
+int8_t i2c_slavedspic_mode_harvest(uint8_t mode);
+int8_t i2c_slavedspic_mode_store(uint8_t times, uint8_t mode);
+int8_t i2c_slavedspic_mode_dump(uint8_t mode);
+int8_t i2c_slavedspic_mode_set_infos_all(int8_t nb_goldbars_in_boot, int8_t nb_goldbars_in_mouth,
+                           int8_t nb_coins_in_boot, int8_t nb_coins_in_mouth);
+int8_t i2c_slavedspic_mode_set_infos_mouth(int8_t nb_goldbars_in_mouth,int8_t nb_coins_in_mouth);
+int8_t i2c_slavedspic_mode_set_infos_boot(int8_t nb_goldbars_in_boot, int8_t nb_coins_in_boot);
+void i2c_slavedspic_wait_ready(void);
+
+/*2011*/
+/*int8_t i2c_slavedspic_mode_token_take(uint8_t side);
 int8_t i2c_slavedspic_mode_token_eject(uint8_t side);
 int8_t i2c_slavedspic_mode_token_stop(uint8_t side);
 int8_t i2c_slavedspic_mode_token_show(uint8_t side);
 int8_t i2c_slavedspic_mode_token_out(uint8_t side);
 int8_t i2c_slavedspic_mode_token_push_r(uint8_t side);
-int8_t i2c_slavedspic_mode_token_push_l(uint8_t side);
-
+int8_t i2c_slavedspic_mode_token_push_l(uint8_t side);*/
 /* mirrors control */
-int8_t i2c_slavedspic_mode_mirror_pos(uint8_t side, uint16_t pos);
+/*int8_t i2c_slavedspic_mode_mirror_pos(uint8_t side, uint16_t pos);*/
 
 #endif
