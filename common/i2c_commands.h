@@ -30,7 +30,6 @@
 #ifndef _I2C_COMMANDS_H_
 #define _I2C_COMMANDS_H_
 
-//#include "../slavedspic/actuator.h"
 
 #define I2C_SLAVEDSPIC_ADDR 	0x10
 #define I2C_GPIOS_01_ADDR 		0x20
@@ -125,70 +124,70 @@ struct i2c_cmd_slavedspic_set_mode {
 	union{
 		struct {
 			uint8_t type;
-#define I2C_FINGERS_TYPE_FLOOR	FINGERS_TYPE_FLOOR
-#define I2C_FINGERS_TYPE_TOTEM	FINGERS_TYPE_TOTEM
+#define I2C_FINGERS_TYPE_FLOOR	0
+#define I2C_FINGERS_TYPE_TOTEM	1
 
 			uint8_t mode;
-#define I2C_FINGERS_MODE_HUG 		FINGERS_MODE_HUG
-#define I2C_FINGERS_MODE_OPEN 	FINGERS_MODE_OPEN
-#define I2C_FINGERS_MODE_HOLD 	FINGERS_MODE_HOLD	
-#define I2C_FINGERS_MODE_CLOSE	FINGERS_MODE_CLOSE
-#define I2C_FINGERS_MODE_PUSHIN	FINGERS_MODE_PUSHIN
+#define I2C_FINGERS_MODE_HUG 		0
+#define I2C_FINGERS_MODE_OPEN 	1
+#define I2C_FINGERS_MODE_HOLD 	2	
+#define I2C_FINGERS_MODE_CLOSE	3
+#define I2C_FINGERS_MODE_PUSHIN	4
 
-			int16_t offset;
+			int8_t offset;
 		} fingers;
 
 		struct {
 			uint8_t type;
-#define I2C_ARM_TYPE_RIGHT	ARM_TYPE_RIGHT
-#define I2C_ARM_TYPE_LEFT	ARM_TYPE_LEFT
+#define I2C_ARM_TYPE_RIGHT	0
+#define I2C_ARM_TYPE_LEFT	1
 
 			uint8_t mode;
-#define I2C_ARM_MODE_HIDE				ARM_MODE_HIDE
-#define I2C_ARM_MODE_SHOW				ARM_MODE_SHOW
-#define I2C_ARM_MODE_PUSH_GOLDBAR	ARM_MODE_PUSH_GOLDBAR
-#define I2C_ARM_MODE_PUSH_FLOOR		ARM_MODE_PUSH_FLOOR
+#define I2C_ARM_MODE_HIDE				0
+#define I2C_ARM_MODE_SHOW				1
+#define I2C_ARM_MODE_PUSH_GOLDBAR	2
+#define I2C_ARM_MODE_PUSH_FLOOR		3
 
-			int16_t offset;
+			int8_t offset;
 		} arm;
 
 		struct {
-			uint32_t height;
+			uint8_t height; /* XXX x1000 */
 		} lift;
 
 		struct {
 			int8_t angle_deg;
-			uint16_t angle_speed;
-			uint16_t blow_speed;
+			uint8_t angle_speed;
+			uint8_t blow_speed; /*XXX x4 */
 		} turbine;
 		
 		struct {
 			uint8_t mode;
-#define I2C_BOOT_MODE_OPEN_FULL		BOOT_MODE_OPEN_FULL
-#define I2C_BOOT_MODE_OPEN_HOLD		BOOT_MODE_OPEN_HOLD
-#define I2C_BOOT_MODE_CLOSE			BOOT_MODE_CLOSE
+#define I2C_BOOT_MODE_OPEN_FULL		0
+#define I2C_BOOT_MODE_OPEN_HOLD		1
+#define I2C_BOOT_MODE_CLOSE			2
 
 		} boot;
 
 		struct {
 			uint8_t mode;
-#define I2C_HOOK_MODE_HIDE			HOOK_MODE_HIDE
-#define I2C_HOOK_MODE_SHOW			HOOK_MODE_SHOW
-#define I2C_HOOK_MODE_FUCKYOU		HOOK_MODE_FUCKYOU
-#define I2C_HOOK_MODE_OPEN_HOLD	HOOK_MODE_OPEN_HOLD
+#define I2C_HOOK_MODE_HIDE			0
+#define I2C_HOOK_MODE_SHOW			1
+#define I2C_HOOK_MODE_FUCKYOU		2
+#define I2C_HOOK_MODE_OPEN_HOLD	3
 
 		} hook;
 
 		struct {
 			uint8_t type;
-#define I2C_TRAY_TYPE_RECEPTION	TRAY_TYPE_RECEPTION
-#define I2C_TRAY_TYPE_STORE		TRAY_TYPE_STORE
-#define I2C_TRAY_TYPE_BOOT			TRAY_TYPE_BOOT
+#define I2C_TRAY_TYPE_RECEPTION	0
+#define I2C_TRAY_TYPE_STORE		1
+#define I2C_TRAY_TYPE_BOOT			2
 
 			uint8_t mode;
-#define I2C_TRAY_MODE_DOWN			TRAY_MODE_DOWN 	/* it means off in case of boot tray */
-#define I2C_TRAY_MODE_UP			TRAY_MODE_UP 		/* only reception and store tray */
-#define I2C_TRAY_MODE_VIBRATE		TRAY_MODE_VIBRATE /* only boot and store tray */
+#define I2C_TRAY_MODE_DOWN			0 	/* it means off in case of boot tray */
+#define I2C_TRAY_MODE_UP			1 		/* only reception and store tray */
+#define I2C_TRAY_MODE_VIBRATE		2 /* only boot and store tray */
 
 		} tray;
 

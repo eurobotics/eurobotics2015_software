@@ -393,7 +393,6 @@ struct cmd_slavedspic_result {
 /* function called when cmd_slavedspic is parsed successfully */
 static void cmd_slavedspic_parsed(void *parsed_result, void *data)
 {
-#ifdef notyet
 	struct cmd_slavedspic_result *res = parsed_result;
 	static uint8_t led_flag = 0;
 	int16_t c;
@@ -450,19 +449,10 @@ static void cmd_slavedspic_parsed(void *parsed_result, void *data)
 	}
 	else if (!strcmp(res->arg1, "info"))
 	{
-		/* wait one pulling cycle */
-		i2cproto_wait_update();
-
-		/* show info */
-		printf("FRONT: state = %d / blocked = %d / catched = %d \n\r",
-				 slavedspic.ts[I2C_SIDE_FRONT].state,
-				 slavedspic.ts[I2C_SIDE_FRONT].belts_blocked,
-				 slavedspic.ts[I2C_SIDE_FRONT].token_catched);
-
-		printf("REAR:  state = %d / blocked = %d / catched = %d \n\r",
-				 slavedspic.ts[I2C_SIDE_REAR].state,
-				 slavedspic.ts[I2C_SIDE_REAR].belts_blocked,
-				 slavedspic.ts[I2C_SIDE_REAR].token_catched);
+		/* actuators blocking flags */		printf("fingers_floor_blocked = %d\r\n", slavedspic.fingers_floor_blocked);		printf("fingers_totem_blocked = %d\r\n", slavedspic.fingers_totem_blocked);		printf("arm_right_blocked = %d\r\n", slavedspic.arm_right_blocked);		printf("arm_left_blocked = %d\r\n", slavedspic.arm_left_blocked);		printf("lift_blocked = %d\r\n", slavedspic.lift_blocked);
+		/* sensors */		printf("turbine_sensors = %d\r\n", slavedspic.turbine_sensors);
+		/* infos */		printf("status = %s\r\n", slavedspic.status == I2C_SLAVEDSPIC_STATUS_BUSY? "BUSY":"READY");		printf("harvest_mode = %d\r\n", slavedspic.harvest_mode);		printf("store_mode = %d\r\n", slavedspic.store_mode);		printf("dump_mode = %d\r\n", slavedspic.dump_mode);
+		printf("nb_goldbars_in_boot = %d\r\n", slavedspic.nb_goldbars_in_boot);		printf("nb_goldbars_in_mouth = %d\r\n", slavedspic.nb_goldbars_in_mouth);		printf("nb_coins_in_boot = %d\r\n", slavedspic.nb_coins_in_boot);		printf("nb_coins_in_mouth = %d\r\n", slavedspic.nb_coins_in_mouth);
 	}
 	else if(!strcmp(res->arg1, "led")){
 		i2c_led_control(I2C_SLAVEDSPIC_ADDR, 1, led_flag);
@@ -472,7 +462,6 @@ static void cmd_slavedspic_parsed(void *parsed_result, void *data)
 
 	printf("done \r\n");
 	return;	
-#endif
 }
 
 prog_char str_slavedspic_arg0[] = "slavedspic";

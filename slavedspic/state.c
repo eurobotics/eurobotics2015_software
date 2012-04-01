@@ -197,7 +197,7 @@ void state_do_lift_height(void)
 	if (!state_check_update(LIFT_HEIGHT))
 		return;
 
-	lift_set_height(mainboard_command.lift.height);
+	lift_set_height(mainboard_command.lift.height * 1000);
 	lift_wait_end();
 
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
@@ -221,7 +221,7 @@ void state_do_turbine_blow(void)
 	if (!state_check_update(TURBINE_BLOW))
 		return;
 
-	turbine_set_blow_speed(&slavedspic.turbine, mainboard_command.turbine.blow_speed);
+	turbine_set_blow_speed(&slavedspic.turbine, mainboard_command.turbine.blow_speed << 2);
 
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
 }

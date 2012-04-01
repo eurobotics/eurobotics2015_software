@@ -398,16 +398,28 @@ void i2c_read_event(uint8_t * buf, uint16_t size)
 			if (size != sizeof (*ans))
 				goto *p_error_recv;
 	
-#if 0
-			/* token systems status */
-			slavedspic.ts[I2C_SIDE_REAR].state 			 = ans->ts[I2C_SIDE_REAR].state;
-			slavedspic.ts[I2C_SIDE_REAR].belts_blocked = ans->ts[I2C_SIDE_REAR].belts_blocked;
-			slavedspic.ts[I2C_SIDE_REAR].token_catched = ans->ts[I2C_SIDE_REAR].token_catched;
+      	/* actuators blocking */
+      	slavedspic.fingers_floor_blocked = ans->fingers_floor_blocked;
+      	slavedspic.fingers_totem_blocked = ans->fingers_totem_blocked;
+      	slavedspic.arm_right_blocked = ans->arm_right_blocked;
+      	slavedspic.arm_left_blocked = ans->arm_left_blocked;
+      	slavedspic.lift_blocked = ans->lift_blocked;
+      
+      	/* sensors */
+      	slavedspic.turbine_sensors = ans->turbine_sensors;
+      
+      	/* infos */
+      	slavedspic.status = ans->status;
+      
+      	slavedspic.harvest_mode = ans->harvest_mode;
+      	slavedspic.store_mode = ans->store_mode;
+      	slavedspic.dump_mode = ans->dump_mode;
+      
+      	slavedspic.nb_goldbars_in_boot = ans->nb_goldbars_in_boot;
+      	slavedspic.nb_goldbars_in_mouth = ans->nb_goldbars_in_mouth;
+      	slavedspic.nb_coins_in_boot = ans->nb_coins_in_boot;
+      	slavedspic.nb_coins_in_mouth = ans->nb_coins_in_mouth;
 
-			slavedspic.ts[I2C_SIDE_FRONT].state 		  = ans->ts[I2C_SIDE_FRONT].state;
-			slavedspic.ts[I2C_SIDE_FRONT].belts_blocked = ans->ts[I2C_SIDE_FRONT].belts_blocked;
-			slavedspic.ts[I2C_SIDE_FRONT].token_catched = ans->ts[I2C_SIDE_FRONT].token_catched;
-#endif
 			break;
 		}
 	
@@ -525,7 +537,6 @@ int8_t i2c_led_control(uint8_t addr, uint8_t led, uint8_t state)
 	return i2c_send_command(addr, (uint8_t*)&buf, sizeof(buf));
 }
 
-#if 0
 int8_t i2c_slavedspic_mode_init(void)
 {
 	struct i2c_cmd_slavedspic_set_mode buf;
@@ -538,6 +549,299 @@ int8_t i2c_slavedspic_mode_init(void)
 	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
 }
 
+int8_t i2c_slavedspic_mode_power_off(void)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_POWER_OFF;
+
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+
+int8_t i2c_slavedspic_mode_fingers(uint8_t type, uint8_t mode, int16_t offset)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_FINGERS;
+	buf.fingers.type = type;
+	buf.fingers.mode = mode;
+	buf.fingers.offset = offset;
+
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+
+int8_t i2c_slavedspic_mode_arm(uint8_t type, uint8_t mode, int16_t offset)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_ARM;
+	buf.arm.type = type;
+	buf.arm.mode = mode;
+	buf.arm.offset = offset;
+
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+
+int8_t i2c_slavedspic_mode_lift_height(uint32_t height)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_LIFT_HEIGHT;
+   buf.lift.height=height;
+
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+
+int8_t i2c_slavedspic_mode_hook(uint8_t mode)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_HOOK;
+	buf.hook.mode = mode;
+
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+
+int8_t i2c_slavedspic_mode_boot(uint8_t mode)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_BOOT;
+	buf.boot.mode = mode;
+
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+
+int8_t i2c_slavedspic_mode_tray(uint8_t type, uint8_t mode)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_TRAY;
+	buf.tray.type = type;
+	buf.tray.mode = mode;
+
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+
+int8_t i2c_slavedspic_mode_turbine_angle(int8_t angle_deg, uint16_t angle_speed)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_TURBINE_ANGLE;
+	buf.turbine.angle_deg=angle_deg;
+	buf.turbine.angle_speed=angle_speed;
+    
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+
+int8_t i2c_slavedspic_mode_turbine_blow(int8_t blow_speed)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_TURBINE_BLOW;
+	buf.turbine.blow_speed=blow_speed;
+    
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+
+int8_t i2c_slavedspic_mode_harvest(uint8_t mode)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_HARVEST;
+	buf.harvest.mode = mode;
+
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+
+int8_t i2c_slavedspic_mode_store(uint8_t times, uint8_t mode)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_STORE;
+	buf.store.times = times;
+	buf.store.mode = mode;
+
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+
+int8_t i2c_slavedspic_mode_dump(uint8_t mode)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_DUMP;
+	buf.dump.mode = mode;
+
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+
+int8_t i2c_slavedspic_mode_set_infos_all(int8_t nb_goldbars_in_boot, int8_t nb_goldbars_in_mouth,
+                           int8_t nb_coins_in_boot, int8_t nb_coins_in_mouth)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_SET_INFOS;
+   buf.set_infos.nb_goldbars_in_boot=nb_goldbars_in_boot;
+   buf.set_infos.nb_goldbars_in_mouth=nb_goldbars_in_mouth;
+   buf.set_infos.nb_coins_in_boot=nb_coins_in_boot;
+   buf.set_infos.nb_coins_in_mouth=nb_coins_in_mouth;
+
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+int8_t i2c_slavedspic_mode_set_infos_mouth(int8_t nb_goldbars_in_mouth,int8_t nb_coins_in_mouth)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_SET_INFOS;
+   buf.set_infos.nb_goldbars_in_boot=-1;
+   buf.set_infos.nb_goldbars_in_mouth=nb_goldbars_in_mouth;
+   buf.set_infos.nb_coins_in_boot=-1;
+   buf.set_infos.nb_coins_in_mouth=nb_coins_in_mouth;
+
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+int8_t i2c_slavedspic_mode_set_infos_boot(int8_t nb_goldbars_in_boot, int8_t nb_coins_in_boot)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_SET_INFOS;
+   buf.set_infos.nb_goldbars_in_boot=nb_goldbars_in_boot;
+   buf.set_infos.nb_goldbars_in_mouth=-1;
+   buf.set_infos.nb_coins_in_boot=nb_coins_in_boot;
+   buf.set_infos.nb_coins_in_mouth=-1;
+
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+
+void i2c_slavedspic_wait_ready(void)
+{
+   do{
+      i2cproto_wait_update();
+   } while(slavedspic.status == I2C_SLAVEDSPIC_STATUS_BUSY);
+}
+
+   
+/*******************************************************************************
+ * Debug functions
+ ******************************************************************************/
+#if 0
+
+uint8_t val[32];
+uint8_t i=0;
+uint8_t error = 0;
+
+void i2c_test_read_event(uint8_t *rBuff, uint16_t size)
+{
+		error = 0;
+		
+		if(size == 1 && rBuff[0]==val[0])
+			printf("%d val_rd = %d\n\r", i++, rBuff[0]);
+		else{
+			printf("%d Error lectura: leido %d\r\n", i++, rBuff[0]);
+			error = 1;
+			i2c_reset();
+		}			
+			
+		val[0]++;
+}
+
+void i2c_test_write_event(uint16_t size)
+{
+	if(size ==1)
+		printf("%d val_wr = %d\n\r", i, val[0]);
+	else{
+		printf("%d Error escritura: %d bytes escritos\n\r",i, size);
+		error = 1;
+		i2c_reset();
+	}
+}
+
+void i2c_test(void)
+{
+	uint8_t ret;
+	
+	while(1){
+		ret = i2c_write(0x21, 0x02, val, 1);	
+		wait_ms(100);
+		ret = i2c_read(0x21, 0x02, 1);
+		wait_ms(100);
+	
+	}
+}	
+#endif
+
+#if 0
+	while(1){
+		wait_ms(200);
+		pepe ^=1;
+		i2c_led_control(I2C_SLAVEDSPIC_ADDR,1,pepe);
+		printf("slavedspic led = %d\r\n", slavedspic.led);
+	}
+#endif
+
+
+/*******************************************************************************
+ * 2011 functions
+ ******************************************************************************/
+#if 0
 int8_t i2c_slavedspic_mode_token_take(uint8_t side)
 {
 	struct i2c_cmd_slavedspic_set_mode buf;
@@ -650,62 +954,4 @@ int8_t i2c_slavedspic_mode_mirror_pos(uint8_t side, uint16_t pos)
 	/* send command and return */
 	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
 }
-#endif
-
-/*******************************************************************************
- * Debug functions
- ******************************************************************************/
-#if 0
-
-uint8_t val[32];
-uint8_t i=0;
-uint8_t error = 0;
-
-void i2c_test_read_event(uint8_t *rBuff, uint16_t size)
-{
-		error = 0;
-		
-		if(size == 1 && rBuff[0]==val[0])
-			printf("%d val_rd = %d\n\r", i++, rBuff[0]);
-		else{
-			printf("%d Error lectura: leido %d\r\n", i++, rBuff[0]);
-			error = 1;
-			i2c_reset();
-		}			
-			
-		val[0]++;
-}
-
-void i2c_test_write_event(uint16_t size)
-{
-	if(size ==1)
-		printf("%d val_wr = %d\n\r", i, val[0]);
-	else{
-		printf("%d Error escritura: %d bytes escritos\n\r",i, size);
-		error = 1;
-		i2c_reset();
-	}
-}
-
-void i2c_test(void)
-{
-	uint8_t ret;
-	
-	while(1){
-		ret = i2c_write(0x21, 0x02, val, 1);	
-		wait_ms(100);
-		ret = i2c_read(0x21, 0x02, 1);
-		wait_ms(100);
-	
-	}
-}	
-#endif
-
-#if 0
-	while(1){
-		wait_ms(200);
-		pepe ^=1;
-		i2c_led_control(I2C_SLAVEDSPIC_ADDR,1,pepe);
-		printf("slavedspic led = %d\r\n", slavedspic.led);
-	}
 #endif

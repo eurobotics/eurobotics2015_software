@@ -224,10 +224,10 @@ int main(void)
 	encoders_dspic_init();
 
 	/* I2C */
-	//i2c_init();
-	//i2c_register_read_event(i2c_read_event);
-	//i2c_register_write_event(i2c_write_event);
-	//i2c_protocol_init();
+	i2c_init();
+	i2c_register_read_event(i2c_read_event);
+	i2c_register_write_event(i2c_write_event);
+	i2c_protocol_init();
 
 	/* DAC_MC */
 	dac_mc_channel_init(&gen.dac_mc_right, 1, CHANNEL_R,											DAC_MC_MODE_SIGNED|DAC_MC_MODE_SIGN_INVERTED,										 	&LATB, 10, NULL, 0);
@@ -260,8 +260,8 @@ int main(void)
 	sensor_init();
 
 	/* i2c slaves polling (gpios and slavedspic) */
-	//scheduler_add_periodical_event_priority(i2c_poll_slaves, NULL,
-	//					EVENT_PERIOD_I2C_POLL / SCHEDULER_UNIT, EVENT_PRIORITY_I2C_POLL);
+	scheduler_add_periodical_event_priority(i2c_poll_slaves, NULL,
+						EVENT_PERIOD_I2C_POLL / SCHEDULER_UNIT, EVENT_PRIORITY_I2C_POLL);
 
 	/* beacon commnads and polling */
 	scheduler_add_periodical_event_priority(beacon_protocol, NULL,

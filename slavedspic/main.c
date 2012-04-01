@@ -240,10 +240,12 @@ int main(void)
 	slavedspic_cs_init();
 
 	/* I2C */
+#if 1
 	i2c_init(I2C_SLAVEDSPIC_ADDR);
 	i2c_register_read_event(i2c_read_event);
 	i2c_register_write_event(i2c_write_event);
 	i2c_protocol_init();
+#endif
 
 	/* TIMER */
 	timer_init();
@@ -288,7 +290,6 @@ int main(void)
 	scheduler_add_periodical_event_priority(do_cs, NULL, 
 						CS_PERIOD / SCHEDULER_UNIT, 
 						CS_PRIO);
-
 	scheduler_add_periodical_event_priority(do_i2c_watchdog, NULL, 
 						8000L / SCHEDULER_UNIT, 
 						I2C_POLL_PRIO);
