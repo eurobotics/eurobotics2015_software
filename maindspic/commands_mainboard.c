@@ -241,6 +241,37 @@ parse_pgm_inst_t cmd_opponent_set = {
 };
 
 
+
+/**********************************************************/
+/* Start */
+
+/* this structure is filled when cmd_start is parsed successfully */
+struct cmd_start_result {
+	fixed_string_t arg0;
+};
+
+/* function called when cmd_start is parsed successfully */
+static void cmd_start_parsed(void *parsed_result, void *data)
+{	
+	strat_game();
+}
+
+prog_char str_start_arg0[] = "start";
+parse_pgm_token_string_t cmd_start_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_start_result, arg0, str_start_arg0);
+
+prog_char help_start[] = "Start the robot";
+parse_pgm_inst_t cmd_start = {
+	.f = cmd_start_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_start,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_start_arg0, 
+		NULL,
+	},
+};
+
+
+#if 0
 /**********************************************************/
 /* Start */
 
@@ -304,11 +335,11 @@ static void cmd_start_parsed(void *parsed_result, void *data)
 	}
 	
 	if (!strcmp_P(res->color, PSTR("blue"))) {
-		mainboard.our_color = I2C_COLOR_RED;
+		mainboard.our_color = I2C_COLOR_PURPLE;
 		//beacon_cmd_color();
 	}
 	else if (!strcmp_P(res->color, PSTR("red"))) {
-		mainboard.our_color = I2C_COLOR_PURPLE;
+		mainboard.our_color = I2C_COLOR_RED;
 		//beacon_cmd_color();
 	}
 
@@ -338,7 +369,7 @@ parse_pgm_inst_t cmd_start = {
 	},
 };
 
-
+#endif
 /**********************************************************/
 /* Color */
 

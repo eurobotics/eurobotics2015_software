@@ -53,6 +53,7 @@ struct xy_point {
 
 int16_t distance_between(int16_t x1, int16_t y1, int16_t x2, int16_t y2);
 int16_t distance_from_robot(int16_t x, int16_t y);
+int16_t distance_from_robot_signed(int16_t x, int16_t y);
 
 int16_t simple_modulo_360(int16_t a);
 double simple_modulo_2pi(double a);
@@ -101,4 +102,6 @@ uint8_t opponent_is_in_area(int16_t x_up, int16_t y_up,
 /* only compile with HOMOLOGATION define */
 void wait_until_opponent_is_far(void);
 
+void strat_auto_position(void);
 #endif
+
