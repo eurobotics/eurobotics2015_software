@@ -84,6 +84,32 @@ int16_t distance_from_robot(int16_t x, int16_t y)
 				position_get_y_s16(&mainboard.pos), x, y);
 }
 
+/* return the distance to a point in the area */
+int16_t distance_from_robot_signed(int16_t x, int16_t y)
+{
+	double a = position_get_a_rad_double(&mainboard.pos);
+   double dis=distance_between(position_get_x_s16(&mainboard.pos),
+				position_get_y_s16(&mainboard.pos), x, y);
+
+   if(a>0 && a<M_PI/2) {
+      if(position_get_x_s16(&mainboard.pos)>x) dis=-dis; 
+   }
+
+   else if(a>M_PI/2 && a<M_PI){
+      if(position_get_x_s16(&mainboard.pos)<x) dis=-dis;
+   }
+
+   else if(a<-M_PI/2 && a>-M_PI){
+      if(position_get_x_s16(&mainboard.pos)<x) dis=-dis;
+   }
+
+   else if(a<0 && a>-M_PI/2){
+      if(position_get_x_s16(&mainboard.pos)>x) dis=-dis;
+   }
+
+   return dis;
+}
+
 /** do a modulo 360 -> [-180,+180], knowing that 'a' is in [-3*180,+3*180] */  
 int16_t simple_modulo_360(int16_t a)
 {
@@ -226,6 +252,7 @@ uint8_t y_is_more_than(int16_t y)
 
 /* return 1 or 0 depending on which side of a line (x=cste) is the
  * robot. works in red or green color. */
+
 uint8_t x_is_more_than(int16_t x)
 {
 	int16_t posx;
@@ -244,8 +271,6 @@ uint8_t x_is_more_than(int16_t x)
 			return 0;
 	}
 }
-
-
 /* return 1 if x > x_opp or opponent not there */
 uint8_t opp_x_is_more_than(int16_t x)
 {
@@ -489,7 +514,64 @@ void wait_until_opponent_is_far(void)
 }
 
 
+#define AUTOPOS_SPEED_FAST 	500
+#define ROBOT_DIS2_WALL 		(int16_t)(119)
+void strat_auto_position(void)
+{
+	uint8_t err;
+	uint16_t old_spdd, old_spda;
 
+	/* save & set speeds */
+	interrupt_traj_reset();
+	strat_get_speed(&old_spdd, &old_spda);
+	strat_set_speed(AUTOPOS_SPEED_FAST, AUTOPOS_SPEED_FAST);
+
+	/* goto blocking to y axis */
+	trajectory_d_rel(&mainboard.traj, -300);
+	err = wait_traj_end(END_INTR|END_TRAJ|END_BLOCKING);
+	if (err == END_INTR)
+		goto intr;
+	wait_ms(100);
+	
+	/* set y */
+	strat_reset_pos(0, COLOR_Y(ROBOT_DIS2_WALL), 90);
+	
+	/* prepare to x axis */
+	trajectory_d_rel(&mainboard.traj, 195); //35
+	err = wait_traj_end(END_INTR|END_TRAJ);
+	if (err == END_INTR)
+		goto intr;
+
+	trajectory_a_rel(&mainboard.traj, COLOR_A_REL(-90));
+	err = wait_traj_end(END_INTR|END_TRAJ);
+	if (err == END_INTR)
+		goto intr;
+
+	/* goto blocking to x axis */
+	trajectory_d_rel(&mainboard.traj, -800);
+	err = wait_traj_end(END_INTR|END_TRAJ|END_BLOCKING);
+	if (err == END_INTR)
+		goto intr;
+	wait_ms(100);
+
+	/* set x and angle */
+	strat_reset_pos(COLOR_X(ROBOT_DIS2_WALL), DO_NOT_SET_POS, COLOR_A_ABS(0));
+
+	/* goto start position */
+	trajectory_d_rel(&mainboard.traj, 500-(ROBOT_LENGTH));
+	err = wait_traj_end(END_INTR|END_TRAJ);
+	if (err == END_INTR)
+		goto intr;
+	wait_ms(100);
+	
+	/* restore speeds */	
+	strat_set_speed(old_spdd, old_spda);
+	return;
+
+intr:
+	strat_hardstop();
+	strat_set_speed(old_spdd, old_spda);
+}
 
 
 

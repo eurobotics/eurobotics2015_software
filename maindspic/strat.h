@@ -102,6 +102,7 @@
 
 /* useful traj flags */
 #define TRAJ_SUCCESS(f) 				(f & (END_TRAJ|END_NEAR))
+#define TRAJ_BLOCKING(f) 				(f & (END_BLOCKING))
 
 #define TRAJ_FLAGS_STD 					(END_TRAJ|END_BLOCKING|END_NEAR|END_OBSTACLE|END_INTR|END_TIMER)
 #define TRAJ_FLAGS_NO_TIMER 			(END_TRAJ|END_BLOCKING|END_NEAR|END_OBSTACLE|END_INTR)
@@ -288,6 +289,7 @@ uint8_t strat_save_treasure_in_deck_back(int16_t x, int16_t y);
 uint8_t strat_save_treasure_in_hold_back(int16_t x, int16_t y);
 uint8_t strat_raise_window(uint8_t window);
 uint8_t strat_steal_treasure_hold(void);
+uint8_t strat_game(void);
 
 
 /* add here more strat functions in files */
