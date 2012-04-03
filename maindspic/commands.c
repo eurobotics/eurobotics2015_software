@@ -91,6 +91,10 @@ extern parse_pgm_inst_t cmd_opponent_set;
 extern parse_pgm_inst_t cmd_start;
 extern parse_pgm_inst_t cmd_color;
 extern parse_pgm_inst_t cmd_slavedspic;
+extern parse_pgm_inst_t cmd_slavedspic_harvest;
+extern parse_pgm_inst_t cmd_slavedspic_store;
+extern parse_pgm_inst_t cmd_slavedspic_dump;
+extern parse_pgm_inst_t cmd_treasure;
 
 #ifdef notyet
 extern parse_pgm_inst_t cmd_slavedspic_ts;
@@ -198,6 +202,10 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_start,
 	(parse_pgm_inst_t *)&cmd_color,
 	(parse_pgm_inst_t *)&cmd_slavedspic,
+	(parse_pgm_inst_t *)&cmd_slavedspic_harvest,
+	(parse_pgm_inst_t *)&cmd_slavedspic_store,
+	(parse_pgm_inst_t *)&cmd_slavedspic_dump,
+	(parse_pgm_inst_t *)&cmd_treasure,
 
 #ifdef notyet
 	(parse_pgm_inst_t *)&cmd_slavedspic_ts,
