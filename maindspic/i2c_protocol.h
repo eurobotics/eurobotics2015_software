@@ -48,7 +48,6 @@ int8_t i2c_led_control(uint8_t addr, uint8_t led, uint8_t state);
 
 /*Actuators mode commands 2012*/
 int8_t i2c_slavedspic_mode_init(void);
-int8_t i2c_slavedspic_mode_init(void);
 int8_t i2c_slavedspic_mode_power_off(void);
 int8_t i2c_slavedspic_mode_fingers(uint8_t type, uint8_t mode, int16_t offset);
 int8_t i2c_slavedspic_mode_arm(uint8_t type, uint8_t mode, int16_t offset);
