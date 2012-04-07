@@ -141,7 +141,7 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar)
    i2c_slavedspic_wait_ready();
    i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_COINS_TOTEM);
    i2c_slavedspic_wait_ready();
-	wait_ms(600);
+	time_wait_ms(600);
 
 	DEBUG(E_USER_STRAT, "Pickup goldbar.");
    i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_PREPARE_GOLDBAR_TOTEM);
@@ -154,7 +154,7 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar)
 	while(!cmdline_keypressed());
    i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_GOLDBAR_TOTEM);
    i2c_slavedspic_wait_ready();
-	wait_ms(1500);
+	time_wait_ms(1500);
 
    /*Go a little backward*/
 	strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
@@ -340,7 +340,7 @@ uint8_t strat_send_message_bottle(int16_t x, int16_t y)
 	/* go to blocking*/
 	trajectory_d_rel(&mainboard.traj, -300);
 	err = wait_traj_end(END_INTR|END_TRAJ|END_BLOCKING);
-	if (err != END_BLOCKING)
+	if (!TRAJ_BLOCKING(err))
 			ERROUT(err);
    
 	/* go forward to safe distance from token */
@@ -382,7 +382,7 @@ uint8_t strat_save_treasure_generic(int16_t x, int16_t y)
 			ERROUT(err);
    
 	DEBUG(E_USER_STRAT, "Open floor fingers.");
-   i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_PREPARE_COINS_FLOOR);
+   i2c_slavedspic_mode_dump(I2C_DUMP_MODE_PREPARE_MOUTH);
    i2c_slavedspic_wait_ready();
 
    
@@ -395,7 +395,7 @@ uint8_t strat_save_treasure_generic(int16_t x, int16_t y)
 
    /*Close fingers*/
 	DEBUG(E_USER_STRAT, "Close floor fingers.");
-   i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_COINS_FLOOR);
+   i2c_slavedspic_mode_dump(I2C_DUMP_MODE_END_MOUTH);
    i2c_slavedspic_wait_ready();
 
    end:
@@ -404,10 +404,13 @@ uint8_t strat_save_treasure_generic(int16_t x, int16_t y)
 }
 
 
+/* Start position must be in line with the ship and the robot looking backwards*/
 uint8_t strat_save_treasure_in_deck_back(int16_t x, int16_t y)
 {   
    uint8_t err;
 	uint16_t old_spdd, old_spda;
+   int16_t d;
+   #define D_SAVE 100
 
 	/* save speed */
 	strat_get_speed(&old_spdd, &old_spda);
@@ -419,31 +422,34 @@ uint8_t strat_save_treasure_in_deck_back(int16_t x, int16_t y)
 			ERROUT(err);
 
    /*go to the ship*/
-	trajectory_d_rel(&mainboard.traj, -abs(x-position_get_x_s16(&mainboard.pos)));
+   d=distance_from_robot(x,y)+D_SAVE;
+	trajectory_d_rel(&mainboard.traj, -d);
 	err = wait_traj_end(TRAJ_FLAGS_STD);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
-   /*Slave in mode empty*/
-	DEBUG(E_USER_STRAT, "Mode empty.");
-	while(!cmdline_keypressed());
+	DEBUG(E_USER_STRAT, "Prepare for dump.");
+   i2c_slavedspic_mode_dump(I2C_DUMP_MODE_PREPARE_BOOT);
+   i2c_slavedspic_wait_ready();
 
-	wait_ms(2000);
+	DEBUG(E_USER_STRAT, "Dump.");
+   i2c_slavedspic_mode_dump(I2C_DUMP_MODE_BOOT);
+
 
    /*Turn a little to each side to let tokens fall down*/
-   trajectory_a_rel(&mainboard.traj,60);
+   trajectory_a_rel(&mainboard.traj,40);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
-   trajectory_a_rel(&mainboard.traj,-120);
+   trajectory_a_rel(&mainboard.traj,-80);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
-   trajectory_a_rel(&mainboard.traj,60);
+   trajectory_a_rel(&mainboard.traj,40);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
-	wait_ms(1000);
+	time_wait_ms(1000);
 
 	/* go to safe distance*/
 	strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
@@ -452,15 +458,19 @@ uint8_t strat_save_treasure_in_deck_back(int16_t x, int16_t y)
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
+   i2c_slavedspic_wait_ready();
+
    /*End of mode empty*/
 	DEBUG(E_USER_STRAT, "End of mode empty.");
-	while(!cmdline_keypressed());
+   i2c_slavedspic_mode_dump(I2C_DUMP_MODE_END_BOOT);
+   i2c_slavedspic_wait_ready();
 
    end:
 	strat_set_speed(old_spdd, old_spda);
    return err;
 }
 
+/* Start position must be in line with the ship and the robot looking backwards*/
 uint8_t strat_save_treasure_in_hold_back(int16_t x, int16_t y)
 {   
    uint8_t err;
@@ -477,32 +487,29 @@ uint8_t strat_save_treasure_in_hold_back(int16_t x, int16_t y)
 
    /*Spread hook out*/
 	DEBUG(E_USER_STRAT, "Spread hook out.");
-	while(!cmdline_keypressed());
+   i2c_slavedspic_mode_dump(I2C_DUMP_MODE_PREPARE_HOLD);
+   i2c_slavedspic_wait_ready();
+
+   /* it needs more time to get hook down*/
+	time_wait_ms(1000);
 
    /*Deactivate cs angle*/
-   /**/
+   /*TODO*/
 
    /*Go backward until blocking*/
 	trajectory_d_rel(&mainboard.traj, -300);
 	err = wait_traj_end(END_INTR|END_TRAJ|END_BLOCKING);
-	if (err != END_BLOCKING)
+	if (!TRAJ_BLOCKING(err))
 			ERROUT(err);
 
    /*Activate cs angle*/
-   /**/
-
-   /*Lift hook to lift the lid*/
-	DEBUG(E_USER_STRAT, "Lift hook to lift the lid.");
-	while(!cmdline_keypressed());
+   /*TODO*/
 
    /*Slave in mode empty*/
 	DEBUG(E_USER_STRAT, "Mode empty.");
-	while(!cmdline_keypressed());
-	wait_ms(3000);
-
-   /*Put down hook*/
-	DEBUG(E_USER_STRAT, "Put down hook.");
-	while(!cmdline_keypressed());
+   i2c_slavedspic_mode_dump(I2C_DUMP_MODE_BOOT);
+	time_wait_ms(3000);
+   i2c_slavedspic_wait_ready();
 
 	/* go to safe distance*/
 	strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
@@ -511,12 +518,10 @@ uint8_t strat_save_treasure_in_hold_back(int16_t x, int16_t y)
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
-   /*Gather hook in*/
-	DEBUG(E_USER_STRAT, "Gather hook in.");
-	while(!cmdline_keypressed());
 
-   /*End of mode empty*/
-	DEBUG(E_USER_STRAT, "End of mode empty.");
+   /*Put down hook*/
+   i2c_slavedspic_mode_dump(I2C_DUMP_MODE_END_BOOT);
+   i2c_slavedspic_wait_ready();
 
    end:
 	strat_set_speed(old_spdd, old_spda);
@@ -526,7 +531,43 @@ uint8_t strat_save_treasure_in_hold_back(int16_t x, int16_t y)
 
 uint8_t strat_raise_window(uint8_t window)
 {
-   return 1;
+   uint8_t err;
+	uint16_t old_spdd, old_spda;
+
+	/* save speed */
+	strat_get_speed(&old_spdd, &old_spda);
+
+   /*Turn to abs 180 or 0 deg*/
+   trajectory_a_abs(&mainboard.traj,COLOR_A_ABS(0));
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+
+   /*Spread hook out*/
+	DEBUG(E_USER_STRAT, "Spread hook out.");
+   i2c_slavedspic_mode_dump(I2C_DUMP_MODE_PREPARE_HOLD);
+   i2c_slavedspic_wait_ready();
+
+   /*Deactivate cs angle*/
+   /*TODO*/
+
+   /*Go backward until blocking*/
+	trajectory_d_rel(&mainboard.traj, -300);
+	err = wait_traj_end(END_INTR|END_TRAJ|END_BLOCKING);
+	if (!TRAJ_BLOCKING(err))
+			ERROUT(err);
+
+   /*Activate cs angle*/
+   /*TODO*/
+
+   /*Slave in mode empty*/
+	DEBUG(E_USER_STRAT, "Mode empty.");
+   i2c_slavedspic_mode_dump(I2C_DUMP_MODE_BOOT);
+   i2c_slavedspic_wait_ready();
+
+   end:
+	strat_set_speed(old_spdd, old_spda);
+   return err;
 }
 
 uint8_t strat_steal_treasure_hold(void)

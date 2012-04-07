@@ -1052,17 +1052,20 @@ void state_do_dump_mode(void)
 
          break;
    
-      /* ??????? */
 		case I2C_DUMP_MODE_PREPARE_BOOT:	
-      	STMCH_DEBUG("??");
-      	STMCH_DEBUG("TO DO");
-			err = 0;	
+         boot_set_mode(&slavedspic.boot, BOOT_MODE_OPEN_FULL);
+         tray_set_mode(&slavedspic.tray_store,TRAY_MODE_DOWN);
+			
+			/* XXX */
+			time_wait_ms(100);
+
+			err = 0;
          break;
 
 		case I2C_DUMP_MODE_BOOT:
          hook_set_mode(&slavedspic.hook, HOOK_MODE_OPEN_HOLD);
 			/* XXX */
-			time_wait_ms(100);
+			time_wait_ms(200);
 
          boot_set_mode(&slavedspic.boot, BOOT_MODE_OPEN_HOLD);
          tray_set_mode(&slavedspic.tray_store,TRAY_MODE_DOWN);
@@ -1074,6 +1077,10 @@ void state_do_dump_mode(void)
 
          tray_set_mode(&slavedspic.tray_boot,TRAY_MODE_DOWN);
          tray_set_mode(&slavedspic.tray_store,TRAY_MODE_DOWN);
+
+         boot_set_mode(&slavedspic.boot, BOOT_MODE_CLOSE);
+			time_wait_ms(200);
+         hook_set_mode(&slavedspic.hook, HOOK_MODE_SHOW);
 			err = 0;	
          break;
 
@@ -1089,7 +1096,6 @@ void state_do_dump_mode(void)
 
 		case I2C_DUMP_MODE_END_BOOT:
          hook_set_mode(&slavedspic.hook, HOOK_MODE_HIDE);
-         boot_set_mode(&slavedspic.boot, BOOT_MODE_CLOSE);
 			
 			/* XXX */
 			time_wait_ms(100);
