@@ -47,6 +47,10 @@
 
 /* SOME USEFUL MACROS AND VALUES  *********************************************/
 
+/* NUMBER OF ROBOTS TO TRACK */
+#define TWO_OPPONENTS
+/*#define ROBOT_2ND*/
+
 /* uart 0 is for cmds and uart 1 is 
  * multiplexed between beacon and slavedspic */
 #define CMDLINE_UART 	0
@@ -261,6 +265,20 @@ struct beaconboard
 	int16_t opponent_y;
 	int16_t opponent_a;
 	int16_t opponent_d;
+
+#ifdef TWO_OPPONENTS
+	int16_t opponent2_x;
+	int16_t opponent2_y;
+	int16_t opponent2_a;
+	int16_t opponent2_d;
+#endif
+
+#ifdef ROBOT_2ND
+	int16_t robot_2nd_x;
+	int16_t robot_2nd_y;
+	int16_t robot_2nd_a;
+	int16_t robot_2nd_d;
+#endif
 
 };
 
