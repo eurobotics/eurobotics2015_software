@@ -227,6 +227,14 @@ uint8_t beacon_parse_opponent_answer(int16_t c)
 {
 	static uint8_t state = 0, i = 0;
 	static int16_t opp_x=0, opp_y=0, opp_d=0, opp_a=0;
+   #ifdef TWO_OPPONENTS
+   	static int16_t opp2_x=0, opp2_y=0, opp2_d=0, opp2_a=0;
+   #endif
+   
+   #ifdef ROBOT_2ND
+   	static int16_t robot_2nd_x=0, robot_2nd_y=0, robot_2nd_d=0, robot_2nd_a=0;
+   #endif
+
 	static uint16_t checksum = 0;
 	uint16_t local_checksum;
 	uint8_t flags;
@@ -255,7 +263,6 @@ uint8_t beacon_parse_opponent_answer(int16_t c)
 			break;
 
 		case 1:
-
 			/* read data */
 			if(i==8)  { opp_x  = ((int16_t)c); 		}
 			if(i==9)  { opp_x |= ((int16_t)c << 8);	}
@@ -266,20 +273,124 @@ uint8_t beacon_parse_opponent_answer(int16_t c)
 			if(i==14) {	opp_d  = ((int16_t)c); 		 } //printf("c(14) = %d\n\r", (int16_t)c);}
 			if(i==15) {	opp_d |= ((int16_t)c << 8); } //printf("c(15) = %d\n\r", ((int16_t)c << 8));}
 
+         /* Only one opponent */
+#ifndef TWO_OPPONENTS
+#ifndef ROBOT_2ND
+         /* CHECKSUM */
 			if(i==16) {	checksum  = ((uint16_t)c); 		}
 			if(i==17) {	checksum |= ((uint16_t)c << 8); }
+#endif
+#endif
 
+#ifdef TWO_OPPONENTS
+			/* read data */
+			if(i==16) { opp2_x  = ((int16_t)c); 		}
+			if(i==17) { opp2_x |= ((int16_t)c << 8);	}
+			if(i==18) {	opp2_y  = ((int16_t)c); 		}
+			if(i==19) { opp2_y |= ((int16_t)c << 8); }
+			if(i==20) {	opp2_a  = ((int16_t)c); 		}
+			if(i==21) {	opp2_a |= ((int16_t)c << 8); }
+			if(i==22) {	opp2_d  = ((int16_t)c); 		 } 
+			if(i==23) {	opp2_d |= ((int16_t)c << 8); } 
+
+         /*two opponents and 2nd robot*/
+#ifdef ROBOT_2ND
+			/* read data */
+			if(i==24) { robot_2nd_x  = ((int16_t)c); 		}
+			if(i==25) { robot_2nd_x |= ((int16_t)c << 8);	}
+			if(i==26) {	robot_2nd_y  = ((int16_t)c); 		}
+			if(i==27) { robot_2nd_y |= ((int16_t)c << 8); }
+			if(i==28) {	robot_2nd_a  = ((int16_t)c); 		}
+			if(i==29) {	robot_2nd_a |= ((int16_t)c << 8); }
+			if(i==30) {	robot_2nd_d  = ((int16_t)c); 		 } 
+			if(i==31) {	robot_2nd_d |= ((int16_t)c << 8); } 
+
+         /* CHECKSUM */
+			if(i==32) {	checksum  = ((uint16_t)c); 		}
+			if(i==33) {	checksum |= ((uint16_t)c << 8); }
+#endif
+
+         /* Only two opponents */
+#ifndef ROBOT_2ND
+         /* CHECKSUM */
+			if(i==24) {	checksum  = ((uint16_t)c); 		}
+			if(i==25) {	checksum |= ((uint16_t)c << 8); }
+#endif
+#endif
+
+         /*2nd robot and just one opponent*/
+#ifndef TWO_OPPONENTS
+#ifdef ROBOT_2ND
+			/* read data */
+			if(i==16) { robot_2nd_x  = ((int16_t)c); 		}
+			if(i==17) { robot_2nd_x |= ((int16_t)c << 8);	}
+			if(i==18) {	robot_2nd_y  = ((int16_t)c); 		}
+			if(i==19) { robot_2nd_y |= ((int16_t)c << 8); }
+			if(i==20) {	robot_2nd_a  = ((int16_t)c); 		}
+			if(i==21) {	robot_2nd_a |= ((int16_t)c << 8); }
+			if(i==22) {	robot_2nd_d  = ((int16_t)c); 		 } 
+			if(i==23) {	robot_2nd_d |= ((int16_t)c << 8); } 
+
+         /* CHECKSUM */
+			if(i==24) {	checksum  = ((uint16_t)c); 		}
+			if(i==25) {	checksum |= ((uint16_t)c << 8); }
+#endif
+#endif
 			i++;
 
-			if(i==18) {
 
-				NOTICE(E_USER_BEACON,"data: %d %d %d %d %d\n\r", (int16_t)opp_x, (int16_t)opp_y, (int16_t)opp_a, (int16_t)opp_d, (uint16_t)checksum);
+/* only one opponent*/
+#ifndef TWO_OPPONENTS
+#ifndef ROBOT_2ND
+#define NUMBER 18
+#endif
+#endif
+
+/*2nd robot and 2 opponents*/
+#ifdef TWO_OPPONENTS
+#ifdef ROBOT_2ND
+#define NUMBER 34
+#endif
+/*2 opponents and no 2nd robot */
+#ifndef ROBOT_2ND
+#define NUMBER 26
+#endif
+#endif
+
+/*2nd robot and 1 opponent*/
+#ifndef TWO_OPPONENTS
+#ifdef ROBOT_2ND
+#define NUMBER 26
+#endif
+#endif
+			if(i==NUMBER) {
+
+				NOTICE(E_USER_BEACON,"data opp: %d %d %d %d\n\r", (int16_t)opp_x, (int16_t)opp_y, (int16_t)opp_a, (int16_t)opp_d);
+#ifdef TWO_OPPONENTS
+				NOTICE(E_USER_BEACON,"data opp2: %d %d %d %d\n\r", (int16_t)opp2_x, (int16_t)opp2_y, (int16_t)opp2_a, (int16_t)opp2_d);
+#endif
+#ifdef ROBOT_2ND
+				NOTICE(E_USER_BEACON,"data robot 2nd: %d %d %d %d\n\r", (int16_t)robot_2nd_x, (int16_t)robot_2nd_y, (int16_t)robot_2nd_a, (int16_t)robot_2nd_d);
+#endif
+				NOTICE(E_USER_BEACON,"checksum: %d\n\r", (uint16_t)checksum);
 
 				/* checksum */
 				local_checksum  = (uint16_t)opp_x;
 				local_checksum += (uint16_t)opp_y;
 				local_checksum += (uint16_t)opp_a;
 				local_checksum += (uint16_t)opp_d;
+#ifdef TWO_OPPONENTS
+				local_checksum += (uint16_t)opp2_x;
+				local_checksum += (uint16_t)opp2_y;
+				local_checksum += (uint16_t)opp2_a;
+				local_checksum += (uint16_t)opp2_d;
+#endif
+#ifdef ROBOT_2ND
+				local_checksum += (uint16_t)robot_2nd_x;
+				local_checksum += (uint16_t)robot_2nd_y;
+				local_checksum += (uint16_t)robot_2nd_a;
+				local_checksum += (uint16_t)robot_2nd_d;
+#endif
 
 				/* save data */
 				if(checksum == local_checksum) {
@@ -309,13 +420,80 @@ uint8_t beacon_parse_opponent_answer(int16_t c)
 						return 1; 
 					}
 						
-
+               /*XXX ¿esto no tiene que ir antes de los if? */
 					IRQ_LOCK(flags);
 					beaconboard.opponent_x = (int16_t)opp_x;
 					beaconboard.opponent_y = (int16_t)opp_y;		
 					beaconboard.opponent_a = (int16_t)opp_a;
 					beaconboard.opponent_d = (int16_t)opp_d;
-					IRQ_UNLOCK(flags);		
+					IRQ_UNLOCK(flags);	
+
+#ifdef TWO_OPPONENTS
+					if(opp2_x > 3000-100) {
+						i=0;
+						beaconboard.opponent2_x = I2C_OPPONENT_NOT_THERE;
+						state = 0;
+						return 1; 
+					}
+					if(opp2_x < 100) {
+						i=0;
+						beaconboard.opponent2_x = I2C_OPPONENT_NOT_THERE;
+						state = 0;
+						return 1; 
+					}
+					if(opp2_y > 2100-100) {
+						i=0;
+						beaconboard.opponent2_x = I2C_OPPONENT_NOT_THERE;
+						state = 0;
+						return 1; 
+					}
+					if(opp2_y < 100) {
+						i=0;
+						beaconboard.opponent2_x = I2C_OPPONENT_NOT_THERE;
+						state = 0;
+						return 1; 
+					}
+               /*XXX ¿esto no tiene que ir antes de los if? */
+					IRQ_LOCK(flags);
+					beaconboard.opponent2_x = (int16_t)opp2_x;
+					beaconboard.opponent2_y = (int16_t)opp2_y;		
+					beaconboard.opponent2_a = (int16_t)opp2_a;
+					beaconboard.opponent2_d = (int16_t)opp2_d;
+					IRQ_UNLOCK(flags);	
+#endif						
+#ifdef ROBOT_2ND
+					if(robot_2nd_x > 3000-100) {
+						i=0;
+						beaconboard.robot_2nd_x = I2C_OPPONENT_NOT_THERE;
+						state = 0;
+						return 1; 
+					}
+					if(robot_2nd_x < 100) {
+						i=0;
+						beaconboard.robot_2nd_x = I2C_OPPONENT_NOT_THERE;
+						state = 0;
+						return 1; 
+					}
+					if(robot_2nd_y > 2100-100) {
+						i=0;
+						beaconboard.robot_2nd_x = I2C_OPPONENT_NOT_THERE;
+						state = 0;
+						return 1; 
+					}
+					if(robot_2nd_y < 100) {
+						i=0;
+						beaconboard.robot_2nd_x = I2C_OPPONENT_NOT_THERE;
+						state = 0;
+						return 1; 
+					}
+               /*XXX ¿esto no tiene que ir antes de los if? */
+					IRQ_LOCK(flags);
+					beaconboard.robot_2nd_x = (int16_t)robot_2nd_x;
+					beaconboard.robot_2nd_y = (int16_t)robot_2nd_y;		
+					beaconboard.robot_2nd_a = (int16_t)robot_2nd_a;
+					beaconboard.robot_2nd_d = (int16_t)robot_2nd_d;
+					IRQ_UNLOCK(flags);	
+#endif	
 				}		
 				else {
 					NOTICE(E_USER_STRAT, "opponent checksum fails");			
@@ -337,6 +515,7 @@ uint8_t beacon_parse_opponent_answer(int16_t c)
 }
 
 
+/*XXX NOT UPDATED for 2nd opponent and 2nd robot*/
 /* for test pulling opponent possition */
 void beacon_opponent_pulling(void)
 {
