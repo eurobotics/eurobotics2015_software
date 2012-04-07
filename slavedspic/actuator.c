@@ -648,7 +648,7 @@ void tray_set_mode(tray_t *tray, uint8_t mode)
 				ACTUATORS_ERROR("RECEPTION TRAY MODE does not exist");
 				break;
 			default:
-				ACTUATORS_ERROR("Unknow RECEPTION TRAY MODE");
+				ACTUATORS_ERROR("Unknown RECEPTION TRAY MODE");
 				break;
 		}
 		if(pos_saturated)
@@ -676,7 +676,7 @@ void tray_set_mode(tray_t *tray, uint8_t mode)
 											TRAY_STORE_VIBRATE_PERIOD_us / SCHEDULER_UNIT);
 				break;
 			default:
-				ACTUATORS_ERROR("Unknow STORE TRAY MODE");
+				ACTUATORS_ERROR("Unknown STORE TRAY MODE");
 				break;
 		}
 		if(pos_saturated)
@@ -694,7 +694,7 @@ void tray_set_mode(tray_t *tray, uint8_t mode)
 				pwm_mc_set(PWM_MC_TRAY_BOOT, TRAY_BOOT_VIBRATE_PWM);
 				break;
 			default:
-				ACTUATORS_ERROR("Unknow BOOT TRAY MODE");
+				ACTUATORS_ERROR("Unknown BOOT TRAY MODE");
 				break;
 		}
 	}

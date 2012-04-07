@@ -760,6 +760,9 @@ uint8_t store_goldbar_in_boot(void)
 	if(err & END_BLOCKING)
 		goto end;
 
+	/* store tray down */
+	tray_set_mode(&slavedspic.tray_store, TRAY_MODE_DOWN);
+
 end:
 	return err;
 }
@@ -886,6 +889,8 @@ uint8_t store_coins_in_boot(void)
 	if(err & END_BLOCKING)
 		goto end;
 
+	/* store tray down */
+	tray_set_mode(&slavedspic.tray_store, TRAY_MODE_DOWN);
 end:
 	return err;
 }
@@ -1000,11 +1005,115 @@ void state_do_store_mode(void)
 /* set dump mode */
 void state_do_dump_mode(void)
 {
+	uint8_t err = 0;
 	if (!state_check_update(DUMP))
 		return;
 
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
 
+	/* notice status and update mode*/
+	slavedspic.status = I2C_SLAVEDSPIC_STATUS_BUSY;
+	slavedspic.dump_mode = mainboard_command.dump.mode;
+
+	switch(slavedspic.dump_mode)
+	{
+		case I2C_DUMP_MODE_PREPARE_HOLD:
+         hook_set_mode(&slavedspic.hook, HOOK_MODE_SHOW);
+         tray_set_mode(&slavedspic.tray_store,TRAY_MODE_DOWN);
+			
+			/* XXX */
+			time_wait_ms(100);
+
+			err = 0;
+			break;
+
+      /*XXX this should be called I2C_DUMP_MODE_MOUTH*/
+		case I2C_DUMP_MODE_PREPARE_MOUTH:			
+         /* open all fingers */
+			fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_HUG, 0);
+			fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_HUG, 0);
+			
+			/* XXX */
+			time_wait_ms(100);
+
+			lift_set_height(LIFT_HEIGHT_OVER_TOTEM);
+			time_wait_ms(100);
+			err = lift_wait_end();
+			if(err & END_BLOCKING)
+				break;
+
+			err = fingers_wait_end(&slavedspic.fingers_totem);
+			if(err & END_BLOCKING)
+				break;
+
+			err = fingers_wait_end(&slavedspic.fingers_floor);
+			if(err & END_BLOCKING)
+				break;
+
+         break;
+   
+      /* ??????? */
+		case I2C_DUMP_MODE_PREPARE_BOOT:	
+      	STMCH_DEBUG("??");
+      	STMCH_DEBUG("TO DO");
+			err = 0;	
+         break;
+
+		case I2C_DUMP_MODE_BOOT:
+         hook_set_mode(&slavedspic.hook, HOOK_MODE_OPEN_HOLD);
+			/* XXX */
+			time_wait_ms(100);
+
+         boot_set_mode(&slavedspic.boot, BOOT_MODE_OPEN_HOLD);
+         tray_set_mode(&slavedspic.tray_store,TRAY_MODE_DOWN);
+         tray_set_mode(&slavedspic.tray_boot,TRAY_MODE_VIBRATE);
+			time_wait_ms(1000);
+
+         tray_set_mode(&slavedspic.tray_store,TRAY_MODE_UP);
+			time_wait_ms(2000);
+
+         tray_set_mode(&slavedspic.tray_boot,TRAY_MODE_DOWN);
+         tray_set_mode(&slavedspic.tray_store,TRAY_MODE_DOWN);
+			err = 0;	
+         break;
+
+		case I2C_DUMP_MODE_BOOT_BLOWING:
+      	STMCH_DEBUG("TO DO");
+			err = 0;	
+         break;
+
+		case I2C_DUMP_MODE_MOUTH_BLOWING:
+      	STMCH_DEBUG("TO DO");
+			err = 0;	
+         break;
+
+		case I2C_DUMP_MODE_END_BOOT:
+         hook_set_mode(&slavedspic.hook, HOOK_MODE_HIDE);
+         boot_set_mode(&slavedspic.boot, BOOT_MODE_CLOSE);
+			
+			/* XXX */
+			time_wait_ms(100);
+			err = 0;	
+         break;
+
+		case I2C_DUMP_MODE_END_MOUTH:		
+         /* open all fingers */
+			fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_CLOSE, 0);
+			fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_CLOSE, 0);
+			
+			/* XXX */
+			time_wait_ms(100);
+
+			err = fingers_wait_end(&slavedspic.fingers_totem);
+			if(err & END_BLOCKING)
+				break;
+
+			err = fingers_wait_end(&slavedspic.fingers_floor);
+			if(err & END_BLOCKING)
+				break;
+         break;
+    }
+  
 	/* notice status and update mode*/
 	slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
 }
