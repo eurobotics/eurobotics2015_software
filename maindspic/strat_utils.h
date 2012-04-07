@@ -79,7 +79,11 @@ uint8_t y_is_more_than(int16_t y);
 uint8_t x_is_more_than(int16_t x);
 
 uint8_t opp_x_is_more_than(int16_t x);
+uint8_t opp2_x_is_more_than(int16_t x);
+uint8_t robot_2nd_x_is_more_than(int16_t x);
 uint8_t opp_y_is_more_than(int16_t y);
+uint8_t opp2_y_is_more_than(int16_t y);
+uint8_t robot_2nd_y_is_more_than(int16_t y);
 
 int16_t fast_sin(int16_t deg);
 int16_t fast_cos(int16_t deg);
@@ -88,16 +92,29 @@ uint8_t get_color(void);
 uint8_t get_opponent_color(void);
 
 int8_t get_opponent_xy(int16_t *x, int16_t *y);
+int8_t get_opponent2_xy(int16_t *x, int16_t *y);
+int8_t get_robot_2nd_xy(int16_t *x, int16_t *y);
 int8_t get_opponent_da(int16_t *d, int16_t *a);
+int8_t get_opponent2_da(int16_t *d, int16_t *a);
+int8_t get_robot_2nd_da(int16_t *d, int16_t *a);
 int8_t get_opponent_xyda(int16_t *x, int16_t *y, int16_t *d, int16_t *a);
+int8_t get_opponent2_xyda(int16_t *x, int16_t *y, int16_t *d, int16_t *a);
+int8_t get_robot_2nd_xyda(int16_t *x, int16_t *y, int16_t *d, int16_t *a);
 
 uint8_t opponent_is_behind(void);
+uint8_t robots_behind(void);
 uint8_t opponent_is_infront(void);
+uint8_t robots_infront(void);
+/*
 uint8_t opponent_is_behind_side(uint8_t side);
 uint8_t opponent_is_infront_side(uint8_t side);
+*/
+
+/* XXX NOT UPDATED*/
 uint8_t opponent_is_in_area(int16_t x_up, int16_t y_up,
 									 int16_t x_down, int16_t y_down);
 
+/* XXX NOT UPDATED*/
 /* return 1 if the opponent is near */
 /* only compile with HOMOLOGATION define */
 void wait_until_opponent_is_far(void);

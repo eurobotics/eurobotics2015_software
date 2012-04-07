@@ -271,6 +271,7 @@ uint8_t x_is_more_than(int16_t x)
 			return 0;
 	}
 }
+
 /* return 1 if x > x_opp or opponent not there */
 uint8_t opp_x_is_more_than(int16_t x)
 {
@@ -293,6 +294,55 @@ uint8_t opp_x_is_more_than(int16_t x)
 	}
 }
 
+/* return 1 if x > x_opp or opponent not there */
+uint8_t opp2_x_is_more_than(int16_t x)
+{
+#ifdef TWO_OPPONENTS
+	int16_t x_opp2, y_opp2;
+	
+	if(get_opponent_xy(&x_opp2, &y_opp2) == -1)
+		return 1;
+
+	if (mainboard.our_color == I2C_COLOR_RED) {
+		if (x_opp2 > x)
+			return 1;
+		else
+			return 0;
+	}
+	else {
+		if (x_opp2 < (AREA_X-x))
+			return 1;
+		else
+			return 0;
+	}
+#endif
+   return 0;
+}
+/* return 1 if x > x_opp or opponent not there */
+uint8_t robot_2nd_x_is_more_than(int16_t x)
+{
+#ifdef ROBOT_2ND
+	int16_t x_robot_2nd, y_robot_2nd;
+	
+	if(get_robot_2nd_xy(&x_robot_2nd, &y_robot_2nd) == -1)
+		return 1;
+
+	if (mainboard.our_color == I2C_COLOR_RED) {
+		if (x_robot_2nd > x)
+			return 1;
+		else
+			return 0;
+	}
+	else {
+		if (x_robot_2nd < (AREA_X-x))
+			return 1;
+		else
+			return 0;
+	}
+#endif
+   return 0;
+}
+
 /* return 1 if y > y_opp or opponent not there */
 uint8_t opp_y_is_more_than(int16_t y)
 {
@@ -306,6 +356,40 @@ uint8_t opp_y_is_more_than(int16_t y)
 	else
 		return 0;
 
+}
+/* return 1 if y > y_opp or opponent not there */
+uint8_t opp2_y_is_more_than(int16_t y)
+{
+#ifdef TWO_OPPONENTS
+	int16_t x_opp2, y_opp2;
+	
+	if(get_opponent2_xy(&x_opp2, &y_opp2) == -1)
+		return 1;
+
+	if (y_opp2 > y)
+		return 1;
+	else
+		return 0;
+#endif
+   return 0;
+
+}
+/* return 1 if y > y_opp or opponent not there */
+uint8_t robot_2nd_y_is_more_than(int16_t y)
+{
+#ifdef ROBOT_2ND
+	int16_t x_robot_2nd, y_robot_2nd;
+	
+	if(get_robot_2nd_xy(&x_robot_2nd, &y_robot_2nd) == -1)
+		return 1;
+
+	if (y_robot_2nd > y)
+		return 1;
+	else
+		return 0;
+
+#endif
+   return 0;
 }
 
 int16_t sin_table[] = {
@@ -378,6 +462,32 @@ int8_t get_opponent_xy(int16_t *x, int16_t *y)
 		return -1;
 	return 0;
 }
+int8_t get_opponent2_xy(int16_t *x, int16_t *y)
+{
+#ifdef TWO_OPPONENTS
+	uint8_t flags;
+	IRQ_LOCK(flags);
+	*x = beaconboard.opponent2_x;
+	*y = beaconboard.opponent2_y;
+	IRQ_UNLOCK(flags);
+	if (*x == I2C_OPPONENT_NOT_THERE)
+		return -1;
+#endif
+	return 0;
+}
+int8_t get_robot_2nd_xy(int16_t *x, int16_t *y)
+{
+#ifdef ROBOT_2ND
+	uint8_t flags;
+	IRQ_LOCK(flags);
+	*x = beaconboard.robot_2nd_x;
+	*y = beaconboard.robot_2nd_y;
+	IRQ_UNLOCK(flags);
+	if (*x == I2C_OPPONENT_NOT_THERE)
+		return -1;
+#endif
+	return 0;
+}
 
 /* get the da pos of the opponent robot */
 int8_t get_opponent_da(int16_t *d, int16_t *a)
@@ -391,6 +501,36 @@ int8_t get_opponent_da(int16_t *d, int16_t *a)
 	IRQ_UNLOCK(flags);
 	if (x_tmp == I2C_OPPONENT_NOT_THERE)
 		return -1;
+	return 0;
+}
+int8_t get_opponent2_da(int16_t *d, int16_t *a)
+{
+#ifdef TWO_OPPONENTS
+	uint8_t flags;
+	int16_t x_tmp;
+	IRQ_LOCK(flags);
+	x_tmp = beaconboard.opponent2_x;
+	*d = beaconboard.opponent2_d;
+	*a = beaconboard.opponent2_a;
+	IRQ_UNLOCK(flags);
+	if (x_tmp == I2C_OPPONENT_NOT_THERE)
+		return -1;
+#endif
+	return 0;
+}
+int8_t get_robot_2nd_da(int16_t *d, int16_t *a)
+{
+#ifdef ROBOT_2ND
+	uint8_t flags;
+	int16_t x_tmp;
+	IRQ_LOCK(flags);
+	x_tmp = beaconboard.robot_2nd_x;
+	*d = beaconboard.robot_2nd_d;
+	*a = beaconboard.robot_2nd_a;
+	IRQ_UNLOCK(flags);
+	if (x_tmp == I2C_OPPONENT_NOT_THERE)
+		return -1;
+#endif
 	return 0;
 }
 
@@ -409,6 +549,38 @@ int8_t get_opponent_xyda(int16_t *x, int16_t *y, int16_t *d, int16_t *a)
 		return -1;
 	return 0;
 }
+int8_t get_opponent2_xyda(int16_t *x, int16_t *y, int16_t *d, int16_t *a)
+{
+#ifdef TWO_OPPONENTS
+	uint8_t flags;
+	IRQ_LOCK(flags);
+	*x = beaconboard.opponent2_x;
+	*y = beaconboard.opponent2_y;
+	*d = beaconboard.opponent2_d;
+	*a = beaconboard.opponent2_a;
+	IRQ_UNLOCK(flags);
+
+	if (*x == I2C_OPPONENT_NOT_THERE)
+		return -1;
+#endif
+	return 0;
+}
+int8_t get_robot_2nd_xyda(int16_t *x, int16_t *y, int16_t *d, int16_t *a)
+{
+#ifdef ROBOT_2ND
+	uint8_t flags;
+	IRQ_LOCK(flags);
+	*x = beaconboard.robot_2nd_x;
+	*y = beaconboard.robot_2nd_y;
+	*d = beaconboard.robot_2nd_d;
+	*a = beaconboard.robot_2nd_a;
+	IRQ_UNLOCK(flags);
+
+	if (*x == I2C_OPPONENT_NOT_THERE)
+		return -1;
+#endif
+	return 0;
+}
 
 uint8_t opponent_is_behind(void)
 {
@@ -422,6 +594,40 @@ uint8_t opponent_is_behind(void)
 
 	if ((opp_a < 215 && opp_a > 145) && opp_d < 500)
 		return 1;
+
+	return 0;
+}
+
+uint8_t robots_behind(void)
+{
+	int8_t opp_there, opp2_there=-1, r2nd_there=-1;
+	int16_t opp_d, opp_a;
+
+	opp_there = get_opponent_da(&opp_d, &opp_a);
+#ifdef TWO_OPPONENTS
+	int16_t opp2_d, opp2_a;
+	opp2_there = get_opponent2_da(&opp2_d, &opp2_a);
+#endif
+#ifdef ROBOT_2ND
+	int16_t robot_2nd_d, robot_2nd_a;
+	r2nd_there = get_robot_2nd_da(&robot_2nd_d, &robot_2nd_a);
+#endif
+
+	if((opp_there == -1) && (opp2_there == -1) && (r2nd_there == -1))
+		return 0;
+
+	if ((opp_a < 215 && opp_a > 145) && opp_d < 500)
+		return 1;
+
+#ifdef TWO_OPPONENTS
+	if ((opp2_a < 215 && opp2_a > 145) && opp2_d < 500)
+		return 1;
+#endif
+
+#ifdef ROBOT_2ND
+	if ((robot_2nd_a < 215 && robot_2nd_a > 145) && robot_2nd_d < 500)
+		return 1;
+#endif
 
 	return 0;
 }
@@ -442,7 +648,42 @@ uint8_t opponent_is_infront(void)
 	return 0;
 }
 
+uint8_t robots_infront(void)
+{
+	int8_t opp_there, opp2_there=-1, r2nd_there=-1;
+	int16_t opp_d, opp_a;
 
+	opp_there = get_opponent_da(&opp_d, &opp_a);
+#ifdef TWO_OPPONENTS
+	int16_t opp2_d, opp2_a;
+	opp2_there = get_opponent2_da(&opp2_d, &opp2_a);
+#endif
+#ifdef ROBOT_2ND
+	int16_t robot_2nd_d, robot_2nd_a;
+	r2nd_there = get_robot_2nd_da(&robot_2nd_d, &robot_2nd_a);
+#endif
+	
+	if((opp_there == -1) && (opp2_there == -1) && (r2nd_there == -1))
+		return 0;
+
+	if ((opp_a > 325 || opp_a < 35) && opp_d < 500)
+		return 1;
+
+#ifdef TWO_OPPONENTS
+	if ((opp2_a > 325 || opp2_a < 35) && opp2_d < 500)
+		return 1;
+#endif
+
+#ifdef ROBOT_2ND
+	if ((robot_2nd_a > 325 || robot_2nd_a < 35) && robot_2nd_d < 500)
+		return 1;
+#endif
+
+	return 0;
+}
+
+
+/* XXX NOT UPDATED*/
 /* return 1 if opp is in area, COLOR is take in acount!! */
 uint8_t opponent_is_in_area(int16_t x_up, int16_t y_up,
 									 int16_t x_down, int16_t y_down)
@@ -468,29 +709,8 @@ uint8_t opponent_is_in_area(int16_t x_up, int16_t y_up,
 	return 0;
 }
 
-uint8_t opponent_is_behind_side(uint8_t side)
-{
-#if 0
-	if(side == SIDE_FRONT)
-		return opponent_is_behind();
-	else
-		return opponent_is_infront();
-#endif
-	return 0;
-}
 
-uint8_t opponent_is_infront_side(uint8_t side)
-{
-#if 0
-	if(side == SIDE_REAR)
-		return opponent_is_behind();
-	else
-		return opponent_is_infront();
-#endif
-	return 0;
-}
-
-
+/* XXX NOT UPDATED*/
 /* return 1 if the opponent is near */
 void wait_until_opponent_is_far(void)
 {
@@ -512,6 +732,31 @@ void wait_until_opponent_is_far(void)
 	}
 #endif
 }
+
+
+/*
+uint8_t opponent_is_behind_side(uint8_t side)
+{
+#if 0
+	if(side == SIDE_FRONT)
+		return opponent_is_behind();
+	else
+		return opponent_is_infront();
+#endif
+	return 0;
+}
+
+uint8_t opponent_is_infront_side(uint8_t side)
+{
+#if 0
+	if(side == SIDE_REAR)
+		return opponent_is_behind();
+	else
+		return opponent_is_infront();
+#endif
+	return 0;
+}
+*/
 
 
 #define AUTOPOS_SPEED_FAST 	500
