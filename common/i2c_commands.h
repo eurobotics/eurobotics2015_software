@@ -219,6 +219,7 @@ struct i2c_cmd_slavedspic_set_mode {
 		struct {
 			uint8_t mode;
 #define I2C_DUMP_MODE_PREPARE_HOLD			0
+/*XXX this should be called I2C_DUMP_MODE_MOUTH*/
 #define I2C_DUMP_MODE_PREPARE_MOUTH			1
 #define I2C_DUMP_MODE_PREPARE_BOOT			2
 #define I2C_DUMP_MODE_BOOT						3
