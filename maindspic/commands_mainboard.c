@@ -691,7 +691,9 @@ static void cmd_treasure_parsed(void *parsed_result,
 	if (!strcmp(res->arg1, "empty_totem"))
 		strat_empty_totem_side(res->arg2,res->arg3,0);
 	else if (!strcmp(res->arg1, "coin_floor"))
-		strat_pickup_coins_floor(res->arg2,res->arg3);
+		strat_pickup_coins_floor(res->arg2,res->arg3,0);
+	else if (!strcmp(res->arg1, "coin_floor_group"))
+		strat_pickup_coins_floor(res->arg2,res->arg3,1);
 	else if (!strcmp(res->arg1, "goldbar_floor"))
 		strat_pickup_goldbar_floor(res->arg2,res->arg3,0);
 	else if (!strcmp(res->arg1, "send_message"))
@@ -706,7 +708,7 @@ static void cmd_treasure_parsed(void *parsed_result,
 
 prog_char str_treasure_arg0[] = "treasure";
 parse_pgm_token_string_t cmd_treasure_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_treasure_result, arg0, str_treasure_arg0);
-prog_char str_treasure_arg1[] = "empty_totem#coin_floor#goldbar_floor#send_message#save_generic#save_deck_back#save_hold#";
+prog_char str_treasure_arg1[] = "empty_totem#coin_floor#coin_floor_group#goldbar_floor#send_message#save_generic#save_deck_back#save_hold#";
 parse_pgm_token_string_t cmd_treasure_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_treasure_result, arg1, str_treasure_arg1);
 parse_pgm_token_num_t cmd_treasure_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_treasure_result, arg2, INT32);
 parse_pgm_token_num_t cmd_treasure_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_treasure_result, arg3, INT32);

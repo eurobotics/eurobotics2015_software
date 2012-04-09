@@ -193,27 +193,30 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar)
 }
 
 
-uint8_t strat_pickup_coins_floor(int16_t x, int16_t y)
+uint8_t strat_pickup_coins_floor(int16_t x, int16_t y, uint8_t group)
 {
    uint8_t err;
 	uint16_t old_spdd, old_spda;
    int16_t d;
    #define D_TO_COIN 300
+   #define D_TO_COIN_GROUP 400
 
 	/* save speed */
 	strat_get_speed(&old_spdd, &old_spda);
-   
+     
    /*Turn until we face the coin*/
    trajectory_turnto_xy(&mainboard.traj,x,y);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
    
-	
    /*Go forward to near the coin*/
-   d=distance_from_robot(x,y)-D_TO_COIN;
+   if(!group)
+       d=distance_from_robot(x,y)-D_TO_COIN;
+   else
+       d=distance_from_robot(x,y)-D_TO_COIN_GROUP;
 	trajectory_d_rel(&mainboard.traj, d);
-	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
@@ -227,6 +230,8 @@ uint8_t strat_pickup_coins_floor(int16_t x, int16_t y)
 	DEBUG(E_USER_STRAT, "Open fingers floor.");
    i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_PREPARE_COINS_FLOOR);
    i2c_slavedspic_wait_ready();
+   i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR, I2C_FINGERS_MODE_OPEN,-50);
+   i2c_slavedspic_wait_ready();
 
    /*XXX If we are taking the coin near to the ship there is no space and we turn*/
    /*if(x==RED_FLOOR_COIN_3_X || x==PURPLE_FLOOR_COIN_3_X) {
@@ -238,11 +243,24 @@ uint8_t strat_pickup_coins_floor(int16_t x, int16_t y)
 
    /*Go forward until we have the coins inside the robot*/
 	strat_set_speed(SPEED_DIST_SLOW,SPEED_ANGLE_SLOW);
-	trajectory_goto_xy_abs(&mainboard.traj, x, y);
-	err = WAIT_COND_OR_TRAJ_END(distance_from_robot(x,y)<50, TRAJ_FLAGS_SMALL_DIST);
-   /*returns 0 if cond, and err if traj ended before */
-	if (err!=0)
-			if(!TRAJ_SUCCESS(err)) ERROUT(err);
+   if(!group){
+   	d=distance_from_robot(x,y)-ROBOT_CENTER_TO_FRONT;
+   	trajectory_d_rel(&mainboard.traj, d);
+	   err = WAIT_COND_OR_TRAJ_END((distance_from_robot(x,y)-ROBOT_CENTER_TO_FRONT)<50, TRAJ_FLAGS_SMALL_DIST);
+      /*returns 0 if cond, and err if traj ended before */
+   	if (err!=0)
+   			if(!TRAJ_SUCCESS(err)) ERROUT(err);
+   }   
+
+   else{
+   	d=distance_from_robot(x,y)-ROBOT_CENTER_TO_FRONT+120;
+   	trajectory_d_rel(&mainboard.traj, d);
+	   err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+   	if(!TRAJ_SUCCESS(err)) 
+            ERROUT(err);
+      i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR, I2C_FINGERS_MODE_OPEN,40);
+      i2c_slavedspic_wait_ready();
+   }
 
 	DEBUG(E_USER_STRAT, "Close fingers floor.");
    i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_COINS_FLOOR);
@@ -609,11 +627,11 @@ uint8_t strat_game(void)
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
-   trajectory_goto_xy_abs(&mainboard.traj,strat_infos.zones[ZONE_FLOOR_COINS_GROUP].init_x+100, strat_infos.zones[ZONE_FLOOR_COINS_GROUP].init_y);
+   trajectory_goto_xy_abs(&mainboard.traj,strat_infos.zones[ZONE_FLOOR_COINS_GROUP].init_x, strat_infos.zones[ZONE_FLOOR_COINS_GROUP].init_y);
 	err = wait_traj_end(TRAJ_FLAGS_STD);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
-   err=strat_pickup_coins_floor(FLOOR_COINS_GROUP_X+100,FLOOR_COINS_GROUP_Y);
+   err=strat_pickup_coins_floor(FLOOR_COINS_GROUP_X,FLOOR_COINS_GROUP_Y,1);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
@@ -637,7 +655,7 @@ uint8_t strat_game(void)
 	err = wait_traj_end(TRAJ_FLAGS_STD);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
-   err=strat_pickup_coins_floor(PURPLE_FLOOR_COIN_3_X,PURPLE_FLOOR_COIN_3_Y);
+   err=strat_pickup_coins_floor(PURPLE_FLOOR_COIN_3_X,PURPLE_FLOOR_COIN_3_Y,0);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);*/
 
@@ -647,7 +665,7 @@ uint8_t strat_game(void)
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
    DEBUG(E_USER_STRAT, "Going to pick up the group of coins apart");
-   err=strat_pickup_coins_floor(2350,1700);
+   err=strat_pickup_coins_floor(2350,1700,1);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
@@ -668,7 +686,7 @@ uint8_t strat_game(void)
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 	while(!cmdline_keypressed());
-   err=strat_pickup_coins_floor(PURPLE_FLOOR_COIN_2_X+100,PURPLE_FLOOR_COIN_2_Y);
+   err=strat_pickup_coins_floor(PURPLE_FLOOR_COIN_2_X+100,PURPLE_FLOOR_COIN_2_Y,0);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
@@ -678,7 +696,7 @@ uint8_t strat_game(void)
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
-   err=strat_pickup_coins_floor(PURPLE_FLOOR_COIN_1_X,PURPLE_FLOOR_COIN_1_Y);
+   err=strat_pickup_coins_floor(PURPLE_FLOOR_COIN_1_X,PURPLE_FLOOR_COIN_1_Y,0);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
