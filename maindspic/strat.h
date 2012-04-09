@@ -280,7 +280,7 @@ void strat_event(void *dummy);
  * in strat_treasure.c 
  *******************************************/
 uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar);
-uint8_t strat_pickup_coins_floor(int16_t x, int16_t y);
+uint8_t strat_pickup_coins_floor(int16_t x, int16_t y, uint8_t group);
 uint8_t strat_pickup_goldbar_floor(int16_t x, int16_t y, uint8_t store);
 uint8_t strat_send_message_bottle(int16_t x, int16_t y);
 uint8_t strat_save_treasure_generic(int16_t x, int16_t y);
