@@ -28,7 +28,8 @@
 #define AREA_Y 2000
 
 /* obstacle clerance */
-#define OBS_CLERANCE   260.0
+//#define OBS_CLERANCE   260.0
+#define OBS_CLERANCE   100.0
 
 /* position of the tokens */
 #define TOTEM_1_X               1100
@@ -61,8 +62,6 @@
 #define RED_FLOOR_GOLDBAR_Y  785
 #define PURPLE_FLOOR_GOLDBAR_X     2580
 #define PURPLE_FLOOR_GOLDBAR_Y     785
-
-#define D_EMPTY_TOTEM	        30
 
 /* infos about strat */
 #define NB_SLOT_X				8
@@ -126,9 +125,9 @@
 #define SPEED_ANGLE_SLOW 		1000
 #define SPEED_DIST_VERY_SLOW 	500
 #define SPEED_ANGLE_VERY_SLOW 500
-#define PICKUP_SPEED		      1000 
+//#define PICKUP_SPEED		      1000 
 
-#define PICKUP_CAUGHT_TIME	  	  100
+//#define PICKUP_CAUGHT_TIME	  	  100
 #define PLACE_D_SAFE				  140
 
 /* zones */
@@ -290,6 +289,7 @@ uint8_t strat_save_treasure_in_hold_back(int16_t x, int16_t y);
 uint8_t strat_raise_window(uint8_t window);
 uint8_t strat_steal_treasure_hold(void);
 uint8_t strat_game(void);
+void celebrate(void);
 
 
 /* add here more strat functions in files */

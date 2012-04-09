@@ -269,7 +269,7 @@ void state_do_tray_mode(void)
 void state_do_harvest_mode(void)
 {
 #define LIFT_HEIGHT_INFRONT_GOLDBAR_TOTEM 	44000
-#define LIFT_HEIGHT_OVER_TOTEM					15000
+#define LIFT_HEIGHT_OVER_TOTEM					12000
 #define LIFT_HEIGHT_OVER_GOLDBAR					32000
 #define LIFT_HEIGHT_OVER_COINS					35000
 #define LIFT_HEIGHT_NEAR_GOLDBAR					40000
