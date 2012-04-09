@@ -74,7 +74,7 @@ struct strat_infos strat_infos = {
    /*zones[W] =                          { x_up, y_up, x_down, y_down, init_x,init_y, prio,     flags };                            */
    .zones[ZONE_TOTEM_1_SIDE_1]=          { 1400, 1000, 700,    500   , 1100,  500,   ZONE_PRIO_2, ZONE_WITH_TREASURE },
 	.zones[ZONE_TOTEM_1_SIDE_2]=          { 1400, 1500, 700,    1000  , 1100,  1500,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_TOTEM_2_SIDE_1]=          { 2300, 1000, 1600,   500   , 1900,  500,   ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_TOTEM_2_SIDE_1]=          { 2300, 1000, 1600,   500   , 1900,  400,   ZONE_PRIO_2, ZONE_WITH_TREASURE },
 	.zones[ZONE_TOTEM_2_SIDE_2]=          { 2300, 1500, 1600,   1000  , 1900,  1500,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
 	
 	.zones[ZONE_PURPLE_FLOOR_COIN_1]=     { 1400, 650,  700,    250   , 2000,  200,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
@@ -86,8 +86,8 @@ struct strat_infos strat_infos = {
 	.zones[ZONE_RED_FLOOR_COIN_3]=        { 350,  1850, 750,   1550   , 750,   1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
 	.zones[ZONE_RED_FLOOR_GOLDBAR]=       { 300,  1000, 700,    600   , 700,   785,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
 
-	.zones[ZONE_PURPLE_BOTTLE_1]=         { 2550, 2000, 2170,   1600  , 2360,  1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_PURPLE_BOTTLE_2]=         { 1307, 2000, 927,    1600  , 1117,  1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_PURPLE_BOTTLE_1]=         { 2550, 2000, 2170,   1600  , 1900,  1600, ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_PURPLE_BOTTLE_2]=         { 1307, 2000, 927,    1600  , 600,   1600, ZONE_PRIO_2, ZONE_WITH_TREASURE },
 	.zones[ZONE_RED_BOTTLE_1]=            { 830,  2000, 450,    1600  , 640,   1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
 	.zones[ZONE_RED_BOTTLE_2]=            { 2073, 2000, 1693,   1600  , 1883,  1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
 	.zones[ZONE_PURPLE_MAP]=              { 2000, 500,  1500,      0  , 1600,  400,  ZONE_PRIO_2, ZONE_WITH_TREASURE },

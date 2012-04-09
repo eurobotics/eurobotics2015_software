@@ -45,7 +45,7 @@
 /* AX12 stuff */
 #define AX12_PULLING_TIME_us		5000L
 #define AX12_WINDOW_POSITION		15
-#define AX12_BLOCKING_TIMEOUT_us	1000000L
+#define AX12_BLOCKING_TIMEOUT_us	1300000L
 
 
 /**** lift functions ********************************************************/
@@ -319,15 +319,16 @@ int8_t fingers_set_mode(fingers_t *fingers, uint8_t mode, int16_t pos_offset)
 	fingers->ax12_pos_r = fingers_ax12_pos_r[fingers->type][fingers->mode] - pos_offset;
 
 	/* set speed */
+#if 0
 	if(fingers->type == FINGERS_TYPE_TOTEM && fingers->mode == FINGERS_MODE_CLOSE) {
-		ax12_user_write_int(&gen.ax12, ax12_left_id, AA_MOVING_SPEED_L, 300);
-		ax12_user_write_int(&gen.ax12, ax12_right_id, AA_MOVING_SPEED_L, 300);
+		ax12_user_write_int(&gen.ax12, ax12_left_id, AA_MOVING_SPEED_L, 200);
+		ax12_user_write_int(&gen.ax12, ax12_right_id, AA_MOVING_SPEED_L, 200);
 	}
 	else if(fingers->type == FINGERS_TYPE_TOTEM) {
-		ax12_user_write_int(&gen.ax12, ax12_left_id, AA_MOVING_SPEED_L, 0x3FF);
-		ax12_user_write_int(&gen.ax12, ax12_right_id, AA_MOVING_SPEED_L, 0x3FF);
+		ax12_user_write_int(&gen.ax12, ax12_left_id, AA_MOVING_SPEED_L, 200);
+		ax12_user_write_int(&gen.ax12, ax12_right_id, AA_MOVING_SPEED_L, 200);
 	}
-
+#endif
 
 	/* saturate to position range */
 	if(fingers->ax12_pos_l > fingers_ax12_pos_l[fingers->type][FINGERS_MODE_L_POS_MAX])
@@ -716,6 +717,11 @@ void actuator_init(void)
 	//ax12_user_write_int(&gen.ax12, AX12_ID_FINGERS_FLOOR_L, AA_MOVING_SPEED_L, 350);
 	ax12_user_write_int(&gen.ax12, AX12_ID_BOOT, AA_MOVING_SPEED_L, 300);
 	ax12_user_write_int(&gen.ax12, AX12_ID_HOOK, AA_MOVING_SPEED_L, 300);
+
+   ax12_user_write_int(&gen.ax12, 254, AA_MOVING_SPEED_L, 300);
+
+	ax12_user_write_int(&gen.ax12, AX12_ID_ARM_R, AA_MOVING_SPEED_L, 0x3FF);
+	ax12_user_write_int(&gen.ax12, AX12_ID_ARM_L, AA_MOVING_SPEED_L, 0x3FF);
 
 	/* init structures */
 	slavedspic.fingers_totem.type = FINGERS_TYPE_TOTEM;

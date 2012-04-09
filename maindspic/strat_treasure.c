@@ -80,7 +80,7 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar)
 	uint16_t old_spdd, old_spda;
    int16_t d;
    #define D_TOTEM_TO_FIRST_LINE 450
-   #define D_TO_COINS_TOTEM 30
+   #define D_TO_COINS_TOTEM 50
    #define D_GOLDBAR D_TO_COINS_TOTEM-10
 
 	/* save speed */
@@ -126,29 +126,36 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar)
 	DEBUG(E_USER_STRAT, "Going forward until blocking with totem");
 	strat_set_speed(SPEED_DIST_VERY_SLOW,SPEED_ANGLE_VERY_SLOW);
 	trajectory_d_rel(&mainboard.traj,600);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_BLOCKING(err))
 			ERROUT(err);
 
    /*Go a little backward*/
 	trajectory_d_rel(&mainboard.traj, -D_TO_COINS_TOTEM);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
 	DEBUG(E_USER_STRAT, "Coins totem");
    i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_PREPARE_COINS_TOTEM);
    i2c_slavedspic_wait_ready();
-   i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_COINS_TOTEM);
+   i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR, I2C_FINGERS_MODE_HOLD,-40);
    i2c_slavedspic_wait_ready();
-	time_wait_ms(600);
+	time_wait_ms(1000);
+
+  // i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_COINS_TOTEM);
+   //i2c_slavedspic_wait_ready();
+
+   i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_TOTEM, I2C_FINGERS_MODE_HOLD,0);
+   i2c_slavedspic_wait_ready();
+	time_wait_ms(1000);
 
 	DEBUG(E_USER_STRAT, "Pickup goldbar.");
    i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_PREPARE_GOLDBAR_TOTEM);
    i2c_slavedspic_wait_ready();
    /*Go a little forward*/
 	trajectory_d_rel(&mainboard.traj, D_GOLDBAR);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 	while(!cmdline_keypressed());
@@ -158,19 +165,19 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar)
 
    /*Go a little backward*/
 	strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
-	trajectory_d_rel(&mainboard.traj, -50);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	trajectory_d_rel(&mainboard.traj, -100);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
    i2c_slavedspic_mode_store(1,I2C_STORE_MODE_GOLDBAR_IN_BOOT);
    i2c_slavedspic_wait_ready();
 	while(!cmdline_keypressed());
-   
+
 
 	/* go backward to safe position*/
 	trajectory_d_rel(&mainboard.traj, -PLACE_D_SAFE);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
@@ -192,7 +199,7 @@ uint8_t strat_pickup_coins_floor(int16_t x, int16_t y)
    
    /*Turn until we face the coin*/
    trajectory_turnto_xy(&mainboard.traj,x,y);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
    
@@ -200,7 +207,7 @@ uint8_t strat_pickup_coins_floor(int16_t x, int16_t y)
    /*Go forward to near the coin*/
    d=distance_from_robot(x,y)-D_TO_COIN;
 	trajectory_d_rel(&mainboard.traj, d);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
@@ -262,14 +269,14 @@ uint8_t strat_pickup_goldbar_floor(int16_t x, int16_t y, uint8_t store)
    
    /*Turn until we face the goldbar*/
    trajectory_turnto_xy(&mainboard.traj,x,y);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
    /*Go forward to near the goldbar*/
    d=distance_from_robot(x,y);
 	trajectory_d_rel(&mainboard.traj, d-D_TO_GOLDBAR);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
@@ -324,7 +331,7 @@ uint8_t strat_send_message_bottle(int16_t x, int16_t y)
    
    /*go to the bottle*/
 	trajectory_d_rel(&mainboard.traj, abs(x-position_get_x_s16(&mainboard.pos)));
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
@@ -346,7 +353,7 @@ uint8_t strat_send_message_bottle(int16_t x, int16_t y)
 	/* go forward to safe distance from token */
 	strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 	trajectory_d_rel(&mainboard.traj, PLACE_D_SAFE);
- 	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
@@ -369,7 +376,7 @@ uint8_t strat_save_treasure_generic(int16_t x, int16_t y)
 
    /*Turn to point*/
    trajectory_turnto_xy(&mainboard.traj,x,y);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
@@ -377,7 +384,7 @@ uint8_t strat_save_treasure_generic(int16_t x, int16_t y)
    d= distance_from_robot_signed(x,y);
    if(d>0 && d<MIN_D_TO_POINT) d=-d;
 	trajectory_d_rel(&mainboard.traj, d-100);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
    
@@ -389,7 +396,7 @@ uint8_t strat_save_treasure_generic(int16_t x, int16_t y)
 	/* go backward to safe distance from token */
 	strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 	trajectory_d_rel(&mainboard.traj, -MIN_D_TO_POINT);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
@@ -424,7 +431,7 @@ uint8_t strat_save_treasure_in_deck_back(int16_t x, int16_t y)
    /*go to the ship*/
    d=distance_from_robot(x,y)+D_SAVE;
 	trajectory_d_rel(&mainboard.traj, -d);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
@@ -454,7 +461,7 @@ uint8_t strat_save_treasure_in_deck_back(int16_t x, int16_t y)
 	/* go to safe distance*/
 	strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 	trajectory_d_rel(&mainboard.traj, PLACE_D_SAFE);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
@@ -514,7 +521,7 @@ uint8_t strat_save_treasure_in_hold_back(int16_t x, int16_t y)
 	/* go to safe distance*/
 	strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 	trajectory_d_rel(&mainboard.traj, PLACE_D_SAFE);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
@@ -588,12 +595,12 @@ uint8_t strat_game(void)
 	strat_auto_position();
    
    trajectory_d_rel(&mainboard.traj, 250);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
    DEBUG(E_USER_STRAT, "Going to group of coins");
    trajectory_goto_xy_abs(&mainboard.traj,2360, 1700);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
    trajectory_goto_xy_abs(&mainboard.traj,strat_infos.zones[ZONE_FLOOR_COINS_GROUP].init_x+100, strat_infos.zones[ZONE_FLOOR_COINS_GROUP].init_y);
@@ -610,7 +617,7 @@ uint8_t strat_game(void)
 
    DEBUG(E_USER_STRAT, "Going to totem 2 side 2");
    trajectory_goto_xy_abs(&mainboard.traj,strat_infos.zones[ZONE_TOTEM_2_SIDE_2].init_x, strat_infos.zones[ZONE_TOTEM_2_SIDE_2].init_y);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
    err=strat_empty_totem_side(TOTEM_2_X,TOTEM_2_Y,0);
@@ -630,7 +637,7 @@ uint8_t strat_game(void)
 
 
    trajectory_goto_xy_abs(&mainboard.traj,1900, 1700);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
    DEBUG(E_USER_STRAT, "Going to pick up the group of coins apart");
@@ -639,7 +646,7 @@ uint8_t strat_game(void)
 			ERROUT(err);
 
    trajectory_goto_xy_abs(&mainboard.traj,2360, 1000);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
@@ -651,7 +658,7 @@ uint8_t strat_game(void)
 
    DEBUG(E_USER_STRAT, "Going to coin 2");
    trajectory_goto_xy_abs(&mainboard.traj,strat_infos.zones[ZONE_PURPLE_FLOOR_COIN_2].init_x, strat_infos.zones[ZONE_PURPLE_FLOOR_COIN_2].init_y);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 	while(!cmdline_keypressed());
@@ -662,7 +669,7 @@ uint8_t strat_game(void)
 
    DEBUG(E_USER_STRAT, "Going to coin 1");
    trajectory_goto_xy_abs(&mainboard.traj,strat_infos.zones[ZONE_PURPLE_FLOOR_COIN_1].init_x, strat_infos.zones[ZONE_PURPLE_FLOOR_COIN_1].init_y);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
    err=strat_pickup_coins_floor(PURPLE_FLOOR_COIN_1_X,PURPLE_FLOOR_COIN_1_Y);
@@ -671,24 +678,24 @@ uint8_t strat_game(void)
 
    DEBUG(E_USER_STRAT, "Going to totem 2 side 1");
    trajectory_goto_xy_abs(&mainboard.traj,strat_infos.zones[ZONE_TOTEM_2_SIDE_1].init_x, strat_infos.zones[ZONE_TOTEM_2_SIDE_1].init_y);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
    err=strat_empty_totem_side(TOTEM_2_X,TOTEM_2_Y,0);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
    trajectory_d_rel(&mainboard.traj, -100);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
    DEBUG(E_USER_STRAT, "Going to save treasure in deck");
    trajectory_goto_xy_abs(&mainboard.traj,2360, 700);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
    trajectory_goto_xy_abs(&mainboard.traj,2360, 1000);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
    err = strat_save_treasure_generic(2750,1000);
@@ -697,7 +704,7 @@ uint8_t strat_game(void)
 
    DEBUG(E_USER_STRAT, "Going to send message bottle 1");
    trajectory_goto_xy_abs(&mainboard.traj,strat_infos.zones[ZONE_PURPLE_BOTTLE_1].init_x, strat_infos.zones[ZONE_PURPLE_BOTTLE_1].init_y);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
    err=strat_send_message_bottle(PURPLE_BOTTLE_1_X,BOTTLE_Y);
@@ -706,7 +713,7 @@ uint8_t strat_game(void)
 
    DEBUG(E_USER_STRAT, "Going to send message bottle 2");
    trajectory_goto_xy_abs(&mainboard.traj,strat_infos.zones[ZONE_PURPLE_BOTTLE_2].init_x, strat_infos.zones[ZONE_PURPLE_BOTTLE_2].init_y);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
    err=strat_send_message_bottle(PURPLE_BOTTLE_2_X,BOTTLE_Y);
