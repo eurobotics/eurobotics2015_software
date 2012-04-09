@@ -80,6 +80,8 @@ int8_t state_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd)
 	memcpy(&mainboard_command, cmd, sizeof(mainboard_command));
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, mainboard_command.mode);
 
+	slavedspic.status = I2C_SLAVEDSPIC_STATUS_BUSY;
+
 	/* XXX power off mode */
 	if (mainboard_command.mode == POWER_OFF) {
 
@@ -102,6 +104,8 @@ int8_t state_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd)
 
 		wait_ms(100);
 		pwm_servo_disable();
+      
+      slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
 	}
 	else
 		mode_changed = 1;
@@ -143,6 +147,8 @@ static void state_do_init(void)
 
 	state_init();
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
+
+   slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
 }
 
 /* set fingers mode */
@@ -167,6 +173,7 @@ void state_do_fingers_mode(void)
 	}
 
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
+   slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
 }
 
 /* set arms mode */
@@ -189,6 +196,7 @@ void state_do_arms_mode(void)
 
 		arm_wait_end(&slavedspic.arm_left);
 	}
+   slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
 }
 
 /* set lift heigh */
@@ -201,6 +209,7 @@ void state_do_lift_height(void)
 	lift_wait_end();
 
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
+   slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
 }
 
 /* set turbine angle */
@@ -212,7 +221,10 @@ void state_do_turbine_angle(void)
 	turbine_set_angle(&slavedspic.turbine, 
 							mainboard_command.turbine.angle_deg, mainboard_command.turbine.angle_speed);
 
+   time_wait_ms(400);
+
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
+   slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
 }
 
 /* set turbine blow speed */
@@ -224,6 +236,7 @@ void state_do_turbine_blow(void)
 	turbine_set_blow_speed(&slavedspic.turbine, mainboard_command.turbine.blow_speed << 2);
 
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
+   slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
 }
 
 /* set hook mode */
@@ -235,6 +248,10 @@ void state_do_hook_mode(void)
 	hook_set_mode(&slavedspic.hook, mainboard_command.hook.mode);
 
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
+
+   hook_wait_end(&slavedspic.hook);
+
+   slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
 }
 
 /* set boot mode */
@@ -246,6 +263,10 @@ void state_do_boot_mode(void)
 	boot_set_mode(&slavedspic.boot, mainboard_command.boot.mode);
 
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
+
+   boot_wait_end(&slavedspic.boot);
+
+   slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
 }
 
 /* set tray mode */
@@ -261,7 +282,9 @@ void state_do_tray_mode(void)
 	else if(mainboard_command.tray.type == I2C_TRAY_TYPE_BOOT)
 		tray_set_mode(&slavedspic.tray_boot, mainboard_command.tray.mode);
 
+
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
+   slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
 }
 
 
@@ -269,7 +292,8 @@ void state_do_tray_mode(void)
 void state_do_harvest_mode(void)
 {
 #define LIFT_HEIGHT_INFRONT_GOLDBAR_TOTEM 	44000
-#define LIFT_HEIGHT_OVER_TOTEM					12000
+#define LIFT_HEIGHT_OVER_TOTEM_OLD				12000
+#define LIFT_HEIGHT_OVER_TOTEM					5000
 #define LIFT_HEIGHT_OVER_GOLDBAR					32000
 #define LIFT_HEIGHT_OVER_COINS					35000
 #define LIFT_HEIGHT_NEAR_GOLDBAR					40000
@@ -383,12 +407,18 @@ void state_do_harvest_mode(void)
 				break;
 
 			/* lift over totem */
+#ifdef old_version
 			turbine_set_angle(&slavedspic.turbine, 90, TURBINE_ANGLE_SPEED_FAST);
 			lift_set_height(LIFT_HEIGHT_OVER_TOTEM);
 			err = lift_wait_end();
 			if(err & END_BLOCKING)
 				break;
-
+#else
+			lift_set_height(LIFT_HEIGHT_OVER_TOTEM);
+			err = lift_wait_end();
+			if(err & END_BLOCKING)
+				break;
+#endif
 			err = fingers_wait_end(&slavedspic.fingers_floor);
 			if(err & END_BLOCKING)
 				break;
@@ -665,6 +695,7 @@ uint8_t store_goldbar_in_boot(void)
 			goto end;	
 	}
 
+
 	/* lift in front of store input */
 	lift_set_height(LIFT_HEIGHT_STORE_GOLDBAR_1);
 
@@ -679,8 +710,8 @@ uint8_t store_goldbar_in_boot(void)
 		goto end;
 
 	/* all fingers mode hold */
-	fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_HOLD, 0);
-	fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_HOLD, 0);
+	//fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_HOLD, 0);
+	//fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_HOLD, 0);
 
 	/* turn turbine for put totem into store system */
 	turbine_set_angle(&slavedspic.turbine, -45, TURBINE_ANGLE_SPEED_FAST);
@@ -728,7 +759,7 @@ uint8_t store_goldbar_in_boot(void)
 	turbine_set_angle(&slavedspic.turbine, -45, TURBINE_ANGLE_SPEED_FAST);
 
 	/* XXX */
-	time_wait_ms(100);
+	time_wait_ms(100); //100
 
 	/* lift in front of store input */
 	lift_set_height(LIFT_HEIGHT_STORE_GOLDBAR_1);
@@ -764,6 +795,7 @@ uint8_t store_goldbar_in_boot(void)
 	tray_set_mode(&slavedspic.tray_store, TRAY_MODE_DOWN);
 
 end:
+
 	return err;
 }
 
@@ -900,7 +932,7 @@ void state_do_store_mode(void)
 {
 #define LIFT_HEIGHT_NEAR_COINS	44000
 
-	uint8_t err = 0;
+	uint8_t err = 0,nb_tries=0;
 	uint8_t store_times, cnt_times = 0;
 	
 	if (!state_check_update(STORE))
@@ -924,9 +956,12 @@ void state_do_store_mode(void)
 			/* XXX only 3 goldbars */
 			if(slavedspic.nb_goldbars_in_boot >= 3) 
 				err = store_goldbar_in_mouth();
-			else
-				err = store_goldbar_in_boot();
-			
+			else{
+			   do{
+			   	err = store_goldbar_in_boot();
+               nb_tries++;
+            } while((err & END_BLOCKING) && (nb_tries<8));  
+         }                
 			break;
 
 		case I2C_STORE_MODE_MOUTH_IN_BOOT:
@@ -1146,6 +1181,7 @@ void state_do_set_infos(void)
 	STMCH_DEBUG("nb_coins_in_boot = %d", slavedspic.nb_coins_in_boot);
 	STMCH_DEBUG("nb_coins_in_mouth = %d", slavedspic.nb_coins_in_mouth);
 
+   slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
 }
 
 
