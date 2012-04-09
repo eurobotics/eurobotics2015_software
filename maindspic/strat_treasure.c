@@ -80,8 +80,8 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar)
 	uint16_t old_spdd, old_spda;
    int16_t d;
    #define D_TOTEM_TO_FIRST_LINE 450
-   #define D_TO_COINS_TOTEM 50
-   #define D_GOLDBAR D_TO_COINS_TOTEM-10
+   #define D_TO_COINS_TOTEM 35
+   #define D_GOLDBAR 10
 
 	/* save speed */
 	strat_get_speed(&old_spdd, &old_spda);
@@ -91,6 +91,7 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar)
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
+
 
    /*Open fingers*/
 	DEBUG(E_USER_STRAT, "Open fingers floor and fingers totem.");
@@ -104,23 +105,28 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar)
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
    
+	strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
+
    /*Close fingers floor*/
 	DEBUG(E_USER_STRAT, "Pickup first line of coins.");
    i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_COINS_ISLE);
    i2c_slavedspic_wait_ready();
-	while(!cmdline_keypressed());
 
-   //XXX
    if(slavedspic.fingers_floor_blocked)
    { 
-   	while(!cmdline_keypressed());
      	DEBUG(E_USER_STRAT, "Fingers floor blocked.");
       i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_PREPARE_TOTEM);
       i2c_slavedspic_wait_ready();
    	trajectory_d_rel(&mainboard.traj, -10);
+   	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+   	if (!TRAJ_SUCCESS(err))
+   			ERROUT(err);
       i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_COINS_ISLE);
       i2c_slavedspic_wait_ready();
    }
+
+   i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_PREPARE_GOLDBAR_TOTEM);
+   i2c_slavedspic_wait_ready();
 
    /*Go forward until blocking with totem*/
 	DEBUG(E_USER_STRAT, "Going forward until blocking with totem");
@@ -129,42 +135,18 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar)
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_BLOCKING(err))
 			ERROUT(err);
+	strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 
-   /*Go a little backward*/
-	trajectory_d_rel(&mainboard.traj, -D_TO_COINS_TOTEM);
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
-
-	DEBUG(E_USER_STRAT, "Coins totem");
-   i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_PREPARE_COINS_TOTEM);
-   i2c_slavedspic_wait_ready();
-   i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR, I2C_FINGERS_MODE_HOLD,-40);
-   i2c_slavedspic_wait_ready();
-	time_wait_ms(1000);
-
-  // i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_COINS_TOTEM);
-   //i2c_slavedspic_wait_ready();
-
-   i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_TOTEM, I2C_FINGERS_MODE_HOLD,0);
-   i2c_slavedspic_wait_ready();
-	time_wait_ms(1000);
 
 	DEBUG(E_USER_STRAT, "Pickup goldbar.");
-   i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_PREPARE_GOLDBAR_TOTEM);
-   i2c_slavedspic_wait_ready();
-   /*Go a little forward*/
-	trajectory_d_rel(&mainboard.traj, D_GOLDBAR);
+	trajectory_d_rel(&mainboard.traj, -D_GOLDBAR);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
-	while(!cmdline_keypressed());
    i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_GOLDBAR_TOTEM);
    i2c_slavedspic_wait_ready();
-	time_wait_ms(1500);
 
    /*Go a little backward*/
-	strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 	trajectory_d_rel(&mainboard.traj, -100);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
@@ -172,8 +154,32 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar)
 
    i2c_slavedspic_mode_store(1,I2C_STORE_MODE_GOLDBAR_IN_BOOT);
    i2c_slavedspic_wait_ready();
-	while(!cmdline_keypressed());
 
+	DEBUG(E_USER_STRAT, "Prepare for coins totem and go forward.");
+   i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_PREPARE_COINS_TOTEM);
+   i2c_slavedspic_wait_ready();
+   i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR, I2C_FINGERS_MODE_HOLD,0);
+   i2c_slavedspic_wait_ready();
+
+	trajectory_d_rel(&mainboard.traj, 100+D_GOLDBAR-D_TO_COINS_TOTEM);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+
+	DEBUG(E_USER_STRAT, "Close fingers and catch coins totem.");
+   i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_TOTEM, I2C_FINGERS_MODE_HOLD,30);
+   i2c_slavedspic_wait_ready();
+
+   if(slavedspic.fingers_totem_blocked)
+   { 
+     	DEBUG(E_USER_STRAT, "Fingers totem blocked.");
+   	trajectory_d_rel(&mainboard.traj, -10);
+   	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+   	if (!TRAJ_SUCCESS(err))
+   			ERROUT(err);
+      i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_TOTEM, I2C_FINGERS_MODE_HOLD,30);
+      i2c_slavedspic_wait_ready();
+   }
 
 	/* go backward to safe position*/
 	trajectory_d_rel(&mainboard.traj, -PLACE_D_SAFE);
@@ -223,12 +229,12 @@ uint8_t strat_pickup_coins_floor(int16_t x, int16_t y)
    i2c_slavedspic_wait_ready();
 
    /*XXX If we are taking the coin near to the ship there is no space and we turn*/
-   if(x==RED_FLOOR_COIN_3_X || x==PURPLE_FLOOR_COIN_3_X) {
+   /*if(x==RED_FLOOR_COIN_3_X || x==PURPLE_FLOOR_COIN_3_X) {
    	trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(-90));
 	   err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
    	if (!TRAJ_SUCCESS(err))
    			ERROUT(err);
-   }
+   }*/
 
    /*Go forward until we have the coins inside the robot*/
 	strat_set_speed(SPEED_DIST_SLOW,SPEED_ANGLE_SLOW);

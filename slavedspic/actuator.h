@@ -245,6 +245,8 @@ uint8_t boot_set_mode(boot_t *boot, uint8_t mode);
 /* return 1 if mode is done */
 uint8_t boot_check_mode_done(boot_t *boot);
 
+/* return END_TRAJ or END_BLOCKING */
+uint8_t boot_wait_end(boot_t *boot);
 
 /**** hook funcions *********************************************************/
 typedef struct {
@@ -263,6 +265,9 @@ uint8_t hook_set_mode(hook_t *hook, uint8_t mode);
 
 /* return 1 if mode is done */
 uint8_t hook_check_mode_done(hook_t *hook);
+
+/* return END_TRAJ or END_BLOCKING */
+uint8_t hook_wait_end(hook_t *hook);
 
 /**** trays funcions *********************************************************/
 

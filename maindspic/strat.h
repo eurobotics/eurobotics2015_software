@@ -121,13 +121,13 @@
 #define SPEED_ANGLE_FAST 		1000
 #endif
 
+//Do not change
 #define SPEED_DIST_SLOW 		1000
 #define SPEED_ANGLE_SLOW 		1000
 #define SPEED_DIST_VERY_SLOW 	500
 #define SPEED_ANGLE_VERY_SLOW 500
-//#define PICKUP_SPEED		      1000 
 
-//#define PICKUP_CAUGHT_TIME	  	  100
+
 #define PLACE_D_SAFE				  140
 
 /* zones */

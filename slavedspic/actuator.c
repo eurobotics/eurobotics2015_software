@@ -319,14 +319,14 @@ int8_t fingers_set_mode(fingers_t *fingers, uint8_t mode, int16_t pos_offset)
 	fingers->ax12_pos_r = fingers_ax12_pos_r[fingers->type][fingers->mode] - pos_offset;
 
 	/* set speed */
-#if 0
-	if(fingers->type == FINGERS_TYPE_TOTEM && fingers->mode == FINGERS_MODE_CLOSE) {
-		ax12_user_write_int(&gen.ax12, ax12_left_id, AA_MOVING_SPEED_L, 200);
-		ax12_user_write_int(&gen.ax12, ax12_right_id, AA_MOVING_SPEED_L, 200);
+#if 1
+	if(fingers->type == FINGERS_TYPE_TOTEM && (fingers->mode == FINGERS_MODE_CLOSE || fingers->mode == FINGERS_MODE_HOLD)) {
+		ax12_user_write_int(&gen.ax12, ax12_left_id, AA_MOVING_SPEED_L, 300);
+		ax12_user_write_int(&gen.ax12, ax12_right_id, AA_MOVING_SPEED_L, 300);
 	}
 	else if(fingers->type == FINGERS_TYPE_TOTEM) {
-		ax12_user_write_int(&gen.ax12, ax12_left_id, AA_MOVING_SPEED_L, 200);
-		ax12_user_write_int(&gen.ax12, ax12_right_id, AA_MOVING_SPEED_L, 200);
+		ax12_user_write_int(&gen.ax12, ax12_left_id, AA_MOVING_SPEED_L, 0x3ff);
+		ax12_user_write_int(&gen.ax12, ax12_right_id, AA_MOVING_SPEED_L, 0x3ff);
 	}
 #endif
 
@@ -562,6 +562,18 @@ uint8_t boot_check_mode_done(boot_t *boot)
 	return 0;
 }
 
+/* return END_TRAJ or END_BLOCKING */
+uint8_t boot_wait_end(boot_t *boot)
+{
+	uint8_t ret = 0;
+
+	/* wait end */
+	while(!ret)
+		ret = boot_check_mode_done(boot);
+
+	return ret;
+}
+
 /**** hook funcions *********************************************************/
 
 uint16_t hook_ax12_pos[HOOK_MODE_MAX] = {
@@ -614,6 +626,18 @@ uint8_t hook_check_mode_done(hook_t *hook)
 		return 1;
 	
 	return 0;
+}
+
+/* return END_TRAJ or END_BLOCKING */
+uint8_t hook_wait_end(hook_t *hook)
+{
+	uint8_t ret = 0;
+
+	/* wait end */
+	while(!ret)
+		ret = hook_check_mode_done(hook);
+
+	return ret;
 }
 
 /**** trays funcions *********************************************************/
@@ -718,10 +742,10 @@ void actuator_init(void)
 	ax12_user_write_int(&gen.ax12, AX12_ID_BOOT, AA_MOVING_SPEED_L, 300);
 	ax12_user_write_int(&gen.ax12, AX12_ID_HOOK, AA_MOVING_SPEED_L, 300);
 
-   ax12_user_write_int(&gen.ax12, 254, AA_MOVING_SPEED_L, 300);
+   //ax12_user_write_int(&gen.ax12, 254, AA_MOVING_SPEED_L, 300);
 
-	ax12_user_write_int(&gen.ax12, AX12_ID_ARM_R, AA_MOVING_SPEED_L, 0x3FF);
-	ax12_user_write_int(&gen.ax12, AX12_ID_ARM_L, AA_MOVING_SPEED_L, 0x3FF);
+	//ax12_user_write_int(&gen.ax12, AX12_ID_ARM_R, AA_MOVING_SPEED_L, 0x3FF);
+	//ax12_user_write_int(&gen.ax12, AX12_ID_ARM_L, AA_MOVING_SPEED_L, 0x3FF);
 
 	/* init structures */
 	slavedspic.fingers_totem.type = FINGERS_TYPE_TOTEM;
