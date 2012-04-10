@@ -99,7 +99,7 @@ extern parse_pgm_inst_t cmd_state3;
 
 
 /* in progmem */
-parse_pgm_ctx_t main_ctx[] = {
+parse_pgm_ctx_t main_ctx[]  = {
 
 	/* commands_gen.c */
 	(parse_pgm_inst_t *)&cmd_reset,

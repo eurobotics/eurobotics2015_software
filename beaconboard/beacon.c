@@ -769,9 +769,12 @@ void sensor_calc(uint8_t sensor)
 		BEACON_NOTICE("opponent_1 (%.3ld, %.4ld, %.4ld, %.4ld) "
 						  "opponent_2 (%.3ld, %.4ld, %.4ld, %.4ld) "
 						  "robot_2nd  (%.3ld, %.4ld, %.4ld, %.4ld) ",
-						  beacon.opponent1_angle, beacon.opponent1_dist, beacon.opponent1_x, beacon.opponent1_y,
-						  beacon.opponent2_angle, beacon.opponent2_dist, beacon.opponent2_x, beacon.opponent2_y,
-						  beacon.robot_2nd_angle, beacon.robot_2nd_dist, beacon.robot_2nd_x, beacon.robot_2nd_y);	
+						  beacon.opponent1_angle, beacon.opponent1_dist, beacon.opponent1_x, beacon.opponent1_y
+						  , beacon.opponent2_angle, beacon.opponent2_dist, beacon.opponent2_x, beacon.opponent2_y
+	#ifdef ROBOT_2ND
+						  , beacon.robot_2nd_angle, beacon.robot_2nd_dist, beacon.robot_2nd_x, beacon.robot_2nd_y	
+	#endif
+						  );
 	#endif
 	
 	}

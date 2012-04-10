@@ -27,9 +27,8 @@
 #define AREA_X 3000
 #define AREA_Y 2000
 
-/* obstacle clerance */
-//#define OBS_CLERANCE   260.0
-#define OBS_CLERANCE   100.0
+/* XXX obstacle clerance */
+#define OBS_CLERANCE   240.0
 
 /* position of the tokens */
 #define TOTEM_1_X               1100

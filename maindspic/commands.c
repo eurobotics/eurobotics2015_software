@@ -96,10 +96,11 @@ extern parse_pgm_inst_t cmd_slavedspic_store;
 extern parse_pgm_inst_t cmd_slavedspic_dump;
 extern parse_pgm_inst_t cmd_treasure;
 
+extern parse_pgm_inst_t cmd_beacon;
+
 #ifdef notyet
 extern parse_pgm_inst_t cmd_slavedspic_ts;
 extern parse_pgm_inst_t cmd_slavedspic_mirror;
-extern parse_pgm_inst_t cmd_beacon;
 extern parse_pgm_inst_t cmd_sensor_robot;
 extern parse_pgm_inst_t cmd_lasers;
 #endif
@@ -207,11 +208,11 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_slavedspic_dump,
 	(parse_pgm_inst_t *)&cmd_treasure,
 
+	(parse_pgm_inst_t *)&cmd_beacon,
+
 #ifdef notyet
 	(parse_pgm_inst_t *)&cmd_slavedspic_ts,
 	(parse_pgm_inst_t *)&cmd_slavedspic_mirror,
-	(parse_pgm_inst_t *)&cmd_beacon,
-
 	(parse_pgm_inst_t *)&cmd_sensor_robot,
 	(parse_pgm_inst_t *)&cmd_lasers,
 #endif

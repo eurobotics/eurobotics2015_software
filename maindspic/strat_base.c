@@ -138,14 +138,32 @@ uint8_t strat_goto_xy_force(int16_t x, int16_t y)
 	uint8_t hardstop = 0;
 	microseconds us = time_get_us2();
 	int16_t opp_a, opp_d, opp_x, opp_y;
+#ifdef TWO_OPPONENTS
+	int16_t opp2_a, opp2_d, opp2_x, opp2_y;
+	int8_t err2;
+#endif
 
 	while (1) {
+#ifdef TWO_OPPONENTS
 		err = get_opponent_xyda(&opp_x, &opp_y,
 					&opp_d, &opp_a);
+
+		err2 = get_opponent2_xyda(&opp2_x, &opp2_y,
+					&opp2_d, &opp2_a);
+
+		if (err == -1 && err2 == -1)
+			break;
+		if (opp_d < 600 || opp2_d < 600) /* XXX i don't understood */
+			break;
+#else
+		err = get_opponent_xyda(&opp_x, &opp_y,
+					&opp_d, &opp_a);
+
 		if (err == -1)
 			break;
 		if (opp_d < 600) /* XXX i don't understood */
 			break;
+#endif
 		if (hardstop == 0) {
 			strat_hardstop();
 			hardstop = 1;
@@ -290,12 +308,26 @@ void strat_limit_speed(void)
 {
 	uint16_t lim_d = 0, lim_a = 0;
 	int16_t opp_d, opp_a;
+#ifdef TWO_OPPONENTS
+	int16_t opp2_d, opp2_a;
+#endif
 
 	if (strat_limit_speed_enabled == 0)
 		goto update;
 
+#ifdef TWO_OPPONENTS
+	get_opponent_da(&opp_d, &opp_a);
+	get_opponent2_da(&opp2_d, &opp2_a);
+
+	if(opp_d > opp2_d) {
+		opp_d = opp2_d;
+		opp_a = opp2_a;
+	}
+
+#else
 	if (get_opponent_da(&opp_d, &opp_a) == -1)
 		goto update;
+#endif
 		
 #ifdef HOMOLOGATION
 	if (opp_d < 600) {
@@ -383,10 +415,11 @@ void strat_start(void)
 }
 
 /* return true if we have to brake due to an obstacle */
-uint8_t strat_obstacle(void)
+uint8_t __strat_obstacle(uint8_t which)
 {
 	int16_t x_rel, y_rel;
 	int16_t opp_x, opp_y, opp_d, opp_a;
+	int8_t ret;
 
 	/* too slow */
 	if (ABS(mainboard.speed_d) < 150)
@@ -406,12 +439,16 @@ uint8_t strat_obstacle(void)
 		//sensor_obstacle_disable();
 		return 1;
 	}
-
 #endif
 
+
+	if(which == 0)
+		ret = get_opponent_xyda(&opp_x, &opp_y,&opp_d, &opp_a);
+	else 
+		ret = get_opponent2_xyda(&opp_x, &opp_y,&opp_d, &opp_a);
+
 	/* no opponent detected */
-	if (get_opponent_xyda(&opp_x, &opp_y,
-			      &opp_d, &opp_a) == -1) {
+	if (ret == -1) {
 		return 0;
 	}
 
@@ -450,6 +487,19 @@ uint8_t strat_obstacle(void)
 	}
 
 	return 0;
+}
+
+/* return true if we have to brake due to an obstacle */
+uint8_t strat_obstacle(void)
+{
+	if(__strat_obstacle(0))
+		return 1;
+#ifdef TWO_OPPONENTS
+	if(__strat_obstacle(1))
+		return 1;
+#endif
+	else
+		return 0;
 }
 
 void interrupt_traj(void)

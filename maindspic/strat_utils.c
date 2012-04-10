@@ -318,6 +318,7 @@ uint8_t opp2_x_is_more_than(int16_t x)
 #endif
    return 0;
 }
+
 /* return 1 if x > x_opp or opponent not there */
 uint8_t robot_2nd_x_is_more_than(int16_t x)
 {
@@ -712,6 +713,7 @@ uint8_t opponent_is_in_area(int16_t x_up, int16_t y_up,
 
 /* XXX NOT UPDATED*/
 /* return 1 if the opponent is near */
+#ifdef use_goto_force_instead
 void wait_until_opponent_is_far(void)
 {
 #ifdef HOMOLOGATION
@@ -732,6 +734,7 @@ void wait_until_opponent_is_far(void)
 	}
 #endif
 }
+#endif
 
 
 /*
