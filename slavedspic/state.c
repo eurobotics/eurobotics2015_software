@@ -73,14 +73,22 @@ static volatile uint8_t prev_state;
 static volatile uint8_t mode_changed = 0;
 uint8_t state_debug = 0;
 
+/* set status value */
+void state_set_status(uint8_t val)
+{
+	uint8_t flags;
+	IRQ_LOCK(flags);
+   slavedspic.status = val;
+	IRQ_UNLOCK(flags);
+}
+
+
 /* set a new state, return 0 on success */
 int8_t state_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd)
 {
 	prev_state = mainboard_command.mode;
 	memcpy(&mainboard_command, cmd, sizeof(mainboard_command));
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, mainboard_command.mode);
-
-	slavedspic.status = I2C_SLAVEDSPIC_STATUS_BUSY;
 
 	/* XXX power off mode */
 	if (mainboard_command.mode == POWER_OFF) {
@@ -105,7 +113,7 @@ int8_t state_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd)
 		wait_ms(100);
 		pwm_servo_disable();
       
-      slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
+      state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 	}
 	else
 		mode_changed = 1;
@@ -145,10 +153,12 @@ static void state_do_init(void)
 	if (!state_check_update(INIT))
 		return;
 
+	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
+
 	state_init();
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
 
-   slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
+  	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
 /* set fingers mode */
@@ -157,6 +167,8 @@ void state_do_fingers_mode(void)
 	/* return if no update */
 	if (!state_check_update(FINGERS))
 		return;
+
+	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
 
 	/* set fingers mode */
 	if(mainboard_command.fingers.type == I2C_FINGERS_TYPE_FLOOR) {
@@ -173,7 +185,8 @@ void state_do_fingers_mode(void)
 	}
 
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
-   slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
+
+   state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
 /* set arms mode */
@@ -182,6 +195,8 @@ void state_do_arms_mode(void)
 	/* return if no update */
 	if (!state_check_update(ARM))
 		return;
+
+	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
 
 	/* set fingers mode */
 	if(mainboard_command.arm.type == I2C_ARM_TYPE_RIGHT) {
@@ -196,7 +211,7 @@ void state_do_arms_mode(void)
 
 		arm_wait_end(&slavedspic.arm_left);
 	}
-   slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
+   state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
 /* set lift heigh */
@@ -205,11 +220,13 @@ void state_do_lift_height(void)
 	if (!state_check_update(LIFT_HEIGHT))
 		return;
 
+	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
+
 	lift_set_height(mainboard_command.lift.height * 1000);
 	lift_wait_end();
 
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
-   slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
+   state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
 /* set turbine angle */
@@ -218,13 +235,16 @@ void state_do_turbine_angle(void)
 	if (!state_check_update(TURBINE_ANGLE))
 		return;
 
+	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
+
 	turbine_set_angle(&slavedspic.turbine, 
 							mainboard_command.turbine.angle_deg, mainboard_command.turbine.angle_speed);
 
    time_wait_ms(400);
 
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
-   slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
+
+   state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
 /* set turbine blow speed */
@@ -233,10 +253,13 @@ void state_do_turbine_blow(void)
 	if (!state_check_update(TURBINE_BLOW))
 		return;
 
+	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
+
 	turbine_set_blow_speed(&slavedspic.turbine, mainboard_command.turbine.blow_speed << 2);
 
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
-   slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
+
+   state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
 /* set hook mode */
@@ -245,13 +268,15 @@ void state_do_hook_mode(void)
 	if (!state_check_update(HOOK))
 		return;
 
+	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
+
 	hook_set_mode(&slavedspic.hook, mainboard_command.hook.mode);
 
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
 
    hook_wait_end(&slavedspic.hook);
 
-   slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
+   state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
 /* set boot mode */
@@ -260,13 +285,15 @@ void state_do_boot_mode(void)
 	if (!state_check_update(BOOT))
 		return;
 
+	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
+
 	boot_set_mode(&slavedspic.boot, mainboard_command.boot.mode);
 
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
 
    boot_wait_end(&slavedspic.boot);
 
-   slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
+   state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
 /* set tray mode */
@@ -274,6 +301,8 @@ void state_do_tray_mode(void)
 {
 	if (!state_check_update(TRAY))
 		return;
+
+	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
 
 	if(mainboard_command.tray.type == I2C_TRAY_TYPE_RECEPTION)
 		tray_set_mode(&slavedspic.tray_reception, mainboard_command.tray.mode);
@@ -284,7 +313,8 @@ void state_do_tray_mode(void)
 
 
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
-   slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
+
+   state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
 
@@ -309,7 +339,7 @@ void state_do_harvest_mode(void)
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
 
 	/* notice status and update mode*/
-	slavedspic.status = I2C_SLAVEDSPIC_STATUS_BUSY;
+	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
 	slavedspic.harvest_mode = mainboard_command.harvest.mode;
 
 	switch(slavedspic.harvest_mode)
@@ -588,8 +618,7 @@ void state_do_harvest_mode(void)
 		STMCH_DEBUG("HARVEST mode ends with BLOCKING");
 
 	/* notice status and update mode*/
-	slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
-
+	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
 /* store constants */
@@ -941,7 +970,7 @@ void state_do_store_mode(void)
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
 
 	/* notice status and update mode*/
-	slavedspic.status = I2C_SLAVEDSPIC_STATUS_BUSY;
+	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
 	slavedspic.store_mode = mainboard_command.store.mode;
 	store_times =  mainboard_command.store.times;
 
@@ -1034,7 +1063,7 @@ void state_do_store_mode(void)
 		STMCH_DEBUG("HARVEST mode ends with BLOCKING");
 
 	/* notice status and update mode*/
-	slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
+	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
 /* set dump mode */
@@ -1047,7 +1076,7 @@ void state_do_dump_mode(void)
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
 
 	/* notice status and update mode*/
-	slavedspic.status = I2C_SLAVEDSPIC_STATUS_BUSY;
+	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
 	slavedspic.dump_mode = mainboard_command.dump.mode;
 
 	switch(slavedspic.dump_mode)
@@ -1156,7 +1185,7 @@ void state_do_dump_mode(void)
     }
   
 	/* notice status and update mode*/
-	slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
+	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
 /* set infos */
@@ -1164,6 +1193,8 @@ void state_do_set_infos(void)
 {
 	if (!state_check_update(SET_INFOS))
 		return;
+
+	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
 
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
 
@@ -1181,7 +1212,7 @@ void state_do_set_infos(void)
 	STMCH_DEBUG("nb_coins_in_boot = %d", slavedspic.nb_coins_in_boot);
 	STMCH_DEBUG("nb_coins_in_mouth = %d", slavedspic.nb_coins_in_mouth);
 
-   slavedspic.status = I2C_SLAVEDSPIC_STATUS_READY;
+   state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
 

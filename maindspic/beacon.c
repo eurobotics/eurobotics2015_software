@@ -395,6 +395,7 @@ uint8_t beacon_parse_opponent_answer(int16_t c)
 				/* save data */
 				if(checksum == local_checksum) {
 
+#if not_usefull
 					if(opp_x > 3000-100) {
 						i=0;
 						beaconboard.opponent_x = I2C_OPPONENT_NOT_THERE;
@@ -419,7 +420,7 @@ uint8_t beacon_parse_opponent_answer(int16_t c)
 						state = 0;
 						return 1; 
 					}
-						
+#endif						
                /*XXX ¿esto no tiene que ir antes de los if? */
 					IRQ_LOCK(flags);
 					beaconboard.opponent_x = (int16_t)opp_x;
@@ -429,6 +430,7 @@ uint8_t beacon_parse_opponent_answer(int16_t c)
 					IRQ_UNLOCK(flags);	
 
 #ifdef TWO_OPPONENTS
+#if not_usefull
 					if(opp2_x > 3000-100) {
 						i=0;
 						beaconboard.opponent2_x = I2C_OPPONENT_NOT_THERE;
@@ -453,6 +455,7 @@ uint8_t beacon_parse_opponent_answer(int16_t c)
 						state = 0;
 						return 1; 
 					}
+#endif
                /*XXX ¿esto no tiene que ir antes de los if? */
 					IRQ_LOCK(flags);
 					beaconboard.opponent2_x = (int16_t)opp2_x;
@@ -462,6 +465,7 @@ uint8_t beacon_parse_opponent_answer(int16_t c)
 					IRQ_UNLOCK(flags);	
 #endif						
 #ifdef ROBOT_2ND
+#if not_usefull
 					if(robot_2nd_x > 3000-100) {
 						i=0;
 						beaconboard.robot_2nd_x = I2C_OPPONENT_NOT_THERE;
@@ -486,6 +490,7 @@ uint8_t beacon_parse_opponent_answer(int16_t c)
 						state = 0;
 						return 1; 
 					}
+#endif
                /*XXX ¿esto no tiene que ir antes de los if? */
 					IRQ_LOCK(flags);
 					beaconboard.robot_2nd_x = (int16_t)robot_2nd_x;
