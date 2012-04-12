@@ -647,7 +647,7 @@ uint8_t strat_steal_treasure_hold(void)
 uint8_t strat_game(void)
 {
    #define D_INI 295
-   uint8_t err;
+   uint8_t err=0;
    static uint8_t _case;
 
    while(1)
@@ -663,9 +663,6 @@ uint8_t strat_game(void)
          	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             _case=1;
             break;
       
@@ -675,15 +672,9 @@ uint8_t strat_game(void)
             TRAJ_FLAGS_NO_NEAR,TRAJ_FLAGS_NO_NEAR);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             err=strat_pickup_coins_floor(FLOOR_COINS_GROUP_X,FLOOR_COINS_GROUP_Y,GROUP);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             _case=2;
             break;
       
@@ -691,26 +682,18 @@ uint8_t strat_game(void)
             err=strat_save_treasure_generic(2362,1650);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             _case=13;
             break;
       
-         case 13:
+         case 13: //Going to middle floor goldbar
+            DEBUG(E_USER_STRAT, "Going to middle floor goldbar");
             err=goto_and_avoid(strat_infos.zones[ZONE_MIDDLE_FLOOR_GOLDBAR].init_x, strat_infos.zones[ZONE_MIDDLE_FLOOR_GOLDBAR].init_y,
             TRAJ_FLAGS_NO_NEAR,TRAJ_FLAGS_NO_NEAR);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             err=strat_pickup_goldbar_floor(MIDDLE_FLOOR_GOLDBAR_X,MIDDLE_FLOOR_GOLDBAR_Y,STORE_BOOT);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             _case=3;
             break;
 
@@ -720,15 +703,9 @@ uint8_t strat_game(void)
             TRAJ_FLAGS_NO_NEAR,TRAJ_FLAGS_NO_NEAR);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             err=strat_empty_totem_side(TOTEM_2_X,TOTEM_2_Y,STORE_BOOT);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             _case=4;
             break;
       
@@ -737,15 +714,9 @@ uint8_t strat_game(void)
             err=goto_and_avoid(1900, 1700, TRAJ_FLAGS_NO_NEAR,TRAJ_FLAGS_NO_NEAR);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             err=strat_pickup_coins_floor(2362,1650,GROUP);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             _case=5;
             break;
       
@@ -754,15 +725,9 @@ uint8_t strat_game(void)
             err=goto_and_avoid(2360, 800, TRAJ_FLAGS_NO_NEAR,TRAJ_FLAGS_NO_NEAR);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             err = strat_save_treasure_generic(2750,800);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             _case=6;
             break;
       
@@ -789,15 +754,9 @@ uint8_t strat_game(void)
             err=goto_and_avoid(COLOR_X(strat_infos.area_bbox.x1), 250, TRAJ_FLAGS_NO_NEAR,TRAJ_FLAGS_NO_NEAR);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             err=strat_pickup_coins_floor(PURPLE_FLOOR_COIN_1_X,PURPLE_FLOOR_COIN_1_Y,ONE);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             _case=8;
             break;
    
@@ -808,25 +767,16 @@ uint8_t strat_game(void)
             TRAJ_FLAGS_NO_NEAR,TRAJ_FLAGS_NO_NEAR);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             err=strat_empty_totem_side(TOTEM_2_X,TOTEM_2_Y,STORE_BOOT);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
 
-/* XXX restore if not work the game
+            /* XXX restore if not work the game
             trajectory_d_rel(&mainboard.traj, -100);
          	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
-*/
+            */
             _case=9;
             break;
    
@@ -837,15 +787,9 @@ uint8_t strat_game(void)
             TRAJ_FLAGS_NO_NEAR,TRAJ_FLAGS_NO_NEAR);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             err = strat_save_treasure_generic(2750,1055);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
          
             _case=14;
             break;
@@ -855,15 +799,9 @@ uint8_t strat_game(void)
             err=goto_and_avoid(2360, 1700, TRAJ_FLAGS_NO_NEAR,TRAJ_FLAGS_NO_NEAR);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             err = strat_save_treasure_in_hold_back(2750,1700);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             _case=10;
             break;
    
@@ -874,15 +812,9 @@ uint8_t strat_game(void)
             TRAJ_FLAGS_NO_NEAR,TRAJ_FLAGS_NO_NEAR);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             err=strat_send_message_bottle(PURPLE_BOTTLE_1_X,BOTTLE_Y);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             _case=11;
             break;
    
@@ -893,22 +825,16 @@ uint8_t strat_game(void)
             TRAJ_FLAGS_NO_NEAR,TRAJ_FLAGS_NO_NEAR);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             err=strat_send_message_bottle(PURPLE_BOTTLE_2_X,BOTTLE_Y);
             if(!TRAJ_SUCCESS(err))
                break;
-//            else
-            //	if (!TRAJ_SUCCESS(err))
-           // 			ERROUT(err);
             _case=12;
             break;
    
          
          case 12: //end
             DEBUG(E_USER_STRAT, "Mission completed!!");
-            return 0;
+            goto end;
             break;
 
          default:
@@ -916,7 +842,7 @@ uint8_t strat_game(void)
       }
    }
 
-//   end:
+   end:
    return err;
 }
 

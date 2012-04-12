@@ -262,6 +262,7 @@ parse_pgm_inst_t cmd_opponent_set = {
 /**********************************************************/
 /* Start */
 
+#if 0
 /* this structure is filled when cmd_start is parsed successfully */
 struct cmd_start_result {
 	fixed_string_t arg0;
@@ -287,8 +288,8 @@ parse_pgm_inst_t cmd_start = {
 	},
 };
 
+#endif
 
-#if 0
 /**********************************************************/
 /* Start */
 
@@ -335,7 +336,7 @@ static void cmd_start_parsed(void *parsed_result, void *data)
 			goto retry;
 		}
 		else{
-			printf("Beacon connection SUCESS!\r\n");		
+			printf("Beacon connection SUCCESS!\r\n");		
  retry_on:
 			beacon_cmd_beacon_on();
 			
@@ -351,7 +352,7 @@ static void cmd_start_parsed(void *parsed_result, void *data)
 		}
 	}
 	
-	if (!strcmp_P(res->color, PSTR("blue"))) {
+	if (!strcmp_P(res->color, PSTR("purple"))) {
 		mainboard.our_color = I2C_COLOR_PURPLE;
 		//beacon_cmd_color();
 	}
@@ -368,7 +369,7 @@ static void cmd_start_parsed(void *parsed_result, void *data)
 
 prog_char str_start_arg0[] = "start";
 parse_pgm_token_string_t cmd_start_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_start_result, arg0, str_start_arg0);
-prog_char str_start_color[] = "blue#red";
+prog_char str_start_color[] = "purple#red";
 parse_pgm_token_string_t cmd_start_color = TOKEN_STRING_INITIALIZER(struct cmd_start_result, color, str_start_color);
 prog_char str_start_debug[] = "debug#match";
 parse_pgm_token_string_t cmd_start_debug = TOKEN_STRING_INITIALIZER(struct cmd_start_result, debug, str_start_debug);
@@ -386,7 +387,7 @@ parse_pgm_inst_t cmd_start = {
 	},
 };
 
-#endif
+
 /**********************************************************/
 /* Color */
 
