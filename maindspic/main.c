@@ -209,6 +209,14 @@ int main(void)
 	
 	beaconboard.opponent_x = I2C_OPPONENT_NOT_THERE;
 
+#ifdef TWO_OPPONENTS
+   beaconboard.opponent2_x = I2C_OPPONENT_NOT_THERE;
+#endif
+
+#ifdef ROBOT_2ND
+	beaconboard.robot_2nd_x = I2C_OPPONENT_NOT_THERE;
+#endif
+
 	/* UART */
 	uart_init();
 	uart_register_rx_event(CMDLINE_UART, emergency);
