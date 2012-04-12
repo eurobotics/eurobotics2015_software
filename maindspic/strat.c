@@ -264,7 +264,7 @@ void strat_event(void *dummy)
 /* strat main loop */
 uint8_t strat_main(void)
 {
-	return END_TRAJ;
+   return strat_game();
 }
 
 #endif /* HOST_VERSION */
