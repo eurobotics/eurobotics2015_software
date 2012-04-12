@@ -256,9 +256,7 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 	   name = opp1;
 	}
 	else if(type == OPP2) {
-	   /* TODO: get second oponent xy */
-	   x = I2C_OPPONENT_NOT_THERE;
-	   y = 0;
+	   get_opponent2_xy(&x, &y);
 	   name = opp2;
 	}
 	else if(type == ROBOT_2ND) {
@@ -274,13 +272,11 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 	   name = opp1;
 	}
 	else if(type == OPP2) {
-	   /* TODO: get second oponent xy */
 	   x = g_opp2_x;
 	   y = g_opp2_y;
 	   name = opp2;
 	}
 	else if(type == ROBOT_2ND) {
-		/* TODO: get second robot xy */
 	   x = g_robot_2nd_x;
 	   y = g_robot_2nd_y;
 	   name = robot_2nd;
@@ -904,7 +900,7 @@ void set_totems_poly(poly_t *pol)
   int16_t x = 0;
   int16_t y = 1000;
   int16_t x_half_size = 400;
-  int16_t radius = (300 + 170);
+  int16_t radius = (300 + 190);
 
 	/* generate pentagon  */
 	c_a = cos(-2*M_PI/__EDGE_NUMBER);
@@ -1060,13 +1056,11 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 	/* opponent info */
 #ifndef HOST_VERSION	
 	get_opponent_xy(&opp1_x, &opp1_y);
-	/* TODO: get second opponent */
-	opp2_x = I2C_OPPONENT_NOT_THERE;
-	opp2_y = I2C_OPPONENT_NOT_THERE;
+   get_opponent2_xy(&opp2_x, &opp2_y);
 	
 	/* TODO: get second robot */
 	robot_2nd_x = I2C_OPPONENT_NOT_THERE;
-	robot_2nd_y = I2C_OPPONENT_NOT_THERE;
+	robot_2nd_y = 0;
 #endif
 
 	opp1_w = O_WIDTH;
@@ -1144,6 +1138,11 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 	}
  	if (is_point_in_poly(pol_robot_2nd, x, y)) {
 		NOTICE(E_USER_STRAT, " dst is in robot 2nd");
+		return END_ERROR;
+	}
+
+	if (is_point_in_poly(pol_totems, x, y)) {
+		NOTICE(E_USER_STRAT, " dst is in totems");
 		return END_ERROR;
 	}
 

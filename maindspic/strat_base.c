@@ -310,14 +310,18 @@ void strat_limit_speed(void)
 	int16_t opp_d, opp_a;
 #ifdef TWO_OPPONENTS
 	int16_t opp2_d, opp2_a;
+   int8_t ret1, ret2;
 #endif
 
 	if (strat_limit_speed_enabled == 0)
 		goto update;
 
 #ifdef TWO_OPPONENTS
-	get_opponent_da(&opp_d, &opp_a);
-	get_opponent2_da(&opp2_d, &opp2_a);
+	ret1 = get_opponent_da(&opp_d, &opp_a);
+	ret2 = get_opponent2_da(&opp2_d, &opp2_a);
+
+   if(ret1 == -1 && ret2 == -1)
+      goto update;
 
 	if(opp_d > opp2_d) {
 		opp_d = opp2_d;
@@ -329,7 +333,8 @@ void strat_limit_speed(void)
 		goto update;
 #endif
 		
-#ifdef HOMOLOGATION
+//ifdef HOMOLOGATION
+#if 1
 	if (opp_d < 600) {
 		lim_d = SPEED_ANGLE_VERY_SLOW;
 		lim_a = SPEED_ANGLE_VERY_SLOW;
@@ -338,25 +343,25 @@ void strat_limit_speed(void)
 	if (opp_d < 500) {
 		if (mainboard.speed_d > 0 && (opp_a > 310 || opp_a < 40)) { // XXX tested with +/-70
 			lim_d = SPEED_DIST_VERY_SLOW;
-			lim_a = SPEED_ANGLE_FAST;
+			lim_a = SPEED_ANGLE_SLOW;
 		}
 		else if (mainboard.speed_d < 0 && (opp_a < 220 && opp_a > 140)) {
 			lim_d = SPEED_DIST_VERY_SLOW;
-			lim_a = SPEED_ANGLE_FAST;
+			lim_a = SPEED_ANGLE_SLOW;
 		}
 		else {
-			lim_d = 2000;
+			lim_d = SPEED_DIST_SLOW;
 			lim_a = SPEED_ANGLE_SLOW;
 		}
 	}
 #endif		
 	else if (opp_d < 600) {
 		if (mainboard.speed_d > 0 && (opp_a > 310 || opp_a < 40)) {
-			lim_d = 3000;
+			lim_d = SPEED_DIST_SLOW;
 			lim_a = SPEED_ANGLE_FAST;
 		}
 		else if (mainboard.speed_d < 0 && (opp_a < 220 && opp_a > 140)) {
-			lim_d = 3000;
+			lim_d = SPEED_DIST_SLOW;
 			lim_a = SPEED_DIST_FAST;
 		}
 	}
@@ -475,14 +480,14 @@ uint8_t __strat_obstacle(uint8_t which)
 		DEBUG(E_USER_STRAT, "opponent front d=%d, a=%d "
 		      "xrel=%d yrel=%d (speed_d=%d)", 
 		      opp_d, opp_a, x_rel, y_rel, mainboard.speed_d);
-		sensor_obstacle_disable();
+		//sensor_obstacle_disable();
 		return 1;
 	}
 	/* opponent is behind us */
 	if (mainboard.speed_d < 0 && (opp_a < 215 && opp_a > 145)) {
 		DEBUG(E_USER_STRAT, "opponent behind d=%d, a=%d xrel=%d yrel=%d", 
 		      opp_d, opp_a, x_rel, y_rel);
-		sensor_obstacle_disable();
+		//sensor_obstacle_disable();
 		return 1;
 	}
 
@@ -495,7 +500,7 @@ uint8_t strat_obstacle(void)
 	if(__strat_obstacle(0))
 		return 1;
 #ifdef TWO_OPPONENTS
-	if(__strat_obstacle(1))
+	else if(__strat_obstacle(1))
 		return 1;
 #endif
 	else
