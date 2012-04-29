@@ -74,7 +74,7 @@
 
 
 /*it's neccessary to start from a point in the y_line of the goldbar */
-uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar)
+uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar, uint8_t step)
 {
    uint8_t err;
 	uint16_t old_spdd, old_spda;
@@ -85,13 +85,48 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar)
 
 	/* save speed */
 	strat_get_speed(&old_spdd, &old_spda);
-
+   strat_limit_speed_disable();
+	strat_set_speed(SPEED_DIST_FAST,SPEED_ANGLE_FAST);
+   
    /*Turn until we face the totem*/
    trajectory_turnto_xy(&mainboard.traj,x,y);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
+
+   switch(step)
+   {
+      case 0:
+      case 1:
+      default:
+         goto coins_isle;
+         break;
+
+      case 2:
+         d=distance_from_robot(x,y);
+      	trajectory_d_rel(&mainboard.traj, d-D_TOTEM_TO_FIRST_LINE);
+      	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+      	if (!TRAJ_SUCCESS(err))
+      			ERROUT(err);
+         goto goldbar;
+         break;
+
+      case 3:
+      	DEBUG(E_USER_STRAT, "Prepare for coins totem and go forward.");
+         i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_PREPARE_COINS_TOTEM);
+         d=distance_from_robot(x,y);
+      	trajectory_d_rel(&mainboard.traj, d-TOTEM_WIDE/2-ROBOT_CENTER_TO_FRONT-D_TO_COINS_TOTEM);
+      	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+      	if (!TRAJ_SUCCESS(err))
+      			ERROUT(err);
+         i2c_slavedspic_wait_ready();
+
+         goto  coins_totem;
+         break;
+   }
+
+coins_isle:
 
    /*Open fingers*/
 	DEBUG(E_USER_STRAT, "Open fingers floor and fingers totem.");
@@ -105,7 +140,6 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar)
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
    
-	strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 
    /*Close fingers floor*/
 	DEBUG(E_USER_STRAT, "Pickup first line of coins.");
@@ -125,6 +159,9 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar)
       i2c_slavedspic_wait_ready();
    }
 
+   if(step)
+      goto end;
+goldbar:
    i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_PREPARE_GOLDBAR_TOTEM);
    i2c_slavedspic_wait_ready();
 
@@ -135,7 +172,7 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar)
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_BLOCKING(err))
 			ERROUT(err);
-	strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
+	strat_set_speed(old_spdd, old_spdd);
 
 
 	DEBUG(E_USER_STRAT, "Pickup goldbar.");
@@ -145,7 +182,7 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar)
 			ERROUT(err);
    i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_GOLDBAR_TOTEM);
    i2c_slavedspic_wait_ready();
-   time_wait_ms(1000);
+   time_wait_ms(800); /* FIXME */
 
    /*Go a little backward*/
 	trajectory_d_rel(&mainboard.traj, -100);
@@ -154,18 +191,21 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar)
 			ERROUT(err);
 
    i2c_slavedspic_mode_store(1,I2C_STORE_MODE_GOLDBAR_IN_BOOT);
-   i2c_slavedspic_wait_ready();
+   time_wait_ms(500);
 
-	DEBUG(E_USER_STRAT, "Prepare for coins totem and go forward.");
-   i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_PREPARE_COINS_TOTEM);
-   i2c_slavedspic_wait_ready();
-   i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR, I2C_FINGERS_MODE_HOLD,0);
-   i2c_slavedspic_wait_ready();
+   if(step)
+      goto end;
 
-	trajectory_d_rel(&mainboard.traj, 100+D_GOLDBAR-D_TO_COINS_TOTEM);
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
+coins_totem:
+   if(!step){
+   	DEBUG(E_USER_STRAT, "Prepare for coins totem and go forward.");
+      i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_PREPARE_COINS_TOTEM);
+   	trajectory_d_rel(&mainboard.traj, 100+D_GOLDBAR-D_TO_COINS_TOTEM);
+   	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+   	if (!TRAJ_SUCCESS(err))
+   			ERROUT(err);
+      i2c_slavedspic_wait_ready();
+   }
 
 	DEBUG(E_USER_STRAT, "Close fingers and catch coins totem.");
    i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_TOTEM, I2C_FINGERS_MODE_HOLD,30);
@@ -190,6 +230,7 @@ uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar)
 
    end:
 	strat_set_speed(old_spdd, old_spda);
+   strat_limit_speed_enable();
    return err;
 }
 
@@ -212,10 +253,9 @@ uint8_t strat_pickup_coins_floor(int16_t x, int16_t y, uint8_t group)
 			ERROUT(err);
    
    /*Go forward to near the coin*/
-   if(!group)
-       d=distance_from_robot(x,y)-D_TO_COIN;
-   else
-       d=distance_from_robot(x,y)-D_TO_COIN_GROUP;
+   if(!group) d=distance_from_robot(x,y)-D_TO_COIN;
+   else       d=distance_from_robot(x,y)-D_TO_COIN_GROUP;
+
 	trajectory_d_rel(&mainboard.traj, d);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
@@ -223,27 +263,23 @@ uint8_t strat_pickup_coins_floor(int16_t x, int16_t y, uint8_t group)
 
    /*Return if opponent is in front*/
 	if(opponent_is_infront())  {
-		ERROUT(END_OBSTACLE);
-	}
+		ERROUT(END_OBSTACLE); }
 
-   /*Open fingers floor*/
-   /*Wait until they are open*/
 	DEBUG(E_USER_STRAT, "Open fingers floor.");
    i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_PREPARE_COINS_FLOOR);
    i2c_slavedspic_wait_ready();
    i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR, I2C_FINGERS_MODE_OPEN,-50);
    i2c_slavedspic_wait_ready();
 
-   /*XXX If we are taking the coin near to the ship there is no space and we turn*/
+   /*XXX If we are taking the coin near to the ship, there is no space and we turn*/
    /*if(x==RED_FLOOR_COIN_3_X || x==PURPLE_FLOOR_COIN_3_X) {
-   	trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(-90));
+   	trajectory_a_abs(&mainboard.traj, -90);
 	   err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
    	if (!TRAJ_SUCCESS(err))
    			ERROUT(err);
    }*/
 
    /*Go forward until we have the coins inside the robot*/
-	strat_set_speed(SPEED_DIST_SLOW,SPEED_ANGLE_SLOW);
    if(!group){
    	d=distance_from_robot(x,y)-ROBOT_CENTER_TO_FRONT;
    	trajectory_d_rel(&mainboard.traj, d);
@@ -311,7 +347,6 @@ uint8_t strat_pickup_goldbar_floor(int16_t x, int16_t y, uint8_t store)
 
 
    /*Go forward until we have the gold bar inside the robot*/
-	strat_set_speed(SPEED_DIST_SLOW,SPEED_ANGLE_SLOW);
 	trajectory_d_rel(&mainboard.traj, D_PICKUP_GOLDBAR);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
    if (!TRAJ_SUCCESS(err))
@@ -376,7 +411,7 @@ uint8_t strat_send_message_bottle(int16_t x, int16_t y)
 			ERROUT(err);
    
 	/* go forward to safe distance from token */
-	strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
+	strat_set_speed(old_spdd, old_spda);
 	trajectory_d_rel(&mainboard.traj, 200);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
@@ -423,7 +458,6 @@ uint8_t strat_save_treasure_generic(int16_t x, int16_t y)
 
    
 	/* go backward to safe distance from token */
-	strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 	trajectory_d_rel(&mainboard.traj, -MIN_D_TO_POINT);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
@@ -434,7 +468,6 @@ uint8_t strat_save_treasure_generic(int16_t x, int16_t y)
    i2c_slavedspic_mode_dump(I2C_DUMP_MODE_END_MOUTH);
    i2c_slavedspic_wait_ready();
 
-	strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
    d=distance_from_robot(COLOR_X(strat_infos.area_bbox.x1),position_get_y_s16(&mainboard.pos))+5;
 	trajectory_d_rel(&mainboard.traj, -d);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
@@ -494,7 +527,6 @@ uint8_t strat_save_treasure_in_deck_back(int16_t x, int16_t y)
 	time_wait_ms(1000);
 
 	/* go to safe distance*/
-	strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 	trajectory_d_rel(&mainboard.traj, PLACE_D_SAFE);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
@@ -578,7 +610,6 @@ uint8_t strat_save_treasure_in_hold_back(int16_t x, int16_t y)
    i2c_slavedspic_wait_ready();
 
 	/* go to safe distance*/
-	strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 	trajectory_d_rel(&mainboard.traj, PLACE_D_SAFE);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
@@ -644,6 +675,7 @@ uint8_t strat_steal_treasure_hold(void)
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
+#ifdef notnow
 uint8_t strat_game(void)
 {
    #define D_INI 295
@@ -656,9 +688,8 @@ uint8_t strat_game(void)
       {
          case 0:  //init
             DEBUG(E_USER_STRAT, "Game started!");
-         	mainboard.our_color = I2C_COLOR_PURPLE;
             i2c_slavedspic_mode_init();
-         	strat_auto_position();
+            i2c_slavedspic_wait_ready();
             trajectory_d_rel(&mainboard.traj, D_INI);
          	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
             if(!TRAJ_SUCCESS(err))
@@ -845,6 +876,6 @@ uint8_t strat_game(void)
    end:
    return err;
 }
-
+#endif
 
 

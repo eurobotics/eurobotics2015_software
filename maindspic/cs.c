@@ -135,7 +135,7 @@ static void do_cs(void *dummy)
 			dac_mc_set(RIGHT_MOTOR, 0);
 
 			/* kill strat */
-			strat_exit();
+			//strat_exit();
 
 			printf_P(PSTR("END OF TIME\r\n"));
 	

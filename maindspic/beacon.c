@@ -501,7 +501,7 @@ uint8_t beacon_parse_opponent_answer(int16_t c)
 #endif	
 				}		
 				else {
-					NOTICE(E_USER_STRAT, "opponent checksum fails");			
+					ERROR(E_USER_STRAT, "opponent checksum fails");			
 				}
 
 				i=0;
