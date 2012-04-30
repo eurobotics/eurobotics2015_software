@@ -343,10 +343,10 @@ static void cmd_pwm_parsed(void * parsed_result, void * data)
 	void * pwm_ptr = NULL;
 	struct cmd_pwm_result * res = parsed_result;
 	
-	if (!strcmp_P(res->arg1, PSTR("1_1")))
-		pwm_ptr = &gen.pwm_mc_1_1;
-	else if (!strcmp_P(res->arg1, PSTR("1_2)")))
-		pwm_ptr = &gen.pwm_mc_1_2;
+	if (!strcmp_P(res->arg1, PSTR("left")))
+		pwm_ptr = &gen.pwm_mc_left;
+	else if (!strcmp_P(res->arg1, PSTR("right")))
+		pwm_ptr = &gen.pwm_mc_right;
 		
 	if (pwm_ptr)
 		pwm_mc_set(pwm_ptr, res->arg2);
@@ -356,11 +356,11 @@ static void cmd_pwm_parsed(void * parsed_result, void * data)
 
 prog_char str_pwm_arg0[] = "pwm";
 parse_pgm_token_string_t cmd_pwm_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_pwm_result, arg0, str_pwm_arg0);
-prog_char str_pwm_arg1[] = "1_1#1_2";
+prog_char str_pwm_arg1[] = "left#right";
 parse_pgm_token_string_t cmd_pwm_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_pwm_result, arg1, str_pwm_arg1);
 parse_pgm_token_num_t cmd_pwm_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_pwm_result, arg2, INT16);
 
-prog_char help_pwm[] = "Set pwm values [-5332 ; 5332]";
+prog_char help_pwm[] = "Set pwm values";
 parse_pgm_inst_t cmd_pwm = {
 	.f = cmd_pwm_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
@@ -375,7 +375,7 @@ parse_pgm_inst_t cmd_pwm = {
 
 /**********************************************************/
 /* Adcs tests */
-
+#ifdef notuse
 /* this structure is filled when cmd_adc is parsed successfully */
 struct cmd_adc_result {
 	fixed_string_t arg0;
@@ -417,7 +417,7 @@ parse_pgm_inst_t cmd_adc = {
 		NULL,
 	},
 };
-
+#endif
 
 /**********************************************************/
 /* Sensors tests */

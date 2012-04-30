@@ -36,6 +36,7 @@
 #include <encoders_dspic.h>
 #include <pwm_mc.h>
 #include <pwm_servo.h>
+#include <ax12.h>
 
 #include <timer.h>
 #include <scheduler.h>
@@ -66,23 +67,21 @@
 #include "cs.h"
 #include "i2c_protocol.h"
 #include "beacon.h"
+#include "ax12_user.h"
 
 
 struct genboard gen;
 struct mainboard mainboard;
 struct beaconboard beaconboard;
 
+#define HACK_EUROBOT_2012
+
 /***************************************************************/
 
-void do_led_blink(void *dummy)
-{
-	static int8_t foo =0;
-	_LATB13 = foo;
-	_LATC7 = foo;
-	_LATB12 = foo;
-
-	foo ^= 1;
+#ifdef notuse
+void do_led_blink(void *dummy) {
 }
+#endif
 
 static void main_timer_interrupt(void)
 {
@@ -119,16 +118,27 @@ void io_pins_init(void)
 
 	/* analog inputs */
 	/* by default all analog pins are digital */
-	//AD1PCFGL = 0xFF;	
+	AD1PCFGL = 0xFF;	
 
 	/* L6203 H bridges (outputs) */
+#ifdef HACK_EUROBOT_2012
+	_TRISC7 		= 0;	// M_DER_IN1
+	_TRISC0  	= 0;	// M_DER_IN2
+	_TRISC6 	   = 0;	// M_DER_EN
+
+	_TRISB15 	= 0;	// M_IZQ_IN1
+	_TRISC1  	= 0;	// M_IZQ_IN2
+	_TRISB14 	= 0;	// M_IZQ_EN
+#else
 	_TRISB13 	= 0;	// M_DER_IN1
 	_TRISC7  	= 0;	// M_DER_IN2
 	_TRISB12 	= 0;	// M_DER_EN
-	
+
 	_TRISB15 	= 0;	// M_IZQ_IN1
 	_TRISC6  	= 0;	// M_IZQ_IN2
 	_TRISB14 	= 0;	// M_IZQ_EN
+#endif	
+
 	
 	// encoders (inputs)
 	_QEA1R 	= 21;	// QEA1 <- RP21
@@ -140,24 +150,30 @@ void io_pins_init(void)
 	_TRISC3  = 1;	// QEA2
 	_QEB2R 	= 4;	// QEB2 <- RP4
 	_TRISB4	= 1;	// QEB2
-
-	// robot start (input)
-	_TRISA9 = 1;	// START
 	
-	// color
+	// sensors
 	_TRISA4 = 1;	// COLOR
-	
+	_TRISA9 = 1;	// START	
+	_TRISC8 = 1;	// OPPONENT FRONT
+	_TRISC9 = 1;   // OPPONENT FRONT
+	_TRISB3 = 1; 	// OPPONENT REAR
+
 	// wt11 reset (output)
 	_TRISA8	= 0;	// RESET_BLUE
 	_LATA8	= 0;	// RESET_BLUE OFF
 	
-	// i2c (in/out open collector??)
+	// i2c
 		
 	// uarts
 	_U1RXR 	= 8;	// U1RX <- RP8
-	_TRISB8 = 1;	// U1RX is input
+	_TRISB8  = 1;	// U1RX is input
   	_RP7R 	= 3;	// U1TX -> RP7
 	_TRISB7	= 0;	// U1TX is output
+
+	_U2RXR 	= 9;	// U2RX <- RP9 <- SERVOS_AX12_UART
+  	_RP9R 	= 5;	// U2TX -> RP9 -> SERVOS_AX12_UART
+	_TRISB9	= 0;	// U2TX is output
+ 	_ODCB9 	= 1;	// For half-duplex mode RP9 is open collector
 }
 
 
@@ -210,19 +226,33 @@ int main(void)
 #endif
 
 	/* DAC_MC */
+#ifdef HACK_EUROBOT_2012
+	pwm_mc_channel_init(LEFT_MOTOR,
+	                    PWM_MC_MODE_SIGNED | PWM_MC_MODE_SIGN_INVERTED, 
+	                    2, 1, &PORTC, 7, &PORTC, 0);
+
+	pwm_mc_channel_init(RIGHT_MOTOR,
+	                    PWM_MC_MODE_SIGNED, 
+	                    1, 1, &PORTB, 15, &PORTC, 1);
+
+	pwm_mc_init(LEFT_MOTOR,  15000, CH1_IND&PEN1H&PDIS1L);
+	pwm_mc_init(RIGHT_MOTOR, 15000, CH1_IND&PEN1H&PDIS1L);
+#else
 	pwm_mc_channel_init(LEFT_MOTOR,
 	                    PWM_MC_MODE_SIGNED, 
 	                    1, 1, &PORTB, 15, &PORTC, 6);
-	//pwm_mc_channel_init(RIGHT_MOTOR,
-	//                    PWM_MC_MODE_SIGNED, 
-	 //                   1, 2, &PORTB, 13, &PORTC, 7);
-                    
-	pwm_mc_init(LEFT_MOTOR, 15000, CH1_IND&PEN1H&PDIS1L);// &
-											 //CH2_IND&PEN2H&PDIS2L);
-	//pwm_mc_init(RIGHT_MOTOR, 15000, CH1_IND&PEN1H&PDIS1L &
-	//										  CH2_IND&PEN2H&PDIS2L);																 
+	pwm_mc_channel_init(RIGHT_MOTOR,
+	                    PWM_MC_MODE_SIGNED, 
+	                   1, 2, &PORTB, 13, &PORTC, 7);
+
+	pwm_mc_init(LEFT_MOTOR, 15000, CH1_IND&PEN1H&PDIS1L &
+											 CH2_IND&PEN2H&PDIS2L);
+	pwm_mc_init(RIGHT_MOTOR, 15000, CH1_IND&PEN1H&PDIS1L &
+											  CH2_IND&PEN2H&PDIS2L);
+#endif
+                    												 
 	pwm_mc_set(LEFT_MOTOR, 0);
-	//pwm_mc_set(RIGHT_MOTOR, 0);
+	pwm_mc_set(RIGHT_MOTOR, 0);
 
 
 	/* MAIN TIMER */
@@ -240,7 +270,7 @@ int main(void)
 	maindspic_cs_init();
 
 	/* sensors, will also init hardware adc */
-	//sensor_init();
+	sensor_init();
 
 	/* i2c slaves polling (gpios and slavedspic) */
 #ifdef notuse
@@ -250,16 +280,17 @@ int main(void)
 	/* beacon commnads and polling */
 	scheduler_add_periodical_event_priority(beacon_protocol, NULL,
 					EVENT_PERIOD_BEACON_PULL / SCHEDULER_UNIT, EVENT_PRIORITY_BEACON_POLL);
-#endif
 
 	scheduler_add_periodical_event_priority(do_led_blink, NULL, 
-						1000000 / SCHEDULER_UNIT, EVENT_PRIORITY_LED);
-
+						1000000 / SCHEDULER_UNIT, EVENT_PRIORITY_LED);#endif
 
 	/* strat-related event */
 	//scheduler_add_periodical_event_priority(strat_event, NULL,
 	//					EVENT_PERIOD_STRAT / SCHEDULER_UNIT, EVENT_PRIORITY_STRAT);
 
+
+	/* SERVOS AX12 */
+	ax12_user_init();
 
 	/* log setup */
  	gen.logs[0] = E_USER_STRAT;
@@ -281,8 +312,15 @@ int main(void)
 	printf("\r\n");
 	printf("Siempre falta tiempo para hacer pruebas!!\r\n");
 
-	/* process commands, never returns */
-	cmdline_interact();
+	/* init cmdline */
+	cmdline_init();
+
+	/* main loop */
+	while(1)	{
+		cmdline_interact_nowait();
+		
+		/* add here main program */
+	}
 
 	return 0;
 }

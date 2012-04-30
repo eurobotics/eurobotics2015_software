@@ -37,8 +37,13 @@ void emergency(char c);
 /* log function */
 void mylog(struct error * e, ...);
 
-/* launch cmdline */
-int cmdline_interact(void);
+/* init cmdline */
+void cmdline_init(void);
+
+/* execute cmdline waiting to input commands */
+int cmdline_interact(void);
+/* execute cmdline without waiting, pull input commands */
+int cmdline_interact_nowait(void);
 
 /* detect a key */
 static inline uint8_t cmdline_keypressed(void) {

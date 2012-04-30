@@ -29,19 +29,11 @@
  */
 
 /* synchronize with sensor.c */
-#define ADC_LASER_1   0
-#define ADC_LASER_2   1
-#define ADC_MAX       2
-
-/* synchronize with sensor.c */
 #define S_START_SWITCH 0
-#define S_RESERVED0    1
-#define S_RESERVED1    2
-#define S_RESERVED2    3
-#define S_RESERVED3    4
-#define S_RESERVED4    5
-#define S_RESERVED5    6
-#define S_RESERVED6    7
+#define S_COLOR_SWITCH 1
+#define S_OPP_FRONT_L  2
+#define S_OPP_FRONT_R  3
+#define S_OPP_REAR  	  4
 
 #define S_GP0_0		 8
 #define S_GP0_1		 9
@@ -78,39 +70,7 @@
 #define S_GP3_5		 37
 #define S_GP3_6		 38
 #define S_GP3_7		 39
-#define SENSOR_MAX    40
-
-/* lasers map */
-#define ADC_LASER_R		ADC_LASER_1
-#define ADC_LASER_L		ADC_LASER_2
-#define ADC_LASER_MAX	2
-
-/* token sensors */
-#define S_TOKEN_FRONT_R			S_GP3_4
-#define S_TOKEN_FRONT_L			S_GP3_3
-#define S_TOKEN_FRONT_45R		S_GP1_1
-#define S_TOKEN_FRONT_45L		S_GP1_0
-#define S_TOKEN_FRONT_TOWER2H	S_GP0_6
-#define S_TOKEN_FRONT_TOWER1H	S_GP3_1
-#define S_TOKEN_FRONT_FIGURE	S_GP0_0
-
-#define S_TOKEN_REAR_R			S_GP2_6
-#define S_TOKEN_REAR_L			S_GP2_4
-#define S_TOKEN_REAR_45R		S_GP2_7
-#define S_TOKEN_REAR_45L		S_GP2_3
-#define S_TOKEN_REAR_TOWER2H	S_GP0_3
-#define S_TOKEN_REAR_TOWER1H	S_GP3_0
-#define S_TOKEN_REAR_FIGURE	S_GP0_1
-
-/* opponent sensors */
-#define S_OPPONENT_FRONT_R		S_GP1_7
-#define S_OPPONENT_FRONT_L		S_GP0_4
-
-#define S_OPPONENT_REAR_R		S_GP1_6
-#define S_OPPONENT_REAR_L		S_GP1_4
-
-#define S_OPPONENT_RIGHT		S_GP0_7
-#define S_OPPONENT_LEFT			S_GP1_3
+#define SENSOR_MAX    5
 
 /* digital and analog */
 void sensor_init(void);
@@ -128,15 +88,4 @@ void sensor_obstacle_disable(void);
 void sensor_obstacle_enable(void);
 uint8_t sensor_obstacle_is_disabled(void);
 
-/* token sensors utils */
-
-/* return 1 if right and left token 
- *	sensors of a side are activated */
-uint8_t sensor_token_side(uint8_t side);
-
-/* return distance of a laser in mm */
-int16_t sensor_get_laser_distance(uint8_t i);
-
-/* get distance and angle (+/- PI) of laser point */
-int16_t sensor_get_laser_point_da(uint8_t i, int16_t *d, double *a_rad);
 

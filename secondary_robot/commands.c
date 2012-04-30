@@ -36,6 +36,7 @@
 #define COMPILE_COMMANDS_CS
 #define COMPILE_COMMANDS_MAINBOARD
 #define COMPILE_COMMANDS_TRAJ
+#define COMPILE_COMMANDS_AX12
 //#define COMPILE_CODE
 
 /* commands_gen.c */
@@ -50,7 +51,7 @@ extern parse_pgm_inst_t cmd_pwm_servo;
 extern parse_pgm_inst_t cmd_pwm_servo_show_range;
 //extern parse_pgm_inst_t cmd_dac_mc;
 extern parse_pgm_inst_t cmd_pwm;
-extern parse_pgm_inst_t cmd_adc;
+//extern parse_pgm_inst_t cmd_adc;
 extern parse_pgm_inst_t cmd_sensor;
 extern parse_pgm_inst_t cmd_log;
 extern parse_pgm_inst_t cmd_log_show;
@@ -80,6 +81,17 @@ extern parse_pgm_inst_t cmd_blocking_i;
 extern parse_pgm_inst_t cmd_blocking_i_show;
 
 #endif /* COMPILE_COMMANDS_CS */
+
+/* commands_ax12.c */#ifdef COMPILE_COMMANDS_AX12
+#include "./commands_ax12.c"
+//extern parse_pgm_inst_t cmd_baudrate;
+extern parse_pgm_inst_t cmd_uint16_read;
+extern parse_pgm_inst_t cmd_uint16_write;
+extern parse_pgm_inst_t cmd_uint8_read;
+extern parse_pgm_inst_t cmd_uint8_write;
+extern parse_pgm_inst_t cmd_ax12_stress;
+extern parse_pgm_inst_t cmd_ax12_dump_stats;
+#endif /* COMPILE_COMMANDS_AX12 */
 
 /* commands_mainboard.c */
 #ifdef COMPILE_COMMANDS_MAINBOARD
@@ -153,7 +165,7 @@ parse_pgm_ctx_t main_ctx[] = {
 //	(parse_pgm_inst_t *)&cmd_pwm_servo_show_range,
 //	(parse_pgm_inst_t *)&cmd_dac_mc,
 	(parse_pgm_inst_t *)&cmd_pwm,
-	(parse_pgm_inst_t *)&cmd_adc,
+//	(parse_pgm_inst_t *)&cmd_adc,
 	(parse_pgm_inst_t *)&cmd_sensor,
 	(parse_pgm_inst_t *)&cmd_log,
 	(parse_pgm_inst_t *)&cmd_log_show,
@@ -182,6 +194,17 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_blocking_i_show,
 
 #endif /* COMPILE_COMMANDS_CS */
+
+#ifdef COMPILE_COMMANDS_AX12
+	/* commands_ax12.c */
+	//(parse_pgm_inst_t *)&cmd_baudrate,
+	(parse_pgm_inst_t *)&cmd_uint16_read,
+	(parse_pgm_inst_t *)&cmd_uint16_write,
+	(parse_pgm_inst_t *)&cmd_uint8_read,
+	(parse_pgm_inst_t *)&cmd_uint8_write,
+	(parse_pgm_inst_t *)&cmd_ax12_stress,
+	(parse_pgm_inst_t *)&cmd_ax12_dump_stats,
+#endif
 
 #ifdef COMPILE_COMMANDS_MAINBOARD
 
