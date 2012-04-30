@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Revision : $Id: uart_config.h,v 1.3.10.1 2006/11/26 21:06:02 zer0 Exp $
+ *  Revision : $Id$
  *
  */
 
@@ -23,12 +23,13 @@
  * config for uart module
  */
 
+
 /*  
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
  *  Javier Baliñas Santos <javier@arc-robots.org>
  *
  *  Code ported to family of microcontrollers dsPIC from
- *  uart_config.h,v 1.3.10.1 2006/11/26 21:06:02 zer0 Exp.
+ *  uart_config.h,v 1.3.10.1 2006/11/26 21:06:02 zer0 Exp 
  */
 
 #ifndef UART_CONFIG_H
@@ -61,8 +62,8 @@
 #define UART0_USE_DOUBLE_SPEED 0
 //#define UART0_USE_DOUBLE_SPEED 1
 
-#define UART0_RX_FIFO_SIZE 127
-#define UART0_TX_FIFO_SIZE 127
+#define UART0_RX_FIFO_SIZE 64
+#define UART0_TX_FIFO_SIZE 16
 
 #define UART0_NBITS 8
 //#define UART0_NBITS 9
@@ -78,26 +79,26 @@
  * UART1 definitions (dspic UART2) 
  */
 
-/* compile uart0 fonctions, undefine it to pass compilation */
+/* compile uart1 fonctions, undefine it to pass compilation */
 #define UART1_COMPILE  
 
-/* enable uart0 if == 1, disable if == 0 */
+/* enable uart if == 1, disable if == 0 */
 #define UART1_ENABLED  1
 
-/* enable uart0 interrupts if == 1, disable if == 0 */
+/* enable uart interrupts if == 1, disable if == 0 */
 #define UART1_INTERRUPT_ENABLED  1
 
-#define UART1_BAUDRATE 115200
+#define UART1_BAUDRATE 1000000
 
 /* 
  * if you enable this, the maximum baudrate you can reach is 
  * higher, but the precision is lower. 
  */
-#define UART1_USE_DOUBLE_SPEED 0
-//#define UART0_USE_DOUBLE_SPEED 1
+//#define UART1_USE_DOUBLE_SPEED 0
+#define UART1_USE_DOUBLE_SPEED 1
 
 #define UART1_RX_FIFO_SIZE 127
-#define UART1_TX_FIFO_SIZE 64
+#define UART1_TX_FIFO_SIZE 127
 
 #define UART1_NBITS 8
 //#define UART1_NBITS 9
@@ -109,6 +110,8 @@
 #define UART1_STOP_BIT UART_STOP_BITS_1
 //#define UART1_STOP_BIT UART_STOP_BITS_2
 
+
+/* .... same for uart 1, 2, 3 ... */
 
 #endif
 

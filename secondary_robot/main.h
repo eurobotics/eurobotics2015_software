@@ -33,6 +33,7 @@
 #include <encoders_dspic.h>
 #include <pwm_mc.h>
 #include <pwm_servo.h>
+#include <ax12.h>
 
 #include <pid.h>
 #include <quadramp.h>
@@ -77,17 +78,12 @@
 
 /* distance between encoders weels,
  * decrease track to decrease angle */
-#define EXT_TRACK_MM 292.74161502079 //292.8
-//#define EXT_TRACK_MM 293.57360825271 /* 2011 */
-//#define EXT_TRACK_MM 290.37650894 /* 2010 */
-
-#define VIRTUAL_TRACK_MM EXT_TRACK_MM
+#define EXT_TRACK_MM 		292.74161502079
+#define VIRTUAL_TRACK_MM 	EXT_TRACK_MM
 
 /* robot dimensions */
 #define ROBOT_LENGTH    281.5
 #define ROBOT_WIDTH 	   330.0
-#define ROBOT_CENTER_TO_FRONT 162.5
-#define ROBOT_CENTER_TO_BACK 119.0
 
 /* Some calculus:
  * it is a 3600 imps -> 14400 because we see 1/4 period
@@ -96,21 +92,24 @@
 
 /* increase it to go further */
 #define IMP_ENCODERS 		3600.0
-//#define WHEEL_DIAMETER_MM 	(55.0/0.989123953)// 0.988333287)//0.993077287) /* 2011 */
-#define WHEEL_DIAMETER_MM 	(55.0)// 0.988333287)//0.993077287)
+#define WHEEL_DIAMETER_MM 	(55.0)
 
 
 #define WHEEL_PERIM_MM 	(WHEEL_DIAMETER_MM * M_PI)
 #define IMP_COEF 			10.0
 #define DIST_IMP_MM 		(((IMP_ENCODERS*4) / WHEEL_PERIM_MM) * IMP_COEF)
 
+/* ax12 */
+#define AX12_ID_ARM		1
+#define AX12_ID_TOOTHS	2
+
 /* encoders handlers */
-#define LEFT_ENCODER        ((void *)2)
-#define RIGHT_ENCODER       ((void *)1)
+#define RIGHT_ENCODER       ((void *)1) // decrements going fordwars
+#define LEFT_ENCODER        ((void *)2) // increments with fordward
 
 /* motor handles */
-#define LEFT_MOTOR          ((void *)&gen.pwm_mc_1_1)
-#define RIGHT_MOTOR         ((void *)&gen.pwm_mc_1_2)
+#define LEFT_MOTOR          ((void *)&gen.pwm_mc_left)
+#define RIGHT_MOTOR         ((void *)&gen.pwm_mc_right)
 
 /** ERROR NUMS */
 #define E_USER_STRAT        194
@@ -118,6 +117,7 @@
 #define E_USER_SENSOR       196
 #define E_USER_CS           197
 #define E_USER_BEACON       198
+#define E_USER_AX12         199
 
 /* EVENTS PRIORITIES */
 #define EVENT_PRIORITY_LED 			  170
@@ -159,11 +159,11 @@ struct genboard
 	char prompt[RDLINE_PROMPT_SIZE];
 
 	/* motors */
-	struct pwm_mc pwm_mc_1_1;
-	struct pwm_mc pwm_mc_1_2;
+	struct pwm_mc pwm_mc_left;
+	struct pwm_mc pwm_mc_right;
 
-	/* servos */
-	/* TODO add ax12 channel */
+	/* ax12 servos */
+	AX12 ax12;
 
 	/* i2c gpios */
 #ifdef notuse

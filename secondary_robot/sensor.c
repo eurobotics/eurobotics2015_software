@@ -41,6 +41,8 @@
 
 /************ ADC */
 
+#ifdef notuse
+
 /* config init */
 static void adc_init(void)
 {
@@ -272,6 +274,8 @@ int16_t sensor_get_laser_point_da(uint8_t i, int16_t *d, double *a_rad)
 	return 1;
 }
 
+#endif
+
 /************ boolean sensors */
 
 
@@ -285,15 +289,13 @@ struct sensor_filter {
 };
 
 static struct sensor_filter sensor_filter[SENSOR_MAX] = {
-	[S_START_SWITCH] = { 1, 0, 0, 1, 0, 1 }, /* 0 */
-	[S_RESERVED0] = { 0, 0, 0, 1, 0, 0 }, /* 1 */
-	[S_RESERVED1] = { 0, 0, 0, 1, 0, 0 }, /* 2 */
-	[S_RESERVED2] = { 0, 0, 0, 1, 0, 0 }, /* 3 */
-	[S_RESERVED3] = { 0, 0, 0, 1, 0, 0 }, /* 4 */
-	[S_RESERVED4] = { 0, 0, 0, 1, 0, 0 }, /* 5 */
-	[S_RESERVED5] = { 0, 0, 0, 1, 0, 0 }, /* 6 */
-	[S_RESERVED6] = { 0, 0, 0, 1, 0, 0 }, /* 7 */
-		
+	[S_START_SWITCH] 	= { 1, 0, 0, 1, 0, 1 }, /* 0 */
+	[S_COLOR_SWITCH] 	= { 1, 0, 0, 1, 0, 1 }, /* 1 */
+	[S_OPP_FRONT_R] 	= { 1, 0, 0, 1, 0, 1 }, /* 2 */
+	[S_OPP_FRONT_L] 	= { 1, 0, 0, 1, 0, 1 }, /* 3 */
+	[S_OPP_REAR] 		= { 1, 0, 0, 1, 0, 1 }, /* 4 */
+
+#ifdef notuse	
 	[S_GP0_0] = { 1, 0, 0, 1, 0, 1 }, /* 8 */
 	[S_GP0_1] = { 1, 0, 0, 1, 0, 1 }, /*  */
 	[S_GP0_2] = { 1, 0, 0, 1, 0, 1 }, /*  */
@@ -329,15 +331,19 @@ static struct sensor_filter sensor_filter[SENSOR_MAX] = {
 	[S_GP3_5] = { 1, 0, 0, 1, 0, 0 }, /*  */
 	[S_GP3_6] = { 1, 0, 0, 1, 0, 0 }, /*  */
 	[S_GP3_7] = { 1, 0, 0, 1, 0, 0 }, /* 39 */
-
+#endif
 };
 
 /* value of filtered sensors */
 static uint64_t sensor_filtered = 0;
 
 /* sensor mapping : 
- * 0:  	  PORTA 9 (START)
- * 1-7:   reserved
+ * 0:  	 PORTA 9 (START)
+ * 1:  	 PORTA 4 (COLOR)
+ * 2:  	 PORTC 8 (OPP_FRONT_R)
+ * 3:  	 PORTC 9 (OPP_FRONT_L)
+ * 4:  	 PORTB 3 (OPP_REAR)
+ * 5-7:   reserved
  * 8-15:  i2c GP0
  * 16-23: i2c GP1
  * 24-31: i2c GP2
@@ -366,7 +372,13 @@ static uint64_t sensor_read(void)
 	uint64_t tmp = 0;
 
 	tmp |= (uint64_t)((PORTA & (_BV(9))) >> 9) << 0;
-	/* 1 to 7 reserved */
+	tmp |= (uint64_t)((PORTA & (_BV(4))) >> 4) << 1;
+	tmp |= (uint64_t)((PORTC & (_BV(8))) >> 8) << 2;
+	tmp |= (uint64_t)((PORTC & (_BV(9))) >> 9) << 3;
+	tmp |= (uint64_t)((PORTB & (_BV(3))) >> 3) << 4;
+
+	/* 5 to 7 reserved */
+
 #if notuse
 	tmp |= ((uint64_t)((uint16_t)gen.i2c_gpio0))<< 8;
 	tmp |= ((uint64_t)((uint16_t)gen.i2c_gpio1))<< 16;
@@ -454,15 +466,20 @@ uint8_t sensor_obstacle_is_disabled(void)
 /* called every 10 ms, see init below */
 static void do_sensors(void *dummy)
 {
+#ifdef notuse
 	do_adc(NULL);
+#endif
+
 	do_boolean_sensors(NULL);
 	sensor_obstacle_update();
 }
 
 void sensor_init(void)
 {
+#ifdef notuse
 	adc_init();
-	
+#endif
+
 	/* CS EVENT */
 	scheduler_add_periodical_event_priority(do_sensors, NULL, 
 						EVENT_PERIOD_SENSORS / SCHEDULER_UNIT, EVENT_PRIORITY_SENSORS);
