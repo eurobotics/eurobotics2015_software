@@ -72,10 +72,10 @@ struct strat_infos strat_infos = {
 	},
 
    /*zones[W] =                          { x_up, y_up, x_down, y_down, init_x,init_y, prio,     flags };                            */
-   .zones[ZONE_TOTEM_1_SIDE_1]=          { 1400, 1000, 700,    500   , 1100,  500,   ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_TOTEM_1_SIDE_2]=          { 1400, 1500, 700,    1000  , 1100,  1500,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
+   .zones[ZONE_TOTEM_1_SIDE_1]=          { 1400, 1000, 700,    500   , 1100,  400,   ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_TOTEM_1_SIDE_2]=          { 1400, 1500, 700,    1000  , 1100,  1600,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
 	.zones[ZONE_TOTEM_2_SIDE_1]=          { 2300, 1000, 1600,   500   , 1900,  400,   ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_TOTEM_2_SIDE_2]=          { 2300, 1500, 1600,   1000  , 1900,  1500,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_TOTEM_2_SIDE_2]=          { 2300, 1500, 1600,   1000  , 1900,  1600,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
 	
 	.zones[ZONE_PURPLE_FLOOR_COIN_1]=     { 1400, 650,  700,    250   , 2000,  200,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
 	.zones[ZONE_PURPLE_FLOOR_COIN_2]=     { 2450, 1200, 2100,   800   , 2400,  1000, ZONE_PRIO_2, ZONE_WITH_TREASURE },
@@ -86,8 +86,8 @@ struct strat_infos strat_infos = {
 	.zones[ZONE_RED_FLOOR_COIN_3]=        { 350,  1850, 750,   1550   , 750,   1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
 	.zones[ZONE_RED_FLOOR_GOLDBAR]=       { 300,  1000, 700,    600   , 700,   785,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
 
-	.zones[ZONE_PURPLE_BOTTLE_1]=         { 2550, 2000, 2170,   1600  , 1900,  1600, ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_PURPLE_BOTTLE_2]=         { 1307, 2000, 927,    1600  , 600,   1600, ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_PURPLE_BOTTLE_1]=         { 2550, 2000, 2170,   1600  , 2000,  1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_PURPLE_BOTTLE_2]=         { 1307, 2000, 927,    1600  , 1477,  1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
 	.zones[ZONE_RED_BOTTLE_1]=            { 830,  2000, 450,    1600  , 640,   1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
 	.zones[ZONE_RED_BOTTLE_2]=            { 2073, 2000, 1693,   1600  , 1883,  1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
 	.zones[ZONE_PURPLE_MAP]=              { 2000, 500,  1500,      0  , 1600,  400,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
@@ -95,7 +95,7 @@ struct strat_infos strat_infos = {
 
    /*XXX To pickup floor coins group the init position should depend on which color we are playing*/
 	.zones[ZONE_FLOOR_COINS_GROUP]=                 { 1780, 1950, 1220,   1450  , 1782,  1470, ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_MIDDLE_FLOOR_GOLDBAR]=              { 1780, 1156, 1220,   1550  , 1500,  1500, ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_MIDDLE_FLOOR_GOLDBAR]=              { 1780, 1156, 1220,   1550  , 1500,  1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
 	
    /* ship zones */
    .zones[ZONE_SHIP_PURPLE_CAPTAINS_BEDRROM]=      { 3000,     500,    2500,       0     , 2100 ,  250,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
@@ -114,10 +114,18 @@ struct strat_infos strat_infos = {
 /*************************************************************/
 void strat_set_bounding_box(uint8_t type)
 {
-	strat_infos.area_bbox.x1 = 400 + OBS_CLERANCE;
+#if 1
+	strat_infos.area_bbox.x1 = 400 + OBS_CLERANCE -10;
 	strat_infos.area_bbox.y1 = OBS_CLERANCE;
-	strat_infos.area_bbox.x2 = 3000 - 400 - OBS_CLERANCE;
+	strat_infos.area_bbox.x2 = 3000 - 400 - OBS_CLERANCE + 10;
 	strat_infos.area_bbox.y2 = 2000 - 44 - OBS_CLERANCE;
+#else
+	strat_infos.area_bbox.x1 = OBS_CLERANCE;
+	strat_infos.area_bbox.y1 = OBS_CLERANCE;
+	strat_infos.area_bbox.x2 = 3000 - OBS_CLERANCE;
+	strat_infos.area_bbox.y2 = 2000 - 44 - OBS_CLERANCE;
+#endif
+
 
 	polygon_set_boundingbox(strat_infos.area_bbox.x1,
 				strat_infos.area_bbox.y1,
@@ -256,7 +264,7 @@ void strat_event(void *dummy)
 /* strat main loop */
 uint8_t strat_main(void)
 {
-	return END_TRAJ;
+   return strat_game();
 }
 
 #endif /* HOST_VERSION */

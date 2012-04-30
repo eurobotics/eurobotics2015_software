@@ -812,6 +812,7 @@ uint8_t store_goldbar_in_boot(void)
 	if(err & END_BLOCKING)
 		goto end;
 
+/*
 	err = fingers_wait_end(&slavedspic.fingers_totem);
 	if(err & END_BLOCKING)
 		goto end;
@@ -819,9 +820,7 @@ uint8_t store_goldbar_in_boot(void)
 	err = fingers_wait_end(&slavedspic.fingers_floor);
 	if(err & END_BLOCKING)
 		goto end;
-
-	/* store tray down */
-	tray_set_mode(&slavedspic.tray_store, TRAY_MODE_DOWN);
+*/
 
 end:
 
@@ -950,8 +949,6 @@ uint8_t store_coins_in_boot(void)
 	if(err & END_BLOCKING)
 		goto end;
 
-	/* store tray down */
-	tray_set_mode(&slavedspic.tray_store, TRAY_MODE_DOWN);
 end:
 	return err;
 }
@@ -989,7 +986,7 @@ void state_do_store_mode(void)
 			   do{
 			   	err = store_goldbar_in_boot();
                nb_tries++;
-            } while((err & END_BLOCKING) && (nb_tries<8));  
+            } while((err & END_BLOCKING) && (nb_tries<2));  
          }                
 			break;
 
@@ -1136,7 +1133,7 @@ void state_do_dump_mode(void)
          tray_set_mode(&slavedspic.tray_boot,TRAY_MODE_VIBRATE);
 			time_wait_ms(1000);
 
-         tray_set_mode(&slavedspic.tray_store,TRAY_MODE_UP);
+         tray_set_mode(&slavedspic.tray_store,TRAY_MODE_VIBRATE);
 			time_wait_ms(2000);
 
          tray_set_mode(&slavedspic.tray_boot,TRAY_MODE_DOWN);

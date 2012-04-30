@@ -30,6 +30,6 @@
 #define MAX_POLY 			5					// 2 opp + 2nd robot + totem area + boundingbox
 #define MAX_PTS 			MAX_POLY*4 + 4	// MAX_POLY * 4 (all polys are squares) + 4 points more of totems poly
 #define MAX_RAYS 			150				
-#define MAX_CHKPOINTS 	10
+#define MAX_CHKPOINTS 	20
 
 

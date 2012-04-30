@@ -28,7 +28,7 @@
 #define AREA_Y 2000
 
 /* XXX obstacle clerance */
-#define OBS_CLERANCE   240.0
+#define OBS_CLERANCE   230.0
 
 /* position of the tokens */
 #define TOTEM_1_X               1100
@@ -55,8 +55,8 @@
 #define RED_BOTTLE_2_X       1883  
 #define FLOOR_COINS_GROUP_X     1500
 #define FLOOR_COINS_GROUP_Y     1700
-#define MIDDLE_FLOOR_GOLDBAR_X  1353
-#define MIDDLE_FLOOR_GOLDBAR_Y  1500
+#define MIDDLE_FLOOR_GOLDBAR_X  1500
+#define MIDDLE_FLOOR_GOLDBAR_Y  1353
 #define RED_FLOOR_GOLDBAR_X  420
 #define RED_FLOOR_GOLDBAR_Y  785
 #define PURPLE_FLOOR_GOLDBAR_X     2580
@@ -116,8 +116,9 @@
 #define SPEED_DIST_FAST 		2000
 #define SPEED_ANGLE_FAST 		2000
 #else
-#define SPEED_DIST_FAST 		1000
-#define SPEED_ANGLE_FAST 		1000
+
+#define SPEED_DIST_FAST 		2000
+#define SPEED_ANGLE_FAST 		2000
 #endif
 
 //Do not change
@@ -128,6 +129,11 @@
 
 
 #define PLACE_D_SAFE				  140
+
+/*for coins */
+#define ONE                      0
+#define GROUP                    1
+
 
 /* zones */
 #define ZONE_TOTEM_1_SIDE_1			      0
@@ -160,8 +166,8 @@
 #define ZONE_SHIP_PURPLE_DECK             25
 
 /* Store goldbars and coins or not and where */
-#define STORE_FRONT                       1
-#define STORE_BACK                        2
+#define STORE_MOUTH                       1
+#define STORE_BOOT                        2
 #define DONT_STORE                        0
 
 /************************************************************* 
@@ -288,7 +294,6 @@ uint8_t strat_save_treasure_in_hold_back(int16_t x, int16_t y);
 uint8_t strat_raise_window(uint8_t window);
 uint8_t strat_steal_treasure_hold(void);
 uint8_t strat_game(void);
-void celebrate(void);
 
 
 /* add here more strat functions in files */
