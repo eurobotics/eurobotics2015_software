@@ -183,8 +183,6 @@ void dump_pid(const char *name, struct pid_filter *pid)
 		 pid_get_value_out(pid));
 }
 
-//void dac_set_and_save(void *dac, int32_t val);
-
 /* cs init */
 void maindspic_cs_init(void)
 {
@@ -193,7 +191,7 @@ void maindspic_cs_init(void)
 	rs_set_left_pwm(&mainboard.rs, dac_set_and_save, LEFT_MOTOR);
 	rs_set_right_pwm(&mainboard.rs,  dac_set_and_save, RIGHT_MOTOR);
 
-#define Ed	1.00000
+#define Ed	1.020625
 #define Cl	(2.0/(Ed + 1.0))
 #define Cr  (2.0 /((1.0 / Ed) + 1.0))
 
@@ -205,11 +203,10 @@ void maindspic_cs_init(void)
 
 	/* rs will use external encoders */
 	rs_set_flags(&mainboard.rs, RS_USE_EXT);
-	//rs_set_ratio(&mainboard.rs, MOTOR_GEAR_RATIO);
 
 	/* POSITION MANAGER */
 	position_init(&mainboard.pos);
-	position_set_physical_params(&mainboard.pos, VIRTUAL_TRACK_MM, DIST_IMP_MM * 1.0000);
+	position_set_physical_params(&mainboard.pos, VIRTUAL_TRACK_MM, DIST_IMP_MM * 0.9718172983479);
 	position_set_related_robot_system(&mainboard.pos, &mainboard.rs);
 	position_set_centrifugal_coef(&mainboard.pos, 0.0); // 0.000016
 	position_use_ext(&mainboard.pos);
@@ -228,7 +225,7 @@ void maindspic_cs_init(void)
 	/* ---- CS angle */
 	/* PID */
 	pid_init(&mainboard.angle.pid);
-	pid_set_gains(&mainboard.angle.pid, 200, 10, 500);
+	pid_set_gains(&mainboard.angle.pid, 2000, 100, 5000);
 	pid_set_maximums(&mainboard.angle.pid, 0, 2650, 5332);
 	pid_set_out_shift(&mainboard.angle.pid, 10);	
 	pid_set_derivate_filter(&mainboard.angle.pid, 4);
@@ -249,13 +246,13 @@ void maindspic_cs_init(void)
 
 	/* Blocking detection */
 	bd_init(&mainboard.angle.bd);
-	bd_set_speed_threshold(&mainboard.angle.bd, 100);
-	bd_set_current_thresholds(&mainboard.angle.bd, 20, 8000, 1000000, 50);
+	bd_set_speed_threshold(&mainboard.angle.bd, 80);
+	bd_set_current_thresholds(&mainboard.angle.bd, 400, 8000, 1000000, 50);
 
 	/* ---- CS distance */
 	/* PID */
 	pid_init(&mainboard.distance.pid);
-	pid_set_gains(&mainboard.distance.pid, 200, 10, 500);
+	pid_set_gains(&mainboard.distance.pid, 2000, 100, 5000);
 	pid_set_maximums(&mainboard.distance.pid, 0, 2650, 5332);
 	pid_set_out_shift(&mainboard.distance.pid, 10);
 	pid_set_derivate_filter(&mainboard.distance.pid, 6);
@@ -275,8 +272,10 @@ void maindspic_cs_init(void)
 
 	/* Blocking detection */
 	bd_init(&mainboard.distance.bd);
-	bd_set_speed_threshold(&mainboard.distance.bd, 100);
-	bd_set_current_thresholds(&mainboard.distance.bd, 20, 8000, 1000000, 50);
+	bd_set_speed_threshold(&mainboard.distance.bd, 60);
+	bd_set_current_thresholds(&mainboard.distance.bd, 200, 8000, 1000000, 50); /* k1, k2, i, cpt_threshold */
+
+	/* i = k1.V - k2.w */
 
 	/* set them on !! */
 	mainboard.angle.on = 1;
