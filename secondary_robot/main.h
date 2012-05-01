@@ -78,25 +78,26 @@
 
 /* distance between encoders weels,
  * decrease track to decrease angle */
-#define EXT_TRACK_MM 		292.74161502079
+#define EXT_TRACK_MM 	   211.0
 #define VIRTUAL_TRACK_MM 	EXT_TRACK_MM
 
 /* robot dimensions */
-#define ROBOT_LENGTH    281.5
-#define ROBOT_WIDTH 	   330.0
+#define ROBOT_LENGTH    150.0
+#define ROBOT_WIDTH 	   250.0
 
 /* Some calculus:
- * it is a 3600 imps -> 14400 because we see 1/4 period
- * and diameter: 55mm -> perimeter 173mm 
- * 14400/173 -> 832 imps/10 mm */
+ * it is a 500 imps -> 109200 because we see 1/4 period and encoder is before motor 54,6:1 gears.
+ * and diameter: 48mm -> perimeter 150,796 mm 
+ * 109200/150,8 -> 7240 imps / 10 mm */
 
 /* increase it to go further */
-#define IMP_ENCODERS 		3600.0
-#define WHEEL_DIAMETER_MM 	(55.0)
+#define MOTOR_GEAR_RATIO	54.6		
+#define IMP_ENCODERS 		(500.0 * MOTOR_GEAR_RATIO)
+#define WHEEL_DIAMETER_MM 	48.0
 
 
 #define WHEEL_PERIM_MM 	(WHEEL_DIAMETER_MM * M_PI)
-#define IMP_COEF 			10.0
+#define IMP_COEF 			1.0
 #define DIST_IMP_MM 		(((IMP_ENCODERS*4) / WHEEL_PERIM_MM) * IMP_COEF)
 
 /* ax12 */
