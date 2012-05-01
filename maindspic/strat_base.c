@@ -320,43 +320,48 @@ void strat_limit_speed(void)
 	ret1 = get_opponent_da(&opp_d, &opp_a);
 	ret2 = get_opponent2_da(&opp2_d, &opp2_a);
 
-   if(ret1 == -1 && ret2 == -1)
+   if(ret1 == -1 && ret2 == -1){	
+      //DEBUG(E_USER_STRAT, "NO OPPONENTS");
       goto update;
-
-	if(opp_d > opp2_d) {
+   } 
+   else if(ret1 == -1) {
 		opp_d = opp2_d;
 		opp_a = opp2_a;
-	}
+   }
+   else if(ret2 == -1) {
+		opp_d = opp_d;
+		opp_a = opp_a;   
+   }
+	else
+      if(opp_d > opp2_d ) {
+		   opp_d = opp2_d;
+		   opp_a = opp2_a;
+	   }
 
 #else
 	if (get_opponent_da(&opp_d, &opp_a) == -1)
 		goto update;
 #endif
 		
-//ifdef HOMOLOGATION
-#if 1
+#ifdef HOMOLOGATION
 	if (opp_d < 600) {
 		lim_d = SPEED_ANGLE_VERY_SLOW;
 		lim_a = SPEED_ANGLE_VERY_SLOW;
 	}
 #else
 	if (opp_d < 500) {
-		if (mainboard.speed_d > 0 && (opp_a > 310 || opp_a < 40)) { // XXX tested with +/-70
-			lim_d = SPEED_DIST_VERY_SLOW;
+		if (mainboard.speed_d > 0 && (opp_a > 320 || opp_a < 40)) {
+			lim_d = SPEED_DIST_SLOW;
 			lim_a = SPEED_ANGLE_SLOW;
 		}
 		else if (mainboard.speed_d < 0 && (opp_a < 220 && opp_a > 140)) {
-			lim_d = SPEED_DIST_VERY_SLOW;
-			lim_a = SPEED_ANGLE_SLOW;
-		}
-		else {
 			lim_d = SPEED_DIST_SLOW;
 			lim_a = SPEED_ANGLE_SLOW;
 		}
 	}
 #endif		
 	else if (opp_d < 600) {
-		if (mainboard.speed_d > 0 && (opp_a > 310 || opp_a < 40)) {
+		if (mainboard.speed_d > 0 && (opp_a > 320 || opp_a < 40)) {
 			lim_d = SPEED_DIST_SLOW;
 			lim_a = SPEED_ANGLE_FAST;
 		}

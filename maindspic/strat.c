@@ -94,15 +94,15 @@ struct strat_infos strat_infos = {
 	.zones[ZONE_RED_MAP]=                 { 1500, 500,  1000,      0  , 1400,  400,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
 
    /*XXX To pickup floor coins group the init position should depend on which color we are playing*/
-	.zones[ZONE_FLOOR_COINS_GROUP]=                 { 1780, 1950, 1220,   1450  , 1782,  1470, ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_FLOOR_COINS_GROUP]=                 { 1780, 1950, 1220,   1450  , 1218,  1470, ZONE_PRIO_2, ZONE_WITH_TREASURE },
 	.zones[ZONE_MIDDLE_FLOOR_GOLDBAR]=              { 1780, 1156, 1220,   1550  , 1500,  1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
 	
    /* ship zones */
-   .zones[ZONE_SHIP_PURPLE_CAPTAINS_BEDRROM]=      { 3000,     500,    2500,       0     , 2100 ,  250,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
-   .zones[ZONE_SHIP_PURPLE_DECK]=                  { 3000,     1400,   2600,     500     , 2250,   950,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
+   .zones[ZONE_SHIP_PURPLE_CAPTAINS_BEDRROM]=      { 3000,     500,    2500,       0     , 2200 ,  250,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
+   .zones[ZONE_SHIP_PURPLE_DECK]=                  { 3000,     1400,   2600,     500     , 2360,   750,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
 	.zones[ZONE_SHIP_PURPLE_HOLD]=                  { 3000,     2000,   2600,     1400    , 2250,   1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
-   .zones[ZONE_SHIP_RED_CAPTAINS_BEDRROM]=         { 500,      500,    0,          0     , 900,    250,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_SHIP_RED_DECK]=                     { 400,      1400,   0,         500    , 750,    950,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
+   .zones[ZONE_SHIP_RED_CAPTAINS_BEDRROM]=         { 500,      500,    0,          0     , 800,    250,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_SHIP_RED_DECK]=                     { 400,      1400,   0,         500    , 640,    750,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
 	.zones[ZONE_SHIP_RED_HOLD]=                     { 400,      2000,   0,        1400    , 750,    1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
 };
 
@@ -264,7 +264,10 @@ void strat_event(void *dummy)
 /* strat main loop */
 uint8_t strat_main(void)
 {
-   return strat_game();
+   //strat_game();
+   //strat_exit();
+
+   return 0;
 }
 
 #endif /* HOST_VERSION */

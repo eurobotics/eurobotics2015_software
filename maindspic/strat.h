@@ -62,6 +62,11 @@
 #define PURPLE_FLOOR_GOLDBAR_X     2580
 #define PURPLE_FLOOR_GOLDBAR_Y     785
 
+#define OUR_SHIP_DECK_1_X        250
+#define OUR_SHIP_DECK_1_Y        750
+#define OUR_SHIP_DECK_2_X        250
+#define OUR_SHIP_DECK_2_Y        1050
+
 /* infos about strat */
 #define NB_SLOT_X				8
 #define NB_SLOT_Y				6
@@ -117,13 +122,13 @@
 #define SPEED_ANGLE_FAST 		2000
 #else
 
-#define SPEED_DIST_FAST 		2000
-#define SPEED_ANGLE_FAST 		2000
+#define SPEED_DIST_FAST 		4000
+#define SPEED_ANGLE_FAST 		4000
 #endif
 
 //Do not change
-#define SPEED_DIST_SLOW 		1000
-#define SPEED_ANGLE_SLOW 		1000
+#define SPEED_DIST_SLOW 		2000
+#define SPEED_ANGLE_SLOW 		2000
 #define SPEED_DIST_VERY_SLOW 	500
 #define SPEED_ANGLE_VERY_SLOW 500
 
@@ -284,7 +289,7 @@ void strat_event(void *dummy);
 /********************************************
  * in strat_treasure.c 
  *******************************************/
-uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar);
+uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar, uint8_t step);
 uint8_t strat_pickup_coins_floor(int16_t x, int16_t y, uint8_t group);
 uint8_t strat_pickup_goldbar_floor(int16_t x, int16_t y, uint8_t store);
 uint8_t strat_send_message_bottle(int16_t x, int16_t y);

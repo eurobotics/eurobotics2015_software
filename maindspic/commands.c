@@ -95,6 +95,7 @@ extern parse_pgm_inst_t cmd_slavedspic_harvest;
 extern parse_pgm_inst_t cmd_slavedspic_store;
 extern parse_pgm_inst_t cmd_slavedspic_dump;
 extern parse_pgm_inst_t cmd_treasure;
+extern parse_pgm_inst_t cmd_game;
 
 extern parse_pgm_inst_t cmd_beacon;
 
@@ -209,6 +210,7 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_treasure,
 
 	(parse_pgm_inst_t *)&cmd_beacon,
+	(parse_pgm_inst_t *)&cmd_game,
 
 #ifdef notyet
 	(parse_pgm_inst_t *)&cmd_slavedspic_ts,

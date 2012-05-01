@@ -260,35 +260,34 @@ parse_pgm_inst_t cmd_opponent_set = {
 
 
 /**********************************************************/
-/* Start */
+/* Test game */
 
-#if 0
 /* this structure is filled when cmd_start is parsed successfully */
-struct cmd_start_result {
+struct cmd_game_result {
 	fixed_string_t arg0;
 };
 
 /* function called when cmd_start is parsed successfully */
-static void cmd_start_parsed(void *parsed_result, void *data)
+static void cmd_game_parsed(void *parsed_result, void *data)
 {	
-	strat_game();
+	//strat_game();
 }
 
-prog_char str_start_arg0[] = "start";
-parse_pgm_token_string_t cmd_start_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_start_result, arg0, str_start_arg0);
+prog_char str_game_arg0[] = "game";
+parse_pgm_token_string_t cmd_game_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_game_result, arg0, str_game_arg0);
 
-prog_char help_start[] = "Start the robot";
-parse_pgm_inst_t cmd_start = {
-	.f = cmd_start_parsed,  /* function to call */
+prog_char help_game[] = "Test game";
+parse_pgm_inst_t cmd_game = {
+	.f = cmd_game_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_start,
+	.help_str = help_game,
 	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_start_arg0, 
+		(prog_void *)&cmd_game_arg0, 
 		NULL,
 	},
 };
 
-#endif
+
 
 /**********************************************************/
 /* Start */
@@ -698,16 +697,26 @@ struct cmd_treasure_result {
 	fixed_string_t arg1;
 	int16_t arg2;
 	int16_t arg3;
+	int16_t arg4;
 };
 
 /* function called when cmd_dump is parsed successfully */
 static void cmd_treasure_parsed(void *parsed_result,
 			      __attribute__((unused)) void *data)
 {
+   #include "../common/i2c_commands.h"
+
 	struct cmd_treasure_result *res = parsed_result;
 
-	if (!strcmp(res->arg1, "empty_totem"))
-		strat_empty_totem_side(res->arg2,res->arg3,0);
+	if (!strcmp(res->arg1, "empty_totem")){
+		strat_empty_totem_side(res->arg2,res->arg3,0,res->arg4);
+      i2c_slavedspic_mode_lift_height(30);
+      i2c_slavedspic_mode_turbine_angle(0,200);
+      i2c_slavedspic_wait_ready();
+      i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR,I2C_FINGERS_MODE_CLOSE,0);
+      i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_TOTEM,I2C_FINGERS_MODE_HOLD,0);
+      i2c_slavedspic_wait_ready();
+   }  
 	else if (!strcmp(res->arg1, "coin_floor"))
 		strat_pickup_coins_floor(res->arg2,res->arg3,0);
 	else if (!strcmp(res->arg1, "coin_floor_group"))
@@ -730,6 +739,7 @@ prog_char str_treasure_arg1[] = "empty_totem#coin_floor#coin_floor_group#goldbar
 parse_pgm_token_string_t cmd_treasure_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_treasure_result, arg1, str_treasure_arg1);
 parse_pgm_token_num_t cmd_treasure_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_treasure_result, arg2, INT32);
 parse_pgm_token_num_t cmd_treasure_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_treasure_result, arg3, INT32);
+parse_pgm_token_num_t cmd_treasure_arg4 = TOKEN_NUM_INITIALIZER(struct cmd_treasure_result, arg4, INT32);
 
 
 prog_char help_treasure[] = "treasure functions";
@@ -742,6 +752,7 @@ parse_pgm_inst_t cmd_treasure = {
 		(prog_void *)&cmd_treasure_arg1, 
 		(prog_void *)&cmd_treasure_arg2, 
 		(prog_void *)&cmd_treasure_arg3, 
+		(prog_void *)&cmd_treasure_arg4, 
 		NULL,
 	},
 };
