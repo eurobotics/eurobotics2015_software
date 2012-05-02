@@ -842,6 +842,7 @@ parse_pgm_inst_t cmd_strat_conf = {
 	},
 };
 
+#endif
 /**********************************************************/
 /* strat configuration */
 
@@ -863,17 +864,8 @@ static void cmd_strat_conf2_parsed(void *parsed_result, void *data)
 	else
 		on = 0;
 	
-	if (!strcmp_P(res->arg1, PSTR("bonus_old")))
-		bit = LINE1_TOKENS_ON_BONUS_OLD;
-	else if (!strcmp_P(res->arg1, PSTR("near_wall")))
-		bit = LINE1_TOKENS_NEAR_WALL;
-	else if (!strcmp_P(res->arg1, PSTR("before")))
-		bit = LINE1_OPP_TOKEN_BEFORE_PLACE;
-	else if (!strcmp_P(res->arg1, PSTR("after")))
-		bit = LINE1_OPP_TOKEN_AFTER_PLACE;
-	else if (!strcmp_P(res->arg1, PSTR("green_opp")))
-		bit = GREEN_OPP_ZONE_FIRST;
-
+	if (!strcmp_P(res->arg1, PSTR("coins_group")))
+		bit = PICKUP_COINS_GROUP;
 
 
 	if (on)
@@ -887,7 +879,7 @@ static void cmd_strat_conf2_parsed(void *parsed_result, void *data)
 
 prog_char str_strat_conf2_arg0[] = "strat_conf";
 parse_pgm_token_string_t cmd_strat_conf2_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_strat_conf2_result, arg0, str_strat_conf2_arg0);
-prog_char str_strat_conf2_arg1[] = "bonus_old#near_wall#before#after#green_opp";
+prog_char str_strat_conf2_arg1[] = "coins_group";
 parse_pgm_token_string_t cmd_strat_conf2_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_strat_conf2_result, arg1, str_strat_conf2_arg1);
 prog_char str_strat_conf2_arg2[] = "on#off";
 parse_pgm_token_string_t cmd_strat_conf2_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_strat_conf2_result, arg2, str_strat_conf2_arg2);
@@ -906,6 +898,7 @@ parse_pgm_inst_t cmd_strat_conf2 = {
 	},
 };
 
+#ifdef notyet
 #ifdef COMPILE_CODE /*---------------------------------------------------------------------------------------------*/
 //#endif /* COMPILE_CODE ---------------------------------------------------------------------------------------------*/
 
@@ -953,6 +946,8 @@ parse_pgm_inst_t cmd_strat_conf3 = {
 
 #endif /* COMPILE_CODE ---------------------------------------------------------------------------------------------*/
 
+#endif /* notyet */
+
 /**********************************************************/
 /* Subtraj 1 */
 
@@ -960,10 +955,6 @@ parse_pgm_inst_t cmd_strat_conf3 = {
 struct cmd_subtraj1_result {
 	fixed_string_t arg0;
 	fixed_string_t arg1;
-	int32_t arg2;
-	int32_t arg3;
-//	int32_t arg4;
-//	int32_t arg5;
 };
 
 /* function called when cmd_subtraj1 is parsed successfully */
@@ -973,53 +964,10 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 	uint8_t err = 0;
 
 
-	if (strcmp_P(res->arg1, PSTR("pickup_f")) == 0) {
-		err = strat_pickup_token(res->arg2, res->arg3, SIDE_FRONT);
+	if (strcmp_P(res->arg1, PSTR("begin")) == 0) {
+		err = strat_begin();
 	}
-	else if (strcmp_P(res->arg1, PSTR("pickup_r")) == 0) {
-		err = strat_pickup_token(res->arg2, res->arg3, SIDE_REAR);
-	}
-	else if (strcmp_P(res->arg1, PSTR("place_ff")) == 0) {
-		err = strat_place_token(res->arg2, res->arg3, SIDE_FRONT, GO_FORWARD);
-	}
-	else if (strcmp_P(res->arg1, PSTR("place_fb")) == 0) {
-		err = strat_place_token(res->arg2, res->arg3, SIDE_FRONT, GO_BACKWARD);
-	}
-	else if (strcmp_P(res->arg1, PSTR("place_rf")) == 0) {
-		err = strat_place_token(res->arg2, res->arg3, SIDE_REAR, GO_FORWARD);
-	}
-	else if (strcmp_P(res->arg1, PSTR("place_rb")) == 0) {
-		err = strat_place_token(res->arg2, res->arg3, SIDE_REAR, GO_BACKWARD);
-	}
-	else if (strcmp_P(res->arg1, PSTR("green")) == 0) {
-		
-		/* set figures flags */
-		if(res->arg2 != 0 && res->arg3 != 0) {
-			strat_infos.slot[0][res->arg2].flags = SLOT_FIGURE;
-			strat_infos.slot[0][res->arg3].flags = SLOT_FIGURE;
-			strat_infos.slot[7][res->arg2].flags = SLOT_FIGURE;
-			strat_infos.slot[7][res->arg3].flags = SLOT_FIGURE;
-		}
-		err = strat_harvest_green_area_smart(get_color());
-	}
-	else if (strcmp_P(res->arg1, PSTR("green_opp")) == 0) {
-		
-		/* set figures flags */
-		if(res->arg2 != 0 && res->arg3 != 0) {
-			strat_infos.slot[0][res->arg2].flags = SLOT_FIGURE;
-			strat_infos.slot[0][res->arg3].flags = SLOT_FIGURE;
-			strat_infos.slot[7][res->arg2].flags = SLOT_FIGURE;
-			strat_infos.slot[7][res->arg3].flags = SLOT_FIGURE;
-		}
-		err = strat_harvest_green_area_smart(get_opponent_color());
-	}
-	else if (strcmp_P(res->arg1, PSTR("place_near")) == 0) {
-		err = strat_place_near_slots(res->arg2,res->arg3);
-	}
-	else if (strcmp_P(res->arg1, PSTR("prior_score")) == 0) {
-		strat_infos.conf.th_place_prio = res->arg2;
-		strat_infos.conf.th_token_score = res->arg3;
-	}
+
 	
 
 	printf_P(PSTR("substrat returned %s\r\n"), get_err(err));
@@ -1028,12 +976,8 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 
 prog_char str_subtraj1_arg0[] = "subtraj";
 parse_pgm_token_string_t cmd_subtraj1_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg0, str_subtraj1_arg0);
-prog_char str_subtraj1_arg1[] = "pickup_f#pickup_r#place_ff#place_fb#place_rf#place_rb#green#green_opp#place_near#prior_score";
+prog_char str_subtraj1_arg1[] = "begin";
 parse_pgm_token_string_t cmd_subtraj1_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg1, str_subtraj1_arg1);
-parse_pgm_token_num_t cmd_subtraj1_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg2, INT32);
-parse_pgm_token_num_t cmd_subtraj1_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg3, INT32);
-//parse_pgm_token_num_t cmd_subtraj1_arg4 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg4, INT32);
-//parse_pgm_token_num_t cmd_subtraj1_arg5 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg5, INT32);
 //
 prog_char help_subtraj1[] = "Test sub-trajectories (a,b,c,d: specific params)";
 parse_pgm_inst_t cmd_subtraj1 = {
@@ -1043,15 +987,12 @@ parse_pgm_inst_t cmd_subtraj1 = {
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_subtraj1_arg0, 
 		(prog_void *)&cmd_subtraj1_arg1, 
-		(prog_void *)&cmd_subtraj1_arg2, 
-		(prog_void *)&cmd_subtraj1_arg3, 
-//		(prog_void *)&cmd_subtraj1_arg4, 
-//		(prog_void *)&cmd_subtraj1_arg5, 
 		NULL,
 	},
 };
 
 
+#ifdef notyet
 /**********************************************************/
 /* Subtraj 2 */
 

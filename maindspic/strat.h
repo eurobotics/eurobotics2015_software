@@ -193,12 +193,7 @@ struct conf {
 /* depends on flags the robot
  * do one things or anothers */
 	uint8_t flags;
-   #define ZONE_IS_CLOSE		         1
-   #define ZONE_IS_CLOSE_TO_OPP			2
-
-	/* thresholds */
-	uint8_t th_place_prio;
-	uint8_t th_token_score;
+   #define PICKUP_COINS_GROUP 1
 };
 
 /* scores */
@@ -299,6 +294,13 @@ uint8_t strat_save_treasure_in_hold_back(int16_t x, int16_t y);
 uint8_t strat_raise_window(uint8_t window);
 uint8_t strat_steal_treasure_hold(void);
 uint8_t strat_game(void);
+
+
+
+/********************************************
+ * in strat_begin.c 
+ *******************************************/
+uint8_t strat_begin(void);
 
 
 /* add here more strat functions in files */
