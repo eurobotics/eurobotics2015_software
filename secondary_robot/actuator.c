@@ -23,9 +23,11 @@
 #include <aversive.h>
 #include <encoders_dspic.h>
 #include <pwm_mc.h>
+#include <ax12.h>
 
 #include "i2c_protocol.h"
 #include "actuator.h"
+#include "ax12_user.h"
 #include "main.h"
 
 void dac_set_and_save(void *dac, int32_t val)
@@ -71,5 +73,127 @@ void dac_set_and_save(void *dac, int32_t val)
 
 	/* set value */
 	pwm_mc_set(dac, val);
+}
+
+
+void actuators_init(void)
+{
+	ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_ALARM_SHUTDOWN, 0x24);	ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_ALARM_LED, 0x24);
+	/* specific config for mirror ax12, angle is limited */ 
+	ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_TORQUE_ENABLE, 0x1);	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_CW_ANGLE_LIMIT_L, 0x00);	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_CCW_ANGLE_LIMIT_L, 0x3FF);
+	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_MOVING_SPEED_L, 0x3FF);
+}
+
+
+/* AX12 stuff */
+#define AX12_PULLING_TIME_us		5000L
+#define AX12_WINDOW_POSITION		15
+#define AX12_BLOCKING_TIMEOUT_us	1300000L
+
+typedef struct {
+	uint8_t id;
+	uint16_t pos;
+} ax12_actuator_t;
+
+ax12_actuator_t arm = {
+	.id = AX12_ID_ARM,
+};
+
+ax12_actuator_t teeth = {
+	.id = AX12_ID_TEETH,
+};
+
+/* set finger position depends on mode */
+static uint8_t ax12_set_pos(ax12_actuator_t *ax12, uint16_t pos)
+{
+	uint8_t err;
+		
+	ax12->pos = pos;
+	
+	/* apply to ax12 */
+	err = ax12_user_write_int(&gen.ax12, ax12->id, AA_GOAL_POSITION_L, ax12->pos);
+	if(err) 	
+		return err;
+
+	return 0;
+}
+
+/* return 1 if mode is done */
+static uint8_t ax12_check_mode_done(ax12_actuator_t *ax12)
+{
+	static microseconds us = 0;
+	uint16_t ax12_pos;
+
+	/* ax12 position pulling */
+	if(time_get_us2() - us < AX12_PULLING_TIME_us)
+		return 0;
+
+	/* update time */
+	us = time_get_us2();
+
+	/* read positions */
+	if(ax12_user_read_int(&gen.ax12, ax12->id, AA_PRESENT_POSITION_L, &ax12_pos))
+		return 0;
+
+	/* check if position is inside window */
+	if(ABS(ax12->pos - ax12_pos) < AX12_WINDOW_POSITION)	
+		return END_TRAJ;
+	
+	return 0;
+}
+
+/* return END_TRAJ or END_BLOCKING */
+static uint8_t ax12_wait_end(ax12_actuator_t *ax12)
+{
+	uint8_t ret = 0;
+
+	/* wait end */
+	while(!ret)
+		ret = ax12_check_mode_done(ax12);
+
+	return ret;
+}
+
+static uint8_t ax12_disable_torque(ax12_actuator_t *ax12) 
+{
+	uint8_t err;
+	err =ax12_user_write_byte(&gen.ax12, ax12->id, AA_TORQUE_ENABLE, 0);
+
+	if(err) 	
+		return err;
+
+	return 0;
+}
+
+static uint8_t ax12_enable_torque(ax12_actuator_t *ax12) {
+	uint8_t err;
+	err =ax12_user_write_byte(&gen.ax12, ax12->id, AA_TORQUE_ENABLE, 0xFF);
+
+	if(err) 	
+		return err;
+
+	return 0;
+}
+
+
+inline uint8_t arm_set_pos(uint16_t pos){	return ax12_set_pos(&arm, pos);
+}
+
+inline uint8_t arm_wait_end(void) {
+	return ax12_wait_end(&arm);
+}
+
+inline uint8_t arm_disable_torque(void){	return ax12_disable_torque(&arm);
+}
+
+inline uint8_t arm_enable_torque(void){	return ax12_enable_torque(&arm);
+}
+
+
+inline uint8_t teeth_set_pos(uint16_t pos){	return ax12_set_pos(&teeth, pos);
+}
+
+inline uint8_t teeth_wait_end(void) {
+	return ax12_wait_end(&teeth);
 }
 

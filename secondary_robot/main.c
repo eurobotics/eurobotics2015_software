@@ -202,6 +202,7 @@ int main(void)
 							| DO_POS | DO_POWER;
 	
 	beaconboard.opponent_x = I2C_OPPONENT_NOT_THERE;
+	beaconboard.opponent2_x = I2C_OPPONENT_NOT_THERE;
 
 	/* UART */
 	uart_init();

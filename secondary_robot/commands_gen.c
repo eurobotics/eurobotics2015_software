@@ -360,7 +360,7 @@ prog_char str_pwm_arg1[] = "left#right";
 parse_pgm_token_string_t cmd_pwm_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_pwm_result, arg1, str_pwm_arg1);
 parse_pgm_token_num_t cmd_pwm_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_pwm_result, arg2, INT16);
 
-prog_char help_pwm[] = "Set pwm values";
+prog_char help_pwm[] = "Set pwm values [-5332 : +5332]";
 parse_pgm_inst_t cmd_pwm = {
 	.f = cmd_pwm_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */

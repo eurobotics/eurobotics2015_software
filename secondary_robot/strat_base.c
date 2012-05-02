@@ -422,24 +422,21 @@ uint8_t __strat_obstacle(uint8_t which)
 	int8_t ret;
 
 	/* too slow */
-	if (ABS(mainboard.speed_d) < 150)
+	if (ABS(mainboard.speed_d) < 100)
 		return 0;
 
-
-#ifdef HOMOLOGATION
 	/* opponent is in front of us */
-	if (mainboard.speed_d > 0 && (sensor_get(S_OPPONENT_FRONT_R) || sensor_get(S_OPPONENT_FRONT_L))) {
+	if (mainboard.speed_d > 0 && (sensor_get(S_OPP_FRONT_R) || sensor_get(S_OPP_FRONT_L))) {
 		DEBUG(E_USER_STRAT, "opponent front");
-		//sensor_obstacle_disable();
+		sensor_obstacle_disable();
 		return 1;
 	}
 	/* opponent is behind us */
-	if (mainboard.speed_d < 0 && (sensor_get(S_OPPONENT_REAR_R) || sensor_get(S_OPPONENT_REAR_L))) {
+	if (mainboard.speed_d < 0 && sensor_get(S_OPP_REAR)) {
 		DEBUG(E_USER_STRAT, "opponent behind");
-		//sensor_obstacle_disable();
+		sensor_obstacle_disable();
 		return 1;
 	}
-#endif
 
 
 	if(which == 0)
@@ -532,7 +529,14 @@ uint8_t test_traj_end(uint8_t why)
 	}
 
 	if ((why & END_OBSTACLE) && strat_obstacle()) {
-		strat_hardstop();
+		if (mainboard.speed_d > 0)
+			trajectory_d_rel(&mainboard.traj, 120);
+		else
+			trajectory_d_rel(&mainboard.traj, -120);
+		
+		/* XXX */
+		time_wait_ms(200);		
+
 		return END_OBSTACLE;
 	}
 

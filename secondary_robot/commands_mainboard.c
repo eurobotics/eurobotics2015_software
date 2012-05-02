@@ -443,19 +443,15 @@ struct cmd_treasure_result {
 static void cmd_treasure_parsed(void *parsed_result,
 			      __attribute__((unused)) void *data)
 {
-#if notyet
 	struct cmd_treasure_result *res = parsed_result;
 
-	if (!strcmp(res->arg1, "empty_totem"))
-		strat_empty_totem_side(res->arg2,res->arg3,0);
-	else if (!strcmp(res->arg1, "coin_floor"))
-		strat_pickup_coins_floor(res->arg2,res->arg3,0);
-#endif
+	if (!strcmp(res->arg1, "pickupmap"))
+		strat_pickup_map();
 }
 
 prog_char str_treasure_arg0[] = "treasure";
 parse_pgm_token_string_t cmd_treasure_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_treasure_result, arg0, str_treasure_arg0);
-prog_char str_treasure_arg1[] = "foo#bar";
+prog_char str_treasure_arg1[] = "pickupmap";
 parse_pgm_token_string_t cmd_treasure_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_treasure_result, arg1, str_treasure_arg1);
 parse_pgm_token_num_t cmd_treasure_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_treasure_result, arg2, INT32);
 parse_pgm_token_num_t cmd_treasure_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_treasure_result, arg3, INT32);
@@ -471,6 +467,68 @@ parse_pgm_inst_t cmd_treasure = {
 		(prog_void *)&cmd_treasure_arg1, 
 		(prog_void *)&cmd_treasure_arg2, 
 		(prog_void *)&cmd_treasure_arg3, 
+		NULL,
+	},
+};
+
+/**********************************************************/
+/* actuator */
+
+/* this structure is filled when cmd_dump is parsed successfully */
+struct cmd_actuator_result {
+	fixed_string_t arg0;
+	uint16_t arg1;
+};
+
+/* function called when cmd_dump is parsed successfully */
+static void cmd_actuator_parsed(void *parsed_result,
+			      __attribute__((unused)) void *data)
+{
+	struct cmd_actuator_result *res = parsed_result;
+	uint8_t err = 0;
+
+	if (!strcmp(res->arg0, "arm")) {
+		if(arm_set_pos(res->arg1))
+			printf("arm_set_pos error\n\r");
+
+		//err = arm_wait_end();
+		
+		if(err == END_BLOCKING)
+			printf("END_BLOCKING\n\r");
+	}
+	else if (!strcmp(res->arg0, "torque_arm")) {
+
+		if(res->arg1 == 0)
+			err = arm_disable_torque();
+		else
+			err = arm_enable_torque();
+		
+		if(err)
+			printf("set torque error\n\r");
+	}
+	else if (!strcmp(res->arg0, "teeth")) {
+		if(teeth_set_pos(res->arg1))
+			printf("teeth_set_pos error\n\r");
+
+		//err = teeth_wait_end();
+		
+		if(err == END_BLOCKING)
+			printf("END_BLOCKING\n\r");
+	}
+}
+
+prog_char str_actuator_arg0[] = "arm#torque_arm#teeth";
+parse_pgm_token_string_t cmd_actuator_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_actuator_result, arg0, str_actuator_arg0);
+parse_pgm_token_num_t cmd_actuator_arg1 = TOKEN_NUM_INITIALIZER(struct cmd_actuator_result, arg1, UINT16);
+
+prog_char help_actuator[] = "set actuator possition";
+parse_pgm_inst_t cmd_actuator = {
+	.f = cmd_actuator_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_actuator,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_actuator_arg0, 
+		(prog_void *)&cmd_actuator_arg1,  
 		NULL,
 	},
 };

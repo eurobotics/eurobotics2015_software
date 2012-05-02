@@ -104,6 +104,7 @@ extern parse_pgm_inst_t cmd_opponent_set;
 extern parse_pgm_inst_t cmd_start;
 extern parse_pgm_inst_t cmd_color;
 extern parse_pgm_inst_t cmd_treasure;
+extern parse_pgm_inst_t cmd_actuator;
 extern parse_pgm_inst_t cmd_beacon;
 
 //extern parse_pgm_inst_t cmd_interact;
@@ -215,6 +216,7 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_start,
 	(parse_pgm_inst_t *)&cmd_color,
 	(parse_pgm_inst_t *)&cmd_treasure,
+	(parse_pgm_inst_t *)&cmd_actuator,
 //	(parse_pgm_inst_t *)&cmd_beacon,
 
 //	(parse_pgm_inst_t *)&cmd_interact,

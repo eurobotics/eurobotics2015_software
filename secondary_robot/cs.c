@@ -183,8 +183,6 @@ void dump_pid(const char *name, struct pid_filter *pid)
 		 pid_get_value_out(pid));
 }
 
-//void dac_set_and_save(void *dac, int32_t val);
-
 /* cs init */
 void maindspic_cs_init(void)
 {
@@ -193,26 +191,27 @@ void maindspic_cs_init(void)
 	rs_set_left_pwm(&mainboard.rs, dac_set_and_save, LEFT_MOTOR);
 	rs_set_right_pwm(&mainboard.rs,  dac_set_and_save, RIGHT_MOTOR);
 
-#define Ed	1.013175
+#define Ed	1.020625
 #define Cl	(2.0/(Ed + 1.0))
 #define Cr  (2.0 /((1.0 / Ed) + 1.0))
 
 	/* increase gain to decrease dist, increase left and it will turn more left */
 	rs_set_left_ext_encoder(&mainboard.rs, encoders_dspic_get_value, 
-				LEFT_ENCODER, IMP_COEF * Cl); // 2011 0.996); //0.998);//0.999083
+				LEFT_ENCODER, IMP_COEF * Cl);
 	rs_set_right_ext_encoder(&mainboard.rs, encoders_dspic_get_value, 
-				 RIGHT_ENCODER, IMP_COEF * -Cr); // 2011 -1.004);//-1.002);//1.003087
+				 RIGHT_ENCODER, IMP_COEF * -Cr);
 
 	/* rs will use external encoders */
 	rs_set_flags(&mainboard.rs, RS_USE_EXT);
 
 	/* POSITION MANAGER */
 	position_init(&mainboard.pos);
-	position_set_physical_params(&mainboard.pos, VIRTUAL_TRACK_MM, DIST_IMP_MM * 0.986923267);
+	position_set_physical_params(&mainboard.pos, VIRTUAL_TRACK_MM, DIST_IMP_MM * 0.9718172983479);
 	position_set_related_robot_system(&mainboard.pos, &mainboard.rs);
 	position_set_centrifugal_coef(&mainboard.pos, 0.0); // 0.000016
 	position_use_ext(&mainboard.pos);
 
+	
 	/* TRAJECTORY MANAGER */
 	trajectory_init(&mainboard.traj);
 	trajectory_set_cs(&mainboard.traj, &mainboard.distance.cs,
@@ -221,22 +220,20 @@ void maindspic_cs_init(void)
 	/* d, a */
 	trajectory_set_speed(&mainboard.traj, SPEED_DIST_FAST, SPEED_ANGLE_FAST); 		
 	/* distance window, angle window, angle start */
-	trajectory_set_windows(&mainboard.traj, 50., 5.0, 5.0);
+	trajectory_set_windows(&mainboard.traj, 200., 5.0, 30.0);
 
 	/* ---- CS angle */
 	/* PID */
 	pid_init(&mainboard.angle.pid);
-	pid_set_gains(&mainboard.angle.pid, 360, 3, 3000);
-	pid_set_maximums(&mainboard.angle.pid, 0, 30000, 65000);
-	pid_set_out_shift(&mainboard.angle.pid, 6);	
-	pid_set_derivate_filter(&mainboard.angle.pid, 1);
+	pid_set_gains(&mainboard.angle.pid, 2000, 100, 5000);
+	pid_set_maximums(&mainboard.angle.pid, 0, 2650, 5332);
+	pid_set_out_shift(&mainboard.angle.pid, 10);	
+	pid_set_derivate_filter(&mainboard.angle.pid, 4);
 
 	/* QUADRAMP */
 	quadramp_init(&mainboard.angle.qr);
-	quadramp_set_1st_order_vars(&mainboard.angle.qr, 4000, 4000); 	/* set speed */
-	quadramp_set_2nd_order_vars(&mainboard.angle.qr, 40, 40); 		/* set accel */
-	//quadramp_set_1st_order_vars(&mainboard.angle.qr, 1000, 1000); 	/* set speed */
-	//quadramp_set_2nd_order_vars(&mainboard.angle.qr, 5, 5); 		/* set accel */
+	quadramp_set_1st_order_vars(&mainboard.angle.qr, 2800, 2800); 	/* set speed */
+	quadramp_set_2nd_order_vars(&mainboard.angle.qr, 25, 25); 		/* set accel */
 
 
 	/* CS */
@@ -249,23 +246,21 @@ void maindspic_cs_init(void)
 
 	/* Blocking detection */
 	bd_init(&mainboard.angle.bd);
-	bd_set_speed_threshold(&mainboard.angle.bd, 100);
-	bd_set_current_thresholds(&mainboard.angle.bd, 20, 8000, 1000000, 50);
+	bd_set_speed_threshold(&mainboard.angle.bd, 80);
+	bd_set_current_thresholds(&mainboard.angle.bd, 400, 8000, 1000000, 50);
 
 	/* ---- CS distance */
 	/* PID */
 	pid_init(&mainboard.distance.pid);
-	pid_set_gains(&mainboard.distance.pid, 360, 3, 3000);
-	pid_set_maximums(&mainboard.distance.pid, 0, 30000, 65000);
-	pid_set_out_shift(&mainboard.distance.pid, 6);
-	pid_set_derivate_filter(&mainboard.distance.pid, 1);
+	pid_set_gains(&mainboard.distance.pid, 2000, 100, 5000);
+	pid_set_maximums(&mainboard.distance.pid, 0, 2650, 5332);
+	pid_set_out_shift(&mainboard.distance.pid, 10);
+	pid_set_derivate_filter(&mainboard.distance.pid, 6);
 
 	/* QUADRAMP */
 	quadramp_init(&mainboard.distance.qr);
-	quadramp_set_1st_order_vars(&mainboard.distance.qr, 4000, 4000); 	/* set speed */
-	quadramp_set_2nd_order_vars(&mainboard.distance.qr, 35, 35); 	/* set accel */
-	//quadramp_set_1st_order_vars(&mainboard.distance.qr, 1000, 1000); 	/* set speed */
-	//quadramp_set_2nd_order_vars(&mainboard.distance.qr, 5, 5); 	/* set accel */
+	quadramp_set_1st_order_vars(&mainboard.distance.qr, 2800, 2800); 	/* set speed */
+	quadramp_set_2nd_order_vars(&mainboard.distance.qr, 25, 25); 	/* set accel */
 
 	/* CS */
 	cs_init(&mainboard.distance.cs);
@@ -277,8 +272,10 @@ void maindspic_cs_init(void)
 
 	/* Blocking detection */
 	bd_init(&mainboard.distance.bd);
-	bd_set_speed_threshold(&mainboard.distance.bd, 100);
-	bd_set_current_thresholds(&mainboard.distance.bd, 20, 8000, 1000000, 50);
+	bd_set_speed_threshold(&mainboard.distance.bd, 60);
+	bd_set_current_thresholds(&mainboard.distance.bd, 200, 8000, 1000000, 50); /* k1, k2, i, cpt_threshold */
+
+	/* i = k1.V - k2.w */
 
 	/* set them on !! */
 	mainboard.angle.on = 1;

@@ -113,18 +113,18 @@
 
 /* default speeds */
 #ifdef HOMOLOGATION
-#define SPEED_DIST_FAST 		2000
-#define SPEED_ANGLE_FAST 		2000
+#define SPEED_DIST_FAST 		2800
+#define SPEED_ANGLE_FAST 		2800
 #else
-#define SPEED_DIST_FAST 		1000
-#define SPEED_ANGLE_FAST 		1000
+#define SPEED_DIST_FAST 		2800
+#define SPEED_ANGLE_FAST 		2800
 #endif
 
 //Do not change
-#define SPEED_DIST_SLOW 		1000
-#define SPEED_ANGLE_SLOW 		1000
-#define SPEED_DIST_VERY_SLOW 	500
-#define SPEED_ANGLE_VERY_SLOW 500
+#define SPEED_DIST_SLOW 		2800
+#define SPEED_ANGLE_SLOW 		2800
+#define SPEED_DIST_VERY_SLOW 	2800
+#define SPEED_ANGLE_VERY_SLOW 2800
 
 
 #define PLACE_D_SAFE				  140
@@ -278,6 +278,9 @@ void strat_event(void *dummy);
 /********************************************
  * in strat_treasure.c 
  *******************************************/
+
+/* pick up the piece of fabric that discover the map */
+uint8_t strat_pickup_map(void);
 
 /* add here more strat functions in files */
 
