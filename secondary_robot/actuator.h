@@ -28,20 +28,26 @@
 /* used by cs, correct offset and save values */
 void dac_set_and_save(void *dac, int32_t val);
 
-/* lasers on/off */
-void lasers_set_on(void);
-void lasers_set_off(void);
-uint8_t lasers_get_state(void);
+/* actuators 2012 */
+#define END_TRAJ		1
+#define END_BLOCKING	2
 
+#define ARM_POS_HIDE			792
+#define ARM_POS_HOLD_MAP	680
+#define ARM_POS_PICKUP_MAP	530
 
-/* manage mirrors position */
-void mirrors_state_machine(void);
+#define TEETH_POS_OPEN	737
+#define TEETH_POS_CLOSE 515
 
-/* set mirrors mode */
-#define MODE_LOOK_FOR_TOWERS	0
-#define MODE_LOOK_FOR_FIGURES	1
-#define MODE_HIDE_MIRRORS		2
-void mirrors_set_mode(uint8_t mode);
+void actuators_init(void);
+
+inline uint8_t arm_set_pos(uint16_t pos);
+inline uint8_t arm_wait_end(void);
+inline uint8_t arm_disable_torque(void);
+inline uint8_t arm_enable_torque(void);
+
+inline uint8_t teeth_set_pos(uint16_t pos);
+inline uint8_t teeth_wait_end(void);
 
 #endif
 

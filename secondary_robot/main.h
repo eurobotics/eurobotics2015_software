@@ -102,7 +102,7 @@
 
 /* ax12 */
 #define AX12_ID_ARM		1
-#define AX12_ID_TOOTHS	2
+#define AX12_ID_TEETH	2
 
 /* encoders handlers */
 #define RIGHT_ENCODER       ((void *)1) // decrements going fordwars

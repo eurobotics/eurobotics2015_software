@@ -279,6 +279,9 @@ void strat_event(void *dummy);
  * in strat_treasure.c 
  *******************************************/
 
+/* pick up the piece of fabric that discover the map */
+uint8_t strat_pickup_map(void);
+
 /* add here more strat functions in files */
 
 #else
