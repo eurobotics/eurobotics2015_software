@@ -221,7 +221,8 @@ void maindspic_cs_init(void)
 	/* d, a */
 	trajectory_set_speed(&mainboard.traj, SPEED_DIST_FAST, SPEED_ANGLE_FAST); 		
 	/* distance window, angle window, angle start */
-	trajectory_set_windows(&mainboard.traj, 50., 5.0, 5.0);
+	//trajectory_set_windows(&mainboard.traj, 50., 5.0, 5.0);
+   trajectory_set_windows(&mainboard.traj, 200., 5.0, 30.0);
 
 	/* ---- CS angle */
 	/* PID */
@@ -234,7 +235,7 @@ void maindspic_cs_init(void)
 	/* QUADRAMP */
 	quadramp_init(&mainboard.angle.qr);
 	quadramp_set_1st_order_vars(&mainboard.angle.qr, 4000, 4000); 	/* set speed */
-	quadramp_set_2nd_order_vars(&mainboard.angle.qr, 40, 40); 		/* set accel */
+	quadramp_set_2nd_order_vars(&mainboard.angle.qr, 80, 80); 		/* set accel */
 	//quadramp_set_1st_order_vars(&mainboard.angle.qr, 1000, 1000); 	/* set speed */
 	//quadramp_set_2nd_order_vars(&mainboard.angle.qr, 5, 5); 		/* set accel */
 

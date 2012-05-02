@@ -145,13 +145,13 @@ extern parse_pgm_inst_t cmd_position_set;
 
 #ifdef notyet
 extern parse_pgm_inst_t cmd_strat_infos;
-extern parse_pgm_inst_t cmd_strat_conf;
-extern parse_pgm_inst_t cmd_strat_conf2;
 
-extern parse_pgm_inst_t cmd_subtraj1;
+extern parse_pgm_inst_t cmd_strat_conf;
 extern parse_pgm_inst_t cmd_subtraj2;
 #endif
 
+extern parse_pgm_inst_t cmd_strat_conf2;
+extern parse_pgm_inst_t cmd_subtraj1;
 #endif /* COMPILE_COMMANDS_TRAJ */
 
 /* in progmem */
@@ -250,15 +250,15 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_position,
 	(parse_pgm_inst_t *)&cmd_position_set,
 
+
 #ifdef notyet
 	(parse_pgm_inst_t *)&cmd_strat_infos,
 	(parse_pgm_inst_t *)&cmd_strat_conf,
-	(parse_pgm_inst_t *)&cmd_strat_conf2,
-
-	(parse_pgm_inst_t *)&cmd_subtraj1,
 	(parse_pgm_inst_t *)&cmd_subtraj2,
 #endif
 
+	(parse_pgm_inst_t *)&cmd_strat_conf2,
+	(parse_pgm_inst_t *)&cmd_subtraj1,
 #endif /* COMPILE_COMMANDS_TRAJ */
 
 	NULL,
