@@ -124,8 +124,12 @@ struct i2c_cmd_slavedspic_set_mode {
 	union{
 		struct {
 			uint8_t type;
-#define I2C_FINGERS_TYPE_FLOOR	0
-#define I2C_FINGERS_TYPE_TOTEM	1
+#define I2C_FINGERS_TYPE_FLOOR		      0
+#define I2C_FINGERS_TYPE_TOTEM		      1
+#define I2C_FINGERS_TYPE_FLOOR_RIGHT		3
+#define I2C_FINGERS_TYPE_FLOOR_LEFT		   4
+#define I2C_FINGERS_TYPE_TOTEM_RIGHT		5
+#define I2C_FINGERS_TYPE_TOTEM_LEFT		   6
 
 			uint8_t mode;
 #define I2C_FINGERS_MODE_HUG 		0

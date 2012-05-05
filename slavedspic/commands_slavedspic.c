@@ -356,10 +356,18 @@ static void cmd_fingers_parsed(__attribute__((unused)) void *parsed_result,
 	printf("done\n\r");
 
 #else
-	if (!strcmp_P(res->arg1, PSTR("totem")))
+	if (!strcmp_P(res->arg1, PSTR("totem"))) 
 		command.fingers.type = I2C_FINGERS_TYPE_TOTEM;
-	else
+	else if (!strcmp_P(res->arg1, PSTR("floor"))) 
 		command.fingers.type = I2C_FINGERS_TYPE_FLOOR;
+	else if (!strcmp_P(res->arg1, PSTR("left_totem")))
+		command.fingers.type = I2C_FINGERS_TYPE_TOTEM_LEFT;
+	else if (!strcmp_P(res->arg1, PSTR("right_totem")))
+		command.fingers.type = I2C_FINGERS_TYPE_TOTEM_RIGHT;
+	else if (!strcmp_P(res->arg1, PSTR("left_floor")))
+		command.fingers.type = I2C_FINGERS_TYPE_FLOOR_LEFT;
+	else if (!strcmp_P(res->arg1, PSTR("right_floor")))
+		command.fingers.type = I2C_FINGERS_TYPE_FLOOR_RIGHT;
 
 	if (!strcmp_P(res->arg2, PSTR("hug")))
 		command.fingers.mode = I2C_FINGERS_MODE_HUG;
@@ -369,7 +377,7 @@ static void cmd_fingers_parsed(__attribute__((unused)) void *parsed_result,
 		command.fingers.mode = I2C_FINGERS_MODE_CLOSE;
 	else if (!strcmp_P(res->arg2, PSTR("hold")))
 		command.fingers.mode = I2C_FINGERS_MODE_HOLD;
-	else
+	else if (!strcmp_P(res->arg2, PSTR("pushin")))
 		command.fingers.mode = I2C_FINGERS_MODE_PUSHIN;
 
 	command.mode = I2C_SLAVEDSPIC_MODE_FINGERS;
@@ -380,7 +388,7 @@ static void cmd_fingers_parsed(__attribute__((unused)) void *parsed_result,
 
 prog_char str_fingers_arg0[] = "fingers";
 parse_pgm_token_string_t cmd_fingers_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_fingers_result, arg0, str_fingers_arg0);
-prog_char str_fingers_arg1[] = "totem#floor";
+prog_char str_fingers_arg1[] = "totem#floor#left_totem#right_totem#left_floor#right_floor";
 parse_pgm_token_string_t cmd_fingers_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_fingers_result, arg1, str_fingers_arg1);
 prog_char str_fingers_arg2[] = "hug#open#hold#close#pushin";
 parse_pgm_token_string_t cmd_fingers_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_fingers_result, arg2, str_fingers_arg2);
