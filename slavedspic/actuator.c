@@ -266,47 +266,55 @@ uint16_t turbine_get_blow_speed(turbine_t *turbine) {
 /**** fingers funcions *********************************************************/
 
 uint16_t fingers_ax12_pos_l[FINGERS_TYPE_MAX][FINGERS_MODE_MAX] = {
-		[FINGERS_TYPE_FLOOR][FINGERS_MODE_HUG] 		= POS_FINGER_FLOOR_L_HUG, 
-		[FINGERS_TYPE_FLOOR][FINGERS_MODE_OPEN] 		= POS_FINGER_FLOOR_L_OPEN,
-		[FINGERS_TYPE_FLOOR][FINGERS_MODE_HOLD] 		= POS_FINGER_FLOOR_L_HOLD,
-		[FINGERS_TYPE_FLOOR][FINGERS_MODE_CLOSE] 		= POS_FINGER_FLOOR_L_CLOSE,
-		[FINGERS_TYPE_FLOOR][FINGERS_MODE_PUSHIN] 	= POS_FINGER_FLOOR_L_PUSHIN,
+	[FINGERS_TYPE_FLOOR][FINGERS_MODE_HUG] 	      	= POS_FINGER_FLOOR_L_HUG, 
+	[FINGERS_TYPE_FLOOR][FINGERS_MODE_OPEN] 	         = POS_FINGER_FLOOR_L_OPEN,
+	[FINGERS_TYPE_FLOOR][FINGERS_MODE_HOLD] 		      = POS_FINGER_FLOOR_L_HOLD,
+	[FINGERS_TYPE_FLOOR][FINGERS_MODE_CLOSE] 		      = POS_FINGER_FLOOR_L_CLOSE,
+	[FINGERS_TYPE_FLOOR][FINGERS_MODE_PUSHIN]       	= POS_FINGER_FLOOR_L_PUSHIN,
 
-		[FINGERS_TYPE_TOTEM][FINGERS_MODE_HUG] 		= POS_FINGER_TOTEM_L_HUG,
-		[FINGERS_TYPE_TOTEM][FINGERS_MODE_OPEN] 		= POS_FINGER_TOTEM_L_OPEN,
-		[FINGERS_TYPE_TOTEM][FINGERS_MODE_HOLD] 		= POS_FINGER_TOTEM_L_HOLD,
-		[FINGERS_TYPE_TOTEM][FINGERS_MODE_CLOSE] 		= POS_FINGER_TOTEM_L_CLOSE,
-		[FINGERS_TYPE_TOTEM][FINGERS_MODE_PUSHIN] 	= POS_FINGER_TOTEM_L_PUSHIN,
+	[FINGERS_TYPE_TOTEM][FINGERS_MODE_HUG] 	       	= POS_FINGER_TOTEM_L_HUG,
+	[FINGERS_TYPE_TOTEM][FINGERS_MODE_OPEN] 	       	= POS_FINGER_TOTEM_L_OPEN,
+	[FINGERS_TYPE_TOTEM][FINGERS_MODE_HOLD] 		      = POS_FINGER_TOTEM_L_HOLD,
+	[FINGERS_TYPE_TOTEM][FINGERS_MODE_CLOSE] 		      = POS_FINGER_TOTEM_L_CLOSE,
+	[FINGERS_TYPE_TOTEM][FINGERS_MODE_PUSHIN] 	      = POS_FINGER_TOTEM_L_PUSHIN,
 };
 
 uint16_t fingers_ax12_pos_r[FINGERS_TYPE_MAX][FINGERS_MODE_MAX] = {
-	[FINGERS_TYPE_FLOOR][FINGERS_MODE_HUG] 		= POS_FINGER_FLOOR_R_HUG,
-	[FINGERS_TYPE_FLOOR][FINGERS_MODE_OPEN] 		= POS_FINGER_FLOOR_R_OPEN,
-	[FINGERS_TYPE_FLOOR][FINGERS_MODE_HOLD] 		= POS_FINGER_FLOOR_R_HOLD,
-	[FINGERS_TYPE_FLOOR][FINGERS_MODE_CLOSE] 		= POS_FINGER_FLOOR_R_CLOSE,
-	[FINGERS_TYPE_FLOOR][FINGERS_MODE_PUSHIN] 	= POS_FINGER_FLOOR_R_PUSHIN,
+	[FINGERS_TYPE_FLOOR][FINGERS_MODE_HUG] 	      	= POS_FINGER_FLOOR_R_HUG,
+	[FINGERS_TYPE_FLOOR][FINGERS_MODE_OPEN] 	       	= POS_FINGER_FLOOR_R_OPEN,
+	[FINGERS_TYPE_FLOOR][FINGERS_MODE_HOLD] 		      = POS_FINGER_FLOOR_R_HOLD,
+	[FINGERS_TYPE_FLOOR][FINGERS_MODE_CLOSE] 		      = POS_FINGER_FLOOR_R_CLOSE,
+	[FINGERS_TYPE_FLOOR][FINGERS_MODE_PUSHIN] 	      = POS_FINGER_FLOOR_R_PUSHIN,
 
-	[FINGERS_TYPE_TOTEM][FINGERS_MODE_HUG] 		= POS_FINGER_TOTEM_R_HUG,
-	[FINGERS_TYPE_TOTEM][FINGERS_MODE_OPEN] 		= POS_FINGER_TOTEM_R_OPEN,
-	[FINGERS_TYPE_TOTEM][FINGERS_MODE_HOLD] 		= POS_FINGER_TOTEM_R_HOLD,
-	[FINGERS_TYPE_TOTEM][FINGERS_MODE_CLOSE] 		= POS_FINGER_TOTEM_R_CLOSE,
-	[FINGERS_TYPE_TOTEM][FINGERS_MODE_PUSHIN] 	= POS_FINGER_TOTEM_R_PUSHIN,
+	[FINGERS_TYPE_TOTEM][FINGERS_MODE_HUG] 	      	= POS_FINGER_TOTEM_R_HUG,
+	[FINGERS_TYPE_TOTEM][FINGERS_MODE_OPEN] 	      	= POS_FINGER_TOTEM_R_OPEN,
+	[FINGERS_TYPE_TOTEM][FINGERS_MODE_HOLD] 	      	= POS_FINGER_TOTEM_R_HOLD,
+	[FINGERS_TYPE_TOTEM][FINGERS_MODE_CLOSE] 		      = POS_FINGER_TOTEM_R_CLOSE,
+	[FINGERS_TYPE_TOTEM][FINGERS_MODE_PUSHIN]       	= POS_FINGER_TOTEM_R_PUSHIN,
 };
+
 
 /* set finger position depends on mode */
 int8_t fingers_set_mode(fingers_t *fingers, uint8_t mode, int16_t pos_offset)
 {
-	uint8_t ax12_left_id, ax12_right_id, err1, err2;
+	uint8_t ax12_left_id, ax12_right_id, err1=0, err2=0;
+   uint8_t fingers_type;
+
+ 	if(fingers->type == FINGERS_TYPE_TOTEM_LEFT || fingers->type == FINGERS_TYPE_TOTEM_RIGHT || fingers->type == FINGERS_TYPE_TOTEM) 
+      fingers_type = FINGERS_TYPE_TOTEM;
+	else
+	   fingers_type = FINGERS_TYPE_FLOOR;
+
 
 	/* set ax12 ids */
-	if(fingers->type == FINGERS_TYPE_TOTEM) {
+	if(fingers_type == FINGERS_TYPE_TOTEM) {
 		ax12_left_id = AX12_ID_FINGERS_TOTEM_L;
 		ax12_right_id = AX12_ID_FINGERS_TOTEM_R;
 	}
 	else {
 		ax12_left_id = AX12_ID_FINGERS_FLOOR_L;
 		ax12_right_id = AX12_ID_FINGERS_FLOOR_R;
-	}
+   }   
 		
 	/* set ax12 possitions depends on mode and type */
 	if(mode >= FINGERS_MODE_MAX) {
@@ -314,13 +322,24 @@ int8_t fingers_set_mode(fingers_t *fingers, uint8_t mode, int16_t pos_offset)
 		return -1;
 	}
 
+   /* ax12 possitions */
 	fingers->mode = mode;
-	fingers->ax12_pos_l = fingers_ax12_pos_l[fingers->type][fingers->mode] + pos_offset;
-	fingers->ax12_pos_r = fingers_ax12_pos_r[fingers->type][fingers->mode] - pos_offset;
+	if(fingers->type == FINGERS_TYPE_TOTEM_LEFT || fingers->type == FINGERS_TYPE_TOTEM)
+	   fingers->ax12_pos_l = fingers_ax12_pos_l[FINGERS_TYPE_TOTEM][fingers->mode] + pos_offset;
+	else if(fingers->type == FINGERS_TYPE_FLOOR_LEFT || fingers->type == FINGERS_TYPE_FLOOR)
+	   fingers->ax12_pos_l = fingers_ax12_pos_l[FINGERS_TYPE_FLOOR][fingers->mode] + pos_offset;
+
+	if(fingers->type == FINGERS_TYPE_TOTEM_RIGHT || fingers->type == FINGERS_TYPE_TOTEM)
+	   fingers->ax12_pos_r = fingers_ax12_pos_r[FINGERS_TYPE_TOTEM][fingers->mode] - pos_offset;
+	else if(fingers->type == FINGERS_TYPE_FLOOR_RIGHT || fingers->type == FINGERS_TYPE_FLOOR)
+	   fingers->ax12_pos_r = fingers_ax12_pos_r[FINGERS_TYPE_FLOOR][fingers->mode] - pos_offset;
+
+   /* set general type */
+   fingers->type = fingers_type;
 
 	/* set speed */
 #if 1
-	if(fingers->type == FINGERS_TYPE_TOTEM && (fingers->mode == FINGERS_MODE_CLOSE || fingers->mode == FINGERS_MODE_HOLD)) {
+   if((fingers->type == FINGERS_TYPE_TOTEM)&& (fingers->mode == FINGERS_MODE_CLOSE || fingers->mode == FINGERS_MODE_HOLD)) {
 		ax12_user_write_int(&gen.ax12, ax12_left_id, AA_MOVING_SPEED_L, 300);
 		ax12_user_write_int(&gen.ax12, ax12_right_id, AA_MOVING_SPEED_L, 300);
 	}
@@ -331,6 +350,7 @@ int8_t fingers_set_mode(fingers_t *fingers, uint8_t mode, int16_t pos_offset)
 #endif
 
 	/* saturate to position range */
+/*
 	if(fingers->ax12_pos_l > fingers_ax12_pos_l[fingers->type][FINGERS_MODE_L_POS_MAX])
 		fingers->ax12_pos_l = fingers_ax12_pos_l[fingers->type][FINGERS_MODE_L_POS_MAX];
 	if(fingers->ax12_pos_l < fingers_ax12_pos_l[fingers->type][FINGERS_MODE_L_POS_MIN])
@@ -340,9 +360,10 @@ int8_t fingers_set_mode(fingers_t *fingers, uint8_t mode, int16_t pos_offset)
 		fingers->ax12_pos_r = fingers_ax12_pos_r[fingers->type][FINGERS_MODE_R_POS_MAX];
 	if(fingers->ax12_pos_r < fingers_ax12_pos_r[fingers->type][FINGERS_MODE_R_POS_MIN])
 		fingers->ax12_pos_r = fingers_ax12_pos_r[fingers->type][FINGERS_MODE_R_POS_MIN];
-
+ */
 	/* apply to ax12 */
-	err1 = ax12_user_write_int(&gen.ax12, ax12_left_id, AA_GOAL_POSITION_L, fingers->ax12_pos_l);	err2 = ax12_user_write_int(&gen.ax12, ax12_right_id, AA_GOAL_POSITION_L, fingers->ax12_pos_r);
+	err1 = ax12_user_write_int(&gen.ax12, ax12_left_id, AA_GOAL_POSITION_L, fingers->ax12_pos_l);
+   err2 = ax12_user_write_int(&gen.ax12, ax12_right_id, AA_GOAL_POSITION_L, fingers->ax12_pos_r);
 
 	if(err1) return err1;
 	if(err2) return err2;

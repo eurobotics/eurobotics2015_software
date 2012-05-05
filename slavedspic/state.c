@@ -171,13 +171,15 @@ void state_do_fingers_mode(void)
 	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
 
 	/* set fingers mode */
-	if(mainboard_command.fingers.type == I2C_FINGERS_TYPE_FLOOR) {
-		if(fingers_set_mode(&slavedspic.fingers_floor, mainboard_command.fingers.mode, mainboard_command.fingers.offset))
+	if(mainboard_command.fingers.type == I2C_FINGERS_TYPE_FLOOR || mainboard_command.fingers.type == I2C_FINGERS_TYPE_FLOOR_LEFT || mainboard_command.fingers.type == I2C_FINGERS_TYPE_FLOOR_RIGHT) {
+		slavedspic.fingers_floor.type = mainboard_command.fingers.type;
+      if(fingers_set_mode(&slavedspic.fingers_floor, mainboard_command.fingers.mode, mainboard_command.fingers.offset))
 			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
 
 		fingers_wait_end(&slavedspic.fingers_floor);
 	}	
-	else if(mainboard_command.fingers.type == I2C_FINGERS_TYPE_TOTEM) {
+	else if(mainboard_command.fingers.type == I2C_FINGERS_TYPE_TOTEM || mainboard_command.fingers.type == I2C_FINGERS_TYPE_TOTEM_LEFT || mainboard_command.fingers.type == I2C_FINGERS_TYPE_TOTEM_RIGHT) {
+		slavedspic.fingers_totem.type = mainboard_command.fingers.type;
 		if(fingers_set_mode(&slavedspic.fingers_totem, mainboard_command.fingers.mode, mainboard_command.fingers.offset))
 			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
 
@@ -526,23 +528,34 @@ void state_do_harvest_mode(void)
 			break;
 
 		case I2C_HARVEST_MODE_GOLDBAR_TOTEM:
+      {
+         uint8_t sensors_line_b1;
+         uint8_t sensors_line_b2;
+
+         sensors_line_b1=sensor_get(S_TURBINE_LINE_B1);
+         sensors_line_b2=sensor_get(S_TURBINE_LINE_B2);
 
 			/* turbine sucking up */
 			turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_FAST);
 
-			/* check sensors */
-			if(WAIT_COND_OR_TIMEOUT(sensor_get(S_TURBINE_LINE_B1) && sensor_get(S_TURBINE_LINE_B2), 2000))
-				STMCH_DEBUG("Goldbar catched!");
-			else {
-				STMCH_DEBUG("Goldbar not there");
-				turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);								
-			}
+         //XXX
+         if(! (sensors_line_b1&&sensors_line_b2)) 
+         {
+   			/* check sensors */
+   			if(WAIT_COND_OR_TIMEOUT(sensor_get(S_TURBINE_LINE_B1) && sensor_get(S_TURBINE_LINE_B2), 2000))
+   				STMCH_DEBUG("Goldbar catched!");
+   			else {
+   				STMCH_DEBUG("Goldbar not there");
+   				turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);								
+   			}
+         }        
+         else time_wait_ms(600);
 
 			/* uncomment for debug */
 			//time_wait_ms(800);
-			//turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);								
-
-			break;
+			//turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);
+      }   
+		break;
 
 		case I2C_HARVEST_MODE_GOLDBAR_FLOOR:
 
@@ -716,14 +729,12 @@ uint8_t store_goldbar_in_boot(void)
 	/* XXX */
 	turbine_angle = turbine_get_angle(&slavedspic.turbine);
 	if(turbine_angle > 20 ) {
-
 		/* totem fingers mode open */
 		fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_OPEN, 0);
 		err = fingers_wait_end(&slavedspic.fingers_totem);
 		if(err & END_BLOCKING)
 			goto end;	
 	}
-
 
 	/* lift in front of store input */
 	lift_set_height(LIFT_HEIGHT_STORE_GOLDBAR_1);
@@ -733,7 +744,6 @@ uint8_t store_goldbar_in_boot(void)
 
 	/* turn turbine for put totem into store system */
 	turbine_set_angle(&slavedspic.turbine, TURBINE_ANGLE_ZERO, TURBINE_ANGLE_SPEED_FAST);
-
 	err = lift_wait_end();
 	if(err & END_BLOCKING)
 		goto end;
@@ -742,7 +752,7 @@ uint8_t store_goldbar_in_boot(void)
 	//fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_HOLD, 0);
 	//fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_HOLD, 0);
 
-	/* turn turbine for put totem into store system */
+	/* turn turbine for put goldbar into store system */
 	turbine_set_angle(&slavedspic.turbine, -45, TURBINE_ANGLE_SPEED_FAST);
 
 	/* XXX */
@@ -807,7 +817,7 @@ uint8_t store_goldbar_in_boot(void)
 		tray_set_mode(&slavedspic.tray_store, TRAY_MODE_UP);
 
 	/* goto safe height */
-	lift_set_height(LIFT_HEIGHT_SAFE);
+	lift_set_height(LIFT_HEIGHT_OVER_TOTEM);
 	err = lift_wait_end();
 	if(err & END_BLOCKING)
 		goto end;

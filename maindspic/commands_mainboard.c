@@ -710,12 +710,15 @@ static void cmd_treasure_parsed(void *parsed_result,
 
 	if (!strcmp(res->arg1, "empty_totem")){
 		strat_empty_totem_side(res->arg2,res->arg3,0,res->arg4);
-      i2c_slavedspic_mode_lift_height(30);
-      i2c_slavedspic_mode_turbine_angle(0,200);
-      i2c_slavedspic_wait_ready();
-      i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR,I2C_FINGERS_MODE_CLOSE,0);
-      i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_TOTEM,I2C_FINGERS_MODE_HOLD,0);
-      i2c_slavedspic_wait_ready();
+
+      if(res->arg4 != 0 && res->arg4 != 3) {
+         i2c_slavedspic_mode_turbine_angle(0,200);
+         i2c_slavedspic_wait_ready();
+         i2c_slavedspic_mode_lift_height(30);
+         i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_TOTEM,I2C_FINGERS_MODE_HOLD,0);
+         i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR,I2C_FINGERS_MODE_CLOSE,0);
+         i2c_slavedspic_wait_ready();
+      }
    }  
 	else if (!strcmp(res->arg1, "coin_floor"))
 		strat_pickup_coins_floor(res->arg2,res->arg3,0);

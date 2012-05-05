@@ -180,9 +180,10 @@ goldbar:
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
+   DEBUG(E_USER_STRAT, "I'm going to take the goldbar");
    i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_GOLDBAR_TOTEM);
    i2c_slavedspic_wait_ready();
-   time_wait_ms(800); /* FIXME */
+   DEBUG(E_USER_STRAT, "Done! goldbar taken");
 
    /*Go a little backward*/
 	trajectory_d_rel(&mainboard.traj, -100);
@@ -228,7 +229,7 @@ coins_totem:
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
-   end:
+end:
 	strat_set_speed(old_spdd, old_spda);
    strat_limit_speed_enable();
    return err;
