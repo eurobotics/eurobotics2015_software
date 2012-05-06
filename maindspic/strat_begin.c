@@ -70,32 +70,33 @@
 	} while(0)
 
 
-
-uint8_t strat_begin(void)
+#if 0
+uint8_t strat_begin(uint16_t y_begin_curve, uint16_t final_angle)
 {   
    uint8_t err;
 	uint16_t old_spdd, old_spda;
    int16_t d;
    uint32_t old_var_2nd_ord_pos, old_var_2nd_ord_neg;
 
-   #define X_CORNER_1        628
+   #define X_CORNER_1       628
    #define Y_CORNER_1       1353
    #define X_CORNER_2       900
    #define Y_CORNER_2       Y_CORNER_1+ROBOT_WIDTH/2+50
    #define LONG_DISTANCE    2500
-   #define Y_BEGIN_CURVE    1050
+   //#define Y_BEGIN_CURVE    1050
+   #define Y_BEGIN_CURVE    y_begin_curve
+   #define X_BEGIN_CURVE_HOME    325
    #define X_END_CURVE      1100
 
    DEBUG(E_USER_STRAT, "Start");
-	/* save speed */
-	strat_get_speed(&old_spdd, &old_spda);
-   strat_limit_speed_disable();
-	strat_set_speed(SPEED_DIST_FAST,SPEED_ANGLE_FAST);
 
-   /* save quadramp values */
+	/* save speed and aceleration values */
+   strat_limit_speed_disable();
+	strat_get_speed(&old_spdd, &old_spda);
    old_var_2nd_ord_pos = mainboard.angle.qr.var_2nd_ord_pos;
    old_var_2nd_ord_neg = mainboard.angle.qr.var_2nd_ord_neg;
 
+#ifdef VERSION1
    /* fingers in hold mode and put lift down */
    i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR, I2C_FINGERS_MODE_HOLD,0);
    i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_TOTEM, I2C_FINGERS_MODE_HOLD,0);
@@ -111,7 +112,7 @@ uint8_t strat_begin(void)
    i2c_slavedspic_mode_lift_height(44);
 
    /* go to point close to the bottles */
-#ifdef VERSION1
+
 
    if(strat_infos.conf.flags & PICKUP_COINS_GROUP)
       trajectory_goto_forward_xy_abs(&mainboard.traj,COLOR_X(X_CORNER_1), Y_CORNER_1);
@@ -134,6 +135,7 @@ uint8_t strat_begin(void)
 			ERROUT(err);
 #endif
 
+/*
    if(strat_infos.conf.flags & PICKUP_COINS_GROUP)
       trajectory_a_abs(&mainboard.traj, 90);
    else
@@ -141,11 +143,12 @@ uint8_t strat_begin(void)
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);   
-
+*/
 
    /* modify speed and quadramp */
-   quadramp_set_2nd_order_vars(&mainboard.angle.qr, 20, 20);
-	strat_set_speed(SPEED_DIST_FAST,2000);
+	//strat_set_speed(SPEED_DIST_FAST,SPEED_ANGLE_FAST);
+   //quadramp_set_2nd_order_vars(&mainboard.angle.qr, 20, 20);
+	//strat_set_speed(SPEED_DIST_FAST,2000);
 
 
    if(strat_infos.conf.flags & PICKUP_COINS_GROUP)
@@ -153,14 +156,24 @@ uint8_t strat_begin(void)
    else
       trajectory_d_rel(&mainboard.traj, -LONG_DISTANCE);
    
-   err=WAIT_COND_OR_TRAJ_END(y_is_more_than(Y_BEGIN_CURVE), TRAJ_FLAGS_STD);
+
+   err = WAIT_COND_OR_TRAJ_END(x_is_more_than(X_BEGIN_CURVE_HOME), TRAJ_FLAGS_STD);
    if(err) 
    	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);   
 
+   if(strat_infos.conf.flags & PICKUP_COINS_GROUP)
+      trajectory_only_a_abs(&mainboard.traj, COLOR_A_ABS(90));
+   else
+      trajectory_only_a_abs(&mainboard.traj, COLOR_A_ABS(-90));
+
+   err = WAIT_COND_OR_TRAJ_END(y_is_more_than(Y_BEGIN_CURVE), TRAJ_FLAGS_STD);
+   if(err) 
+   	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);   
 
    if(strat_infos.conf.flags & PICKUP_COINS_GROUP)
-      trajectory_only_a_abs(&mainboard.traj, COLOR_A_ABS(0));
+      trajectory_only_a_abs(&mainboard.traj, COLOR_A_ABS(0+final_angle));
    else
       trajectory_only_a_abs(&mainboard.traj, COLOR_A_ABS(180));
 
@@ -182,4 +195,63 @@ uint8_t strat_begin(void)
    quadramp_set_2nd_order_vars(&mainboard.angle.qr,old_var_2nd_ord_pos,old_var_2nd_ord_neg);
    return err;
 }
+#endif
+
+
+uint8_t strat_begin(uint16_t y_begin_curve, int16_t final_angle)
+{   
+   uint8_t err;
+	uint16_t old_spdd, old_spda;
+   uint32_t old_var_2nd_ord_pos, old_var_2nd_ord_neg;
+
+   #define LONG_DISTANCE        5000
+   #define Y_BEGIN_CURVE        y_begin_curve
+   #define X_BEGIN_CURVE_HOME   325
+   #define X_END_CURVE          1150
+
+
+   DEBUG(E_USER_STRAT, "Start");
+   strat_limit_speed_disable();
+	/* save speed and aceleration values */
+	strat_get_speed(&old_spdd, &old_spda);
+   old_var_2nd_ord_pos = mainboard.angle.qr.var_2nd_ord_pos;
+   old_var_2nd_ord_neg = mainboard.angle.qr.var_2nd_ord_neg;
+   /* modify speed and quadramp */
+	strat_set_speed(4000,2000);
+   quadramp_set_2nd_order_vars(&mainboard.angle.qr, 20, 20);
+
+
+   trajectory_d_rel(&mainboard.traj, LONG_DISTANCE);
+   err = WAIT_COND_OR_TRAJ_END(x_is_more_than(X_BEGIN_CURVE_HOME), TRAJ_FLAGS_STD);
+   if(err) {
+   	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);   	} 
+	else DEBUG(E_USER_STRAT, "X is more than X_BEGIN_CURVE_HOME");
+		
+
+   trajectory_only_a_abs(&mainboard.traj, COLOR_A_ABS(90));
+   err = WAIT_COND_OR_TRAJ_END(y_is_more_than(Y_BEGIN_CURVE), END_OBSTACLE|END_BLOCKING|END_INTR);
+   if(err) {
+   	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);  	}
+	else DEBUG(E_USER_STRAT, "Y is more than Y_BEGIN_CURVE");
+
+   trajectory_only_a_abs(&mainboard.traj, COLOR_A_ABS(final_angle));
+   err=WAIT_COND_OR_TRAJ_END(x_is_more_than(X_END_CURVE), TRAJ_FLAGS_NO_NEAR);
+	strat_hardstop();
+   if(err) {
+   	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);   	}  
+	else DEBUG(E_USER_STRAT, "X is more than X_END_CURVE");
+
+	
+end:
+   DEBUG(E_USER_STRAT, "End");
+   /* restore speed and quadramp values */
+	strat_set_speed(old_spdd, old_spda);
+   strat_limit_speed_enable();
+   quadramp_set_2nd_order_vars(&mainboard.angle.qr,old_var_2nd_ord_pos,old_var_2nd_ord_neg);
+   return err;
+}
+
 

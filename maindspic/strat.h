@@ -300,7 +300,7 @@ uint8_t strat_game(void);
 /********************************************
  * in strat_begin.c 
  *******************************************/
-uint8_t strat_begin(void);
+uint8_t strat_begin(uint16_t y_begin_curve, int16_t final_angle);
 
 
 /* add here more strat functions in files */

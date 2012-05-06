@@ -640,7 +640,7 @@ static void auto_position(void)
 	strat_reset_pos(0, COLOR_Y(ROBOT_DIS2_WALL), 90);
 	
 	/* prepare to x axis */
-	trajectory_d_rel(&mainboard.traj, 195); //35
+	trajectory_d_rel(&mainboard.traj, 250-ROBOT_CENTER_TO_BACK); //35 //195
 	err = wait_traj_end(END_INTR|END_TRAJ);
 	if (err == END_INTR)
 		goto intr;
@@ -955,6 +955,8 @@ parse_pgm_inst_t cmd_strat_conf3 = {
 struct cmd_subtraj1_result {
 	fixed_string_t arg0;
 	fixed_string_t arg1;
+ 	int32_t arg2;
+ 	int32_t arg3;
 };
 
 /* function called when cmd_subtraj1 is parsed successfully */
@@ -965,11 +967,8 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 
 
 	if (strcmp_P(res->arg1, PSTR("begin")) == 0) {
-		err = strat_begin();
+		err = strat_begin(res->arg2, res->arg3);
 	}
-
-	
-
 	printf_P(PSTR("substrat returned %s\r\n"), get_err(err));
 	trajectory_hardstop(&mainboard.traj);
 }
@@ -978,15 +977,18 @@ prog_char str_subtraj1_arg0[] = "subtraj";
 parse_pgm_token_string_t cmd_subtraj1_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg0, str_subtraj1_arg0);
 prog_char str_subtraj1_arg1[] = "begin";
 parse_pgm_token_string_t cmd_subtraj1_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg1, str_subtraj1_arg1);
-//
-prog_char help_subtraj1[] = "Test sub-trajectories (a,b,c,d: specific params)";
+parse_pgm_token_num_t cmd_subtraj1_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg2, INT32);
+parse_pgm_token_num_t cmd_subtraj1_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg3, INT32);
+prog_char help_subtraj1[] = "Test sub-trajectories (a,b,c: specific params)";
 parse_pgm_inst_t cmd_subtraj1 = {
 	.f = cmd_subtraj1_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
 	.help_str = help_subtraj1,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_subtraj1_arg0, 
-		(prog_void *)&cmd_subtraj1_arg1, 
+		(prog_void *)&cmd_subtraj1_arg1,
+ 		(prog_void *)&cmd_subtraj1_arg2, 
+ 		(prog_void *)&cmd_subtraj1_arg3,  
 		NULL,
 	},
 };
