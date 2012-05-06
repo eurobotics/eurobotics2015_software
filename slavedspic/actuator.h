@@ -167,9 +167,15 @@ uint16_t turbine_get_blow_speed(turbine_t *turbine);
 
 typedef struct {
 	uint8_t type;
-#define FINGERS_TYPE_FLOOR		0
-#define FINGERS_TYPE_TOTEM		1
-#define FINGERS_TYPE_MAX		2
+
+#define FINGERS_TYPE_FLOOR		      0
+#define FINGERS_TYPE_TOTEM		      1
+#define FINGERS_TYPE_MAX		      2 //XXX
+
+#define FINGERS_TYPE_FLOOR_RIGHT		3
+#define FINGERS_TYPE_FLOOR_LEFT		4
+#define FINGERS_TYPE_TOTEM_RIGHT		5
+#define FINGERS_TYPE_TOTEM_LEFT		6
 
 	uint8_t mode;
 #define FINGERS_MODE_HUG		0
