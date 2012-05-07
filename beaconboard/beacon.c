@@ -162,15 +162,15 @@ void beacon_init(void)
 	IC8CONbits.ICM = 0b011; 	// generate capture event on every rising edge
 
 	/* enable all inputs capture interrupts and Timer 2 */
-	IPC0bits.IC1IP = 6; 	// setup IC1 interrupt priority level XXX, higher than scheduler!
+	IPC0bits.IC1IP = 5; 	// setup IC1 interrupt priority level XXX, higher than scheduler!
 	IFS0bits.IC1IF = 0; 	// clear IC1 Interrupt Status Flag
 	IEC0bits.IC1IE = 1; 	// enable IC1 interrupt
 
-	IPC1bits.IC2IP = 6; 	// setup IC2 interrupt priority level XXX, higher than scheduler!
+	IPC1bits.IC2IP = 5; 	// setup IC2 interrupt priority level XXX, higher than scheduler!
 	IFS0bits.IC2IF = 0; 	// clear IC2 Interrupt Status Flag
 	IEC0bits.IC2IE = 1; 	// enable IC2 interrupt
 
-	IPC5bits.IC7IP = 5; 	// setup IC7 interrupt priority level XXX, higher than scheduler!
+	IPC5bits.IC7IP = 6; 	// setup IC7 interrupt priority level XXX, higher than scheduler!
 	IFS1bits.IC7IF = 0; 	// clear IC7 Interrupt Status Flag
 	IEC1bits.IC7IE = 1; 	// enable IC7 interrupt
 
@@ -197,11 +197,11 @@ void beacon_init(void)
 /* input compare 1 interrupt connected to IR_SENSOR_0_DEG */
 void __attribute__((__interrupt__, no_auto_psv)) _IC1Interrupt(void)
 {
-	//uint8_t flags;
+	uint8_t flags;
 	
 	/* reset flag */
 	_IC1IF=0;
-	
+
 	/* Capture of Timer 2 counts on falling and risign edge of IR sensor.
     * After falling edge set valid_pulse.
 	 */
@@ -212,20 +212,20 @@ void __attribute__((__interrupt__, no_auto_psv)) _IC1Interrupt(void)
 
 	/* rising edge */
 	if ( IR_SENSOR_0_DEG_PIN()) {
-		//IRQ_LOCK(flags);
+		IRQ_LOCK(flags);
 		count_edge[IR_SENSOR_0_DEG][EDGE_RISING] = (int32_t)IC1BUF;
 		count_edge_ov[IR_SENSOR_0_DEG][EDGE_RISING] = _T2IF;
+		IRQ_UNLOCK(flags);
 		valid_pulse[IR_SENSOR_0_DEG] = 0;
-		//IRQ_UNLOCK(flags);
-
 	}
 	/* falling edge */
 	else {
-		//IRQ_LOCK(flags);
+		IRQ_LOCK(flags);
 		count_edge[IR_SENSOR_0_DEG][EDGE_FALLING] = (int32_t)IC1BUF;
 		count_edge_ov[IR_SENSOR_0_DEG][EDGE_FALLING] = _T2IF;
+		IRQ_UNLOCK(flags);
 		valid_pulse[IR_SENSOR_0_DEG] = 1;
-		//IRQ_UNLOCK(flags);
+
 	}
 	
 }
@@ -233,12 +233,11 @@ void __attribute__((__interrupt__, no_auto_psv)) _IC1Interrupt(void)
 /* input compare 2 interrupt connected to IR_SENSOR_180_DEG */
 void __attribute__((__interrupt__, no_auto_psv)) _IC2Interrupt(void)
 {
-	//uint8_t flags;
-	
+	uint8_t flags;
+
 	/* reset flag */
 	_IC2IF=0;
-
-
+	
 	/* Capture of Timer 2 counts on falling and risign edge of IR sensor.
     * After falling edge set valid_pulse.
 	 */
@@ -249,27 +248,27 @@ void __attribute__((__interrupt__, no_auto_psv)) _IC2Interrupt(void)
 
 	/* rising edge */
 	if ( IR_SENSOR_180_DEG_PIN()) {
-		//IRQ_LOCK(flags);
+		IRQ_LOCK(flags);
 		count_edge[IR_SENSOR_180_DEG][EDGE_RISING] = (int32_t)IC2BUF;
 		count_edge_ov[IR_SENSOR_180_DEG][EDGE_RISING] = _T2IF;
 		valid_pulse[IR_SENSOR_180_DEG] = 0;
-		//IRQ_UNLOCK(flags);
-
+		IRQ_UNLOCK(flags);
 	}
 	/* falling edge */
 	else {
-		//IRQ_LOCK(flags);
+		IRQ_LOCK(flags);
 		count_edge[IR_SENSOR_180_DEG][EDGE_FALLING] = (int32_t)IC2BUF;
 		count_edge_ov[IR_SENSOR_180_DEG][EDGE_FALLING] = _T2IF;
 		valid_pulse[IR_SENSOR_180_DEG] = 1;
-		//IRQ_UNLOCK(flags);
+		IRQ_UNLOCK(flags);
 	}
+
 }
 
 /* input compare 7 interrupt connected to turn sensor aligned with IR_SENSOR_0_DEG */
 void __attribute__((__interrupt__, no_auto_psv)) _IC7Interrupt(void)
 {
-	//uint8_t flags;
+	uint8_t flags;
 	
 	/* reset flag */
 	_IC7IF=0;
@@ -279,7 +278,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _IC7Interrupt(void)
 	 */
 
 	/* block interrupt */
-	//IRQ_LOCK(flags);
+	IRQ_LOCK(flags);
 	
 	/* reset timer */
 	TMR2 = 0;
@@ -299,7 +298,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _IC7Interrupt(void)
 	valid_period = 1;
 
 	/* unblock interrupt */
-	//IRQ_UNLOCK(flags);
+	IRQ_UNLOCK(flags);
 }
 
 /* TODO: input compare 7 interrupt connected to turn sensor aligned with IR_SENSOR_180_DEG */
@@ -522,6 +521,7 @@ void sensor_calc(uint8_t sensor)
 #ifdef TWO_OPPONENTS
 	int16_t d_opp1, d_opp2;
 	uint8_t tracking_update = 0;
+	int16_t angle_dif = 0;
 #define OPPONENT_1	1
 #define OPPONENT_2	2
 #endif
@@ -621,6 +621,9 @@ void sensor_calc(uint8_t sensor)
 	local_dist = get_dist_array(sensor, count_size, local_count_period);
 	//local_dist = get_dist_array(sensor, count_size_filtered, local_count_period_filtered);
 
+	if(local_dist == DIST_ERROR)
+		goto error;
+
 
 	/* debug angle and distance */
 	//BEACON_DEBUG("a = %.4ld deg / d = %.4ld mm", local_angle, local_dist);
@@ -702,13 +705,17 @@ void sensor_calc(uint8_t sensor)
 		 */
 
 #ifdef ROBOT_2ND
-#define ANGLE_MARGIN	5
+#define ANGLE_MARGIN	4
 #define DIST_MARGIN	150
-		if(beacon.robot_2nd_x != I2C_OPPONENT_NOT_THERE 
-			&& (ABS(beacon.robot_2nd_angle) - ABS(local_angle)) < ANGLE_MARGIN
-			&& (ABS(beacon.robot_2nd_dist) - ABS(local_dist)) < DIST_MARGIN) {
-			BEACON_NOTICE("discarting opponent because is robot 2nd (%d, %d)", local_angle, local_dist);
-			goto error;
+		if(beacon.robot_2nd_x != I2C_OPPONENT_NOT_THERE) {
+			
+			angle_dif = beacon.robot_2nd_angle - local_angle;					
+
+			if( ABS(angle_dif) < ANGLE_MARGIN) {
+				//&& (ABS(beacon.robot_2nd_dist) - ABS(local_dist)) < DIST_MARGIN) {
+				BEACON_NOTICE("discarting opponent because is robot 2nd (a %ld, diff %d)", local_angle, angle_dif);
+				goto error;
+			}
 		}
 #endif
 
@@ -811,20 +818,7 @@ void sensor_calc(uint8_t sensor)
 			UNLIKELY CASE: case opponent robots have a reflected tape on beacon sensor place, like our secondary robot.  
 			Solution: discard if angle is very similar to opponents angle
 		 */
-#if 0
-#define ANGLE_MARGIN	5
-		if(beacon.opponent1_x != I2C_OPPONENT_NOT_THERE 
-			&& (ABS(beacon.opponent1_angle) - ABS(local_angle)) < ANGLE_MARGIN) {
-			BEACON_NOTICE("discarting 2nd_robot because is opponent 1");
-			goto error;
-		}
 
-		if(beacon.opponent2_x != I2C_OPPONENT_NOT_THERE
-			&& (ABS(beacon.opponent2_angle) - ABS(local_angle)) < ANGLE_MARGIN) {
-			BEACON_NOTICE("discarting 2nd_robot because is opponent 2");
-			goto error;
-		}
-#endif
 		/* update results */	
 		IRQ_LOCK(flags);			
 		beacon.robot_2nd_x = result_x;
