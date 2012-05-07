@@ -643,7 +643,7 @@ uint8_t measure2distance_sensor_180 [] = {
 
 /* size measure params */
 #define S0_MEASURE_MAX	4500
-#define S0_MEASURE_MIN 	820
+#define S0_MEASURE_MIN 	1236 //820
 
 /* get distance params */
 #define S0_X_EVAL_DELTA		8
@@ -1147,8 +1147,10 @@ uint16_t get_dist_array(uint8_t sensor, int32_t size, int32_t period)
 		/* saturate to working range */
 		if(measure > S0_MEASURE_MAX)
 			measure = S0_MEASURE_MAX;
-		if(measure < S0_MEASURE_MIN)
+		if(measure < S0_MEASURE_MIN) {
 			measure = S0_MEASURE_MIN;
+			return DIST_ERROR;			/* HACK for not detect s180 beacon, very specific case */
+		}
 	
 		/* calculate array index */
 		index = (S0_ARRAY_SIZE-1) - ((measure-S0_X_EVAL_MIN)/S0_X_EVAL_DELTA);	

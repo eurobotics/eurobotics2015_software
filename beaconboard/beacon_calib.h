@@ -22,4 +22,5 @@
 
 
 /* get distance (cm) from calib array */
+#define DIST_ERROR 3000
 uint16_t get_dist_array(uint8_t sensor, int32_t size, int32_t period);
