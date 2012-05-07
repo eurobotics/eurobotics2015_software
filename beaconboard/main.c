@@ -209,8 +209,8 @@ int main(void)
 	sei();
 
 	/* DINAMIC LOGS */
-	beaconboard.log_level = 5;
-	beaconboard.logs[0] = E_USER_BEACON;
+	//beaconboard.log_level = 5;
+	//beaconboard.logs[0] = E_USER_BEACON;
 
 	/* hello */
 	printf_P(PSTR("\r\n"));

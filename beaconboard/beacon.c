@@ -162,15 +162,15 @@ void beacon_init(void)
 	IC8CONbits.ICM = 0b011; 	// generate capture event on every rising edge
 
 	/* enable all inputs capture interrupts and Timer 2 */
-	IPC0bits.IC1IP = 5; 	// setup IC1 interrupt priority level XXX, higher than scheduler!
+	IPC0bits.IC1IP = 6; 	// setup IC1 interrupt priority level XXX, higher than scheduler!
 	IFS0bits.IC1IF = 0; 	// clear IC1 Interrupt Status Flag
 	IEC0bits.IC1IE = 1; 	// enable IC1 interrupt
 
-	IPC1bits.IC2IP = 5; 	// setup IC2 interrupt priority level XXX, higher than scheduler!
+	IPC1bits.IC2IP = 6; 	// setup IC2 interrupt priority level XXX, higher than scheduler!
 	IFS0bits.IC2IF = 0; 	// clear IC2 Interrupt Status Flag
 	IEC0bits.IC2IE = 1; 	// enable IC2 interrupt
 
-	IPC5bits.IC7IP = 6; 	// setup IC7 interrupt priority level XXX, higher than scheduler!
+	IPC5bits.IC7IP = 5; 	// setup IC7 interrupt priority level XXX, higher than scheduler!
 	IFS1bits.IC7IF = 0; 	// clear IC7 Interrupt Status Flag
 	IEC1bits.IC7IE = 1; 	// enable IC7 interrupt
 
@@ -197,7 +197,7 @@ void beacon_init(void)
 /* input compare 1 interrupt connected to IR_SENSOR_0_DEG */
 void __attribute__((__interrupt__, no_auto_psv)) _IC1Interrupt(void)
 {
-	uint8_t flags;
+	//uint8_t flags;
 	
 	/* reset flag */
 	_IC1IF=0;
@@ -212,20 +212,20 @@ void __attribute__((__interrupt__, no_auto_psv)) _IC1Interrupt(void)
 
 	/* rising edge */
 	if ( IR_SENSOR_0_DEG_PIN()) {
-		IRQ_LOCK(flags);
+		//IRQ_LOCK(flags);
 		count_edge[IR_SENSOR_0_DEG][EDGE_RISING] = (int32_t)IC1BUF;
 		count_edge_ov[IR_SENSOR_0_DEG][EDGE_RISING] = _T2IF;
 		valid_pulse[IR_SENSOR_0_DEG] = 0;
-		IRQ_UNLOCK(flags);
+		//IRQ_UNLOCK(flags);
 
 	}
 	/* falling edge */
 	else {
-		IRQ_LOCK(flags);
+		//IRQ_LOCK(flags);
 		count_edge[IR_SENSOR_0_DEG][EDGE_FALLING] = (int32_t)IC1BUF;
 		count_edge_ov[IR_SENSOR_0_DEG][EDGE_FALLING] = _T2IF;
 		valid_pulse[IR_SENSOR_0_DEG] = 1;
-		IRQ_UNLOCK(flags);
+		//IRQ_UNLOCK(flags);
 	}
 	
 }
@@ -233,7 +233,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _IC1Interrupt(void)
 /* input compare 2 interrupt connected to IR_SENSOR_180_DEG */
 void __attribute__((__interrupt__, no_auto_psv)) _IC2Interrupt(void)
 {
-	uint8_t flags;
+	//uint8_t flags;
 	
 	/* reset flag */
 	_IC2IF=0;
@@ -249,27 +249,27 @@ void __attribute__((__interrupt__, no_auto_psv)) _IC2Interrupt(void)
 
 	/* rising edge */
 	if ( IR_SENSOR_180_DEG_PIN()) {
-		IRQ_LOCK(flags);
+		//IRQ_LOCK(flags);
 		count_edge[IR_SENSOR_180_DEG][EDGE_RISING] = (int32_t)IC2BUF;
 		count_edge_ov[IR_SENSOR_180_DEG][EDGE_RISING] = _T2IF;
 		valid_pulse[IR_SENSOR_180_DEG] = 0;
-		IRQ_UNLOCK(flags);
+		//IRQ_UNLOCK(flags);
 
 	}
 	/* falling edge */
 	else {
-		IRQ_LOCK(flags);
+		//IRQ_LOCK(flags);
 		count_edge[IR_SENSOR_180_DEG][EDGE_FALLING] = (int32_t)IC2BUF;
 		count_edge_ov[IR_SENSOR_180_DEG][EDGE_FALLING] = _T2IF;
 		valid_pulse[IR_SENSOR_180_DEG] = 1;
-		IRQ_UNLOCK(flags);
+		//IRQ_UNLOCK(flags);
 	}
 }
 
 /* input compare 7 interrupt connected to turn sensor aligned with IR_SENSOR_0_DEG */
 void __attribute__((__interrupt__, no_auto_psv)) _IC7Interrupt(void)
 {
-	uint8_t flags;
+	//uint8_t flags;
 	
 	/* reset flag */
 	_IC7IF=0;
@@ -279,7 +279,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _IC7Interrupt(void)
 	 */
 
 	/* block interrupt */
-	IRQ_LOCK(flags);
+	//IRQ_LOCK(flags);
 	
 	/* reset timer */
 	TMR2 = 0;
@@ -299,7 +299,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _IC7Interrupt(void)
 	valid_period = 1;
 
 	/* unblock interrupt */
-	IRQ_UNLOCK(flags);
+	//IRQ_UNLOCK(flags);
 }
 
 /* TODO: input compare 7 interrupt connected to turn sensor aligned with IR_SENSOR_180_DEG */
@@ -597,9 +597,12 @@ void sensor_calc(uint8_t sensor)
 
 
 	/* debug counts, uncomment for calibrate */
-	//BEACON_DEBUG("period = %.5ld / size = %.5ld / middle = %.5ld (x0.1)",
-					 //local_count_period_filtered/10, count_size_filtered/10, count_middle_filtered/10);
+	/*
+	BEACON_DEBUG("period = %.5ld / size = %.5ld / middle = %.5ld (x0.1)",
+					 local_count_period_filtered/10, count_size_filtered/10, count_middle_filtered/10);
 					 //local_count_period/10, count_size/10, count_middle/10);
+	return;
+	*/
 
 	/* if pulse width is out of range return */
 /*		if(count_size > 5000){
@@ -632,10 +635,19 @@ void sensor_calc(uint8_t sensor)
 	}
 #endif
 
-	/* XXX: check distance range */
-
 	/* calculate (x,y) coordenates relative to (0,0) */
 	beacon_angle_dist_to_x_y(local_angle, local_dist, &result_x, &result_y);
+
+	/* error if point is out off playground */
+#define PLAYGROUND_MARGIN 120
+	if(result_x < PLAYGROUND_MARGIN || result_x > (3000-PLAYGROUND_MARGIN)) {
+		BEACON_NOTICE("discard xy (%ld %ld), x is out of playground", result_x, result_y);
+		goto error;
+	}
+	if(result_y < PLAYGROUND_MARGIN || result_y > (2000-PLAYGROUND_MARGIN)) {
+		BEACON_NOTICE("discard xy (%ld %ld), y is out of playground", result_x, result_y);
+		goto error;
+	}
 
 
 #ifdef BEACON_MODE_EXTERNAL
@@ -684,11 +696,22 @@ void sensor_calc(uint8_t sensor)
 
 #define TRACKING_WINDOW_mm	200
 	
-		/* XXX case of reflexive beacon on in our secondary robot.
-			Solution: discard if position very similar to robot_2nd??
+		/* XXX 
+			HIGH LIKELY CASE: case of reflexive beacon on in our secondary robot.
+			Solution: discard if the angle is very similar to secondary robot angle
 		 */
-		//if(distance_between(result_x, result_y, beacon.robot_2nd_x, beacon.robot_2nd_y) < TRACKING_WINDOW_mm)
-		//	return;
+
+#ifdef ROBOT_2ND
+#define ANGLE_MARGIN	5
+#define DIST_MARGIN	150
+		if(beacon.robot_2nd_x != I2C_OPPONENT_NOT_THERE 
+			&& (ABS(beacon.robot_2nd_angle) - ABS(local_angle)) < ANGLE_MARGIN
+			&& (ABS(beacon.robot_2nd_dist) - ABS(local_dist)) < DIST_MARGIN) {
+			BEACON_NOTICE("discarting opponent because is robot 2nd (%d, %d)", local_angle, local_dist);
+			goto error;
+		}
+#endif
+
 
 		/* distance from new xy to opponents xy */
 		d_opp1 = distance_between(result_x, result_y, beacon.tracking_opp1_x, beacon.tracking_opp1_y);
@@ -762,15 +785,18 @@ void sensor_calc(uint8_t sensor)
 			//BEACON_DEBUG("opponent 2 not there");
 			beacon.opponent2_x = I2C_OPPONENT_NOT_THERE;	
 		}	
-		//BEACON_NOTICE("opp1(%.3d, %.3ld, %.4ld, %.4ld, %.4ld) opp2(%.3d, %.3ld, %.4ld, %.4ld, %.4ld)",
-		//					d_opp1, beacon.opponent1_angle, beacon.opponent1_dist, beacon.opponent1_x, beacon.opponent1_y,
-		//					d_opp2, beacon.opponent2_angle, beacon.opponent2_dist, beacon.opponent2_x, beacon.opponent2_y);
 
-		BEACON_NOTICE("opponent_1 (%.3ld, %.4ld, %.4ld, %.4ld) "
-						  "opponent_2 (%.3ld, %.4ld, %.4ld, %.4ld) "
-						  "robot_2nd  (%.3ld, %.4ld, %.4ld, %.4ld) ",
-						  beacon.opponent1_angle, beacon.opponent1_dist, beacon.opponent1_x, beacon.opponent1_y
+		BEACON_NOTICE("opp1 (%.3ld, %.4ld, %.4ld, %.4ld) "
+	#ifdef TWO_OPPONENTS
+						  "opp2 (%.3ld, %.4ld, %.4ld, %.4ld) "
+	#endif
+	#ifdef ROBOT_2ND
+						  "r2nd (%.3ld, %.4ld, %.4ld, %.4ld) "
+	#endif
+						  , beacon.opponent1_angle, beacon.opponent1_dist, beacon.opponent1_x, beacon.opponent1_y
+	#ifdef TWO_OPPONENTS
 						  , beacon.opponent2_angle, beacon.opponent2_dist, beacon.opponent2_x, beacon.opponent2_y
+	#endif
 	#ifdef ROBOT_2ND
 						  , beacon.robot_2nd_angle, beacon.robot_2nd_dist, beacon.robot_2nd_x, beacon.robot_2nd_y	
 	#endif
@@ -781,10 +807,24 @@ void sensor_calc(uint8_t sensor)
 #ifdef ROBOT_2ND
 	else /* IR_SENSOR_0_DEG */
 	{
-		/* XXX: case opponent robots have a reflected tape on beacon sensor place, like our secondary robot.
-			Solution: dicard if it's not in secondary robot working area??? 
+		/* XXX
+			UNLIKELY CASE: case opponent robots have a reflected tape on beacon sensor place, like our secondary robot.  
+			Solution: discard if angle is very similar to opponents angle
 		 */
+#if 0
+#define ANGLE_MARGIN	5
+		if(beacon.opponent1_x != I2C_OPPONENT_NOT_THERE 
+			&& (ABS(beacon.opponent1_angle) - ABS(local_angle)) < ANGLE_MARGIN) {
+			BEACON_NOTICE("discarting 2nd_robot because is opponent 1");
+			goto error;
+		}
 
+		if(beacon.opponent2_x != I2C_OPPONENT_NOT_THERE
+			&& (ABS(beacon.opponent2_angle) - ABS(local_angle)) < ANGLE_MARGIN) {
+			BEACON_NOTICE("discarting 2nd_robot because is opponent 2");
+			goto error;
+		}
+#endif
 		/* update results */	
 		IRQ_LOCK(flags);			
 		beacon.robot_2nd_x = result_x;
@@ -794,16 +834,21 @@ void sensor_calc(uint8_t sensor)
 		IRQ_UNLOCK(flags);
 	
 		/* final results */
-		//BEACON_NOTICE("robot_2nd: a = %.3ld / d = %.4ld / x = %.4ld / y = %.4ld",
-		//				 beacon.robot_2nd_angle, beacon.robot_2nd_dist,
-		//				 beacon.robot_2nd_x, beacon.robot_2nd_y);
-
-		BEACON_NOTICE("opponent_1 (%.3ld, %.4ld, %.4ld, %.4ld) "
-						  "opponent_2 (%.3ld, %.4ld, %.4ld, %.4ld) "
-						  "robot_2nd  (%.3ld, %.4ld, %.4ld, %.4ld) ",
-						  beacon.opponent1_angle, beacon.opponent1_dist, beacon.opponent1_x, beacon.opponent1_y,
-						  beacon.opponent2_angle, beacon.opponent2_dist, beacon.opponent2_x, beacon.opponent2_y,
-						  beacon.robot_2nd_angle, beacon.robot_2nd_dist, beacon.robot_2nd_x, beacon.robot_2nd_y);
+		BEACON_NOTICE("opp1 (%.3ld, %.4ld, %.4ld, %.4ld) "
+	#ifdef TWO_OPPONENTS
+						  "opp2 (%.3ld, %.4ld, %.4ld, %.4ld) "
+	#endif
+	#ifdef ROBOT_2ND
+						  "r2nd (%.3ld, %.4ld, %.4ld, %.4ld) "
+	#endif
+						  , beacon.opponent1_angle, beacon.opponent1_dist, beacon.opponent1_x, beacon.opponent1_y
+	#ifdef TWO_OPPONENTS
+						  , beacon.opponent2_angle, beacon.opponent2_dist, beacon.opponent2_x, beacon.opponent2_y
+	#endif
+	#ifdef ROBOT_2ND
+						  , beacon.robot_2nd_angle, beacon.robot_2nd_dist, beacon.robot_2nd_x, beacon.robot_2nd_y	
+	#endif
+						  );
 
 	}
 #endif
