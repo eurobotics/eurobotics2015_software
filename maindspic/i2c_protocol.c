@@ -291,7 +291,7 @@ void i2c_poll_slaves(void *dummy)
 	return;
 
 /* error during pull operation */
- error_pull:
+error_pull:
 
 	/* reset op */
 	running_op = OP_READY;
@@ -451,7 +451,7 @@ void i2c_read_event(uint8_t * buf, uint16_t size)
 	return;
 
  /* received error */	
- error_recv:
+error_recv:
 
 	/* manage error */
 	i2c_errors++;

@@ -85,11 +85,11 @@
 #else
 /* /!\ half size */
 #define O_WIDTH  330
-#define O_LENGTH 280
+#define O_LENGTH 220
 #endif
 
 #define ROBOT_2ND_WIDTH  330
-#define ROBOT_2ND_LENGTH 275
+#define ROBOT_2ND_LENGTH 220
 
 #define CENTER_X 1500
 #define CENTER_Y 1000
@@ -242,7 +242,7 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 {
 #define OPP1      0
 #define OPP2      1
-#define ROBOT_2ND 2
+#define ROBOT2ND 2
 
 	int16_t x=0, y=0;
 	int8_t *name = NULL;
@@ -259,10 +259,8 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 	   get_opponent2_xy(&x, &y);
 	   name = opp2;
 	}
-	else if(type == ROBOT_2ND) {
-		/* TODO: get second robot xy */
-	   x = I2C_OPPONENT_NOT_THERE;
-	   y = 0;
+	else if(type == ROBOT2ND) {
+		get_robot_2nd_xy(&x, &y);
 	   name = robot_2nd;
 	}
 #else
@@ -276,7 +274,7 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 	   y = g_opp2_y;
 	   name = opp2;
 	}
-	else if(type == ROBOT_2ND) {
+	else if(type == ROBOT2ND) {
 	   x = g_robot_2nd_x;
 	   y = g_robot_2nd_y;
 	   name = robot_2nd;
@@ -1044,7 +1042,7 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 	g_robot_2nd_y = robot_2nd_y;
 #endif
 
- retry:
+retry:
 
 #ifdef POLYS_IN_PATH
 	/* reset slots in path */
@@ -1094,7 +1092,7 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 	pol_opp2 = oa_new_poly(4);
 	set_opponent_poly(OPP2, pol_opp2, &robot_pt, O_WIDTH, O_LENGTH);
 	pol_robot_2nd = oa_new_poly(4);
-	set_opponent_poly(ROBOT_2ND, pol_robot_2nd, &robot_pt, ROBOT_2ND_WIDTH, ROBOT_2ND_LENGTH);
+	set_opponent_poly(ROBOT2ND, pol_robot_2nd, &robot_pt, ROBOT_2ND_WIDTH, ROBOT_2ND_LENGTH);
 
 
   /* add home area polys */
@@ -1217,7 +1215,7 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 			NOTICE(E_USER_STRAT, "reducing opponent 1 %d %d", opp1_w, opp1_l);
 			set_opponent_poly(OPP1, pol_opp1, &robot_pt, opp1_w, opp1_l);
 		}
-		else if (distance_between(robot_pt.x, robot_pt.y, opp2_x, opp2_y) < REDUCE_POLY_THRES ) {
+		if (distance_between(robot_pt.x, robot_pt.y, opp2_x, opp2_y) < REDUCE_POLY_THRES ) {
 			if (opp2_w == 0) {
 				opp2_l /= 2;
 			}
@@ -1227,7 +1225,10 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 			NOTICE(E_USER_STRAT, "reducing opponent 2 %d %d", opp2_w, opp2_l);
 			set_opponent_poly(OPP2, pol_opp2, &robot_pt, opp2_w, opp2_l);
 		}
-		else {
+		
+		if (distance_between(robot_pt.x, robot_pt.y, opp1_x, opp1_y) >= REDUCE_POLY_THRES 
+		    && distance_between(robot_pt.x, robot_pt.y, opp2_x, opp2_y) >= REDUCE_POLY_THRES)
+      {
 		
 		   /* XXX don't try to reduce robot 2nd */
 		

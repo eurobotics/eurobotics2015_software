@@ -49,7 +49,7 @@
 
 /* NUMBER OF ROBOTS TO TRACK */
 #define TWO_OPPONENTS
-/*#define ROBOT_2ND*/
+#define ROBOT_2ND
 
 /* uart 0 is for cmds and uart 1 is 
  * multiplexed between beacon and slavedspic */
@@ -137,6 +137,7 @@
 #define E_USER_BEACON       198
 
 /* EVENTS PRIORITIES */
+#ifdef old_version
 #define EVENT_PRIORITY_LED 			  170
 #define EVENT_PRIORITY_TIME           160
 #define EVENT_PRIORITY_I2C_POLL       140
@@ -145,13 +146,24 @@
 #define EVENT_PRIORITY_BEACON_POLL     80
 #define EVENT_PRIORITY_STRAT         	70
 
+#else
+
+#define EVENT_PRIORITY_LED 			  170
+#define EVENT_PRIORITY_TIME           160
+#define EVENT_PRIORITY_SENSORS        120
+#define EVENT_PRIORITY_CS             100
+#define EVENT_PRIORITY_STRAT         	30
+#define EVENT_PRIORITY_BEACON_POLL     20
+#define EVENT_PRIORITY_I2C_POLL        15
+
+#endif
 
 /* EVENTS PERIODS */
 #define EVENT_PERIOD_LED 			1000000L
 #define EVENT_PERIOD_STRAT			  25000L
-#define EVENT_PERIOD_BEACON_PULL	  50000L
-#define EVENT_PERIOD_I2C_POLL		   8000L	// 8ms
-#define EVENT_PERIOD_SENSORS		   5000L /* XXX same as CS with higher priority */
+#define EVENT_PERIOD_BEACON_PULL	  10000L
+#define EVENT_PERIOD_SENSORS		  10000L
+#define EVENT_PERIOD_I2C_POLL		   8000L
 #define EVENT_PERIOD_CS 			   5000L
 
 /* dynamic logs */
@@ -222,8 +234,8 @@ struct mainboard
 	uint8_t our_color;
 	volatile int16_t speed_a;     /* current angle speed */
 	volatile int16_t speed_d;     /* current dist speed */
-	volatile int32_t dac_l;       /* current left dac */
-	volatile int32_t dac_r;       /* current right dac */
+	int32_t dac_l;       /* current left dac */
+	int32_t dac_r;       /* current right dac */
 };
 
 

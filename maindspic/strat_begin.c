@@ -187,7 +187,7 @@ uint8_t strat_begin(uint16_t y_begin_curve, uint16_t final_angle)
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);   
 
-   end:
+end:
 	strat_set_speed(old_spdd, old_spda);
    strat_limit_speed_enable();
 

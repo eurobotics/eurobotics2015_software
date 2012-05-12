@@ -402,7 +402,7 @@ static void cmd_pt_list_parsed(void * parsed_result, void * data)
 		}
 		else if (!strcmp_P(res->arg1, PSTR("avoid_start"))) {
 			while (1) {
-				why = goto_and_avoid(pt_list[i].x, pt_list[i].y, TRAJ_FLAGS_NO_NEAR_NO_TIMER, TRAJ_FLAGS_NO_NEAR_NO_TIMER);
+				why = goto_and_avoid(pt_list[i].x, pt_list[i].y, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR_NO_TIMER);
 				printf("next point\r\n");
 				if (why != END_OBSTACLE)
 					break;
@@ -534,12 +534,12 @@ static void cmd_goto_parsed(void * parsed_result, void * data)
 		trajectory_goto_xy_abs(&mainboard.traj, res->arg2, res->arg3);
 	}
 	else if (!strcmp_P(res->arg1, PSTR("avoid"))) {
-		err = goto_and_avoid_forward(res->arg2, res->arg3, TRAJ_FLAGS_NO_NEAR, TRAJ_FLAGS_NO_NEAR);
+		err = goto_and_avoid_forward(res->arg2, res->arg3, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 		if (err != END_TRAJ && err != END_NEAR)
 			strat_hardstop();
 	}
 	else if (!strcmp_P(res->arg1, PSTR("avoid_bw"))) {
-		err = goto_and_avoid_backward(res->arg2, res->arg3, TRAJ_FLAGS_NO_NEAR, TRAJ_FLAGS_NO_NEAR);
+		err = goto_and_avoid_backward(res->arg2, res->arg3, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 		if (err != END_TRAJ && err != END_NEAR)
 			strat_hardstop();
 	}

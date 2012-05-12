@@ -183,41 +183,65 @@ struct cmd_opponent_result {
 /* function called when cmd_opponent is parsed successfully */
 static void cmd_opponent_parsed(void *parsed_result, void *data)
 {
+	struct cmd_opponent_result * res = parsed_result;
+
 	int16_t x,y,d,a;
 	int16_t x2, y2, d2, a2;
-	int8_t opp1, opp2;
+	int16_t x_r2nd,y_r2nd,d_r2nd,a_r2nd;
+	int8_t opp1, opp2, r2nd;
 //	microseconds us;
 
-	do {
-
-#ifdef TWO_OPPONENTS
-	opp1 = get_opponent_xyda(&x, &y, &d, &a);
-	opp2 = get_opponent2_xyda(&x2, &y2, &d2, &a2);
-
-	if (opp1 == -1 && opp2 == -1)
-		printf_P(PSTR("No opponent\r\n"));
-	else if (opp1 == -1)
-		printf_P(PSTR("opp1 not there / opp2 x=%d y=%d, d=%d a=%d\r\n"), x2, y2, d2, a2);
-	else if (opp2 == -1)
-		printf_P(PSTR("opp1 x=%d y=%d, d=%d a=%d / opp2 not there\r\n"), x, y, d, a);
+	if(data)
+	{
+		beaconboard.opponent_d = res->arg2;
+		beaconboard.opponent_a = res->arg3;
+		beaconboard.opponent_x = 0;
+	}
 	else
-		printf_P(PSTR("opp1 x=%d y=%d, d=%d a=%d / opp2 x=%d y=%d, d=%d a=%d\r\n"),
-							 x, y, d, a, x2, y2, d2, a2);
-#else
-	if (get_opponent_xyda(&x, &y, &d, &a) == -1)
-		printf_P(PSTR("No opponent\r\n"));
-	else
-		printf_P(PSTR("x=%d y=%d, d=%d a=%d\r\n"), x, y, d, a);
-#endif
-
-//	us = time_get_us2();
-//	while(time_get_us2()-us < 200000L) {
-//		beacon_opponent_pulling();
-//	}
-
-	wait_ms(200);
-
-	} while (!cmdline_keypressed());
+		do {
+	
+	#ifdef TWO_OPPONENTS
+		opp1 = get_opponent_xyda(&x, &y, &d, &a);
+		opp2 = get_opponent2_xyda(&x2, &y2, &d2, &a2);
+		r2nd = get_robot_2nd_xyda(&x_r2nd, &y_r2nd, &d_r2nd, &a_r2nd);
+	
+		if (opp1 == -1 && opp2 == -1)
+			printf_P(PSTR("No opponent"));
+	
+		if (opp1 == -1)
+			printf_P(PSTR("opp1 not there"));
+		else
+			printf_P(PSTR("opp1 x=%.4d y=%.4d, d=%.4d a=%+.3d"), x, y, d, a);
+	
+		if (opp2 == -1)
+			printf_P(PSTR(" / opp2 not there"));
+		else
+			printf_P(PSTR(" / opp2 x=%.4d y=%.4d, d=%.4d a=%+.3d"), x2, y2, d2, a2);
+	
+	#ifdef ROBOT_2ND
+		if (r2nd == -1)
+			printf_P(PSTR(" / r2nd not there"));
+		else
+			printf_P(PSTR(" / r2nd x=%.4d y=%.4d, d=%.4d a=%+.3d"), x_r2nd, y_r2nd, d_r2nd, a_r2nd);
+	#endif
+	
+		printf("\n\r");
+	
+	#else
+		if (get_opponent_xyda(&x, &y, &d, &a) == -1)
+			printf_P(PSTR("No opponent\r\n"));
+		else
+			printf_P(PSTR("x=%d y=%d, d=%d a=%d\r\n"), x, y, d, a);
+	#endif
+	
+	//	us = time_get_us2();
+	//	while(time_get_us2()-us < 200000L) {
+	//		beacon_opponent_pulling();
+	//	}
+	
+		wait_ms(200);
+	
+		} while (!cmdline_keypressed());
 }
 
 prog_char str_opponent_arg0[] = "opponent";
@@ -246,7 +270,7 @@ parse_pgm_token_num_t cmd_opponent_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_oppon
 prog_char help_opponent_set[] = "Set (x,y) opponent";
 parse_pgm_inst_t cmd_opponent_set = {
 	.f = cmd_opponent_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
+	.data = (void*)1,      /* 2nd arg of func */
 	.help_str = help_opponent_set,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_opponent_arg0, 
@@ -316,7 +340,7 @@ static void cmd_start_parsed(void *parsed_result, void *data)
 		gen.log_level = 0;
 	}
 
- retry:
+retry:
 	printf_P(PSTR("Press a key when beacon ready, 'q' for skip \r\n"));
 	c = -1;
 	while(c == -1){
@@ -336,7 +360,7 @@ static void cmd_start_parsed(void *parsed_result, void *data)
 		}
 		else{
 			printf("Beacon connection SUCCESS!\r\n");		
- retry_on:
+retry_on:
 			beacon_cmd_beacon_on();
 			
 			printf("is beacon running? (s/n)\n\r");

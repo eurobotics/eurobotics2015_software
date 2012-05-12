@@ -228,11 +228,11 @@ uint8_t beacon_parse_opponent_answer(int16_t c)
 	static uint8_t state = 0, i = 0;
 	static int16_t opp_x=0, opp_y=0, opp_d=0, opp_a=0;
    #ifdef TWO_OPPONENTS
-   	static int16_t opp2_x=0, opp2_y=0, opp2_d=0, opp2_a=0;
+   static int16_t opp2_x=0, opp2_y=0, opp2_d=0, opp2_a=0;
    #endif
    
    #ifdef ROBOT_2ND
-   	static int16_t robot_2nd_x=0, robot_2nd_y=0, robot_2nd_d=0, robot_2nd_a=0;
+   static int16_t robot_2nd_x=0, robot_2nd_y=0, robot_2nd_d=0, robot_2nd_a=0;
    #endif
 
 	static uint16_t checksum = 0;
@@ -395,33 +395,6 @@ uint8_t beacon_parse_opponent_answer(int16_t c)
 				/* save data */
 				if(checksum == local_checksum) {
 
-#if not_usefull
-					if(opp_x > 3000-100) {
-						i=0;
-						beaconboard.opponent_x = I2C_OPPONENT_NOT_THERE;
-						state = 0;
-						return 1; 
-					}
-					if(opp_x < 100) {
-						i=0;
-						beaconboard.opponent_x = I2C_OPPONENT_NOT_THERE;
-						state = 0;
-						return 1; 
-					}
-					if(opp_y > 2100-100) {
-						i=0;
-						beaconboard.opponent_x = I2C_OPPONENT_NOT_THERE;
-						state = 0;
-						return 1; 
-					}
-					if(opp_y < 100) {
-						i=0;
-						beaconboard.opponent_x = I2C_OPPONENT_NOT_THERE;
-						state = 0;
-						return 1; 
-					}
-#endif						
-               /*XXX ¿esto no tiene que ir antes de los if? */
 					IRQ_LOCK(flags);
 					beaconboard.opponent_x = (int16_t)opp_x;
 					beaconboard.opponent_y = (int16_t)opp_y;		
@@ -430,33 +403,6 @@ uint8_t beacon_parse_opponent_answer(int16_t c)
 					IRQ_UNLOCK(flags);	
 
 #ifdef TWO_OPPONENTS
-#if not_usefull
-					if(opp2_x > 3000-100) {
-						i=0;
-						beaconboard.opponent2_x = I2C_OPPONENT_NOT_THERE;
-						state = 0;
-						return 1; 
-					}
-					if(opp2_x < 100) {
-						i=0;
-						beaconboard.opponent2_x = I2C_OPPONENT_NOT_THERE;
-						state = 0;
-						return 1; 
-					}
-					if(opp2_y > 2100-100) {
-						i=0;
-						beaconboard.opponent2_x = I2C_OPPONENT_NOT_THERE;
-						state = 0;
-						return 1; 
-					}
-					if(opp2_y < 100) {
-						i=0;
-						beaconboard.opponent2_x = I2C_OPPONENT_NOT_THERE;
-						state = 0;
-						return 1; 
-					}
-#endif
-               /*XXX ¿esto no tiene que ir antes de los if? */
 					IRQ_LOCK(flags);
 					beaconboard.opponent2_x = (int16_t)opp2_x;
 					beaconboard.opponent2_y = (int16_t)opp2_y;		
@@ -465,33 +411,6 @@ uint8_t beacon_parse_opponent_answer(int16_t c)
 					IRQ_UNLOCK(flags);	
 #endif						
 #ifdef ROBOT_2ND
-#if not_usefull
-					if(robot_2nd_x > 3000-100) {
-						i=0;
-						beaconboard.robot_2nd_x = I2C_OPPONENT_NOT_THERE;
-						state = 0;
-						return 1; 
-					}
-					if(robot_2nd_x < 100) {
-						i=0;
-						beaconboard.robot_2nd_x = I2C_OPPONENT_NOT_THERE;
-						state = 0;
-						return 1; 
-					}
-					if(robot_2nd_y > 2100-100) {
-						i=0;
-						beaconboard.robot_2nd_x = I2C_OPPONENT_NOT_THERE;
-						state = 0;
-						return 1; 
-					}
-					if(robot_2nd_y < 100) {
-						i=0;
-						beaconboard.robot_2nd_x = I2C_OPPONENT_NOT_THERE;
-						state = 0;
-						return 1; 
-					}
-#endif
-               /*XXX ¿esto no tiene que ir antes de los if? */
 					IRQ_LOCK(flags);
 					beaconboard.robot_2nd_x = (int16_t)robot_2nd_x;
 					beaconboard.robot_2nd_y = (int16_t)robot_2nd_y;		
@@ -648,7 +567,7 @@ void beacon_protocol(void * dummy)
 {
 	int16_t i;
 	static uint8_t a = 0;
-	int16_t c = 0;
+	volatile int16_t c = 0;
 	uint8_t ret = 0;
 	static microseconds pull_time_us = 0;
 	
@@ -693,7 +612,7 @@ void beacon_protocol(void * dummy)
 		}
 
 		/* request opponent possition */
-		if((time_get_us2() - pull_time_us > 100000UL)) {
+		if((time_get_us2() - pull_time_us > 50000UL)) {
 			beacon_pull_opponent();	
 			pull_time_us = time_get_us2();
 		}

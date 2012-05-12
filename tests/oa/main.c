@@ -89,7 +89,7 @@ int main(void)
 	error_register_debug(mylog);
 	
 	/* set playground boundingbox */
-	strat_set_bounding_box(AREA_BBOX_4X4);
+	strat_set_bounding_box(I2C_COLOR_PURPLE);
 
 	/* goto and avoid */
 	DEBUG(E_USER_STRAT, "robot at: %d %d %d", robot_x, robot_y, robot_a_deg);

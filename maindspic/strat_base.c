@@ -306,43 +306,78 @@ void strat_limit_speed_disable(void)
 /* called periodically */
 void strat_limit_speed(void)
 {
+#define SPEED_MIN	20
+
+#ifdef TWO_OPPONENTS
+#ifdef ROBOT_2ND
+#define NB_OPPONENTS	3
+#else
+#define NB_OPPONENTS	2
+#endif
+#endif
+
 	uint16_t lim_d = 0, lim_a = 0;
 	int16_t opp_d, opp_a;
-#ifdef TWO_OPPONENTS
-	int16_t opp2_d, opp2_a;
-   int8_t ret1, ret2;
-#endif
+	int16_t speed_d = 0;
+	uint8_t flags;
+	#ifdef TWO_OPPONENTS
+	int16_t d[NB_OPPONENTS], a[NB_OPPONENTS];
+	int8_t ret[NB_OPPONENTS];
+	uint16_t lim_d_save = 0, lim_a_save = 0;
+	uint8_t i;
+	#endif
 
 	if (strat_limit_speed_enabled == 0)
 		goto update;
 
-#ifdef TWO_OPPONENTS
-	ret1 = get_opponent_da(&opp_d, &opp_a);
-	ret2 = get_opponent2_da(&opp2_d, &opp2_a);
 
-   if(ret1 == -1 && ret2 == -1){	
-      //DEBUG(E_USER_STRAT, "NO OPPONENTS");
+#ifdef TWO_OPPONENTS
+	ret[0] = get_opponent_da(&d[0], &a[0]);
+	ret[1] = get_opponent2_da(&d[1], &a[1]);
+#ifdef ROBOT_2ND
+	ret[2] = get_robot_2nd_da(&d[2], &a[2]);
+#endif
+#endif
+
+
+#ifdef TWO_OPPONENTS
+#ifdef ROBOT_2ND
+   if(ret[0] == -1 && ret[1] == -1 && ret[2]== -1){	
       goto update;
-   } 
-   else if(ret1 == -1) {
-		opp_d = opp2_d;
-		opp_a = opp2_a;
    }
-   else if(ret2 == -1) {
-		opp_d = opp_d;
-		opp_a = opp_a;   
+#else
+   if(ret[0] == -1 && ret[1] == -1){	
+      goto update;
    }
-	else
-      if(opp_d > opp2_d ) {
-		   opp_d = opp2_d;
-		   opp_a = opp2_a;
-	   }
+#endif
 
 #else
 	if (get_opponent_da(&opp_d, &opp_a) == -1)
 		goto update;
 #endif
-		
+
+
+	IRQ_LOCK(flags);
+	speed_d = mainboard.speed_d;
+	IRQ_UNLOCK(flags);
+
+
+#ifdef TWO_OPPONENTS
+	for(i=0; i<NB_OPPONENTS; i++) 
+	{
+		/* skip opponents which not there */
+		if(ret[i] == -1)
+			continue;
+
+		/* save limits */
+		lim_d_save = lim_d;
+		lim_a_save = lim_a;
+
+		/* distance and angle to evaluate */
+		opp_d = d[i];
+		opp_a = a[i];
+#endif
+	
 #ifdef HOMOLOGATION
 	if (opp_d < 600) {
 		lim_d = SPEED_ANGLE_VERY_SLOW;
@@ -350,34 +385,47 @@ void strat_limit_speed(void)
 	}
 #else
 	if (opp_d < 500) {
-		if (mainboard.speed_d > 0 && (opp_a > 320 || opp_a < 40)) {
-			lim_d = SPEED_DIST_SLOW;
-			lim_a = SPEED_ANGLE_SLOW;
+		if (speed_d > SPEED_MIN && (opp_a > 290 || opp_a < 70)) {
+			lim_d = SPEED_DIST_VERY_SLOW;
+			lim_a = SPEED_ANGLE_VERY_SLOW;
 		}
-		else if (mainboard.speed_d < 0 && (opp_a < 220 && opp_a > 140)) {
+		else if (speed_d < -SPEED_MIN && (opp_a < 250 && opp_a > 110)) {
+			lim_d = SPEED_DIST_VERY_SLOW;
+			lim_a = SPEED_ANGLE_VERY_SLOW;
+		}
+		else {
 			lim_d = SPEED_DIST_SLOW;
-			lim_a = SPEED_ANGLE_SLOW;
+			lim_a = SPEED_ANGLE_VERY_SLOW;
 		}
 	}
 #endif		
-	else if (opp_d < 600) {
-		if (mainboard.speed_d > 0 && (opp_a > 320 || opp_a < 40)) {
+	else if (opp_d < 800) {
+		if (speed_d > SPEED_MIN && (opp_a > 290 || opp_a < 70)) {
 			lim_d = SPEED_DIST_SLOW;
-			lim_a = SPEED_ANGLE_FAST;
+			lim_a = SPEED_ANGLE_SLOW;
 		}
-		else if (mainboard.speed_d < 0 && (opp_a < 220 && opp_a > 140)) {
+		else if (speed_d < -SPEED_MIN && (opp_a < 250 && opp_a > 110)) {
 			lim_d = SPEED_DIST_SLOW;
-			lim_a = SPEED_DIST_FAST;
+			lim_a = SPEED_ANGLE_SLOW;
 		}
 	}
 
- update:
+#ifdef TWO_OPPONENTS
+		/* set the minimum limits */
+		if(lim_d != 0 && lim_d_save != 0 && lim_d_save < lim_d)
+			lim_d = lim_d_save;
+		if(lim_a != 0 && lim_a_save != 0 && lim_a_save < lim_a)
+			lim_a = lim_a_save;
+	}
+#endif
+
+update:
 	if (lim_d != strat_limit_speed_d ||
 	    lim_a != strat_limit_speed_a) {
 		strat_limit_speed_d = lim_d;
 		strat_limit_speed_a = lim_a;
 
-		DEBUG(E_USER_STRAT, "new speed limit da=%d,%d", lim_d, lim_a);
+		DEBUG(E_USER_STRAT, "new speed limit da=%d,%d (speed = %d)", lim_d, lim_a, speed_d);
 		strat_update_traj_speed();
 	}
 }
@@ -427,9 +475,14 @@ void strat_start(void)
 /* return true if we have to brake due to an obstacle */
 uint8_t __strat_obstacle(uint8_t which)
 {
+#define OBSTACLE_OPP1	0
+#define OBSTACLE_OPP2	1
+#define OBSTACLE_R2ND	2
+
+
 	int16_t x_rel, y_rel;
 	int16_t opp_x, opp_y, opp_d, opp_a;
-	int8_t ret;
+	int8_t ret = -1;
 
 	/* too slow */
 	if (ABS(mainboard.speed_d) < 150)
@@ -451,11 +504,19 @@ uint8_t __strat_obstacle(uint8_t which)
 	}
 #endif
 
-
-	if(which == 0)
+#ifdef TWO_OPPONENTS
+	if(which == OBSTACLE_OPP1)
 		ret = get_opponent_xyda(&opp_x, &opp_y,&opp_d, &opp_a);
-	else 
+	else if(which == OBSTACLE_OPP2)
 		ret = get_opponent2_xyda(&opp_x, &opp_y,&opp_d, &opp_a);
+#ifdef ROBOT_2ND
+	else if(which == OBSTACLE_R2ND)
+		ret = get_robot_2nd_xyda(&opp_x, &opp_y,&opp_d, &opp_a);
+#endif
+
+#else
+	ret = get_opponent_xyda(&opp_x, &opp_y,&opp_d, &opp_a);
+#endif
 
 	/* no opponent detected */
 	if (ret == -1) {
@@ -485,14 +546,14 @@ uint8_t __strat_obstacle(uint8_t which)
 		DEBUG(E_USER_STRAT, "opponent front d=%d, a=%d "
 		      "xrel=%d yrel=%d (speed_d=%d)", 
 		      opp_d, opp_a, x_rel, y_rel, mainboard.speed_d);
-		//sensor_obstacle_disable();
+		sensor_obstacle_disable();
 		return 1;
 	}
 	/* opponent is behind us */
 	if (mainboard.speed_d < 0 && (opp_a < 215 && opp_a > 145)) {
 		DEBUG(E_USER_STRAT, "opponent behind d=%d, a=%d xrel=%d yrel=%d", 
 		      opp_d, opp_a, x_rel, y_rel);
-		//sensor_obstacle_disable();
+		sensor_obstacle_disable();
 		return 1;
 	}
 
@@ -502,11 +563,15 @@ uint8_t __strat_obstacle(uint8_t which)
 /* return true if we have to brake due to an obstacle */
 uint8_t strat_obstacle(void)
 {
-	if(__strat_obstacle(0))
+	if(__strat_obstacle(OBSTACLE_OPP1))
 		return 1;
 #ifdef TWO_OPPONENTS
-	else if(__strat_obstacle(1))
+	else if(__strat_obstacle(OBSTACLE_OPP2))
 		return 1;
+#ifdef ROBOT_2ND
+	else if(__strat_obstacle(OBSTACLE_R2ND))
+		return 1;
+#endif
 #endif
 	else
 		return 0;
