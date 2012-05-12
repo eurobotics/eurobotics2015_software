@@ -116,8 +116,9 @@ void strat_set_bounding_box(uint8_t type)
 {
 
 	strat_infos.area_bbox.x1 = 400 + OBS_CLERANCE -10;
-	strat_infos.area_bbox.y1 = OBS_CLERANCE;
 	strat_infos.area_bbox.x2 = 3000 - 400 - OBS_CLERANCE + 10;
+	
+	strat_infos.area_bbox.y1 = OBS_CLERANCE;
 	strat_infos.area_bbox.y2 = 2000 - 44 - OBS_CLERANCE;
 
 
@@ -180,7 +181,7 @@ void strat_dump_infos(const char *caller)
 void strat_reset_infos(void)
 {
 	/* bounding box */
-	strat_set_bounding_box(-1);
+	strat_set_bounding_box(mainboard.our_color);
 
 	/* add here other infos resets */
 }

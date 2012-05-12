@@ -28,7 +28,8 @@
 #define AREA_Y 2000
 
 /* XXX obstacle clerance */
-#define OBS_CLERANCE   230.0
+#define OBS_CLERANCE       230.0
+//#define OBS_CLERANCE  205.0    /* when goes backwards */
 
 /* position of the tokens */
 #define TOTEM_1_X               1100
@@ -247,9 +248,11 @@ struct strat_infos {
 	uint8_t current_zone;
 	/* opponent zone position */
 	uint8_t opp_current_zone;
-
 	/* opponent stadistics */
 	uint32_t opp_time_zone_ms;
+
+	uint8_t treasure_in_mouth;
+	uint8_t treasure_in_boot;
 };
 extern struct strat_infos strat_infos;
 

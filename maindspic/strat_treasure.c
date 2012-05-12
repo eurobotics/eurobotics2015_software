@@ -159,6 +159,8 @@ coins_isle:
       i2c_slavedspic_wait_ready();
    }
 
+	strat_infos.treasure_in_mouth =1;
+
    if(step)
       goto end;
 goldbar:
@@ -194,6 +196,8 @@ goldbar:
    i2c_slavedspic_mode_store(1,I2C_STORE_MODE_GOLDBAR_IN_BOOT);
    time_wait_ms(500);
 
+	strat_infos.treasure_in_boot =1;
+
    if(step)
       goto end;
 
@@ -222,6 +226,8 @@ coins_totem:
       i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_TOTEM, I2C_FINGERS_MODE_HOLD,30);
       i2c_slavedspic_wait_ready();
    }
+
+	strat_infos.treasure_in_mouth =1;
 
 	/* go backward to safe position*/
 	trajectory_d_rel(&mainboard.traj, -PLACE_D_SAFE);
@@ -263,7 +269,7 @@ uint8_t strat_pickup_coins_floor(int16_t x, int16_t y, uint8_t group)
 			ERROUT(err);
 
    /*Return if opponent is in front*/
-	if(opponent_is_infront())  {
+	if(robots_infront())  {
 		ERROUT(END_OBSTACLE); }
 
 	DEBUG(E_USER_STRAT, "Open fingers floor.");
@@ -304,6 +310,7 @@ uint8_t strat_pickup_coins_floor(int16_t x, int16_t y, uint8_t group)
    i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_COINS_FLOOR);
    i2c_slavedspic_wait_ready();
 
+	strat_infos.treasure_in_mouth=1;
 
 	/* go backward to safe distance from token */
 	trajectory_d_rel(&mainboard.traj, -PLACE_D_SAFE);
@@ -311,6 +318,7 @@ uint8_t strat_pickup_coins_floor(int16_t x, int16_t y, uint8_t group)
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
+	
 end:
 	strat_set_speed(old_spdd, old_spda);
    return err;
@@ -361,6 +369,7 @@ uint8_t strat_pickup_goldbar_floor(int16_t x, int16_t y, uint8_t store)
    i2c_slavedspic_mode_store(1,I2C_STORE_MODE_GOLDBAR_IN_BOOT);
    i2c_slavedspic_wait_ready();
 	
+	strat_infos.treasure_in_boot =1;
 
 	/*go backward to safe distance from token */
 	trajectory_d_rel(&mainboard.traj, -PLACE_D_SAFE);
@@ -469,6 +478,9 @@ uint8_t strat_save_treasure_generic(int16_t x, int16_t y)
    i2c_slavedspic_mode_dump(I2C_DUMP_MODE_END_MOUTH);
    i2c_slavedspic_wait_ready();
 
+
+	strat_infos.treasure_in_mouth=0;
+
    d=distance_from_robot(COLOR_X(strat_infos.area_bbox.x1),position_get_y_s16(&mainboard.pos))+5;
 	trajectory_d_rel(&mainboard.traj, -d);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
@@ -539,6 +551,9 @@ uint8_t strat_save_treasure_in_deck_back(int16_t x, int16_t y)
 	DEBUG(E_USER_STRAT, "End of mode empty.");
    i2c_slavedspic_mode_dump(I2C_DUMP_MODE_END_BOOT);
    i2c_slavedspic_wait_ready();
+
+
+	strat_infos.treasure_in_boot =0;
 
 end:
 	strat_set_speed(old_spdd, old_spda);
@@ -620,6 +635,9 @@ uint8_t strat_save_treasure_in_hold_back(int16_t x, int16_t y)
    /*Put down hook*/
    i2c_slavedspic_mode_dump(I2C_DUMP_MODE_END_BOOT);
    i2c_slavedspic_wait_ready();
+
+
+	strat_infos.treasure_in_boot =0;
 
 end:
 	strat_set_speed(old_spdd, old_spda);

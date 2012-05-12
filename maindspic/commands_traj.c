@@ -534,6 +534,11 @@ static void cmd_goto_parsed(void * parsed_result, void * data)
 		trajectory_goto_xy_abs(&mainboard.traj, res->arg2, res->arg3);
 	}
 	else if (!strcmp_P(res->arg1, PSTR("avoid"))) {
+		err = goto_and_avoid(res->arg2, res->arg3, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+		if (err != END_TRAJ && err != END_NEAR)
+			strat_hardstop();
+	}
+	else if (!strcmp_P(res->arg1, PSTR("avoid_fw"))) {
 		err = goto_and_avoid_forward(res->arg2, res->arg3, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 		if (err != END_TRAJ && err != END_NEAR)
 			strat_hardstop();
@@ -586,7 +591,7 @@ parse_pgm_inst_t cmd_goto1 = {
 	},
 };
 
-prog_char str_goto_arg1_b[] = "xy_rel#xy_abs#xy_abs_fow#xy_abs_back#da_rel#a_to_xy#avoid#avoid_bw#a_behind_xy";
+prog_char str_goto_arg1_b[] = "xy_rel#xy_abs#xy_abs_fow#xy_abs_back#da_rel#a_to_xy#avoid#avoid_fw#avoid_bw#a_behind_xy";
 parse_pgm_token_string_t cmd_goto_arg1_b = TOKEN_STRING_INITIALIZER(struct cmd_goto_result, arg1, str_goto_arg1_b);
 parse_pgm_token_num_t cmd_goto_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_goto_result, arg3, INT32);
 
@@ -743,7 +748,7 @@ parse_pgm_inst_t cmd_position_set = {
 	},
 };
 
-#ifdef notyet
+
 
 /**********************************************************/
 /* strat configuration */
@@ -799,27 +804,12 @@ static void cmd_strat_conf_parsed(void *parsed_result, void *data)
 
 	if (!strcmp_P(res->arg1, PSTR("base"))) {
 
-		/* thresholds */
-		strat_infos.conf.th_place_prio = SLOT_PRIO_NEAR_GREEN;
-		strat_infos.conf.th_token_score = PION_SCORE;
-
 		/* flags */
 		strat_infos.conf.flags  = 0;
 #ifndef HOMOLOGATION
-		//strat_infos.conf.flags |= LINE1_TOKENS_ON_BONUS_OLD;
-		//strat_infos.conf.flags |= LINE1_TOKENS_NEAR_WALL;
-		strat_infos.conf.flags |= LINE1_OPP_TOKEN_BEFORE_PLACE;
-		strat_infos.conf.flags |= LINE1_OPP_TOKEN_AFTER_PLACE;
-		//strat_infos.conf.flags |= GREEN_OPP_ZONE_FIRST;
+
 #endif
 	}
-
-
-	/* init mirrors */
-	mirrors_set_mode(MODE_HIDE_MIRRORS);
-	time_wait_ms(700);
-	mirrors_set_mode(MODE_LOOK_FOR_FIGURES);
-	lasers_set_on();
 
 	strat_infos.dump_enabled = 1;
 	strat_dump_conf();
@@ -842,7 +832,6 @@ parse_pgm_inst_t cmd_strat_conf = {
 	},
 };
 
-#endif
 /**********************************************************/
 /* strat configuration */
 
