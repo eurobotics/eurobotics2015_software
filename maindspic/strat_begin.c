@@ -83,8 +83,7 @@ uint8_t strat_begin(uint16_t y_begin_curve, uint16_t final_angle)
    #define X_CORNER_2       900
    #define Y_CORNER_2       Y_CORNER_1+ROBOT_WIDTH/2+50
    #define LONG_DISTANCE    2500
-   //#define Y_BEGIN_CURVE    1050
-   #define Y_BEGIN_CURVE    y_begin_curve
+	#define Y_BEGIN_CURVE    y_begin_curve
    #define X_BEGIN_CURVE_HOME    325
    #define X_END_CURVE      1100
 
@@ -203,9 +202,10 @@ uint8_t strat_begin(uint16_t y_begin_curve, int16_t final_angle)
    uint8_t err;
 	uint16_t old_spdd, old_spda;
    uint32_t old_var_2nd_ord_pos, old_var_2nd_ord_neg;
+	int16_t posx, posy, posa;
 
    #define LONG_DISTANCE        5000
-   #define Y_BEGIN_CURVE        y_begin_curve
+   #define Y_BEGIN_CURVE        842
    #define X_BEGIN_CURVE_HOME   325
    #define X_END_CURVE          1150
 
@@ -220,7 +220,10 @@ uint8_t strat_begin(uint16_t y_begin_curve, int16_t final_angle)
 	strat_set_speed(4000,2000);
    quadramp_set_2nd_order_vars(&mainboard.angle.qr, 20, 20);
 
+	/* prepare fingers */
+	i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_PREPARE_GOLDBAR_FLOOR);
 
+	/* robot describes curve trajectory until goldbar */
    trajectory_d_rel(&mainboard.traj, LONG_DISTANCE);
    err = WAIT_COND_OR_TRAJ_END(x_is_more_than(X_BEGIN_CURVE_HOME), TRAJ_FLAGS_STD);
    if(err) {
@@ -236,7 +239,11 @@ uint8_t strat_begin(uint16_t y_begin_curve, int16_t final_angle)
 			ERROUT(err);  	}
 	else DEBUG(E_USER_STRAT, "Y is more than Y_BEGIN_CURVE");
 
-   trajectory_only_a_abs(&mainboard.traj, COLOR_A_ABS(final_angle));
+
+	/* prepare fingers */
+	(mainboard.our_color==I2C_COLOR_RED)?		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_OPEN,-50) :		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_OPEN,-50);
+
+   trajectory_only_a_abs(&mainboard.traj, COLOR_A_ABS(0));
    err=WAIT_COND_OR_TRAJ_END(x_is_more_than(X_END_CURVE), TRAJ_FLAGS_NO_NEAR);
 	strat_hardstop();
    if(err) {
@@ -244,7 +251,51 @@ uint8_t strat_begin(uint16_t y_begin_curve, int16_t final_angle)
 			ERROUT(err);   	}  
 	else DEBUG(E_USER_STRAT, "X is more than X_END_CURVE");
 
+
+	/*catch goldbar */
+	DEBUG(E_USER_STRAT, "Catch goldbar");
+	trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(0));
+	(mainboard.our_color==I2C_COLOR_RED)?
+		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_CLOSE,0):
+		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_CLOSE,0);
+	time_wait_ms(100);
+	i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_GOLDBAR_FLOOR);
+
+
+	DEBUG(E_USER_STRAT, "Correct position error");
+	posx=position_get_x_s16(&mainboard.pos);
+	posy=position_get_y_s16(&mainboard.pos);
+	posa=position_get_a_deg_s16(&mainboard.pos);
+	strat_reset_pos(posx+COLOR_SIGN(-20),posy+20,posa+COLOR_SIGN(3));
+
+	DEBUG(E_USER_STRAT, "Go to group of coins");
+	trajectory_goto_xy_abs(&mainboard.traj,
+		COLOR_X(strat_infos.zones[ZONE_FLOOR_COINS_GROUP].init_x),
+		strat_infos.zones[ZONE_FLOOR_COINS_GROUP].init_y);
+	err=wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+   if(!TRAJ_SUCCESS(err))
+      ERROUT(err);
+   i2c_slavedspic_wait_ready();
+	i2c_slavedspic_mode_store(1,I2C_STORE_MODE_GOLDBAR_IN_BOOT);
+   i2c_slavedspic_wait_ready();
+
 	
+	DEBUG(E_USER_STRAT, "Pick up group of coins");
+	strat_limit_speed_enable();
+	err=strat_pickup_coins_floor(FLOOR_COINS_GROUP_X,FLOOR_COINS_GROUP_Y,GROUP);
+  	if (!TRAJ_SUCCESS(err))
+		ERROUT(err);   	
+
+	DEBUG(E_USER_STRAT, "Save group of coins");
+	err=strat_goto_xy_force(COLOR_X(900),1600);
+   if(!TRAJ_SUCCESS(err))
+   	ERROUT(err);
+
+   err=strat_save_treasure_generic(COLOR_X(700),1400);
+   if(!TRAJ_SUCCESS(err))
+   	ERROUT(err);
+
+
 end:
    DEBUG(E_USER_STRAT, "End");
    /* restore speed and quadramp values */

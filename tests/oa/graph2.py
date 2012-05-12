@@ -61,6 +61,8 @@ def graph(filename, stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x
     purple = 100
     red = 0
     x,y = build_poly([(400+clerance-10+purple,clerance), (3000-400-clerance+10-red,clerance),(3000-400-clerance+10-red,2000-44-clerance), (400+clerance-10+purple,2000-44-clerance)])
+    #x,y = build_poly([(clerance,clerance), (3000-clerance,clerance),(3000-clerance,2000-44-clerance), (clerance,2000-44-clerance)])
+
     #x,y = build_poly([(240,240), (3000-240,240), (3000-240,2000-240-44), (240,2000-240-44)])
     ax.plot(x, y, 'c--')
      
@@ -235,20 +237,27 @@ def graph(filename, stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x
 #graph("single.png", 250, 250, 0, 2000, 1600, -1500, 0, -1500, 0)
 
 def random_target_xy():
-   x = random.choice([660, 1100, 1900, 2340])
-   if x <= 660 or x >= 2340:
-      y = random.choice([260, 500, 1000, 1500, 1696])
+   x = random.choice([1117, 1883, 2360])
+   if x >= 1117 or x < 2360:
+      y = random.choice([1600, 1400])
    else:
-      y = random.choice([260, 500, 1500, 1696])
+      y = random.choice([1600, 1000])
    return x,y
    
 def random_robot_2nd_xy():
-   x = random.choice([250, 660, 1100, 1500, 1900, 2340, 2750])
-   if x <= 660 or x >= 2340:
-      y = random.choice([260, 500, 1000, 1500, 1696])
+   x = random.choice([1600, 2000, 2500, 2600])
+   if x >= 1500 or x <= 2500:
+      y = random.choice([200, 500, 600])
    else:
-      y = random.choice([260, 500])
+      y = random.choice([600, 1000])
    return x,y
+
+def random_opp_xy():
+   x = random.choice([640, 1118, 1500, 1883, 2360])
+   y = random.choice([1700+150, 1350])
+   return x,y
+
+
 
 # go in playground area
 print("go_in_area_1.png", 250, 250, 0, 2300, 1600, -1500, 0, -1500, 0, -1500, 0)
@@ -275,13 +284,13 @@ print("op2_at_ship_4.png", 1500, 350, 0, 1500, 1600, -1000, 0, 500, 1600, -1500,
 graph("op2_at_ship_4.png", 1500, 350, 0, 1500, 1600, -1000, 0, 500, 1600, -1500, 0)
 
 
-# random
+random
 random.seed(0)
 for i in range(200):
     stx,sty = random_target_xy()
     enx,eny = random_target_xy()
-    op1x,op1y = random_target_xy()
-    op2x,op2y = random_target_xy()
+    op1x,op1y = random_opp_xy()
+    op2x,op2y = random_opp_xy()
     robot_2nd_x,robot_2nd_y = random_robot_2nd_xy()
     name = "random%d.png"%(i)
     print (name, stx, sty, 0, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x, robot_2nd_y)

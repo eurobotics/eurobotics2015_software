@@ -170,8 +170,6 @@ file_142=.
 file_143=.
 file_144=.
 file_145=.
-file_146=.
-file_147=.
 [GENERATED_FILES]
 file_000=no
 file_001=no
@@ -319,8 +317,6 @@ file_142=no
 file_143=no
 file_144=no
 file_145=no
-file_146=no
-file_147=no
 [OTHER_FILES]
 file_000=no
 file_001=no
@@ -468,8 +464,6 @@ file_142=yes
 file_143=yes
 file_144=yes
 file_145=yes
-file_146=yes
-file_147=yes
 [FILE_INFO]
 file_000=..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c
 file_001=..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c
@@ -617,8 +611,6 @@ file_142=commands_gen.c
 file_143=commands_mainboard.c
 file_144=commands_traj.c
 file_145=C:\Program Files (x86)\Microchip\MPLAB C30\support\dsPIC33F\h\p33FJ128MC804.h
-file_146=G:\Eurobotics engineering\software\slavedspic\state.c
-file_147=G:\Eurobotics engineering\software\slavedspic\actuator.c
 [SUITE_INFO]
 suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 suite_state=

@@ -235,7 +235,7 @@ void maindspic_cs_init(void)
 	/* QUADRAMP */
 	quadramp_init(&mainboard.angle.qr);
 	quadramp_set_1st_order_vars(&mainboard.angle.qr, 4000, 4000); 	/* set speed */
-	quadramp_set_2nd_order_vars(&mainboard.angle.qr, 40, 40); 		/* set accel */
+	quadramp_set_2nd_order_vars(&mainboard.angle.qr, 20, 20); 		/* set accel */
 	//quadramp_set_1st_order_vars(&mainboard.angle.qr, 1000, 1000); 	/* set speed */
 	//quadramp_set_2nd_order_vars(&mainboard.angle.qr, 5, 5); 		/* set accel */
 

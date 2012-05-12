@@ -98,7 +98,7 @@
 #define ESCAPE_POLY_THRES 1000
 
 /* don't reduce opp if opp is too far */
-#define REDUCE_POLY_THRES 600
+#define REDUCE_POLY_THRES 3000
 
 /* has to be longer than any poly */
 #define ESCAPE_VECT_LEN 3000
@@ -1207,20 +1207,24 @@ retry:
 		/* len < 0, try reduce opponent to get a valid path */
 		if (distance_between(robot_pt.x, robot_pt.y, opp1_x, opp1_y) < REDUCE_POLY_THRES ) {
 			if (opp1_w == 0) {
-				opp1_l /= 2;
+				//opp1_l /= 2;
+				opp1_l *= 0.75;
 			}
 
-			opp1_w /= 2;
+			//opp1_w /= 2;
+			opp1_l *= 0.75;
 
 			NOTICE(E_USER_STRAT, "reducing opponent 1 %d %d", opp1_w, opp1_l);
 			set_opponent_poly(OPP1, pol_opp1, &robot_pt, opp1_w, opp1_l);
 		}
 		if (distance_between(robot_pt.x, robot_pt.y, opp2_x, opp2_y) < REDUCE_POLY_THRES ) {
 			if (opp2_w == 0) {
-				opp2_l /= 2;
+				//opp2_l /= 2;
+				opp2_l *= 0.75;
 			}
 
-			opp2_w /= 2;
+			//opp2_w /= 2;
+			opp2_l *= 0.75;
 
 			NOTICE(E_USER_STRAT, "reducing opponent 2 %d %d", opp2_w, opp2_l);
 			set_opponent_poly(OPP2, pol_opp2, &robot_pt, opp2_w, opp2_l);
@@ -1295,12 +1299,31 @@ retry:
 }
 
 #ifndef HOST_VERSION
+
+/* go to a x,y point. prefer backward but go forward if the point is
+ * near and in front of us */
+uint8_t goto_and_avoid(int16_t x, int16_t y, uint8_t flags_intermediate,
+			       uint8_t flags_final)
+{
+	double d,a;
+	abs_xy_to_rel_da(x, y, &d, &a); 
+
+	if (d < 300 && a < RAD(90) && a > RAD(-90))
+		return __goto_and_avoid(x, y, flags_intermediate,
+					flags_final, GO_AVOID_FORWARD);
+	else
+		return __goto_and_avoid(x, y, flags_intermediate,
+					flags_final, GO_AVOID_BACKWARD);
+}
+
+#if 0
 /* go to a x,y point */
 uint8_t goto_and_avoid(int16_t x, int16_t y, uint8_t flags_intermediate,
 			       uint8_t flags_final)
 {
 	return __goto_and_avoid(x, y, flags_intermediate, flags_final, GO_AVOID_AUTO);
 }
+#endif
 
 /* go forward to a x,y point. use current speed for that */
 uint8_t goto_and_avoid_forward(int16_t x, int16_t y, uint8_t flags_intermediate,
@@ -1315,6 +1338,8 @@ uint8_t goto_and_avoid_backward(int16_t x, int16_t y, uint8_t flags_intermediate
 {
 	return __goto_and_avoid(x, y, flags_intermediate, flags_final, GO_AVOID_BACKWARD);
 }
+
+
 
 #endif
 
