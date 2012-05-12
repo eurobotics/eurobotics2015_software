@@ -288,7 +288,7 @@ static void cmd_opponent_parsed(void * parsed_result, void *data)
 
 	IRQ_UNLOCK(flags);
 
-
+#ifdef RECALC
 	/* get actual value of (x,y) */
 	if(opponent1_x != I2C_OPPONENT_NOT_THERE){
 		/* calculate (x,y) coordenates relative to (0,0) */
@@ -307,6 +307,7 @@ static void cmd_opponent_parsed(void * parsed_result, void *data)
 		beacon_angle_dist_to_x_y(robot_2nd_angle, robot_2nd_dist, &robot_2nd_x, &robot_2nd_y);
 	}
 #endif
+#endif /* RECALC */
 
 	/* calculate checksum */
 	checksum = (uint16_t)(checksum + opponent1_x);

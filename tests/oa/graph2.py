@@ -57,7 +57,10 @@ def graph(filename, stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x
     ax.plot(x, y, 'k-')
     
     # play area limits
-    x,y = build_poly([(400+260,260), (3000-400-260,260), (3000-400-260,2000-260-44), (400+260,2000-260-44)])
+    clerance = 230
+    purple = 100
+    red = 0
+    x,y = build_poly([(400+clerance-10+purple,clerance), (3000-400-clerance+10-red,clerance),(3000-400-clerance+10-red,2000-44-clerance), (400+clerance-10+purple,2000-44-clerance)])
     #x,y = build_poly([(240,240), (3000-240,240), (3000-240,2000-240-44), (240,2000-240-44)])
     ax.plot(x, y, 'c--')
      

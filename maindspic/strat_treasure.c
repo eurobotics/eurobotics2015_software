@@ -311,7 +311,7 @@ uint8_t strat_pickup_coins_floor(int16_t x, int16_t y, uint8_t group)
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
-   end:
+end:
 	strat_set_speed(old_spdd, old_spda);
    return err;
 }
@@ -368,7 +368,7 @@ uint8_t strat_pickup_goldbar_floor(int16_t x, int16_t y, uint8_t store)
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
-   end:
+end:
 	strat_set_speed(old_spdd, old_spda);
    return err;
 }
@@ -418,7 +418,7 @@ uint8_t strat_send_message_bottle(int16_t x, int16_t y)
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
-   end:
+end:
 	strat_set_speed(old_spdd, old_spda);
    return err;
 }
@@ -474,7 +474,7 @@ uint8_t strat_save_treasure_generic(int16_t x, int16_t y)
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
-   end:
+end:
 	strat_set_speed(old_spdd, old_spda);
    return err;
 }
@@ -540,7 +540,7 @@ uint8_t strat_save_treasure_in_deck_back(int16_t x, int16_t y)
    i2c_slavedspic_mode_dump(I2C_DUMP_MODE_END_BOOT);
    i2c_slavedspic_wait_ready();
 
-   end:
+end:
 	strat_set_speed(old_spdd, old_spda);
    return err;
 }
@@ -621,7 +621,7 @@ uint8_t strat_save_treasure_in_hold_back(int16_t x, int16_t y)
    i2c_slavedspic_mode_dump(I2C_DUMP_MODE_END_BOOT);
    i2c_slavedspic_wait_ready();
 
-   end:
+end:
 	strat_set_speed(old_spdd, old_spda);
    return err;
 }
@@ -663,7 +663,7 @@ uint8_t strat_raise_window(uint8_t window)
    i2c_slavedspic_mode_dump(I2C_DUMP_MODE_BOOT);
    i2c_slavedspic_wait_ready();
 
-   end:
+end:
 	strat_set_speed(old_spdd, old_spda);
    return err;
 }
@@ -874,7 +874,7 @@ uint8_t strat_game(void)
       }
    }
 
-   end:
+end:
    return err;
 }
 #endif

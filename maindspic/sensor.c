@@ -416,7 +416,7 @@ static void do_boolean_sensors(void *dummy)
 }
 
 /* virtual obstacle */
-#define DISABLE_CPT_MAX 500
+#define DISABLE_CPT_MAX 200
 static uint16_t disable = 0; 	/* used to disable obstacle detection 
 			   				 		 * during some time */
 
