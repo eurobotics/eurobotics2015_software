@@ -684,16 +684,19 @@ uint8_t robots_infront(void)
 }
 
 
-/* XXX NOT UPDATED*/
-/* return 1 if opp is in area, COLOR is take in acount!! */
+
+/* return 1 if opp is in area, COLOR is taken into account!! */
 uint8_t opponent_is_in_area(int16_t x_up, int16_t y_up,
 									 int16_t x_down, int16_t y_down)
 {
 	int8_t opp_there;
 	int16_t opp_x, opp_y;
+	int16_t opp2_x, opp2_y;
+	int16_t _2nd_robot_x, _2nd_robot_y;
 
+
+	/* Opponent 1 */
 	opp_there = get_opponent_xy(&opp_x, &opp_y);
-
 	if(opp_there == -1)
 		return 0;
 
@@ -707,6 +710,41 @@ uint8_t opponent_is_in_area(int16_t x_up, int16_t y_up,
 			 && (opp_y < y_up && opp_y > y_down) )
 			return 1;
 	}
+
+	/* Opponent 2 */
+	opp_there = get_opponent2_xy(&opp2_x, &opp2_y);
+
+	if(opp_there == -1)
+		return 0;
+
+	if (mainboard.our_color == I2C_COLOR_RED) {
+		if ((opp2_x > x_up && opp2_x < x_down)
+			&& (opp2_y < y_up && opp2_y > y_down) )
+			return 1;
+	}
+	else {
+		if ((opp2_x < x_up && opp2_x > x_down)
+			 && (opp2_y < y_up && opp2_y > y_down) )
+			return 1;
+	}
+
+	/* 2nd robot */
+	opp_there = get_robot_2nd_xy(&_2nd_robot_x, &_2nd_robot_y);
+
+	if(opp_there == -1)
+		return 0;
+
+	if (mainboard.our_color == I2C_COLOR_RED) {
+		if ((_2nd_robot_x > x_up && _2nd_robot_x < x_down)
+			&& (_2nd_robot_y < y_up && _2nd_robot_y > y_down) )
+			return 1;
+	}
+	else {
+		if ((_2nd_robot_x < x_up && _2nd_robot_x > x_down)
+			 && (_2nd_robot_y < y_up && _2nd_robot_y > y_down) )
+			return 1;
+	}
+
 	return 0;
 }
 
@@ -762,6 +800,7 @@ uint8_t opponent_is_infront_side(uint8_t side)
 */
 
 
+#if 0
 #define AUTOPOS_SPEED_FAST 	500
 #define ROBOT_DIS2_WALL 		(int16_t)(119)
 void strat_auto_position(void)
@@ -820,7 +859,6 @@ intr:
 	strat_hardstop();
 	strat_set_speed(old_spdd, old_spda);
 }
-
-
+#endif
 
 

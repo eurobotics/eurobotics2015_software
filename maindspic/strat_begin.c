@@ -197,9 +197,10 @@ end:
 #endif
 
 
-uint8_t strat_begin(uint16_t y_begin_curve, int16_t final_angle)
+//uint8_t strat_begin(uint16_t y_begin_curve, int16_t final_angle)
+uint8_t strat_begin(void)
 {   
-   uint8_t err;
+   uint8_t err, n=0;
 	uint16_t old_spdd, old_spda;
    uint32_t old_var_2nd_ord_pos, old_var_2nd_ord_neg;
 	int16_t posx, posy, posa;
@@ -232,6 +233,8 @@ uint8_t strat_begin(uint16_t y_begin_curve, int16_t final_angle)
 	else DEBUG(E_USER_STRAT, "X is more than X_BEGIN_CURVE_HOME");
 		
 
+	(mainboard.our_color==I2C_COLOR_RED)?		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_OPEN,-50) :		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_OPEN,-50);
+
    trajectory_only_a_abs(&mainboard.traj, COLOR_A_ABS(90));
    err = WAIT_COND_OR_TRAJ_END(y_is_more_than(Y_BEGIN_CURVE), END_OBSTACLE|END_BLOCKING|END_INTR);
    if(err) {
@@ -241,7 +244,9 @@ uint8_t strat_begin(uint16_t y_begin_curve, int16_t final_angle)
 
 
 	/* prepare fingers */
-	(mainboard.our_color==I2C_COLOR_RED)?		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_OPEN,-50) :		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_OPEN,-50);
+	(mainboard.our_color==I2C_COLOR_RED)?
+		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_OPEN,120):
+		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_OPEN,120);
 
    trajectory_only_a_abs(&mainboard.traj, COLOR_A_ABS(0));
    err=WAIT_COND_OR_TRAJ_END(x_is_more_than(X_END_CURVE), TRAJ_FLAGS_NO_NEAR);
@@ -251,57 +256,70 @@ uint8_t strat_begin(uint16_t y_begin_curve, int16_t final_angle)
 			ERROUT(err);   	}  
 	else DEBUG(E_USER_STRAT, "X is more than X_END_CURVE");
 
-
-	/*catch goldbar */
-	DEBUG(E_USER_STRAT, "Catch goldbar");
-	trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(0));
-	(mainboard.our_color==I2C_COLOR_RED)?
-		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_CLOSE,0):
-		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_CLOSE,0);
-	time_wait_ms(100);
-	i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_GOLDBAR_FLOOR);
-
-
 	DEBUG(E_USER_STRAT, "Correct position error");
+	//trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(0));
+	//err=wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+  	//if (!TRAJ_SUCCESS(err))
+	//	ERROUT(err);   	
 	posx=position_get_x_s16(&mainboard.pos);
 	posy=position_get_y_s16(&mainboard.pos);
 	posa=position_get_a_deg_s16(&mainboard.pos);
 	strat_reset_pos(posx+COLOR_SIGN(-20),posy+20,posa+COLOR_SIGN(3));
 
-	DEBUG(E_USER_STRAT, "Go to group of coins");
-	trajectory_goto_xy_abs(&mainboard.traj,
-		COLOR_X(strat_infos.zones[ZONE_FLOOR_COINS_GROUP].init_x),
-		strat_infos.zones[ZONE_FLOOR_COINS_GROUP].init_y);
-	err=wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-   if(!TRAJ_SUCCESS(err))
-      ERROUT(err);
-   i2c_slavedspic_wait_ready();
-	i2c_slavedspic_mode_store(1,I2C_STORE_MODE_GOLDBAR_IN_BOOT);
-   i2c_slavedspic_wait_ready();
 
-	
-	DEBUG(E_USER_STRAT, "Pick up group of coins");
-	strat_limit_speed_enable();
-	err=strat_pickup_coins_floor(FLOOR_COINS_GROUP_X,FLOOR_COINS_GROUP_Y,GROUP);
+	/*catch goldbar */
+	DEBUG(E_USER_STRAT, "Catch goldbar");
+	(mainboard.our_color==I2C_COLOR_RED)?
+		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_OPEN,0):
+		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_OPEN,0);
+
+	trajectory_a_rel(&mainboard.traj, COLOR_A_REL(-40));
+	err=wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+  	if (!TRAJ_SUCCESS(err))
+		ERROUT(err);   	
+	trajectory_d_rel(&mainboard.traj, 50);
+	err=wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
   	if (!TRAJ_SUCCESS(err))
 		ERROUT(err);   	
 
-	DEBUG(E_USER_STRAT, "Save group of coins");
-	err=strat_goto_xy_force(COLOR_X(900),1600);
-   if(!TRAJ_SUCCESS(err))
-   	ERROUT(err);
+	i2c_slavedspic_wait_ready();
+	DEBUG(E_USER_STRAT, "blockings: %d %d", slavedspic.fingers_floor_blocked, slavedspic.fingers_totem_blocked);
 
-   err=strat_save_treasure_generic(COLOR_X(700),1400);
-   if(!TRAJ_SUCCESS(err))
-   	ERROUT(err);
+	DEBUG(E_USER_STRAT, "First finger");
+	(mainboard.our_color==I2C_COLOR_RED)?
+		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_HOLD,0):
+		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_HOLD,0);
+
+	i2c_slavedspic_wait_ready();
+	DEBUG(E_USER_STRAT, "blockings: %d %d", slavedspic.fingers_floor_blocked, slavedspic.fingers_totem_blocked);
+
+	//time_wait_ms(100);
+	DEBUG(E_USER_STRAT, "Second finger");
+	(mainboard.our_color==I2C_COLOR_RED)?
+		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_CLOSE,0):
+		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_CLOSE,0);
+
+	do{
+		DEBUG(E_USER_STRAT, "Harvest goldbar floor");
+		i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_GOLDBAR_FLOOR);
+	   i2c_slavedspic_wait_ready();
+		DEBUG(E_USER_STRAT, "Store goldbar in boot");
+		i2c_slavedspic_mode_store(1,I2C_STORE_MODE_GOLDBAR_IN_BOOT);
+	   i2c_slavedspic_wait_ready();
+		//time_wait_ms(2000);
+		n++;
+		DEBUG(E_USER_STRAT, "Nb of goldbars in boot: %d", slavedspic.nb_goldbars_in_boot);
+	}while((slavedspic.nb_goldbars_in_boot==0) && (n<2));
 
 
 end:
-   DEBUG(E_USER_STRAT, "End");
+   DEBUG(E_USER_STRAT, "End (%d goldbars catched)", slavedspic.nb_goldbars_in_boot);
    /* restore speed and quadramp values */
 	strat_set_speed(old_spdd, old_spda);
    strat_limit_speed_enable();
    quadramp_set_2nd_order_vars(&mainboard.angle.qr,old_var_2nd_ord_pos,old_var_2nd_ord_neg);
+
+	//strat_main_loop();
    return err;
 }
 

@@ -350,7 +350,7 @@ int8_t fingers_set_mode(fingers_t *fingers, uint8_t mode, int16_t pos_offset)
 #endif
 
 	/* saturate to position range */
-/*
+
 	if(fingers->ax12_pos_l > fingers_ax12_pos_l[fingers->type][FINGERS_MODE_L_POS_MAX])
 		fingers->ax12_pos_l = fingers_ax12_pos_l[fingers->type][FINGERS_MODE_L_POS_MAX];
 	if(fingers->ax12_pos_l < fingers_ax12_pos_l[fingers->type][FINGERS_MODE_L_POS_MIN])
@@ -360,7 +360,7 @@ int8_t fingers_set_mode(fingers_t *fingers, uint8_t mode, int16_t pos_offset)
 		fingers->ax12_pos_r = fingers_ax12_pos_r[fingers->type][FINGERS_MODE_R_POS_MAX];
 	if(fingers->ax12_pos_r < fingers_ax12_pos_r[fingers->type][FINGERS_MODE_R_POS_MIN])
 		fingers->ax12_pos_r = fingers_ax12_pos_r[fingers->type][FINGERS_MODE_R_POS_MIN];
- */
+ 
 	/* apply to ax12 */
 	err1 = ax12_user_write_int(&gen.ax12, ax12_left_id, AA_GOAL_POSITION_L, fingers->ax12_pos_l);
    err2 = ax12_user_write_int(&gen.ax12, ax12_right_id, AA_GOAL_POSITION_L, fingers->ax12_pos_r);

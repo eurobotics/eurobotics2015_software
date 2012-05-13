@@ -782,12 +782,12 @@ uint8_t store_goldbar_in_boot(void)
 
 	/* wait no object cached */
 	if(WAIT_COND_OR_TIMEOUT((sensor_get_all() != sensors_saved), 1000)) {
-		//slavedspic.nb_goldbars_in_boot ++;
+		slavedspic.nb_goldbars_in_boot ++;
 		STMCH_DEBUG("Goldbar stored in boot :) (%d)", slavedspic.nb_goldbars_in_boot);
 	}
 	else {
 		/* XXX comment if no debug */
-		slavedspic.nb_goldbars_in_boot ++; 
+		//slavedspic.nb_goldbars_in_boot ++; 
 		STMCH_DEBUG("Seems goldbar NOT stored in boot :S (%d)", slavedspic.nb_goldbars_in_boot);
 	}
 

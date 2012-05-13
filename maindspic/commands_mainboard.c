@@ -711,6 +711,74 @@ parse_pgm_inst_t cmd_slavedspic_dump = {
 
 
 
+/**********************************************************/
+/* fingers */
+
+/* this structure is filled when cmd_fingers is parsed successfully */
+struct cmd_fingers_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+	fixed_string_t arg2;
+	int16_t arg3;
+};
+
+/* function called when cmd_fingers is parsed successfully */
+static void cmd_fingers_parsed(__attribute__((unused)) void *parsed_result,
+			    __attribute__((unused)) void *data)
+{
+	struct cmd_fingers_result *res = (struct cmd_fingers_result *) parsed_result;
+	uint8_t type=-1, mode=-1;
+
+	if (!strcmp_P(res->arg1, PSTR("totem"))) 
+		type=I2C_FINGERS_TYPE_TOTEM;
+	else if (!strcmp_P(res->arg1, PSTR("floor")))
+		type=I2C_FINGERS_TYPE_FLOOR;
+	else if (!strcmp_P(res->arg1, PSTR("left_totem")))
+		type=I2C_FINGERS_TYPE_TOTEM_LEFT;
+	else if (!strcmp_P(res->arg1, PSTR("right_totem")))
+		type=I2C_FINGERS_TYPE_TOTEM_RIGHT;
+	else if (!strcmp_P(res->arg1, PSTR("left_floor")))
+		type=I2C_FINGERS_TYPE_FLOOR_LEFT;
+	else if (!strcmp_P(res->arg1, PSTR("right_floor")))
+		type=I2C_FINGERS_TYPE_FLOOR_RIGHT;
+
+	if (!strcmp_P(res->arg2, PSTR("hug")))
+		mode=I2C_FINGERS_MODE_HUG;
+	else if (!strcmp_P(res->arg2, PSTR("open")))
+		mode=I2C_FINGERS_MODE_OPEN;
+	else if (!strcmp_P(res->arg2, PSTR("close")))
+		mode=I2C_FINGERS_MODE_CLOSE;
+	else if (!strcmp_P(res->arg2, PSTR("hold")))
+		mode=I2C_FINGERS_MODE_HOLD;
+	else if (!strcmp_P(res->arg2, PSTR("pushin")))
+		mode=I2C_FINGERS_MODE_PUSHIN;
+
+	i2c_slavedspic_mode_fingers(type,mode,res->arg3);
+	i2c_slavedspic_wait_ready();
+}
+
+prog_char str_fingers_arg0[] = "fingers";
+parse_pgm_token_string_t cmd_fingers_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_fingers_result, arg0, str_fingers_arg0);
+prog_char str_fingers_arg1[] = "totem#floor#left_totem#right_totem#left_floor#right_floor";
+parse_pgm_token_string_t cmd_fingers_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_fingers_result, arg1, str_fingers_arg1);
+prog_char str_fingers_arg2[] = "hug#open#hold#close#pushin";
+parse_pgm_token_string_t cmd_fingers_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_fingers_result, arg2, str_fingers_arg2);
+parse_pgm_token_num_t cmd_fingers_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_fingers_result, arg3, INT16);
+
+
+prog_char help_fingers[] = "set fingers mode";
+parse_pgm_inst_t cmd_fingers = {
+	.f = cmd_fingers_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_fingers,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_fingers_arg0, 
+		(prog_void *)&cmd_fingers_arg1,
+		(prog_void *)&cmd_fingers_arg2,
+		(prog_void *)&cmd_fingers_arg3,
+		NULL,
+	},
+};
 
 /**********************************************************/
 /* treasure */

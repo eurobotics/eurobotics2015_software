@@ -792,10 +792,23 @@ int8_t i2c_slavedspic_mode_set_infos_boot(int8_t nb_goldbars_in_boot, int8_t nb_
 
 
 void i2c_slavedspic_wait_ready(void)
-{
+{                    
+   //microseconds __us = time_get_us2();                 
+   //uint8_t __ret = 1;             
+    
+	/* DANGEROUS */
    do{
       i2cproto_wait_update();
    } while(slavedspic.status == I2C_SLAVEDSPIC_STATUS_BUSY);
+
+	/*do{																			
+		i2cproto_wait_update();
+      if (time_get_us2() - __us > (1500)*1000L) 
+		{
+             __ret = 0;                            
+             break;                                
+      }                                 
+	} while(slavedspic.status == I2C_SLAVEDSPIC_STATUS_BUSY && __ret==1);   */
 }
 
    
