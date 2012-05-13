@@ -150,11 +150,12 @@
 
 #define EVENT_PRIORITY_LED 			  170
 #define EVENT_PRIORITY_TIME           160
+#define EVENT_PRIORITY_I2C_POLL       140
 #define EVENT_PRIORITY_SENSORS        120
 #define EVENT_PRIORITY_CS             100
 #define EVENT_PRIORITY_STRAT         	30
 #define EVENT_PRIORITY_BEACON_POLL     20
-#define EVENT_PRIORITY_I2C_POLL        15
+//#define EVENT_PRIORITY_I2C_POLL        15
 
 #endif
 

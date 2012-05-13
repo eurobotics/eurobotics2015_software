@@ -72,38 +72,43 @@ struct strat_infos strat_infos = {
 	},
 
    /*zones[W] =                          { x_up, y_up, x_down, y_down, init_x,init_y, prio,     flags };                            */
-   .zones[ZONE_TOTEM_1_SIDE_1]=          { 1400, 1000, 700,    500   , 1100,  400,   ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_TOTEM_1_SIDE_2]=          { 1400, 1500, 700,    1000  , 1100,  1600,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_TOTEM_2_SIDE_1]=          { 2300, 1000, 1600,   500   , 1900,  400,   ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_TOTEM_2_SIDE_2]=          { 2300, 1500, 1600,   1000  , 1900,  1600,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
+   .zones[ZONE_TOTEM_OUR_SIDE_1]=        { 1300, 800,  900,    200   , 1100,  450,   ZONE_PRIO_10, 0 },
+	.zones[ZONE_TOTEM_OUR_SIDE_2]=        { 1300, 1200, 900,    1800  , 1100,  1550,  ZONE_PRIO_60, 0 },
+	.zones[ZONE_TOTEM_OPP_SIDE_1]=     	  { 2100, 800,  1700,   200   , 1900,  450,   ZONE_PRIO_10, 0 },
+	.zones[ZONE_TOTEM_OPP_SIDE_2]=        { 2100, 1200, 1700,   1800  , 1900,  1550,  ZONE_PRIO_90, 0 },
 	
-	.zones[ZONE_PURPLE_FLOOR_COIN_1]=     { 1400, 650,  700,    250   , 2000,  200,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_PURPLE_FLOOR_COIN_2]=     { 2450, 1200, 2100,   800   , 2400,  1000, ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_PURPLE_FLOOR_COIN_3]=     { 2650, 1850, 2250,   1550  , 2250,  1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_PURPLE_FLOOR_GOLDBAR]=    { 2700, 1000, 2300,   600   , 2300,  785,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_RED_FLOOR_COIN_1]=        { 2300, 650,  1600,   250   , 1000,  200,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_RED_FLOOR_COIN_2]=        { 550,  1200, 900,    800   , 600,   1000, ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_RED_FLOOR_COIN_3]=        { 350,  1850, 750,   1550   , 750,   1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_RED_FLOOR_GOLDBAR]=       { 300,  1000, 700,    600   , 700,   785,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_OUR_FLOOR_COIN_1]=        { 2300, 650,  1600,   250   , 1000,  200,  ZONE_PRIO_0, ZONE_CHECKED },
+	.zones[ZONE_OUR_FLOOR_COIN_2]=        { 550,  1200, 900,    800   , 600,   1000, ZONE_PRIO_0, ZONE_CHECKED },
+	.zones[ZONE_OUR_FLOOR_COIN_3]=        { 350,  1850, 750,   1550   , 750,   1700, ZONE_PRIO_0, ZONE_CHECKED },
+	.zones[ZONE_OUR_FLOOR_GOLDBAR]=       { 300,  1000, 700,    600   , 700,   785,  ZONE_PRIO_0, ZONE_CHECKED },
+	.zones[ZONE_OPP_FLOOR_COIN_1]=        { 1400, 650,  700,    250   , 2000,  200,  ZONE_PRIO_0, ZONE_CHECKED },
+	.zones[ZONE_OPP_FLOOR_COIN_2]=        { 2450, 1200, 2100,   800   , 2400,  1000, ZONE_PRIO_0, ZONE_CHECKED },
+	.zones[ZONE_OPP_FLOOR_COIN_3]=        { 2650, 1850, 2250,   1550  , 2250,  1700, ZONE_PRIO_0, ZONE_CHECKED },
+	.zones[ZONE_OPP_FLOOR_GOLDBAR]=       { 2700, 1000, 2300,   600   , 2300,  785,  ZONE_PRIO_0, ZONE_CHECKED },
 
-	.zones[ZONE_PURPLE_BOTTLE_1]=         { 2550, 2000, 2170,   1600  , 2000,  1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_PURPLE_BOTTLE_2]=         { 1307, 2000, 927,    1600  , 1477,  1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_RED_BOTTLE_1]=            { 830,  2000, 450,    1600  , 640,   1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_RED_BOTTLE_2]=            { 2073, 2000, 1693,   1600  , 1883,  1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_PURPLE_MAP]=              { 2000, 500,  1500,      0  , 1600,  400,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_RED_MAP]=                 { 1500, 500,  1000,      0  , 1400,  400,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_OUR_BOTTLE_1]=            { 840,  2000, 440,    1450  , 640,   1700, ZONE_PRIO_40, 0 },
+	.zones[ZONE_OUR_BOTTLE_2]=            { 2083, 2000, 1683,   1450  , 1883,  1700, ZONE_PRIO_80, 0 },
+	.zones[ZONE_OPP_BOTTLE_1]=            { 2560, 2000, 2160,   1450  , 2000,  1700, ZONE_PRIO_0,  0 },
+	.zones[ZONE_OPP_BOTTLE_2]=            { 1317, 2000, 917,    1450  , 1477,  1700, ZONE_PRIO_0,  0 },
 
-   /*XXX To pickup floor coins group the init position should depend on which color we are playing*/
-	.zones[ZONE_FLOOR_COINS_GROUP]=                 { 1780, 1950, 1220,   1450  , 1218,  1470, ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_MIDDLE_FLOOR_GOLDBAR]=              { 1780, 1156, 1220,   1550  , 1500,  1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
+	.zones[ZONE_OUR_MAP]=                 { 1500, 500,  1000,      0  , 1400,  400,  ZONE_PRIO_0, ZONE_CHECKED },
+	.zones[ZONE_OPP_MAP]=                 { 2000, 500,  1500,      0  , 1600,  400,  ZONE_PRIO_0, ZONE_CHECKED },
+
+	.zones[ZONE_FLOOR_COINS_GROUP]=       { 1780, 1950, 1220,   1450  , 1218,  1470, ZONE_PRIO_70, 0 },
+	.zones[ZONE_MIDDLE_FLOOR_GOLDBAR]=    { 1780, 1156, 1220,   1550  , 1500,  1700, ZONE_PRIO_20, ZONE_CHECKED },
 	
-   /* ship zones */
-   .zones[ZONE_SHIP_PURPLE_CAPTAINS_BEDRROM]=      { 3000,     500,    2500,       0     , 2200 ,  250,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
-   .zones[ZONE_SHIP_PURPLE_DECK]=                  { 3000,     1400,   2600,     500     , 2360,   750,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_SHIP_PURPLE_HOLD]=                  { 3000,     2000,   2600,     1400    , 2250,   1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
-   .zones[ZONE_SHIP_RED_CAPTAINS_BEDRROM]=         { 500,      500,    0,          0     , 800,    250,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_SHIP_RED_DECK]=                     { 400,      1400,   0,         500    , 640,    750,  ZONE_PRIO_2, ZONE_WITH_TREASURE },
-	.zones[ZONE_SHIP_RED_HOLD]=                     { 400,      2000,   0,        1400    , 750,    1700, ZONE_PRIO_2, ZONE_WITH_TREASURE },
+
+    /* ship zones */
+   .zones[ZONE_SHIP_OUR_CAPTAINS_BEDRROM]=      { 500,      500,    0,          0     , 800,    250,  ZONE_PRIO_10, 0 },
+	.zones[ZONE_SHIP_OUR_DECK]=                  { 400,      1400,   0,         500    , 640,    750,  ZONE_PRIO_30, 0 },
+	.zones[ZONE_SHIP_OUR_HOLD]=                  { 400,      2000,   0,        1400    , 750,    1700, ZONE_PRIO_20, 0 },
+
+   .zones[ZONE_SHIP_OPP_CAPTAINS_BEDRROM]=      { 3000,     500,    2500,       0     , 2200 ,  250,  ZONE_PRIO_10, 0 },
+   .zones[ZONE_SHIP_OPP_DECK]=                  { 3000,     1400,   2600,     500     , 2360,   750,  ZONE_PRIO_10, 0 },
+	.zones[ZONE_SHIP_OPP_HOLD]=                  { 3000,     2000,   2600,     1400    , 2250,   1700, ZONE_PRIO_10, 0 },
+
+	/* zone to save treasure */
+	.zones[ZONE_SAVE_TREASURE]=           { 900,      1600,   500,        1200    , 900,    1600, ZONE_PRIO_40, 0 },
 };
 
 
@@ -138,6 +143,7 @@ void strat_set_bounding_box(uint8_t type)
 				strat_infos.area_bbox.x2,
 				strat_infos.area_bbox.y2);
 }
+
 
 #ifndef HOST_VERSION
 

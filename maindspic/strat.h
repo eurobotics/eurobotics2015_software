@@ -37,31 +37,31 @@
 #define TOTEM_1_Y               AREA_Y/2
 #define TOTEM_2_Y               TOTEM_1_Y
 #define TOTEM_WIDE              250
-#define PURPLE_FLOOR_COIN_1_X      2000 
-#define PURPLE_FLOOR_COIN_1_Y      500 
-#define PURPLE_FLOOR_COIN_2_X      2150 
-#define PURPLE_FLOOR_COIN_2_Y      1000 
-#define PURPLE_FLOOR_COIN_3_X      2550 
-#define PURPLE_FLOOR_COIN_3_Y      1700 
-#define RED_FLOOR_COIN_1_X   1000 
-#define RED_FLOOR_COIN_1_Y   500 
-#define RED_FLOOR_COIN_2_X   850 
-#define RED_FLOOR_COIN_2_Y   1000 
-#define RED_FLOOR_COIN_3_X   450
-#define RED_FLOOR_COIN_3_Y   1700  
+#define OPP_FLOOR_COIN_1_X      2000 
+#define OPP_FLOOR_COIN_1_Y      500 
+#define OPP_FLOOR_COIN_2_X      2150 
+#define OPP_FLOOR_COIN_2_Y      1000 
+#define OPP_FLOOR_COIN_3_X      2550 
+#define OPP_FLOOR_COIN_3_Y      1700 
+#define OUR_FLOOR_COIN_1_X   1000 
+#define OUR_FLOOR_COIN_1_Y   500 
+#define OUR_FLOOR_COIN_2_X   850 
+#define OUR_FLOOR_COIN_2_Y   1000 
+#define OUR_FLOOR_COIN_3_X   450
+#define OUR_FLOOR_COIN_3_Y   1700  
 #define BOTTLE_Y                2000 
-#define PURPLE_BOTTLE_1_X          2360   
-#define PURPLE_BOTTLE_2_X          1117   
-#define RED_BOTTLE_1_X       640  
-#define RED_BOTTLE_2_X       1883  
+#define OPP_BOTTLE_1_X          2360   
+#define OPP_BOTTLE_2_X          1117   
+#define OUR_BOTTLE_1_X       640  
+#define OUR_BOTTLE_2_X       1883  
 #define FLOOR_COINS_GROUP_X     1500
 #define FLOOR_COINS_GROUP_Y     1700
 #define MIDDLE_FLOOR_GOLDBAR_X  1500
 #define MIDDLE_FLOOR_GOLDBAR_Y  1353
-#define RED_FLOOR_GOLDBAR_X  420
-#define RED_FLOOR_GOLDBAR_Y  785
-#define PURPLE_FLOOR_GOLDBAR_X     2580
-#define PURPLE_FLOOR_GOLDBAR_Y     785
+#define OUR_FLOOR_GOLDBAR_X  420
+#define OUR_FLOOR_GOLDBAR_Y  785
+#define OPP_FLOOR_GOLDBAR_X     2580
+#define OPP_FLOOR_GOLDBAR_Y     785
 
 #define OUR_SHIP_DECK_1_X        250
 #define OUR_SHIP_DECK_1_Y        750
@@ -142,34 +142,36 @@
 
 
 /* zones */
-#define ZONE_TOTEM_1_SIDE_1			      0
-#define ZONE_TOTEM_1_SIDE_2       	      1
-#define ZONE_TOTEM_2_SIDE_1			      2
-#define ZONE_TOTEM_2_SIDE_2			      3
-#define ZONE_RED_FLOOR_COIN_1			      4
-#define ZONE_RED_FLOOR_COIN_2  	         5
-#define ZONE_RED_FLOOR_COIN_3 	       	6
-#define ZONE_RED_FLOOR_GOLDBAR   	      7
-#define ZONE_PURPLE_FLOOR_COIN_1	         8
-#define ZONE_PURPLE_FLOOR_COIN_2	         9
-#define ZONE_PURPLE_FLOOR_COIN_3	         10
-#define ZONE_PURPLE_FLOOR_GOLDBAR			11
-#define ZONE_RED_BOTTLE_1			         12
-#define ZONE_RED_BOTTLE_2   			      13
-#define ZONE_PURPLE_BOTTLE_1			      14
-#define ZONE_PURPLE_BOTTLE_2			      15
-#define ZONE_RED_MAP          	       	16
-#define ZONE_PURPLE_MAP          	      17
+#define ZONE_TOTEM_OUR_SIDE_1			      0
+#define ZONE_TOTEM_OUR_SIDE_2       	   1
+#define ZONE_TOTEM_OPP_SIDE_1			   2
+#define ZONE_TOTEM_OPP_SIDE_2			   3
+#define ZONE_OUR_FLOOR_COIN_1			      4
+#define ZONE_OUR_FLOOR_COIN_2  	         5
+#define ZONE_OUR_FLOOR_COIN_3 	       	6
+#define ZONE_OUR_FLOOR_GOLDBAR   	      7
+#define ZONE_OPP_FLOOR_COIN_1	         8
+#define ZONE_OPP_FLOOR_COIN_2	         9
+#define ZONE_OPP_FLOOR_COIN_3	         10
+#define ZONE_OPP_FLOOR_GOLDBAR			11
+#define ZONE_OUR_BOTTLE_1			         12
+#define ZONE_OUR_BOTTLE_2   			      13
+#define ZONE_OPP_BOTTLE_1			      14
+#define ZONE_OPP_BOTTLE_2			      15
+#define ZONE_OUR_MAP          	       	16
+#define ZONE_OPP_MAP          	      17
 #define ZONE_FLOOR_COINS_GROUP          	18
 #define ZONE_MIDDLE_FLOOR_GOLDBAR         19
 
 /* place zones */
-#define ZONE_SHIP_RED_CAPTAINS_BEDRROM	   20
-#define ZONE_SHIP_RED_HOLD	               21
-#define ZONE_SHIP_RED_DECK                22
-#define ZONE_SHIP_PURPLE_CAPTAINS_BEDRROM 23
-#define ZONE_SHIP_PURPLE_HOLD             24
-#define ZONE_SHIP_PURPLE_DECK             25
+#define ZONE_SHIP_OUR_CAPTAINS_BEDRROM	   20
+#define ZONE_SHIP_OUR_HOLD	               21
+#define ZONE_SHIP_OUR_DECK                22
+#define ZONE_SHIP_OPP_CAPTAINS_BEDRROM 23
+#define ZONE_SHIP_OPP_HOLD             24
+#define ZONE_SHIP_OPP_DECK             25
+
+#define ZONE_SAVE_TREASURE		            25
 
 /* Store goldbars and coins or not and where */
 #define STORE_MOUTH                       1
@@ -197,16 +199,9 @@ struct conf {
    #define PICKUP_COINS_GROUP 1
 };
 
-/* scores */
-#define BLACKCOIN_SCORE 0
-#define WHITECOIN_SCORE 1
-#define BOTTLE_SCORE 5
-#define MAP_SCORE 5
-#define GOLDBAR_SCORE 3
 
 
 typedef struct {
-
 	/* boundinbox */
 	int16_t x_up;
 	int16_t y_up;
@@ -219,21 +214,23 @@ typedef struct {
 	
 	uint8_t prio;
    #define ZONE_PRIO_0		0
-   #define ZONE_PRIO_1		10
-   #define ZONE_PRIO_2		20
-   #define ZONE_PRIO_3		30
-   #define ZONE_PRIO_4		40
+   #define ZONE_PRIO_10		10
+   #define ZONE_PRIO_20		20
+   #define ZONE_PRIO_30		30
+   #define ZONE_PRIO_40		40
+   #define ZONE_PRIO_50		50
+   #define ZONE_PRIO_60		60
+   #define ZONE_PRIO_70		70
+   #define ZONE_PRIO_80		80
+   #define ZONE_PRIO_90		90
    #define ZONE_PRIO_MAX	100
 
 	uint16_t flags;
-   #define ZONE_WITH_TREASURE		2
-   #define ZONE_AVOID		    	4
-   #define ZONE_CHECKED		    	8
-   #define ZONE_CHECKED_OPP		16
-   #define ZONE_OPPONENT	   	32
-   #define ZONE_OPPONENT_2	   	64
-   #define ZONE_ROBOT    	   	128
-   #define ZONE_SEC_ROBOT	   	256
+   #define ZONE_CHECKED		    	1
+   #define ZONE_CHECKED_OPP		2
+   #define ZONE_SEC_ROBOT	   	4
+   #define ZONE_AVOID		    	8
+
 } strat_zones;
 
 
@@ -243,17 +240,20 @@ struct strat_infos {
 	struct bbox area_bbox;
 
 	/* points areas */
-	strat_zones zones[26];
+	strat_zones zones[27];
 	/* our zone position */
 	uint8_t current_zone;
 	/* opponent zone position */
 	uint8_t opp_current_zone;
+	uint8_t opp2_current_zone;
+
 	/* opponent stadistics */
 	uint32_t opp_time_zone_ms;
 
 	uint8_t treasure_in_mouth;
 	uint8_t treasure_in_boot;
 };
+
 extern struct strat_infos strat_infos;
 
 
@@ -303,7 +303,14 @@ uint8_t strat_game(void);
 /********************************************
  * in strat_begin.c 
  *******************************************/
-uint8_t strat_begin(uint16_t y_begin_curve, int16_t final_angle);
+uint8_t strat_begin(void);
+
+
+
+/********************************************
+ * in strat_main.c 
+ *******************************************/
+uint8_t strat_main_loop(void);
 
 
 /* add here more strat functions in files */
