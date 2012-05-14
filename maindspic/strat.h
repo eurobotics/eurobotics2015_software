@@ -32,48 +32,66 @@
 //#define OBS_CLERANCE  205.0    /* when goes backwards */
 
 /* position of the tokens */
-#define TOTEM_1_X               1100
-#define TOTEM_2_X               1900
-#define TOTEM_1_Y               AREA_Y/2
-#define TOTEM_2_Y               TOTEM_1_Y
-#define TOTEM_WIDE              250
-#define OPP_FLOOR_COIN_1_X      2000 
-#define OPP_FLOOR_COIN_1_Y      500 
-#define OPP_FLOOR_COIN_2_X      2150 
-#define OPP_FLOOR_COIN_2_Y      1000 
-#define OPP_FLOOR_COIN_3_X      2550 
-#define OPP_FLOOR_COIN_3_Y      1700 
+#define TOTEM_1_X            1100
+#define TOTEM_1_Y            (AREA_Y/2)
+#define TOTEM_2_X            1900
+#define TOTEM_2_Y            (AREA_Y/2)
+#define TOTEM_WIDE           250
+
+#define OUR_TOTEM_X				TOTEM_1_X
+#define OUR_TOTEM_Y 				TOTEM_1_Y
+#define OPP_TOTEM_X 				TOTEM_2_X
+#define OPP_TOTEM_Y 				TOTEM_2_Y
+
+#define OPP_FLOOR_COIN_1_X   2000 
+#define OPP_FLOOR_COIN_1_Y   500 
+#define OPP_FLOOR_COIN_2_X   2150 
+#define OPP_FLOOR_COIN_2_Y   1000 
+#define OPP_FLOOR_COIN_3_X   2550 
+#define OPP_FLOOR_COIN_3_Y   1700
+ 
 #define OUR_FLOOR_COIN_1_X   1000 
 #define OUR_FLOOR_COIN_1_Y   500 
 #define OUR_FLOOR_COIN_2_X   850 
 #define OUR_FLOOR_COIN_2_Y   1000 
 #define OUR_FLOOR_COIN_3_X   450
 #define OUR_FLOOR_COIN_3_Y   1700  
-#define BOTTLE_Y                2000 
-#define OPP_BOTTLE_1_X          2360   
-#define OPP_BOTTLE_2_X          1117   
+
+#define BOTTLES_Y            2000
 #define OUR_BOTTLE_1_X       640  
 #define OUR_BOTTLE_2_X       1883  
-#define FLOOR_COINS_GROUP_X     1500
-#define FLOOR_COINS_GROUP_Y     1700
+#define OPP_BOTTLE_1_X       2360   
+#define OPP_BOTTLE_2_X       1117   
+
+#define MIDDLE_COINS_GROUP_X  	1500
+#define MIDDLE_COINS_GROUP_Y     1700
+
 #define MIDDLE_FLOOR_GOLDBAR_X  1500
 #define MIDDLE_FLOOR_GOLDBAR_Y  1353
-#define OUR_FLOOR_GOLDBAR_X  420
-#define OUR_FLOOR_GOLDBAR_Y  785
-#define OPP_FLOOR_GOLDBAR_X     2580
-#define OPP_FLOOR_GOLDBAR_Y     785
+
+#define OUR_FLOOR_GOLDBAR_X  		420
+#define OUR_FLOOR_GOLDBAR_Y  		785
+
+#define OPP_FLOOR_GOLDBAR_X     	2580
+#define OPP_FLOOR_GOLDBAR_Y     	785
 
 #define OUR_SHIP_DECK_1_X        250
 #define OUR_SHIP_DECK_1_Y        750
 #define OUR_SHIP_DECK_2_X        250
 #define OUR_SHIP_DECK_2_Y        1050
 
-/* infos about strat */
-#define NB_SLOT_X				8
-#define NB_SLOT_Y				6
-#define NB_SLOT_GREEN		5
-#define NB_GRID_LINES_X 	9
-#define NB_GRID_LINES_Y 	7
+#define OUR_SHIP_DECK_1_X        250
+#define OUR_SHIP_DECK_1_Y        750
+#define OUR_SHIP_DECK_2_X        250
+#define OUR_SHIP_DECK_2_Y        1050
+
+#define OUR_CAPTAINS_BEDROOM_X	250
+#define OUR_CAPTAINS_BEDROOM_Y	250
+#define OPP_CAPTAINS_BEDROOM_X	2750
+#define OPP_CAPTAINS_BEDROOM_Y	250
+
+#define SAVE_TREASURE_X				700
+#define SAVE_TREASURE_y				1400
 
 
 /* convert coords according to our color */
@@ -133,50 +151,53 @@
 #define SPEED_DIST_VERY_SLOW 	500
 #define SPEED_ANGLE_VERY_SLOW 500
 
-
-#define PLACE_D_SAFE				  140
+#define PLACE_D_SAFE	 140
 
 /*for coins */
-#define ONE                      0
-#define GROUP                    1
+#define ONE       0
+#define GROUP     1
 
 
 /* zones */
-#define ZONE_TOTEM_OUR_SIDE_1			      0
-#define ZONE_TOTEM_OUR_SIDE_2       	   1
+#define ZONE_TOTEM_OUR_SIDE_1			   0
+#define ZONE_TOTEM_OUR_SIDE_2       	1
 #define ZONE_TOTEM_OPP_SIDE_1			   2
 #define ZONE_TOTEM_OPP_SIDE_2			   3
-#define ZONE_OUR_FLOOR_COIN_1			      4
-#define ZONE_OUR_FLOOR_COIN_2  	         5
-#define ZONE_OUR_FLOOR_COIN_3 	       	6
-#define ZONE_OUR_FLOOR_GOLDBAR   	      7
+#define ZONE_OUR_FLOOR_COIN_1			   4
+#define ZONE_OUR_FLOOR_COIN_2  	      5
+#define ZONE_OUR_FLOOR_COIN_3 	      6
+#define ZONE_OUR_FLOOR_GOLDBAR   	   7
 #define ZONE_OPP_FLOOR_COIN_1	         8
 #define ZONE_OPP_FLOOR_COIN_2	         9
 #define ZONE_OPP_FLOOR_COIN_3	         10
 #define ZONE_OPP_FLOOR_GOLDBAR			11
-#define ZONE_OUR_BOTTLE_1			         12
-#define ZONE_OUR_BOTTLE_2   			      13
+#define ZONE_OUR_BOTTLE_1			      12
+#define ZONE_OUR_BOTTLE_2   			   13
 #define ZONE_OPP_BOTTLE_1			      14
 #define ZONE_OPP_BOTTLE_2			      15
-#define ZONE_OUR_MAP          	       	16
+#define ZONE_OUR_MAP          	      16
 #define ZONE_OPP_MAP          	      17
-#define ZONE_FLOOR_COINS_GROUP          	18
-#define ZONE_MIDDLE_FLOOR_GOLDBAR         19
+#define ZONE_MIDDLE_COINS_GROUP        18
+#define ZONE_MIDDLE_FLOOR_GOLDBAR      19
 
 /* place zones */
-#define ZONE_SHIP_OUR_CAPTAINS_BEDRROM	   20
-#define ZONE_SHIP_OUR_HOLD	               21
-#define ZONE_SHIP_OUR_DECK                22
-#define ZONE_SHIP_OPP_CAPTAINS_BEDRROM 23
-#define ZONE_SHIP_OPP_HOLD             24
-#define ZONE_SHIP_OPP_DECK             25
+#define ZONE_SHIP_OUR_CAPTAINS_BEDRROM	20
+#define ZONE_SHIP_OUR_HOLD	            21
+#define ZONE_SHIP_OUR_DECK_UP          22
+#define ZONE_SHIP_OUR_DECK_DOWN        23
 
-#define ZONE_SAVE_TREASURE		            25
+#define ZONE_SHIP_OPP_CAPTAINS_BEDRROM	24
+#define ZONE_SHIP_OPP_HOLD             25
+#define ZONE_SHIP_OPP_DECK_1          	26
+#define ZONE_SHIP_OPP_DECK_2        	27
+
+#define ZONE_SAVE_TREASURE		         28
+#define ZONES_MAX								29
 
 /* Store goldbars and coins or not and where */
-#define STORE_MOUTH                       1
-#define STORE_BOOT                        2
-#define DONT_STORE                        0
+#define STORE_MOUTH    1
+#define STORE_BOOT     2
+#define DONT_STORE     0
 
 /************************************************************* 
  * Strat data structures 
@@ -196,22 +217,42 @@ struct conf {
 /* depends on flags the robot
  * do one things or anothers */
 	uint8_t flags;
-   #define PICKUP_COINS_GROUP 1
+   #define ENABLE_R2ND_POS				1 /* TODO: set by command */
+	#define ENABLE_DOWN_SIDE_ZONES	2
 };
 
 
 
 typedef struct {
+	/* type */
+	uint16_t type;
+	#define ZONE_TYPE_TOTEM					0
+	#define ZONE_TYPE_GOLDBAR				1
+	#define ZONE_TYPE_MAP					2
+	#define ZONE_TYPE_BOTTLE				3
+	#define ZONE_TYPE_COIN					4
+	#define ZONE_TYPE_COINS_GROUP			5
+	#define ZONE_TYPE_HOLD					6
+	#define ZONE_TYPE_DECK					7
+	#define ZONE_TYPE_CAPTAINS_BEDROOM	8
+	#define ZONE_TYPE_SAVE					9
+	#define ZONE_TYPE_MAX					10
+
+	/* target point */
+	int16_t x;
+	int16_t y;	
+
 	/* boundinbox */
 	int16_t x_up;
 	int16_t y_up;
 	int16_t x_down;
 	int16_t y_down;
 
-   /*init points*/
+   /* init point */
 	int16_t init_x;
 	int16_t init_y;
-	
+
+	/* priority */
 	uint8_t prio;
    #define ZONE_PRIO_0		0
    #define ZONE_PRIO_10		10
@@ -230,7 +271,6 @@ typedef struct {
    #define ZONE_CHECKED_OPP		2
    #define ZONE_SEC_ROBOT	   	4
    #define ZONE_AVOID		    	8
-
 } strat_zones;
 
 
@@ -240,9 +280,13 @@ struct strat_infos {
 	struct bbox area_bbox;
 
 	/* points areas */
-	strat_zones zones[27];
+	strat_zones zones[ZONES_MAX];
+
 	/* our zone position */
 	uint8_t current_zone;
+	uint8_t goto_zone;
+	uint8_t last_zone;
+
 	/* opponent zone position */
 	uint8_t opp_current_zone;
 	uint8_t opp2_current_zone;

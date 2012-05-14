@@ -480,6 +480,11 @@ int8_t get_robot_2nd_xy(int16_t *x, int16_t *y)
 {
 #ifdef ROBOT_2ND
 	uint8_t flags;
+
+	/* if disable by strat return like it's not there */
+	if((strat_infos.conf.flags & ENABLE_R2ND_POS) == 0)
+		return -1;
+
 	IRQ_LOCK(flags);
 	*x = beaconboard.robot_2nd_x;
 	*y = beaconboard.robot_2nd_y;
@@ -524,6 +529,11 @@ int8_t get_robot_2nd_da(int16_t *d, int16_t *a)
 #ifdef ROBOT_2ND
 	uint8_t flags;
 	int16_t x_tmp;
+
+	/* if disable by strat return like it's not there */
+	if((strat_infos.conf.flags & ENABLE_R2ND_POS) == 0)
+		return -1;
+
 	IRQ_LOCK(flags);
 	x_tmp = beaconboard.robot_2nd_x;
 	*d = beaconboard.robot_2nd_d;
@@ -570,6 +580,11 @@ int8_t get_robot_2nd_xyda(int16_t *x, int16_t *y, int16_t *d, int16_t *a)
 {
 #ifdef ROBOT_2ND
 	uint8_t flags;
+
+	/* if disable by strat return like it's not there */
+	if((strat_infos.conf.flags & ENABLE_R2ND_POS) == 0)
+		return -1;
+
 	IRQ_LOCK(flags);
 	*x = beaconboard.robot_2nd_x;
 	*y = beaconboard.robot_2nd_y;
@@ -685,21 +700,27 @@ uint8_t robots_infront(void)
 
 
 
-/* return 1 if opp is in area, COLOR is taken into account!! */
+/* return 1 if opp is in area, XXX pass coordinates with COLOR macro */
 uint8_t opponent_is_in_area(int16_t x_up, int16_t y_up,
 									 int16_t x_down, int16_t y_down)
 {
-	int8_t opp_there;
+	int8_t opp_there, opp2_there, r2nd_there;
 	int16_t opp_x, opp_y;
 	int16_t opp2_x, opp2_y;
-	int16_t _2nd_robot_x, _2nd_robot_y;
+	int16_t r2nd_x, r2nd_y;
+
+
+	/* get robot coordenates */
+	opp_there = get_opponent_xy(&opp_x, &opp_y);
+	opp2_there = get_opponent2_xy(&opp2_x, &opp2_y);
+	r2nd_there = get_robot_2nd_xy(&r2nd_x, &r2nd_y);
+
+	/* return if no robots */
+	if(opp_there == -1 && opp2_there == -1 && r2nd_there == -1)
+		return 0;
 
 
 	/* Opponent 1 */
-	opp_there = get_opponent_xy(&opp_x, &opp_y);
-	if(opp_there == -1)
-		return 0;
-
 	if (mainboard.our_color == I2C_COLOR_RED) {
 		if ((opp_x > x_up && opp_x < x_down)
 			&& (opp_y < y_up && opp_y > y_down) )
@@ -712,11 +733,6 @@ uint8_t opponent_is_in_area(int16_t x_up, int16_t y_up,
 	}
 
 	/* Opponent 2 */
-	opp_there = get_opponent2_xy(&opp2_x, &opp2_y);
-
-	if(opp_there == -1)
-		return 0;
-
 	if (mainboard.our_color == I2C_COLOR_RED) {
 		if ((opp2_x > x_up && opp2_x < x_down)
 			&& (opp2_y < y_up && opp2_y > y_down) )
@@ -729,50 +745,19 @@ uint8_t opponent_is_in_area(int16_t x_up, int16_t y_up,
 	}
 
 	/* 2nd robot */
-	opp_there = get_robot_2nd_xy(&_2nd_robot_x, &_2nd_robot_y);
-
-	if(opp_there == -1)
-		return 0;
-
 	if (mainboard.our_color == I2C_COLOR_RED) {
-		if ((_2nd_robot_x > x_up && _2nd_robot_x < x_down)
-			&& (_2nd_robot_y < y_up && _2nd_robot_y > y_down) )
+		if ((r2nd_x > x_up && r2nd_x < x_down)
+			&& (r2nd_y < y_up && r2nd_y > y_down) )
 			return 1;
 	}
 	else {
-		if ((_2nd_robot_x < x_up && _2nd_robot_x > x_down)
-			 && (_2nd_robot_y < y_up && _2nd_robot_y > y_down) )
+		if ((r2nd_x < x_up && r2nd_x > x_down)
+			 && (r2nd_y < y_up && r2nd_y > y_down) )
 			return 1;
 	}
 
 	return 0;
 }
-
-
-/* XXX NOT UPDATED*/
-/* return 1 if the opponent is near */
-#ifdef use_goto_force_instead
-void wait_until_opponent_is_far(void)
-{
-#ifdef HOMOLOGATION
-	int16_t opp_x, opp_y, opp_d, opp_a;
-
-	if (get_opponent_xyda(&opp_x, &opp_y, &opp_d, &opp_a) == -1)
-		return;
-
-	if(opp_d < 600 ) {
-		DEBUG(E_USER_STRAT, "waiting opponent far");
-
-		do {
-			if (get_opponent_xyda(&opp_x, &opp_y,
-					      &opp_d, &opp_a) == -1)
-				return;
-	
-		} while(opp_d < 600);
-	}
-#endif
-}
-#endif
 
 
 /*

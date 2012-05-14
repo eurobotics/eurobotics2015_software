@@ -95,7 +95,7 @@
 #define CENTER_Y 1000
 
 /* don't care about polygons further than this distance for escape */
-#define ESCAPE_POLY_THRES 1000
+#define ESCAPE_POLY_THRES 500
 
 /* don't reduce opp if opp is too far */
 #define REDUCE_POLY_THRES 3000

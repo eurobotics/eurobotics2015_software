@@ -94,7 +94,7 @@ uint8_t strat_main_loop(void)
 	  	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);   	
 		DEBUG(E_USER_STRAT, "Save group of coins");
-		err=strat_goto_xy_force(COLOR_X(900),1600);
+		/* XXX */ /*err=strat_goto_xy_force(COLOR_X(900),1600);*/
 	   if(!TRAJ_SUCCESS(err))
 	   	ERROUT(err);
 	   err=strat_save_treasure_generic(COLOR_X(700),1400);
@@ -147,3 +147,163 @@ end:
    return err;
 }
 #endif
+
+
+/* return 1 if is a valid for work */
+uint8_t strat_is_valid_zone(uint8_t zone_num)
+{
+	/* discard actual zone */
+	if(strat_infos.current_zone == zone_num)
+		return 0;
+
+	/* discard down side zones depends on strat config */
+	if((strat_infos.conf.flags & ENABLE_DOWN_SIDE_ZONES) == 0 
+		&& strat_infos.zone.y_init < )
+		return 0;
+
+	/* discard if opp is in zone */
+	if(opponent_is_in_area(	COLOR_X(strat_infos.zones[zone_num].x_up),strat_infos.zones[zone_num].y_up,
+								COLOR_X(strat_infos.zones[zone_num].x_down),	strat_infos.zones[zone_num].y_down)) {
+		return 0;
+	}
+
+	/* discard our checked zones */
+	if(strat_infos.zones[zone_num].flags & ZONE_CHECKED)
+		return 0;	
+
+	/* discard opp checked zones */
+	if(strat_infos.zones[zone_num].flags & ZONE_CHECKED_OPP)
+		return 0;	
+
+	/* discard avoid zones */
+	if(strat_infos.zones[zone_num].flags & ZONE_AVOID)
+		return 0;	
+
+	/* if we have treasure on mouth, we only can send messages, save treasure on ship or pickup middle coins group */
+	if(treasure_in_mouth) {
+		if(!(zone_num != ZONE_SHIP_OUR_CAPTAINS_BEDRROM
+			&& zone_num != ZONE_SHIP_OUR_HOLD
+			&& zone_num != ZONE_SHIP_OUR_DECK_1
+			&& zone_num != ZONE_SHIP_OUR_DECK_2
+			&& zone_num != ZONE_SAVE_TREASURE
+			&& zone_num != ZONE_MIDDLE_COINS_GROUP
+			&& zone_num != ZONE_OUR_BOTTLE_1
+			&& zone_num != ZONE_OUR_BOTTLE_2 ))
+		
+		return 0;
+	}
+	/* if we have not treasure on mouth, we have not to save treasure any where */
+	else {
+		if(zone_num == ZONE_SHIP_OUR_CAPTAINS_BEDRROM
+		|| zone_num == ZONE_SHIP_OUR_HOLD
+		|| zone_num == ZONE_SHIP_OUR_DECK_1
+		|| zone_num == ZONE_SHIP_OUR_DECK_2
+		|| zone_num == ZONE_SAVE_TREASURE)
+		
+		return 0;
+	}
+
+	/* depending on goldbars in boot */
+
+
+}
+
+/* return new work zone, -1 if any zone is found */
+int8_t strat_get_new_zone(void)
+{
+	uint16_t prio_max = 0;
+	int8_t zone_num = -1;
+	
+	/* evaluate zones */
+	for(i=0; i < ZONES_MAX; i++) 
+	{
+		/* check if is a valid zone */
+		if(!strat_is_valid_zone(i))	
+			continue;
+
+		/* check priority */
+		if(strat_infos.zones[i].prio > prio_max) {
+
+			/* update zone candidate params */
+			prior_max = strat_infos.zones[i].prio;
+			zone_num = i;
+		}
+	}
+
+	return zone_num;
+}
+
+/* return END_TRAJ if zone is reached */
+uint8_t strat_goto_zone(uint8_t zone_num)
+{
+	/* special cases */
+	if(zone_num == ZONE_MIDDLE_COINS_GROUP
+	|| zone_num == ZONE_TOTEM_OPP_SIDE_2) {
+
+		err = goto_and_avoid_forward(COLOR_X(strat_infos.zones[zone_num].init_x), strat_infos.zones[zone_num].init_y, 
+							TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+
+	}
+	else if(zone_num == ZONE_OUR_BOTTLE_1) {
+
+		/* TODO: goto move the orphan coin first */
+
+	}
+	else if(zone_num == ZONE_SHIP_OPP_DECK_2 
+			&& (strat_infos.zones[ZONE_SAVE_TREASURE].flags & ZONE_CHECKED)) {
+		
+		/* TODO: goto move the orphan coin first, and goto deck forward with fingers opened */
+
+	}
+	/* by default */
+	else {
+		err = goto_and_avoid(COLOR_X(strat_infos.zones[zone_num].init_x), strat_infos.zones[zone_num].init_y, 
+							TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+	}
+
+	return err;
+}
+
+/* return END_TRAJ if the work is done */
+uint8_t strat_work_on_zone(uint8_t zone_num)
+{
+	int16_t x = strat_infos.zones[zone_num].x;
+	int16_t y = strat_infos.zones[zone_num].y;
+
+	if(strat_infos.zones[zone_num].type == ZONE_TYPE_TOTEM) {
+		err = strat_empty_totem_side(x, y, uint8_t store_goldbar, uint8_t step);
+	}
+	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_GOLDBAR) {
+		err = strat_pickup_goldbar_floor(int16_t x, int16_t y, uint8_t store);
+	}
+	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_MAP) {
+		/* TODO */
+		err = END_TRAJ;
+	}
+	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_BOTTLE) {
+		err = strat_send_message_bottle(x, y);
+	}
+	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_COIN) {
+		err = strat_pickup_coins_floor(x, y, uint8_t group);
+	}
+	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_COINS_GROUP) {
+		err = strat_pickup_coins_floor(int16_t x, int16_t y, uint8_t group);
+	}
+	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_HOLD) {
+		err = strat_save_treasure_generic(int16_t x, int16_t y);
+		err = strat_save_treasure_in_hold_back(int16_t x, int16_t y);
+	}
+	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_DECK) {
+		err = strat_save_treasure_in_deck_back(int16_t x, int16_t y);
+	}
+	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_CAPTAINS_BEDROOM) {
+		/* TODO */
+		err = END_TRAJ;
+	}
+	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_SAVE) {
+		err = strat_save_treasure_generic(int16_t x, int16_t y);
+	}
+
+	return err;
+
+}
