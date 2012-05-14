@@ -110,7 +110,6 @@ uint8_t opponent_is_behind_side(uint8_t side);
 uint8_t opponent_is_infront_side(uint8_t side);
 */
 
-/* XXX NOT UPDATED*/
 uint8_t opponent_is_in_area(int16_t x_up, int16_t y_up,
 									 int16_t x_down, int16_t y_down);
 
