@@ -102,7 +102,8 @@
 
 /* ax12 */
 #define AX12_ID_ARM		1
-#define AX12_ID_TEETH	2
+#define AX12_ID_COMB		2
+#define AX12_ID_TEETH	3
 
 /* encoders handlers */
 #define RIGHT_ENCODER       ((void *)1) // decrements going fordwars
@@ -121,22 +122,20 @@
 #define E_USER_AX12         199
 
 /* EVENTS PRIORITIES */
-#define EVENT_PRIORITY_LED 			  170
-#define EVENT_PRIORITY_TIME           160
-#define EVENT_PRIORITY_I2C_POLL       140
-#define EVENT_PRIORITY_SENSORS        120
-#define EVENT_PRIORITY_CS             100
-#define EVENT_PRIORITY_BEACON_POLL     80
-#define EVENT_PRIORITY_STRAT         	70
-
+#ifdef old_version
+	#define EVENT_PRIORITY_LED 			  170
+	#define EVENT_PRIORITY_TIME           160
+	#define EVENT_PRIORITY_I2C_POLL       140
+	#define EVENT_PRIORITY_SENSORS        120
+	#define EVENT_PRIORITY_CS             100
+	#define EVENT_PRIORITY_BEACON_POLL     80
+	#define EVENT_PRIORITY_STRAT         	70
+#else
+	#define EVENT_PRIORITY_LED 			  170	#define EVENT_PRIORITY_TIME           160	#define EVENT_PRIORITY_I2C_POLL       140	#define EVENT_PRIORITY_SENSORS        120	#define EVENT_PRIORITY_CS             100	#define EVENT_PRIORITY_STRAT         	30	#define EVENT_PRIORITY_BEACON_POLL     20
+#endif
 
 /* EVENTS PERIODS */
-#define EVENT_PERIOD_LED 			1000000L
-#define EVENT_PERIOD_STRAT			  25000L
-#define EVENT_PERIOD_BEACON_PULL	  10000L
-#define EVENT_PERIOD_I2C_POLL		   8000L	// 8ms
-#define EVENT_PERIOD_SENSORS		   5000L /* XXX same as CS with higher priority */
-#define EVENT_PERIOD_CS 			   5000L
+#define EVENT_PERIOD_LED 			1000000L#define EVENT_PERIOD_STRAT			  25000L#define EVENT_PERIOD_BEACON_PULL	  10000L#define EVENT_PERIOD_SENSORS		  10000L#define EVENT_PERIOD_I2C_POLL		   8000L#define EVENT_PERIOD_CS 			   5000L
 
 /* dynamic logs */
 #define NB_LOGS 10
