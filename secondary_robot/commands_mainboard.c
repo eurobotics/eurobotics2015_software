@@ -258,44 +258,12 @@ parse_pgm_inst_t cmd_opponent_set = {
 };
 
 
-
 /**********************************************************/
 /* Start */
 
 /* this structure is filled when cmd_start is parsed successfully */
 struct cmd_start_result {
 	fixed_string_t arg0;
-};
-
-/* function called when cmd_start is parsed successfully */
-static void cmd_start_parsed(void *parsed_result, void *data)
-{	
-	//strat_game();
-}
-
-prog_char str_start_arg0[] = "start";
-parse_pgm_token_string_t cmd_start_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_start_result, arg0, str_start_arg0);
-
-prog_char help_start[] = "Start the robot";
-parse_pgm_inst_t cmd_start = {
-	.f = cmd_start_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_start,
-	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_start_arg0, 
-		NULL,
-	},
-};
-
-
-#if 0
-/**********************************************************/
-/* Start */
-
-/* this structure is filled when cmd_start is parsed successfully */
-struct cmd_start_result {
-	fixed_string_t arg0;
-	fixed_string_t color;
 	fixed_string_t debug;
 };
 
@@ -303,73 +271,17 @@ struct cmd_start_result {
 static void cmd_start_parsed(void *parsed_result, void *data)
 {
 	struct cmd_start_result *res = parsed_result;
-	uint8_t old_level = gen.log_level;
-	int8_t c;
 	
-	gen.logs[NB_LOGS] = E_USER_STRAT;
 	if (!strcmp_P(res->debug, PSTR("debug"))) {
-		strat_infos.dump_enabled = 1;
-		gen.log_level = 5;
+		strat_start_match(1);
 	}
 	else {
-		strat_infos.dump_enabled = 0;
-		gen.log_level = 0;
+		strat_start_match(0);
 	}
-
- retry:
-	printf_P(PSTR("Press a key when beacon ready, 'q' for skip \r\n"));
-	c = -1;
-	while(c == -1){
-		c = cmdline_getchar();
-	}
-	
-	if(c == 'q'){
-		printf("Play without beacon\r\n");
-	}
-	else{
-		beacon_cmd_wt11_call();
-		WAIT_COND_OR_TIMEOUT((beacon_connected==1),5000);
-		if(!beacon_connected){
-			printf("Beacon connection FAIL, reseting local wt11\r\n");
-			beacon_cmd_wt11_local_reset();
-			goto retry;
-		}
-		else{
-			printf("Beacon connection SUCESS!\r\n");		
- retry_on:
-			beacon_cmd_beacon_on();
-			
-			printf("is beacon running? (s/n)\n\r");
-			c = -1;
-			while(c == -1){
-				c = cmdline_getchar();
-			}
-			if(c == 'n'){
-				wait_ms(100);
-				goto retry_on;	
-			}
-		}
-	}
-	
-	if (!strcmp_P(res->color, PSTR("blue"))) {
-		mainboard.our_color = I2C_COLOR_PURPLE;
-		//beacon_cmd_color();
-	}
-	else if (!strcmp_P(res->color, PSTR("red"))) {
-		mainboard.our_color = I2C_COLOR_RED;
-		//beacon_cmd_color();
-	}
-
-	strat_start();
-
-	gen.logs[NB_LOGS] = 0;
-	gen.log_level = old_level;
 }
 
 prog_char str_start_arg0[] = "start";
 parse_pgm_token_string_t cmd_start_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_start_result, arg0, str_start_arg0);
-prog_char str_start_color[] = "blue#red";
-parse_pgm_token_string_t cmd_start_color = TOKEN_STRING_INITIALIZER(struct cmd_start_result, color, str_start_color);
 prog_char str_start_debug[] = "debug#match";
 parse_pgm_token_string_t cmd_start_debug = TOKEN_STRING_INITIALIZER(struct cmd_start_result, debug, str_start_debug);
 
@@ -380,13 +292,12 @@ parse_pgm_inst_t cmd_start = {
 	.help_str = help_start,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_start_arg0, 
-		(prog_void *)&cmd_start_color, 
 		(prog_void *)&cmd_start_debug, 
 		NULL,
 	},
 };
 
-#endif
+
 /**********************************************************/
 /* Color */
 
@@ -447,14 +358,15 @@ static void cmd_treasure_parsed(void *parsed_result,
 
 	if (!strcmp(res->arg1, "pickupmap"))
 		strat_pickup_map();
-
-	if (!strcmp(res->arg1, "empty_totem"))
+	else if (!strcmp(res->arg1, "empty_totem"))
 		strat_empty_totem();
+	else if (!strcmp(res->arg1, "save_treasure"))
+		strat_save_treasure_on_ship();
 }
 
 prog_char str_treasure_arg0[] = "treasure";
 parse_pgm_token_string_t cmd_treasure_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_treasure_result, arg0, str_treasure_arg0);
-prog_char str_treasure_arg1[] = "pickupmap#empty_totem";
+prog_char str_treasure_arg1[] = "pickupmap#empty_totem#save_treasure";
 parse_pgm_token_string_t cmd_treasure_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_treasure_result, arg1, str_treasure_arg1);
 parse_pgm_token_num_t cmd_treasure_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_treasure_result, arg2, INT32);
 parse_pgm_token_num_t cmd_treasure_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_treasure_result, arg3, INT32);

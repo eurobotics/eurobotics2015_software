@@ -316,6 +316,10 @@ int main(void)
 	/* init cmdline */
 	cmdline_init();
 
+
+	/* start */
+	//strat_start_match(1);
+
 	/* main loop */
 	while(1)	{
 		cmdline_interact_nowait();

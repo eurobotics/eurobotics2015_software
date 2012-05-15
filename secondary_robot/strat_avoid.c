@@ -84,21 +84,21 @@
 #define O_LENGTH 550
 #else
 /* /!\ half size */
-#define O_WIDTH  245
-#define O_LENGTH 340
+#define O_WIDTH  330
+#define O_LENGTH 220
 #endif
 
-#define ROBOT_2ND_WIDTH  245
-#define ROBOT_2ND_LENGTH 340
+#define ROBOT_2ND_WIDTH  330
+#define ROBOT_2ND_LENGTH 220
 
 #define CENTER_X 1500
 #define CENTER_Y 1000
 
 /* don't care about polygons further than this distance for escape */
-#define ESCAPE_POLY_THRES 1000
+#define ESCAPE_POLY_THRES 500
 
 /* don't reduce opp if opp is too far */
-#define REDUCE_POLY_THRES 600
+#define REDUCE_POLY_THRES 3000
 
 /* has to be longer than any poly */
 #define ESCAPE_VECT_LEN 3000
@@ -206,12 +206,43 @@ void set_rotated_poly(poly_t *pol, const point_t *robot_pt,
 	oa_poly_set_point(pol, tmp_x, tmp_y, 3);
 }
 
+#define EDGE_NUMBER 8
+void set_rotated_pentagon(poly_t *pol, const point_t *robot_pt,
+			  int16_t radius, int16_t x, int16_t y, double a_rad)
+{
+
+	double c_a, s_a;
+	uint8_t i;
+	double px1, py1, px2, py2;
+	//double a_rad;
+
+	//a_rad = atan2(y - robot_pt->y, x - robot_pt->x);
+
+	/* generate pentagon  */
+	c_a = cos(-2*M_PI/EDGE_NUMBER);
+	s_a = sin(-2*M_PI/EDGE_NUMBER);
+	
+	px1 = radius * cos(a_rad + 2*M_PI/(2*EDGE_NUMBER));
+	py1 = radius * sin(a_rad + 2*M_PI/(2*EDGE_NUMBER));
+  
+
+	for (i = 0; i < EDGE_NUMBER; i++){
+		oa_poly_set_point(pol, x + px1, y + py1, i);
+		
+		px2 = px1*c_a + py1*s_a;
+		py2 = -px1*s_a + py1*c_a;
+
+		px1 = px2;
+		py1 = py2;
+	}
+}
+
 /* set poly that represent the opponent */
 void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16_t w, int16_t l)
 {
 #define OPP1      0
 #define OPP2      1
-#define ROBOT_2ND 2
+#define ROBOT2ND 2
 
 	int16_t x=0, y=0;
 	int8_t *name = NULL;
@@ -225,15 +256,11 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 	   name = opp1;
 	}
 	else if(type == OPP2) {
-	   /* TODO: get second oponent xy */
-	   x = I2C_OPPONENT_NOT_THERE;
-	   y = 0;
+	   get_opponent2_xy(&x, &y);
 	   name = opp2;
 	}
-	else if(type == ROBOT_2ND) {
-		/* TODO: get second robot xy */
-	   x = I2C_OPPONENT_NOT_THERE;
-	   y = 0;
+	else if(type == ROBOT2ND) {
+		get_robot_2nd_xy(&x, &y);
 	   name = robot_2nd;
 	}
 #else
@@ -243,13 +270,11 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 	   name = opp1;
 	}
 	else if(type == OPP2) {
-	   /* TODO: get second oponent xy */
 	   x = g_opp2_x;
 	   y = g_opp2_y;
 	   name = opp2;
 	}
-	else if(type == ROBOT_2ND) {
-		/* TODO: get second robot xy */
+	else if(type == ROBOT2ND) {
 	   x = g_robot_2nd_x;
 	   y = g_robot_2nd_y;
 	   name = robot_2nd;
@@ -848,6 +873,7 @@ void set_totems_poly(poly_t *pol)
 
 #define POLY_CORNER        108
 
+#ifdef old_version
    oa_poly_set_point(pol, TOTEMS_X - POLY_CORNER, TOTEMS_Y - OBS_CLERANCE, 0);
    oa_poly_set_point(pol, TOTEMS_X + TOTEMS_L + POLY_CORNER, TOTEMS_Y - OBS_CLERANCE, 1);
 
@@ -859,8 +885,100 @@ void set_totems_poly(poly_t *pol)
 
    oa_poly_set_point(pol, TOTEMS_X - OBS_CLERANCE, TOTEMS_Y + TOTEMS_W + POLY_CORNER, 6);
    oa_poly_set_point(pol, TOTEMS_X - OBS_CLERANCE, TOTEMS_Y - POLY_CORNER, 7);
+
+#else
+
+#define __EDGE_NUMBER 8
+
+	double c_a, s_a;
+	uint8_t i;
+	double px1, py1, px2, py2;
+	double a_rad = M_PI/2.0;
+
+  int16_t x = 0;
+  int16_t y = 1000;
+  int16_t x_half_size = 400;
+  int16_t radius = (300 + 190);
+
+	/* generate pentagon  */
+	c_a = cos(-2*M_PI/__EDGE_NUMBER);
+	s_a = sin(-2*M_PI/__EDGE_NUMBER);
+	
+	px1 = radius * cos(a_rad + 2*M_PI/(2*__EDGE_NUMBER));
+	py1 = radius * sin(a_rad + 2*M_PI/(2*__EDGE_NUMBER));
+  
+
+	for (i = 0; i < __EDGE_NUMBER; i++){
+
+    /* long side */
+    if(i < 4)
+      x = 1500 - x_half_size;
+    else
+      x = 1500 + x_half_size;
+
+		oa_poly_set_point(pol, x + px1, y + py1, i);
+		
+		px2 = px1*c_a + py1*s_a;
+		py2 = -px1*s_a + py1*c_a;
+
+		px1 = px2;
+		py1 = py2;
+	}
+#endif
 }
  
+
+/* set a generic square poly */
+void set_treasure_poly(poly_t *pol, uint8_t type)
+{
+#define HOME_PURPLE   0
+#define HOME_RED      1
+#define SHIP_PURPLE   2
+#define SHIP_RED      3
+
+  int16_t x, y; 
+  int16_t x_half_size, y_half_size;
+
+  /* center of poly depends on type */
+  switch(type) {
+    case HOME_RED:
+      x = 400 - 9;
+      y = 500 + 9;
+      x_half_size =  9; 
+      y_half_size =  9;
+      break;
+
+    case HOME_PURPLE:
+      x = 3000 - 400 - 9;
+      y = 500 + 9;
+      x_half_size =  9; 
+      y_half_size =  9;
+      break;
+
+    case SHIP_RED:
+      x = 400;
+      y = 2000 - 740;
+      x_half_size =  9; 
+      y_half_size =  9;
+      break;
+
+    case SHIP_PURPLE:
+      x = 3000 - 400;
+      y = 2000 - 740;
+      x_half_size =  9; 
+      y_half_size =  9;
+      break;
+
+    default:
+      return;
+  }
+
+  /* set poly points */
+  oa_poly_set_point(pol, x - x_half_size - OBS_CLERANCE, y - y_half_size - OBS_CLERANCE, 0);
+  oa_poly_set_point(pol, x + x_half_size + OBS_CLERANCE, y - y_half_size - OBS_CLERANCE, 1);
+  oa_poly_set_point(pol, x + x_half_size + OBS_CLERANCE, y + y_half_size + OBS_CLERANCE, 2);
+  oa_poly_set_point(pol, x - x_half_size - OBS_CLERANCE, y + y_half_size + OBS_CLERANCE, 3);
+}
 
 #define GO_AVOID_AUTO		0
 #define GO_AVOID_FORWARD	1
@@ -890,6 +1008,9 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 	point_t *p;
 	poly_t *pol_opp1, *pol_opp2, *pol_robot_2nd;
 	poly_t *pol_totems;
+  //poly_t *pol_totem_red, *pol_totem_purple;
+	//poly_t *pol_home_purple, *pol_home_red;
+  //poly_t *pol_ship_purple, *pol_ship_red;
 	int8_t ret;
 
 	int16_t opp1_w, opp1_l;
@@ -921,7 +1042,7 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 	g_robot_2nd_y = robot_2nd_y;
 #endif
 
- retry:
+retry:
 
 #ifdef POLYS_IN_PATH
 	/* reset slots in path */
@@ -933,13 +1054,11 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 	/* opponent info */
 #ifndef HOST_VERSION	
 	get_opponent_xy(&opp1_x, &opp1_y);
-	/* TODO: get second opponent */
-	opp2_x = I2C_OPPONENT_NOT_THERE;
-	opp2_y = I2C_OPPONENT_NOT_THERE;
+   get_opponent2_xy(&opp2_x, &opp2_y);
 	
 	/* TODO: get second robot */
 	robot_2nd_x = I2C_OPPONENT_NOT_THERE;
-	robot_2nd_y = I2C_OPPONENT_NOT_THERE;
+	robot_2nd_y = 0;
 #endif
 
 	opp1_w = O_WIDTH;
@@ -959,9 +1078,13 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 	/* init oa */
 	oa_init();
   
-   /* add totems islands poly */
-   pol_totems = oa_new_poly(8);
-   set_totems_poly(pol_totems);
+  /* add totems islands poly */
+  pol_totems = oa_new_poly(8);
+  set_totems_poly(pol_totems);
+	//pol_totem_red = oa_new_poly(EDGE_NUMBER);
+  //set_rotated_pentagon(pol_totem_red, &robot_pt, (300 + 170), 1100, 1000, M_PI/4.0);
+	//pol_totem_purple = oa_new_poly(EDGE_NUMBER);
+  //set_rotated_pentagon(pol_totem_red, &robot_pt, (300 + 170), 1900, 1000, M_PI/4.0);
   
 	/* add opponent polyS */
 	pol_opp1 = oa_new_poly(4);
@@ -969,7 +1092,20 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 	pol_opp2 = oa_new_poly(4);
 	set_opponent_poly(OPP2, pol_opp2, &robot_pt, O_WIDTH, O_LENGTH);
 	pol_robot_2nd = oa_new_poly(4);
-	set_opponent_poly(ROBOT_2ND, pol_robot_2nd, &robot_pt, ROBOT_2ND_WIDTH, ROBOT_2ND_LENGTH);
+	set_opponent_poly(ROBOT2ND, pol_robot_2nd, &robot_pt, ROBOT_2ND_WIDTH, ROBOT_2ND_LENGTH);
+
+
+  /* add home area polys */
+	//pol_home_red = oa_new_poly(4);
+	//set_treasure_poly(pol_home_red, HOME_RED);
+	//pol_home_purple = oa_new_poly(4);
+	//set_treasure_poly(pol_home_purple, HOME_PURPLE);
+
+  /* add ships polys */
+	//pol_ship_red = oa_new_poly(4);
+	//set_treasure_poly(pol_ship_red, SHIP_RED);
+	//pol_ship_purple = oa_new_poly(4);
+	//set_treasure_poly(pol_ship_purple, SHIP_PURPLE);
 
 	/* if we are not in the limited area, try to go in it. */
 	ret = go_in_area(&robot_pt);
@@ -1000,6 +1136,11 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 	}
  	if (is_point_in_poly(pol_robot_2nd, x, y)) {
 		NOTICE(E_USER_STRAT, " dst is in robot 2nd");
+		return END_ERROR;
+	}
+
+	if (is_point_in_poly(pol_totems, x, y)) {
+		NOTICE(E_USER_STRAT, " dst is in totems");
 		return END_ERROR;
 	}
 
@@ -1066,25 +1207,32 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 		/* len < 0, try reduce opponent to get a valid path */
 		if (distance_between(robot_pt.x, robot_pt.y, opp1_x, opp1_y) < REDUCE_POLY_THRES ) {
 			if (opp1_w == 0) {
-				opp1_l /= 2;
+				//opp1_l /= 2;
+				opp1_l *= 0.75;
 			}
 
-			opp1_w /= 2;
+			//opp1_w /= 2;
+			opp1_l *= 0.75;
 
 			NOTICE(E_USER_STRAT, "reducing opponent 1 %d %d", opp1_w, opp1_l);
 			set_opponent_poly(OPP1, pol_opp1, &robot_pt, opp1_w, opp1_l);
 		}
-		else if (distance_between(robot_pt.x, robot_pt.y, opp2_x, opp2_y) < REDUCE_POLY_THRES ) {
+		if (distance_between(robot_pt.x, robot_pt.y, opp2_x, opp2_y) < REDUCE_POLY_THRES ) {
 			if (opp2_w == 0) {
-				opp2_l /= 2;
+				//opp2_l /= 2;
+				opp2_l *= 0.75;
 			}
 
-			opp2_w /= 2;
+			//opp2_w /= 2;
+			opp2_l *= 0.75;
 
 			NOTICE(E_USER_STRAT, "reducing opponent 2 %d %d", opp2_w, opp2_l);
 			set_opponent_poly(OPP2, pol_opp2, &robot_pt, opp2_w, opp2_l);
 		}
-		else {
+		
+		if (distance_between(robot_pt.x, robot_pt.y, opp1_x, opp1_y) >= REDUCE_POLY_THRES 
+		    && distance_between(robot_pt.x, robot_pt.y, opp2_x, opp2_y) >= REDUCE_POLY_THRES)
+      {
 		
 		   /* XXX don't try to reduce robot 2nd */
 		
@@ -1151,12 +1299,31 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 }
 
 #ifndef HOST_VERSION
+
+/* go to a x,y point. prefer backward but go forward if the point is
+ * near and in front of us */
+uint8_t goto_and_avoid(int16_t x, int16_t y, uint8_t flags_intermediate,
+			       uint8_t flags_final)
+{
+	double d,a;
+	abs_xy_to_rel_da(x, y, &d, &a); 
+
+	if (d < 300 && a < RAD(90) && a > RAD(-90))
+		return __goto_and_avoid(x, y, flags_intermediate,
+					flags_final, GO_AVOID_FORWARD);
+	else
+		return __goto_and_avoid(x, y, flags_intermediate,
+					flags_final, GO_AVOID_BACKWARD);
+}
+
+#if 0
 /* go to a x,y point */
 uint8_t goto_and_avoid(int16_t x, int16_t y, uint8_t flags_intermediate,
 			       uint8_t flags_final)
 {
 	return __goto_and_avoid(x, y, flags_intermediate, flags_final, GO_AVOID_AUTO);
 }
+#endif
 
 /* go forward to a x,y point. use current speed for that */
 uint8_t goto_and_avoid_forward(int16_t x, int16_t y, uint8_t flags_intermediate,
@@ -1171,6 +1338,8 @@ uint8_t goto_and_avoid_backward(int16_t x, int16_t y, uint8_t flags_intermediate
 {
 	return __goto_and_avoid(x, y, flags_intermediate, flags_final, GO_AVOID_BACKWARD);
 }
+
+
 
 #endif
 
