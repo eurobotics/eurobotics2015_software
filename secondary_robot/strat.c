@@ -112,7 +112,7 @@ struct strat_infos strat_infos = {
 /*                  INIT                                     */
 
 /*************************************************************/
-void strat_set_bounding_box(uint8_t type)
+void strat_set_bounding_box(void)
 {
 	strat_infos.area_bbox.x1 = 400 + OBS_CLERANCE;
 	strat_infos.area_bbox.y1 = OBS_CLERANCE;
@@ -167,7 +167,7 @@ void strat_dump_infos(const char *caller)
 void strat_reset_infos(void)
 {
 	/* bounding box */
-	strat_set_bounding_box(AREA_BBOX_4X4);
+	strat_set_bounding_box();
 
 	/* add here other infos resets */
 }
@@ -239,9 +239,181 @@ void strat_event(void *dummy)
 	} while(0)	
 
 
+/* start a match debuging or not */
+void strat_start_match(uint8_t debug)
+{
+	uint8_t old_level = gen.log_level;
+
+	time_wait_ms(3000);
+
+	/* logs */
+	gen.logs[NB_LOGS] = E_USER_STRAT;
+
+	if (debug) {
+		strat_infos.dump_enabled = 1;
+		gen.log_level = 5;
+	}
+	else {
+		strat_infos.dump_enabled = 0;
+		gen.log_level = 0;
+	}	
+
+	/* get color */
+	mainboard.our_color = sensor_get(S_COLOR_SWITCH);
+	printf_P(PSTR("COLOR is %s\r\n"), mainboard.our_color == I2C_COLOR_RED? "RED" : "PURPLE");
+
+	/* reset position */
+	strat_position_color();
+
+	printf_P(PSTR("x=%.2f y=%.2f a=%.2f\r\n"), 
+		 position_get_x_double(&mainboard.pos),
+		 position_get_y_double(&mainboard.pos),
+		 DEG(position_get_a_rad_double(&mainboard.pos)));
+
+	/* strat start */
+	strat_start();
+
+	/* restore logs */
+	gen.log_level = old_level;
+}
+
+
 /* strat main loop */
 uint8_t strat_main(void)
 {
+	uint8_t state = 0;
+   uint8_t err;
+
+#define STRAT_GOTO_EMPTY_TOTEM			0
+#define STRAT_GOTO_EMPTY_TOTEM_RETRY	1
+#define STRAT_DO_EMPTY_TOTEM				2
+#define STRAT_DO_SAVE_TREASURE			3
+#define STRAT_GOTO_DISCOVER_MAP			4
+#define STRAT_GOTO_DISCOVER_MAP_AVOID	5
+#define STRAT_DO_DISCOVER_MAP				6
+#define STRAT_WAIT_FOR_MAIN_ROBOT		7
+#define STRAT_END								8
+
+	while(1)
+  	{
+		switch(state)
+		{
+			case STRAT_GOTO_EMPTY_TOTEM:
+			
+				/* TODO goto with curve traj */
+
+				/* go near orphan coin */
+				trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1000), 357);
+				err = wait_traj_end(TRAJ_FLAGS_STD);
+				if (!TRAJ_SUCCESS(err)) {
+					state = STRAT_GOTO_EMPTY_TOTEM_RETRY;
+					break;
+				}
+
+				/* go near totem */
+				trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1460), 710);
+				err = wait_traj_end(TRAJ_FLAGS_STD);
+				if (!TRAJ_SUCCESS(err)) {
+					state = STRAT_GOTO_EMPTY_TOTEM_RETRY;
+					break;
+				}
+
+				state = STRAT_DO_EMPTY_TOTEM;
+				break;
+
+			case STRAT_GOTO_EMPTY_TOTEM_RETRY:
+		
+				/* TODO goto with avoidance */
+
+				/* go near totem */
+				trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1460), 710);
+				err = wait_traj_end(TRAJ_FLAGS_STD);
+				if (!TRAJ_SUCCESS(err)) {
+					time_wait_ms(2800);
+
+					/* XXX number of times or timeout? */
+
+					break;
+				}
+
+				state = STRAT_DO_EMPTY_TOTEM;
+				break;
+
+			case STRAT_DO_EMPTY_TOTEM:
+				err = strat_empty_totem();
+				if (!TRAJ_SUCCESS(err)) {
+					trajectory_goto_xy_rel(&mainboard.traj, COLOR_SIGN(100), -10);
+					err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+					state = STRAT_GOTO_EMPTY_TOTEM_RETRY;
+					break;
+				}
+				
+				state = STRAT_DO_SAVE_TREASURE;
+				break;
+
+			case STRAT_DO_SAVE_TREASURE:
+				err = strat_save_treasure_on_ship();
+				if (!TRAJ_SUCCESS(err)) {
+					time_wait_ms(2800);
+					break;
+				}
+				
+				state = STRAT_WAIT_FOR_MAIN_ROBOT;
+				break;
+
+			case STRAT_WAIT_FOR_MAIN_ROBOT:
+				if(time_get_s() > WAIT_FOR_MAIN_ROBOT_TIMEOUT)
+					state = STRAT_GOTO_DISCOVER_MAP;
+				break;
+
+			case STRAT_GOTO_DISCOVER_MAP:
+				trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1370), 235);
+				err = wait_traj_end(TRAJ_FLAGS_STD);
+				if (!TRAJ_SUCCESS(err)) {
+					state = STRAT_GOTO_DISCOVER_MAP_AVOID;
+					break;
+				}
+
+				state = STRAT_DO_DISCOVER_MAP;
+				break;
+
+			case STRAT_GOTO_DISCOVER_MAP_AVOID:
+				trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(700), 235);
+				err = wait_traj_end(TRAJ_FLAGS_STD);
+				if (!TRAJ_SUCCESS(err)) {
+					time_wait_ms(2800);
+					break;
+				}
+
+				state = STRAT_GOTO_DISCOVER_MAP;
+				break;
+
+			case STRAT_DO_DISCOVER_MAP:
+				err = strat_pickup_map();
+				//if (!TRAJ_SUCCESS(err)) {
+				//	time_wait_ms(2800);
+				//	break;
+				//}
+				
+				trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1370), 400);
+				err = wait_traj_end(TRAJ_FLAGS_STD);
+				//if (!TRAJ_SUCCESS(err)) {
+				//	time_wait_ms(2800);
+				//	break;
+				//}
+				
+				state = STRAT_END;
+				break;
+		
+			case STRAT_END:
+				return END_TRAJ;
+			
+			default:
+				break;
+		}
+
+	}
+
 	return END_TRAJ;
 }
 

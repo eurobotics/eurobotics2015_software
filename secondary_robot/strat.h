@@ -257,9 +257,7 @@ extern struct strat_infos strat_infos;
 /********************************************
  * in strat.c 
  *******************************************/
-#define AREA_BBOX_6X5	0
-#define AREA_BBOX_4X4	1
-void strat_set_bounding_box(uint8_t type);
+void strat_set_bounding_box(void);
 
 void strat_dump_infos(const char *caller);
 void strat_dump_conf(void);
@@ -285,13 +283,17 @@ uint8_t strat_pickup_map(void);
 /* empty our totem down side and save treasure on ship */
 uint8_t strat_empty_totem(void);
 
+/* save treasure after empty totem */
+uint8_t strat_save_treasure_on_ship(void);
+
+/* start a match debuging or not */
+void strat_start_match(uint8_t debug);
+
 /* add here more strat functions in files */
 
 #else
 
-#define AREA_BBOX_6X5	0
-#define AREA_BBOX_4X4	1
-void strat_set_bounding_box(uint8_t type);
+void strat_set_bounding_box(void);
 
 #endif /* HOST_VERSION */
 

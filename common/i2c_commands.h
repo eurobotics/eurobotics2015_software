@@ -46,6 +46,9 @@ struct i2c_cmd_hdr {
 };
 
 
+/* shared between robots */
+#define WAIT_FOR_MAIN_ROBOT_TIMEOUT 60
+
 /****/
 /* request status of boards and gpios (read data) */
 /****/
