@@ -39,6 +39,10 @@ void dac_set_and_save(void *dac, int32_t val);
 #define TEETH_POS_OPEN	737
 #define TEETH_POS_CLOSE 515
 
+#define COMB_POS_OPEN	850
+#define COMB_POS_CLOSE 	440
+
+
 void actuators_init(void);
 
 inline uint8_t arm_set_pos(uint16_t pos);
@@ -48,6 +52,9 @@ inline uint8_t arm_enable_torque(void);
 
 inline uint8_t teeth_set_pos(uint16_t pos);
 inline uint8_t teeth_wait_end(void);
+
+inline uint8_t comb_set_pos(uint16_t pos);
+inline uint8_t comb_wait_end(void);
 
 #endif
 

@@ -113,18 +113,18 @@
 
 /* default speeds */
 #ifdef HOMOLOGATION
-#define SPEED_DIST_FAST 		2800
-#define SPEED_ANGLE_FAST 		2800
+#define SPEED_DIST_FAST 		500
+#define SPEED_ANGLE_FAST 		500
 #else
 #define SPEED_DIST_FAST 		2800
 #define SPEED_ANGLE_FAST 		2800
 #endif
 
 //Do not change
-#define SPEED_DIST_SLOW 		2800
-#define SPEED_ANGLE_SLOW 		2800
-#define SPEED_DIST_VERY_SLOW 	2800
-#define SPEED_ANGLE_VERY_SLOW 2800
+#define SPEED_DIST_SLOW 		1400
+#define SPEED_ANGLE_SLOW 		1400
+#define SPEED_DIST_VERY_SLOW 	350
+#define SPEED_ANGLE_VERY_SLOW 350
 
 
 #define PLACE_D_SAFE				  140
@@ -281,6 +281,9 @@ void strat_event(void *dummy);
 
 /* pick up the piece of fabric that discover the map */
 uint8_t strat_pickup_map(void);
+
+/* empty our totem down side and save treasure on ship */
+uint8_t strat_empty_totem(void);
 
 /* add here more strat functions in files */
 

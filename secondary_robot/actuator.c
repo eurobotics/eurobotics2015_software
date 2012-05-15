@@ -103,6 +103,10 @@ ax12_actuator_t teeth = {
 	.id = AX12_ID_TEETH,
 };
 
+ax12_actuator_t comb = {
+	.id = AX12_ID_COMB,
+};
+
 /* set finger position depends on mode */
 static uint8_t ax12_set_pos(ax12_actuator_t *ax12, uint16_t pos)
 {
@@ -197,3 +201,9 @@ inline uint8_t teeth_wait_end(void) {
 	return ax12_wait_end(&teeth);
 }
 
+inline uint8_t comb_set_pos(uint16_t pos){	return ax12_set_pos(&comb, pos);
+}
+
+inline uint8_t comb_wait_end(void) {
+	return ax12_wait_end(&comb);
+}

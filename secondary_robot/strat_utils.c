@@ -823,10 +823,10 @@ intr:
 
 void strat_position_color(void)
 {
-#define TRESPA_BAR	20
+#define TRESPA_BAR	18
 
 	/* set x,y and angle */
-	strat_reset_pos(COLOR_X(ROBOT_LENGTH/2), 500-TRESPA_BAR-(ROBOT_WIDTH/2), COLOR_A_ABS(0));	
+	strat_reset_pos(COLOR_X(ROBOT_LENGTH/2 + TRESPA_BAR), 500-TRESPA_BAR-(ROBOT_WIDTH/2), COLOR_A_ABS(0));	
 }
 
 

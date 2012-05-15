@@ -121,6 +121,7 @@ uint8_t strat_pickup_map(void)
 
 	/* close teeth */
 	teeth_set_pos(TEETH_POS_CLOSE);
+	time_wait_ms(250);
 
 	/* go backwards faster */
 	strat_set_speed(PICKUP_SPEED_FAST, old_spda);
@@ -131,6 +132,128 @@ uint8_t strat_pickup_map(void)
 
 	/* hold map */
 	arm_set_pos(ARM_POS_HOLD_MAP);
+
+end:	strat_set_speed(old_spdd, old_spda);	strat_limit_speed_enable(); 
+  return err;
+}
+
+/* empty our totem down side and save treasure on ship */
+uint8_t strat_empty_totem(void)
+{
+   uint8_t err;
+	uint16_t old_spdd, old_spda;
+
+
+	/* disable limit speed */
+	strat_limit_speed_disable();
+
+	/* save speed */
+	strat_get_speed(&old_spdd, &old_spda);
+	strat_set_speed(SPEED_DIST_FAST, SPEED_ANGLE_FAST);
+
+	/* go near orphan coin */
+	trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1000), 357);
+	err = wait_traj_end(TRAJ_FLAGS_STD);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+
+	/* go near totem */
+	trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1460), 710);
+	err = wait_traj_end(TRAJ_FLAGS_STD);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+
+	/* turn depends on color */
+	if(mainboard.our_color == I2C_COLOR_PURPLE) {
+		trajectory_a_abs(&mainboard.traj, 0);
+		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+		if (!TRAJ_SUCCESS(err))
+				ERROUT(err);
+	}
+
+	/* move first coin */
+	trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1335), 710);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+
+	/* open comb and wait end_traj */
+	comb_set_pos(COMB_POS_OPEN);
+	time_wait_ms(250);
+
+	/* goto push a little the goldbar */
+	strat_set_speed(SPEED_DIST_VERY_SLOW, SPEED_ANGLE_FAST);
+	trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1045), 710);
+
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+
+	/* shoot goldbar */
+	trajectory_a_rel(&mainboard.traj, COLOR_A_REL(-90));
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+
+	trajectory_a_rel(&mainboard.traj, COLOR_A_REL(140));
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+
+//	trajectory_a_rel(&mainboard.traj, COLOR_A_REL(-45));
+//	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+//	if (!TRAJ_SUCCESS(err))
+//			ERROUT(err);
+
+	/* go near group of treasure */
+	trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(940), 710);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+
+//	trajectory_a_rel(&mainboard.traj, COLOR_A_REL(-45));
+//	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+//	if (!TRAJ_SUCCESS(err))
+//			ERROUT(err);
+//
+//	(mainboard.our_color == I2C_COLOR_PURPLE)?
+//		trajectory_d_rel(&mainboard.traj, 150):
+//		trajectory_d_rel(&mainboard.traj, -150);
+//
+//	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+//	if (!TRAJ_SUCCESS(err))
+//			ERROUT(err);
+
+	/* comb treasure to center it in path */
+//	trajectory_a_rel(&mainboard.traj, COLOR_A_REL(45));
+//	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+//	if (!TRAJ_SUCCESS(err))
+//			ERROUT(err);
+//
+//	trajectory_a_rel(&mainboard.traj, COLOR_A_REL(-45));
+//	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+//	if (!TRAJ_SUCCESS(err))
+//			ERROUT(err);
+//
+//	(mainboard.our_color == I2C_COLOR_PURPLE)?
+//		trajectory_d_rel(&mainboard.traj, 150):
+//		trajectory_d_rel(&mainboard.traj, -150);
+//
+//	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+//	if (!TRAJ_SUCCESS(err))
+//			ERROUT(err);
+//
+	/* goto ship */
+	trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(250), 1000);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+
+	trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(180));
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+
 
 end:	strat_set_speed(old_spdd, old_spda);	strat_limit_speed_enable(); 
   return err;
