@@ -168,15 +168,16 @@ uint8_t strat_empty_totem(void)
 #endif
 
 	/* turn depends on color */
-	if(mainboard.our_color == I2C_COLOR_PURPLE) {
-		trajectory_a_abs(&mainboard.traj, 180);
+	//if(mainboard.our_color == I2C_COLOR_PURPLE) {
+		trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(0));
 		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 		if (!TRAJ_SUCCESS(err))
 				ERROUT(err);
-	}
+	//}
 
 	/* move first coin */
-	trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1335), 710);
+	//trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1335), 710);
+	trajectory_d_rel(&mainboard.traj, -125);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
@@ -193,7 +194,10 @@ uint8_t strat_empty_totem(void)
 
 	/* goto push a little the goldbar */
 	strat_set_speed(SPEED_DIST_VERY_SLOW, SPEED_ANGLE_FAST);
-	trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1045), 710);
+	if(mainboard.our_color == I2C_COLOR_PURPLE)
+		trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1045), 710);
+	else
+		trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1045+130), 710);
 
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
@@ -210,48 +214,12 @@ uint8_t strat_empty_totem(void)
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
-#if 0
+
 	/* go near group of treasure */
-	trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(940), 710);
+	trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(840), 710);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
-
-	/* goto ship */
-	trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(250), 1000);
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
-
-	/* try to push treasure inside ship */
-	trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(180));
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
-
-	strat_set_speed(SPEED_DIST_FAST, SPEED_ANGLE_FAST);
-	trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(400), 1000);
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
-
-	trajectory_a_rel(&mainboard.traj, COLOR_A_REL(270));
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
-
-	trajectory_d_rel(&mainboard.traj, COLOR_SIGN(200));
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
-
-	/* get out of ship */
-	comb_set_pos(COMB_POS_CLOSE);
-	trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(700), 600);
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
-#endif
 
 end:	strat_set_speed(old_spdd, old_spda);	strat_limit_speed_enable(); 
   return err;
@@ -269,16 +237,10 @@ uint8_t strat_save_treasure_on_ship(void)
 
 	/* save speed */
 	strat_get_speed(&old_spdd, &old_spda);
-	strat_set_speed(SPEED_DIST_FAST, SPEED_ANGLE_FAST);
-
-	/* go near group of treasure */
-	trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(940), 710);
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
+	strat_set_speed(SPEED_DIST_VERY_SLOW, SPEED_ANGLE_VERY_SLOW);
 
 	/* goto ship */
-	trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(250), 1000);
+	trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(250), 800);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
@@ -289,13 +251,13 @@ uint8_t strat_save_treasure_on_ship(void)
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
-	strat_set_speed(SPEED_DIST_FAST, SPEED_ANGLE_FAST);
-	trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(400), 1000);
+	trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(400), 800);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
-	trajectory_a_rel(&mainboard.traj, COLOR_A_REL(270));
+#if 0
+	trajectory_a_rel(&mainboard.traj, COLOR_A_REL(-270));
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
@@ -304,6 +266,13 @@ uint8_t strat_save_treasure_on_ship(void)
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
+
+#else
+	trajectory_d_rel(&mainboard.traj, COLOR_SIGN(-200));
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+#endif
 
 	/* get out of ship */
 	comb_set_pos(COMB_POS_CLOSE);

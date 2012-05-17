@@ -289,7 +289,7 @@ struct sensor_filter {
 };
 
 static struct sensor_filter sensor_filter[SENSOR_MAX] = {
-	[S_START_SWITCH] 	= { 1, 0, 0, 1, 0, 1 }, /* 0 */
+	[S_START_SWITCH] 	= { 1, 0, 0, 1, 0, 0 }, /* 0 */
 	[S_COLOR_SWITCH] 	= { 1, 0, 0, 1, 0, 1 }, /* 1 */
 	[S_OPP_FRONT_R] 	= { 1, 0, 0, 1, 0, 1 }, /* 2 */
 	[S_OPP_FRONT_L] 	= { 1, 0, 0, 1, 0, 1 }, /* 3 */
