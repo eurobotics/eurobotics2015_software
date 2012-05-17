@@ -184,6 +184,13 @@ void strat_init(void)
 	interrupt_traj_reset();
 
 	/* init other devices (lasers...) */
+	time_wait_ms(100);
+	comb_set_pos(COMB_POS_CLOSE);
+	time_wait_ms(100);
+	arm_set_pos(ARM_POS_HIDE);
+	time_wait_ms(100);
+	teeth_set_pos(TEETH_POS_CLOSE);
+	time_wait_ms(100);
 
 	/* used in strat_base for END_TIMER */
 	mainboard.flags = DO_ENCODERS | DO_CS | DO_RS | 
@@ -244,7 +251,7 @@ void strat_start_match(uint8_t debug)
 {
 	uint8_t old_level = gen.log_level;
 
-	time_wait_ms(3000);
+	time_wait_ms(1000);
 
 	/* logs */
 	gen.logs[NB_LOGS] = E_USER_STRAT;
@@ -294,6 +301,9 @@ uint8_t strat_main(void)
 #define STRAT_WAIT_FOR_MAIN_ROBOT		7
 #define STRAT_END								8
 
+
+	time_wait_ms(500);
+
 	while(1)
   	{
 		switch(state)
@@ -312,7 +322,7 @@ uint8_t strat_main(void)
 
 				/* go near totem */
 				trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1460), 710);
-				err = wait_traj_end(TRAJ_FLAGS_STD);
+				err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 				if (!TRAJ_SUCCESS(err)) {
 					state = STRAT_GOTO_EMPTY_TOTEM_RETRY;
 					break;
@@ -327,7 +337,7 @@ uint8_t strat_main(void)
 
 				/* go near totem */
 				trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1460), 710);
-				err = wait_traj_end(TRAJ_FLAGS_STD);
+				err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 				if (!TRAJ_SUCCESS(err)) {
 					time_wait_ms(2800);
 
@@ -367,8 +377,8 @@ uint8_t strat_main(void)
 				break;
 
 			case STRAT_GOTO_DISCOVER_MAP:
-				trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1370), 235);
-				err = wait_traj_end(TRAJ_FLAGS_STD);
+				trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1370), 260);
+				err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 				if (!TRAJ_SUCCESS(err)) {
 					state = STRAT_GOTO_DISCOVER_MAP_AVOID;
 					break;
@@ -379,7 +389,7 @@ uint8_t strat_main(void)
 
 			case STRAT_GOTO_DISCOVER_MAP_AVOID:
 				trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(700), 235);
-				err = wait_traj_end(TRAJ_FLAGS_STD);
+				err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 				if (!TRAJ_SUCCESS(err)) {
 					time_wait_ms(2800);
 					break;
