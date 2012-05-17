@@ -69,7 +69,7 @@
 		goto end;		 \
 	} while(0)
 
-
+#if 0
 uint8_t strat_main_loop(void)
 {
    uint8_t err;
@@ -125,7 +125,7 @@ end:
 }
 
 
-#if 0
+
 uint8_t try_opp_totem_side_2(void)
 {
    uint8_t err;
@@ -158,7 +158,7 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 
 	/* discard down side zones depends on strat config */
 	if((strat_infos.conf.flags & ENABLE_DOWN_SIDE_ZONES) == 0 
-		&& strat_infos.zone.y_init < (AREA_Y/2) )
+		&& strat_infos.zones[zone_num].init_y < (AREA_Y/2) )
 		return 0;
 
 	/* discard if opp is in zone */
@@ -180,7 +180,7 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 		return 0;	
 
 	/* if we have treasure on mouth, we only can send messages, save treasure on ship or pickup middle coins group */
-	if(treasure_in_mouth) {
+	if(strat_infos.treasure_in_mouth) {
 		if(zone_num != ZONE_SHIP_OUR_CAPTAINS_BEDRROM
 			&& zone_num != ZONE_SHIP_OUR_HOLD
 			&& zone_num != ZONE_SHIP_OUR_DECK_1
@@ -204,6 +204,8 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 	}
 
 	/* TODO depending on goldbars in boot */
+
+	return 1;
 }
 
 /* return new work zone, -1 if any zone is found */
@@ -211,6 +213,7 @@ int8_t strat_get_new_zone(void)
 {
 	uint16_t prio_max = 0;
 	int8_t zone_num = -1;
+	int8_t i;
 	
 	/* evaluate zones */
 	for(i=0; i < ZONES_MAX; i++) 
@@ -223,7 +226,7 @@ int8_t strat_get_new_zone(void)
 		if(strat_infos.zones[i].prio > prio_max) {
 
 			/* update zone candidate params */
-			prior_max = strat_infos.zones[i].prio;
+			prio_max = strat_infos.zones[i].prio;
 			zone_num = i;
 		}
 	}
@@ -234,8 +237,9 @@ int8_t strat_get_new_zone(void)
 /* return END_TRAJ if zone is reached */
 uint8_t strat_goto_zone(uint8_t zone_num)
 {
-	double d_rel = 0.0, a_rel_rad = 0.0;
-	uint8_t arm_type = 0;
+	//double d_rel = 0.0, a_rel_rad = 0.0;
+	//uint8_t arm_type = 0;
+	int8_t err;
 
 	/* special cases */
 	if(zone_num == ZONE_TOTEM_OPP_SIDE_2) {
@@ -247,7 +251,7 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 	else if(zone_num == ZONE_MIDDLE_COINS_GROUP) {
 
 		if(position_get_x_s16(&mainboard.pos) > (AREA_X/2))
-			err = goto_and_avoid_forward(AREA_X - strat_infos.zones[zone_num].init_x), strat_infos.zones[zone_num].init_y, 
+			err = goto_and_avoid_forward((AREA_X - strat_infos.zones[zone_num].init_x), strat_infos.zones[zone_num].init_y, 
 								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 		else
 			err = goto_and_avoid_forward(strat_infos.zones[zone_num].init_x, strat_infos.zones[zone_num].init_y, 
@@ -256,41 +260,16 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 #if 0
 	else if(zone_num == ZONE_OUR_BOTTLE_1) {
 
-		/* goto move the orphan coin first */
-		err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_SAVE_TREASURE].init_x), strat_infos.zones[ZONE_SAVE_TREASURE].init_y, 
-							TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-
-		abs_xy_to_rel_da(COLOR_X(OUR_FLOOR_COIN_3_X), OUR_FLOOR_COIN_3_Y, &d_rel, &a_rel_rad);
-
-		if(a_rel_rad < 0)
-			a_rel_rad += M_PI/2;
-		else
-			a_rel_rad -= M_PI/2;
-
-		if(position_get_a_rad_double(&mainboard.pos) < 0.0) {
-			arm_type = I2C_ARM_TYPE_LEFT;
-			trajectory_a_rel(&mainboard.traj, DEG(a_rel_rad) + 5);
-		}	
-		else {
-			arm_type = I2C_ARM_TYPE_RIGHT;
-			trajectory_a_rel(&mainboard.traj, DEG(a_rel_rad) - 5);
-		}
-	
-		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-
-		i2c_slavedspic_mode_arm(arm_type, I2C_ARM_MODE_FLOOR, 20);
-		i2c_slavedspic_wait_ready();
-
-		trajectory_a_rel(&mainboard.traj, COLOR_A_REL(90));
+	/* TODO */
 
 	}
-#endif
 	else if(zone_num == ZONE_SHIP_OPP_DECK_2 
 			&& (strat_infos.zones[ZONE_SAVE_TREASURE].flags & ZONE_CHECKED)) {
 		
 		/* TODO: goto move the orphan coin first, and goto deck forward with fingers opened */
 
 	}
+#endif
 	/* by default */
 	else {
 		err = goto_and_avoid(COLOR_X(strat_infos.zones[zone_num].init_x), strat_infos.zones[zone_num].init_y, 
@@ -303,41 +282,44 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 /* return END_TRAJ if the work is done */
 uint8_t strat_work_on_zone(uint8_t zone_num)
 {
+	uint8_t err = END_TRAJ;
 	int16_t x = strat_infos.zones[zone_num].x;
 	int16_t y = strat_infos.zones[zone_num].y;
 
 	if(strat_infos.zones[zone_num].type == ZONE_TYPE_TOTEM) {
-		err = strat_empty_totem_side(x, y, uint8_t store_goldbar, uint8_t step);
+		err = strat_empty_totem_side(COLOR_X(x), y, STORE_BOOT, 0);
 	}
 	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_GOLDBAR) {
-		err = strat_pickup_goldbar_floor(int16_t x, int16_t y, uint8_t store);
+		err = strat_pickup_goldbar_floor(COLOR_X(x), y, STORE_BOOT);
 	}
 	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_MAP) {
 		/* TODO */
 		err = END_TRAJ;
 	}
 	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_BOTTLE) {
-		err = strat_send_message_bottle(x, y);
+		if(zone_num == ZONE_OUR_BOTTLE_1)
+			x = x + 80;
+
+		err = strat_send_message_bottle(COLOR_X(x), y);
 	}
 	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_COIN) {
-		err = strat_pickup_coins_floor(x, y, uint8_t group);
+		err = strat_pickup_coins_floor(COLOR_X(x), y, ONE);
 	}
 	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_COINS_GROUP) {
-		err = strat_pickup_coins_floor(int16_t x, int16_t y, uint8_t group);
+		err = strat_pickup_coins_floor(COLOR_X(x), y, GROUP);
 	}
 	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_HOLD) {
-		err = strat_save_treasure_generic(int16_t x, int16_t y);
-		err = strat_save_treasure_in_hold_back(int16_t x, int16_t y);
+		err = strat_save_treasure_in_hold_back(COLOR_X(x), y);
 	}
 	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_DECK) {
-		err = strat_save_treasure_in_deck_back(int16_t x, int16_t y);
+		err = strat_save_treasure_generic(COLOR_X(x), y);
 	}
 	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_CAPTAINS_BEDROOM) {
 		/* TODO */
 		err = END_TRAJ;
 	}
 	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_SAVE) {
-		err = strat_save_treasure_generic(int16_t x, int16_t y);
+		err = strat_save_treasure_generic(COLOR_X(x), y);
 	}
 
 	return err;

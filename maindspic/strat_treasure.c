@@ -694,7 +694,8 @@ uint8_t strat_steal_treasure_hold(void)
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef notnow
+
+#if 0
 uint8_t strat_game(void)
 {
    #define D_INI 295
@@ -718,11 +719,11 @@ uint8_t strat_game(void)
       
          case 1:  //coins group
             DEBUG(E_USER_STRAT, "Going to group of coins");
-            err=goto_and_avoid(strat_infos.zones[ZONE_FLOOR_COINS_GROUP].init_x, strat_infos.zones[ZONE_FLOOR_COINS_GROUP].init_y,
+            err=goto_and_avoid(strat_infos.zones[ZONE_MIDDLE_COINS_GROUP].init_x, strat_infos.zones[ZONE_MIDDLE_COINS_GROUP].init_y,
             TRAJ_FLAGS_NO_NEAR,TRAJ_FLAGS_NO_NEAR);
             if(!TRAJ_SUCCESS(err))
                break;
-            err=strat_pickup_coins_floor(FLOOR_COINS_GROUP_X,FLOOR_COINS_GROUP_Y,GROUP);
+            err=strat_pickup_coins_floor(strat_infos.zones[ZONE_MIDDLE_COINS_GROUP].x,strat_infos.zones[ZONE_MIDDLE_COINS_GROUP].y, GROUP);
             if(!TRAJ_SUCCESS(err))
                break;
             _case=2;
@@ -741,7 +742,7 @@ uint8_t strat_game(void)
             TRAJ_FLAGS_NO_NEAR,TRAJ_FLAGS_NO_NEAR);
             if(!TRAJ_SUCCESS(err))
                break;
-            err=strat_pickup_goldbar_floor(MIDDLE_FLOOR_GOLDBAR_X,MIDDLE_FLOOR_GOLDBAR_Y,STORE_BOOT);
+            err=strat_pickup_goldbar_floor(strat_infos.zones[ZONE_MIDDLE_FLOOR_GOLDBAR].x,strat_infos.zones[ZONE_MIDDLE_FLOOR_GOLDBAR].init_y, STORE_BOOT);
             if(!TRAJ_SUCCESS(err))
                break;
             _case=3;
@@ -749,11 +750,11 @@ uint8_t strat_game(void)
 
          case 3:  //totem 2 side 2
             DEBUG(E_USER_STRAT, "Going to totem 2 side 2");
-            err=goto_and_avoid(strat_infos.zones[ZONE_TOTEM_2_SIDE_2].init_x, strat_infos.zones[ZONE_TOTEM_2_SIDE_2].init_y,
+            err=goto_and_avoid(strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].init_x, strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].init_y,
             TRAJ_FLAGS_NO_NEAR,TRAJ_FLAGS_NO_NEAR);
             if(!TRAJ_SUCCESS(err))
                break;
-            err=strat_empty_totem_side(TOTEM_2_X,TOTEM_2_Y,STORE_BOOT);
+            err=strat_empty_totem_side(strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].x,strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].y, STORE_BOOT, 0);
             if(!TRAJ_SUCCESS(err))
                break;
             _case=4;
@@ -804,7 +805,7 @@ uint8_t strat_game(void)
             err=goto_and_avoid(COLOR_X(strat_infos.area_bbox.x1), 250, TRAJ_FLAGS_NO_NEAR,TRAJ_FLAGS_NO_NEAR);
             if(!TRAJ_SUCCESS(err))
                break;
-            err=strat_pickup_coins_floor(PURPLE_FLOOR_COIN_1_X,PURPLE_FLOOR_COIN_1_Y,ONE);
+            err=strat_pickup_coins_floor(OUR_FLOOR_COIN_1_X,OUR_FLOOR_COIN_1_Y,ONE);
             if(!TRAJ_SUCCESS(err))
                break;
             _case=8;
@@ -813,11 +814,11 @@ uint8_t strat_game(void)
          
          case 8:  //totem 2 side 1
             DEBUG(E_USER_STRAT, "Going to totem 2 side 1");
-            err=goto_and_avoid(strat_infos.zones[ZONE_TOTEM_2_SIDE_1].init_x, strat_infos.zones[ZONE_TOTEM_2_SIDE_1].init_y, 
+            err=goto_and_avoid(strat_infos.zones[ZONE_TOTEM_OUR_SIDE_1].init_x, strat_infos.zones[ZONE_TOTEM_OUR_SIDE_1].init_y, 
             TRAJ_FLAGS_NO_NEAR,TRAJ_FLAGS_NO_NEAR);
             if(!TRAJ_SUCCESS(err))
                break;
-            err=strat_empty_totem_side(TOTEM_2_X,TOTEM_2_Y,STORE_BOOT);
+            err=strat_empty_totem_side(strat_infos.zones[ZONE_TOTEM_OUR_SIDE_1].x,strat_infos.zones[ZONE_TOTEM_OUR_SIDE_1].y, STORE_BOOT,0);
             if(!TRAJ_SUCCESS(err))
                break;
 
@@ -862,7 +863,7 @@ uint8_t strat_game(void)
             TRAJ_FLAGS_NO_NEAR,TRAJ_FLAGS_NO_NEAR);
             if(!TRAJ_SUCCESS(err))
                break;
-            err=strat_send_message_bottle(PURPLE_BOTTLE_1_X,BOTTLE_Y);
+            err=strat_send_message_bottle(strat_infos.zones[ZONE_PURPLE_BOTTLE_1].x, strat_infos.zones[ZONE_PURPLE_BOTTLE_1].y);
             if(!TRAJ_SUCCESS(err))
                break;
             _case=11;
@@ -875,7 +876,7 @@ uint8_t strat_game(void)
             TRAJ_FLAGS_NO_NEAR,TRAJ_FLAGS_NO_NEAR);
             if(!TRAJ_SUCCESS(err))
                break;
-            err=strat_send_message_bottle(PURPLE_BOTTLE_2_X,BOTTLE_Y);
+            err=strat_send_message_bottle(strat_infos.zones[ZONE_PURPLE_BOTTLE_2].x, strat_infos.zones[ZONE_PURPLE_BOTTLE_2].y);
             if(!TRAJ_SUCCESS(err))
                break;
             _case=12;
@@ -895,6 +896,6 @@ uint8_t strat_game(void)
 end:
    return err;
 }
-#endif
 
+#endif
 
