@@ -852,10 +852,6 @@ static void cmd_strat_conf2_parsed(void *parsed_result, void *data)
 		on = 1;
 	else
 		on = 0;
-	
-	if (!strcmp_P(res->arg1, PSTR("coins_group")))
-		bit = PICKUP_COINS_GROUP;
-
 
 	if (on)
 		strat_infos.conf.flags |= bit;

@@ -88,26 +88,26 @@ struct strat_infos strat_infos = {
 	.zones[ZONE_OUR_FLOOR_GOLDBAR]=       {ZONE_TYPE_GOLDBAR, OUR_FLOOR_GOLDBAR_X, OUR_FLOOR_GOLDBAR_Y, 300,  1000, 700,    600   , 700,   785,  ZONE_PRIO_0, ZONE_CHECKED },
 	.zones[ZONE_OPP_FLOOR_GOLDBAR]=       {ZONE_TYPE_GOLDBAR, OPP_FLOOR_GOLDBAR_X, OPP_FLOOR_GOLDBAR_Y, 2700, 1000, 2300,   600   , 2300,  785,  ZONE_PRIO_0, ZONE_CHECKED },
 
-	.zones[ZONE_OUR_BOTTLE_1]=            {ZONE_TYPE_BOTTLE, OUR_BOTTLE_1_X, BOTTLES_Y, 840,  2000, 440,    1450  , 640,   1640, ZONE_PRIO_40, 0 },
-	.zones[ZONE_OUR_BOTTLE_2]=            {ZONE_TYPE_BOTTLE, OUR_BOTTLE_2_X, BOTTLES_Y, 2083, 2000, 1683,   1450  , 1883,  1640, ZONE_PRIO_80, 0 },
+	.zones[ZONE_OUR_BOTTLE_1]=            {ZONE_TYPE_BOTTLE, OUR_BOTTLE_1_X, BOTTLES_Y, 840,  2000, 440,    1450  , 640,   1640, ZONE_PRIO_50, 0 },
+	.zones[ZONE_OUR_BOTTLE_2]=            {ZONE_TYPE_BOTTLE, OUR_BOTTLE_2_X, BOTTLES_Y, 2083, 2000, 1683,   1450  , 1883,  1640, ZONE_PRIO_70, 0 },
 	.zones[ZONE_OPP_BOTTLE_1]=            {ZONE_TYPE_BOTTLE, OPP_BOTTLE_1_X, BOTTLES_Y, 2560, 2000, 2160,   1450  , 2000,  1640, ZONE_PRIO_0,  ZONE_AVOID },
 	.zones[ZONE_OPP_BOTTLE_2]=            {ZONE_TYPE_BOTTLE, OPP_BOTTLE_2_X, BOTTLES_Y, 1317, 2000, 917,    1450  , 1477,  1640, ZONE_PRIO_0,  ZONE_AVOID },
 
 	.zones[ZONE_OUR_MAP]=                 {ZONE_TYPE_MAP, OUR_MAP_X, OUR_MAP_Y, 1500, 500,  1000,      0  , 1400,  400,  ZONE_PRIO_0, ZONE_CHECKED },
-	.zones[ZONE_OPP_MAP]=                 {ZONE_TYPE_MAP, OUR_MAP_X, ORR_MAP_Y, 2000, 500,  1500,      0  , 1600,  400,  ZONE_PRIO_0, ZONE_AVOID },
+	.zones[ZONE_OPP_MAP]=                 {ZONE_TYPE_MAP, OUR_MAP_X, OUR_MAP_Y, 2000, 500,  1500,      0  , 1600,  400,  ZONE_PRIO_0, ZONE_AVOID },
 
-	.zones[ZONE_MIDDLE_COINS_GROUP]=      {ZONE_TYPE_COINS_GROUP, MIDDLE_COINS_GROUP_X, MIDDLE_COINS_GROUP_Y, 1780, 1950, 1220,   1450  , 1218,  1470, ZONE_PRIO_70, 0 },
-	.zones[ZONE_MIDDLE_FLOOR_GOLDBAR]=    {ZONE_TYPE_GOLDBAR, MIDDLE_FLOOR_GOLDBAR_X, MIDDLE_FLOOR_GOLDBAR_Y, 1780, 1156, 1220,   1550  , 1500,  1700, ZONE_PRIO_100, 0 },
+	.zones[ZONE_MIDDLE_COINS_GROUP]=      {ZONE_TYPE_COINS_GROUP, MIDDLE_COINS_GROUP_X, MIDDLE_COINS_GROUP_Y, 1780, 1950, 1220,   1450  , 1218,  1470, ZONE_PRIO_80, 0 },
+	.zones[ZONE_MIDDLE_FLOOR_GOLDBAR]=    {ZONE_TYPE_GOLDBAR, MIDDLE_FLOOR_GOLDBAR_X, MIDDLE_FLOOR_GOLDBAR_Y, 1780, 1156, 1220,   1550  , 1500,  1700, ZONE_PRIO_100, ZONE_CHECKED },
 	
     /* ship zones */
    .zones[ZONE_SHIP_OUR_CAPTAINS_BEDRROM]= {ZONE_TYPE_CAPTAINS_BEDROOM, OUR_CAPTAINS_BEDROOM_X, OUR_CAPTAINS_BEDROOM_Y, 500, 500, 0,    0 , 800,   250,  ZONE_PRIO_10, 0 },
    .zones[ZONE_SHIP_OPP_CAPTAINS_BEDRROM]= {ZONE_TYPE_CAPTAINS_BEDROOM, OPP_CAPTAINS_BEDROOM_X, OPP_CAPTAINS_BEDROOM_Y, 3000,500, 2500, 0 , 2200,  250,  ZONE_PRIO_10, ZONE_AVOID },
 
-	.zones[ZONE_SHIP_OUR_DECK_1]= {ZONE_TYPE_DECK, OUR_SHIP_DECK_X, OUR_SHIP_DECK_Y,  400,     1400,   0,        500     , 640,    700,  ZONE_PRIO_30, 0 },
-   .zones[ZONE_SHIP_OPP_DECK_1]= {ZONE_TYPE_DECK, OPP_SHIP_DECK_X, OPP_SHIP_DECK_Y, 3000,     1400,   2600,     500     , 2360,   700,  ZONE_PRIO_10, ZONE_AVOID },
+	.zones[ZONE_SHIP_OUR_DECK_1]= {ZONE_TYPE_DECK, OUR_SHIP_DECK_1_X, OUR_SHIP_DECK_1_Y,  400,     1400,   0,        500     , 640,    700,  ZONE_PRIO_30, 0 },
+   .zones[ZONE_SHIP_OPP_DECK_1]= {ZONE_TYPE_DECK, OPP_SHIP_DECK_1_X, OPP_SHIP_DECK_1_Y, 3000,     1400,   2600,     500     , 2360,   700,  ZONE_PRIO_10, ZONE_AVOID },
 
-	.zones[ZONE_SHIP_OUR_DECK_2]=   {ZONE_TYPE_DECK, OUR_SHIP_DECK_X, OUR_SHIP_DECK_Y,  400,     1400,   0,        500    , 640,    1050,  ZONE_PRIO_30, 0 },
-   .zones[ZONE_SHIP_OPP_DECK_2]=   {ZONE_TYPE_DECK, OPP_SHIP_DECK_X, OPP_SHIP_DECK_Y, 3000,     1400,   2600,     500    , 2360,   1050,  ZONE_PRIO_10, ZONE_AVOID },
+	.zones[ZONE_SHIP_OUR_DECK_2]=   {ZONE_TYPE_DECK, OUR_SHIP_DECK_2_X, OUR_SHIP_DECK_2_Y,  400,     1400,   0,        500    , 640,    1050,  ZONE_PRIO_30, 0 },
+   .zones[ZONE_SHIP_OPP_DECK_2]=   {ZONE_TYPE_DECK, OPP_SHIP_DECK_2_X, OPP_SHIP_DECK_2_Y, 3000,     1400,   2600,     500    , 2360,   1050,  ZONE_PRIO_10, ZONE_AVOID },
 
 	.zones[ZONE_SHIP_OUR_HOLD]=  {ZONE_TYPE_HOLD, NULL, NULL, 400,      2000,   0,        1400    , 750,    1700, ZONE_PRIO_20, 0 },
 	.zones[ZONE_SHIP_OPP_HOLD]=  {ZONE_TYPE_HOLD, NULL, NULL, 3000,     2000,   2600,     1400    , 2250,   1700, ZONE_PRIO_10, ZONE_AVOID },
@@ -281,9 +281,52 @@ void strat_event(void *dummy)
 /* strat main loop */
 uint8_t strat_main(void)
 {
-   //strat_game();
-   //strat_exit();
+	uint8_t err;
+	int8_t zone_num;
 
+   //strat_game();
+
+	strat_begin();
+
+	while(time_get_s() < 89)
+	{
+		#if 0
+		zone_num = strat_get_new_zone();
+		
+		if(zone_num == -1) {
+			DEBUG(E_USER_STRAT, "Any zone is found");
+			continue;
+		}
+	
+		DEBUG(E_USER_STRAT, "New zone is %d", zone_num);
+
+		err = strat_goto_zone(zone_num);
+		if (!TRAJ_SUCCESS(err)) {
+			DEBUG(E_USER_STRAT, "Can't reach zone %d", zone_num);
+			continue;
+		}
+
+		err = strat_work_on_zone(zone_num);
+		if (!TRAJ_SUCCESS(err)) {
+			DEBUG(E_USER_STRAT, "Work on zone %d fails", zone_num);
+			continue;
+		}
+
+		DEBUG(E_USER_STRAT, "Work on zone %d sucessed", zone_num);
+
+		if(strat_infos.zones[zone_num].type == ZONE_TYPE_HOLD 
+			|| strat_infos.zones[zone_num].type == ZONE_TYPE_DECK
+			|| strat_infos.zones[zone_num].type == ZONE_TYPE_CAPTAINS_BEDROOM) {
+			continue;
+		}
+		else	{
+			strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
+		}
+		#endif
+	}
+
+
+   strat_exit();
    return 0;
 }
 

@@ -711,31 +711,6 @@ uint8_t opponent_is_in_area(int16_t x_up, int16_t y_up,
 }
 
 
-/* XXX NOT UPDATED*/
-/* return 1 if the opponent is near */
-#ifdef use_goto_force_instead
-void wait_until_opponent_is_far(void)
-{
-#ifdef HOMOLOGATION
-	int16_t opp_x, opp_y, opp_d, opp_a;
-
-	if (get_opponent_xyda(&opp_x, &opp_y, &opp_d, &opp_a) == -1)
-		return;
-
-	if(opp_d < 600 ) {
-		DEBUG(E_USER_STRAT, "waiting opponent far");
-
-		do {
-			if (get_opponent_xyda(&opp_x, &opp_y,
-					      &opp_d, &opp_a) == -1)
-				return;
-	
-		} while(opp_d < 600);
-	}
-#endif
-}
-#endif
-
 
 /*
 uint8_t opponent_is_behind_side(uint8_t side)

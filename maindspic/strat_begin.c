@@ -319,7 +319,6 @@ end:
    strat_limit_speed_enable();
    quadramp_set_2nd_order_vars(&mainboard.angle.qr,old_var_2nd_ord_pos,old_var_2nd_ord_neg);
 
-	//strat_main_loop();
    return err;
 }
 

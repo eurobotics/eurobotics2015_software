@@ -80,10 +80,10 @@
 #define OUR_SHIP_DECK_2_X        250
 #define OUR_SHIP_DECK_2_Y        1050
 
-#define OUR_SHIP_DECK_1_X        250
-#define OUR_SHIP_DECK_1_Y        750
-#define OUR_SHIP_DECK_2_X        250
-#define OUR_SHIP_DECK_2_Y        1050
+#define OPP_SHIP_DECK_1_X        (3000-250)
+#define OPP_SHIP_DECK_1_Y        750
+#define OPP_SHIP_DECK_2_X        (3000-250)
+#define OPP_SHIP_DECK_2_Y        1050
 
 #define OUR_CAPTAINS_BEDROOM_X	250
 #define OUR_CAPTAINS_BEDROOM_Y	250
@@ -91,7 +91,11 @@
 #define OPP_CAPTAINS_BEDROOM_Y	250
 
 #define SAVE_TREASURE_X				700
-#define SAVE_TREASURE_y				1400
+#define SAVE_TREASURE_Y				1400
+
+#define OUR_MAP_X		1500
+#define OUR_MAP_Y		0
+
 
 
 /* convert coords according to our color */
@@ -183,8 +187,8 @@
 /* place zones */
 #define ZONE_SHIP_OUR_CAPTAINS_BEDRROM	20
 #define ZONE_SHIP_OUR_HOLD	            21
-#define ZONE_SHIP_OUR_DECK_UP          22
-#define ZONE_SHIP_OUR_DECK_DOWN        23
+#define ZONE_SHIP_OUR_DECK_2           22
+#define ZONE_SHIP_OUR_DECK_1        	23
 
 #define ZONE_SHIP_OPP_CAPTAINS_BEDRROM	24
 #define ZONE_SHIP_OPP_HOLD             25
@@ -264,6 +268,7 @@ typedef struct {
    #define ZONE_PRIO_70		70
    #define ZONE_PRIO_80		80
    #define ZONE_PRIO_90		90
+   #define ZONE_PRIO_100	100
    #define ZONE_PRIO_MAX	100
 
 	uint16_t flags;
@@ -356,6 +361,14 @@ uint8_t strat_begin(void);
  *******************************************/
 uint8_t strat_main_loop(void);
 
+/* return new work zone, -1 if any zone is found */
+int8_t strat_get_new_zone(void);
+
+/* return END_TRAJ if zone is reached */
+uint8_t strat_goto_zone(uint8_t zone_num);
+
+/* return END_TRAJ if the work is done */
+uint8_t strat_work_on_zone(uint8_t zone_num);
 
 /* add here more strat functions in files */
 

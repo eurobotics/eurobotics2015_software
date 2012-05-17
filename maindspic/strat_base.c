@@ -379,7 +379,7 @@ void strat_limit_speed(void)
 #endif
 	
 #ifdef HOMOLOGATION
-	if (opp_d < 600) {
+	if (opp_d < 800) {
 		lim_d = SPEED_ANGLE_VERY_SLOW;
 		lim_a = SPEED_ANGLE_VERY_SLOW;
 	}
@@ -538,8 +538,13 @@ uint8_t __strat_obstacle(uint8_t which)
 	y_rel = sin(RAD(opp_a)) * (double)opp_d;
 
 	/* opponent too far */
+#ifdef HOMOLOGATION
+	if (opp_d > 1500)
+		return 0;
+#else
 	if (opp_d > 600)
 		return 0;
+#endif
 
 	/* opponent is in front of us */
 	if (mainboard.speed_d > 0 && (opp_a > 325 || opp_a < 35)) {

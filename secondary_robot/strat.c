@@ -306,6 +306,11 @@ uint8_t strat_main(void)
 
 	while(1)
   	{
+
+#ifdef HOMOLOGATION
+		time_wait_ms(2800);
+#endif
+
 		switch(state)
 		{
 			case STRAT_GOTO_EMPTY_TOTEM:
@@ -316,6 +321,7 @@ uint8_t strat_main(void)
 				trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1000), 357);
 				err = wait_traj_end(TRAJ_FLAGS_STD);
 				if (!TRAJ_SUCCESS(err)) {
+					time_wait_ms(2800);
 					state = STRAT_GOTO_EMPTY_TOTEM_RETRY;
 					break;
 				}
@@ -324,6 +330,7 @@ uint8_t strat_main(void)
 				trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1460), 710);
 				err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 				if (!TRAJ_SUCCESS(err)) {
+					time_wait_ms(2800);
 					state = STRAT_GOTO_EMPTY_TOTEM_RETRY;
 					break;
 				}
@@ -353,8 +360,9 @@ uint8_t strat_main(void)
 				err = strat_empty_totem();
 				if (!TRAJ_SUCCESS(err)) {
 					trajectory_goto_xy_rel(&mainboard.traj, COLOR_SIGN(100), -10);
-					err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+					err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 					state = STRAT_GOTO_EMPTY_TOTEM_RETRY;
+					time_wait_ms(2800);
 					break;
 				}
 				
