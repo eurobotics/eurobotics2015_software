@@ -145,8 +145,8 @@
 #define SPEED_ANGLE_FAST 		2000
 #else
 
-#define SPEED_DIST_FAST 		4000
-#define SPEED_ANGLE_FAST 		4000
+#define SPEED_DIST_FAST 		2000
+#define SPEED_ANGLE_FAST 		2000
 #endif
 
 //Do not change
@@ -281,6 +281,7 @@ typedef struct {
 
 struct strat_infos {
 	uint8_t dump_enabled;
+	uint8_t debug_step;
 	struct conf conf;
 	struct bbox area_bbox;
 
@@ -370,9 +371,13 @@ uint8_t strat_goto_zone(uint8_t zone_num);
 /* return END_TRAJ if the work is done */
 uint8_t strat_work_on_zone(uint8_t zone_num);
 
+/* smart play */
+//#define DEBUG_STRAT_SMART
+void strat_smart(void);
+
 /* add here more strat functions in files */
 
-#else
+#else /* HOST_VERSION */
 
 #define AREA_BBOX_6X5	0
 #define AREA_BBOX_4X4	1

@@ -328,7 +328,7 @@ void beacon_reset_pos(void)
 void beacon_start(void)
 {
 	/* init watchdog */
-	beaconboard.watchdog = WATCHDOG_NB_TIMES; 
+	beaconboard.watchdog = 40000; 
 
 	/* enable beacon_calc event flag */
 	beaconboard.flags |= DO_BEACON;

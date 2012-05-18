@@ -35,6 +35,7 @@ void beacon_protocol(void * dummy);
 void beacon_cmd_color(void);
 void beacon_cmd_opponent(void);
 void beacon_cmd_beacon_on(void);
+void beacon_cmd_beacon_on_watchdog(void);
 void beacon_cmd_beacon_off(void);
 
 void beacon_opponent_pulling(void);

@@ -308,7 +308,7 @@ uint8_t strat_main(void)
   	{
 
 #ifdef HOMOLOGATION
-		time_wait_ms(2800);
+		//time_wait_ms(2800);
 #endif
 
 		switch(state)
@@ -372,7 +372,19 @@ uint8_t strat_main(void)
 			case STRAT_DO_SAVE_TREASURE:
 				err = strat_save_treasure_on_ship();
 				if (!TRAJ_SUCCESS(err)) {
+
 					time_wait_ms(2800);
+
+					comb_set_pos(COMB_POS_CLOSE);
+
+					trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(700), 600);
+					err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+					if (!TRAJ_SUCCESS(err)) {
+						time_wait_ms(2800);	
+						break;
+					}
+
+					state = STRAT_WAIT_FOR_MAIN_ROBOT;
 					break;
 				}
 				

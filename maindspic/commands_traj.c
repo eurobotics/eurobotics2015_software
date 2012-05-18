@@ -767,13 +767,26 @@ static void cmd_strat_infos_parsed(void *parsed_result, void *data)
 	if (!strcmp_P(res->arg1, PSTR("reset"))) {
 		strat_reset_infos();
 	}
+	else if (!strcmp_P(res->arg1, PSTR("mouth_full"))) {
+		strat_infos.treasure_in_mouth = 1;
+	}
+	else if (!strcmp_P(res->arg1, PSTR("mouth_empty"))) {
+		strat_infos.treasure_in_mouth = 0;
+	}
+	else if (!strcmp_P(res->arg1, PSTR("boot_full"))) {
+		strat_infos.treasure_in_boot = 1;
+	}
+	else if (!strcmp_P(res->arg1, PSTR("boot_empty"))) {
+		strat_infos.treasure_in_boot = 0;
+	}
+
 	strat_infos.dump_enabled = 1;
 	strat_dump_infos(__FUNCTION__);
 }
 
 prog_char str_strat_infos_arg0[] = "strat_infos";
 parse_pgm_token_string_t cmd_strat_infos_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_strat_infos_result, arg0, str_strat_infos_arg0);
-prog_char str_strat_infos_arg1[] = "show#reset";
+prog_char str_strat_infos_arg1[] = "show#reset#mouth_full#mouth_empty#boot_full#boot_empty";
 parse_pgm_token_string_t cmd_strat_infos_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_strat_infos_result, arg1, str_strat_infos_arg1);
 
 prog_char help_strat_infos[] = "reset/show strat_infos";
@@ -953,14 +966,17 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 
 	if (strcmp_P(res->arg1, PSTR("begin")) == 0) {
 		err = strat_begin();
+		printf_P(PSTR("substrat returned %s\r\n"), get_err(err));
+		trajectory_hardstop(&mainboard.traj);
 	}
-	printf_P(PSTR("substrat returned %s\r\n"), get_err(err));
-	trajectory_hardstop(&mainboard.traj);
+	else if (strcmp_P(res->arg1, PSTR("strat_smart")) == 0) {
+		strat_smart();
+	}
 }
 
 prog_char str_subtraj1_arg0[] = "subtraj";
 parse_pgm_token_string_t cmd_subtraj1_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg0, str_subtraj1_arg0);
-prog_char str_subtraj1_arg1[] = "begin";
+prog_char str_subtraj1_arg1[] = "begin#strat_smart";
 parse_pgm_token_string_t cmd_subtraj1_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg1, str_subtraj1_arg1);
 //parse_pgm_token_num_t cmd_subtraj1_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg2, INT32);
 //parse_pgm_token_num_t cmd_subtraj1_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg3, INT32);

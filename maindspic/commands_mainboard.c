@@ -335,6 +335,11 @@ static void cmd_start_parsed(void *parsed_result, void *data)
 		strat_infos.dump_enabled = 1;
 		gen.log_level = 5;
 	}
+	else if (!strcmp_P(res->debug, PSTR("debug_step"))) {
+		strat_infos.dump_enabled = 1;
+		strat_infos.debug_step = 1;	
+		gen.log_level = 5;
+	}
 	else {
 		strat_infos.dump_enabled = 0;
 		gen.log_level = 0;
@@ -361,7 +366,7 @@ retry:
 		else{
 			printf("Beacon connection SUCCESS!\r\n");		
 retry_on:
-			beacon_cmd_beacon_on();
+			beacon_cmd_beacon_on_watchdog();
 			
 			printf("is beacon running? (s/n)\n\r");
 			c = -1;
@@ -394,7 +399,7 @@ prog_char str_start_arg0[] = "start";
 parse_pgm_token_string_t cmd_start_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_start_result, arg0, str_start_arg0);
 prog_char str_start_color[] = "purple#red";
 parse_pgm_token_string_t cmd_start_color = TOKEN_STRING_INITIALIZER(struct cmd_start_result, color, str_start_color);
-prog_char str_start_debug[] = "debug#match";
+prog_char str_start_debug[] = "debug#debug_step#match";
 parse_pgm_token_string_t cmd_start_debug = TOKEN_STRING_INITIALIZER(struct cmd_start_result, debug, str_start_debug);
 
 prog_char help_start[] = "Start the robot";

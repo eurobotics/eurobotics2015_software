@@ -539,10 +539,10 @@ uint8_t __strat_obstacle(uint8_t which)
 
 	/* opponent too far */
 #ifdef HOMOLOGATION
-	if (opp_d > 1500)
+	if (opp_d > 800)
 		return 0;
 #else
-	if (opp_d > 600)
+	if (opp_d > 700)
 		return 0;
 #endif
 
