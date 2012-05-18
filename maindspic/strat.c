@@ -72,10 +72,10 @@ struct strat_infos strat_infos = {
 	},
 
    /*zones[W] =                          {type, x, y, x_up, y_up, x_down, y_down, init_x,init_y, prio, flags };                            */
-   .zones[ZONE_TOTEM_OUR_SIDE_1]=        {ZONE_TYPE_TOTEM, OUR_TOTEM_X, OUR_TOTEM_Y, 1300, 800,  900,    200   , 1100,  450,   ZONE_PRIO_10, ZONE_CHECKED },
-	.zones[ZONE_TOTEM_OUR_SIDE_2]=        {ZONE_TYPE_TOTEM, OUR_TOTEM_X, OUR_TOTEM_Y, 1300, 1200, 900,    1800  , 1100,  1550,  ZONE_PRIO_60, 0 },
-	.zones[ZONE_TOTEM_OPP_SIDE_1]=     	  {ZONE_TYPE_TOTEM, OPP_TOTEM_X, OPP_TOTEM_Y, 2100, 800,  1700,   200   , 1900,  450,   ZONE_PRIO_10, 0 },
-	.zones[ZONE_TOTEM_OPP_SIDE_2]=        {ZONE_TYPE_TOTEM, OPP_TOTEM_X, OPP_TOTEM_Y, 2100, 1200, 1700,   1800  , 1900,  1550,  ZONE_PRIO_90, 0 },
+   .zones[ZONE_TOTEM_OUR_SIDE_1]=        {ZONE_TYPE_TOTEM, OUR_TOTEM_X, OUR_TOTEM_Y, 1300, 800,  900,    200   , 1100,  400,   ZONE_PRIO_10, ZONE_CHECKED },
+	.zones[ZONE_TOTEM_OUR_SIDE_2]=        {ZONE_TYPE_TOTEM, OUR_TOTEM_X, OUR_TOTEM_Y, 1300, 1200, 900,    1800  , 1100,  1600,  ZONE_PRIO_60, 0 },
+	.zones[ZONE_TOTEM_OPP_SIDE_1]=     	  {ZONE_TYPE_TOTEM, OPP_TOTEM_X, OPP_TOTEM_Y, 2100, 800,  1700,   200   , 1900,  400,   ZONE_PRIO_10, 0 },
+	.zones[ZONE_TOTEM_OPP_SIDE_2]=        {ZONE_TYPE_TOTEM, OPP_TOTEM_X, OPP_TOTEM_Y, 2100, 1200, 1700,   1800  , 1900,  1600,  ZONE_PRIO_90, 0 },
 	
 	.zones[ZONE_OUR_FLOOR_COIN_1]=        {ZONE_TYPE_COIN,  OUR_FLOOR_COIN_1_X, OUR_FLOOR_COIN_1_Y, 2300, 650,  1600,   250   , 1000,  200,  ZONE_PRIO_0, ZONE_CHECKED },
 	.zones[ZONE_OUR_FLOOR_COIN_2]=        {ZONE_TYPE_COIN,  OUR_FLOOR_COIN_2_X, OUR_FLOOR_COIN_2_Y, 550,  1200, 900,    800   , 600,   1000, ZONE_PRIO_0, ZONE_CHECKED },
@@ -109,8 +109,8 @@ struct strat_infos strat_infos = {
 	.zones[ZONE_SHIP_OUR_DECK_2]=   {ZONE_TYPE_DECK, OUR_SHIP_DECK_2_X, OUR_SHIP_DECK_2_Y,  400,     1400,   0,        500    , 640,    1050,  ZONE_PRIO_30, 0 },
    .zones[ZONE_SHIP_OPP_DECK_2]=   {ZONE_TYPE_DECK, OPP_SHIP_DECK_2_X, OPP_SHIP_DECK_2_Y, 3000,     1400,   2600,     500    , 2360,   1050,  ZONE_PRIO_10, ZONE_AVOID },
 
-	.zones[ZONE_SHIP_OUR_HOLD]=  {ZONE_TYPE_HOLD, NULL, NULL, 400,      2000,   0,        1400    , 750,    1700, ZONE_PRIO_20, 0 },
-	.zones[ZONE_SHIP_OPP_HOLD]=  {ZONE_TYPE_HOLD, NULL, NULL, 3000,     2000,   2600,     1400    , 2250,   1700, ZONE_PRIO_10, ZONE_AVOID },
+	.zones[ZONE_SHIP_OUR_HOLD]=  {ZONE_TYPE_HOLD, 750,    1700, 400,      2000,   0,        1400    , 750,    1700, ZONE_PRIO_20, 0 },
+	.zones[ZONE_SHIP_OPP_HOLD]=  {ZONE_TYPE_HOLD, 2250,   1700, 3000,     2000,   2600,     1400    , 2250,   1700, ZONE_PRIO_10, ZONE_AVOID },
 
 	/* zone to save/restore treasure temporaly */
 	.zones[ZONE_SAVE_TREASURE]=  {ZONE_TYPE_SAVE, SAVE_TREASURE_X, SAVE_TREASURE_Y, 900,      1600,   500,      1200    , 900,    1600, ZONE_PRIO_40, 0 },
@@ -160,6 +160,9 @@ void strat_preinit(void)
 	mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS |
 							 DO_POS | DO_BD | DO_POWER | DO_OPP;
 
+	/* XXX default conf */
+	strat_infos.conf.flags |= ENABLE_R2ND_POS;
+
 	strat_dump_conf();
 	strat_dump_infos(__FUNCTION__);
 }
@@ -172,9 +175,45 @@ void strat_dump_conf(void)
 
 	printf_P(PSTR("-- conf --\r\n"));
 
+	printf(" ENABLE_R2ND_POS is %s\n\r", strat_infos.conf.flags & ENABLE_R2ND_POS? "ON":"OFF");
+	printf(" ENABLE_DOWN_SIDE_ZONES is %s\n\r", strat_infos.conf.flags & ENABLE_DOWN_SIDE_ZONES? "ON":"OFF");
+
 	/* add here configuration dump */
 }
 
+
+char numzone2name[ZONES_MAX + 1][30] = {
+[ZONE_TOTEM_OUR_SIDE_1] = "TOTEM_OUR_SIDE_1",
+[ZONE_TOTEM_OUR_SIDE_2] = "TOTEM_OUR_SIDE_2",
+[ZONE_TOTEM_OPP_SIDE_1] = "TOTEM_OPP_SIDE_1",
+[ZONE_TOTEM_OPP_SIDE_2] = "TOTEM_OPP_SIDE_2",
+[ZONE_OUR_FLOOR_COIN_1] = "OUR_FLOOR_COIN_1",
+[ZONE_OUR_FLOOR_COIN_2] = "OUR_FLOOR_COIN_2",
+[ZONE_OUR_FLOOR_COIN_3] = "OUR_FLOOR_COIN_3",
+[ZONE_OUR_FLOOR_GOLDBAR] = "OUR_FLOOR_GOLDBAR",
+[ZONE_OPP_FLOOR_COIN_1] = "OPP_FLOOR_COIN_1",
+[ZONE_OPP_FLOOR_COIN_2] = "_OPP_FLOOR_COIN_2",
+[ZONE_OPP_FLOOR_COIN_3] = "OPP_FLOOR_COIN_3",
+[ZONE_OPP_FLOOR_GOLDBAR] = "OPP_FLOOR_GOLDBAR",
+[ZONE_OUR_BOTTLE_1] = "OUR_BOTTLE_1",
+[ZONE_OUR_BOTTLE_2] = "OUR_BOTTLE_2",
+[ZONE_OPP_BOTTLE_1] = "OPP_BOTTLE_1",
+[ZONE_OPP_BOTTLE_2] = "OPP_BOTTLE_2",
+[ZONE_OUR_MAP] = "OUR_MAP",
+[ZONE_OPP_MAP] = "OPP_MAP",
+[ZONE_MIDDLE_COINS_GROUP] = "MIDDLE_COINS_GROUP",
+[ZONE_MIDDLE_FLOOR_GOLDBAR] = "MIDDLE_FLOOR_GOLDBAR",
+[ZONE_SHIP_OUR_CAPTAINS_BEDRROM] = "OUR_CAPTAINS_BEDRROM",
+[ZONE_SHIP_OUR_HOLD] = "OUR_HOLD",
+[ZONE_SHIP_OUR_DECK_2] = "OUR_DECK_2",
+[ZONE_SHIP_OUR_DECK_1] = "OUR_DECK_1",
+[ZONE_SHIP_OPP_CAPTAINS_BEDRROM] = "OPP_CAPTAINS_BEDRROM",
+[ZONE_SHIP_OPP_HOLD] = "OPP_HOLD",
+[ZONE_SHIP_OPP_DECK_1] = "OPP_DECK_1",
+[ZONE_SHIP_OPP_DECK_2] = "OPP_DECK_2",
+[ZONE_SAVE_TREASURE] = "SAVE_TREASURE",
+[ZONES_MAX] = "NULL",
+};
 
 /* display current information about the state of the game */
 void strat_dump_infos(const char *caller)
@@ -183,6 +222,13 @@ void strat_dump_infos(const char *caller)
 		return;
 
 	printf(PSTR("%s() dump strat infos:\r\n"), caller);
+
+	printf("treasure_in_mouth = %d\r\n", strat_infos.treasure_in_mouth);
+	printf("treasure_in_boot = %d\r\n", strat_infos.treasure_in_boot);
+
+	printf("curretn_zone is %s\r\n", numzone2name[strat_infos.current_zone]);
+	printf("goto_zone is %s\r\n", numzone2name[strat_infos.goto_zone]);
+	printf("last_zone is %s\r\n", numzone2name[strat_infos.last_zone]);
 
 	/* add here print infos */
 }
@@ -193,6 +239,13 @@ void strat_reset_infos(void)
 {
 	/* bounding box */
 	strat_set_bounding_box(mainboard.our_color);
+
+	strat_infos.treasure_in_mouth = 0;
+	strat_infos.treasure_in_boot = 0;
+		
+	strat_infos.current_zone = ZONES_MAX;
+	strat_infos.goto_zone = ZONES_MAX;
+	strat_infos.last_zone = ZONES_MAX;
 
 	/* add here other infos resets */
 }
@@ -281,53 +334,76 @@ void strat_event(void *dummy)
 /* strat main loop */
 uint8_t strat_main(void)
 {
-	uint8_t err;
-	int8_t zone_num;
+#ifdef HOMOLOGATION
 
-   //strat_game();
+	trajectory_d_rel(&mainboard.traj, 300);
+	err = wait_traj_end(TRAJ_FLAGS_STD);
+
+	/* */
+	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_TOTEM_OUR_SIDE_2].init_x), 
+								strat_infos.zones[ZONE_TOTEM_OUR_SIDE_2].init_y, 
+								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+	if (TRAJ_SUCCESS(err))
+	err = strat_empty_totem_side(COLOR_X(strat_infos.zones[ZONE_TOTEM_OUR_SIDE_2].x),
+									strat_infos.zones[ZONE_TOTEM_OUR_SIDE_2].y, STORE_BOOT, 0);
+
+	/* */
+	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_x), 
+								strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_y, 
+								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+	if (TRAJ_SUCCESS(err))
+	err = strat_save_treasure_generic(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].x), 
+												 strat_infos.zones[ZONE_SHIP_OUR_DECK_2].y);
+
+	/* */
+
+	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].init_x), 
+								strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].init_y, 
+								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+	if (TRAJ_SUCCESS(err))
+	err = strat_empty_totem_side(COLOR_X(strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].x),
+									strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].y, STORE_BOOT, 0);
+	/* */
+	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_x), 
+								strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_y, 
+								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+
+	if (TRAJ_SUCCESS(err))
+	err = strat_save_treasure_generic(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].x), 
+												 strat_infos.zones[ZONE_SHIP_OUR_DECK_2].y);
+	/* */
+	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_MIDDLE_COINS_GROUP].init_x), 
+								strat_infos.zones[ZONE_MIDDLE_COINS_GROUP].init_y, 
+								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+
+	if (TRAJ_SUCCESS(err))
+	err = strat_pickup_coins_floor(COLOR_X(strat_infos.zones[ZONE_MIDDLE_COINS_GROUP].x), 
+											strat_infos.zones[ZONE_MIDDLE_COINS_GROUP].y, GROUP);
+
+	/* */
+	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_x), 
+								strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_y, 
+								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+
+	if (TRAJ_SUCCESS(err))
+	err = strat_save_treasure_generic(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].x), 
+												 strat_infos.zones[ZONE_SHIP_OUR_DECK_2].y);
+
+	while(time_get_s() < 89);
+	strat_exit();
+	return 0;
+
+#else
 
 	strat_begin();
 
-	while(time_get_s() < 89)
-	{
-		#if 0
-		zone_num = strat_get_new_zone();
-		
-		if(zone_num == -1) {
-			DEBUG(E_USER_STRAT, "Any zone is found");
-			continue;
-		}
-	
-		DEBUG(E_USER_STRAT, "New zone is %d", zone_num);
-
-		err = strat_goto_zone(zone_num);
-		if (!TRAJ_SUCCESS(err)) {
-			DEBUG(E_USER_STRAT, "Can't reach zone %d", zone_num);
-			continue;
-		}
-
-		err = strat_work_on_zone(zone_num);
-		if (!TRAJ_SUCCESS(err)) {
-			DEBUG(E_USER_STRAT, "Work on zone %d fails", zone_num);
-			continue;
-		}
-
-		DEBUG(E_USER_STRAT, "Work on zone %d sucessed", zone_num);
-
-		if(strat_infos.zones[zone_num].type == ZONE_TYPE_HOLD 
-			|| strat_infos.zones[zone_num].type == ZONE_TYPE_DECK
-			|| strat_infos.zones[zone_num].type == ZONE_TYPE_CAPTAINS_BEDROOM) {
-			continue;
-		}
-		else	{
-			strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
-		}
-		#endif
+	while(time_get_s() < 89) {
+		strat_smart();
 	}
-
-
    strat_exit();
    return 0;
+
+#endif
 }
 
 #endif /* HOST_VERSION */

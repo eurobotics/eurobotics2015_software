@@ -602,7 +602,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 	}
 	
 	/* process escape vectors */
-	if (distance_between(robot_pt->x, robot_pt->y, opp1_x, opp1_y) < ESCAPE_POLY_THRES) {
+	if (in_opp1 && distance_between(robot_pt->x, robot_pt->y, opp1_x, opp1_y) < ESCAPE_POLY_THRES) {
 		opp1_dx = robot_pt->x - opp1_x;
 		opp1_dy = robot_pt->y - opp1_y;
 		NOTICE(E_USER_STRAT, " robot is near opp1: vect=%2.2f,%2.2f",
@@ -620,7 +620,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 		escape_dy += opp1_dy;
 	}
 	
-	if (distance_between(robot_pt->x, robot_pt->y, opp2_x, opp2_y) < ESCAPE_POLY_THRES) {
+	if (in_opp2 && distance_between(robot_pt->x, robot_pt->y, opp2_x, opp2_y) < ESCAPE_POLY_THRES) {
 		opp2_dx = robot_pt->x - opp2_x;
 		opp2_dy = robot_pt->y - opp2_y;
 		NOTICE(E_USER_STRAT, " robot is near opp2: vect=%2.2f,%2.2f",
@@ -638,7 +638,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 		escape_dy += opp2_dy;
 	}
 
-	if (distance_between(robot_pt->x, robot_pt->y, totems_x, totems_y) < ESCAPE_POLY_THRES) {
+	if (in_totems && distance_between(robot_pt->x, robot_pt->y, totems_x, totems_y) < ESCAPE_POLY_THRES) {
 		totems_dx = robot_pt->x - totems_x;
 		totems_dy = robot_pt->y - totems_y;
 		NOTICE(E_USER_STRAT, " robot is near totems: vect=%2.2f,%2.2f",
@@ -656,7 +656,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 		escape_dy += totems_dy;
 	}
 	
-	if (distance_between(robot_pt->x, robot_pt->y, robot_2nd_x, robot_2nd_y) < ESCAPE_POLY_THRES) {
+	if (in_robot_2nd && distance_between(robot_pt->x, robot_pt->y, robot_2nd_x, robot_2nd_y) < ESCAPE_POLY_THRES) {
 		robot_2nd_dx = robot_pt->x - robot_2nd_x;
 		robot_2nd_dy = robot_pt->y - robot_2nd_y;
 		NOTICE(E_USER_STRAT, " robot is near robot_2nd: vect=%2.2f,%2.2f",
@@ -999,6 +999,13 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 {
 	int8_t len = -1;
 	int8_t i;
+
+
+#ifdef DEBUG_STRAT_SMART
+	/* force possition */
+	strat_reset_pos(x, y, DO_NOT_SET_POS);
+	return END_TRAJ;
+#endif
 
 #ifdef POLYS_IN_PATH
 	int8_t num_slots_in_path_save;

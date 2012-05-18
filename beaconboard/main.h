@@ -89,7 +89,7 @@ struct beaconboard
 
 	/* beacon running watchdog */
 	uint8_t watchdog_enable;
-	uint8_t watchdog;
+	uint16_t watchdog;
 #define WATCHDOG_NB_TIMES	10
 
 };

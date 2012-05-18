@@ -439,7 +439,8 @@ uint8_t strat_save_treasure_generic(int16_t x, int16_t y)
 	uint16_t old_spdd, old_spda;
    int16_t d;
    /* Minimum distance to point to be able to open fingers*/
-   #define MIN_D_TO_POINT 285
+   #define MIN_D_TO_SAFE_FINGER 	285
+	#define MIN_D_TO_POINT 			ROBOT_CENTER_TO_FRONT
 
 	/* save speed */
 	strat_get_speed(&old_spdd, &old_spda);
@@ -451,9 +452,12 @@ uint8_t strat_save_treasure_generic(int16_t x, int16_t y)
 			ERROUT(err);
 
    /*go to the point*/
-   d= distance_from_robot_signed(x,y);
-   if(d>0 && d<MIN_D_TO_POINT) d=-d;
-	trajectory_d_rel(&mainboard.traj, d-100);
+   d= distance_from_robot(x,y);
+   if(d < MIN_D_TO_POINT)
+		trajectory_d_rel(&mainboard.traj, -(MIN_D_TO_POINT-d));
+	else
+		trajectory_d_rel(&mainboard.traj, d-MIN_D_TO_POINT);
+
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
@@ -481,11 +485,14 @@ uint8_t strat_save_treasure_generic(int16_t x, int16_t y)
 
 	strat_infos.treasure_in_mouth=0;
 
+	#if notyet
    d=distance_from_robot(COLOR_X(strat_infos.area_bbox.x1),position_get_y_s16(&mainboard.pos))+5;
 	trajectory_d_rel(&mainboard.traj, -d);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
+	#endif
+
 end:
 	strat_set_speed(old_spdd, old_spda);
    return err;

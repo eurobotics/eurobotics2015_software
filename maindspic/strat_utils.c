@@ -87,9 +87,11 @@ int16_t distance_from_robot(int16_t x, int16_t y)
 /* return the distance to a point in the area */
 int16_t distance_from_robot_signed(int16_t x, int16_t y)
 {
-	double a = position_get_a_rad_double(&mainboard.pos);
-   double dis=distance_between(position_get_x_s16(&mainboard.pos),
-				position_get_y_s16(&mainboard.pos), x, y);
+	double a;// = position_get_a_rad_double(&mainboard.pos);
+   double dis;//=distance_between(position_get_x_s16(&mainboard.pos),
+				//position_get_y_s16(&mainboard.pos), x, y);
+
+	abs_xy_to_rel_da(x, y, &dis, &a);
 
    if(a>0 && a<M_PI/2) {
       if(position_get_x_s16(&mainboard.pos)>x) dis=-dis; 

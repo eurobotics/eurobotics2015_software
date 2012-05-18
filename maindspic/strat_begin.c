@@ -70,7 +70,7 @@
 	} while(0)
 
 
-#if 0
+#ifdef OLD
 uint8_t strat_begin(uint16_t y_begin_curve, uint16_t final_angle)
 {   
    uint8_t err;
@@ -197,13 +197,13 @@ end:
 #endif
 
 
-//uint8_t strat_begin(uint16_t y_begin_curve, int16_t final_angle)
 uint8_t strat_begin(void)
 {   
    uint8_t err, n=0;
 	uint16_t old_spdd, old_spda;
    uint32_t old_var_2nd_ord_pos, old_var_2nd_ord_neg;
 	int16_t posx, posy, posa;
+	int8_t nb_tries;
 
    #define LONG_DISTANCE        5000
    #define Y_BEGIN_CURVE        842
@@ -213,10 +213,12 @@ uint8_t strat_begin(void)
 
    DEBUG(E_USER_STRAT, "Start");
    strat_limit_speed_disable();
+
 	/* save speed and aceleration values */
 	strat_get_speed(&old_spdd, &old_spda);
    old_var_2nd_ord_pos = mainboard.angle.qr.var_2nd_ord_pos;
    old_var_2nd_ord_neg = mainboard.angle.qr.var_2nd_ord_neg;
+
    /* modify speed and quadramp */
 	strat_set_speed(4000,2000);
    quadramp_set_2nd_order_vars(&mainboard.angle.qr, 20, 20);
@@ -285,6 +287,9 @@ uint8_t strat_begin(void)
 	i2c_slavedspic_wait_ready();
 	DEBUG(E_USER_STRAT, "blockings: %d %d", slavedspic.fingers_floor_blocked, slavedspic.fingers_totem_blocked);
 
+	nb_tries = 2;
+
+retry:
 	DEBUG(E_USER_STRAT, "First finger");
 	(mainboard.our_color==I2C_COLOR_RED)?
 		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_HOLD,0):
@@ -309,10 +314,32 @@ uint8_t strat_begin(void)
 		//time_wait_ms(2000);
 		n++;
 		DEBUG(E_USER_STRAT, "Nb of goldbars in boot: %d", slavedspic.nb_goldbars_in_boot);
-	}while((slavedspic.nb_goldbars_in_boot==0) && (n<2));
+	}while((slavedspic.nb_goldbars_in_boot==0) && (n<3));
 
+	if((slavedspic.fingers_floor_blocked || slavedspic.fingers_totem_blocked) && nb_tries) {
+
+		nb_tries --;
+
+		trajectory_d_rel(&mainboard.traj, -50);
+		err=wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+	  	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);   	
+
+		i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_PREPARE_GOLDBAR_FLOOR);
+		i2c_slavedspic_wait_ready();
+
+		trajectory_a_rel(&mainboard.traj, COLOR_A_REL(-40));
+		err=wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+	  	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);   	
+
+		goto retry;
+	}
 
 end:
+	if(slavedspic.nb_goldbars_in_boot)	
+		strat_infos.treasure_in_boot =1;
+
    DEBUG(E_USER_STRAT, "End (%d goldbars catched)", slavedspic.nb_goldbars_in_boot);
    /* restore speed and quadramp values */
 	strat_set_speed(old_spdd, old_spda);

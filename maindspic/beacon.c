@@ -37,7 +37,7 @@
 #include "beacon.h"
 
 #define LINE_BUFF_SIZE 	128
-#define CMD_LINE_SIZE 	16
+#define CMD_LINE_SIZE 	32
 
 /* local header functions */
 void beacon_pull_opponent(void);
@@ -670,6 +670,15 @@ void beacon_cmd_beacon_on(void)
 {
 	int8_t buff[] = "\n\rbeacon on";
 	uint16_t size = 11;
+	
+	beacon_send_cmd(buff, size);
+}
+
+/* beacon on with watchdog */
+void beacon_cmd_beacon_on_watchdog(void)
+{
+	int8_t buff[] = "\n\rbeacon watchdog_on";
+	uint16_t size = 20;
 	
 	beacon_send_cmd(buff, size);
 }
