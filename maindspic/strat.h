@@ -145,8 +145,8 @@
 #define SPEED_ANGLE_FAST 		2000
 #else
 
-#define SPEED_DIST_FAST 		2000
-#define SPEED_ANGLE_FAST 		2000
+#define SPEED_DIST_FAST 		4000
+#define SPEED_ANGLE_FAST 		4000
 #endif
 
 //Do not change
@@ -342,7 +342,9 @@ uint8_t strat_pickup_coins_floor(int16_t x, int16_t y, uint8_t group);
 uint8_t strat_pickup_goldbar_floor(int16_t x, int16_t y, uint8_t store);
 uint8_t strat_send_message_bottle(int16_t x, int16_t y);
 uint8_t strat_save_treasure_generic(int16_t x, int16_t y);
+uint8_t strat_save_treasure_arms(int16_t x, int16_t y, uint8_t arm_side);
 uint8_t strat_save_treasure_in_deck_back(int16_t x, int16_t y);
+uint8_t strat_save_treasure_in_deck_back_blowing(int16_t x, int16_t y);
 uint8_t strat_save_treasure_in_hold_back(int16_t x, int16_t y);
 uint8_t strat_raise_window(uint8_t window);
 uint8_t strat_steal_treasure_hold(void);

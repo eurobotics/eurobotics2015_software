@@ -115,8 +115,8 @@ uint8_t strat_pickup_map(void)
 	/* go slow until blocking */
 	d = position_get_y_s16(&mainboard.pos);
 	strat_set_speed(PICKUP_SPEED_SLOW, old_spda);
-	//trajectory_d_rel(&mainboard.traj, PICKUP_D*2);
-	trajectory_d_rel(&mainboard.traj, d-(ROBOT_LENGTH/2));
+	trajectory_d_rel(&mainboard.traj, PICKUP_D*2);
+	//trajectory_d_rel(&mainboard.traj, d-(ROBOT_LENGTH/2));
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	//if (!TRAJ_SUCCESS(err))
 	//		ERROUT(err);		

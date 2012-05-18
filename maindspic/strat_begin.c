@@ -314,7 +314,7 @@ retry:
 		//time_wait_ms(2000);
 		n++;
 		DEBUG(E_USER_STRAT, "Nb of goldbars in boot: %d", slavedspic.nb_goldbars_in_boot);
-	}while((slavedspic.nb_goldbars_in_boot==0) && (n<3));
+	}while((slavedspic.nb_goldbars_in_boot==0) && (n<2));
 
 	if((slavedspic.fingers_floor_blocked || slavedspic.fingers_totem_blocked) && nb_tries) {
 
@@ -335,6 +335,13 @@ retry:
 
 		goto retry;
 	}
+
+	if(!slavedspic.nb_goldbars_in_boot) {
+		err = strat_save_treasure_generic(COLOR_X(1500), 1700);
+	  	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);   	
+	}
+
 
 end:
 	if(slavedspic.nb_goldbars_in_boot)	

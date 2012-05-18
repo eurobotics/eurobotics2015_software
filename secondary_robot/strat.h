@@ -24,7 +24,7 @@
 #define _STRAT_H_
 
 /* homologation compilation */
-#define HOMOLOGATION
+//#define HOMOLOGATION
 
 /* area */
 #define AREA_X 3000

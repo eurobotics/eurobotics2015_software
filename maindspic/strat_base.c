@@ -542,7 +542,7 @@ uint8_t __strat_obstacle(uint8_t which)
 	if (opp_d > 800)
 		return 0;
 #else
-	if (opp_d > 700)
+	if (opp_d > 600)
 		return 0;
 #endif
 

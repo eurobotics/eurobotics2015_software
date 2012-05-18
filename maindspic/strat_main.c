@@ -194,7 +194,7 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 
 
 		/* goto ship deck init point */
-		err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_x), strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_y, 
+		err = goto_and_avoid_forward(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_x), strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_y, 
 							TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 	}
 
@@ -260,7 +260,17 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 		err = strat_save_treasure_in_hold_back(COLOR_X(x), y);
 	}
 	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_DECK) {
-		err = strat_save_treasure_generic(COLOR_X(x), y);
+
+		err = strat_save_treasure_in_deck_back_blowing(COLOR_X(x), y);
+		err = strat_save_treasure_in_deck_back_blowing(COLOR_X(x), y);
+
+		//err = strat_save_treasure_generic(COLOR_X(x), y);
+		if(mainboard.our_color == I2C_COLOR_PURPLE)
+			err = strat_save_treasure_arms(COLOR_X(x), y, I2C_ARM_TYPE_RIGHT);
+		else
+			err = strat_save_treasure_arms(COLOR_X(x), y, I2C_ARM_TYPE_LEFT);
+
+
 	}
 	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_CAPTAINS_BEDROOM) {
 		/* TODO */
