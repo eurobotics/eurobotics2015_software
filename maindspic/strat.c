@@ -109,7 +109,7 @@ struct strat_infos strat_infos = {
 	.zones[ZONE_SHIP_OUR_DECK_2]=   {ZONE_TYPE_DECK, OUR_SHIP_DECK_2_X, OUR_SHIP_DECK_2_Y,  400,     1400,   0,        500    , 640,    1050,  ZONE_PRIO_30, 0 },
    .zones[ZONE_SHIP_OPP_DECK_2]=   {ZONE_TYPE_DECK, OPP_SHIP_DECK_2_X, OPP_SHIP_DECK_2_Y, 3000,     1400,   2600,     500    , 2360,   1050,  ZONE_PRIO_10, ZONE_AVOID },
 
-	.zones[ZONE_SHIP_OUR_HOLD]=  {ZONE_TYPE_HOLD, 750,    1700, 400,      2000,   0,        1400    , 750,    1700, ZONE_PRIO_20, 0 },
+	.zones[ZONE_SHIP_OUR_HOLD]=  {ZONE_TYPE_HOLD, 750,    1700, 400,      2000,   0,        1400    , 750,    1700, ZONE_PRIO_20, ZONE_AVOID },
 	.zones[ZONE_SHIP_OPP_HOLD]=  {ZONE_TYPE_HOLD, 2250,   1700, 3000,     2000,   2600,     1400    , 2250,   1700, ZONE_PRIO_10, ZONE_AVOID },
 
 	/* zone to save/restore treasure temporaly */
@@ -161,7 +161,7 @@ void strat_preinit(void)
 							 DO_POS | DO_BD | DO_POWER | DO_OPP;
 
 	/* XXX default conf */
-	strat_infos.conf.flags |= ENABLE_R2ND_POS;
+	//strat_infos.conf.flags |= ENABLE_R2ND_POS;
 
 	strat_dump_conf();
 	strat_dump_infos(__FUNCTION__);

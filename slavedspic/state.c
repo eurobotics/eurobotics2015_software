@@ -468,7 +468,7 @@ void state_do_harvest_mode(void)
 
 			/* turbine looking down and over a coin heigh */
 			turbine_set_angle(&slavedspic.turbine, TURBINE_ANGLE_ZERO, TURBINE_ANGLE_SPEED_FAST);
-			lift_set_height(LIFT_HEIGHT_OVER_COINS);
+			lift_set_height(LIFT_HEIGHT_OVER_TOTEM);
 			err = lift_wait_end();
 			if(err & END_BLOCKING)
 				break;
