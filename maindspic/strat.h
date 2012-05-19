@@ -76,12 +76,12 @@
 #define OPP_FLOOR_GOLDBAR_Y     	785
 
 #define OUR_SHIP_DECK_1_X        200
-#define OUR_SHIP_DECK_1_Y        750
+#define OUR_SHIP_DECK_1_Y        (500+360)
 #define OUR_SHIP_DECK_2_X        200
 #define OUR_SHIP_DECK_2_Y        900
 
 #define OPP_SHIP_DECK_1_X        (3000-200)
-#define OPP_SHIP_DECK_1_Y        (550+210+150)
+#define OPP_SHIP_DECK_1_Y        (500+360)
 #define OPP_SHIP_DECK_2_X        (3000-200)
 #define OPP_SHIP_DECK_2_Y        900
 
@@ -298,6 +298,12 @@ struct strat_infos {
 	uint8_t current_zone;
 	uint8_t goto_zone;
 	uint8_t last_zone;
+
+	/* step of each empty totem */
+	uint8_t step_our_totem_1;
+	uint8_t step_our_totem_2;
+	uint8_t step_opp_totem_1;
+	uint8_t step_opp_totem_2;
 
 	/* opponent zone position */
 	uint8_t opp_current_zone;

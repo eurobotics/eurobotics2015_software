@@ -103,11 +103,11 @@ struct strat_infos strat_infos = {
    .zones[ZONE_SHIP_OUR_CAPTAINS_BEDRROM]= {ZONE_TYPE_CAPTAINS_BEDROOM, OUR_CAPTAINS_BEDROOM_X, OUR_CAPTAINS_BEDROOM_Y, 500, 500, 0,    0 , 800,   250,  ZONE_PRIO_0, ZONE_AVOID },
    .zones[ZONE_SHIP_OPP_CAPTAINS_BEDRROM]= {ZONE_TYPE_CAPTAINS_BEDROOM, OPP_CAPTAINS_BEDROOM_X, OPP_CAPTAINS_BEDROOM_Y, 3000,500, 2500, 0 , 2200,  250,  ZONE_PRIO_0, ZONE_AVOID },
 
-	.zones[ZONE_SHIP_OUR_DECK_1]= {ZONE_TYPE_DECK, OUR_SHIP_DECK_1_X, OUR_SHIP_DECK_1_Y,  400,     1100,   0,        500     , 640,    550+210,  ZONE_PRIO_50, 0 },
-   .zones[ZONE_SHIP_OPP_DECK_1]= {ZONE_TYPE_DECK, OPP_SHIP_DECK_1_X, OPP_SHIP_DECK_1_Y, 3000,     1100,   2600,     500     , 2360,   500+210,  ZONE_PRIO_0, ZONE_AVOID },
+	.zones[ZONE_SHIP_OUR_DECK_1]= {ZONE_TYPE_DECK, OUR_SHIP_DECK_1_X, OUR_SHIP_DECK_1_Y,  400,     1100,   0,        500     , 640,    500+360,  ZONE_PRIO_50, 0 },
+   .zones[ZONE_SHIP_OPP_DECK_1]= {ZONE_TYPE_DECK, OPP_SHIP_DECK_1_X, OPP_SHIP_DECK_1_Y, 3000,     1100,   2600,     500     , 2360,   500+360,  ZONE_PRIO_0, ZONE_AVOID },
 
-	.zones[ZONE_SHIP_OUR_DECK_2]=   {ZONE_TYPE_DECK, OUR_SHIP_DECK_2_X, OUR_SHIP_DECK_2_Y,  400,     1400,   0,        900    , 640,    1050,  ZONE_PRIO_80, 0 },
-   .zones[ZONE_SHIP_OPP_DECK_2]=   {ZONE_TYPE_DECK, OPP_SHIP_DECK_2_X, OPP_SHIP_DECK_2_Y, 3000,     1400,   2600,     900    , 2360,   1050,  ZONE_PRIO_0, ZONE_AVOID },
+	.zones[ZONE_SHIP_OUR_DECK_2]=   {ZONE_TYPE_DECK, OUR_SHIP_DECK_2_X, OUR_SHIP_DECK_2_Y,  400,     1400,   0,        900    , 640,    900,  ZONE_PRIO_80, 0 },
+   .zones[ZONE_SHIP_OPP_DECK_2]=   {ZONE_TYPE_DECK, OPP_SHIP_DECK_2_X, OPP_SHIP_DECK_2_Y, 3000,     1400,   2600,     900    , 2360,   900,  ZONE_PRIO_0, ZONE_AVOID },
 
 	.zones[ZONE_SHIP_OUR_HOLD]=  {ZONE_TYPE_HOLD, 750,    1700, 400,      2000,   0,        1400    , 750,    1700, ZONE_PRIO_0, ZONE_AVOID },
 	.zones[ZONE_SHIP_OPP_HOLD]=  {ZONE_TYPE_HOLD, 2250,   1700, 3000,     2000,   2600,     1400    , 2250,   1700, ZONE_PRIO_0, ZONE_AVOID },
@@ -162,6 +162,11 @@ void strat_preinit(void)
 
 	/* XXX default conf */
 	//strat_infos.conf.flags |= ENABLE_R2ND_POS;
+
+	strat_infos.step_our_totem_1 = 1;
+	strat_infos.step_our_totem_2 = 1;
+	strat_infos.step_opp_totem_1 = 1;
+	strat_infos.step_opp_totem_2 = 1;
 
 	strat_dump_conf();
 	strat_dump_infos(__FUNCTION__);
