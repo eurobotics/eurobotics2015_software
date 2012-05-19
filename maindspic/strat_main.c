@@ -73,6 +73,10 @@
 /* return 1 if is a valid zone and 0 otherwise */
 uint8_t strat_is_valid_zone(uint8_t zone_num)
 {
+#define OPP_WAS_IN_ZONE_TIMES	
+
+	static uint16_t opp_times[ZONES_MAX];
+	static microseconds opp_time_us = 0;
 	/* discard actual zone */
 	//if(strat_infos.current_zone == zone_num)
 	//	return 0;
@@ -89,6 +93,15 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 	if(opponent_is_in_area(	COLOR_X(strat_infos.zones[zone_num].x_up),strat_infos.zones[zone_num].y_up,
 								COLOR_X(strat_infos.zones[zone_num].x_down),	strat_infos.zones[zone_num].y_down)) {
 
+#if 0
+		if(time_get_us2() - opp_time_us < 100000UL)		{
+			opp_time_us = time_get_us2();
+
+			opp_times[zone_num]++;
+			if(opp_times[zone_num] > OPP_WAS_IN_ZONE_TIMES)
+				strat_infos.zones[zone_num].flags |= ZONE_CHECKED_OPP;
+		}
+#endif
 		DEBUG(E_USER_STRAT, "Discarted zone %s, opp inside", numzone2name[zone_num]);
 		return 0;
 	}
@@ -98,7 +111,12 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 		return 0;	
 
 	/* discard opp checked zones */
-	if(strat_infos.zones[zone_num].flags & ZONE_CHECKED_OPP)
+	if((strat_infos.zones[zone_num].flags & ZONE_CHECKED_OPP)
+		&& zone_num != ZONE_SHIP_OUR_CAPTAINS_BEDRROM 
+		&& zone_num != ZONE_SHIP_OUR_HOLD 
+		&& zone_num != ZONE_SHIP_OUR_DECK_2 
+		&& zone_num != ZONE_SHIP_OUR_DECK_1 )
+
 		return 0;	
 
 	/* discard avoid zones */
@@ -183,33 +201,16 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 			err = goto_and_avoid_forward(strat_infos.zones[zone_num].init_x, strat_infos.zones[zone_num].init_y, 
 								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 	}
-
-
 	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_BOTTLE) {
 		err = goto_and_avoid_backward(COLOR_X(strat_infos.zones[zone_num].init_x), strat_infos.zones[zone_num].init_y, 
 							TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 	}
 
-#if 0
-	else if(zone_num == ZONE_SHIP_OUR_DECK_2) {
-		/* first goto repick the treasure aparted */		
-		err = goto_and_avoid_forward(COLOR_X(strat_infos.zones[ZONE_SAVE_TREASURE].init_x), strat_infos.zones[ZONE_SAVE_TREASURE].init_y, 
+	else if(zone_num == ZONE_SHIP_OUR_DECK_1 || zone_num == ZONE_SHIP_OUR_DECK_2) {
+		err = goto_and_avoid_forward(COLOR_X(strat_infos.zones[zone_num].init_x), strat_infos.zones[zone_num].init_y, 
 							TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-      if(!TRAJ_SUCCESS(err))
-         return err;
 
-      err=strat_pickup_coins_floor(COLOR_X(strat_infos.zones[ZONE_SAVE_TREASURE].x),strat_infos.zones[ZONE_SAVE_TREASURE].y,GROUP);
-      if(!TRAJ_SUCCESS(err))
-         return err;
-
-
-		/* goto ship deck init point */
-		err = goto_and_avoid_forward(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_x), strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_y, 
-							TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 	}
-#endif
-
-
 	/* by default */
 	else {
 		err = goto_and_avoid(COLOR_X(strat_infos.zones[zone_num].init_x), strat_infos.zones[zone_num].init_y, 
@@ -234,7 +235,24 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 #endif
 
 	if(strat_infos.zones[zone_num].type == ZONE_TYPE_TOTEM) {
+
+#if 0
+		if(zone_num == ZONE_TOTEM_OUR_SIDE_1) {
+			err = strat_empty_totem_side(COLOR_X(x), y, STORE_BOOT, step_our_totem_1);
+
+		}
+		else if(zone_num == ZONE_TOTEM_OUR_SIDE_2) {
+
+		}
+		else if(zone_num == ZONE_TOTEM_OPP_SIDE_1) {
+
+		}
+		else if(zone_num == ZONE_TOTEM_OPP_SIDE_2) {
+
+		}
+#else
 		err = strat_empty_totem_side(COLOR_X(x), y, STORE_BOOT, 0);
+#endif
 	}
 	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_GOLDBAR) {
 		err = strat_pickup_goldbar_floor(COLOR_X(x), y, STORE_BOOT);
@@ -313,6 +331,12 @@ void strat_smart(void)
 
 	/* XXX DEBUG STEP BY STEP */
 	state_debug_wait_key_pressed();
+
+   i2c_slavedspic_mode_arm(I2C_ARM_TYPE_LEFT, I2C_ARM_MODE_HIDE, 0);
+   i2c_slavedspic_wait_ready();
+   i2c_slavedspic_mode_arm(I2C_ARM_TYPE_RIGHT, I2C_ARM_MODE_HIDE, 0);
+   i2c_slavedspic_wait_ready();
+
 
 	/* get new zone */
 	zone_num = strat_get_new_zone();
