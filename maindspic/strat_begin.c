@@ -199,11 +199,14 @@ end:
 
 uint8_t strat_begin(void)
 {   
-   uint8_t err, n=0;
+   uint8_t err;
 	uint16_t old_spdd, old_spda;
    uint32_t old_var_2nd_ord_pos, old_var_2nd_ord_neg;
 	int16_t posx, posy, posa;
+#ifdef CATCH_GOLDBAR
+	uint8_t n=0;
 	int8_t nb_tries;
+#endif
 
    #define LONG_DISTANCE        5000
    #define Y_BEGIN_CURVE        842
@@ -223,8 +226,10 @@ uint8_t strat_begin(void)
 	strat_set_speed(4000,2000);
    quadramp_set_2nd_order_vars(&mainboard.angle.qr, 20, 20);
 
+#ifdef CATCH_GOLDBAR
 	/* prepare fingers */
 	i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_PREPARE_GOLDBAR_FLOOR);
+#endif
 
 	/* robot describes curve trajectory until goldbar */
    trajectory_d_rel(&mainboard.traj, LONG_DISTANCE);
@@ -234,8 +239,9 @@ uint8_t strat_begin(void)
 			ERROUT(err);   	} 
 	else DEBUG(E_USER_STRAT, "X is more than X_BEGIN_CURVE_HOME");
 		
-
+#ifdef CATCH_GOLDBAR
 	(mainboard.our_color==I2C_COLOR_RED)?		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_OPEN,-50) :		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_OPEN,-50);
+#endif
 
    trajectory_only_a_abs(&mainboard.traj, COLOR_A_ABS(90));
    err = WAIT_COND_OR_TRAJ_END(y_is_more_than(Y_BEGIN_CURVE), END_OBSTACLE|END_BLOCKING|END_INTR);
@@ -244,11 +250,12 @@ uint8_t strat_begin(void)
 			ERROUT(err);  	}
 	else DEBUG(E_USER_STRAT, "Y is more than Y_BEGIN_CURVE");
 
-
+#ifdef CATCH_GOLDBAR
 	/* prepare fingers */
 	(mainboard.our_color==I2C_COLOR_RED)?
 		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_OPEN,120):
 		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_OPEN,120);
+#endif
 
    trajectory_only_a_abs(&mainboard.traj, COLOR_A_ABS(0));
    err=WAIT_COND_OR_TRAJ_END(x_is_more_than(X_END_CURVE), TRAJ_FLAGS_NO_NEAR);
@@ -257,6 +264,7 @@ uint8_t strat_begin(void)
    	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);   	}  
 	else DEBUG(E_USER_STRAT, "X is more than X_END_CURVE");
+
 
 	DEBUG(E_USER_STRAT, "Correct position error");
 	//trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(0));
@@ -268,7 +276,13 @@ uint8_t strat_begin(void)
 	posa=position_get_a_deg_s16(&mainboard.pos);
 	strat_reset_pos(posx+COLOR_SIGN(-20),posy+20,posa+COLOR_SIGN(3));
 
+	//trajectory_goto_xy_abs(&mainboard.traj,COLOR_X(1900), 1610);
+	//err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+	//if (!TRAJ_SUCCESS(err))
+	//	ERROUT(err);		
 
+
+#ifdef CATCH_GOLDBAR
 	/*catch goldbar */
 	DEBUG(E_USER_STRAT, "Catch goldbar");
 	(mainboard.our_color==I2C_COLOR_RED)?
@@ -341,7 +355,7 @@ retry:
 	  	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);   	
 	}
-
+#endif /* CATCH_GOLDBAR */
 
 end:
 	if(slavedspic.nb_goldbars_in_boot)	

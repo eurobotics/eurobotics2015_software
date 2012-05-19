@@ -1134,6 +1134,7 @@ void state_do_dump_mode(void)
          break;
 
 		case I2C_DUMP_MODE_BOOT:
+#ifdef old_version
          hook_set_mode(&slavedspic.hook, HOOK_MODE_OPEN_HOLD);
 			/* XXX */
 			time_wait_ms(200);
@@ -1153,6 +1154,25 @@ void state_do_dump_mode(void)
 			time_wait_ms(200);
          hook_set_mode(&slavedspic.hook, HOOK_MODE_SHOW);
 			err = 0;	
+#else
+			/* XXX */
+			time_wait_ms(200);
+
+         boot_set_mode(&slavedspic.boot, BOOT_MODE_OPEN_FULL);
+         tray_set_mode(&slavedspic.tray_store,TRAY_MODE_DOWN);
+         tray_set_mode(&slavedspic.tray_boot,TRAY_MODE_VIBRATE);
+			time_wait_ms(1000);
+
+         tray_set_mode(&slavedspic.tray_store,TRAY_MODE_VIBRATE);
+			time_wait_ms(2000);
+
+         tray_set_mode(&slavedspic.tray_boot,TRAY_MODE_DOWN);
+         tray_set_mode(&slavedspic.tray_store,TRAY_MODE_DOWN);
+
+         boot_set_mode(&slavedspic.boot, BOOT_MODE_CLOSE);
+			time_wait_ms(200);
+			err = 0;	
+#endif
          break;
 
 		case I2C_DUMP_MODE_BOOT_BLOWING:

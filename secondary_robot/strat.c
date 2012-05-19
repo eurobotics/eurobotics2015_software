@@ -288,9 +288,6 @@ void strat_start_match(uint8_t debug)
 /* strat main loop */
 uint8_t strat_main(void)
 {
-	uint8_t state = 0;
-   uint8_t err;
-
 #define STRAT_GOTO_EMPTY_TOTEM			0
 #define STRAT_GOTO_EMPTY_TOTEM_RETRY	1
 #define STRAT_DO_EMPTY_TOTEM				2
@@ -303,6 +300,8 @@ uint8_t strat_main(void)
 #define STRAT_ESCAPE_DISCOVER_MAP		9
 #define STRAT_END								10
 
+	uint8_t state = STRAT_GOTO_DISCOVER_MAP;
+   uint8_t err;
 
 	time_wait_ms(500);
 
@@ -402,7 +401,10 @@ uint8_t strat_main(void)
 				trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1370), 260);
 				err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 				if (!TRAJ_SUCCESS(err)) {
-					state = STRAT_GOTO_DISCOVER_MAP_AVOID;
+					trajectory_d_rel(&mainboard.traj, -100);
+					err = wait_traj_end(TRAJ_FLAGS_STD);
+					time_wait_ms(2800);
+					strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 					break;
 				}
 
@@ -413,7 +415,7 @@ uint8_t strat_main(void)
 				trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(700), 235);
 				err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 				if (!TRAJ_SUCCESS(err)) {
-					time_wait_ms(2800);
+					state = STRAT_GOTO_DISCOVER_MAP;
 					break;
 				}
 
@@ -426,19 +428,34 @@ uint8_t strat_main(void)
 				//	time_wait_ms(2800);
 				//	break;
 				//}
-				state = STRAT_ESCAPE_DISCOVER_MAP;
+
+				strat_set_speed(SPEED_DIST_FAST, SPEED_ANGLE_FAST);
+				trajectory_a_rel(&mainboard.traj, COLOR_A_REL(-360));
+				err = wait_traj_end(TRAJ_FLAGS_STD);
+
+				trajectory_a_rel(&mainboard.traj, COLOR_A_REL(-90));
+				err = wait_traj_end(TRAJ_FLAGS_STD);
+				
+				arm_set_pos(ARM_POS_PICKUP_MAP2);
+
+				state = STRAT_END;
 				break;
 				
 			case STRAT_ESCAPE_DISCOVER_MAP:
+				if(time_get_s() < 80)
+					break;
+
+				strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
+
 				//trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1370), 400);
 				trajectory_d_rel(&mainboard.traj, -200);
 				err = wait_traj_end(TRAJ_FLAGS_STD);
 				if (!TRAJ_SUCCESS(err)) {
-					time_wait_ms(2800);
+					state = STRAT_END;
 					break;
 				}
 				
-				state = STRAT_GOTO_PROTECT;		
+				state = STRAT_END;
 				break;
 		
 			case STRAT_GOTO_PROTECT:			

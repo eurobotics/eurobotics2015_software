@@ -231,6 +231,7 @@ void turbine_set_angle(turbine_t *turbine, int16_t angle_deg, uint16_t angle_spe
 		time_wait_ms(wait_ms);
 #endif
 
+#if 0
 	/* manage servo on event */
 	IRQ_LOCK(flags);
 	turbine->angle_consign = angle_pos;
@@ -238,6 +239,9 @@ void turbine_set_angle(turbine_t *turbine, int16_t angle_deg, uint16_t angle_spe
 	IRQ_UNLOCK(flags);
 	turbine->angle_event_handler = scheduler_add_periodical_event(turbine_angle_speed_control,
 									 		(void *)(turbine), TURBINE_ANGLE_SPEED_CONTROL_us / SCHEDULER_UNIT);
+#endif
+
+	turbine->angle_pos = pwm_servo_set(TURBINE_ANGLE_PWM_SERVO, angle_pos);
 
 }
 

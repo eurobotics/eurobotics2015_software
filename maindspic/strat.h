@@ -75,15 +75,15 @@
 #define OPP_FLOOR_GOLDBAR_X     	2580
 #define OPP_FLOOR_GOLDBAR_Y     	785
 
-#define OUR_SHIP_DECK_1_X        250
+#define OUR_SHIP_DECK_1_X        200
 #define OUR_SHIP_DECK_1_Y        750
-#define OUR_SHIP_DECK_2_X        250
-#define OUR_SHIP_DECK_2_Y        1050
+#define OUR_SHIP_DECK_2_X        200
+#define OUR_SHIP_DECK_2_Y        900
 
-#define OPP_SHIP_DECK_1_X        (3000-250)
-#define OPP_SHIP_DECK_1_Y        750
-#define OPP_SHIP_DECK_2_X        (3000-250)
-#define OPP_SHIP_DECK_2_Y        1050
+#define OPP_SHIP_DECK_1_X        (3000-200)
+#define OPP_SHIP_DECK_1_Y        (550+210+150)
+#define OPP_SHIP_DECK_2_X        (3000-200)
+#define OPP_SHIP_DECK_2_Y        900
 
 #define OUR_CAPTAINS_BEDROOM_X	250
 #define OUR_CAPTAINS_BEDROOM_Y	250
@@ -93,8 +93,8 @@
 #define SAVE_TREASURE_X				700
 #define SAVE_TREASURE_Y				1400
 
-#define OUR_MAP_X		1500
-#define OUR_MAP_Y		0
+#define OUR_MAP_X						1500
+#define OUR_MAP_Y							0
 
 
 
@@ -247,10 +247,16 @@ typedef struct {
 	int16_t y;	
 
 	/* boundinbox */
-	int16_t x_up;
-	int16_t y_up;
 	int16_t x_down;
+	int16_t y_up;
+	int16_t x_up;
 	int16_t y_down;
+
+
+	//int16_t x_up;
+	//int16_t y_up;
+	//int16_t x_down;
+	//int16_t y_down;
 
    /* init point */
 	int16_t init_x;
@@ -306,6 +312,7 @@ struct strat_infos {
 
 extern struct strat_infos strat_infos;
 
+extern char numzone2name[ZONES_MAX + 1][30];
 
 #ifndef HOST_VERSION
 

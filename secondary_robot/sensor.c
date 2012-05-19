@@ -446,8 +446,9 @@ void sensor_obstacle_update(void)
 
 void sensor_obstacle_disable(void)
 {
-	DEBUG(E_USER_STRAT, "disable sensor");
-	disable = DISABLE_CPT_MAX;
+	//DEBUG(E_USER_STRAT, "disable sensor");
+	//disable = DISABLE_CPT_MAX;
+	disable = 0;
 }
 
 void sensor_obstacle_enable(void)
