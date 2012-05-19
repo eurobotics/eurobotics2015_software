@@ -422,8 +422,8 @@ uint8_t __strat_obstacle(uint8_t which)
 	int8_t ret;
 
 	/* too slow */
-	if (ABS(mainboard.speed_d) < 100)
-		return 0;
+	//if (ABS(mainboard.speed_d) < 100)
+	//	return 0;
 
 	/* opponent is in front of us */
 	if (mainboard.speed_d > 0 && (sensor_get(S_OPP_FRONT_R) || sensor_get(S_OPP_FRONT_L))) {
@@ -529,13 +529,13 @@ uint8_t test_traj_end(uint8_t why)
 	}
 
 	if ((why & END_OBSTACLE) && strat_obstacle()) {
-		if (mainboard.speed_d > 0)
-			trajectory_d_rel(&mainboard.traj, 120);
-		else
-			trajectory_d_rel(&mainboard.traj, -120);
+		//if (mainboard.speed_d > 0)
+		//	trajectory_d_rel(&mainboard.traj, 120);
+		//else
+		//	trajectory_d_rel(&mainboard.traj, -120);
 		
 		/* XXX */
-		time_wait_ms(200);		
+		//time_wait_ms(200);		
 
 		return END_OBSTACLE;
 	}

@@ -484,8 +484,11 @@ int8_t get_robot_2nd_xy(int16_t *x, int16_t *y)
 	uint8_t flags;
 
 	/* if disable by strat return like it's not there */
-	if((strat_infos.conf.flags & ENABLE_R2ND_POS) == 0)
+	if((strat_infos.conf.flags & ENABLE_R2ND_POS) == 0) {
+		beaconboard.robot_2nd_x = I2C_OPPONENT_NOT_THERE;
+		beaconboard.robot_2nd_y = 0;
 		return -1;
+	}
 
 	IRQ_LOCK(flags);
 	*x = beaconboard.robot_2nd_x;
@@ -533,8 +536,11 @@ int8_t get_robot_2nd_da(int16_t *d, int16_t *a)
 	int16_t x_tmp;
 
 	/* if disable by strat return like it's not there */
-	if((strat_infos.conf.flags & ENABLE_R2ND_POS) == 0)
+	if((strat_infos.conf.flags & ENABLE_R2ND_POS) == 0) {
+		beaconboard.robot_2nd_x = I2C_OPPONENT_NOT_THERE;
+		beaconboard.robot_2nd_y = 0;
 		return -1;
+	}
 
 	IRQ_LOCK(flags);
 	x_tmp = beaconboard.robot_2nd_x;
@@ -584,8 +590,11 @@ int8_t get_robot_2nd_xyda(int16_t *x, int16_t *y, int16_t *d, int16_t *a)
 	uint8_t flags;
 
 	/* if disable by strat return like it's not there */
-	if((strat_infos.conf.flags & ENABLE_R2ND_POS) == 0)
+	if((strat_infos.conf.flags & ENABLE_R2ND_POS) == 0) {
+		beaconboard.robot_2nd_x = I2C_OPPONENT_NOT_THERE;
+		beaconboard.robot_2nd_y = 0;
 		return -1;
+	}
 
 	IRQ_LOCK(flags);
 	*x = beaconboard.robot_2nd_x;

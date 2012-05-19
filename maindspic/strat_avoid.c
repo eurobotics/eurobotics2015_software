@@ -898,7 +898,7 @@ void set_totems_poly(poly_t *pol)
   int16_t x = 0;
   int16_t y = 1000;
   int16_t x_half_size = 400;
-  int16_t radius = (300 + 190);
+  int16_t radius = (300 + 185);
 
 	/* generate pentagon  */
 	c_a = cos(-2*M_PI/__EDGE_NUMBER);
@@ -1248,6 +1248,12 @@ retry:
 		}
 	}
 	
+	if(!(opp1_w && opp1_l && opp2_w && opp2_l)) {
+				
+			NOTICE(E_USER_STRAT, "oa_process() returned %d", len);
+			return END_ERROR;
+	}
+
 	/* execute path */
 	p = oa_get_path();
 	for (i=0 ; i<len ; i++) {

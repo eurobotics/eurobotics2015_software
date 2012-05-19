@@ -159,7 +159,7 @@ coins_isle:
       i2c_slavedspic_wait_ready();
    }
 
-	strat_infos.treasure_in_mouth =1;
+
 
    if(step)
       goto end;
@@ -196,7 +196,7 @@ goldbar:
    i2c_slavedspic_mode_store(1,I2C_STORE_MODE_GOLDBAR_IN_BOOT);
    time_wait_ms(500);
 
-	strat_infos.treasure_in_boot =1;
+
 
    if(step)
       goto end;
@@ -227,16 +227,17 @@ coins_totem:
       i2c_slavedspic_wait_ready();
    }
 
-	strat_infos.treasure_in_mouth =1;
 
 	/* go backward to safe position*/
 	trajectory_d_rel(&mainboard.traj, -PLACE_D_SAFE);
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
+	//err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST|END_OBSTACLE);
+	//if (!TRAJ_SUCCESS(err))
+	//		ERROUT(err);
 
 end:
-	strat_set_speed(old_spdd, old_spda);
+	strat_set_speed(old_spdd, old_spda);	
+	strat_infos.treasure_in_mouth =1;
+	strat_infos.treasure_in_boot =1;
    strat_limit_speed_enable();
    return err;
 }
@@ -314,10 +315,9 @@ uint8_t strat_pickup_coins_floor(int16_t x, int16_t y, uint8_t group)
 
 	/* go backward to safe distance from token */
 	trajectory_d_rel(&mainboard.traj, -PLACE_D_SAFE);
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
-
+	//err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST|END_OBSTACLE);
+	//if (!TRAJ_SUCCESS(err))
+	//		ERROUT(err);
 	
 end:
 	strat_set_speed(old_spdd, old_spda);
@@ -373,9 +373,9 @@ uint8_t strat_pickup_goldbar_floor(int16_t x, int16_t y, uint8_t store)
 
 	/*go backward to safe distance from token */
 	trajectory_d_rel(&mainboard.traj, -PLACE_D_SAFE);
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
+	//err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST|END_OBSTACLE);
+	//if (!TRAJ_SUCCESS(err))
+	//		ERROUT(err);
 
 end:
 	strat_set_speed(old_spdd, old_spda);
@@ -391,6 +391,7 @@ uint8_t strat_send_message_bottle(int16_t x, int16_t y)
 	/* save speed */
 	strat_get_speed(&old_spdd, &old_spda);
 
+#if 0
    /*Turn until position in front of the bottle (depending on which point we use to to send message
    we turn to abs 180 or 0 deg*/
    bottle_is_at_right = (position_get_x_s16(&mainboard.pos) < x);
@@ -404,6 +405,7 @@ uint8_t strat_send_message_bottle(int16_t x, int16_t y)
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
+#endif
 
    /*Turn until we have bottle behind*/
    trajectory_a_abs(&mainboard.traj,COLOR_A_ABS(-90));
@@ -420,12 +422,14 @@ uint8_t strat_send_message_bottle(int16_t x, int16_t y)
 	if (!TRAJ_BLOCKING(err))
 			ERROUT(err);
    
+	err = END_TRAJ;
+
 	/* go forward to safe distance from token */
 	strat_set_speed(old_spdd, old_spda);
 	trajectory_d_rel(&mainboard.traj, 200);
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
+	//err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST|END_OBSTACLE);
+	//if (!TRAJ_SUCCESS(err))
+	//		ERROUT(err);
 
 end:
 	strat_set_speed(old_spdd, old_spda);
@@ -473,9 +477,9 @@ uint8_t strat_save_treasure_generic(int16_t x, int16_t y)
    
 	/* go backward to safe distance from token */
 	trajectory_d_rel(&mainboard.traj, -MIN_D_TO_POINT);
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
+	//err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST|END_OBSTACLE);
+	//if (!TRAJ_SUCCESS(err))
+	//		ERROUT(err);
 
    /*Close fingers*/
 	DEBUG(E_USER_STRAT, "Close floor fingers.");
@@ -530,7 +534,17 @@ uint8_t strat_save_treasure_arms(int16_t x, int16_t y, uint8_t arm_side)
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
-   
+
+	if(arm_side == I2C_ARM_TYPE_RIGHT)
+		trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(180+30));
+	else
+		trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(180-30));
+	
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+	   
+
 	DEBUG(E_USER_STRAT, "Open floor fingers.");
    i2c_slavedspic_mode_dump(I2C_DUMP_MODE_PREPARE_MOUTH);
    i2c_slavedspic_wait_ready();
@@ -542,9 +556,9 @@ uint8_t strat_save_treasure_arms(int16_t x, int16_t y, uint8_t arm_side)
    
 	/* go backward to safe distance from token */
 	trajectory_d_rel(&mainboard.traj, -MIN_D_TO_POINT);
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
+	//err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST|END_OBSTACLE);
+	//if (!TRAJ_SUCCESS(err))
+	//		ERROUT(err);
 
    /*Close fingers*/
 	DEBUG(E_USER_STRAT, "Close floor fingers.");
@@ -620,9 +634,9 @@ uint8_t strat_save_treasure_in_deck_back(int16_t x, int16_t y)
 
 	/* go to safe distance*/
 	trajectory_d_rel(&mainboard.traj, PLACE_D_SAFE);
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
+	//err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST|END_OBSTACLE);
+	//if (!TRAJ_SUCCESS(err))
+	//		ERROUT(err);
 
    i2c_slavedspic_wait_ready();
 
@@ -706,9 +720,9 @@ uint8_t strat_save_treasure_in_hold_back(int16_t x, int16_t y)
 
 	/* go to safe distance*/
 	trajectory_d_rel(&mainboard.traj, PLACE_D_SAFE);
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
+	//err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST|END_OBSTACLE);
+	//if (!TRAJ_SUCCESS(err))
+	//		ERROUT(err);
 
 
    /*Put down hook*/
@@ -738,14 +752,18 @@ uint8_t strat_save_treasure_in_deck_back_blowing(int16_t x, int16_t y)
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
+   i2c_slavedspic_mode_dump(I2C_DUMP_MODE_PREPARE_BOOT);
+	i2c_slavedspic_wait_ready();
+
    trajectory_d_rel(&mainboard.traj,-150);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
+#if 0
    i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR, I2C_FINGERS_MODE_HOLD,0);
    i2c_slavedspic_wait_ready();
-   i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_TOTEM, I2C_FINGERS_MODE_HOLD,0);
+   i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_TOTEM, I2C_FINGERS_MODE_OPEN,0);
    i2c_slavedspic_wait_ready();
    i2c_slavedspic_mode_lift_height(15);
    i2c_slavedspic_wait_ready();
@@ -755,15 +773,19 @@ uint8_t strat_save_treasure_in_deck_back_blowing(int16_t x, int16_t y)
    i2c_slavedspic_wait_ready();
    i2c_slavedspic_mode_turbine_angle(120,250);
    i2c_slavedspic_wait_ready();
-   i2c_slavedspic_mode_turbine_blow(125);
+   i2c_slavedspic_mode_turbine_blow(90);
    i2c_slavedspic_wait_ready();
+#endif
 
    /*Slave in mode empty*/
 	DEBUG(E_USER_STRAT, "Mode empty.");
    i2c_slavedspic_mode_dump(I2C_DUMP_MODE_BOOT);
-	time_wait_ms(3000);
    i2c_slavedspic_wait_ready();
-   i2c_slavedspic_mode_turbine_blow(0);
+	time_wait_ms(1500);
+
+#if 0
+ 	time_wait_ms(3000);
+  	i2c_slavedspic_mode_turbine_blow(0);
    i2c_slavedspic_wait_ready();
    i2c_slavedspic_mode_turbine_angle(90,250);
    i2c_slavedspic_wait_ready();
@@ -771,16 +793,23 @@ uint8_t strat_save_treasure_in_deck_back_blowing(int16_t x, int16_t y)
    i2c_slavedspic_wait_ready();
    i2c_slavedspic_mode_turbine_angle(0,250);
    i2c_slavedspic_wait_ready();
+   i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_TOTEM, I2C_FINGERS_MODE_HOLD,0);
+   i2c_slavedspic_wait_ready();
+#endif
 
 	/* go to safe distance*/
 	trajectory_d_rel(&mainboard.traj, 150);
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
+	//err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST|END_OBSTACLE);
+	//if (!TRAJ_SUCCESS(err))
+	//		ERROUT(err);
 
 	strat_infos.treasure_in_boot =0;
 
 end:
+#if 0
+   i2c_slavedspic_mode_turbine_blow(0);
+   i2c_slavedspic_wait_ready();
+#endif
 	strat_set_speed(old_spdd, old_spda);
    return err;
 }

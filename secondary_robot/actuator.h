@@ -35,6 +35,7 @@ void dac_set_and_save(void *dac, int32_t val);
 #define ARM_POS_HIDE			792
 #define ARM_POS_HOLD_MAP	680
 #define ARM_POS_PICKUP_MAP	530
+#define ARM_POS_PICKUP_MAP2 430
 
 #define TEETH_POS_OPEN	737
 #define TEETH_POS_CLOSE 515
