@@ -136,6 +136,8 @@
 #define TRAJ_FLAGS_NO_NEAR_NO_TIMER (END_TRAJ|END_BLOCKING|END_OBSTACLE|END_INTR)
 #define TRAJ_FLAGS_SMALL_DIST 		(END_TRAJ|END_BLOCKING|END_INTR)
 
+#define LAST_SECONDS_TIME	80
+
 /* homologation compilation */
 //#define HOMOLOGATION
 
@@ -388,7 +390,7 @@ uint8_t strat_work_on_zone(uint8_t zone_num);
 
 /* smart play */
 //#define DEBUG_STRAT_SMART
-void strat_smart(void);
+uint8_t strat_smart(void);
 
 /* add here more strat functions in files */
 

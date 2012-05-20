@@ -117,13 +117,13 @@
 #endif
 
 /* default speeds */
-#ifdef HOMOLOGATION
-#define SPEED_DIST_FAST 		1400
-#define SPEED_ANGLE_FAST 		1400
-#else
+//#ifdef HOMOLOGATION
+//#define SPEED_DIST_FAST 		1400
+//#define SPEED_ANGLE_FAST 		1400
+//#else
 #define SPEED_DIST_FAST 		2800
 #define SPEED_ANGLE_FAST 		2800
-#endif
+//#endif
 
 //Do not change
 #define SPEED_DIST_SLOW 		1400

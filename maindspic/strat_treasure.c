@@ -554,6 +554,13 @@ uint8_t strat_save_treasure_arms(int16_t x, int16_t y, uint8_t arm_side)
   //i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_TOTEM, I2C_FINGERS_MODE_OPEN,0);
   //i2c_slavedspic_wait_ready();
 
+	/* XXX */
+	if(time_get_s() > LAST_SECONDS_TIME-1
+		&& (strat_infos.zones[ZONE_OUR_BOTTLE_1].flags & ZONE_CHECKED)
+		&& (strat_infos.zones[ZONE_OUR_BOTTLE_2].flags & ZONE_CHECKED)) {
+		err = END_TIMER;
+		goto end;
+	}
    
 	/* go backward to safe distance from token */
 	trajectory_d_rel(&mainboard.traj, -(d-MIN_D_TO_POINT));

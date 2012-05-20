@@ -298,12 +298,15 @@ uint8_t strat_main(void)
 #define STRAT_WAIT_FOR_MAIN_ROBOT		7
 #define STRAT_GOTO_PROTECT					8
 #define STRAT_ESCAPE_DISCOVER_MAP		9
-#define STRAT_END								10
+#define STRAT_GOTO_BLOCKING				10
+#define STRAT_END								11
 
 	uint8_t state = STRAT_GOTO_DISCOVER_MAP;
    uint8_t err;
 
-	time_wait_ms(500);
+	time_wait_ms(250);
+
+	strat_set_speed(SPEED_DIST_FAST, SPEED_ANGLE_FAST);
 
 	while(1)
   	{
@@ -396,9 +399,29 @@ uint8_t strat_main(void)
 				if(time_get_s() > WAIT_FOR_MAIN_ROBOT_TIMEOUT)
 					state = STRAT_GOTO_DISCOVER_MAP;
 				break;
+#if 0
+			case STRAT_GOTO_BLOCKING:
+				trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1665), 260);
+				err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+				if (!TRAJ_SUCCESS(err)) {
+					//trajectory_d_rel(&mainboard.traj, -100);
+					err = wait_traj_end(TRAJ_FLAGS_STD);
+					time_wait_ms(2800);
+					strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
+					break;
+				}
 
+				time_wait_ms(15);
+
+				state = STRAT_GOTO_DISCOVER_MAP;
+				break;
+#endif
 			case STRAT_GOTO_DISCOVER_MAP:
-				trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1370), 260);
+				//trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1370), 260);
+				trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1440), 260);
+
+				time_wait_ms(1000);
+
 				err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 				if (!TRAJ_SUCCESS(err)) {
 					trajectory_d_rel(&mainboard.traj, -100);
@@ -430,11 +453,11 @@ uint8_t strat_main(void)
 				//}
 
 				strat_set_speed(SPEED_DIST_FAST, SPEED_ANGLE_FAST);
-				trajectory_a_rel(&mainboard.traj, COLOR_A_REL(-360));
-				err = wait_traj_end(TRAJ_FLAGS_STD);
+				//trajectory_a_rel(&mainboard.traj, COLOR_A_REL(-360));
+				//err = wait_traj_end(END_TRAJ);
 
 				trajectory_a_rel(&mainboard.traj, COLOR_A_REL(-90));
-				err = wait_traj_end(TRAJ_FLAGS_STD);
+				err = wait_traj_end(END_TRAJ);
 				
 				arm_set_pos(ARM_POS_PICKUP_MAP2);
 

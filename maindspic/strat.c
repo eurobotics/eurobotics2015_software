@@ -430,11 +430,10 @@ uint8_t strat_main(void)
 	strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].flags |= ZONE_CHECKED;
 
 	/* auto-play */
-	while(time_get_s() < 89) {
-		strat_smart();
-	}
+	do{
+		err = strat_smart();
+	}while((err & END_TIMER) == 0);
 
-	/* TODO: last minutes */
 
 	/* end */
    strat_exit();
