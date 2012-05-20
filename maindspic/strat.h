@@ -81,7 +81,7 @@
 #define OUR_SHIP_DECK_2_Y        900
 
 #define OPP_SHIP_DECK_1_X        (3000-200)
-#define OPP_SHIP_DECK_1_Y        (500+360)
+#define OPP_SHIP_DECK_1_Y        900
 #define OPP_SHIP_DECK_2_X        (3000-200)
 #define OPP_SHIP_DECK_2_Y        900
 
@@ -365,6 +365,7 @@ uint8_t strat_raise_window(uint8_t window);
 uint8_t strat_steal_treasure_hold(void);
 uint8_t strat_game(void);
 
+uint8_t strat_stole_opp_treasure(int16_t x, int16_t y);
 
 
 /********************************************

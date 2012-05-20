@@ -313,8 +313,6 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 					err = strat_save_treasure_arms(COLOR_X(x), y, I2C_ARM_TYPE_LEFT);
 			}
 		}
-
-
 		else if(zone_num == ZONE_SHIP_OUR_DECK_1) {
 			
 			if(mainboard.our_color == I2C_COLOR_PURPLE)
@@ -325,6 +323,9 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 			if(strat_infos.treasure_in_boot)
 				err = strat_save_treasure_in_deck_back_blowing(COLOR_X(x), y);
 		}
+		else {
+			err = strat_stole_opp_treasure(COLOR_X(x), y);
+		}	
 	}
 
 

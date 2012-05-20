@@ -922,6 +922,72 @@ uint8_t strat_steal_treasure_hold(void)
    return 1;
 }
 
+
+
+uint8_t strat_stole_opp_treasure(int16_t x, int16_t y)
+{
+   uint8_t err;
+	uint16_t old_spdd, old_spda;
+   int16_t d;
+
+	#define D_PUSH						(ROBOT_CENTER_TO_FRONT+75)
+
+	/* save speed */
+	strat_get_speed(&old_spdd, &old_spda);
+	strat_limit_speed_disable();
+	strat_set_speed(SPEED_DIST_VERY_SLOW,SPEED_ANGLE_VERY_SLOW);
+
+   /*Turn to point*/
+   trajectory_turnto_xy(&mainboard.traj,x,y);
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+
+	DEBUG(E_USER_STRAT, "Open floor fingers.");
+   i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR, I2C_FINGERS_MODE_OPEN,0);
+   i2c_slavedspic_wait_ready();
+  	i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_TOTEM, I2C_FINGERS_MODE_OPEN,0);
+  	i2c_slavedspic_wait_ready();
+
+   /*go to the point*/
+	DEBUG(E_USER_STRAT, "Go to the point.");
+   d= distance_from_robot(x,y);
+   if(d < MIN_D_TO_POINT)
+		trajectory_d_rel(&mainboard.traj, -(MIN_D_TO_POINT-d));
+	else
+		trajectory_d_rel(&mainboard.traj, d-MIN_D_TO_POINT);
+
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+	//if (!TRAJ_SUCCESS(err))
+	//		ERROUT(err);
+  
+  /*Close fingers*/
+	DEBUG(E_USER_STRAT, "Close floor fingers.");
+   i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR, I2C_FINGERS_MODE_HOLD,0);
+   i2c_slavedspic_wait_ready();
+   i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_TOTEM, I2C_FINGERS_MODE_HOLD,0);
+   i2c_slavedspic_wait_ready();
+
+	/* go backward to safe distance from token */
+	trajectory_d_rel(&mainboard.traj, -(d-MIN_D_TO_POINT));
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+	if (!TRAJ_SUCCESS(err))
+		ERROUT(END_TRAJ);
+
+	strat_infos.treasure_in_mouth=1;
+
+end:
+	strat_limit_speed_enable();
+	strat_set_speed(old_spdd, old_spda);
+   return err;
+}
+
+
+
+
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
