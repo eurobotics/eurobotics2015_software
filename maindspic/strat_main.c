@@ -373,6 +373,7 @@ uint8_t strat_smart(void)
 		DEBUG(E_USER_STRAT, "No zone is found");
 		DEBUG(E_USER_STRAT, "Down side zones enabled");	
 		strat_infos.conf.flags |= ENABLE_DOWN_SIDE_ZONES;	
+		strat_infos.conf.flags |= ENABLE_R2ND_POS;
 
 		/* Enable all paths */
 		DEBUG(E_USER_STRAT, "All possible paths enabled");	
