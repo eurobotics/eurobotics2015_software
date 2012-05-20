@@ -1215,11 +1215,11 @@ retry:
 		if (distance_between(robot_pt.x, robot_pt.y, opp1_x, opp1_y) < REDUCE_POLY_THRES ) {
 			if (opp1_w == 0) {
 				//opp1_l /= 2;
-				opp1_l *= 0.75;
+				opp1_l *= 0.66;
 			}
 
 			//opp1_w /= 2;
-			opp1_l *= 0.75;
+			opp1_l *= 0.66;
 
 			NOTICE(E_USER_STRAT, "reducing opponent 1 %d %d", opp1_w, opp1_l);
 			set_opponent_poly(OPP1, pol_opp1, &robot_pt, opp1_w, opp1_l);
@@ -1227,11 +1227,11 @@ retry:
 		if (distance_between(robot_pt.x, robot_pt.y, opp2_x, opp2_y) < REDUCE_POLY_THRES ) {
 			if (opp2_w == 0) {
 				//opp2_l /= 2;
-				opp2_l *= 0.75;
+				opp2_l *= 0.66;
 			}
 
 			//opp2_w /= 2;
-			opp2_l *= 0.75;
+			opp2_l *= 0.66;
 
 			NOTICE(E_USER_STRAT, "reducing opponent 2 %d %d", opp2_w, opp2_l);
 			set_opponent_poly(OPP2, pol_opp2, &robot_pt, opp2_w, opp2_l);

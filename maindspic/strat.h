@@ -76,7 +76,7 @@
 #define OPP_FLOOR_GOLDBAR_Y     	785
 
 #define OUR_SHIP_DECK_1_X        200
-#define OUR_SHIP_DECK_1_Y        (500+360)
+#define OUR_SHIP_DECK_1_Y        900
 #define OUR_SHIP_DECK_2_X        200
 #define OUR_SHIP_DECK_2_Y        900
 

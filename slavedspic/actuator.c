@@ -45,7 +45,7 @@
 /* AX12 stuff */
 #define AX12_PULLING_TIME_us		5000L
 #define AX12_WINDOW_POSITION		15
-#define AX12_BLOCKING_TIMEOUT_us	1300000L
+#define AX12_BLOCKING_TIMEOUT_us	600000L
 
 
 /**** lift functions ********************************************************/
@@ -369,12 +369,12 @@ int8_t fingers_set_mode(fingers_t *fingers, uint8_t mode, int16_t pos_offset)
 	err1 = ax12_user_write_int(&gen.ax12, ax12_left_id, AA_GOAL_POSITION_L, fingers->ax12_pos_l);
    err2 = ax12_user_write_int(&gen.ax12, ax12_right_id, AA_GOAL_POSITION_L, fingers->ax12_pos_r);
 
+	/* update time for timeout and reset blocking */
+	fingers->blocking = 0;
+	fingers->time_us = time_get_us2();
+
 	if(err1) return err1;
 	if(err2) return err2;
-
-	/* update time for timeout and reset blocking */
-	fingers->time_us = time_get_us2();
-	fingers->blocking = 0;
 
 	return 0;
 }
@@ -475,12 +475,12 @@ uint8_t arm_set_mode(arm_t *arm, uint8_t mode, int16_t pos_offset)
 	
 	/* apply to ax12 */
 	err = ax12_user_write_int(&gen.ax12, ax12_id, AA_GOAL_POSITION_L, arm->ax12_pos);
-	if(err) 	return err;
 
 	/* update time for timeout and reset blocking */
 	arm->time_us = time_get_us2();
 	arm->blocking = 0;
 
+	if(err) 	return err;
 	return 0;
 }
 
@@ -514,7 +514,7 @@ int8_t arm_check_mode_done(arm_t *arm)
 	
 	/* ax12 blocking timeout */
 	if(time_get_us2() - arm->time_us > AX12_BLOCKING_TIMEOUT_us) {
-		ax12_user_write_int(&gen.ax12, ax12_id, AA_GOAL_POSITION_L, ax12_pos);
+		//ax12_user_write_int(&gen.ax12, ax12_id, AA_GOAL_POSITION_L, ax12_pos);
 		arm->blocking = 1;
 		return END_BLOCKING;
 	}
@@ -557,6 +557,10 @@ uint8_t boot_set_mode(boot_t *boot, uint8_t mode)
 	
 	/* apply to ax12 */
 	err = ax12_user_write_int(&gen.ax12, AX12_ID_BOOT, AA_GOAL_POSITION_L, boot->ax12_pos);
+
+	/* update time for timeout and reset blocking */
+	boot->time_us = time_get_us2();
+
 	if(err) 	
 		return err;
 
@@ -584,6 +588,13 @@ uint8_t boot_check_mode_done(boot_t *boot)
 	if(ABS(boot->ax12_pos - ax12_pos) < AX12_WINDOW_POSITION)	
 		return END_TRAJ;
 	
+	/* ax12 blocking timeout */
+	if(time_get_us2() - boot->time_us > AX12_BLOCKING_TIMEOUT_us) {
+		//ax12_user_write_int(&gen.ax12, ax12_id, AA_GOAL_POSITION_L, ax12_pos);
+		//arm->blocking = 1;
+		return END_BLOCKING;
+	}
+
 	return 0;
 }
 
@@ -624,6 +635,10 @@ uint8_t hook_set_mode(hook_t *hook, uint8_t mode)
 	
 	/* apply to ax12 */
 	err = ax12_user_write_int(&gen.ax12, AX12_ID_HOOK, AA_GOAL_POSITION_L, hook->ax12_pos);
+
+	/* update time for timeout and reset blocking */
+	hook->time_us = time_get_us2();
+
 	if(err) 	return err;
 
 	return 0;
@@ -650,6 +665,13 @@ uint8_t hook_check_mode_done(hook_t *hook)
 	if(ABS(hook->ax12_pos - ax12_pos) < AX12_WINDOW_POSITION)	
 		return 1;
 	
+	/* ax12 blocking timeout */
+	if(time_get_us2() - hook->time_us > AX12_BLOCKING_TIMEOUT_us) {
+		//ax12_user_write_int(&gen.ax12, ax12_id, AA_GOAL_POSITION_L, ax12_pos);
+		//arm->blocking = 1;
+		return END_BLOCKING;
+	}
+
 	return 0;
 }
 
@@ -761,6 +783,15 @@ void actuator_init(void)
 	/* specific config for mirror ax12, angle is limited */ 
 	ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_TORQUE_ENABLE, 0xFF);	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_CW_ANGLE_LIMIT_L, 0x00);	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_CCW_ANGLE_LIMIT_L, 0x3FF);
 	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_MOVING_SPEED_L, 0x3FF);#endif
+
+	time_wait_ms(100);
+
+#if 1
+	ax12_user_write_byte(&gen.ax12, AX12_ID_ARM_R, AA_ALARM_SHUTDOWN, 0x04);
+	ax12_user_write_byte(&gen.ax12, AX12_ID_ARM_L, AA_ALARM_SHUTDOWN, 0x04);
+	ax12_user_write_byte(&gen.ax12, AX12_ID_BOOT, AA_ALARM_SHUTDOWN, 0x04);
+	ax12_user_write_byte(&gen.ax12, AX12_ID_HOOK, AA_ALARM_SHUTDOWN, 0x04);
+#endif
 
 	/* init ax12 */
 	//ax12_user_write_int(&gen.ax12, AX12_ID_FINGERS_FLOOR_L, AA_MOVING_SPEED_L, 350);

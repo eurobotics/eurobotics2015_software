@@ -243,6 +243,7 @@ typedef struct {
 #define BOOT_MODE_MAX				3
 
 	uint16_t ax12_pos;
+	microseconds time_us;
 } boot_t;
 
 /* set finger position depends on mode */
@@ -264,6 +265,7 @@ typedef struct {
 #define HOOK_MODE_MAX			4
 
 	uint16_t ax12_pos;
+	microseconds time_us;
 } hook_t;
 
 /* set finger position depends on mode */

@@ -755,8 +755,11 @@ uint8_t store_goldbar_in_boot(void)
 	/* turn turbine for put goldbar into store system */
 	turbine_set_angle(&slavedspic.turbine, -45, TURBINE_ANGLE_SPEED_FAST);
 
+	fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_HOLD, 0);
+
 	/* XXX */
 	time_wait_ms(100);	
+
 
 	/* check sensors */
 	sensors_saved = sensor_get_all();
@@ -1155,22 +1158,14 @@ void state_do_dump_mode(void)
          hook_set_mode(&slavedspic.hook, HOOK_MODE_SHOW);
 			err = 0;	
 #else
-			/* XXX */
-			time_wait_ms(200);
-
          boot_set_mode(&slavedspic.boot, BOOT_MODE_OPEN_FULL);
-         tray_set_mode(&slavedspic.tray_store,TRAY_MODE_DOWN);
          tray_set_mode(&slavedspic.tray_boot,TRAY_MODE_VIBRATE);
-			time_wait_ms(1000);
-
          tray_set_mode(&slavedspic.tray_store,TRAY_MODE_VIBRATE);
-			time_wait_ms(2000);
+			time_wait_ms(1000);
 
          tray_set_mode(&slavedspic.tray_boot,TRAY_MODE_DOWN);
          tray_set_mode(&slavedspic.tray_store,TRAY_MODE_DOWN);
 
-         boot_set_mode(&slavedspic.boot, BOOT_MODE_CLOSE);
-			time_wait_ms(200);
 			err = 0;	
 #endif
          break;
