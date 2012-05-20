@@ -318,7 +318,7 @@ int main(void)
 
 
 	/* start */
-	strat_start_match(1);
+	strat_start_match(0);
 
 	/* main loop */
 	while(1)	{
