@@ -420,7 +420,7 @@ uint8_t strat_main(void)
 				//trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1370), 260);
 				trajectory_goto_xy_abs(&mainboard.traj, COLOR_X(1440), 260);
 
-				time_wait_ms(1000);
+				time_wait_ms(500);
 
 				err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 				if (!TRAJ_SUCCESS(err)) {
