@@ -74,7 +74,7 @@ struct strat_infos strat_infos = {
    /*zones[W] =                          {type, x, 											x_down, y_up, x_up, y_down, init_x,init_y, prio, flags };                            */
    .zones[ZONE_TOTEM_OUR_SIDE_1]=        {ZONE_TYPE_TOTEM, OUR_TOTEM_X, OUR_TOTEM_Y, 1300, 800,  900,    200   , 1100,  400,   ZONE_PRIO_40, 0 },
 	.zones[ZONE_TOTEM_OUR_SIDE_2]=        {ZONE_TYPE_TOTEM, OUR_TOTEM_X, OUR_TOTEM_Y, 1300, 1800, 900,    1200  , 1100,  1600,  ZONE_PRIO_70, 0 },
-	.zones[ZONE_TOTEM_OPP_SIDE_1]=     	  {ZONE_TYPE_TOTEM, OPP_TOTEM_X, OPP_TOTEM_Y, 2100, 800,  1700,   200   , 1900,  400,   ZONE_PRIO_30, 0 },
+	.zones[ZONE_TOTEM_OPP_SIDE_1]=     	  {ZONE_TYPE_TOTEM, OPP_TOTEM_X, OPP_TOTEM_Y, 2100, 800,  1700,   200   , 1900,  400,   ZONE_PRIO_30, ZONE_AVOID },
 	.zones[ZONE_TOTEM_OPP_SIDE_2]=        {ZONE_TYPE_TOTEM, OPP_TOTEM_X, OPP_TOTEM_Y, 2100, 1800, 1700,   1200  , 1900,  1600,  ZONE_PRIO_100,0 },
 	
 	.zones[ZONE_OUR_FLOOR_COIN_1]=        {ZONE_TYPE_COIN,  OUR_FLOOR_COIN_1_X, OUR_FLOOR_COIN_1_Y, 2300, 650,  1600,   250   , 1000,  200,  ZONE_PRIO_0, ZONE_CHECKED },
@@ -104,10 +104,12 @@ struct strat_infos strat_infos = {
    .zones[ZONE_SHIP_OPP_CAPTAINS_BEDRROM]= {ZONE_TYPE_CAPTAINS_BEDROOM, OPP_CAPTAINS_BEDROOM_X, OPP_CAPTAINS_BEDROOM_Y, 3000,500, 2500, 0 , 2200,  250,  ZONE_PRIO_0, ZONE_AVOID },
 
 	.zones[ZONE_SHIP_OUR_DECK_1]= {ZONE_TYPE_DECK, OUR_SHIP_DECK_1_X, OUR_SHIP_DECK_1_Y,  400,     1100,   0,        500     , 640,    900,  ZONE_PRIO_80, ZONE_AVOID },
-   .zones[ZONE_SHIP_OPP_DECK_1]= {ZONE_TYPE_DECK, OPP_SHIP_DECK_1_X, OPP_SHIP_DECK_1_Y, 3000,     1100,   2600,     500     , 2360,   900,  ZONE_PRIO_0, ZONE_AVOID },
+  																														/* x_down, y_up, x_up, y_down */
+   .zones[ZONE_SHIP_OPP_DECK_1]= {ZONE_TYPE_DECK, OPP_SHIP_DECK_1_X, OPP_SHIP_DECK_1_Y, 3000,     1000,   3000-640,     0     , 3000-640,   500 + ROBOT_WIDTH/2 + 20,  ZONE_PRIO_30, 0 },
 
 	.zones[ZONE_SHIP_OUR_DECK_2]=   {ZONE_TYPE_DECK, OUR_SHIP_DECK_2_X, OUR_SHIP_DECK_2_Y,  400,     1400,   0,        900    , 640,    900,  ZONE_PRIO_80, 0 },
-   .zones[ZONE_SHIP_OPP_DECK_2]=   {ZONE_TYPE_DECK, OPP_SHIP_DECK_2_X, OPP_SHIP_DECK_2_Y, 3000,     1400,   2600,     900    , 2360,   900,  ZONE_PRIO_0, ZONE_AVOID },
+   																												/* x_down, y_up, x_up, y_down */
+	.zones[ZONE_SHIP_OPP_DECK_2]=   {ZONE_TYPE_DECK, OPP_SHIP_DECK_2_X, OPP_SHIP_DECK_2_Y, 3000,     2000,   3000-640,     1000    , 3000-640,   1260 - ROBOT_WIDTH/2 - 20,  ZONE_PRIO_30, 0 },
 
 	.zones[ZONE_SHIP_OUR_HOLD]=  {ZONE_TYPE_HOLD, 750,    1700, 400,      2000,   0,        1400    , 750,    1700, ZONE_PRIO_0, ZONE_AVOID },
 	.zones[ZONE_SHIP_OPP_HOLD]=  {ZONE_TYPE_HOLD, 2250,   1700, 3000,     2000,   2600,     1400    , 2250,   1700, ZONE_PRIO_0, ZONE_AVOID },
