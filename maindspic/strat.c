@@ -75,7 +75,7 @@ struct strat_infos strat_infos = {
    .zones[ZONE_TOTEM_OUR_SIDE_1]=        {ZONE_TYPE_TOTEM, OUR_TOTEM_X, OUR_TOTEM_Y, 1300, 800,  900,    200   , 1100,  400,   ZONE_PRIO_40, 0 },
 	.zones[ZONE_TOTEM_OUR_SIDE_2]=        {ZONE_TYPE_TOTEM, OUR_TOTEM_X, OUR_TOTEM_Y, 1300, 1800, 900,    1200  , 1100,  1600,  ZONE_PRIO_70, 0 },
 	.zones[ZONE_TOTEM_OPP_SIDE_1]=     	  {ZONE_TYPE_TOTEM, OPP_TOTEM_X, OPP_TOTEM_Y, 2100, 800,  1700,   200   , 1900,  400,   ZONE_PRIO_30, 0 },
-	.zones[ZONE_TOTEM_OPP_SIDE_2]=        {ZONE_TYPE_TOTEM, OPP_TOTEM_X, OPP_TOTEM_Y, 2100, 1800, 1700,   1200  , 1900,  1600,  ZONE_PRIO_100,0 },
+	.zones[ZONE_TOTEM_OPP_SIDE_2]=        {ZONE_TYPE_TOTEM, OPP_TOTEM_X, OPP_TOTEM_Y, 2100, 1800, 1700,   1200  , 1900,  1600,  ZONE_PRIO_100,ZONE_AVOID },
 	
 	.zones[ZONE_OUR_FLOOR_COIN_1]=        {ZONE_TYPE_COIN,  OUR_FLOOR_COIN_1_X, OUR_FLOOR_COIN_1_Y, 2300, 650,  1600,   250   , 1000,  200,  ZONE_PRIO_0, ZONE_CHECKED },
 	.zones[ZONE_OUR_FLOOR_COIN_2]=        {ZONE_TYPE_COIN,  OUR_FLOOR_COIN_2_X, OUR_FLOOR_COIN_2_Y, 550,  1200, 900,    800   , 600,   1000, ZONE_PRIO_0, ZONE_CHECKED },
@@ -405,7 +405,7 @@ uint8_t strat_main(void)
 #else
 
 	strat_begin();
-
+#if 0
 	/* try to empty opp totem */
    trajectory_goto_xy_abs(&mainboard.traj,
 								COLOR_X(strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].init_x),
@@ -428,7 +428,7 @@ uint8_t strat_main(void)
 	}
 
 	strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].flags |= ZONE_CHECKED;
-
+#endif
 	/* auto-play */
 	do{
 		err = strat_smart();

@@ -623,7 +623,7 @@ uint16_t hook_ax12_pos[HOOK_MODE_MAX] = {
 uint8_t hook_set_mode(hook_t *hook, uint8_t mode)
 {
 	uint8_t err;
-		
+	return 0;	
 	/* set ax12 possitions depends on mode and type */
 	if(mode >= HOOK_MODE_MAX) {
 		ACTUATORS_ERROR("Unknow HOOK MODE");
@@ -634,7 +634,7 @@ uint8_t hook_set_mode(hook_t *hook, uint8_t mode)
 	hook->ax12_pos = hook_ax12_pos[hook->mode];
 	
 	/* apply to ax12 */
-	err = ax12_user_write_int(&gen.ax12, AX12_ID_HOOK, AA_GOAL_POSITION_L, hook->ax12_pos);
+	//err = ax12_user_write_int(&gen.ax12, AX12_ID_HOOK, AA_GOAL_POSITION_L, hook->ax12_pos);
 
 	/* update time for timeout and reset blocking */
 	hook->time_us = time_get_us2();
