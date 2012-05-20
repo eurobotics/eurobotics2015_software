@@ -75,18 +75,22 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 {
 #define OPP_WAS_IN_ZONE_TIMES	
 
-	static uint16_t opp_times[ZONES_MAX];
-	static microseconds opp_time_us = 0;
+	//static uint16_t opp_times[ZONES_MAX];
+	//static microseconds opp_time_us = 0;
 	/* discard actual zone */
 	//if(strat_infos.current_zone == zone_num)
 	//	return 0;
 
 	/* discard down side zones depends on strat config */
 	if((strat_infos.conf.flags & ENABLE_DOWN_SIDE_ZONES) == 0 
-		&& strat_infos.zones[zone_num].init_y < (AREA_Y/2) )
+		&& strat_infos.zones[zone_num].init_y < (AREA_Y/2)
+		&& zone_num != ZONE_SHIP_OUR_DECK_2
+		&& zone_num != ZONE_SHIP_OUR_DECK_1 )
 		return 0;
 	else if((strat_infos.conf.flags & ENABLE_DOWN_SIDE_ZONES) 
-		&& strat_infos.zones[zone_num].init_y > (AREA_Y/2) )
+		&& strat_infos.zones[zone_num].init_y > (AREA_Y/2) 
+		&& zone_num != ZONE_SHIP_OUR_DECK_2
+		&& zone_num != ZONE_SHIP_OUR_DECK_1 )
 		return 0;
 
 	/* discard if opp is in zone */
@@ -189,8 +193,14 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 	/* special cases */
 
 	if(zone_num == ZONE_TOTEM_OPP_SIDE_2) {
+
+		if(!opp_y_is_more_than(1200) && !opp2_y_is_more_than(1200))
+			strat_limit_speed_disable();
+
 		err = goto_and_avoid_forward(COLOR_X(strat_infos.zones[zone_num].init_x), strat_infos.zones[zone_num].init_y, 
 							TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+
+		strat_limit_speed_enable();
 	}
 
 	else if(zone_num == ZONE_MIDDLE_COINS_GROUP) {
@@ -279,24 +289,27 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 	else if(strat_infos.zones[zone_num].type == ZONE_TYPE_DECK) {
 
 		if(zone_num == ZONE_SHIP_OUR_DECK_2) {
-			if(!first_time)
-				err = strat_save_treasure_in_deck_back_blowing(COLOR_X(x), y);
-			first_time = 0;
 			
 			if(mainboard.our_color == I2C_COLOR_PURPLE)
 				err = strat_save_treasure_arms(COLOR_X(x), y, I2C_ARM_TYPE_RIGHT);
 			else
 				err = strat_save_treasure_arms(COLOR_X(x), y, I2C_ARM_TYPE_LEFT);
+
+			if(!(first_time) && strat_infos.treasure_in_boot)
+				err = strat_save_treasure_in_deck_back_blowing(COLOR_X(x), y);
+			first_time = 0;
 		}
 
 
 		else if(zone_num == ZONE_SHIP_OUR_DECK_1) {
-			err = strat_save_treasure_in_deck_back_blowing(COLOR_X(x), y);
 			
 			if(mainboard.our_color == I2C_COLOR_PURPLE)
 				err = strat_save_treasure_arms(COLOR_X(x), y, I2C_ARM_TYPE_LEFT);
 			else
 				err = strat_save_treasure_arms(COLOR_X(x), y, I2C_ARM_TYPE_RIGHT);
+
+			if(strat_infos.treasure_in_boot)
+				err = strat_save_treasure_in_deck_back_blowing(COLOR_X(x), y);
 		}
 	}
 
@@ -332,11 +345,6 @@ void strat_smart(void)
 	/* XXX DEBUG STEP BY STEP */
 	state_debug_wait_key_pressed();
 
-   i2c_slavedspic_mode_arm(I2C_ARM_TYPE_LEFT, I2C_ARM_MODE_HIDE, 0);
-   i2c_slavedspic_wait_ready();
-   i2c_slavedspic_mode_arm(I2C_ARM_TYPE_RIGHT, I2C_ARM_MODE_HIDE, 0);
-   i2c_slavedspic_wait_ready();
-
 
 	/* get new zone */
 	zone_num = strat_get_new_zone();
@@ -347,6 +355,7 @@ void strat_smart(void)
 		strat_infos.conf.flags |= ENABLE_DOWN_SIDE_ZONES;	
 
 		/* Enable all paths */
+		DEBUG(E_USER_STRAT, "All possible paths enabled");	
 		strat_set_bounding_box(-1);	
 		return;
 	}
@@ -386,9 +395,9 @@ void strat_smart(void)
 	}
 
 	/* special case */
-	if(strat_infos.current_zone == ZONE_SHIP_OUR_DECK_2 
-		&& strat_infos.zones[ZONE_SHIP_OUR_DECK_2].prio == ZONE_PRIO_80)
-		strat_infos.zones[ZONE_SHIP_OUR_DECK_2].prio = ZONE_PRIO_50;
+//	if(strat_infos.current_zone == ZONE_SHIP_OUR_DECK_2 
+//		&& strat_infos.zones[ZONE_SHIP_OUR_DECK_2].prio == ZONE_PRIO_80)
+//		strat_infos.zones[ZONE_SHIP_OUR_DECK_2].prio = ZONE_PRIO_50;
 
 	/* check the zone */
 

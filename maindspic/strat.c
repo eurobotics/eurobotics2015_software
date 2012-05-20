@@ -88,10 +88,10 @@ struct strat_infos strat_infos = {
 	.zones[ZONE_OUR_FLOOR_GOLDBAR]=       {ZONE_TYPE_GOLDBAR, OUR_FLOOR_GOLDBAR_X, OUR_FLOOR_GOLDBAR_Y, 300,  1000, 700,    600   , 700,   785,  ZONE_PRIO_0, ZONE_CHECKED },
 	.zones[ZONE_OPP_FLOOR_GOLDBAR]=       {ZONE_TYPE_GOLDBAR, OPP_FLOOR_GOLDBAR_X, OPP_FLOOR_GOLDBAR_Y, 2700, 1000, 2300,   600   , 2300,  785,  ZONE_PRIO_0, ZONE_CHECKED },
 
-	.zones[ZONE_OUR_BOTTLE_1]=            {ZONE_TYPE_BOTTLE, OUR_BOTTLE_1_X, BOTTLES_Y, 840,  2000, 440,    1450  , 640,   1640, ZONE_PRIO_60, 0 },
-	.zones[ZONE_OUR_BOTTLE_2]=            {ZONE_TYPE_BOTTLE, OUR_BOTTLE_2_X, BOTTLES_Y, 2083, 2000, 1683,   1450  , 1883,  1640, ZONE_PRIO_90, 0 },
-	.zones[ZONE_OPP_BOTTLE_1]=            {ZONE_TYPE_BOTTLE, OPP_BOTTLE_1_X, BOTTLES_Y, 2560, 2000, 2160,   1450  , 2000,  1640, ZONE_PRIO_0,  ZONE_AVOID },
-	.zones[ZONE_OPP_BOTTLE_2]=            {ZONE_TYPE_BOTTLE, OPP_BOTTLE_2_X, BOTTLES_Y, 1317, 2000, 917,    1450  , 1477,  1640, ZONE_PRIO_0,  ZONE_AVOID },
+	.zones[ZONE_OUR_BOTTLE_1]=            {ZONE_TYPE_BOTTLE, OUR_BOTTLE_1_X, BOTTLES_Y, 840,  2000, 440,    1450  , 640,   1700, ZONE_PRIO_60, 0 },
+	.zones[ZONE_OUR_BOTTLE_2]=            {ZONE_TYPE_BOTTLE, OUR_BOTTLE_2_X, BOTTLES_Y, 2083, 2000, 1683,   1450  , 1883,  1700, ZONE_PRIO_90, 0 },
+	.zones[ZONE_OPP_BOTTLE_1]=            {ZONE_TYPE_BOTTLE, OPP_BOTTLE_1_X, BOTTLES_Y, 2560, 2000, 2160,   1450  , 2000,  1700, ZONE_PRIO_0,  ZONE_AVOID },
+	.zones[ZONE_OPP_BOTTLE_2]=            {ZONE_TYPE_BOTTLE, OPP_BOTTLE_2_X, BOTTLES_Y, 1317, 2000, 917,    1450  , 1477,  1700, ZONE_PRIO_0,  ZONE_AVOID },
 
 	.zones[ZONE_OUR_MAP]=                 {ZONE_TYPE_MAP, OUR_MAP_X, OUR_MAP_Y, 1500, 500,  1000,      0  , 1400,  400,  ZONE_PRIO_0, ZONE_CHECKED },
 	.zones[ZONE_OPP_MAP]=                 {ZONE_TYPE_MAP, OUR_MAP_X, OUR_MAP_Y, 2000, 500,  1500,      0  , 1600,  400,  ZONE_PRIO_0, ZONE_AVOID },
@@ -103,8 +103,8 @@ struct strat_infos strat_infos = {
    .zones[ZONE_SHIP_OUR_CAPTAINS_BEDRROM]= {ZONE_TYPE_CAPTAINS_BEDROOM, OUR_CAPTAINS_BEDROOM_X, OUR_CAPTAINS_BEDROOM_Y, 500, 500, 0,    0 , 800,   250,  ZONE_PRIO_0, ZONE_AVOID },
    .zones[ZONE_SHIP_OPP_CAPTAINS_BEDRROM]= {ZONE_TYPE_CAPTAINS_BEDROOM, OPP_CAPTAINS_BEDROOM_X, OPP_CAPTAINS_BEDROOM_Y, 3000,500, 2500, 0 , 2200,  250,  ZONE_PRIO_0, ZONE_AVOID },
 
-	.zones[ZONE_SHIP_OUR_DECK_1]= {ZONE_TYPE_DECK, OUR_SHIP_DECK_1_X, OUR_SHIP_DECK_1_Y,  400,     1100,   0,        500     , 640,    500+360,  ZONE_PRIO_50, 0 },
-   .zones[ZONE_SHIP_OPP_DECK_1]= {ZONE_TYPE_DECK, OPP_SHIP_DECK_1_X, OPP_SHIP_DECK_1_Y, 3000,     1100,   2600,     500     , 2360,   500+360,  ZONE_PRIO_0, ZONE_AVOID },
+	.zones[ZONE_SHIP_OUR_DECK_1]= {ZONE_TYPE_DECK, OUR_SHIP_DECK_1_X, OUR_SHIP_DECK_1_Y,  400,     1100,   0,        500     , 640,    900,  ZONE_PRIO_80, ZONE_AVOID },
+   .zones[ZONE_SHIP_OPP_DECK_1]= {ZONE_TYPE_DECK, OPP_SHIP_DECK_1_X, OPP_SHIP_DECK_1_Y, 3000,     1100,   2600,     500     , 2360,   900,  ZONE_PRIO_0, ZONE_AVOID },
 
 	.zones[ZONE_SHIP_OUR_DECK_2]=   {ZONE_TYPE_DECK, OUR_SHIP_DECK_2_X, OUR_SHIP_DECK_2_Y,  400,     1400,   0,        900    , 640,    900,  ZONE_PRIO_80, 0 },
    .zones[ZONE_SHIP_OPP_DECK_2]=   {ZONE_TYPE_DECK, OPP_SHIP_DECK_2_X, OPP_SHIP_DECK_2_Y, 3000,     1400,   2600,     900    , 2360,   900,  ZONE_PRIO_0, ZONE_AVOID },
@@ -298,6 +298,8 @@ void strat_exit(void)
 	beacon_cmd_beacon_off();
 
 	/* slavespic exit */
+   i2c_slavedspic_mode_turbine_blow(0);
+   i2c_slavedspic_wait_ready();
 
 	/* turn off other devices (lasers...) */
 
@@ -339,6 +341,8 @@ void strat_event(void *dummy)
 /* strat main loop */
 uint8_t strat_main(void)
 {
+	uint8_t err;
+
 #ifdef HOMOLOGATION
 
 	trajectory_d_rel(&mainboard.traj, 300);
@@ -402,9 +406,37 @@ uint8_t strat_main(void)
 
 	strat_begin();
 
+	/* try to empty opp totem */
+   trajectory_goto_xy_abs(&mainboard.traj,
+								COLOR_X(strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].init_x),
+								strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].init_y);
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+
+ 	err = strat_work_on_zone(ZONE_TOTEM_OPP_SIDE_2);
+	if (!TRAJ_SUCCESS(err)) {
+		DEBUG(E_USER_STRAT, "Work on zone %d fails", ZONE_TOTEM_OPP_SIDE_2);
+
+			strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].flags |= ZONE_CHECKED;
+         i2c_slavedspic_mode_turbine_angle(0,200);
+         i2c_slavedspic_wait_ready();
+         i2c_slavedspic_mode_lift_height(30);
+			i2c_slavedspic_wait_ready();
+         i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_TOTEM,I2C_FINGERS_MODE_HOLD,0);
+			i2c_slavedspic_wait_ready();
+         i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR,I2C_FINGERS_MODE_CLOSE,0);
+         i2c_slavedspic_wait_ready();
+	}
+
+	strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].flags |= ZONE_CHECKED;
+
+	/* auto-play */
 	while(time_get_s() < 89) {
 		strat_smart();
 	}
+
+	/* TODO: last minutes */
+
+	/* end */
    strat_exit();
    return 0;
 
