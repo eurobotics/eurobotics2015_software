@@ -40,7 +40,7 @@
 #include <uart.h>
 #include <dac_mc.h>
 #include <pwm_servo.h>
-#include <time.h>
+#include <clock_time.h>
 
 #include <pid.h>
 #include <quadramp.h>
@@ -78,7 +78,7 @@
 
 #endif
 
-#ifdef HOMOLOGATION
+#if defined(HOMOLOGATION) || defined(DEMO_MODE)
 /* /!\ half size */
 #define O_WIDTH  400
 #define O_LENGTH 550
@@ -262,6 +262,11 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 	else if(type == ROBOT2ND) {
 		get_robot_2nd_xy(&x, &y);
 	   name = robot_2nd;
+
+   #ifdef DEMO_MODE
+      x = -1000;
+      y = -1000;
+   #endif	
 	}
 #else
    if(type == OPP1) {
@@ -278,12 +283,18 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 	   x = g_robot_2nd_x;
 	   y = g_robot_2nd_y;
 	   name = robot_2nd;
+
+   #ifdef DEMO_MODE
+      x = -1000;
+      y = -1000;
+   #endif	
 	}
 #endif	
 	else
 	   ERROR(E_USER_STRAT, "ERROR at %s", __FUNCTION__);
 
 	DEBUG(E_USER_STRAT, "%s at: %d %d", name, x, y);
+	
 	
 	/* place poly even if invalid, because it's -1000 */
 	set_rotated_poly(pol, robot_pt, w, l, x, y); 
@@ -573,7 +584,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 
 	if (is_in_poly(robot_pt, pol_totems) == 1)
 		in_totems = 1;
-   
+		   
  	if (is_in_poly(robot_pt, pol_robot_2nd) == 1)
 		in_robot_2nd = 1;
  
@@ -900,6 +911,10 @@ void set_totems_poly(poly_t *pol)
   int16_t x_half_size = 400;
   int16_t radius = (300 + 185);
 
+#ifdef DEMO_MODE
+   y = -1000;
+#endif
+
 	/* generate pentagon  */
 	c_a = cos(-2*M_PI/__EDGE_NUMBER);
 	s_a = sin(-2*M_PI/__EDGE_NUMBER);
@@ -911,11 +926,17 @@ void set_totems_poly(poly_t *pol)
 	for (i = 0; i < __EDGE_NUMBER; i++){
 
     /* long side */
+#ifdef DEMO_MODE
     if(i < 4)
-      x = 1500 - x_half_size;
+      x = -1500 - x_half_size;
     else
-      x = 1500 + x_half_size;
-
+      x = -1500 + x_half_size;
+#else
+    if(i < 4)
+      x = -1500 - x_half_size;
+    else
+      x = -1500 + x_half_size;
+#endif
 		oa_poly_set_point(pol, x + px1, y + py1, i);
 		
 		px2 = px1*c_a + py1*s_a;
@@ -1093,14 +1114,14 @@ retry:
 	//pol_totem_purple = oa_new_poly(EDGE_NUMBER);
   //set_rotated_pentagon(pol_totem_red, &robot_pt, (300 + 170), 1900, 1000, M_PI/4.0);
   
-	/* add opponent polyS */
+	/* add opponent polys */
 	pol_opp1 = oa_new_poly(4);
 	set_opponent_poly(OPP1, pol_opp1, &robot_pt, O_WIDTH, O_LENGTH);
 	pol_opp2 = oa_new_poly(4);
 	set_opponent_poly(OPP2, pol_opp2, &robot_pt, O_WIDTH, O_LENGTH);
+	
 	pol_robot_2nd = oa_new_poly(4);
 	set_opponent_poly(ROBOT2ND, pol_robot_2nd, &robot_pt, ROBOT_2ND_WIDTH, ROBOT_2ND_LENGTH);
-
 
   /* add home area polys */
 	//pol_home_red = oa_new_poly(4);
@@ -1141,6 +1162,7 @@ retry:
 		NOTICE(E_USER_STRAT, " dst is in opp 2");
 		return END_ERROR;
 	}
+
  	if (is_point_in_poly(pol_robot_2nd, x, y)) {
 		NOTICE(E_USER_STRAT, " dst is in robot 2nd");
 		return END_ERROR;

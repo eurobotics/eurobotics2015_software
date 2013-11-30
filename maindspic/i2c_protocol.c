@@ -37,7 +37,7 @@
 #include <uart.h>
 #include <dac_mc.h>
 #include <i2c_mem.h>
-#include <time.h>
+#include <clock_time.h>
 #include <pwm_servo.h>
 
 #include <parse.h>

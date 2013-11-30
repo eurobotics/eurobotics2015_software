@@ -39,7 +39,7 @@
 #include <pwm_servo.h>
 #include <timer.h>
 #include <scheduler.h>
-#include <time.h>
+#include <clock_time.h>
 
 #include <pid.h>
 #include <quadramp.h>
@@ -214,7 +214,7 @@ void maindspic_cs_init(void)
 	position_use_ext(&mainboard.pos);
 
 	/* TRAJECTORY MANAGER */
-	trajectory_init(&mainboard.traj);
+	trajectory_init(&mainboard.traj, CS_HZ);
 	trajectory_set_cs(&mainboard.traj, &mainboard.distance.cs,
 			  &mainboard.angle.cs);
 	trajectory_set_robot_params(&mainboard.traj, &mainboard.rs, &mainboard.pos);

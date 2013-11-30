@@ -27,7 +27,7 @@
 #include <aversive.h>
 #include <aversive/error.h>
 
-#include <time.h>
+#include <clock_time.h>
 #include <rdline.h>
 
 #include <encoders_dspic.h>
@@ -166,6 +166,8 @@
 #define EVENT_PERIOD_SENSORS		  10000L
 #define EVENT_PERIOD_I2C_POLL		   8000L
 #define EVENT_PERIOD_CS 			   5000L
+
+#define CS_HZ (1000000. / EVENT_PERIOD_CS)
 
 /* dynamic logs */
 #define NB_LOGS 10
