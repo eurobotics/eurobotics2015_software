@@ -29,7 +29,7 @@
 #include <aversive/error.h>
 
 #include <uart.h>
-#include <time.h>
+#include <clock_time.h>
 
 #include "../common/i2c_commands.h"
 

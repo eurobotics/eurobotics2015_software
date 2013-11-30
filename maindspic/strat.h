@@ -23,6 +23,8 @@
 #ifndef _STRAT_H_
 #define _STRAT_H_
 
+#define DEMO_MODE
+
 /* area */
 #define AREA_X 3000
 #define AREA_Y 2000
@@ -140,6 +142,7 @@
 
 /* homologation compilation */
 //#define HOMOLOGATION
+
 
 /* default speeds */
 #ifdef HOMOLOGATION

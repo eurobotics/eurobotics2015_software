@@ -36,7 +36,7 @@
 #include <uart.h>
 #include <dac_mc.h>
 #include <pwm_servo.h>
-#include <time.h>
+#include <clock_time.h>
 
 #include <pid.h>
 #include <quadramp.h>
