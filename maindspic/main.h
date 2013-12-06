@@ -41,6 +41,8 @@
 #include <robot_system.h>
 #include <position_manager.h>
 #include <trajectory_manager.h>
+//#include <trajectory_manager_utils.h>
+//#include <trajectory_manager_core.h>
 
 #include "../common/i2c_commands.h"
 
