@@ -31,9 +31,9 @@
 #define _STRAT_UTILS_H_
 
 
-#define DEG(x) (((double)(x)) * (180.0 / M_PI))
-#define RAD(x) (((double)(x)) * (M_PI / 180.0))
-#define M_2PI (2*M_PI)
+//#define DEG(x) (((double)(x)) * (180.0 / M_PI))
+//#define RAD(x) (((double)(x)) * (M_PI / 180.0))
+//#define M_2PI (2*M_PI)
 
 struct xy_point {
 	int16_t x;
