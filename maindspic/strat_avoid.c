@@ -36,7 +36,7 @@
 #include <aversive/wait.h>
 #include <aversive/error.h>
 
-#ifndef HOST_VERSION
+#ifndef HOST_VERSION_OA_TEST
 #include <uart.h>
 #include <dac_mc.h>
 #include <pwm_servo.h>
@@ -47,7 +47,6 @@
 #include <control_system_manager.h>
 #include <trajectory_manager.h>
 #include <trajectory_manager_utils.h>
-//#include <trajectory_manager_core.h>
 #include <vect_base.h>
 #include <lines.h>
 #include <polygon.h>
@@ -111,7 +110,7 @@ uint8_t num_slots_in_path;
 uint8_t slot_in_path_flag[SLOT_NUMBER];
 #endif
 
-#ifdef HOST_VERSION
+#ifdef HOST_VERSION_OA_TEST
 int16_t g_robot_x;
 int16_t g_robot_y;
 double  g_robot_a;
@@ -124,7 +123,7 @@ int16_t g_robot_2nd_x;
 int16_t g_robot_2nd_y;
 #endif
 
-#ifdef HOST_VERSION
+#ifdef HOST_VERSION_OA_TEST
 /* return the distance between two points */
 int16_t distance_between(int16_t x1, int16_t y1, int16_t x2, int16_t y2)
 {
@@ -139,7 +138,7 @@ int16_t distance_between(int16_t x1, int16_t y1, int16_t x2, int16_t y2)
 
 
 /* normalize vector from origin */
-#if HOST_VERSION
+#if HOST_VERSION_OA_TEST
 double norm(double x, double y)
 {
 	return sqrt(x*x + y*y);
@@ -147,7 +146,7 @@ double norm(double x, double y)
 #endif
 
 /* rotate point */
-#ifdef HOST_VERSION
+#ifdef HOST_VERSION_OA_TEST
 void rotate(double *x, double *y, double rot)
 {
 	double l, a;
@@ -252,7 +251,7 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 	int8_t opp2[] = "opponent 2";
 	int8_t robot_2nd[] = "robot 2nd";
 
-#ifndef HOST_VERSION
+#ifndef HOST_VERSION_OA_TEST
    if(type == OPP1) {
 	   get_opponent_xy(&x, &y);
 	   name = opp1;
@@ -429,7 +428,7 @@ void set_slots_poly_in_path(poly_t **pol,
 		for(j=1; j<(NB_SLOT_Y-1); j++)
 		{			
 	
-#ifndef HOST_VERSION		
+#ifndef HOST_VERSION_OA_TEST		
 			if((strat_infos.slot[i][j].flags & SLOT_AVOID) 
 				& (strat_infos.slot[i][j].color == mainboard.our_color))
 //			if((strat_infos.slot[i][j].color == mainboard.our_color))
@@ -536,7 +535,7 @@ static int8_t go_in_area(point_t *robot_pt)
 		       dst_pt.x, dst_pt.y);
 
 		/* scape from poly */
-#ifndef HOST_VERSION		
+#ifndef HOST_VERSION_OA_TEST		
 		strat_goto_xy_force(dst_pt.x, dst_pt.y);
 #endif
 		robot_pt->x = dst_pt.x;
@@ -756,7 +755,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 				       dst_pt.x, dst_pt.y);
 
 				/* XXX comment for virtual scape from poly */
-#ifndef HOST_VERSION
+#ifndef HOST_VERSION_OA_TEST
 				strat_goto_xy_force(dst_pt.x, dst_pt.y);
 #endif
 				robot_pt->x = dst_pt.x;
@@ -791,7 +790,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 				       dst_pt.x, dst_pt.y);
 
 				/* XXX comment for virtual scape from poly */
-#ifndef HOST_VERSION
+#ifndef HOST_VERSION_OA_TEST
 				strat_goto_xy_force(dst_pt.x, dst_pt.y);
 #endif
 				robot_pt->x = dst_pt.x;
@@ -826,7 +825,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 				       dst_pt.x, dst_pt.y);
 
 				/* XXX comment for virtual scape from poly */
-#ifndef HOST_VERSION
+#ifndef HOST_VERSION_OA_TEST
 				strat_goto_xy_force(dst_pt.x, dst_pt.y);
 #endif
 				robot_pt->x = dst_pt.x;
@@ -861,7 +860,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 				       dst_pt.x, dst_pt.y);
 
 				/* XXX comment for virtual scape from poly */
-#ifndef HOST_VERSION
+#ifndef HOST_VERSION_OA_TEST
 				strat_goto_xy_force(dst_pt.x, dst_pt.y);
 #endif
 				robot_pt->x = dst_pt.x;
@@ -1007,7 +1006,7 @@ void set_treasure_poly(poly_t *pol, uint8_t type)
 #define GO_AVOID_FORWARD	1
 #define GO_AVOID_BACKWARD	2
 
-#ifndef HOST_VERSION
+#ifndef HOST_VERSION_OA_TEST
 static int8_t __goto_and_avoid(int16_t x, int16_t y,
 			       uint8_t flags_intermediate,
 			       uint8_t flags_final, uint8_t direction)
@@ -1045,7 +1044,7 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 
 	int16_t opp1_w, opp1_l;
 	int16_t opp2_w, opp2_l;
-#ifndef HOST_VERSION
+#ifndef HOST_VERSION_OA_TEST
 	int16_t opp1_x, opp1_y;
 	int16_t opp2_x, opp2_y;
 	int16_t robot_2nd_x, robot_2nd_y;
@@ -1057,7 +1056,7 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 	p_retry = &&retry;
 
 	
-#ifndef HOST_VERSION	
+#ifndef HOST_VERSION_OA_TEST	
 	DEBUG(E_USER_STRAT, "%s(%d,%d) flags_i=%x flags_f=%x direct=%d",
 	      __FUNCTION__, x, y, flags_intermediate, flags_final, direction);
 #else
@@ -1082,7 +1081,7 @@ retry:
 #endif
 	
 	/* opponent info */
-#ifndef HOST_VERSION	
+#ifndef HOST_VERSION_OA_TEST	
 	get_opponent_xy(&opp1_x, &opp1_y);
    get_opponent2_xy(&opp2_x, &opp2_y);
 	
@@ -1097,7 +1096,7 @@ retry:
 	opp2_l = O_LENGTH;
 
 	/* robot info */
-#ifndef HOST_VERSION
+#ifndef HOST_VERSION_OA_TEST
 	robot_pt.x = position_get_x_s16(&mainboard.pos);
 	robot_pt.y = position_get_y_s16(&mainboard.pos);
 #else
@@ -1282,7 +1281,7 @@ retry:
 	p = oa_get_path();
 	for (i=0 ; i<len ; i++) {
 
-#ifndef HOST_VERSION
+#ifndef HOST_VERSION_OA_TEST
 		
 //		if (d<20){
 //			p++;
@@ -1324,7 +1323,7 @@ retry:
 			return ret;
 		}
 
-#endif /* HOST_VERSION */
+#endif /* HOST_VERSION_OA_TEST */
 
 		DEBUG(E_USER_STRAT, "With avoidance %d: x=%d y=%d", i, p->x, p->y);		
 
@@ -1335,7 +1334,7 @@ retry:
 	return END_TRAJ;
 }
 
-#ifndef HOST_VERSION
+#ifndef HOST_VERSION_OA_TEST
 
 /* go to a x,y point. prefer backward but go forward if the point is
  * near and in front of us */

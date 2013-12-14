@@ -27,7 +27,7 @@
  *  strat_avoid.h,v 1.4 2009/05/27 20:04:07 zer0 Exp.
  */
 
-#ifndef HOST_VERSION
+#ifndef HOST_VERSION_OA_TEST
 int8_t goto_and_avoid(int16_t x, int16_t y, uint8_t flags_intermediate,
 		      uint8_t flags_final);
 int8_t goto_and_avoid_backward(int16_t x, int16_t y,

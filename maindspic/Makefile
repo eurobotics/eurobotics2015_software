@@ -3,18 +3,19 @@ TARGET = main
 # repertoire des modules
 AVERSIVE_DIR = ../libs/aversive4dspic
 
-SRC  = $(TARGET).c cmdline.c commands_ax12.c commands_gen.c 
+SRC  = $(TARGET).c cmdline.c commands_gen.c
 SRC += commands_cs.c commands_mainboard.c commands_traj.c commands.c
-SRC += i2c_protocol.c sensor.c actuator.c cs.c ax12_user.c
+SRC += i2c_mem.c i2c_protocol.c beacon.c sensor.c actuator.c cs.c
 SRC += strat_utils.c strat_base.c strat_avoid.c strat.c
-SRC += strat_static_columns.c strat_lintel.c
-SRC += strat_column_disp.c strat_building.c strat_scan.c
+SRC += strat_begin.c strat_main.c strat_end.c strat_treasure.c
+ifeq ($(H),1)
+SRC += robotsim.c
+endif
 
 ASRC = 
 
-CFLAGS += -Wall -Werror
-#CFLAGS += -DHOMOLOGATION
-LDFLAGS = -T ../common/avr6.x
+CFLAGS += -Wall
+# -Werror
 
 ########################################
 

@@ -440,6 +440,7 @@ void strat_start(void)
 
 	strat_preinit();
 
+#ifndef HOST_VERSION
 	/* if start sw not plugged */
 	if (sensor_get(S_START_SWITCH)) {
 		printf_P(PSTR("No start switch, press a key or plug it\r\n"));
@@ -463,6 +464,7 @@ void strat_start(void)
 		/* while start sw plugged */
 		while (!sensor_get(S_START_SWITCH));
 	}
+#endif
 
 	/* reset infos, set traj speeds, set events ...*/
 	strat_init();

@@ -218,6 +218,9 @@ struct cmd_rs_gains_result {
 /* function called when cmd_rs_gains is parsed successfully */
 static void cmd_rs_gains_parsed(void * parsed_result, void * data)
 {
+#ifdef HOST_VERSION
+	printf("not implemented\n");
+#else
 	struct cmd_rs_gains_result * res = parsed_result;
 	
 	if (!strcmp_P(res->arg1, PSTR("set"))) {
@@ -233,6 +236,7 @@ static void cmd_rs_gains_parsed(void * parsed_result, void * data)
 	printf_P(PSTR(" "));
 	f64_print(mainboard.rs.right_ext_gain);
 	printf_P(PSTR("\r\n"));
+#endif
 }
 
 prog_char str_rs_gains_arg0[] = "rs_gains";

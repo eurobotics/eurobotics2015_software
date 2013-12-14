@@ -28,7 +28,9 @@
 #include <aversive/wait.h>
 #include <aversive/error.h>
 
+#ifndef HOST_VERSION
 #include <configuration_bits_config.h>
+#endif
 
 #include <uart.h>
 #include <i2c_mem.h>
@@ -37,7 +39,7 @@
 #include <dac_mc.h>
 #include <pwm_servo.h>
 
-#include <timer.h>
+//#include <timer.h>
 #include <scheduler.h>
 #include <clock_time.h>
 
@@ -46,7 +48,6 @@
 #include <control_system_manager.h>
 #include <trajectory_manager.h>
 #include <trajectory_manager_utils.h>
-//#include <trajectory_manager_core.h>
 #include <vect_base.h>
 #include <lines.h>
 #include <polygon.h>
@@ -68,6 +69,7 @@
 #include "cs.h"
 #include "i2c_protocol.h"
 #include "beacon.h"
+#include "robotsim.h"
 
 
 struct genboard gen;
@@ -77,6 +79,7 @@ struct beaconboard beaconboard;
 
 /***************************************************************/
 
+#ifndef HOST_VERSION
 void do_led_blink(void *dummy)
 {
 	/* simple blink */
@@ -111,10 +114,14 @@ void __attribute__((__interrupt__, no_auto_psv)) _T1Interrupt(void)
 
 void io_pins_init(void)
 {
-	/*************************************** 	*  IO portmap and config 	*/
+	/***************************************
+ 	*  IO portmap and config
+ 	*/
+
 	/* XXX: after reset all pins are inputs */
 	/* XXX: after reset all ANALOG pins are analog
-	 *		  and has disabled the read operation	 */
+	 *		  and has disabled the read operation
+	 */
 
 	/* analog inputs */
 	/* by default all analog pins are digital */
@@ -127,10 +134,12 @@ void io_pins_init(void)
 	_TRISC8 = 0;	/* MAIN_LED4 */
 	
 	/* brushless motors */
-	_TRISA10 = 0; 	/* L_MOT_REV	*/	_TRISA7  = 0;  /* L_MOT_BREAK	*/
+	_TRISA10 = 0; 	/* L_MOT_REV	*/
+	_TRISA7  = 0;  /* L_MOT_BREAK	*/
 	_LATA7 	= 0;
 
-	_TRISB10 = 0; 	/* R_MOT_REV	*/	_TRISB11 = 0; 	/* R_MOT_BREAK	*/
+	_TRISB10 = 0; 	/* R_MOT_REV	*/
+	_TRISB11 = 0; 	/* R_MOT_BREAK	*/
 	_LATB11 	= 0;
 
 	/* servos */
@@ -171,13 +180,17 @@ void io_pins_init(void)
 
 //#if 1
 //	_U2RXR 	= 9;	/* U2RX <- RP9(RB9)  <- BEACON_UART_RX */
-//	_TRISB9 	= 1;	/* U2RX is input								*///  	_RP25R 	= 5;	/* U2TX -> RP25(RC9) -> BEACON_UART_TX *///	_TRISC9	= 0;	/* U2TX is output								*/
+//	_TRISB9 	= 1;	/* U2RX is input								*/
+//  	_RP25R 	= 5;	/* U2TX -> RP25(RC9) -> BEACON_UART_TX */
+//	_TRISC9	= 0;	/* U2TX is output								*/
 //#else
 //	_U2RXR 	= 2;	/* U2RX <- RP2(RB2) <- SLAVE_UART_TX	*/
-//	_TRISB2 	= 1;	/* U2RX is input								*///  	_RP3R 	= 5;	/* U2TX -> RP3(RB3) -> SLAVE_UART_RX	*///	_TRISB3	= 0;	/* U2TX is output								*/
+//	_TRISB2 	= 1;	/* U2RX is input								*/
+//  	_RP3R 	= 5;	/* U2TX -> RP3(RB3) -> SLAVE_UART_RX	*/
+//	_TRISB3	= 0;	/* U2TX is output								*/
 //#endif
 }
-
+#endif /* !HOST_VERSION */
 
 int main(void)
 {	
@@ -186,6 +199,7 @@ int main(void)
 
 	/* TODO: eeprom magic number */
 
+#ifndef HOST_VERSION
 	/* remapeable pins */
 	io_pins_init();
 
@@ -200,6 +214,7 @@ int main(void)
 	LED2_OFF();
 	LED3_OFF();
 	LED4_OFF();
+#endif
 
 	/* reset data structures */
 	memset(&gen, 0, sizeof(gen));
@@ -221,9 +236,11 @@ int main(void)
 	beaconboard.robot_2nd_x = I2C_OPPONENT_NOT_THERE;
 #endif
 
+#ifndef HOST_VERSION
 	/* UART */
 	uart_init();
 	uart_register_rx_event(CMDLINE_UART, emergency);
+#endif 
 
 	/* LOGS */
 	error_register_emerg(mylog);
@@ -232,6 +249,7 @@ int main(void)
 	error_register_notice(mylog);
 	error_register_debug(mylog);
 
+#ifndef HOST_VERSION
 	/* ENCODERS */
 	encoders_dspic_init();
 
@@ -242,10 +260,14 @@ int main(void)
 	i2c_protocol_init();
 
 	/* DAC_MC */
-	dac_mc_channel_init(&gen.dac_mc_right, 1, CHANNEL_R,											DAC_MC_MODE_SIGNED|DAC_MC_MODE_SIGN_INVERTED,										 	&LATB, 10, NULL, 0);
+	dac_mc_channel_init(&gen.dac_mc_right, 1, CHANNEL_R,
+											DAC_MC_MODE_SIGNED|DAC_MC_MODE_SIGN_INVERTED,
+										 	&LATB, 10, NULL, 0);
 	
 
-	dac_mc_channel_init(&gen.dac_mc_left, 1, CHANNEL_L,											DAC_MC_MODE_SIGNED,										 	&LATA, 10, NULL, 0);
+	dac_mc_channel_init(&gen.dac_mc_left, 1, CHANNEL_L,
+											DAC_MC_MODE_SIGNED,
+										 	&LATA, 10, NULL, 0);
 	
 	dac_mc_set(&gen.dac_mc_right, 0);
 	dac_mc_set(&gen.dac_mc_left, 0);
@@ -253,14 +275,20 @@ int main(void)
 
 	/* MAIN TIMER */
 	main_timer_init();
+#endif
 
 	/* SCHEDULER */
 	scheduler_init();
+#ifdef HOST_VERSION
+	hostsim_init();
+	robotsim_init();
+#endif
 
 	/* EVENTS OR INIT MODULES THAT INCLUDE EVENTS */
-
+#ifndef HOST_VERSION
 	scheduler_add_periodical_event_priority(do_led_blink, NULL, 
 						EVENT_PERIOD_LED / SCHEDULER_UNIT, EVENT_PRIORITY_LED);
+#endif
 
 	/* time */
 	time_init(EVENT_PRIORITY_TIME);
@@ -271,6 +299,7 @@ int main(void)
 	/* sensors, will also init hardware adc */
 	sensor_init();
 
+#ifndef HOST_VERSION
 	/* i2c slaves polling (gpios and slavedspic) */
 	scheduler_add_periodical_event_priority(i2c_poll_slaves, NULL,
 						EVENT_PERIOD_I2C_POLL / SCHEDULER_UNIT, EVENT_PRIORITY_I2C_POLL);
@@ -278,7 +307,7 @@ int main(void)
 	/* beacon commnads and polling */
 	scheduler_add_periodical_event_priority(beacon_protocol, NULL,
 					EVENT_PERIOD_BEACON_PULL / SCHEDULER_UNIT, EVENT_PRIORITY_BEACON_POLL);
-
+#endif
 
 	/* strat-related event */
 	scheduler_add_periodical_event_priority(strat_event, NULL,
@@ -304,6 +333,10 @@ int main(void)
 	/* say hello */
 	printf("\r\n");
 	printf("Siempre falta tiempo para hacer pruebas!!\r\n");
+
+#ifdef HOST_VERSION
+	strat_reset_pos(400, COLOR_Y(400), COLOR_A_ABS(-90));
+#endif
 
 	/* process commands, never returns */
 	cmdline_interact();

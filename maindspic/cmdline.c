@@ -35,12 +35,15 @@
 #include <aversive.h>
 #include <aversive/error.h>
 
+#include <hostsim.h>
+
 #include <parse.h>
 #include <rdline.h>
 
 #include <uart.h>
 
 #include "main.h"
+#include "robotsim.h"
 #include "beacon.h"
 #include "cmdline.h"
 #include "strat_base.h"
@@ -98,7 +101,11 @@ void emergency(char c)
 	else if ( !(i == 1 && c == 'p') )
 		i = 0;
 	if (i == 3)
+#ifdef HOST_VERSION
+		hostsim_exit();
+#else
 		asm("Reset");
+#endif
 }
 
 /* log function, add a command to configure
@@ -106,6 +113,9 @@ void emergency(char c)
 void mylog(struct error * e, ...) 
 {
 	va_list ap;
+#ifndef HOST_VERSION
+	u16 stream_flags = stdout->flags;
+#endif
 	uint8_t i;
 	time_h tv;
 
@@ -134,6 +144,9 @@ void mylog(struct error * e, ...)
 
 	printf_P(PSTR("\r\n"));
 	va_end(ap);
+#ifndef HOST_VERSION
+	stdout->flags = stream_flags;
+#endif
 }
 
 /* user interact */

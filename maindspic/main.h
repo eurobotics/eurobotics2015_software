@@ -32,7 +32,7 @@
 
 #include <encoders_dspic.h>
 #include <dac_mc.h>
-#include <pwm_servo.h>
+//#include <pwm_servo.h>
 
 #include <pid.h>
 #include <quadramp.h>
@@ -66,12 +66,35 @@
 			port |= _BV(bit);	\
 	} while(0)
 
+#ifdef HOST_VERSION
+#define LED1_ON()
+#define LED1_OFF()
+#define LED1_TOGGLE()
+
+#define LED2_ON()
+#define LED2_OFF()
+#define LED2_TOGGLE()
+
+#define LED3_ON()
+#define LED3_OFF()
+#define LED3_TOGGLE()
+
+#define LED4_ON()
+#define LED4_OFF()
+#define LED4_TOGGLE()
+
+#define BRAKE_DDR()
+#define BRAKE_ON()
+#define BRAKE_OFF()
+
+#else
+
 /* leds manage */
 #define LED1_ON() 		cbi(LATA, 4)
 #define LED1_OFF() 		sbi(LATA, 4)
 #define LED1_TOGGLE() 	LED_TOGGLE(LATA, 4)
 
-#define LED2_ON() 		cbi(LATA, 8)
+#define LED2_ON() 		  cbi(LATA, 8)
 #define LED2_OFF() 			sbi(LATA, 8)
 #define LED2_TOGGLE() 	LED_TOGGLE(LATA, 8)
 
@@ -87,6 +110,8 @@
 /* brake motors */
 #define BRAKE_ON()      do {_LATA7 = 0; _LATB11 = 0;} while(0)
 #define BRAKE_OFF()     do {_LATA7 = 1; _LATB11 = 1;} while(0)
+
+#endif /* !HOST_VERSION */
 
 /* only 90 seconds, don't forget it :) */
 #define MATCH_TIME 89
@@ -107,6 +132,8 @@
 #define ROBOT_WIDTH 	   330.0
 #define ROBOT_CENTER_TO_FRONT 162.5
 #define ROBOT_CENTER_TO_BACK 119.0
+#define ROBOT_HALF_LENGTH_FRONT ROBOT_CENTER_TO_FRONT
+#define ROBOT_HALF_LENGTH_REAR  ROBOT_CENTER_TO_BACK
 
 /* Some calculus:
  * it is a 3600 imps -> 14400 because we see 1/4 period
@@ -196,9 +223,9 @@ struct genboard
 	struct dac_mc dac_mc_left;
 	struct dac_mc dac_mc_right;
 
-	/* servos */
-	struct pwm_servo pwm_servo_oc1;
-	struct pwm_servo pwm_servo_oc2;
+	/* FIXME hostsim servos */
+	//struct pwm_servo pwm_servo_oc1;
+	//struct pwm_servo pwm_servo_oc2;
 
 	/* i2c gpios */
 	uint8_t i2c_gpio0;
@@ -307,6 +334,7 @@ extern struct beaconboard beaconboard;
 ///* start the bootloader */
 //void bootloader(void);
 
+#ifndef HOST_VERSION
 /* swap UART 2 between beacon and slavedspic */ 
 static inline void set_uart_mux(uint8_t channel)
 {
@@ -317,24 +345,26 @@ static inline void set_uart_mux(uint8_t channel)
 
 	IRQ_LOCK(flags);
 
+
 	if(channel == BEACON_CHANNEL){
 		_U2RXR 	= 9;	/* U2RX <- RP9(RB9)  <- BEACON_UART_RX */
 		_TRISB9 	= 1;	/* U2RX is input								*/
-	  	_RP25R 	= 5;	/* U2TX -> RP25(RC9) -> BEACON_UART_TX */
+	  _RP25R 	= 5;	/* U2TX -> RP25(RC9) -> BEACON_UART_TX */
 		_TRISC9	= 0;	/* U2TX is output								*/
 	}
 	else
 	{
 		_U2RXR 	= 2;	/* U2RX <- RP2(RB2) <- SLAVE_UART_TX	*/
 		_TRISB2 	= 1;	/* U2RX is input								*/
-	  	_RP3R 	= 5;	/* U2TX -> RP3(RB3) -> SLAVE_UART_RX	*/
+	  _RP3R 	= 5;	/* U2TX -> RP3(RB3) -> SLAVE_UART_RX	*/
 		_TRISB3	= 0;	/* U2TX is output								*/
 	}
 
-	IRQ_UNLOCK(flags);
 
+	IRQ_UNLOCK(flags);
 	Nop();
 }
+#endif
 
 #define WAIT_COND_OR_TIMEOUT(cond, timeout)                   \
 ({                                                            \

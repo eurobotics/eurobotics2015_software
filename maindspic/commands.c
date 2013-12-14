@@ -34,14 +34,14 @@
 
 #define COMPILE_COMMANDS_GEN
 #define COMPILE_COMMANDS_CS
-//#define COMPILE_COMMANDS_MAINBOARD
+#define COMPILE_COMMANDS_MAINBOARD
 #define COMPILE_COMMANDS_TRAJ
 //#define COMPILE_CODE
 
 /* commands_gen.c */
 #ifdef COMPILE_COMMANDS_GEN
 
-#include "./commands_gen.c"
+//#include "./commands_gen.c"
 
 extern parse_pgm_inst_t cmd_reset;
 //extern parse_pgm_inst_t cmd_bootloader;
@@ -61,7 +61,7 @@ extern parse_pgm_inst_t cmd_scheduler;
 /* commands_cs.c */
 #ifdef COMPILE_COMMANDS_CS
 
-#include "./commands_cs.c"
+//#include "./commands_cs.c"
 
 extern parse_pgm_inst_t cmd_gain;
 extern parse_pgm_inst_t cmd_gain_show;
@@ -83,7 +83,7 @@ extern parse_pgm_inst_t cmd_blocking_i_show;
 /* commands_mainboard.c */
 #ifdef COMPILE_COMMANDS_MAINBOARD
 
-#include "./commands_mainboard.c"
+//#include "./commands_mainboard.c"
 
 extern parse_pgm_inst_t cmd_event;
 extern parse_pgm_inst_t cmd_opponent;
@@ -118,7 +118,7 @@ extern parse_pgm_inst_t cmd_lasers;
 /* commands_traj.c */
 #ifdef COMPILE_COMMANDS_TRAJ
 
-#include "./commands_traj.c"
+//#include "./commands_traj.c"
 
 extern parse_pgm_inst_t cmd_traj_speed;
 extern parse_pgm_inst_t cmd_traj_speed_show;
