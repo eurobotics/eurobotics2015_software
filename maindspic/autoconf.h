@@ -18,6 +18,24 @@
 #define CONFIG_F_CPU (40000000)
 
 /*
+ * Generation options
+ */
+#undef  CONFIG_OPTM_0
+#undef  CONFIG_OPTM_1
+#undef  CONFIG_OPTM_2
+#undef  CONFIG_OPTM_3
+#define CONFIG_OPTM_S 1
+#define CONFIG_MATH_LIB 1
+#undef  CONFIG_FDEVOPEN_COMPAT
+#undef  CONFIG_NO_PRINTF
+#undef  CONFIG_MINIMAL_PRINTF
+#undef  CONFIG_STANDARD_PRINTF
+#define CONFIG_ADVANCED_PRINTF 1
+#define CONFIG_FORMAT_IHEX 1
+#undef  CONFIG_FORMAT_SREC
+#undef  CONFIG_FORMAT_BINARY
+
+/*
  * Base modules
  */
 
