@@ -27,6 +27,7 @@
 #include "i2c_protocol.h"
 #include "actuator.h"
 #include "main.h"
+#include "robotsim.h"
 
 void dac_set_and_save(void *dac, int32_t val)
 {
@@ -70,9 +71,14 @@ void dac_set_and_save(void *dac, int32_t val)
 	}
 
 	/* set value */
+#ifdef HOST_VERSION
+	robotsim_pwm(dac, val);
+#else
 	dac_mc_set(dac, val);
+#endif
 }
 
+#if 0
 /* lasers off */
 void lasers_set_on(void)
 {
@@ -91,7 +97,6 @@ uint8_t lasers_get_state(void)
 }
 
 
-#if 0
 
 /* manage mirrors position */
 

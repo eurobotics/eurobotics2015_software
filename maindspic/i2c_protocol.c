@@ -61,6 +61,9 @@
 #include "main.h"
 #include "sensor.h"
 #include "i2c_protocol.h"
+#ifdef HOST_VERSION
+#include "robotsim.h"
+#endif
 
 
 #define I2C_STATE_MAX 			3
@@ -131,6 +134,9 @@ void i2c_protocol_init(void)
 /* debug protocol */
 void i2c_protocol_debug(void)
 {
+#ifdef HOST_VERSION
+	return;
+#else
 	printf_P(PSTR("I2C protocol debug infos:\r\n"));
 	printf_P(PSTR("  i2c_state=%d\r\n"), i2c_state);
 	printf_P(PSTR("  i2c_errors=%d\r\n"), i2c_errors);
@@ -138,8 +144,10 @@ void i2c_protocol_debug(void)
 	printf_P(PSTR("  command_size=%d\r\n"), command_size);
 	printf_P(PSTR("  command_dest=%d\r\n"), command_dest);
 	printf_P(PSTR("  i2c_status=%x\r\n"), i2c_status());
+#endif
 }
 
+#ifndef HOST_VERSION
 /* update to next state */
 static void i2cproto_next_state(uint8_t inc)
 {
@@ -467,10 +475,14 @@ error_recv:
 		i2c_errors = 0;
 	}
 }
+#endif /* !HOST_VERSION */
 
 /* send generic command */
 static int8_t i2c_send_command(uint8_t addr, uint8_t *buf, uint8_t size) 
 {
+#ifdef HOST_VERSION
+	return robotsim_i2c(addr, buf, size);
+#else
 	uint8_t flags;
   	microseconds us = time_get_us2();
 	uint8_t i;
@@ -502,12 +514,14 @@ static int8_t i2c_send_command(uint8_t addr, uint8_t *buf, uint8_t size)
 	i2c_write_event(2);
 	I2C_ERROR("I2C command send failed");
 	return -EBUSY;
+#endif
 }
 
 /***************************************************************************
  * PULLING COMMANDS (read from slaves)
  **************************************************************************/
 
+#ifndef HOST_VERSION
 /* read i2c gpio ports 0 and 1 */
 static int8_t i2c_read_gpios_01_values(void)
 {
@@ -543,7 +557,7 @@ static int8_t i2c_req_slavedspic_status(void)
 	err = i2c_read(I2C_SLAVEDSPIC_ADDR, I2C_REQ_SLAVEDSPIC_STATUS, sizeof(buf));
 	return err;
 }
-
+#endif /* !HOST_VERSION */
 
 /****************************************************************************
  * CONTROL COMMANDS (write to slaves) 
@@ -794,7 +808,8 @@ int8_t i2c_slavedspic_mode_set_infos_boot(int8_t nb_goldbars_in_boot, int8_t nb_
 
 
 void i2c_slavedspic_wait_ready(void)
-{                    
+{ 
+#ifndef HOST_VERSION                   
    //microseconds __us = time_get_us2();                 
    //uint8_t __ret = 1;             
     
@@ -811,6 +826,7 @@ void i2c_slavedspic_wait_ready(void)
              break;                                
       }                                 
 	} while(slavedspic.status == I2C_SLAVEDSPIC_STATUS_BUSY && __ret==1);   */
+#endif
 }
 
    

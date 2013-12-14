@@ -46,7 +46,6 @@
 #include <control_system_manager.h>
 #include <trajectory_manager.h>
 #include <trajectory_manager_utils.h>
-//#include <trajectory_manager_core.h>
 #include <vect_base.h>
 #include <lines.h>
 #include <polygon.h>
@@ -54,6 +53,7 @@
 #include <blocking_detection_manager.h>
 #include <robot_system.h>
 #include <position_manager.h>
+#include <hostsim.h>
 
 #include <rdline.h>
 #include <parse.h>
@@ -141,8 +141,13 @@ static void cmd_event_parsed(void *parsed_result, void *data)
 		mainboard.flags |= bit;
 	else if (!strcmp_P(res->arg2, PSTR("off"))) {
 		if (!strcmp_P(res->arg1, PSTR("cs"))) {
+#ifdef HOST_VERSION
+			robotsim_pwm(LEFT_MOTOR, 0);
+			robotsim_pwm(RIGHT_MOTOR, 0);
+#else
 		 	dac_mc_set(LEFT_MOTOR, 0);
 			dac_mc_set(RIGHT_MOTOR, 0);
+#endif
 		}
 		mainboard.flags &= (~bit);
 	}
@@ -348,6 +353,7 @@ static void cmd_start_parsed(void *parsed_result, void *data)
 	}
 
 retry:
+#ifndef HOST_VERSION
 	printf_P(PSTR("Press a key when beacon ready, 'q' for skip \r\n"));
 	c = -1;
 	while(c == -1){
@@ -381,7 +387,8 @@ retry_on:
 			}
 		}
 	}
-	
+#endif	
+
 	if (!strcmp_P(res->color, PSTR("purple"))) {
 		mainboard.our_color = I2C_COLOR_PURPLE;
 		//beacon_cmd_color();
@@ -478,9 +485,13 @@ static void cmd_slavedspic_parsed(void *parsed_result, void *data)
 	int8_t cmd = 0;
 	struct vt100 vt100;
 	uint8_t mainboard_flags;
-	uint8_t flags;
+	uint8_t flags;
+
 	if(!strcmp_P(res->arg1, "raw"))
 	{
+#ifdef HOST_VERSION
+	printf("not implemented\n");
+#else
 		/* disable opponent event */
 		IRQ_LOCK(flags);
 		mainboard_flags = mainboard.flags;
@@ -499,8 +510,10 @@ static void cmd_slavedspic_parsed(void *parsed_result, void *data)
 		/* interact */
 		while(cmd != KEY_CTRL_C) 
 		{
-			/* received from slave */			if((c = uart_recv_nowait(MUX_UART))!= -1)
-				/* echo */				uart_send_nowait(CMDLINE_UART,c);
+			/* received from slave */
+			if((c = uart_recv_nowait(MUX_UART))!= -1)
+				/* echo */
+				uart_send_nowait(CMDLINE_UART,c);
 			
 			/* send to slavedspic */
 			c = cmdline_getchar();
@@ -509,7 +522,8 @@ static void cmd_slavedspic_parsed(void *parsed_result, void *data)
 			}
 
 			/* check exit cmd */
-			cmd = vt100_parser(&vt100, c);
+			cmd = vt100_parser(&vt100, c);
+
 			/* send to slave */
 			uart_send_nowait(MUX_UART,c);	
 		}
@@ -521,17 +535,33 @@ static void cmd_slavedspic_parsed(void *parsed_result, void *data)
 		IRQ_LOCK(flags);
 		mainboard.flags = mainboard_flags;
 		IRQ_UNLOCK(flags);
-
+#endif
 	}	
 	else if (!strcmp(res->arg1, "init")){
 		i2c_slavedspic_mode_init();
 	}
 	else if (!strcmp(res->arg1, "info"))
 	{
-		/* actuators blocking flags */		printf("fingers_floor_blocked = %d\r\n", slavedspic.fingers_floor_blocked);		printf("fingers_totem_blocked = %d\r\n", slavedspic.fingers_totem_blocked);		printf("arm_right_blocked = %d\r\n", slavedspic.arm_right_blocked);		printf("arm_left_blocked = %d\r\n", slavedspic.arm_left_blocked);		printf("lift_blocked = %d\r\n", slavedspic.lift_blocked);
-		/* sensors */		printf("turbine_sensors = %d\r\n", slavedspic.turbine_sensors);
-		/* infos */		printf("status = %s\r\n", slavedspic.status == I2C_SLAVEDSPIC_STATUS_BUSY? "BUSY":"READY");		printf("harvest_mode = %d\r\n", slavedspic.harvest_mode);		printf("store_mode = %d\r\n", slavedspic.store_mode);		printf("dump_mode = %d\r\n", slavedspic.dump_mode);
-		printf("nb_goldbars_in_boot = %d\r\n", slavedspic.nb_goldbars_in_boot);		printf("nb_goldbars_in_mouth = %d\r\n", slavedspic.nb_goldbars_in_mouth);		printf("nb_coins_in_boot = %d\r\n", slavedspic.nb_coins_in_boot);		printf("nb_coins_in_mouth = %d\r\n", slavedspic.nb_coins_in_mouth);
+		/* actuators blocking flags */
+		printf("fingers_floor_blocked = %d\r\n", slavedspic.fingers_floor_blocked);
+		printf("fingers_totem_blocked = %d\r\n", slavedspic.fingers_totem_blocked);
+		printf("arm_right_blocked = %d\r\n", slavedspic.arm_right_blocked);
+		printf("arm_left_blocked = %d\r\n", slavedspic.arm_left_blocked);
+		printf("lift_blocked = %d\r\n", slavedspic.lift_blocked);
+
+		/* sensors */
+		printf("turbine_sensors = %d\r\n", slavedspic.turbine_sensors);
+
+		/* infos */
+		printf("status = %s\r\n", slavedspic.status == I2C_SLAVEDSPIC_STATUS_BUSY? "BUSY":"READY");
+		printf("harvest_mode = %d\r\n", slavedspic.harvest_mode);
+		printf("store_mode = %d\r\n", slavedspic.store_mode);
+		printf("dump_mode = %d\r\n", slavedspic.dump_mode);
+
+		printf("nb_goldbars_in_boot = %d\r\n", slavedspic.nb_goldbars_in_boot);
+		printf("nb_goldbars_in_mouth = %d\r\n", slavedspic.nb_goldbars_in_mouth);
+		printf("nb_coins_in_boot = %d\r\n", slavedspic.nb_coins_in_boot);
+		printf("nb_coins_in_mouth = %d\r\n", slavedspic.nb_coins_in_mouth);
 	}
 	else if(!strcmp(res->arg1, "led")){
 		i2c_led_control(I2C_SLAVEDSPIC_ADDR, 1, led_flag);
@@ -880,14 +910,19 @@ static void cmd_beacon_parsed(void * parsed_result, void * data)
 	
 	if(!strcmp_P(res->arg1, "raw"))
 	{
+#ifdef HOST_VERSION
+	printf("not implemented\n");
+#else
 		/* init vt100 character set */
 		vt100_init(&vt100);
 		
 		/* interact */
 		while(cmd != KEY_CTRL_C) 
 		{
-			/* received from slave */			if((c = uart_recv_nowait(MUX_UART))!= -1)
-				/* echo */				uart_send_nowait(CMDLINE_UART,c);
+			/* received from slave */
+			if((c = uart_recv_nowait(MUX_UART))!= -1)
+				/* echo */
+				uart_send_nowait(CMDLINE_UART,c);
 			
 			/* send to slavedspic */
 			c = cmdline_getchar();
@@ -896,10 +931,12 @@ static void cmd_beacon_parsed(void * parsed_result, void * data)
 			}
 
 			/* check exit cmd */
-			cmd = vt100_parser(&vt100, c);
+			cmd = vt100_parser(&vt100, c);
+
 			/* send to slave */
 			uart_send_nowait(MUX_UART,c);	
 		}
+#endif
 	}	
 	else if(!strcmp_P(res->arg1, "wt11_reset")){
 		beacon_cmd_wt11_local_reset();

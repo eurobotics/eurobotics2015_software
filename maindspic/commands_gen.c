@@ -76,7 +76,11 @@ struct cmd_reset_result {
 /* function called when cmd_reset is parsed successfully */
 static void cmd_reset_parsed(void * parsed_result, void * data)
 {
+#ifdef HOST_VERSION
+	hostsim_exit();
+#else
 	asm("Reset");
+#endif
 }
 
 prog_char str_reset_arg0[] = "reset";
@@ -133,6 +137,9 @@ struct cmd_encoders_result {
 /* function called when cmd_encoders is parsed successfully */
 static void cmd_encoders_parsed(void *parsed_result, void *data)
 {
+#ifdef HOST_VERSION
+	printf("not implemented\n");
+#else
 	struct cmd_encoders_result *res = parsed_result;
 
 	if (!strcmp_P(res->arg1, PSTR("reset"))) {
@@ -151,6 +158,7 @@ static void cmd_encoders_parsed(void *parsed_result, void *data)
 
 		wait_ms(50);
 	}
+#endif
 }
 
 prog_char str_encoders_arg0[] = "encoders";
@@ -293,6 +301,9 @@ struct cmd_dac_mc_result {
 /* function called when cmd_dac_mc is parsed successfully */
 static void cmd_dac_mc_parsed(void * parsed_result, __attribute__((unused)) void *data)
 {
+#ifdef HOST_VERSION
+	printf("not implemented\n");
+#else
 	void * dac_mc_ptr = NULL;
 	struct cmd_dac_mc_result * res = parsed_result;
 	
@@ -306,6 +317,7 @@ static void cmd_dac_mc_parsed(void * parsed_result, __attribute__((unused)) void
 		dac_mc_set(dac_mc_ptr, res->arg2);
 
 	printf_P(PSTR("done\r\n"));
+#endif
 }
 
 prog_char str_dac_mc_arg0[] = "dac_mc";
@@ -339,6 +351,9 @@ struct cmd_adc_result {
 /* function called when cmd_adc is parsed successfully */
 static void cmd_adc_parsed(void *parsed_result, void *data)
 {
+#ifdef HOST_VERSION
+	printf("not implemented\n");
+#else
 	struct cmd_adc_result *res = parsed_result;
 	uint8_t i, loop = 0;
 
@@ -353,6 +368,7 @@ static void cmd_adc_parsed(void *parsed_result, void *data)
 		printf_P(PSTR("\r\n"));
 		wait_ms(100);
 	} while (loop && !cmdline_keypressed());
+#endif
 }
 
 prog_char str_adc_arg0[] = "adc";
@@ -385,6 +401,9 @@ struct cmd_sensor_result {
 /* function called when cmd_sensor is parsed successfully */
 static void cmd_sensor_parsed(void *parsed_result, void *data)
 {
+#ifdef HOST_VERSION
+	printf("not implemented\n");
+#else
 	struct cmd_sensor_result *res = parsed_result;
 	uint8_t i, loop = 0;
 
@@ -412,6 +431,7 @@ static void cmd_sensor_parsed(void *parsed_result, void *data)
 		printf_P(PSTR("\r\n"));
 		wait_ms(100);
 	} while (loop && !cmdline_keypressed());
+#endif
 }
 
 prog_char str_sensor_arg0[] = "sensor";

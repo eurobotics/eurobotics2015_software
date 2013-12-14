@@ -37,7 +37,7 @@
 #include <encoders_dspic.h>
 #include <dac_mc.h>
 #include <pwm_servo.h>
-#include <timer.h>
+//#include <timer.h>
 #include <scheduler.h>
 #include <clock_time.h>
 
@@ -46,7 +46,6 @@
 #include <control_system_manager.h>
 #include <trajectory_manager.h>
 #include <trajectory_manager_utils.h>
-//#include <trajectory_manager_core.h>
 #include <vect_base.h>
 #include <lines.h>
 #include <polygon.h>
@@ -59,6 +58,7 @@
 #include <rdline.h>
 
 #include "main.h"
+#include "robotsim.h"
 #include "strat.h"
 #include "actuator.h"
 #include "i2c_protocol.h"
@@ -71,10 +71,14 @@ static void do_cs(void *dummy)
 	static uint16_t cpt = 0;
 	static int32_t old_a = 0, old_d = 0;
 
+#ifdef HOST_VERSION
+	robotsim_update();
+#else
 	/* read encoders */
 	if (mainboard.flags & DO_ENCODERS) {
 		encoders_dspic_manage(NULL);
 	}
+#endif
 
 	/* robot system, conversion to angle, distance */
 	if (mainboard.flags & DO_RS) {
@@ -110,7 +114,7 @@ static void do_cs(void *dummy)
 	if ((cpt & 1) && (mainboard.flags & DO_POS)) {
 
 		/* about 1.5ms 
-       *(worst case without centrifugal force compensation) */
+       		 * (worst case without centrifugal force compensation) */
 		position_manage(&mainboard.pos);
 	}
 
@@ -120,6 +124,7 @@ static void do_cs(void *dummy)
 		bd_manage_from_cs(&mainboard.distance.bd, &mainboard.distance.cs);
 	}
 
+#ifndef HOST_VERSION
 	/* take a look to match time */
 	if (mainboard.flags & DO_TIMER) {
 		uint8_t second;
@@ -145,7 +150,7 @@ static void do_cs(void *dummy)
 			//while(1);
 		}
 	}
-	
+#endif	
 	/* motors brakes */
 	if (mainboard.flags & DO_POWER)
 		BRAKE_OFF();
@@ -153,6 +158,12 @@ static void do_cs(void *dummy)
 		BRAKE_ON();
 	
 	cpt++;
+
+#ifdef HOST_VERSION
+	if ((cpt & 7) == 0) {
+		robotsim_dump();
+	}
+#endif
 }
 
 
@@ -200,11 +211,17 @@ void maindspic_cs_init(void)
 #define Cr  (2.0 /((1.0 / Ed) + 1.0))
 
 	/* increase gain to decrease dist, increase left and it will turn more left */
+#ifdef HOST_VERSION
+	rs_set_left_ext_encoder(&mainboard.rs, robotsim_encoder_get,
+				LEFT_ENCODER, IMP_COEF * 1.);
+	rs_set_right_ext_encoder(&mainboard.rs, robotsim_encoder_get,
+				 RIGHT_ENCODER, IMP_COEF * 1.);
+#else
 	rs_set_left_ext_encoder(&mainboard.rs, encoders_dspic_get_value, 
 				LEFT_ENCODER, IMP_COEF * Cl); // 2011 0.996); //0.998);//0.999083
 	rs_set_right_ext_encoder(&mainboard.rs, encoders_dspic_get_value, 
 				 RIGHT_ENCODER, IMP_COEF * -Cr); // 2011 -1.004);//-1.002);//1.003087
-
+#endif
 	/* rs will use external encoders */
 	rs_set_flags(&mainboard.rs, RS_USE_EXT);
 
@@ -224,7 +241,7 @@ void maindspic_cs_init(void)
 	trajectory_set_speed(&mainboard.traj, SPEED_DIST_FAST, SPEED_ANGLE_FAST); 		
 	/* distance window, angle window, angle start */
 	//trajectory_set_windows(&mainboard.traj, 50., 5.0, 5.0);
-   trajectory_set_windows(&mainboard.traj, 200., 5.0, 30.0);
+   	trajectory_set_windows(&mainboard.traj, 200., 5.0, 30.0);
 
 	/* ---- CS angle */
 	/* PID */

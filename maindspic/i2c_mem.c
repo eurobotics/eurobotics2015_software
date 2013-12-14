@@ -43,6 +43,8 @@
 * Settu D.          07/09/06 	  First release of source file
 * JBS				17/11/08	  Adaptacion firmware RAM.
 **********************************************************************/
+#ifndef HOST_VERSION
+
 #if defined(__dsPIC33F__)
 #include "p33Fxxxx.h"
 #elif defined(__PIC24H__)
@@ -134,9 +136,17 @@ int8_t i2c_write(uint16_t dev_addr, uint16_t sub_addr, uint8_t *buff, uint16_t s
 		// Copy data
 		memcpy(wBuff, buff, size);
 		
-		// Initialise I2C Data object for Write operation       wData.buff=wBuff;    wData.n=size;    wData.addr=sub_addr;     wData.csel=dev_addr;  
-		// Write Data		i2cmem.oData=&wData;		i2cmem.cmd = I2C_WRITE;	
-			// Force interrupt
+		// Initialise I2C Data object for Write operation   
+    wData.buff=wBuff;
+    wData.n=size;
+    wData.addr=sub_addr; 
+    wData.csel=dev_addr;
+  
+		// Write Data
+		i2cmem.oData=&wData;
+		i2cmem.cmd = I2C_WRITE;	
+	
+		// Force interrupt
 		IFS1bits.MI2C1IF = 1;
 		
 		return 0;
@@ -149,9 +159,17 @@ int8_t i2c_read(uint16_t dev_addr, uint16_t sub_addr, uint16_t size)
 			return 1;
 
 		
-		// Initialise I2C Data Object for Read operation                rData.buff=rBuff;    rData.n=size;    rData.addr=sub_addr;     rData.csel=dev_addr; 
-		// Read Data		i2cmem.oData=&rData;		i2cmem.cmd = I2C_READ;
-			// Force interrupt
+		// Initialise I2C Data Object for Read operation            
+    rData.buff=rBuff;
+    rData.n=size;
+    rData.addr=sub_addr; 
+    rData.csel=dev_addr; 
+
+		// Read Data
+		i2cmem.oData=&rData;
+		i2cmem.cmd = I2C_READ;
+	
+		// Force interrupt
 		IFS1bits.MI2C1IF = 1;
 		
 		return 0;
@@ -498,4 +516,5 @@ static int state=0, cntr=0, rtrycntr=0;
 
  	}     
 }
+#endif /* !HOST_VERSION */
 

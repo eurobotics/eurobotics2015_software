@@ -23,7 +23,7 @@
 #ifndef _STRAT_H_
 #define _STRAT_H_
 
-#define DEMO_MODE
+//#define DEMO_MODE
 
 /* area */
 #define AREA_X 3000
@@ -325,7 +325,7 @@ extern struct strat_infos strat_infos;
 
 extern char numzone2name[ZONES_MAX + 1][30];
 
-#ifndef HOST_VERSION
+#ifndef HOST_VERSION_OA_TEST
 
 /************************************************************* 
  * Functions headers of strat files
@@ -398,12 +398,12 @@ uint8_t strat_smart(void);
 
 /* add here more strat functions in files */
 
-#else /* HOST_VERSION */
+#else /* HOST_VERSION_OA_TEST */
 
 #define AREA_BBOX_6X5	0
 #define AREA_BBOX_4X4	1
 void strat_set_bounding_box(uint8_t type);
 
-#endif /* HOST_VERSION */
+#endif /* HOST_VERSION_OA_TEST */
 
 #endif

@@ -30,7 +30,7 @@
 #include <aversive/wait.h>
 #include <aversive/error.h>
 
-#ifndef HOST_VERSION
+#ifndef HOST_VERSION_OA_TEST
 #include <uart.h>
 #include <dac_mc.h>
 #include <pwm_servo.h>
@@ -41,7 +41,6 @@
 #include <control_system_manager.h>
 #include <trajectory_manager.h>
 #include <trajectory_manager_utils.h>
-//#include <trajectory_manager_core.h>
 #include <vect_base.h>
 #include <lines.h>
 #include <polygon.h>
@@ -169,7 +168,7 @@ void strat_set_bounding_box(uint8_t type)
 }
 
 
-#ifndef HOST_VERSION
+#ifndef HOST_VERSION_OA_TEST
 
 /* called before each strat, and before the start switch */
 void strat_preinit(void)
@@ -304,11 +303,13 @@ void strat_exit(void)
 	time_reset();
 
 	/* disable CS, and motors */
+#ifndef HOST_VERSION
 	IRQ_LOCK(flags);
 	mainboard.flags &= ~(DO_CS);
+	IRQ_UNLOCK(flags);
 	dac_mc_set(LEFT_MOTOR, 0);
 	dac_mc_set(RIGHT_MOTOR, 0);
-	IRQ_UNLOCK(flags);
+#endif
 
 	/* stop beacon */
 	IRQ_LOCK(flags);
@@ -317,8 +318,8 @@ void strat_exit(void)
 	beacon_cmd_beacon_off();
 
 	/* slavespic exit */
-   i2c_slavedspic_mode_turbine_blow(0);
-   i2c_slavedspic_wait_ready();
+  i2c_slavedspic_mode_turbine_blow(0);
+  i2c_slavedspic_wait_ready();
 
 	/* turn off other devices (lasers...) */
 
@@ -327,6 +328,7 @@ void strat_exit(void)
 	beacon_cmd_beacon_off();
 	beacon_cmd_beacon_off();
 	beacon_cmd_beacon_off();
+
 }
 
 /* called periodically */
@@ -461,6 +463,6 @@ uint8_t strat_main(void)
 #endif
 }
 
-#endif /* HOST_VERSION */
+#endif /* HOST_VERSION_OA_TEST */
 
 

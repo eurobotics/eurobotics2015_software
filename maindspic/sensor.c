@@ -39,6 +39,8 @@
 #include "strat.h"
 #include "strat_utils.h"
 
+#ifndef HOST_VERSION
+
 /************ ADC */
 
 /* config init */
@@ -174,10 +176,14 @@ static void do_adc(void *dummy)
 	/* launch first conversion */
 	adc_launch(adc_infos[0].config);
 }
+#endif /* !HOST_VERSION */
 
 /* get analog sensor value */
 int16_t sensor_get_adc(uint8_t i)
 {
+#ifdef HOST_VERSION
+	return 0;
+#else
 	int16_t tmp;
 	uint8_t flags;
 
@@ -185,10 +191,10 @@ int16_t sensor_get_adc(uint8_t i)
 	tmp = adc_infos[i].value;
 	IRQ_UNLOCK(flags);
 	return tmp;
+#endif
 }
 
 /* get laser distance in mm */
-
 typedef struct {
 	int16_t offset_code;
 	int16_t offset_mm;
@@ -274,7 +280,7 @@ int16_t sensor_get_laser_point_da(uint8_t i, int16_t *d, double *a_rad)
 
 /************ boolean sensors */
 
-
+#ifndef HOST_VERSION
 struct sensor_filter {
 	uint8_t filter;
 	uint8_t prev;
@@ -331,6 +337,7 @@ static struct sensor_filter sensor_filter[SENSOR_MAX] = {
 	[S_GP3_7] = { 1, 0, 0, 1, 0, 0 }, /* 39 */
 
 };
+#endif /* !HOST_VERSION */
 
 /* value of filtered sensors */
 static uint64_t sensor_filtered = 0;
@@ -356,10 +363,15 @@ uint64_t sensor_get_all(void)
 
 uint8_t sensor_get(uint8_t i)
 {
+#ifdef HOST_VERSION
+	return 0;
+#else
 	uint64_t tmp = sensor_get_all();
 	return (uint8_t)((tmp & ((uint64_t)1 << i))>>i);
+#endif
 }
 
+#ifndef HOST_VERSION
 /* get the physical value of pins */
 static uint64_t sensor_read(void)
 {
@@ -414,6 +426,7 @@ static void do_boolean_sensors(void *dummy)
 	sensor_filtered = tmp;
 	IRQ_UNLOCK(flags);
 }
+#endif /* !HOST_VERSION */
 
 /* virtual obstacle */
 #define DISABLE_CPT_MAX 200
@@ -452,15 +465,18 @@ uint8_t sensor_obstacle_is_disabled(void)
 /* called every 10 ms, see init below */
 static void do_sensors(void *dummy)
 {
+#ifndef HOST_VERSION
 	do_adc(NULL);
 	do_boolean_sensors(NULL);
+#endif
 	sensor_obstacle_update();
 }
 
 void sensor_init(void)
 {
+#ifndef HOST_VERSION
 	adc_init();
-	
+#endif	
 	/* CS EVENT */
 	scheduler_add_periodical_event_priority(do_sensors, NULL, 
 						EVENT_PERIOD_SENSORS / SCHEDULER_UNIT, EVENT_PRIORITY_SENSORS);
