@@ -573,6 +573,11 @@ int8_t i2c_led_control(uint8_t addr, uint8_t led, uint8_t state)
 	return i2c_send_command(addr, (uint8_t*)&buf, sizeof(buf));
 }
 
+
+/*******************************************************************************
+ * 2012 functions
+ ******************************************************************************/
+#if 0
 int8_t i2c_slavedspic_mode_init(void)
 {
 	struct i2c_cmd_slavedspic_set_mode buf;
@@ -596,7 +601,6 @@ int8_t i2c_slavedspic_mode_power_off(void)
 	/* send command and return */
 	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
 }
-
 
 int8_t i2c_slavedspic_mode_fingers(uint8_t type, uint8_t mode, int16_t offset)
 {
@@ -828,7 +832,7 @@ void i2c_slavedspic_wait_ready(void)
 	} while(slavedspic.status == I2C_SLAVEDSPIC_STATUS_BUSY && __ret==1);   */
 #endif
 }
-
+#endif
    
 /*******************************************************************************
  * Debug functions
@@ -889,120 +893,4 @@ void i2c_test(void)
 #endif
 
 
-/*******************************************************************************
- * 2011 functions
- ******************************************************************************/
-#if 0
-int8_t i2c_slavedspic_mode_token_take(uint8_t side)
-{
-	struct i2c_cmd_slavedspic_set_mode buf;
 
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_TOKEN_TAKE;
-	buf.ts.side = side;
-	buf.ts.speed_div4 = TOKEN_SYSTEM_SPEED;
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
-}
-
-int8_t i2c_slavedspic_mode_token_eject(uint8_t side)
-{
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_TOKEN_EJECT;
-	buf.ts.side = side;
-	buf.ts.speed_div4 = TOKEN_SYSTEM_SPEED;
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
-}
-
-int8_t i2c_slavedspic_mode_token_stop(uint8_t side)
-{
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_TOKEN_STOP;
-	buf.ts.side = side;
-	buf.ts.speed_div4 = 0;
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
-}
-
-int8_t i2c_slavedspic_mode_token_show(uint8_t side)
-{
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_TOKEN_SHOW;
-	buf.ts.side = side;
-	buf.ts.speed_div4 = TOKEN_SYSTEM_SPEED;
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
-}
-
-int8_t i2c_slavedspic_mode_token_push_r(uint8_t side)
-{
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_TOKEN_PUSH_R;
-	buf.ts.side = side;
-	buf.ts.speed_div4 = TOKEN_SYSTEM_SPEED;
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
-}
-
-int8_t i2c_slavedspic_mode_token_push_l(uint8_t side)
-{
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_TOKEN_PUSH_L;
-	buf.ts.side = side;
-	buf.ts.speed_div4 = TOKEN_SYSTEM_SPEED;
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
-}
-
-int8_t i2c_slavedspic_mode_token_out(uint8_t side)
-{
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_TOKEN_OUT;
-	buf.ts.side = side;
-	buf.ts.speed_div4 = TOKEN_SYSTEM_SPEED;
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
-}
-
-int8_t i2c_slavedspic_mode_mirror_pos(uint8_t side, uint16_t pos)
-{
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_MIRROR_POS;
-	buf.mirror.side = side;
-	buf.mirror.pos_h = (uint8_t)(pos >> 8);
-	buf.mirror.pos_l = (uint8_t)(0x00FF & pos);
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
-}
-#endif

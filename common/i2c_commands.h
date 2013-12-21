@@ -32,14 +32,14 @@
 
 
 #define I2C_SLAVEDSPIC_ADDR 	0x10
-#define I2C_GPIOS_01_ADDR 	0x20
-#define I2C_GPIOS_23_ADDR 	0x21
+#define I2C_GPIOS_01_ADDR 	  0x20
+#define I2C_GPIOS_23_ADDR 	  0x21
 
 #define I2C_COLOR_PURPLE 	0
-#define I2C_COLOR_RED		1
-#define I2C_COLOR_MAX		2
+#define I2C_COLOR_RED		  1
+#define I2C_COLOR_MAX		  2
 
-#define I2C_OPPONENT_NOT_THERE -1000
+#define I2C_OPPONENT_NOT_THERE (-1000)
 
 struct i2c_cmd_hdr {
 	uint8_t cmd;
@@ -108,21 +108,22 @@ struct i2c_cmd_led_control{
 struct i2c_cmd_slavedspic_set_mode {
 	struct i2c_cmd_hdr hdr;
 	
-#define I2C_SLAVEDSPIC_MODE_INIT		0x01
+#define I2C_SLAVEDSPIC_MODE_INIT		    0x01
 #define I2C_SLAVEDSPIC_MODE_POWER_OFF		0x02
-#define I2C_SLAVEDSPIC_MODE_FINGERS		0x03
-#define I2C_SLAVEDSPIC_MODE_ARM			0x04
-#define I2C_SLAVEDSPIC_MODE_HOOK		0x05
-#define I2C_SLAVEDSPIC_MODE_BOOT		0x06
-#define I2C_SLAVEDSPIC_MODE_TRAY		0x07
+#define I2C_SLAVEDSPIC_MODE_FINGERS		  0x03
+#define I2C_SLAVEDSPIC_MODE_ARM			    0x04
+#define I2C_SLAVEDSPIC_MODE_HOOK		    0x05
+#define I2C_SLAVEDSPIC_MODE_BOOT		    0x06
+#define I2C_SLAVEDSPIC_MODE_TRAY		    0x07
+
 #define I2C_SLAVEDSPIC_MODE_TURBINE_ANGLE	0x08
 #define I2C_SLAVEDSPIC_MODE_TURBINE_BLOW	0x09
 #define I2C_SLAVEDSPIC_MODE_LIFT_HEIGHT		0x0A
 
-#define I2C_SLAVEDSPIC_MODE_HARVEST		0x0B
-#define I2C_SLAVEDSPIC_MODE_STORE		0x0C
-#define I2C_SLAVEDSPIC_MODE_DUMP		0x0D
-#define I2C_SLAVEDSPIC_MODE_SET_INFOS		0x0E
+#define I2C_SLAVEDSPIC_MODE_HARVEST	  0x0B
+#define I2C_SLAVEDSPIC_MODE_STORE		  0x0C
+#define I2C_SLAVEDSPIC_MODE_DUMP		  0x0D
+#define I2C_SLAVEDSPIC_MODE_SET_INFOS	0x0E
 	uint8_t mode;
 	union{
 		struct {
@@ -130,9 +131,9 @@ struct i2c_cmd_slavedspic_set_mode {
 #define I2C_FINGERS_TYPE_FLOOR		      0
 #define I2C_FINGERS_TYPE_TOTEM		      1
 #define I2C_FINGERS_TYPE_FLOOR_RIGHT		3
-#define I2C_FINGERS_TYPE_FLOOR_LEFT		   4
+#define I2C_FINGERS_TYPE_FLOOR_LEFT		  4
 #define I2C_FINGERS_TYPE_TOTEM_RIGHT		5
-#define I2C_FINGERS_TYPE_TOTEM_LEFT		   6
+#define I2C_FINGERS_TYPE_TOTEM_LEFT		  6
 
 			uint8_t mode;
 #define I2C_FINGERS_MODE_HUG 		0
@@ -229,11 +230,11 @@ struct i2c_cmd_slavedspic_set_mode {
 /*XXX this should be called I2C_DUMP_MODE_MOUTH*/
 #define I2C_DUMP_MODE_PREPARE_MOUTH			1
 #define I2C_DUMP_MODE_PREPARE_BOOT			2
-#define I2C_DUMP_MODE_BOOT						3
+#define I2C_DUMP_MODE_BOOT						  3
 #define I2C_DUMP_MODE_BOOT_BLOWING			4
 #define I2C_DUMP_MODE_MOUTH_BLOWING			5
-#define I2C_DUMP_MODE_END_BOOT				6
-#define I2C_DUMP_MODE_END_MOUTH				7
+#define I2C_DUMP_MODE_END_BOOT				  6
+#define I2C_DUMP_MODE_END_MOUTH				  7
 
 		} dump;
 

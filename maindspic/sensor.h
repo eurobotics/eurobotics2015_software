@@ -80,12 +80,15 @@
 #define S_GP3_7		 39
 #define SENSOR_MAX    40
 
+
+#if notyet /* TODO 2014 */
+
 /* lasers map */
 #define ADC_LASER_R		ADC_LASER_1
 #define ADC_LASER_L		ADC_LASER_2
 #define ADC_LASER_MAX	2
 
-/* token sensors */
+/* sensors map */
 #define S_TOKEN_FRONT_R			S_GP3_4
 #define S_TOKEN_FRONT_L			S_GP3_3
 #define S_TOKEN_FRONT_45R		S_GP1_1
@@ -112,6 +115,8 @@
 #define S_OPPONENT_RIGHT		S_GP0_7
 #define S_OPPONENT_LEFT			S_GP1_3
 
+#endif /* notyet TODO 2014 */
+
 /* digital and analog */
 void sensor_init(void);
 
@@ -128,15 +133,4 @@ void sensor_obstacle_disable(void);
 void sensor_obstacle_enable(void);
 uint8_t sensor_obstacle_is_disabled(void);
 
-/* token sensors utils */
-
-/* return 1 if right and left token 
- *	sensors of a side are activated */
-uint8_t sensor_token_side(uint8_t side);
-
-/* return distance of a laser in mm */
-int16_t sensor_get_laser_distance(uint8_t i);
-
-/* get distance and angle (+/- PI) of laser point */
-int16_t sensor_get_laser_point_da(uint8_t i, int16_t *d, double *a_rad);
 

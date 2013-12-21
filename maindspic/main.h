@@ -32,7 +32,7 @@
 
 #include <encoders_dspic.h>
 #include <dac_mc.h>
-//#include <pwm_servo.h>
+#include <pwm_servo.h>
 
 #include <pid.h>
 #include <quadramp.h>
@@ -41,8 +41,6 @@
 #include <robot_system.h>
 #include <position_manager.h>
 #include <trajectory_manager.h>
-//#include <trajectory_manager_utils.h>
-//#include <trajectory_manager_core.h>
 
 #include "../common/i2c_commands.h"
 
@@ -121,17 +119,16 @@
 
 /* distance between encoders weels,
  * decrease track to decrease angle */
-#define EXT_TRACK_MM 292.74161502079 //292.8
-//#define EXT_TRACK_MM 293.57360825271 /* 2011 */
-//#define EXT_TRACK_MM 290.37650894 /* 2010 */
-
-#define VIRTUAL_TRACK_MM EXT_TRACK_MM
+#define EXT_TRACK_MM      292.74161502079
+#define VIRTUAL_TRACK_MM  EXT_TRACK_MM
 
 /* robot dimensions */
-#define ROBOT_LENGTH    281.5
+#define ROBOT_LENGTH     281.5
 #define ROBOT_WIDTH 	   330.0
+
 #define ROBOT_CENTER_TO_FRONT 162.5
-#define ROBOT_CENTER_TO_BACK 119.0
+#define ROBOT_CENTER_TO_BACK  119.0
+
 #define ROBOT_HALF_LENGTH_FRONT ROBOT_CENTER_TO_FRONT
 #define ROBOT_HALF_LENGTH_REAR  ROBOT_CENTER_TO_BACK
 
@@ -141,14 +138,11 @@
  * 14400/173 -> 832 imps/10 mm */
 
 /* increase it to go further */
-#define IMP_ENCODERS 		3600.0
-//#define WHEEL_DIAMETER_MM 	(55.0/0.989123953)// 0.988333287)//0.993077287) /* 2011 */
-#define WHEEL_DIAMETER_MM 	(55.0)// 0.988333287)//0.993077287)
-
-
-#define WHEEL_PERIM_MM 	(WHEEL_DIAMETER_MM * M_PI)
-#define IMP_COEF 			10.0
-#define DIST_IMP_MM 		(((IMP_ENCODERS*4) / WHEEL_PERIM_MM) * IMP_COEF)
+#define IMP_ENCODERS 		    3600.0
+#define WHEEL_DIAMETER_MM 	55.0
+#define WHEEL_PERIM_MM 	    (WHEEL_DIAMETER_MM * M_PI)
+#define IMP_COEF 			      10.0
+#define DIST_IMP_MM 		    (((IMP_ENCODERS*4) / WHEEL_PERIM_MM) * IMP_COEF)
 
 /* encoders handlers */
 #define LEFT_ENCODER        ((void *)2)
@@ -167,35 +161,33 @@
 
 /* EVENTS PRIORITIES */
 #ifdef old_version
-#define EVENT_PRIORITY_LED 			  170
+#define EVENT_PRIORITY_LED 			      170
 #define EVENT_PRIORITY_TIME           160
 #define EVENT_PRIORITY_I2C_POLL       140
 #define EVENT_PRIORITY_SENSORS        120
 #define EVENT_PRIORITY_CS             100
-#define EVENT_PRIORITY_BEACON_POLL     80
+#define EVENT_PRIORITY_BEACON_POLL    80
 #define EVENT_PRIORITY_STRAT         	70
 
 #else
 
-#define EVENT_PRIORITY_LED 			  170
+#define EVENT_PRIORITY_LED 			      170
 #define EVENT_PRIORITY_TIME           160
 #define EVENT_PRIORITY_I2C_POLL       140
 #define EVENT_PRIORITY_SENSORS        120
 #define EVENT_PRIORITY_CS             100
 #define EVENT_PRIORITY_STRAT         	30
-#define EVENT_PRIORITY_BEACON_POLL     20
-//#define EVENT_PRIORITY_I2C_POLL        15
+#define EVENT_PRIORITY_BEACON_POLL    20
 
 #endif
 
 /* EVENTS PERIODS */
-#define EVENT_PERIOD_LED 			1000000L
+#define EVENT_PERIOD_LED 			    1000000L
 #define EVENT_PERIOD_STRAT			  25000L
-#define EVENT_PERIOD_BEACON_PULL	  10000L
+#define EVENT_PERIOD_BEACON_PULL	10000L
 #define EVENT_PERIOD_SENSORS		  10000L
-#define EVENT_PERIOD_I2C_POLL		   8000L
-#define EVENT_PERIOD_CS 			   5000L
-
+#define EVENT_PERIOD_I2C_POLL		  8000L
+#define EVENT_PERIOD_CS 			    5000L
 
 #define CS_PERIOD ((EVENT_PERIOD_CS/SCHEDULER_UNIT)*SCHEDULER_UNIT) /* in microsecond */
 #define CS_HZ (1000000. / CS_PERIOD)
@@ -226,9 +218,9 @@ struct genboard
 	struct dac_mc dac_mc_left;
 	struct dac_mc dac_mc_right;
 
-	/* FIXME hostsim servos */
-	//struct pwm_servo pwm_servo_oc1;
-	//struct pwm_servo pwm_servo_oc2;
+	/* servos */
+	struct pwm_servo pwm_servo_oc1;
+	struct pwm_servo pwm_servo_oc2;
 
 	/* i2c gpios */
 	uint8_t i2c_gpio0;
@@ -247,14 +239,14 @@ struct mainboard
 {
 	/* events flags */
 	uint8_t flags;                
-#define DO_ENCODERS  1
-#define DO_CS        2
-#define DO_RS        4
-#define DO_POS       8
-#define DO_BD       16
-#define DO_TIMER    32
-#define DO_POWER    64
-#define DO_OPP     128
+#define DO_ENCODERS   1
+#define DO_CS         2
+#define DO_RS         4
+#define DO_POS        8
+#define DO_BD         16
+#define DO_TIMER      32
+#define DO_POWER      64
+#define DO_OPP        128
 
 	/* control systems */
 	struct cs_block angle;
@@ -267,10 +259,12 @@ struct mainboard
 
 	/* robot status */
 	uint8_t our_color;
-	volatile int16_t speed_a;     /* current angle speed */
-	volatile int16_t speed_d;     /* current dist speed */
-	int32_t dac_l;       /* current left dac */
-	int32_t dac_r;       /* current right dac */
+
+	volatile int16_t speed_a;  /* current angle speed */
+	volatile int16_t speed_d;  /* current dist speed */
+
+	int32_t dac_l;  /* current left dac */
+	int32_t dac_r;  /* current right dac */
 };
 
 
@@ -334,7 +328,7 @@ extern struct mainboard mainboard;
 extern struct slavedspic slavedspic;
 extern struct beaconboard beaconboard;
 
-///* start the bootloader */
+///* TODO start the bootloader */
 //void bootloader(void);
 
 #ifndef HOST_VERSION
@@ -350,17 +344,17 @@ static inline void set_uart_mux(uint8_t channel)
 
 
 	if(channel == BEACON_CHANNEL){
-		_U2RXR 	= 9;	/* U2RX <- RP9(RB9)  <- BEACON_UART_RX */
+		_U2RXR 	= 9;	  /* U2RX <- RP9(RB9)  <- BEACON_UART_RX */
 		_TRISB9 	= 1;	/* U2RX is input								*/
-	  _RP25R 	= 5;	/* U2TX -> RP25(RC9) -> BEACON_UART_TX */
-		_TRISC9	= 0;	/* U2TX is output								*/
+	  _RP25R 	= 5;	  /* U2TX -> RP25(RC9) -> BEACON_UART_TX */
+		_TRISC9	= 0;	  /* U2TX is output								*/
 	}
 	else
 	{
-		_U2RXR 	= 2;	/* U2RX <- RP2(RB2) <- SLAVE_UART_TX	*/
+		_U2RXR 	= 2;	  /* U2RX <- RP2(RB2) <- SLAVE_UART_TX	*/
 		_TRISB2 	= 1;	/* U2RX is input								*/
-	  _RP3R 	= 5;	/* U2TX -> RP3(RB3) -> SLAVE_UART_RX	*/
-		_TRISB3	= 0;	/* U2TX is output								*/
+	  _RP3R 	= 5;	  /* U2TX -> RP3(RB3) -> SLAVE_UART_RX	*/
+		_TRISB3	= 0;	  /* U2TX is output								*/
 	}
 
 
@@ -389,3 +383,4 @@ static inline void set_uart_mux(uint8_t channel)
         __ret;                                                \
 })
 #endif
+

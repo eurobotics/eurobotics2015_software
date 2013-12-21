@@ -590,11 +590,6 @@ void beacon_protocol(void * dummy)
 			uart_send(BEACON_UART, '\n');
 			uart_send(BEACON_UART, '\r');		
 		}
-
-//		/* request opponent possition*/
-//		if(mainboard.flags & DO_OPP)
-//			beacon_pull_opponent();	
-
 	}
 	/* beacon data pulling */
 	else {

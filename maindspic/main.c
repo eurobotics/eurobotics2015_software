@@ -39,7 +39,6 @@
 #include <dac_mc.h>
 #include <pwm_servo.h>
 
-//#include <timer.h>
 #include <scheduler.h>
 #include <clock_time.h>
 
@@ -135,27 +134,27 @@ void io_pins_init(void)
 	
 	/* brushless motors */
 	_TRISA10 = 0; 	/* L_MOT_REV	*/
-	_TRISA7  = 0;  /* L_MOT_BREAK	*/
-	_LATA7 	= 0;
+	_TRISA7  = 0;   /* L_MOT_BREAK	*/
+	_LATA7 	 = 0;
 
 	_TRISB10 = 0; 	/* R_MOT_REV	*/
 	_TRISB11 = 0; 	/* R_MOT_BREAK	*/
-	_LATB11 	= 0;
+	_LATB11  = 0;
 
 	/* servos */
 	_RP22R = 0b10010; /* OC1 -> RP22(RC6) -> MAIN_SERVO_PWM_1 */
 	_RP23R = 0b10011; /* OC2 -> RP23(RC7) -> MAIN_SERVO_PWM_2 */
-	_TRISC6 	= 0;
+	_TRISC6 = 0;
 	_TRISC7	= 0;
 	
 	/* encoders */	
 	_QEA1R 	= 21;	/* QEA1 <- RP21(RC5) <- R_ENC_CHA */
-	_TRISC5 	= 1;	
+	_TRISC5 = 1;	
 	_QEB1R 	= 20;	/* QEB1 <- RP20(RC4) <- R_ENC_CHB */
 	_TRISC4	= 1;
 
 	_QEA2R 	= 19;	/* QEA2 <- RP19(RC3) <- L_ENC_CHA */
-	_TRISC3 	= 1;	
+	_TRISC3 = 1;	
 	_QEB2R 	= 4;	/* QEB2 <- RP4(RB4)  <- L_ENC_CHB */
 	_TRISB4	= 1;	
 	
@@ -171,11 +170,11 @@ void io_pins_init(void)
 	/* uarts */
 	/* U1 is for cmdline and bootloader */
 	_U1RXR 	= 8;	/* U1RX <- RP8(RB8) <- MAIN_UART_RX	*/
-	_TRISB8 	= 1;	/* U1RX is input							*/
-  	_RP7R 	= 3;	/* U1TX -> RP7(RB7) -> MAIN_UART_TX	*/
-	_TRISB7	= 0;	/* U1TX is output							*/
+	_TRISB8 = 1;	/* U1RX is input	*/
+  _RP7R 	= 3;	/* U1TX -> RP7(RB7) -> MAIN_UART_TX	*/
+	_TRISB7	= 0;	/* U1TX is output	*/
 	
-	/* U2 swap between BEACON and SLAVEDSPIC */
+	/* UART2 swap between BEACON and SLAVEDSPIC */
 	set_uart_mux(BEACON_CHANNEL);
 
 //#if 1
@@ -332,7 +331,7 @@ int main(void)
 	
 	/* say hello */
 	printf("\r\n");
-	printf("Siempre falta tiempo para hacer pruebas!!\r\n");
+	printf("Don't turn it on, take it a part!!\r\n");
 
 #ifdef HOST_VERSION
 	strat_reset_pos(400, COLOR_Y(400), COLOR_A_ABS(-90));

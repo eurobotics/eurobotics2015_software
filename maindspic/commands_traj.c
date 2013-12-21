@@ -755,6 +755,7 @@ parse_pgm_inst_t cmd_position_set = {
 };
 
 
+#ifdef notyet /* TODO 2014*/
 
 /**********************************************************/
 /* strat configuration */
@@ -902,9 +903,6 @@ parse_pgm_inst_t cmd_strat_conf2 = {
 	},
 };
 
-#ifdef notyet
-#ifdef COMPILE_CODE /*---------------------------------------------------------------------------------------------*/
-//#endif /* COMPILE_CODE ---------------------------------------------------------------------------------------------*/
 
 /**********************************************************/
 /* strat configuration */
@@ -948,9 +946,6 @@ parse_pgm_inst_t cmd_strat_conf3 = {
 	},
 };
 
-#endif /* COMPILE_CODE ---------------------------------------------------------------------------------------------*/
-
-#endif /* notyet */
 
 /**********************************************************/
 /* Subtraj 1 */
@@ -1001,7 +996,6 @@ parse_pgm_inst_t cmd_subtraj1 = {
 };
 
 
-#ifdef notyet
 /**********************************************************/
 /* Subtraj 2 */
 
@@ -1077,27 +1071,12 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 		}	
 	}
 
-
-//	else if (strcmp_P(res->arg1, PSTR("home")) == 0) {
-//		err = strat_work_on_zone(&strat_infos.zones[ZONE_NEAR_HOME]);
-//	}
-//	else if (strcmp_P(res->arg1, PSTR("safe")) == 0) {
-//		err = strat_work_on_zone(&strat_infos.zones[ZONE_NEAR_SAFE]);
-//	}
-//	else if (strcmp_P(res->arg1, PSTR("opp_home")) == 0) {
-//		err = strat_work_on_zone(&strat_infos.zones[ZONE_OPP_NEAR_HOME]);
-//	}
-//	else if (strcmp_P(res->arg1, PSTR("opp_safe")) == 0) {
-//		err = strat_work_on_zone(&strat_infos.zones[ZONE_OPP_NEAR_SAFE]);
-//	}
-
 	printf_P(PSTR("substrat returned %s\r\n"), get_err(err));
 	trajectory_hardstop(&mainboard.traj);
 }
 
 prog_char str_subtraj2_arg0[] = "subtraj";
 parse_pgm_token_string_t cmd_subtraj2_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj2_result, arg0, str_subtraj2_arg0);
-//prog_char str_subtraj2_arg1[] = "line1#line2#green#beginning#bonus#pickup_near#place_near#home#safe#opp_home#opp_safe#";
 prog_char str_subtraj2_arg1[] = "line1#line2#green#beginning#pickup_near#bonus_wall#play#final#get_tower";
 parse_pgm_token_string_t cmd_subtraj2_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj2_result, arg1, str_subtraj2_arg1);
 //parse_pgm_token_num_t cmd_subtraj2_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj2_result, arg2, INT32);
@@ -1121,4 +1100,4 @@ parse_pgm_inst_t cmd_subtraj2 = {
 	},
 };
 
-#endif /* notyet */
+#endif /* notyet  TODO 2014*/

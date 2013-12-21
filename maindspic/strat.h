@@ -353,8 +353,19 @@ void strat_event(void *dummy);
 
 
 /********************************************
+ * in strat_fruits.c 
+ *******************************************/
+ /* TODO 2014*/
+
+/********************************************
+ * in strat_fire.c 
+ *******************************************/
+ /* TODO 2014*/
+
+/********************************************
  * in strat_treasure.c 
  *******************************************/
+#ifdef old
 uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar, uint8_t step);
 uint8_t strat_pickup_coins_floor(int16_t x, int16_t y, uint8_t group);
 uint8_t strat_pickup_goldbar_floor(int16_t x, int16_t y, uint8_t store);
@@ -367,20 +378,14 @@ uint8_t strat_save_treasure_in_hold_back(int16_t x, int16_t y);
 uint8_t strat_raise_window(uint8_t window);
 uint8_t strat_steal_treasure_hold(void);
 uint8_t strat_game(void);
-
 uint8_t strat_stole_opp_treasure(int16_t x, int16_t y);
-
-
-/********************************************
- * in strat_begin.c 
- *******************************************/
-uint8_t strat_begin(void);
-
+#endif
 
 
 /********************************************
  * in strat_main.c 
  *******************************************/
+#if notyet /* TODO 2014 */
 uint8_t strat_main_loop(void);
 
 /* return new work zone, -1 if any zone is found */
@@ -398,6 +403,8 @@ uint8_t strat_smart(void);
 
 /* add here more strat functions in files */
 
+#endif /* notyet TODO 2014 */
+
 #else /* HOST_VERSION_OA_TEST */
 
 #define AREA_BBOX_6X5	0
@@ -405,5 +412,6 @@ uint8_t strat_smart(void);
 void strat_set_bounding_box(uint8_t type);
 
 #endif /* HOST_VERSION_OA_TEST */
+
 
 #endif

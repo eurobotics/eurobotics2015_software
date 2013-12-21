@@ -46,7 +46,8 @@ void i2c_write_event(uint16_t size);
 int8_t i2c_led_control(uint8_t addr, uint8_t led, uint8_t state);
 
 
-/*Actuators mode commands 2012*/
+/* Actuators mode commands 2012 */
+#if 0
 int8_t i2c_slavedspic_mode_init(void);
 int8_t i2c_slavedspic_mode_power_off(void);
 int8_t i2c_slavedspic_mode_fingers(uint8_t type, uint8_t mode, int16_t offset);
@@ -65,16 +66,6 @@ int8_t i2c_slavedspic_mode_set_infos_all(int8_t nb_goldbars_in_boot, int8_t nb_g
 int8_t i2c_slavedspic_mode_set_infos_mouth(int8_t nb_goldbars_in_mouth,int8_t nb_coins_in_mouth);
 int8_t i2c_slavedspic_mode_set_infos_boot(int8_t nb_goldbars_in_boot, int8_t nb_coins_in_boot);
 void i2c_slavedspic_wait_ready(void);
-
-/*2011*/
-/*int8_t i2c_slavedspic_mode_token_take(uint8_t side);
-int8_t i2c_slavedspic_mode_token_eject(uint8_t side);
-int8_t i2c_slavedspic_mode_token_stop(uint8_t side);
-int8_t i2c_slavedspic_mode_token_show(uint8_t side);
-int8_t i2c_slavedspic_mode_token_out(uint8_t side);
-int8_t i2c_slavedspic_mode_token_push_r(uint8_t side);
-int8_t i2c_slavedspic_mode_token_push_l(uint8_t side);*/
-/* mirrors control */
-/*int8_t i2c_slavedspic_mode_mirror_pos(uint8_t side, uint16_t pos);*/
+#endif
 
 #endif

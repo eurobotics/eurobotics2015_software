@@ -72,13 +72,18 @@
 	} while(0)
 
 
+/* Add here the main strategic, the inteligence of robot */
+
+#if notyet /* TODO 2014 */
+
 /* return 1 if is a valid zone and 0 otherwise */
 uint8_t strat_is_valid_zone(uint8_t zone_num)
 {
 #define OPP_WAS_IN_ZONE_TIMES	
 
 	//static uint16_t opp_times[ZONES_MAX];
-	//static microseconds opp_time_us = 0;
+	//static microseconds opp_time_us = 0;
+
 	/* discard actual zone */
 	//if(strat_infos.current_zone == zone_num)
 	//	return 0;
@@ -101,7 +106,8 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 								COLOR_X(strat_infos.zones[zone_num].x_down),	strat_infos.zones[zone_num].y_down)) {
 
 #if 0
-		if(time_get_us2() - opp_time_us < 100000UL)		{
+		if(time_get_us2() - opp_time_us < 100000UL)
+		{
 			opp_time_us = time_get_us2();
 
 			opp_times[zone_num]++;
@@ -439,4 +445,6 @@ uint8_t strat_smart(void)
 	DEBUG(E_USER_STRAT, "Work on zone %d successed!", strat_infos.current_zone);
 	return END_TRAJ;
 }
+
+#endif /* notyet TODO 2014 */
 

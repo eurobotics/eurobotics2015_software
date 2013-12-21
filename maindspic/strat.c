@@ -317,9 +317,9 @@ void strat_exit(void)
 	IRQ_UNLOCK(flags);
 	beacon_cmd_beacon_off();
 
-	/* slavespic exit */
-  i2c_slavedspic_mode_turbine_blow(0);
-  i2c_slavedspic_wait_ready();
+	/* slavespic exit TODO 2014 */
+  //i2c_slavedspic_mode_turbine_blow(0);
+  //i2c_slavedspic_wait_ready();
 
 	/* turn off other devices (lasers...) */
 
@@ -363,6 +363,8 @@ void strat_event(void *dummy)
 uint8_t strat_main(void)
 {
 	uint8_t err;
+
+#if notyet /* TODO 2014 */
 
 #ifdef HOMOLOGATION
 
@@ -455,6 +457,7 @@ uint8_t strat_main(void)
 		err = strat_smart();
 	}while((err & END_TIMER) == 0);
 
+#endif /* notyet TODO 2014 */
 
 	/* end */
    strat_exit();

@@ -291,36 +291,6 @@ parse_pgm_inst_t cmd_opponent_set = {
 
 
 /**********************************************************/
-/* Test game */
-
-/* this structure is filled when cmd_start is parsed successfully */
-struct cmd_game_result {
-	fixed_string_t arg0;
-};
-
-/* function called when cmd_start is parsed successfully */
-static void cmd_game_parsed(void *parsed_result, void *data)
-{	
-	//strat_game();
-}
-
-prog_char str_game_arg0[] = "game";
-parse_pgm_token_string_t cmd_game_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_game_result, arg0, str_game_arg0);
-
-prog_char help_game[] = "Test game";
-parse_pgm_inst_t cmd_game = {
-	.f = cmd_game_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_game,
-	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_game_arg0, 
-		NULL,
-	},
-};
-
-
-
-/**********************************************************/
 /* Start */
 
 /* this structure is filled when cmd_start is parsed successfully */
@@ -464,8 +434,103 @@ parse_pgm_inst_t cmd_color = {
 	},
 };
 
+/**********************************************************/
+/* beacon */
+
+/* this structure is filled when cmd_interact is parsed successfully */
+struct cmd_beacon_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+};
+
+static void cmd_beacon_parsed(void * parsed_result, void * data)
+{
+	int16_t c;
+	int8_t cmd = 0;
+	struct vt100 vt100;
+
+	struct cmd_beacon_result *res = parsed_result;
+
+	vt100_init(&vt100);
+	
+	if(!strcmp_P(res->arg1, "raw"))
+	{
+#ifdef HOST_VERSION
+	printf("not implemented\n");
+#else
+		/* init vt100 character set */
+		vt100_init(&vt100);
+		
+		/* interact */
+		while(cmd != KEY_CTRL_C) 
+		{
+			/* received from slave */
+			if((c = uart_recv_nowait(MUX_UART))!= -1)
+				/* echo */
+				uart_send_nowait(CMDLINE_UART,c);
+			
+			/* send to slavedspic */
+			c = cmdline_getchar();
+			if (c == -1) {
+				continue;
+			}
+
+			/* check exit cmd */
+			cmd = vt100_parser(&vt100, c);
+
+			/* send to slave */
+			uart_send_nowait(MUX_UART,c);	
+		}
+#endif
+	}	
+	else if(!strcmp_P(res->arg1, "wt11_reset")){
+		beacon_cmd_wt11_local_reset();
+	}
+	else if(!strcmp_P(res->arg1, "call")){
+		beacon_cmd_wt11_call();
+	}
+	else if(!strcmp_P(res->arg1, "wt11_close")){
+		beacon_cmd_wt11_close();
+	}
+	else if(!strcmp_P(res->arg1, "on")){
+		beacon_cmd_beacon_on();
+	}
+	else if(!strcmp_P(res->arg1, "watchdog_on")){
+		beacon_cmd_beacon_on();
+	}
+	else if(!strcmp_P(res->arg1, "off")){
+		beacon_cmd_beacon_off();
+	}
+	else if(!strcmp_P(res->arg1, "color")){
+		beacon_cmd_color();
+	}
+	else if(!strcmp_P(res->arg1, "opponent")){
+		//beacon_cmd_opponent();
+		beacon_pull_opponent();
+	}
+
+	printf("Done\n\r");
+}
+
+prog_char str_beacon_arg0[] = "beacon";
+parse_pgm_token_string_t cmd_beacon_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_beacon_result, arg0, str_beacon_arg0);
+prog_char str_beacon_arg1[] = "raw#wt11_reset#call#wt11_close#on#watchdog_on#off#color#opponent";
+parse_pgm_token_string_t cmd_beacon_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_beacon_result, arg1, str_beacon_arg1);
+
+prog_char help_beacon[] = "beacon commads";
+parse_pgm_inst_t cmd_beacon = {
+	.f = cmd_beacon_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_beacon,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_beacon_arg0, 
+		(prog_void *)&cmd_beacon_arg1, 
+		NULL,
+	},
+};
 
 
+#ifdef notyet /* TODO 2014*/
 
 /**********************************************************/
 /* slavedspic */
@@ -889,207 +954,6 @@ parse_pgm_inst_t cmd_treasure = {
 	},
 };
 
-/**********************************************************/
-/* beacon */
-
-/* this structure is filled when cmd_interact is parsed successfully */
-struct cmd_beacon_result {
-	fixed_string_t arg0;
-	fixed_string_t arg1;
-};
-
-static void cmd_beacon_parsed(void * parsed_result, void * data)
-{
-	int16_t c;
-	int8_t cmd = 0;
-	struct vt100 vt100;
-
-	struct cmd_beacon_result *res = parsed_result;
-
-	vt100_init(&vt100);
-	
-	if(!strcmp_P(res->arg1, "raw"))
-	{
-#ifdef HOST_VERSION
-	printf("not implemented\n");
-#else
-		/* init vt100 character set */
-		vt100_init(&vt100);
-		
-		/* interact */
-		while(cmd != KEY_CTRL_C) 
-		{
-			/* received from slave */
-			if((c = uart_recv_nowait(MUX_UART))!= -1)
-				/* echo */
-				uart_send_nowait(CMDLINE_UART,c);
-			
-			/* send to slavedspic */
-			c = cmdline_getchar();
-			if (c == -1) {
-				continue;
-			}
-
-			/* check exit cmd */
-			cmd = vt100_parser(&vt100, c);
-
-			/* send to slave */
-			uart_send_nowait(MUX_UART,c);	
-		}
-#endif
-	}	
-	else if(!strcmp_P(res->arg1, "wt11_reset")){
-		beacon_cmd_wt11_local_reset();
-	}
-	else if(!strcmp_P(res->arg1, "call")){
-		beacon_cmd_wt11_call();
-	}
-	else if(!strcmp_P(res->arg1, "wt11_close")){
-		beacon_cmd_wt11_close();
-	}
-	else if(!strcmp_P(res->arg1, "on")){
-		beacon_cmd_beacon_on();
-	}
-	else if(!strcmp_P(res->arg1, "watchdog_on")){
-		beacon_cmd_beacon_on();
-	}
-	else if(!strcmp_P(res->arg1, "off")){
-		beacon_cmd_beacon_off();
-	}
-	else if(!strcmp_P(res->arg1, "color")){
-		beacon_cmd_color();
-	}
-	else if(!strcmp_P(res->arg1, "opponent")){
-		//beacon_cmd_opponent();
-		beacon_pull_opponent();
-	}
-
-	printf("Done\n\r");
-}
-
-prog_char str_beacon_arg0[] = "beacon";
-parse_pgm_token_string_t cmd_beacon_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_beacon_result, arg0, str_beacon_arg0);
-prog_char str_beacon_arg1[] = "raw#wt11_reset#call#wt11_close#on#watchdog_on#off#color#opponent";
-parse_pgm_token_string_t cmd_beacon_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_beacon_result, arg1, str_beacon_arg1);
-
-prog_char help_beacon[] = "beacon commads";
-parse_pgm_inst_t cmd_beacon = {
-	.f = cmd_beacon_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_beacon,
-	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_beacon_arg0, 
-		(prog_void *)&cmd_beacon_arg1, 
-		NULL,
-	},
-};
-
-#ifdef notyet
-/**********************************************************/
-/* slavedspic_ts  */
-
-/* this structure is filled when cmd_slavedspic_ts is parsed successfully */
-struct cmd_slavedspic_ts_result {
-	fixed_string_t arg0;
-	fixed_string_t arg1;
-	fixed_string_t arg2;
-};
-
-/* function called when cmd_slavedspic_ts is parsed successfully */
-static void cmd_slavedspic_ts_parsed(void *parsed_result,
-			      __attribute__((unused)) void *data)
-{
-	struct cmd_slavedspic_ts_result *res = parsed_result;
-	uint8_t side;
-
-	/* get side */
-	if (!strcmp(res->arg2, "front"))
-		side = I2C_SIDE_FRONT;
-	else
-		side = I2C_SIDE_REAR;
-
-	/* token systems control */
-	if (!strcmp(res->arg1, "take"))
-		i2c_slavedspic_mode_token_take(side);
-	else if (!strcmp(res->arg1, "eject"))
-		i2c_slavedspic_mode_token_eject(side);
-	else if (!strcmp(res->arg1, "stop"))
-		i2c_slavedspic_mode_token_stop(side);
-	else if (!strcmp(res->arg1, "show"))
-		i2c_slavedspic_mode_token_show(side);
-	else if (!strcmp(res->arg1, "out"))
-		i2c_slavedspic_mode_token_out(side);
-	else if (!strcmp(res->arg1, "push_l"))
-		i2c_slavedspic_mode_token_push_l(side);
-	else if (!strcmp(res->arg1, "push_r"))
-		i2c_slavedspic_mode_token_push_r(side);
-}
-
-prog_char str_slavedspic_ts_arg0[] = "slavedspic";
-parse_pgm_token_string_t cmd_slavedspic_ts_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_slavedspic_ts_result, arg0, str_slavedspic_ts_arg0);
-prog_char str_slavedspic_ts_arg1[] = "take#eject#stop#show#out#push_l#push_r";
-parse_pgm_token_string_t cmd_slavedspic_ts_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_slavedspic_ts_result, arg1, str_slavedspic_ts_arg1);
-prog_char str_slavedspic_ts_arg2[] = "front#rear";
-parse_pgm_token_string_t cmd_slavedspic_ts_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_slavedspic_ts_result, arg2, str_slavedspic_ts_arg2);
-
-prog_char help_slavedspic_ts[] = "set slavedspic mode";
-parse_pgm_inst_t cmd_slavedspic_ts = {
-	.f = cmd_slavedspic_ts_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_slavedspic_ts,
-	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_slavedspic_ts_arg0,
-		(prog_void *)&cmd_slavedspic_ts_arg2, 
-		(prog_void *)&cmd_slavedspic_ts_arg1, 
-		NULL,
-	},
-};
-
-/**********************************************************/
-/* slavedspic_mirror */
-
-/* this structure is filled when cmd_slavedspic_mirror is parsed successfully */
-struct cmd_slavedspic_mirror_result {
-	fixed_string_t arg0;
-	fixed_string_t arg1;
-	uint16_t arg2;
-};
-
-/* function called when cmd_slavedspic_mirror is parsed successfully */
-static void cmd_slavedspic_mirror_parsed(void *parsed_result,
-			      __attribute__((unused)) void *data)
-{
-	struct cmd_slavedspic_mirror_result *res = parsed_result;
-
-	/* get side */
-	if (!strcmp(res->arg1, "mleft"))
-		i2c_slavedspic_mode_mirror_pos(I2C_MIRROR_SIDE_LEFT, res->arg2);
-	if (!strcmp(res->arg1, "mright"))
-		i2c_slavedspic_mode_mirror_pos(I2C_MIRROR_SIDE_RIGHT, res->arg2);
-	else if (!strcmp(res->arg1, "all")) {
-		i2c_slavedspic_mode_mirror_pos(I2C_MIRROR_SIDE_LEFT, res->arg2);
-		i2c_slavedspic_mode_mirror_pos(I2C_MIRROR_SIDE_RIGHT, res->arg2);
-	}
-}
-
-prog_char str_slavedspic_mirror_arg0[] = "slavedspic";
-parse_pgm_token_string_t cmd_slavedspic_mirror_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_slavedspic_mirror_result, arg0, str_slavedspic_mirror_arg0);
-prog_char str_slavedspic_mirror_arg1[] = "mleft#mright#all";
-parse_pgm_token_string_t cmd_slavedspic_mirror_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_slavedspic_mirror_result, arg1, str_slavedspic_mirror_arg1);
-parse_pgm_token_num_t cmd_slavedspic_mirror_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_slavedspic_mirror_result, arg2, UINT16);
-
-prog_char help_slavedspic_mirror[] = "set slavedspic mode";
-parse_pgm_inst_t cmd_slavedspic_mirror = {
-	.f = cmd_slavedspic_mirror_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_slavedspic_mirror,
-	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_slavedspic_mirror_arg0,
-		(prog_void *)&cmd_slavedspic_mirror_arg1, 
-		(prog_void *)&cmd_slavedspic_mirror_arg2, 
-		NULL,
-	},
-};
 
 
 /**********************************************************/
@@ -1187,99 +1051,7 @@ parse_pgm_inst_t cmd_sensor_robot = {
 	},
 };
 
-/**********************************************************/
-/* Lasers measures */
-
-/* this structure is filled when cmd_lasers is parsed successfully */
-struct cmd_lasers_result {
-	fixed_string_t arg0;
-	fixed_string_t arg1;
-};
-
-/* function called when cmd_lasers is parsed successfully */
-static void cmd_lasers_parsed(void *parsed_result, void *data)
-{
-	struct cmd_lasers_result *res = parsed_result;
-
-	int16_t d_pt_left, d_pt_right;
-	double a_pt_left_rad, a_pt_right_rad;
-
-	if (!strcmp_P(res->arg1, PSTR("on")))
-		lasers_set_on();
-	else if (!strcmp_P(res->arg1, PSTR("off"))) {
-		lasers_set_off();
-	}
-	else if ( !strcmp_P(res->arg1, PSTR("dist")))
-	{
-		do {
-			printf_P(PSTR("dist: rigth = %.4d / left = %.4d"),
-						sensor_get_laser_distance(ADC_LASER_R),
-						sensor_get_laser_distance(ADC_LASER_L));
-			printf_P(PSTR("\n\r"));
-
-			wait_ms(100);
-		} while (!cmdline_keypressed());
-	}
-	else if ( !strcmp_P(res->arg1, PSTR("pt")))
-	{
-		do {
-			sensor_get_laser_point_da(ADC_LASER_R, &d_pt_right, &a_pt_right_rad);
-			sensor_get_laser_point_da(ADC_LASER_L, &d_pt_left, &a_pt_left_rad);
-
-			printf_P(PSTR("pt: rigth = (%.4d, %.3d) / left = (%.4d, %.3d)"),
-						d_pt_right, (int16_t)DEG(a_pt_right_rad),
-						d_pt_left, (int16_t)DEG(a_pt_left_rad));			
-
-			printf_P(PSTR("\n\r"));
-
-			wait_ms(100);
-		} while (!cmdline_keypressed());
-	}
-
-	else if ( !strcmp_P(res->arg1, PSTR("towers")))
-	{
-//		do {
-//			strat_look_for_towers();
-//			wait_ms(100);
-//		} while (!cmdline_keypressed());
-		
-		mirrors_set_mode(MODE_LOOK_FOR_TOWERS);
-		//strat_look_for_towers_enable();
-	}
-
-	else if ( !strcmp_P(res->arg1, PSTR("figures")))
-	{
-		mirrors_set_mode(MODE_LOOK_FOR_FIGURES);
-		//strat_look_for_figures_enable();
-	}
-	else if ( !strcmp_P(res->arg1, PSTR("init")))
-	{
-		mirrors_set_mode(MODE_HIDE_MIRRORS);
-		//strat_look_for_figures_disable();
-		//strat_look_for_towers_disable();
-		lasers_set_off();
-	}
-
-}
-
-prog_char str_lasers_arg0[] = "lasers";
-parse_pgm_token_string_t cmd_lasers_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_lasers_result, arg0, str_lasers_arg0);
-prog_char str_lasers_arg1[] = "on#off#dist#pt#towers#figures#init";
-parse_pgm_token_string_t cmd_lasers_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_lasers_result, arg1, str_lasers_arg1);
-
-prog_char help_lasers[] = "Show lasers values";
-parse_pgm_inst_t cmd_lasers = {
-	.f = cmd_lasers_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_lasers,
-	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_lasers_arg0, 
-		(prog_void *)&cmd_lasers_arg1, 
-		NULL,
-	},
-};
-
-#endif /* notyet */
+#endif /* notyet TODO 2014*/
 
 /**********************************************************/
 /* Interact */
