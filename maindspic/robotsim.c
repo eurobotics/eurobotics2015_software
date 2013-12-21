@@ -291,8 +291,8 @@ void robotsim_update(void)
 	y = position_get_y_double(&mainboard.pos);
 	a = position_get_a_rad_double(&mainboard.pos);
 
-	l_speed = ((l_speed * FILTER) / 100) +
-		((local_l_pwm * 1000 * FILTER2)/1000);
+	l_speed = ((l_speed * FILTER) / 100) + 
+    ((local_l_pwm * 1000 * FILTER2)/1000);
 	r_speed = ((r_speed * FILTER) / 100) +
 		((local_r_pwm * 1000 * FILTER2)/1000);
 
@@ -326,17 +326,17 @@ void robotsim_update(void)
 		r_enc += 5000; /* push 1 cm */
 
 	/* XXX should lock */
-	l_enc += (l_speed / 1000);
-	r_enc += (r_speed / 1000);
+	l_enc += (l_speed/1000);
+	r_enc += (r_speed/1000);
 }
 
 void robotsim_pwm(void *arg, int32_t val)
 {
 	//	printf("%p, %d\n", arg, val);
 	if (arg == LEFT_MOTOR)
-		l_pwm = (val / 1.55);
+		l_pwm = (val / (1.55*2));
 	else if (arg == RIGHT_MOTOR)
-		r_pwm = (val / 1.55);
+		r_pwm = (val / (1.55*2));
 }
 
 int32_t robotsim_encoder_get(void *arg)
