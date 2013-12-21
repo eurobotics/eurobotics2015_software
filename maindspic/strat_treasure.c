@@ -76,6 +76,11 @@
 	} while(0)
 
 
+/* Add here play tasks like "harvest fruits", 
+ * "harvest ground fire", "harvest wall fire", "dump fruits on basket", etc. */
+
+#ifdef notyet /* TODO 2014*/
+
 /*it's neccessary to start from a point in the y_line of the goldbar */
 uint8_t strat_empty_totem_side(int16_t x, int16_t y, uint8_t store_goldbar, uint8_t step)
 {
@@ -1196,4 +1201,6 @@ end:
 }
 
 #endif
+
+#endif notyet /* TODO 2014*/
 

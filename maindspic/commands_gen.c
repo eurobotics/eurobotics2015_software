@@ -210,83 +210,87 @@ parse_pgm_inst_t cmd_scheduler = {
 	},
 };
 
-///**********************************************************/
-///* pwm_servo tests */
-//
-///* this structure is filled when cmd_pwm is parsed successfully */
-//struct cmd_pwm_servo_result {
-//	fixed_string_t arg0;
-//	fixed_string_t arg1;
-//	uint16_t arg2;
-//};
-//
-///* function called when cmd_pwm is parsed successfully */
-//static void cmd_pwm_servo_parsed(void *parsed_result, void *show_range)
-//{
-//	void * pwm_servo_ptr = NULL;
-//	struct cmd_pwm_servo_result * res = parsed_result;
-//
-//	if(show_range){
-//		if (!strcmp_P(res->arg1, PSTR("oc1")))
-//			printf("oc1 range = [0 ; %d]\r\n", gen.pwm_servo_oc1.range);
-//		else if (!strcmp_P(res->arg1, PSTR("oc2")))
-//			printf("oc2 range = [0 ; %d]\r\n", gen.pwm_servo_oc2.range);
-//	}
-//	else{
-//		if (!strcmp_P(res->arg1, PSTR("oc1")))
-//			pwm_servo_ptr = &gen.pwm_servo_oc1;
-//		else if (!strcmp_P(res->arg1, PSTR("oc2")))
-//			pwm_servo_ptr = &gen.pwm_servo_oc2;
-//	
-//		if (pwm_servo_ptr)
-//			pwm_servo_set(pwm_servo_ptr, res->arg2);
-//	
-//		printf("done\r\n");
-//	}
-//}
-//
-//prog_char str_pwm_servo_arg0[] = "pwm_servo";
-//parse_pgm_token_string_t cmd_pwm_servo_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_pwm_servo_result, arg0, str_pwm_servo_arg0);
-//prog_char str_pwm_servo_arg1[] = "oc1#oc2";
-//parse_pgm_token_string_t cmd_pwm_servo_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_pwm_servo_result, arg1, str_pwm_servo_arg1);
-//parse_pgm_token_num_t cmd_pwm_servo_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_pwm_servo_result, arg2, INT16);
-//
-//prog_char help_pwm_servo[] = "Set pwm_servo values";
-//parse_pgm_inst_t cmd_pwm_servo = {
-//	.f = cmd_pwm_servo_parsed,  /* function to call */
-//	.data = NULL,      /* 2nd arg of func */
-//	.help_str = help_pwm_servo,
-//	.tokens = {        /* token list, NULL terminated */
-//		(prog_void *)&cmd_pwm_servo_arg0, 
-//		(prog_void *)&cmd_pwm_servo_arg1, 
-//		(prog_void *)&cmd_pwm_servo_arg2, 
-//		NULL,
-//	},
-//};
-//
-///* show range */
-//
-///* this structure is filled when cmd_pwm_servo is parsed successfully */
-//struct cmd_pwm_servo_show_range_result {
-//	fixed_string_t arg0;
-//	fixed_string_t show_range;
-//	fixed_string_t arg1;
-//};
-//prog_char str_pwm_servo_show_range_arg[] = "show_range";
-//parse_pgm_token_string_t cmd_pwm_servo_show_range_arg = TOKEN_STRING_INITIALIZER(struct cmd_pwm_servo_show_range_result, show_range, str_pwm_servo_show_range_arg);
-//
-//prog_char help_pwm_servo_show_range[] = "Show range values of pwm_servo channel";
-//parse_pgm_inst_t cmd_pwm_servo_show_range = {
-//	.f = cmd_pwm_servo_parsed,  /* function to call */
-//	.data = (void *)1,      /* 2nd arg of func */
-//	.help_str = help_pwm_servo_show_range,
-//	.tokens = {        /* token list, NULL terminated */
-//		(prog_void *)&cmd_pwm_servo_arg0, 
-//		(prog_void *)&cmd_pwm_servo_show_range_arg,
-//		(prog_void *)&cmd_pwm_servo_arg1, 
-//		NULL,
-//	},
-//};
+/**********************************************************/
+/* pwm_servo tests */
+
+/* this structure is filled when cmd_pwm is parsed successfully */
+struct cmd_pwm_servo_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+	uint16_t arg2;
+};
+
+/* function called when cmd_pwm is parsed successfully */
+static void cmd_pwm_servo_parsed(void *parsed_result, void *show_range)
+{
+#ifdef HOST_VERSION
+	printf("not implemented\n");
+#else
+	void * pwm_servo_ptr = NULL;
+	struct cmd_pwm_servo_result * res = parsed_result;
+
+	if(show_range){
+		if (!strcmp_P(res->arg1, PSTR("oc1")))
+			printf("oc1 range = [0 ; %d]\r\n", gen.pwm_servo_oc1.range);
+		else if (!strcmp_P(res->arg1, PSTR("oc2")))
+			printf("oc2 range = [0 ; %d]\r\n", gen.pwm_servo_oc2.range);
+	}
+	else{
+		if (!strcmp_P(res->arg1, PSTR("oc1")))
+			pwm_servo_ptr = &gen.pwm_servo_oc1;
+		else if (!strcmp_P(res->arg1, PSTR("oc2")))
+			pwm_servo_ptr = &gen.pwm_servo_oc2;
+	
+		if (pwm_servo_ptr)
+			pwm_servo_set(pwm_servo_ptr, res->arg2);
+	
+		printf("done\r\n");
+	}
+#endif
+}
+
+prog_char str_pwm_servo_arg0[] = "pwm_servo";
+parse_pgm_token_string_t cmd_pwm_servo_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_pwm_servo_result, arg0, str_pwm_servo_arg0);
+prog_char str_pwm_servo_arg1[] = "oc1#oc2";
+parse_pgm_token_string_t cmd_pwm_servo_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_pwm_servo_result, arg1, str_pwm_servo_arg1);
+parse_pgm_token_num_t cmd_pwm_servo_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_pwm_servo_result, arg2, INT16);
+
+prog_char help_pwm_servo[] = "Set pwm_servo values";
+parse_pgm_inst_t cmd_pwm_servo = {
+	.f = cmd_pwm_servo_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_pwm_servo,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_pwm_servo_arg0, 
+		(prog_void *)&cmd_pwm_servo_arg1, 
+		(prog_void *)&cmd_pwm_servo_arg2, 
+		NULL,
+	},
+};
+
+/* show range */
+
+/* this structure is filled when cmd_pwm_servo is parsed successfully */
+struct cmd_pwm_servo_show_range_result {
+	fixed_string_t arg0;
+	fixed_string_t show_range;
+	fixed_string_t arg1;
+};
+prog_char str_pwm_servo_show_range_arg[] = "show_range";
+parse_pgm_token_string_t cmd_pwm_servo_show_range_arg = TOKEN_STRING_INITIALIZER(struct cmd_pwm_servo_show_range_result, show_range, str_pwm_servo_show_range_arg);
+
+prog_char help_pwm_servo_show_range[] = "Show range values of pwm_servo channel";
+parse_pgm_inst_t cmd_pwm_servo_show_range = {
+	.f = cmd_pwm_servo_parsed,  /* function to call */
+	.data = (void *)1,      /* 2nd arg of func */
+	.help_str = help_pwm_servo_show_range,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_pwm_servo_arg0, 
+		(prog_void *)&cmd_pwm_servo_show_range_arg,
+		(prog_void *)&cmd_pwm_servo_arg1, 
+		NULL,
+	},
+};
 
 /**********************************************************/
 /* dac_mc tests */

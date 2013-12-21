@@ -42,7 +42,6 @@
 #ifndef HOST_VERSION
 
 /************ ADC */
-
 /* config init */
 static void adc_init(void)
 {
@@ -119,7 +118,7 @@ struct adc_infos {
 	uint16_t config;
 	int16_t value;
 	int16_t prev_val;
-   int16_t (*filter)(struct adc_infos *, int16_t);
+  int16_t (*filter)(struct adc_infos *, int16_t);
 };
 
 
@@ -194,89 +193,6 @@ int16_t sensor_get_adc(uint8_t i)
 #endif
 }
 
-/* get laser distance in mm */
-typedef struct {
-	int16_t offset_code;
-	int16_t offset_mm;
-	double gain_mm_code;
-} laser_calib_t;
-
-
-#define LASER_L_D_MIN_MM 		120
-
-#define LASER_L_D_CAL_MM 		2080
-#define LASER_L_D_MIN_CODE		1
-#define LASER_L_D_CAL_CODE		468
-#define LASER_L_G_MM_CODE		4.4540
-
-#define LASER_R_D_MIN_MM 		130
-#define LASER_R_D_CAL_MM 		2087
-#define LASER_R_D_MIN_CODE		1
-#define LASER_R_D_CAL_CODE		850
-#define LASER_R_G_MM_CODE		2.4581
-
-#define LASER_D_CENTER		 	13
-#define LASER_D_OUT_OF_RANGE	5000
-
-const laser_calib_t laser_calib[2] = {
-	[ADC_LASER_R] = { LASER_R_D_MIN_CODE, LASER_R_D_MIN_MM, LASER_R_G_MM_CODE },
-	[ADC_LASER_L] = { LASER_L_D_MIN_CODE, LASER_L_D_MIN_MM, LASER_L_G_MM_CODE },
-};
-
-int16_t sensor_get_laser_distance(uint8_t i)
-{
-	double d = LASER_D_OUT_OF_RANGE;
-	int16_t value_code;
-	
-	/* get code */
-	value_code = sensor_get_adc(i);
-
-	/* if code is more than code of minimun distance */
-	if(value_code > (3*laser_calib[i].offset_code)) {
-
-		/* convert to distance */
-		d = (value_code - laser_calib[i].offset_code) * laser_calib[i].gain_mm_code;
-		d += laser_calib[i].offset_mm;
-		d += (ROBOT_WIDTH/2.0);
-	}
-
-	return (int16_t)d;
-}
-
-/* get distance and angle (+/- PI) of laser point */
-int16_t sensor_get_laser_point_da(uint8_t i, int16_t *d, double *a_rad)
-{
-	double d_laser = sensor_get_laser_distance(i);
-	double d_pt, a_pt_rad;
-
-	/* return if no valid laser distance */
-	if(((int16_t) d_laser ) == LASER_D_OUT_OF_RANGE)
-		return 0;
-
-#ifdef LASER_POINT_WITH_PRECISSION
-	/* distance and relative angle to laser point */
-	d_pt = norm(d_laser, LASER_D_CENTER);
-	a_pt_rad = acos(d_laser/d_pt);	
-	
-	if(i == ADC_LASER_R)
-		a_pt_rad = -(M_PI/2) - a_pt_rad;
-	else
-		a_pt_rad = 	(M_PI/2) + a_pt_rad;
-#else
-
-	d_pt = d_laser;
-	if(i == ADC_LASER_R)
-		a_pt_rad = -(M_PI/2);
-	else
-		a_pt_rad = 	(M_PI/2);
-	
-#endif
-	
-	*d = (int16_t)d_pt;
-	*a_rad = a_pt_rad;
-
-	return 1;
-}
 
 /************ boolean sensors */
 
@@ -431,7 +347,7 @@ static void do_boolean_sensors(void *dummy)
 /* virtual obstacle */
 #define DISABLE_CPT_MAX 200
 static uint16_t disable = 0; 	/* used to disable obstacle detection 
-			   				 		 * during some time */
+			   				 		           * during some time */
 
 /* called every 10 ms */
 void sensor_obstacle_update(void)
