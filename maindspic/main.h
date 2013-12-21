@@ -196,7 +196,10 @@
 #define EVENT_PERIOD_I2C_POLL		   8000L
 #define EVENT_PERIOD_CS 			   5000L
 
-#define CS_HZ (1000000. / EVENT_PERIOD_CS)
+
+#define CS_PERIOD ((EVENT_PERIOD_CS/SCHEDULER_UNIT)*SCHEDULER_UNIT) /* in microsecond */
+#define CS_HZ (1000000. / CS_PERIOD)
+
 
 /* dynamic logs */
 #define NB_LOGS 10
