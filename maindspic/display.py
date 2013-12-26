@@ -1,31 +1,30 @@
 import math, sys, time, os, random, re
+from matplotlib.patches import Arrow, Circle, Wedge, Polygon, Rectangle
 from visual import *
 
 FLOAT = "([-+]?[0-9]*\.?[0-9]+)"
 INT = "([-+]?[0-9][0-9]*)"
 
 AREA_X = 3000.
-AREA_Y = 2100.
+AREA_Y = 2000.
 
-ROBOT_HEIGHT=5 # 350
-CORN_HEIGHT=5  # 150
-BALL_CYLINDER=1 # 0
+ROBOT_HEIGHT = 350.0
+WALL_HEIGHT = 70.0
+ROBOT_WIDTH  = 330.0
+ROBOT_LENGTH = 281.5
 
-ROBOT_WIDTH =281.5
-ROBOT_LENGTH=330.0
-
-area = [ (0.0, 0.0, -0.2), (3000.0, 2100.0, 0.2) ]
+area = [ (0.0, 0.0, -0.2), (3000.0, 2000.0, 0.2) ]
 areasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , area)
 area_box = box(size=areasize, color=(0.0, 1.0, 0.0))
 
-scene.autoscale=0
+scene.autoscale = 1
 
 # all positions of robot every 5ms
 save_pos = []
 
 robot = box(color=(0.4, 0.4, 0.4))
-lspickle = box(color=(0.4, 0.4, 0.4))
-rspickle = box(color=(0.4, 0.4, 0.4))
+#lspickle = box(color=(0.4, 0.4, 0.4))
+#rspickle = box(color=(0.4, 0.4, 0.4))
 
 opp = box(color=(0.7, 0.2, 0.2))
 
@@ -35,20 +34,27 @@ hcenter_line.pos = [(-AREA_X/2, 0., 0.3), (AREA_X/2, 0., 0.3)]
 vcenter_line = curve()
 vcenter_line.pos = [(0., -AREA_Y/2, 0.3), (0., AREA_Y/2, 0.3)]
 
-yellowarea = [ (0.0, 0.0, -0.5), (500.0, 500.0, 0.5) ]
+yellowarea = [ (0.0, 0.0, -0.5), (400.0, 700.0, 0.5) ]
 yellowareasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , yellowarea)
-yellowarea_box = box(pos=(-AREA_X/2+250,-AREA_Y/2+250,0), size=yellowareasize, color=(1.0, 1.0, 0.0))
+yellowarea_box = box(pos=(-AREA_X/2+200,-AREA_Y/2+350,0), size=yellowareasize, color=(1.0, 1.0, 0.0))
 
-bluearea = [ (0.0, 0.0, -0.5), (500.0, 500.0, 0.5) ]
-blueareasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , bluearea)
-bluearea_box = box(pos=(AREA_X/2-250,-AREA_Y/2+250,0), size=blueareasize, color=(0.0, 0.0, 1.0))
+redarea = [ (0.0, 0.0, -0.5), (400.0, 700.0, 0.5) ]
+redareasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , redarea)
+redarea_box = box(pos=(AREA_X/2-200,-AREA_Y/2+350,0), size=redareasize, color=(1.0, 0.0, 0.0))
 
-greyarea = [ (0.0, 0.0, -0.5), (1520.0, 500.0, 0.5) ]
-greyareasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , greyarea)
-greyarea_box = box(pos=(0,-AREA_Y/2+250,0), size=greyareasize, color=(0.3, 0.6, 0.3))
+wallx = [ (0.0, 0.0, -0.5), (AREA_X+44, 22, WALL_HEIGHT) ]
+wallxsize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , wallx)
+wallx1_box = box(pos=(0,-AREA_Y/2-11, WALL_HEIGHT/2), size=wallxsize, color=(0.5, 0.5, 0.5))
+wallx2_box = box(pos=(0,AREA_Y/2+11, WALL_HEIGHT/2), size=wallxsize, color=(0.5, 0.5, 0.5))
+
+wally = [ (0.0, 0.0, -0.5), (22, AREA_Y+44, WALL_HEIGHT) ]
+wallysize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , wally)
+wally1_box = box(pos=(-AREA_X/2-11, 0, WALL_HEIGHT/2), size=wallysize, color=(0.5, 0.5, 0.5))
+wally2_box = box(pos=(AREA_X/2+11, 0, WALL_HEIGHT/2), size=wallysize, color=(0.5, 0.5, 0.5))
+
 
 YELLOW = 0
-BLUE = 1
+RED    = 1
 color = YELLOW
 
 def square(sz):
@@ -66,199 +72,108 @@ sq2 = square(500)
 robot_x = 0.
 robot_y = 0.
 robot_a = 0.
-robot_lspickle_deployed = 0
-robot_rspickle_deployed = 0
-robot_lspickle_autoharvest = 0
-robot_rspickle_autoharvest = 0
+#robot_lspickle_deployed = 0
+#robot_rspickle_deployed = 0
+#robot_lspickle_autoharvest = 0
+#robot_rspickle_autoharvest = 0 
 robot_trail = curve()
 robot_trail_list = []
 max_trail = 500
 
 area_objects = []
 
-OFFSET_CORN_X=150
-OFFSET_CORN_Y=222
-STEP_CORN_X=225
-STEP_CORN_Y=250
-
-WAYPOINTS_NBX = 13
-WAYPOINTS_NBY = 8
-
-TYPE_WAYPOINT=0
-TYPE_DANGEROUS=1
-TYPE_WHITE_CORN=2
-TYPE_BLACK_CORN=3
-TYPE_OBSTACLE=4
-TYPE_BALL=5
-TYPE_NEIGH=6
-
-col = [TYPE_WAYPOINT] * WAYPOINTS_NBY
-waypoints = [col[:] for i in range(WAYPOINTS_NBX)]
-corn_table = [TYPE_WHITE_CORN]*18
-
-corn_side_confs = [
-    [ 1, 4 ],
-    [ 0, 4 ],
-    [ 2, 4 ],
-    [ 2, 3 ],
-    [ 0, 3 ],
-    [ 1, 3 ],
-    [ 1, 6 ],
-    [ 0, 6 ],
-    [ 2, 6 ],
-    ]
-corn_center_confs = [
-    [ 5, 8 ],
-    [ 7, 8 ],
-    [ 5, 9 ],
-    [ 7, 8 ],
-    ]
-
-def pt2corn(i,j):
-    if i == 0 and j == 2: return 0
-    if i == 0 and j == 4: return 1
-    if i == 0 and j == 6: return 2
-    if i == 2 and j == 3: return 3
-    if i == 2 and j == 5: return 4
-    if i == 2 and j == 7: return 5
-    if i == 4 and j == 4: return 6
-    if i == 4 and j == 6: return 7
-    if i == 6 and j == 5: return 8
-    if i == 6 and j == 7: return 9
-    if i == 8 and j == 4: return 10
-    if i == 8 and j == 6: return 11
-    if i == 10 and j == 3: return 12
-    if i == 10 and j == 5: return 13
-    if i == 10 and j == 7: return 14
-    if i == 12 and j == 2: return 15
-    if i == 12 and j == 4: return 16
-    if i == 12 and j == 6: return 17
-    return -1
-
-def corn_get_sym(i):
-    sym = [15, 16, 17, 12, 13, 14, 10, 11, 8, 9, 6, 7, 3, 4, 5, 0, 1, 2]
-    return sym[i]
-
-def init_corn_table(conf_side, conf_center):
-    global corn_table, corn_side_confs, corn_center_confs
-    print "confs = %d, %d"%(conf_side, conf_center)
-    for i in range(18):
-        if i in corn_side_confs[conf_side]:
-            corn_table[i] = TYPE_BLACK_CORN
-            continue
-        if corn_get_sym(i) in corn_side_confs[conf_side]:
-            corn_table[i] = TYPE_BLACK_CORN
-            continue
-        if i in corn_center_confs[conf_center]:
-            corn_table[i] = TYPE_BLACK_CORN
-            continue
-        if corn_get_sym(i) in corn_center_confs[conf_center]:
-            corn_table[i] = TYPE_BLACK_CORN
-            continue
-        corn_table[i] = TYPE_WHITE_CORN
-
-def init_waypoints():
-    global waypoints, corn_table
-
-    for i in range(WAYPOINTS_NBX):
-        for j in range(WAYPOINTS_NBY):
-            # corn
-            c = pt2corn(i, j)
-            if c >= 0:
-                waypoints[i][j] = corn_table[c]
-                continue
-
-            # balls
-            if (i & 1) == 0 and j > 3 and \
-                    (not (i == 0 and j == WAYPOINTS_NBY-1)) and \
-                    (not (i == WAYPOINTS_NBX-1 and j == WAYPOINTS_NBY-1)):
-                waypoints[i][j] = TYPE_BALL
-                continue
-            if (i == 0 or i == WAYPOINTS_NBX-1) and j > 2 and j < 7:
-                waypoints[i][j] = TYPE_BALL
-                continue
-
-            # too close of border
-            if (i & 1) == 1 and j == WAYPOINTS_NBY -1:
-                waypoints[i][j] = TYPE_OBSTACLE
-                continue
-            # hill
-            if i >= 2 and i < WAYPOINTS_NBX - 2 and j < 2:
-                waypoints[i][j] = TYPE_OBSTACLE
-                continue
-            # dangerous points
-            if i == 0 or i == WAYPOINTS_NBX-1:
-                waypoints[i][j] = TYPE_DANGEROUS
-                continue
-            if (i&1) == 0 and j == WAYPOINTS_NBY-1:
-                waypoints[i][j] = TYPE_DANGEROUS
-                continue
-
-            waypoints[i][j] = TYPE_WAYPOINT
-
-        print i, waypoints[i]
-    return waypoints
-
+BASKET_HEIGHT = 44.0
+MAMUT_HEIGHT = 50.0
+FRESCO_HEIGHT = 200.0
+HEARTFIRE_HEIGHT = 30.0
+TREETRUNK_HEIGHT = 320.0
+TREETOP_HEIGHT = 10.0
 
 def toggle_obj_disp():
     global area_objects
 
-    """
+    
     if area_objects == []:
-        c = sphere(radius=5, color=(0., 0.,1.),
-                   pos=(1238.-AREA_X/2, 1313.-AREA_Y/2, 5))
+        yellowbasket = [ (0.0, 0.0, -0.5), (700.0, 300.0, BASKET_HEIGHT) ]
+        yellowbasketsize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , yellowbasket)
+        c = box(pos=(AREA_X/2-400-350,-AREA_Y/2+150,BASKET_HEIGHT/2), size=yellowbasketsize, color=(1.0, 1.0, 0.0))
         area_objects.append(c)
-        c = sphere(radius=5, color=(0., 0.,1.),
-                   pos=(1364.-AREA_X/2, 1097.-AREA_Y/2, 5))
-        area_objects.append(c)
-        c = sphere(radius=5, color=(0., 0.,1.),
-                   pos=(1453.-AREA_X/2, 1176.-AREA_Y/2, 5))
-        area_objects.append(c)
-        c = sphere(radius=5, color=(0., 0.,1.),
-                   pos=(1109.-AREA_X/2, 1050.-AREA_Y/2, 5))
-        area_objects.append(c)
-"""
-    if area_objects == []:
-        i = 0
-        j = 0
-        x = OFFSET_CORN_X
-        while x < 3000:
-            if (i & 1) == 0:
-                y = OFFSET_CORN_Y
-            else:
-                y = OFFSET_CORN_Y + STEP_CORN_Y/2
-            j = 0
-            while y < 2100:
-                print x,y
-                if waypoints[i][j] == TYPE_WHITE_CORN:
-                    c = cylinder(axis=(0,0,1), length=CORN_HEIGHT,
-                                 radius=25, color=(0.8,0.8,0.8),
-                                 pos=(x-AREA_X/2,y-AREA_Y/2,CORN_HEIGHT/2))
-                    area_objects.append(c)
-                elif waypoints[i][j] == TYPE_BLACK_CORN:
-                    c = cylinder(axis=(0,0,1), length=CORN_HEIGHT,
-                                 radius=25, color=(0.2,0.2,0.2),
-                                 pos=(x-AREA_X/2,y-AREA_Y/2,CORN_HEIGHT/2))
-                    area_objects.append(c)
-                elif waypoints[i][j] == TYPE_BALL:
-                    if BALL_CYLINDER == 1:
-                        c = cylinder(axis=(0,0,1), radius=50,
-                                     length=CORN_HEIGHT,
-                                     color=(1., 0.,0.),
-                                     pos=(x-AREA_X/2,y-AREA_Y/2,CORN_HEIGHT/2))
-                    else:
-                        c = sphere(radius=50, color=(1., 0.,0.),
-                                   pos=(x-AREA_X/2,y-AREA_Y/2,50))
 
-                    area_objects.append(c)
-                else:
-                    c = sphere(radius=5, color=(0., 0.,1.),
-                               pos=(x-AREA_X/2,y-AREA_Y/2,5))
-                    area_objects.append(c)
-                j += 1
-                y += STEP_CORN_Y
-            i += 1
-            x += STEP_CORN_X
+        redbasket = [ (0.0, 0.0, -0.5), (700.0, 300.0, BASKET_HEIGHT) ]
+        redbasketsize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , redbasket)
+        c = box(pos=(-AREA_X/2+400+350,-AREA_Y/2+150,BASKET_HEIGHT/2), size=redbasketsize, color=(1.0, 0.0, 0.0))
+        area_objects.append(c)
+
+        mamut = [ (0.0, 0.0, -0.5), (700.0, 22.0, MAMUT_HEIGHT) ]
+        mamutsize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , mamut)
+        c = box(pos=(-AREA_X/2+400+350,-AREA_Y/2-11,MAMUT_HEIGHT/2+70), size=mamutsize, color=(0.6, 0.3, 0.0))
+        area_objects.append(c)
+        c = box(pos=(AREA_X/2-400-350,-AREA_Y/2-11,MAMUT_HEIGHT/2+70), size=mamutsize, color=(0.6, 0.3, 0.0))
+        area_objects.append(c)
+
+        fresco = [ (0.0, 0.0, -0.5), (600.0, 22.0, FRESCO_HEIGHT) ]
+        frescosize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , fresco)
+        c = box(pos=(0,-AREA_Y/2-11, FRESCO_HEIGHT/2+70), size=frescosize, color=(0.5, 0.5, 0.5))
+        area_objects.append(c)
+
+        c = cylinder(axis=(0,0,1), length=HEARTFIRE_HEIGHT,
+                     radius=150, color=(0.6, 0.3, 0.0),
+                     pos=(0,50,HEARTFIRE_HEIGHT/2))
+        area_objects.append(c)
+
+        c = cylinder(axis=(0,0,1), length=HEARTFIRE_HEIGHT,
+                     radius=250, color=(0.6, 0.3, 0.0),
+                     pos=(-AREA_X/2,AREA_Y/2, 0))
+        area_objects.append(c)
+
+        c = cylinder(axis=(0,0,1), length=HEARTFIRE_HEIGHT,
+                     radius=250, color=(0.6, 0.3, 0.0),
+                     pos=(AREA_X/2,AREA_Y/2, 0))
+        area_objects.append(c)
+
+        # tree trunks
+        c = cylinder(axis=(0,0,1), length=TREETRUNK_HEIGHT,
+                     radius=25, color=(0.6, 0.3, 0.0),
+                     pos=(-AREA_X/2,-AREA_Y/2+1300, 0))
+        area_objects.append(c)
+
+        c = cylinder(axis=(0,0,1), length=TREETRUNK_HEIGHT,
+                     radius=25, color=(0.6, 0.3, 0.0),
+                     pos=(AREA_X/2,-AREA_Y/2+1300, 0))
+        area_objects.append(c)
+
+        c = cylinder(axis=(0,0,1), length=TREETRUNK_HEIGHT,
+                     radius=25, color=(0.6, 0.3, 0.0),
+                     pos=(-AREA_X/2+700, AREA_Y/2, 0))
+        area_objects.append(c)
+
+        c = cylinder(axis=(0,0,1), length=TREETRUNK_HEIGHT,
+                     radius=25, color=(0.6, 0.3, 0.0),
+                     pos=(AREA_X/2-700, AREA_Y/2, 0))
+        area_objects.append(c)
+
+        # tree top
+        c = cylinder(axis=(0,0,1), length=TREETOP_HEIGHT,
+                     radius=150, color=(0.0, 1.0, 0.0),
+                     pos=(-AREA_X/2,-AREA_Y/2+1300, TREETRUNK_HEIGHT))
+        area_objects.append(c)
+
+        c = cylinder(axis=(0,0,1), length=TREETOP_HEIGHT,
+                     radius=150, color=(0.0, 1.0, 0.0),
+                     pos=(AREA_X/2,-AREA_Y/2+1300, TREETRUNK_HEIGHT))
+        area_objects.append(c)
+
+        c = cylinder(axis=(0,0,1), length=TREETOP_HEIGHT,
+                     radius=150, color=(0.0, 1.0, 0.0),
+                     pos=(-AREA_X/2+700, AREA_Y/2, TREETRUNK_HEIGHT))
+        area_objects.append(c)
+
+        c = cylinder(axis=(0,0,1), length=TREETOP_HEIGHT,
+                     radius=150, color=(0.0, 1.0, 0.0),
+                     pos=(AREA_X/2-700, AREA_Y/2, TREETRUNK_HEIGHT))
+        area_objects.append(c)
+
+
     else:
         for o in area_objects:
             if o.visible:
@@ -268,9 +183,9 @@ def toggle_obj_disp():
 
 def toggle_color():
     global color
-    global BLUE, YELLOW
+    global RED, YELLOW
     if color == YELLOW:
-        color = BLUE
+        color = RED
     else:
         color = YELLOW
 
@@ -298,7 +213,7 @@ def set_robot():
 
     robot.axis = axis
     robot.size = (ROBOT_LENGTH, ROBOT_WIDTH, ROBOT_HEIGHT)
-
+    """
     lspickle.pos = (tmp_x + (robot_lspickle_deployed*60) * math.cos((tmp_a+90)*math.pi/180),
                     tmp_y + (robot_lspickle_deployed*60) * math.sin((tmp_a+90)*math.pi/180),
                     ROBOT_HEIGHT/2)
@@ -318,7 +233,7 @@ def set_robot():
         rspickle.color = (0.2, 0.2, 1)
     else:
         rspickle.color = (0.4, 0.4, 0.4)
-
+    """
     # save position
     save_pos.append((robot.pos.x, robot.pos.y, tmp_a))
 
@@ -346,9 +261,6 @@ def silent_mkfifo(f):
     except:
         pass
 
-#init_corn_table(random.randint(0,8), random.randint(0,3))
-init_corn_table(0, 0)
-waypoints = init_waypoints()
 toggle_obj_disp()
 
 while True:
@@ -359,7 +271,7 @@ while True:
         fw = open("/tmp/.robot_dis2sim", "w", 0)
         while True:
             m = None
-            l = fr.readline()
+            l = fr. readline()
 
             # parse position
             if not m:
@@ -369,7 +281,7 @@ while True:
                     robot_y = int(m.groups()[1])
                     robot_a = int(m.groups()[2])
                     set_robot()
-
+            """
             # parse ballboard
             if not m:
                 m = re.match("ballboard=%s"%(INT), l)
@@ -383,13 +295,13 @@ while True:
                     print "cobboard: %x,%x"%(int(m.groups()[0]),int(m.groups()[1]))
                     side = int(m.groups()[0])
                     flags = int(m.groups()[1])
-                    if (side == 0 and color == YELLOW) or (side == 1 and color == BLUE):
+                    if (side == 0 and color == YELLOW) or (side == 1 and color == RED):
                         robot_lspickle_deployed = ((flags & 1) * 2)
                         robot_lspickle_autoharvest = ((flags & 2) != 0)
                     else:
                         robot_rspickle_deployed = ((flags & 1) * 2)
                         robot_rspickle_autoharvest = ((flags & 2) != 0)
-
+            """
             if scene.mouse.events != 0:
                 oppx, oppy, oppz = scene.mouse.getevent().project(normal=(0,0,1))
                 set_opp(oppx, oppy)
@@ -399,7 +311,7 @@ while True:
                     else:
                         fw.write("opp %d %d"%(int(1500 - oppx), int(1050 - oppy)))
                 except:
-                    print "not connected"
+                  print "not connected"
 
             if scene.kb.keys == 0:
                 continue
@@ -414,12 +326,12 @@ while True:
                 scene.center = x,y+10,z
             elif k == "down":
                 scene.center = x,y-10,z
-            elif k == "l":
-                fw.write("l")
-            elif k == "r":
-                fw.write("r")
-            elif k == "b":
-                fw.write("b")
+            #elif k == "l":
+            #    fw.write("l")
+            #elif k == "r":
+            #    fw.write("r")
+            #elif k == "b":
+            #    fw.write("b")
             elif k == "c":
                 robot_trail_list = []
             elif k == "x":

@@ -135,31 +135,12 @@ struct strat_infos strat_infos = {
 /*************************************************************/
 void strat_set_bounding_box(uint8_t type)
 {
-#ifdef DEMO_MODE
+
 	strat_infos.area_bbox.x1 = OBS_CLERANCE;
-	strat_infos.area_bbox.x2 = 4000 - OBS_CLERANCE;
+	strat_infos.area_bbox.x2 = 3000 - OBS_CLERANCE;
 	
-	strat_infos.area_bbox.y1 = OBS_CLERANCE;
-	strat_infos.area_bbox.y2 = 3000 - OBS_CLERANCE;
-#else
-	strat_infos.area_bbox.x1 = 400 + OBS_CLERANCE -10;
-	strat_infos.area_bbox.x2 = 3000 - 400 - OBS_CLERANCE + 10;
-	
-	strat_infos.area_bbox.y1 = OBS_CLERANCE;
-	strat_infos.area_bbox.y2 = 2000 - 44 - OBS_CLERANCE;
-
-
-   switch(type) {
-      case I2C_COLOR_RED:
-      	strat_infos.area_bbox.x2 = 3000 - 400 - OBS_CLERANCE - 100;
-         break;
-      case I2C_COLOR_PURPLE:
-	      strat_infos.area_bbox.x1 = 400 + OBS_CLERANCE + 100;
-         break;
-      default:
-         break;
-   }
-#endif
+	strat_infos.area_bbox.y1 = OBS_CLERANCE + 300;
+	strat_infos.area_bbox.y2 = 2000 - OBS_CLERANCE;
 
 	polygon_set_boundingbox(strat_infos.area_bbox.x1,
 				strat_infos.area_bbox.y1,
