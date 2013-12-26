@@ -23,6 +23,8 @@
 #ifndef _STRAT_H_
 #define _STRAT_H_
 
+/* compilation flavours */
+//#define HOMOLOGATION
 //#define DEMO_MODE
 
 /* area */
@@ -30,7 +32,7 @@
 #define AREA_Y 2000
 
 /* XXX obstacle clerance */
-#define OBS_CLERANCE       230.0
+#define OBS_CLERANCE       260.0
 //#define OBS_CLERANCE  205.0    /* when goes backwards */
 
 /* position of the tokens */
@@ -139,10 +141,6 @@
 #define TRAJ_FLAGS_SMALL_DIST 		(END_TRAJ|END_BLOCKING|END_INTR)
 
 #define LAST_SECONDS_TIME	80
-
-/* homologation compilation */
-//#define HOMOLOGATION
-
 
 /* default speeds */
 #ifdef HOMOLOGATION
