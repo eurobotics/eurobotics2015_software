@@ -46,26 +46,112 @@ void i2c_write_event(uint16_t size);
 int8_t i2c_led_control(uint8_t addr, uint8_t led, uint8_t state);
 
 
-/* Actuators mode commands 2012 */
-#if 0
+/* slavedspic mode commands 2012 */
+
+/****** GENERIC FUNCTIONS */
+
+/* initialize */
 int8_t i2c_slavedspic_mode_init(void);
+
+/* exit */
 int8_t i2c_slavedspic_mode_power_off(void);
-int8_t i2c_slavedspic_mode_fingers(uint8_t type, uint8_t mode, int16_t offset);
-int8_t i2c_slavedspic_mode_arm(uint8_t type, uint8_t mode, int16_t offset);
-int8_t i2c_slavedspic_mode_lift_height(uint32_t height);
-int8_t i2c_slavedspic_mode_hook(uint8_t mode);
-int8_t i2c_slavedspic_mode_boot(uint8_t mode);
-int8_t i2c_slavedspic_mode_tray(uint8_t type, uint8_t mode);
-int8_t i2c_slavedspic_mode_turbine_angle(int8_t angle_deg, uint16_t angle_speed);
-int8_t i2c_slavedspic_mode_turbine_blow(int8_t blow_speed);
-int8_t i2c_slavedspic_mode_harvest(uint8_t mode);
-int8_t i2c_slavedspic_mode_store(uint8_t times, uint8_t mode);
-int8_t i2c_slavedspic_mode_dump(uint8_t mode);
-int8_t i2c_slavedspic_mode_set_infos_all(int8_t nb_goldbars_in_boot, int8_t nb_goldbars_in_mouth,
-                           int8_t nb_coins_in_boot, int8_t nb_coins_in_mouth);
-int8_t i2c_slavedspic_mode_set_infos_mouth(int8_t nb_goldbars_in_mouth,int8_t nb_coins_in_mouth);
-int8_t i2c_slavedspic_mode_set_infos_boot(int8_t nb_goldbars_in_boot, int8_t nb_coins_in_boot);
-void i2c_slavedspic_wait_ready(void);
-#endif
+
+/* wait for slavedspic is ready */
+void i2c_slavedspic_wait_status(uint8_t status);
+
+
+/****** LOW LEVEL FUNCTIONS */
+
+/* set arms */
+int8_t i2c_slavedspic_set_arm(uint8_t side, uint8_t elbow_height_mm, uint8_t elbow_yaw_deg, int8_t wrist_roll_deg);
+
+/* set stick */
+int8_t i2c_slavedspic_set_stick(uint8_t side, uint8_t angle_deg);
+
+/* set comb */
+int8_t i2c_slavedspic_set_comb(uint8_t side, uint8_t angle_deg);
+
+/* set comb tray */
+int8_t i2c_slavedspic_set_comb_tray(uint8_t angle_deg);
+
+/* set boot tray */
+int8_t i2c_slavedspic_set_boot_tray(uint8_t duty);
+
+/* set boot tray */
+int8_t i2c_slavedspic_set_boot_door(uint8_t angle_deg);
+
+/* set vacum */
+int8_t i2c_slavedspic_set_vacuum_motor(uint8_t duty);
+
+/* set vacum flow */
+int8_t i2c_slavedspic_set_vacuum_presure(uint8_t on);
+
+
+
+/****** HI LEVEL FUNCTIONS */
+
+/* FIRES STUFF */
+
+/* prepare for pick up fire */
+int8_t i2c_slavedspic_mode_prep_pickup_fire(uint8_t side, uint8_t level, uint8_t elbow_yaw_deg, int8_t wrist_roll_deg);
+
+/* pick up fire */
+int8_t i2c_slavedspic_mode_pickup_fire(uint8_t side, uint8_t level);
+
+/* store fire */
+int8_t i2c_slavedspic_mode_store_fire(uint8_t side);
+
+/* load fires on arms */
+int8_t i2c_slavedspic_mode_load_fire(uint8_t nb_left, uint8_t nb_right);
+
+/* prepare for drag fires */
+int8_t i2c_slavedspic_mode_prep_drag_fire(uint8_t side, uint8_t level, uint8_t elbow_yaw_deg, int8_t wrist_yaw_deg);
+
+/* drag fires */
+int8_t i2c_slavedspic_mode_drag_fire(uint8_t side, uint8_t level);
+
+/* prepare for turn fires */
+int8_t i2c_slavedspic_mode_prep_turn_fires(uint8_t side, uint8_t level, uint8_t elbow_yaw_deg);
+
+/* turn fires */
+int8_t i2c_slavedspic_mode_turn_fires(uint8_t side, uint8_t level);
+
+/* hide arm */
+int8_t i2c_slavedspic_mode_hide_arms(uint8_t side);
+
+
+/* TREES AND FRUITS STUFF */
+
+/* prepare for harvest tree's fruit */
+int8_t i2c_slavedspic_mode_prep_harvest_tree(void);
+
+/* harvest tree's fruit */
+int8_t i2c_slavedspic_mode_harvest_tree(void);
+
+/* dump fruit harvested */
+int8_t i2c_slavedspic_mode_dump_fruit(uint8_t vibration_duty);
+
+/* ends fruit dumping fruit */
+int8_t i2c_slavedspic_mode_end_dump_fruit(void);
+
+/* prepare for scanning toxic fruits */
+int8_t i2c_slavedspic_mode_prep_toxic_fruit(uint8_t side, uint8_t level, uint8_t elbow_yaw_deg);
+
+/* pickup toxic fruit */
+int8_t i2c_slavedspic_mode_pickup_toxic_fruit(uint8_t side, uint8_t level, uint8_t elbow_yaw_deg);
+
+/* drag toxic fruit */
+int8_t i2c_slavedspic_mode_drop_toxic_fruit(uint8_t side);
+
+
+/* STICKS BROOMS STUFF */
+
+/* sticks are hidden */
+int8_t i2c_slavedspic_mode_sticks_hide(void); 
+
+/* use a stick for clean fires */
+int8_t i2c_slavedspic_mode_sticks_clean(uint8_t level);
+
+
 
 #endif

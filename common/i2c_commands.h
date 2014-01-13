@@ -35,11 +35,34 @@
 #define I2C_GPIOS_01_ADDR 	  0x20
 #define I2C_GPIOS_23_ADDR 	  0x21
 
-#define I2C_COLOR_PURPLE 	0
-#define I2C_COLOR_RED		  1
+#define I2C_COLOR_RED 	  0
+#define I2C_COLOR_YELLOW	1
 #define I2C_COLOR_MAX		  2
 
-#define I2C_OPPONENT_NOT_THERE (-1000)
+#define I2C_OPPONENT_NOT_THERE (-1000Q)
+
+#define I2C_SIDE_LEFT   1
+#define I2C_SIDE_RIGHT  2
+#define I2C_SIDE_ALL    3
+
+#define I2C_LEVEL_GROUND_FIRE_0     0
+#define I2C_LEVEL_GROUND_FIRE_1     0
+#define I2C_LEVEL_GROUND_FIRE_2     0
+#define I2C_LEVEL_UP_FIRE_TOP       1
+#define I2C_LEVEL_UP_FIRE_CENTER    2
+#define I2C_LEVEL_TORCH_FIRE_0
+#define I2C_LEVEL_TORCH_FIRE_1
+#define I2C_LEVEL_TORCH_FIRE_2
+#define I2C_LEVEL_TORCH_FIRE_3
+#define I2C_LEVEL_HEART_FIRE_0
+#define I2C_LEVEL_HEART_FIRE_1
+#define I2C_LEVEL_HEART_FIRE_2
+#define I2C_LEVEL_FRUIT_BASKET_0
+#define I2C_LEVEL_FRUIT_BASKET_1
+#define I2C_LEVEL_FRUIT_BASKET_2
+#define I2C_LEVEL_FRUIT_BASKET_3
+#define I2C_LEVEL_FRUIT_BASKET_4
+
 
 struct i2c_cmd_hdr {
 	uint8_t cmd;
@@ -65,29 +88,27 @@ struct i2c_gpios_status {
 struct i2c_slavedspic_status{
 	struct i2c_cmd_hdr hdr;
 
-	/* actuators blocking */
-	uint8_t fingers_floor_blocked;
-	uint8_t fingers_totem_blocked;
-	uint8_t arm_right_blocked;
-	uint8_t arm_left_blocked;
-	uint8_t lift_blocked;
 
-	/* sensors */
-	uint8_t turbine_sensors;
+  /* TODO */
+	
+  /* actuators */
+
+	/* rd sensors */
+
+  /* wr sensors */
 
 	/* infos */
 	uint8_t status;
 #define I2C_SLAVEDSPIC_STATUS_BUSY		1
 #define I2C_SLAVEDSPIC_STATUS_READY		0
 
-	uint8_t harvest_mode;
-	uint8_t store_mode;
-	uint8_t dump_mode;
+	uint8_t fire_mode;
+	uint8_t fruit_mode;
+	uint8_t stick_mode;
 
-	int8_t nb_goldbars_in_boot;
-	int8_t nb_goldbars_in_mouth;
-	int8_t nb_coins_in_boot;
-	int8_t nb_coins_in_mouth;
+  /* statistics */
+	int8_t nb_fires_l;
+	int8_t nb_fires_r;
 };
 
 
@@ -108,143 +129,46 @@ struct i2c_cmd_led_control{
 struct i2c_cmd_slavedspic_set_mode {
 	struct i2c_cmd_hdr hdr;
 	
-#define I2C_SLAVEDSPIC_MODE_INIT		    0x01
-#define I2C_SLAVEDSPIC_MODE_POWER_OFF		0x02
-#define I2C_SLAVEDSPIC_MODE_FINGERS		  0x03
-#define I2C_SLAVEDSPIC_MODE_ARM			    0x04
-#define I2C_SLAVEDSPIC_MODE_HOOK		    0x05
-#define I2C_SLAVEDSPIC_MODE_BOOT		    0x06
-#define I2C_SLAVEDSPIC_MODE_TRAY		    0x07
+#define I2C_SLAVEDSPIC_MODE_INIT		            0x01
+#define I2C_SLAVEDSPIC_MODE_POWER_OFF		        0x02
 
-#define I2C_SLAVEDSPIC_MODE_TURBINE_ANGLE	0x08
-#define I2C_SLAVEDSPIC_MODE_TURBINE_BLOW	0x09
-#define I2C_SLAVEDSPIC_MODE_LIFT_HEIGHT		0x0A
+#define I2C_SLAVEDSPIC_SET_ARM      		        0x02
+#define I2C_SLAVEDSPIC_SET_STICK    		        0x02
+#define I2C_SLAVEDSPIC_SET_COMB      		        0x02
+#define I2C_SLAVEDSPIC_SET_COMB_TRAY 		        0x02
+#define I2C_SLAVEDSPIC_SET_BOOT_DOOR 		        0x02
+#define I2C_SLAVEDSPIC_SET_VACUUM_MOTOR	        0x02
+#define I2C_SLAVEDSPIC_SET_VACUUM_PRESURE      	0x02
 
-#define I2C_SLAVEDSPIC_MODE_HARVEST	  0x0B
-#define I2C_SLAVEDSPIC_MODE_STORE		  0x0C
-#define I2C_SLAVEDSPIC_MODE_DUMP		  0x0D
-#define I2C_SLAVEDSPIC_MODE_SET_INFOS	0x0E
+
+#define I2C_SLAVEDSPIC_MODE_PREP_PICKUP_FIRE	  0x03
+#define I2C_SLAVEDSPIC_MODE_PICKUP_FIRE         0x04
+#define I2C_SLAVEDSPIC_MODE_STORE_FIRE          0x04
+#define I2C_SLAVEDSPIC_MODE_LOAD_FIRE           0x04
+#define I2C_SLAVEDSPIC_MODE_PREP_DRAG_FIRE      0x04
+#define I2C_SLAVEDSPIC_MODE_DRAG_FIRE           0x04
+#define I2C_SLAVEDSPIC_MODE_PREP_TURN_FIRE      0x04
+#define I2C_SLAVEDSPIC_MODE_TURN_FIRE           0x04
+#define I2C_SLAVEDSPIC_MODE_PREP_TURN_FIRE      0x04
+
+#define I2C_SLAVEDSPIC_MODE_HIDE_ARMS           0x04
+
+#define I2C_SLAVEDSPIC_MODE_PREP_HARVEST_TREE   0x04
+#define I2C_SLAVEDSPIC_MODE_HARVEST_TREE        0x04
+
+
+#define I2C_SLAVEDSPIC_MODE_PREP_TOXIC_FRUIT    0x04
+#define I2C_SLAVEDSPIC_MODE_PICKUP_TOXIC_FRUIT  0x04
+#define I2C_SLAVEDSPIC_MODE_DRAG_TOXIC_FRUIT    0x04
+
 	uint8_t mode;
 	union{
-		struct {
-			uint8_t type;
-#define I2C_FINGERS_TYPE_FLOOR		      0
-#define I2C_FINGERS_TYPE_TOTEM		      1
-#define I2C_FINGERS_TYPE_FLOOR_RIGHT		3
-#define I2C_FINGERS_TYPE_FLOOR_LEFT		  4
-#define I2C_FINGERS_TYPE_TOTEM_RIGHT		5
-#define I2C_FINGERS_TYPE_TOTEM_LEFT		  6
 
-			uint8_t mode;
-#define I2C_FINGERS_MODE_HUG 		0
-#define I2C_FINGERS_MODE_OPEN 	1
-#define I2C_FINGERS_MODE_HOLD 	2	
-#define I2C_FINGERS_MODE_CLOSE	3
-#define I2C_FINGERS_MODE_PUSHIN	4
-
-			int8_t offset;
-		} fingers;
+    /* TODO */
 
 		struct {
-			uint8_t type;
-#define I2C_ARM_TYPE_RIGHT	0
-#define I2C_ARM_TYPE_LEFT	1
 
-			uint8_t mode;
-#define I2C_ARM_MODE_HIDE				0
-#define I2C_ARM_MODE_SHOW				1
-#define I2C_ARM_MODE_PUSH_GOLDBAR	2
-#define I2C_ARM_MODE_PUSH_FLOOR		3
-
-			int8_t offset;
-		} arm;
-
-		struct {
-			uint8_t height; /* XXX x1000 */
-		} lift;
-
-		struct {
-			int8_t angle_deg;
-			uint8_t angle_speed;
-			uint8_t blow_speed; /*XXX x4 */
-		} turbine;
-		
-		struct {
-			uint8_t mode;
-#define I2C_BOOT_MODE_OPEN_FULL		0
-#define I2C_BOOT_MODE_OPEN_HOLD		1
-#define I2C_BOOT_MODE_CLOSE			2
-
-		} boot;
-
-		struct {
-			uint8_t mode;
-#define I2C_HOOK_MODE_HIDE			0
-#define I2C_HOOK_MODE_SHOW			1
-#define I2C_HOOK_MODE_FUCKYOU		2
-#define I2C_HOOK_MODE_OPEN_HOLD	3
-
-		} hook;
-
-		struct {
-			uint8_t type;
-#define I2C_TRAY_TYPE_RECEPTION	0
-#define I2C_TRAY_TYPE_STORE		1
-#define I2C_TRAY_TYPE_BOOT			2
-
-			uint8_t mode;
-#define I2C_TRAY_MODE_DOWN			0 	/* it means off in case of boot tray */
-#define I2C_TRAY_MODE_UP			1 		/* only reception and store tray */
-#define I2C_TRAY_MODE_VIBRATE		2 /* only boot and store tray */
-
-		} tray;
-
-		struct {
-			uint8_t mode;
-#define I2C_HARVEST_MODE_PREPARE_TOTEM				0
-#define I2C_HARVEST_MODE_PREPARE_GOLDBAR_TOTEM	1
-#define I2C_HARVEST_MODE_PREPARE_GOLDBAR_FLOOR	2
-#define I2C_HARVEST_MODE_PREPARE_COINS_TOTEM		3
-#define I2C_HARVEST_MODE_PREPARE_COINS_FLOOR		4
-#define I2C_HARVEST_MODE_COINS_ISLE					5
-#define I2C_HARVEST_MODE_COINS_FLOOR				6
-#define I2C_HARVEST_MODE_COINS_TOTEM				7
-#define I2C_HARVEST_MODE_GOLDBAR_TOTEM				8
-#define I2C_HARVEST_MODE_GOLDBAR_FLOOR				9
-
-		} harvest;
-
-		struct {
-			uint8_t mode;
-#define I2C_STORE_MODE_GOLDBAR_IN_MOUTH		0
-#define I2C_STORE_MODE_GOLDBAR_IN_BOOT			1
-#define I2C_STORE_MODE_MOUTH_IN_BOOT			2
-
-			uint8_t times;
-		} store;
-
-
-		struct {
-			uint8_t mode;
-#define I2C_DUMP_MODE_PREPARE_HOLD			0
-/*XXX this should be called I2C_DUMP_MODE_MOUTH*/
-#define I2C_DUMP_MODE_PREPARE_MOUTH			1
-#define I2C_DUMP_MODE_PREPARE_BOOT			2
-#define I2C_DUMP_MODE_BOOT						  3
-#define I2C_DUMP_MODE_BOOT_BLOWING			4
-#define I2C_DUMP_MODE_MOUTH_BLOWING			5
-#define I2C_DUMP_MODE_END_BOOT				  6
-#define I2C_DUMP_MODE_END_MOUTH				  7
-
-		} dump;
-
-		struct {
-			int8_t nb_goldbars_in_boot;
-			int8_t nb_goldbars_in_mouth;
-			int8_t nb_coins_in_boot;
-			int8_t nb_coins_in_mouth;
-
-		} set_infos;
+		} fire;
 
 		/* add more here */
 	};
