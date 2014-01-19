@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Baliñas Santos <javier@arc-robots.org>
+ *  Javier Balias Santos <javier@arc-robots.org> and Silvia Santano
  */
 
 #include <stdio.h>
@@ -198,7 +198,7 @@ end:
 }
 #endif
 
-
+#ifdef 2012
 uint8_t strat_begin(void)
 {   
    uint8_t err;
@@ -373,5 +373,5 @@ end:
 
    return err;
 }
-
+#endif 2012
 
