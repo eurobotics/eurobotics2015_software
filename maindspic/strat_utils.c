@@ -262,7 +262,7 @@ uint8_t x_is_more_than(int16_t x)
 	int16_t posx;
 	
 	posx = position_get_x_s16(&mainboard.pos);
-	if (mainboard.our_color == I2C_COLOR_RED) {
+	if (mainboard.our_color == I2C_COLOR_YELLOW) {
 		if (posx > x)
 			return 1;
 		else
@@ -284,7 +284,7 @@ uint8_t opp_x_is_more_than(int16_t x)
 	if(get_opponent_xy(&x_opp, &y_opp) == -1)
 		return 1;
 
-	if (mainboard.our_color == I2C_COLOR_RED) {
+	if (mainboard.our_color == I2C_COLOR_YELLOW) {
 		if (x_opp > x)
 			return 1;
 		else
@@ -307,7 +307,7 @@ uint8_t opp2_x_is_more_than(int16_t x)
 	if(get_opponent_xy(&x_opp2, &y_opp2) == -1)
 		return 1;
 
-	if (mainboard.our_color == I2C_COLOR_RED) {
+	if (mainboard.our_color == I2C_COLOR_YELLOW) {
 		if (x_opp2 > x)
 			return 1;
 		else
@@ -332,7 +332,7 @@ uint8_t robot_2nd_x_is_more_than(int16_t x)
 	if(get_robot_2nd_xy(&x_robot_2nd, &y_robot_2nd) == -1)
 		return 1;
 
-	if (mainboard.our_color == I2C_COLOR_RED) {
+	if (mainboard.our_color == I2C_COLOR_YELLOW) {
 		if (x_robot_2nd > x)
 			return 1;
 		else
@@ -449,10 +449,10 @@ uint8_t get_color(void)
 /* get the color of the opponent robot */
 uint8_t get_opponent_color(void)
 {
-	if (mainboard.our_color == I2C_COLOR_PURPLE)
-		return I2C_COLOR_RED;
+	if (mainboard.our_color == I2C_COLOR_RED)
+		return I2C_COLOR_YELLOW;
 	else
-		return I2C_COLOR_PURPLE;
+		return I2C_COLOR_RED;
 }
 
 /* get the xy pos of the opponent robot */
@@ -734,7 +734,7 @@ uint8_t opponent_is_in_area(int16_t x_up, int16_t y_up,
 
 
 	/* Opponent 1 */
-	if (mainboard.our_color == I2C_COLOR_RED) {
+	if (mainboard.our_color == I2C_COLOR_YELLOW) {
 		if ((opp_x > x_up && opp_x < x_down)
 			&& (opp_y < y_up && opp_y > y_down) )
 			return 1;
@@ -746,7 +746,7 @@ uint8_t opponent_is_in_area(int16_t x_up, int16_t y_up,
 	}
 
 	/* Opponent 2 */
-	if (mainboard.our_color == I2C_COLOR_RED) {
+	if (mainboard.our_color == I2C_COLOR_YELLOW) {
 		if ((opp2_x > x_up && opp2_x < x_down)
 			&& (opp2_y < y_up && opp2_y > y_down) )
 			return 1;
@@ -758,7 +758,7 @@ uint8_t opponent_is_in_area(int16_t x_up, int16_t y_up,
 	}
 
 	/* 2nd robot */
-	if (mainboard.our_color == I2C_COLOR_RED) {
+	if (mainboard.our_color == I2C_COLOR_YELLOW) {
 		if ((r2nd_x > x_up && r2nd_x < x_down)
 			&& (r2nd_y < y_up && r2nd_y > y_down) )
 			return 1;

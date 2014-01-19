@@ -161,14 +161,14 @@ void parse_line(char * buff)
 	/* BEACON ANSWERS */
 
 	/* beacon wt11 open link connection pass */
- 	ret = sscanf(buff, "CONNECT %d RFCOMM 1", &link_id);
+ 	ret = sscanf(buff, "CONNECT %d RFCOMM 1", (int*)&link_id);
 	if(ret == 1){
 		beacon_connected = 1;
 		NOTICE(E_USER_STRAT, "beacon wt11 link open PASS (%d)", link_id);						
 	}
 
 	/* beacon wt11 open link connection fails */
- 	ret = sscanf(buff, "NO CARRIER %d ERROR %d RFC_CONNECTION_FAILED", &link_id, &error_id);
+ 	ret = sscanf(buff, "NO CARRIER %d ERROR %d RFC_CONNECTION_FAILED", (int*)&link_id, (int*)&error_id);
 	if(ret == 2){
 		beacon_connected = 0;
 		ERROR(E_USER_STRAT, "beacon wt11 link open FAIL(%d,%d)", error_id, link_id);						
@@ -630,10 +630,10 @@ void beacon_cmd_color(void)
 	int8_t buff[20];
 	uint16_t size;
 	
-	if(mainboard.our_color == I2C_COLOR_RED)
-		size = sprintf((char *)buff,"\n\rcolor red");
+	if(mainboard.our_color == I2C_COLOR_YELLOW)
+		size = sprintf((char *)buff,"\n\rcolor yellow");
 	else
-		size = sprintf((char *)buff,"\n\rcolor blue");
+		size = sprintf((char *)buff,"\n\rcolor red");
 	
 	beacon_send_cmd(buff, size);
 }

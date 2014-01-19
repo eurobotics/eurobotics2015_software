@@ -39,7 +39,7 @@
 #define I2C_COLOR_YELLOW	1
 #define I2C_COLOR_MAX		  2
 
-#define I2C_OPPONENT_NOT_THERE (-1000Q)
+#define I2C_OPPONENT_NOT_THERE (-1000)
 
 #define I2C_SIDE_LEFT   1
 #define I2C_SIDE_RIGHT  2

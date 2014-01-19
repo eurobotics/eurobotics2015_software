@@ -242,7 +242,9 @@ uint8_t strat_begin(void)
 	else DEBUG(E_USER_STRAT, "X is more than X_BEGIN_CURVE_HOME");
 		
 #ifdef CATCH_GOLDBAR
-	(mainboard.our_color==I2C_COLOR_RED)?		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_OPEN,-50) :		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_OPEN,-50);
+	(mainboard.our_color==I2C_COLOR_YELLOW)?
+		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_OPEN,-50) :
+		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_OPEN,-50);
 #endif
 
    trajectory_only_a_abs(&mainboard.traj, COLOR_A_ABS(90));
@@ -254,7 +256,7 @@ uint8_t strat_begin(void)
 
 #ifdef CATCH_GOLDBAR
 	/* prepare fingers */
-	(mainboard.our_color==I2C_COLOR_RED)?
+	(mainboard.our_color==I2C_COLOR_YELLOW)?
 		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_OPEN,120):
 		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_OPEN,120);
 #endif
@@ -287,7 +289,7 @@ uint8_t strat_begin(void)
 #ifdef CATCH_GOLDBAR
 	/*catch goldbar */
 	DEBUG(E_USER_STRAT, "Catch goldbar");
-	(mainboard.our_color==I2C_COLOR_RED)?
+	(mainboard.our_color==I2C_COLOR_YELLOW)?
 		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_OPEN,0):
 		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_OPEN,0);
 
@@ -307,7 +309,7 @@ uint8_t strat_begin(void)
 
 retry:
 	DEBUG(E_USER_STRAT, "First finger");
-	(mainboard.our_color==I2C_COLOR_RED)?
+	(mainboard.our_color==I2C_COLOR_YELLOW)?
 		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_HOLD,0):
 		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_HOLD,0);
 
@@ -316,7 +318,7 @@ retry:
 
 	//time_wait_ms(100);
 	DEBUG(E_USER_STRAT, "Second finger");
-	(mainboard.our_color==I2C_COLOR_RED)?
+	(mainboard.our_color==I2C_COLOR_YELLOW)?
 		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_CLOSE,0):
 		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_CLOSE,0);
 

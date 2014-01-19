@@ -69,6 +69,7 @@
 #include "i2c_protocol.h"
 #include "beacon.h"
 #include "robotsim.h"
+#include "strat_base.h"
 
 
 struct genboard gen;

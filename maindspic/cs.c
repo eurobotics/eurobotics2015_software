@@ -167,11 +167,10 @@ static void do_cs(void *dummy)
 }
 
 
-/* debug functions, see commands_cs.c */
 void dump_cs_debug(const char *name, struct cs *cs)
 {
-	DEBUG(E_USER_CS, "%s cons=% .5ld fcons=% .5ld err=% .5ld "
-	      "in=% .5ld out=% .5ld", 
+	DEBUG(E_USER_CS, "%s cons=% .5"PRIi32" fcons=% .5"PRIi32" err=% .5"PRIi32" "
+	      "in=% .5"PRIi32" out=% .5"PRIi32"",
 	      name, cs_get_consign(cs), cs_get_filtered_consign(cs),
 	      cs_get_error(cs), cs_get_filtered_feedback(cs),
 	      cs_get_out(cs));
@@ -179,8 +178,8 @@ void dump_cs_debug(const char *name, struct cs *cs)
 
 void dump_cs(const char *name, struct cs *cs)
 {
-	printf_P(PSTR("%s cons=% .5ld fcons=% .5ld err=% .5ld "
-		      "in=% .5ld out=% .5ld\r\n"), 
+	printf_P(PSTR("%s cons=% .5"PRIi32" fcons=% .5"PRIi32" err=% .5"PRIi32" "
+		      "in=% .5"PRIi32" out=% .5"PRIi32"\r\n"),
 		 name, cs_get_consign(cs), cs_get_filtered_consign(cs),
 		 cs_get_error(cs), cs_get_filtered_feedback(cs),
 		 cs_get_out(cs));
@@ -188,7 +187,7 @@ void dump_cs(const char *name, struct cs *cs)
 
 void dump_pid(const char *name, struct pid_filter *pid)
 {
-	printf_P(PSTR("%s P=% .8ld I=% .8ld D=% .8ld out=% .8ld\r\n"),
+	printf_P(PSTR("%s P=% .8"PRIi32" I=% .8"PRIi32" D=% .8"PRIi32" out=% .8"PRIi32"\r\n"),
 		 name,
 		 pid_get_value_in(pid) * pid_get_gain_P(pid),
 		 pid_get_value_I(pid) * pid_get_gain_I(pid),

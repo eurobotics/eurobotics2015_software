@@ -132,7 +132,7 @@ void mylog(struct error * e, ...)
 
 	va_start(ap, e);
 	tv = time_get_time();
-	printf_P(PSTR("%ld.%.3ld: "), tv.s, (tv.us/1000UL));
+	printf_P(PSTR("%ld.%.3ld: "), (long int)tv.s, (tv.us/1000UL));
 	
 	printf_P(PSTR("(%d,%d,%d) "),
 		 position_get_x_s16(&mainboard.pos),

@@ -104,15 +104,15 @@
 
 /* convert coords according to our color */
 #define COLOR_Y(y)     (y)
-#define COLOR_X(x)     ((mainboard.our_color==I2C_COLOR_RED)? (x) : (AREA_X-(x)))
+#define COLOR_X(x)     ((mainboard.our_color==I2C_COLOR_YELLOW)? (x) : (AREA_X-(x)))
 
-#define COLOR_A_REL(a) ((mainboard.our_color==I2C_COLOR_RED)? (a) : (-a))
-#define COLOR_A_ABS(a) ((mainboard.our_color==I2C_COLOR_RED)? (a) : (180-a))
+#define COLOR_A_REL(a) ((mainboard.our_color==I2C_COLOR_YELLOW)? (a) : (-a))
+#define COLOR_A_ABS(a) ((mainboard.our_color==I2C_COLOR_YELLOW)? (a) : (180-a))
 
-#define COLOR_SIGN(x)  ((mainboard.our_color==I2C_COLOR_RED)? (x) : (-x))
-#define COLOR_INVERT(x)((mainboard.our_color==I2C_COLOR_RED)? (x) : (!x))
+#define COLOR_SIGN(x)  ((mainboard.our_color==I2C_COLOR_YELLOW)? (x) : (-x))
+#define COLOR_INVERT(x)((mainboard.our_color==I2C_COLOR_YELLOW)? (x) : (!x))
 
-#define COLOR_I(x)	  ((mainboard.our_color==I2C_COLOR_RED)? (x) :  ((NB_SLOT_X-1)-x))
+#define COLOR_I(x)	  ((mainboard.our_color==I2C_COLOR_YELLOW)? (x) :  ((NB_SLOT_X-1)-x))
 
 #define START_X 200
 #define START_Y COLOR_Y(200)

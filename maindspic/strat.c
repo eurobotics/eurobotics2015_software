@@ -438,13 +438,15 @@ uint8_t strat_main(void)
 		err = strat_smart();
 	}while((err & END_TIMER) == 0);
 
+
+
+#endif /* HOMOLOGATION */
+
 #endif /* notyet TODO 2014 */
 
 	/* end */
    strat_exit();
    return 0;
-
-#endif
 }
 
 #endif /* HOST_VERSION_OA_TEST */
