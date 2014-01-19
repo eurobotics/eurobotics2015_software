@@ -1,0 +1,9 @@
+glob:*.o
+glob:*.cof
+glob:*.map
+glob:*.hex
+syntax: glob
+toolchain
+*.host*
+*.h~
+*.c~
