@@ -146,10 +146,6 @@ void strat_preinit(void)
 	/* XXX default conf */
 	//strat_infos.conf.flags |= ENABLE_R2ND_POS;
 
-	strat_infos.step_our_totem_1 = 1;
-	strat_infos.step_our_totem_2 = 1;
-	strat_infos.step_opp_totem_1 = 1;
-	strat_infos.step_opp_totem_2 = 1;
 
 	strat_dump_conf();
 	strat_dump_infos(__FUNCTION__);
@@ -209,12 +205,6 @@ void strat_dump_infos(const char *caller)
 
 	printf(PSTR("%s() dump strat infos:\r\n"), caller);
 
-	printf("treasure_in_mouth = %d\r\n", strat_infos.treasure_in_mouth);
-	printf("treasure_in_boot = %d\r\n", strat_infos.treasure_in_boot);
-
-	printf("curretn_zone is %s\r\n", numzone2name[strat_infos.current_zone]);
-	printf("goto_zone is %s\r\n", numzone2name[strat_infos.goto_zone]);
-	printf("last_zone is %s\r\n", numzone2name[strat_infos.last_zone]);
 
 	/* add here print infos */
 }
@@ -225,9 +215,6 @@ void strat_reset_infos(void)
 {
 	/* bounding box */
 	strat_set_bounding_box(mainboard.our_color);
-
-	strat_infos.treasure_in_mouth = 0;
-	strat_infos.treasure_in_boot = 0;
 		
 	strat_infos.current_zone = ZONES_MAX;
 	strat_infos.goto_zone = ZONES_MAX;
