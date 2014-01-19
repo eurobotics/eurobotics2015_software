@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Baliñas Santos <javier@arc-robots.org>
+ *  Javier Baliñas Santos <javier@arc-robots.org> and Silvia Santano
  */
 
 #include <stdio.h>
@@ -198,7 +198,7 @@ end:
 }
 #endif
 
-
+#ifdef 2012
 uint8_t strat_begin(void)
 {   
    uint8_t err;
@@ -242,7 +242,9 @@ uint8_t strat_begin(void)
 	else DEBUG(E_USER_STRAT, "X is more than X_BEGIN_CURVE_HOME");
 		
 #ifdef CATCH_GOLDBAR
-	(mainboard.our_color==I2C_COLOR_RED)?		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_OPEN,-50) :		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_OPEN,-50);
+	(mainboard.our_color==I2C_COLOR_RED)?
+		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_OPEN,-50) :
+		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_OPEN,-50);
 #endif
 
    trajectory_only_a_abs(&mainboard.traj, COLOR_A_ABS(90));
@@ -371,5 +373,5 @@ end:
 
    return err;
 }
-
+#endif 2012
 
