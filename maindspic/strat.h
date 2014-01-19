@@ -347,6 +347,8 @@ void strat_exit(void);
 uint8_t strat_main(void);
 uint8_t strat_beginning(void);
 void strat_event(void *dummy);
+void strat_event_enable(void);
+void strat_event_disable(void);
 
 
 

@@ -73,6 +73,8 @@
 #endif
 
 
+static volatile uint8_t strat_running = 0;
+
 
 struct strat_infos strat_infos = { 
 	/* conf */
@@ -254,6 +256,16 @@ void strat_reset_infos(void)
 	/* add here other infos resets */
 }
 
+void strat_event_enable(void)
+{
+	strat_running = 1;
+}
+
+void strat_event_disable(void)
+{
+	strat_running = 0;
+}
+
 /* call it just before launching the strat */
 void strat_init(void)
 {
@@ -318,6 +330,10 @@ void strat_event(void *dummy)
 	/* XXX in parallel with main strat, 
 	 *	disable/enable events depends on case or protect with IRQ_LOCK.
 	 */
+
+	/* ignore when strat is not running */
+	if (strat_running == 0)
+		return;
 
 	/* limit speed when opponent are close */
 	strat_limit_speed();

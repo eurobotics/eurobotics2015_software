@@ -134,6 +134,129 @@ parse_pgm_inst_t cmd_traj_speed_show = {
 	},
 };
 
+/**********************************************************/
+/* Traj_Accs for trajectory_manager */
+
+/* this structure is filled when cmd_traj_acc is parsed successfully */
+struct cmd_traj_acc_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+	float s;
+};
+
+/* function called when cmd_traj_acc is parsed successfully */
+static void cmd_traj_acc_parsed(void *parsed_result, void *data)
+{
+	struct cmd_traj_acc_result * res = parsed_result;
+
+	if (!strcmp_P(res->arg1, PSTR("angle"))) {
+		trajectory_set_acc(&mainboard.traj, mainboard.traj.d_acc, res->s);
+	}
+	else if (!strcmp_P(res->arg1, PSTR("distance"))) {
+		trajectory_set_acc(&mainboard.traj, res->s, mainboard.traj.a_acc);
+	}
+	/* else it is a "show" */
+
+	printf_P(PSTR("angle %2.2f, distance %2.2f\r\n"),
+		 mainboard.traj.a_acc,
+		 mainboard.traj.d_acc);
+}
+
+prog_char str_traj_acc_arg0[] = "traj_acc";
+parse_pgm_token_string_t cmd_traj_acc_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_traj_acc_result, arg0, str_traj_acc_arg0);
+prog_char str_traj_acc_arg1[] = "angle#distance";
+parse_pgm_token_string_t cmd_traj_acc_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_traj_acc_result, arg1, str_traj_acc_arg1);
+parse_pgm_token_num_t cmd_traj_acc_s = TOKEN_NUM_INITIALIZER(struct cmd_traj_acc_result, s, FLOAT);
+
+prog_char help_traj_acc[] = "Set traj_acc values for trajectory manager";
+parse_pgm_inst_t cmd_traj_acc = {
+	.f = cmd_traj_acc_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_traj_acc,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_traj_acc_arg0,
+		(prog_void *)&cmd_traj_acc_arg1,
+		(prog_void *)&cmd_traj_acc_s,
+		NULL,
+	},
+};
+
+/* show */
+
+prog_char str_traj_acc_show_arg[] = "show";
+parse_pgm_token_string_t cmd_traj_acc_show_arg = TOKEN_STRING_INITIALIZER(struct cmd_traj_acc_result, arg1, str_traj_acc_show_arg);
+
+prog_char help_traj_acc_show[] = "Show traj_acc values for trajectory manager";
+parse_pgm_inst_t cmd_traj_acc_show = {
+	.f = cmd_traj_acc_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_traj_acc_show,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_traj_acc_arg0,
+		(prog_void *)&cmd_traj_acc_show_arg,
+		NULL,
+	},
+};
+
+/**********************************************************/
+/* circle coef configuration */
+
+/* this structure is filled when cmd_circle_coef is parsed successfully */
+struct cmd_circle_coef_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+	float circle_coef;
+};
+
+
+/* function called when cmd_circle_coef is parsed successfully */
+static void cmd_circle_coef_parsed(void *parsed_result, void *data)
+{
+	struct cmd_circle_coef_result *res = parsed_result;
+
+	if (!strcmp_P(res->arg1, PSTR("set"))) {
+		trajectory_set_circle_coef(&mainboard.traj, res->circle_coef);
+	}
+
+	printf_P(PSTR("circle_coef set %2.2f\r\n"), mainboard.traj.circle_coef);
+}
+
+prog_char str_circle_coef_arg0[] = "circle_coef";
+parse_pgm_token_string_t cmd_circle_coef_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_circle_coef_result, arg0, str_circle_coef_arg0);
+prog_char str_circle_coef_arg1[] = "set";
+parse_pgm_token_string_t cmd_circle_coef_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_circle_coef_result, arg1, str_circle_coef_arg1);
+parse_pgm_token_num_t cmd_circle_coef_val = TOKEN_NUM_INITIALIZER(struct cmd_circle_coef_result, circle_coef, FLOAT);
+
+prog_char help_circle_coef[] = "Set circle coef";
+parse_pgm_inst_t cmd_circle_coef = {
+	.f = cmd_circle_coef_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_circle_coef,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_circle_coef_arg0,
+		(prog_void *)&cmd_circle_coef_arg1,
+		(prog_void *)&cmd_circle_coef_val,
+		NULL,
+	},
+};
+
+/* show */
+
+prog_char str_circle_coef_show_arg[] = "show";
+parse_pgm_token_string_t cmd_circle_coef_show_arg = TOKEN_STRING_INITIALIZER(struct cmd_circle_coef_result, arg1, str_circle_coef_show_arg);
+
+prog_char help_circle_coef_show[] = "Show circle coef";
+parse_pgm_inst_t cmd_circle_coef_show = {
+	.f = cmd_circle_coef_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_circle_coef_show,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_circle_coef_arg0,
+		(prog_void *)&cmd_circle_coef_show_arg,
+		NULL,
+	},
+};
+
 #ifdef COMPILE_CODE /*---------------------------------------------------------------------------------------------*/
 #endif /* COMPILE_CODE ---------------------------------------------------------------------------------------------*/
 
@@ -334,6 +457,64 @@ parse_pgm_inst_t cmd_track_show = {
 	},
 };
 
+
+
+/**********************************************************/
+/* centrifugal configuration */
+
+/* this structure is filled when cmd_centrifugal is parsed successfully */
+struct cmd_centrifugal_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+	float val;
+};
+
+/* function called when cmd_centrifugal is parsed successfully */
+static void cmd_centrifugal_parsed(void * parsed_result, void * data)
+{
+	struct cmd_centrifugal_result * res = parsed_result;
+
+	if (!strcmp_P(res->arg1, PSTR("set"))) {
+		position_set_centrifugal_coef(&mainboard.pos, res->val);
+	}
+	printf_P(PSTR("centrifugal set %f\r\n"), mainboard.pos.centrifugal_coef);
+}
+
+prog_char str_centrifugal_arg0[] = "centrifugal";
+parse_pgm_token_string_t cmd_centrifugal_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_centrifugal_result, arg0, str_centrifugal_arg0);
+prog_char str_centrifugal_arg1[] = "set";
+parse_pgm_token_string_t cmd_centrifugal_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_centrifugal_result, arg1, str_centrifugal_arg1);
+parse_pgm_token_num_t cmd_centrifugal_val = TOKEN_NUM_INITIALIZER(struct cmd_centrifugal_result, val, FLOAT);
+
+prog_char help_centrifugal[] = "Set centrifugal coef";
+parse_pgm_inst_t cmd_centrifugal = {
+	.f = cmd_centrifugal_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_centrifugal,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_centrifugal_arg0,
+		(prog_void *)&cmd_centrifugal_arg1,
+		(prog_void *)&cmd_centrifugal_val,
+		NULL,
+	},
+};
+
+/* show */
+
+prog_char str_centrifugal_show_arg[] = "show";
+parse_pgm_token_string_t cmd_centrifugal_show_arg = TOKEN_STRING_INITIALIZER(struct cmd_centrifugal_result, arg1, str_centrifugal_show_arg);
+
+prog_char help_centrifugal_show[] = "Show centrifugal";
+parse_pgm_inst_t cmd_centrifugal_show = {
+	.f = cmd_centrifugal_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_centrifugal_show,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_centrifugal_arg0,
+		(prog_void *)&cmd_centrifugal_show_arg,
+		NULL,
+	},
+};
 
 
 /**********************************************************/
