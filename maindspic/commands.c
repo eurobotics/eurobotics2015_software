@@ -47,7 +47,7 @@
 //#include "./commands_gen.c"
 
 extern parse_pgm_inst_t cmd_reset;
-//extern parse_pgm_inst_t cmd_bootloader;
+//TODO extern parse_pgm_inst_t cmd_bootloader;
 extern parse_pgm_inst_t cmd_encoders;
 extern parse_pgm_inst_t cmd_pwm_servo;
 extern parse_pgm_inst_t cmd_pwm_servo_show_range;
@@ -57,6 +57,7 @@ extern parse_pgm_inst_t cmd_sensor;
 extern parse_pgm_inst_t cmd_log;
 extern parse_pgm_inst_t cmd_log_show;
 extern parse_pgm_inst_t cmd_log_type;
+//TODO extern parse_pgm_inst_t cmd_stack_space;
 extern parse_pgm_inst_t cmd_scheduler;
 
 #endif /* COMPILE_COMMANDS_GEN */
@@ -89,11 +90,19 @@ extern parse_pgm_inst_t cmd_blocking_i_show;
 //#include "./commands_mainboard.c"
 
 extern parse_pgm_inst_t cmd_event;
+// TODO extern parse_pgm_inst_t cmd_spi_test;
 extern parse_pgm_inst_t cmd_opponent;
 extern parse_pgm_inst_t cmd_opponent_set;
 extern parse_pgm_inst_t cmd_start;
 extern parse_pgm_inst_t cmd_color;
 extern parse_pgm_inst_t cmd_beacon;
+extern parse_pgm_inst_t cmd_interact;
+extern parse_pgm_inst_t cmd_rs;
+extern parse_pgm_inst_t cmd_clitoid;
+extern parse_pgm_inst_t cmd_time_monitor;
+extern parse_pgm_inst_t cmd_strat_event;
+extern parse_pgm_inst_t cmd_sleep;
+
 #ifdef notyet /* TODO 2014*/
 extern parse_pgm_inst_t cmd_slavedspic;
 extern parse_pgm_inst_t cmd_slavedspic_harvest;
@@ -103,10 +112,6 @@ extern parse_pgm_inst_t cmd_fingers;
 extern parse_pgm_inst_t cmd_treasure;
 extern parse_pgm_inst_t cmd_sensor_robot;
 #endif
-
-//extern parse_pgm_inst_t cmd_interact;
-//extern parse_pgm_inst_t cmd_rs;
-//extern parse_pgm_inst_t cmd_i2cdebug;
 
 #endif /* COMPILE_COMMANDS_MAINBOARD */
 
@@ -119,6 +124,11 @@ extern parse_pgm_inst_t cmd_sensor_robot;
 
 extern parse_pgm_inst_t cmd_traj_speed;
 extern parse_pgm_inst_t cmd_traj_speed_show;
+extern parse_pgm_inst_t cmd_traj_acc;
+extern parse_pgm_inst_t cmd_traj_acc_show;
+extern parse_pgm_inst_t cmd_circle_coef;
+extern parse_pgm_inst_t cmd_circle_coef_show;
+
 #ifdef COMPILE_CODE /*---------------------------------------------------------------------------------------------*/
 #endif /* COMPILE_CODE --------------------------------------------------------------------------------------------*/
 extern parse_pgm_inst_t cmd_trajectory;
@@ -127,10 +137,13 @@ extern parse_pgm_inst_t cmd_rs_gains;
 extern parse_pgm_inst_t cmd_rs_gains_show;
 extern parse_pgm_inst_t cmd_track;
 extern parse_pgm_inst_t cmd_track_show;
+extern parse_pgm_inst_t cmd_centrifugal;
+extern parse_pgm_inst_t cmd_centrifugal_show;
 extern parse_pgm_inst_t cmd_pt_list;
 extern parse_pgm_inst_t cmd_pt_list_append;
 extern parse_pgm_inst_t cmd_pt_list_del;
 extern parse_pgm_inst_t cmd_pt_list_show;
+
 //#endif /* COMPILE_CODE --------------------------------------------------------------------------------------------*/
 
 extern parse_pgm_inst_t cmd_goto1;
@@ -140,6 +153,7 @@ extern parse_pgm_inst_t cmd_position;
 extern parse_pgm_inst_t cmd_position_set;
 
 #ifdef notyet /* TODO 2014 */
+extern parse_pgm_inst_t cmd_strat_db;
 extern parse_pgm_inst_t cmd_strat_infos;
 extern parse_pgm_inst_t cmd_strat_conf;
 extern parse_pgm_inst_t cmd_strat_conf2;
@@ -200,6 +214,13 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_start,
 	(parse_pgm_inst_t *)&cmd_color,
 	(parse_pgm_inst_t *)&cmd_beacon,
+	(parse_pgm_inst_t *)&cmd_interact,
+	(parse_pgm_inst_t *)&cmd_rs,
+	(parse_pgm_inst_t *)&cmd_clitoid,
+	(parse_pgm_inst_t *)&cmd_time_monitor,
+	(parse_pgm_inst_t *)&cmd_strat_event,
+	(parse_pgm_inst_t *)&cmd_sleep,
+
 #ifdef notyet /* TODO 2014*/
 	(parse_pgm_inst_t *)&cmd_slavedspic,
 	(parse_pgm_inst_t *)&cmd_slavedspic_harvest,
@@ -210,10 +231,6 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_sensor_robot,
 #endif
 
-//	(parse_pgm_inst_t *)&cmd_interact,
-//	(parse_pgm_inst_t *)&cmd_rs,
-//	(parse_pgm_inst_t *)&cmd_i2cdebug,
-
 #endif /* COMPILE_COMMANDS_MAINBOARD */
 
 #ifdef COMPILE_COMMANDS_TRAJ
@@ -221,6 +238,11 @@ parse_pgm_ctx_t main_ctx[] = {
 	/* commands_traj.c */
 	(parse_pgm_inst_t *)&cmd_traj_speed,
 	(parse_pgm_inst_t *)&cmd_traj_speed_show,
+	(parse_pgm_inst_t *)&cmd_traj_acc,
+	(parse_pgm_inst_t *)&cmd_traj_acc_show,
+	(parse_pgm_inst_t *)&cmd_circle_coef,
+	(parse_pgm_inst_t *)&cmd_circle_coef_show,
+
 #ifdef COMPILE_CODE /*---------------------------------------------------------------------------------------------*/
 #endif /* COMPILE_CODE ---------------------------------------------------------------------------------------------*/
 	(parse_pgm_inst_t *)&cmd_trajectory,
@@ -229,6 +251,8 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_rs_gains_show,
 	(parse_pgm_inst_t *)&cmd_track,
 	(parse_pgm_inst_t *)&cmd_track_show,
+	(parse_pgm_inst_t *)&cmd_centrifugal,
+	(parse_pgm_inst_t *)&cmd_centrifugal_show,
 	(parse_pgm_inst_t *)&cmd_pt_list,
 	(parse_pgm_inst_t *)&cmd_pt_list_append,
 	(parse_pgm_inst_t *)&cmd_pt_list_del,

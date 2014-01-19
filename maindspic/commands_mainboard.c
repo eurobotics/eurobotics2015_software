@@ -1057,274 +1057,432 @@ parse_pgm_inst_t cmd_sensor_robot = {
 /**********************************************************/
 /* Interact */
 
-///* this structure is filled when cmd_interact is parsed successfully */
-//struct cmd_interact_result {
-//	fixed_string_t arg0;
-//};
-//
-//static void print_cs(void)
-//{
-//	printf_P(PSTR("cons_d=% .8ld cons_a=% .8ld fil_d=% .8ld fil_a=% .8ld "
-//		      "err_d=% .8ld err_a=% .8ld out_d=% .8ld out_a=% .8ld\r\n"), 
-//		 cs_get_consign(&mainboard.distance.cs),
-//		 cs_get_consign(&mainboard.angle.cs),
-//		 cs_get_filtered_consign(&mainboard.distance.cs),
-//		 cs_get_filtered_consign(&mainboard.angle.cs),
-//		 cs_get_error(&mainboard.distance.cs),
-//		 cs_get_error(&mainboard.angle.cs),
-//		 cs_get_out(&mainboard.distance.cs),
-//		 cs_get_out(&mainboard.angle.cs));
-//}
-//
-//static void print_pos(void)
-//{
-//	printf_P(PSTR("x=% .8d y=% .8d a=% .8d\r\n"), 
-//		 position_get_x_s16(&mainboard.pos),
-//		 position_get_y_s16(&mainboard.pos),
-//		 position_get_a_deg_s16(&mainboard.pos));
-//}
-//
-//static void print_time(void)
-//{
-//	printf_P(PSTR("time %d\r\n"),(int)time_get_s());
-//}
-//
-//
-//static void print_sensors(void)
-//{
-//#ifdef notyet
-//	if (sensor_robot_start_switch())
-//		printf_P(PSTR("Start switch | "));
-//	else
-//		printf_P(PSTR("             | "));
-//
-//	if (IR_DISP_SENSOR())
-//		printf_P(PSTR("IR disp | "));
-//	else
-//		printf_P(PSTR("        | "));
-//
-//	printf_P(PSTR("\r\n"));
-//#endif
-//}
-//
-//static void print_pid(void)
-//{
-//	printf_P(PSTR("P=% .8ld I=% .8ld D=% .8ld out=% .8ld | "
-//		      "P=% .8ld I=% .8ld D=% .8ld out=% .8ld\r\n"),
-//		 pid_get_value_in(&mainboard.distance.pid) * pid_get_gain_P(&mainboard.distance.pid),
-//		 pid_get_value_I(&mainboard.distance.pid) * pid_get_gain_I(&mainboard.distance.pid),
-//		 pid_get_value_D(&mainboard.distance.pid) * pid_get_gain_D(&mainboard.distance.pid),
-//		 pid_get_value_out(&mainboard.distance.pid),
-//		 pid_get_value_in(&mainboard.angle.pid) * pid_get_gain_P(&mainboard.angle.pid),
-//		 pid_get_value_I(&mainboard.angle.pid) * pid_get_gain_I(&mainboard.angle.pid),
-//		 pid_get_value_D(&mainboard.angle.pid) * pid_get_gain_D(&mainboard.angle.pid),
-//		 pid_get_value_out(&mainboard.angle.pid));
-//}
-//
-//#define PRINT_POS       (1<<0)
-//#define PRINT_PID       (1<<1)
-//#define PRINT_CS        (1<<2)
-//#define PRINT_SENSORS   (1<<3)
-//#define PRINT_TIME      (1<<4)
-//#define PRINT_BLOCKING  (1<<5)
-//
-//static void cmd_interact_parsed(void * parsed_result, void * data)
-//{
-//	int c;
-//	int8_t cmd;
-//	uint8_t print = 0;
-//	struct vt100 vt100;
-//
-//	vt100_init(&vt100);
-//
-//	printf_P(PSTR("Display debugs:\r\n"
-//		      "  1:pos\r\n"
-//		      "  2:pid\r\n"
-//		      "  3:cs\r\n"
-//		      "  4:sensors\r\n"
-//		      "  5:time\r\n"
-//		      /* "  6:blocking\r\n" */
-//		      "Commands:\r\n"
-//		      "  arrows:move\r\n"
-//		      "  space:stop\r\n"
-//		      "  q:quit\r\n"));
-//
-//	/* stop motors */
-//	mainboard.flags &= (~DO_CS);
-//	dac_set_and_save(LEFT_MOTOR, 0);
-//	dac_set_and_save(RIGHT_MOTOR, 0);
-//
-//	while(1) {
-//		if (print & PRINT_POS) {
-//			print_pos();
-//		}
-//
-//		if (print & PRINT_PID) {
-//			print_pid();
-//		}
-//
-//		if (print & PRINT_CS) {
-//			print_cs();
-//		}
-//
-//		if (print & PRINT_SENSORS) {
-//			print_sensors();
-//		}
-//
-//		if (print & PRINT_TIME) {
-//			print_time();
-//		}
-///* 		if (print & PRINT_BLOCKING) { */
-///* 			printf_P(PSTR("%s %s blocking=%d\r\n"),  */
-///* 				 mainboard.blocking ? "BLOCK1":"      ", */
-///* 				 rs_is_blocked(&mainboard.rs) ? "BLOCK2":"      ", */
-///* 				 rs_get_blocking(&mainboard.rs)); */
-///* 		} */
-//
-//		c = cmdline_getchar();
-//		if (c == -1) {
-//			wait_ms(10);
-//			continue;
-//		}
-//		cmd = vt100_parser(&vt100, c);
-//		if (cmd == -2) {
-//			wait_ms(10);
-//			continue;
-//		}
-//		
-//		if (cmd == -1) {
-//			switch(c) {
-//			case '1': print ^= PRINT_POS; break;
-//			case '2': print ^= PRINT_PID; break;
-//			case '3': print ^= PRINT_CS; break;
-//			case '4': print ^= PRINT_SENSORS; break;
-//			case '5': print ^= PRINT_TIME; break;
-//			case '6': print ^= PRINT_BLOCKING; break;
-//
-//			case 'q': 
-//				if (mainboard.flags & DO_CS)
-//					strat_hardstop();
-//				dac_set_and_save(LEFT_MOTOR, 0);
-//				dac_set_and_save(RIGHT_MOTOR, 0);
-//				return;
-//			case ' ':
-//				dac_set_and_save(LEFT_MOTOR, 0);
-//				dac_set_and_save(RIGHT_MOTOR, 0);
-//				break;
-//			default: 
-//				break;
-//			}
-//		}
-//		else {
-//			switch(cmd) {
-//			case KEY_UP_ARR: 
-//				dac_set_and_save(LEFT_MOTOR, 6000);
-//				dac_set_and_save(RIGHT_MOTOR, 6000);
-//				break;
-//			case KEY_LEFT_ARR: 
-//				dac_set_and_save(LEFT_MOTOR, -6000);
-//				dac_set_and_save(RIGHT_MOTOR, 6000);
-//				break;
-//			case KEY_DOWN_ARR: 
-//				dac_set_and_save(LEFT_MOTOR, -6000);
-//				dac_set_and_save(RIGHT_MOTOR, -6000);
-//				break;
-//			case KEY_RIGHT_ARR:
-//				dac_set_and_save(LEFT_MOTOR, 6000);
-//				dac_set_and_save(RIGHT_MOTOR, -6000);
-//				break;
-//			}
-//		}
-//		wait_ms(10);
-//	}
-//}
-//
-//prog_char str_interact_arg0[] = "interact";
-//parse_pgm_token_string_t cmd_interact_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_interact_result, arg0, str_interact_arg0);
-//
-//prog_char help_interact[] = "Interactive mode";
-//parse_pgm_inst_t cmd_interact = {
-//	.f = cmd_interact_parsed,  /* function to call */
-//	.data = NULL,      /* 2nd arg of func */
-//	.help_str = help_interact,
-//	.tokens = {        /* token list, NULL terminated */
-//		(prog_void *)&cmd_interact_arg0, 
-//		NULL,
-//	},
-//};
+/* this structure is filled when cmd_interact is parsed successfully */
+struct cmd_interact_result {
+	fixed_string_t arg0;
+};
+
+static void print_cs(void)
+{
+	printf_P(PSTR("cons_d=% .8"PRIi32" cons_a=% .8"PRIi32" fil_d=% .8"PRIi32" fil_a=% .8"PRIi32" "
+		      "err_d=% .8"PRIi32" err_a=% .8"PRIi32" out_d=% .8"PRIi32" out_a=% .8"PRIi32"\r\n"),
+		 cs_get_consign(&mainboard.distance.cs),
+		 cs_get_consign(&mainboard.angle.cs),
+		 cs_get_filtered_consign(&mainboard.distance.cs),
+		 cs_get_filtered_consign(&mainboard.angle.cs),
+		 cs_get_error(&mainboard.distance.cs),
+		 cs_get_error(&mainboard.angle.cs),
+		 cs_get_out(&mainboard.distance.cs),
+		 cs_get_out(&mainboard.angle.cs));
+}
+
+static void print_pos(void)
+{
+	printf_P(PSTR("x=% .8d y=% .8d a=% .8d\r\n"),
+		 position_get_x_s16(&mainboard.pos),
+		 position_get_y_s16(&mainboard.pos),
+		 position_get_a_deg_s16(&mainboard.pos));
+}
+
+static void print_time(void)
+{
+	printf_P(PSTR("time %d\r\n"),time_get_s());
+}
+
+
+static void print_sensors(void)
+{
+#ifdef notyet
+	if (sensor_start_switch())
+		printf_P(PSTR("Start switch | "));
+	else
+		printf_P(PSTR("             | "));
+
+	if (IR_DISP_SENSOR())
+		printf_P(PSTR("IR disp | "));
+	else
+		printf_P(PSTR("        | "));
+
+	printf_P(PSTR("\r\n"));
+#endif
+}
+
+static void print_pid(void)
+{
+	printf_P(PSTR("P=% .8"PRIi32" I=% .8"PRIi32" D=% .8"PRIi32" out=% .8"PRIi32" | "
+		      "P=% .8"PRIi32" I=% .8"PRIi32" D=% .8"PRIi32" out=% .8"PRIi32"\r\n"),
+		 pid_get_value_in(&mainboard.distance.pid) * pid_get_gain_P(&mainboard.distance.pid),
+		 pid_get_value_I(&mainboard.distance.pid) * pid_get_gain_I(&mainboard.distance.pid),
+		 pid_get_value_D(&mainboard.distance.pid) * pid_get_gain_D(&mainboard.distance.pid),
+		 pid_get_value_out(&mainboard.distance.pid),
+		 pid_get_value_in(&mainboard.angle.pid) * pid_get_gain_P(&mainboard.angle.pid),
+		 pid_get_value_I(&mainboard.angle.pid) * pid_get_gain_I(&mainboard.angle.pid),
+		 pid_get_value_D(&mainboard.angle.pid) * pid_get_gain_D(&mainboard.angle.pid),
+		 pid_get_value_out(&mainboard.angle.pid));
+}
+
+#define PRINT_POS       (1<<0)
+#define PRINT_PID       (1<<1)
+#define PRINT_CS        (1<<2)
+#define PRINT_SENSORS   (1<<3)
+#define PRINT_TIME      (1<<4)
+#define PRINT_BLOCKING  (1<<5)
+
+static void cmd_interact_parsed(void * parsed_result, void * data)
+{
+	int c;
+	int8_t cmd;
+	uint8_t print = 0;
+	struct vt100 vt100;
+
+	vt100_init(&vt100);
+
+	printf_P(PSTR("Display debugs:\r\n"
+		      "  1:pos\r\n"
+		      "  2:pid\r\n"
+		      "  3:cs\r\n"
+		      "  4:sensors\r\n"
+		      "  5:time\r\n"
+		      /* "  6:blocking\r\n" */
+		      "Commands:\r\n"
+		      "  arrows:move\r\n"
+		      "  space:stop\r\n"
+		      "  q:quit\r\n"));
+
+	/* stop motors */
+	mainboard.flags &= (~DO_CS);
+	dac_set_and_save(LEFT_MOTOR, 0);
+	dac_set_and_save(RIGHT_MOTOR, 0);
+
+	while(1) {
+		if (print & PRINT_POS) {
+			print_pos();
+		}
+
+		if (print & PRINT_PID) {
+			print_pid();
+		}
+
+		if (print & PRINT_CS) {
+			print_cs();
+		}
+
+		if (print & PRINT_SENSORS) {
+			print_sensors();
+		}
+
+		if (print & PRINT_TIME) {
+			print_time();
+		}
+/* 		if (print & PRINT_BLOCKING) { */
+/* 			printf_P(PSTR("%s %s blocking=%d\r\n"),  */
+/* 				 mainboard.blocking ? "BLOCK1":"      ", */
+/* 				 rs_is_blocked(&mainboard.rs) ? "BLOCK2":"      ", */
+/* 				 rs_get_blocking(&mainboard.rs)); */
+/* 		} */
+
+		c = cmdline_getchar();
+		if (c == -1) {
+			wait_ms(10);
+			continue;
+		}
+		cmd = vt100_parser(&vt100, c);
+		if (cmd == -2) {
+			wait_ms(10);
+			continue;
+		}
+
+		if (cmd == -1) {
+			switch(c) {
+			case '1': print ^= PRINT_POS; break;
+			case '2': print ^= PRINT_PID; break;
+			case '3': print ^= PRINT_CS; break;
+			case '4': print ^= PRINT_SENSORS; break;
+			case '5': print ^= PRINT_TIME; break;
+			case '6': print ^= PRINT_BLOCKING; break;
+
+			case 'q':
+				if (mainboard.flags & DO_CS)
+					strat_hardstop();
+				dac_set_and_save(LEFT_MOTOR, 0);
+				dac_set_and_save(RIGHT_MOTOR, 0);
+				return;
+			case ' ':
+				dac_set_and_save(LEFT_MOTOR, 0);
+				dac_set_and_save(RIGHT_MOTOR, 0);
+				break;
+			default:
+				break;
+			}
+		}
+		else {
+#ifdef HOST_VERSION
+#define PWM_INTERACT 1200
+#else
+#define PWM_INTERACT 1200
+#endif
+			switch(cmd) {
+			case KEY_UP_ARR:
+				dac_set_and_save(LEFT_MOTOR, PWM_INTERACT);
+				dac_set_and_save(RIGHT_MOTOR, PWM_INTERACT);
+				break;
+			case KEY_LEFT_ARR:
+				dac_set_and_save(LEFT_MOTOR, -PWM_INTERACT);
+				dac_set_and_save(RIGHT_MOTOR, PWM_INTERACT);
+				break;
+			case KEY_DOWN_ARR:
+				dac_set_and_save(LEFT_MOTOR, -PWM_INTERACT);
+				dac_set_and_save(RIGHT_MOTOR, -PWM_INTERACT);
+				break;
+			case KEY_RIGHT_ARR:
+				dac_set_and_save(LEFT_MOTOR, PWM_INTERACT);
+				dac_set_and_save(RIGHT_MOTOR, -PWM_INTERACT);
+				break;
+			}
+		}
+		wait_ms(10);
+	}
+}
+
+prog_char str_interact_arg0[] = "interact";
+parse_pgm_token_string_t cmd_interact_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_interact_result, arg0, str_interact_arg0);
+
+prog_char help_interact[] = "Interactive mode";
+parse_pgm_inst_t cmd_interact = {
+	.f = cmd_interact_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_interact,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_interact_arg0,
+		NULL,
+	},
+};
+
 
 
 /**********************************************************/
 /* Rs tests */
 
-///* this structure is filled when cmd_rs is parsed successfully */
-//struct cmd_rs_result {
-//	fixed_string_t arg0;
-//	fixed_string_t arg1;
-//};
-//
-///* function called when cmd_rs is parsed successfully */
-//static void cmd_rs_parsed(void *parsed_result, void *data)
-//{
-//	//	struct cmd_rs_result *res = parsed_result;
-//	do {
-//		printf_P(PSTR("angle cons=% .6ld in=% .6ld out=% .6ld / "), 
-//			 cs_get_consign(&mainboard.angle.cs),
-//			 cs_get_filtered_feedback(&mainboard.angle.cs),
-//			 cs_get_out(&mainboard.angle.cs));
-//		printf_P(PSTR("distance cons=% .6ld in=% .6ld out=% .6ld / "), 
-//			 cs_get_consign(&mainboard.distance.cs),
-//			 cs_get_filtered_feedback(&mainboard.distance.cs),
-//			 cs_get_out(&mainboard.distance.cs));
-//		printf_P(PSTR("l=% .4ld r=% .4ld\r\n"), mainboard.dac_l,
-//			 mainboard.dac_r);
-//		wait_ms(100);
-//	} while(!cmdline_keypressed());
-//}
-//
-//prog_char str_rs_arg0[] = "rs";
-//parse_pgm_token_string_t cmd_rs_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_rs_result, arg0, str_rs_arg0);
-//prog_char str_rs_arg1[] = "show";
-//parse_pgm_token_string_t cmd_rs_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_rs_result, arg1, str_rs_arg1);
-//
-//prog_char help_rs[] = "Show rs (robot system) values";
-//parse_pgm_inst_t cmd_rs = {
-//	.f = cmd_rs_parsed,  /* function to call */
-//	.data = NULL,      /* 2nd arg of func */
-//	.help_str = help_rs,
-//	.tokens = {        /* token list, NULL terminated */
-//		(prog_void *)&cmd_rs_arg0, 
-//		(prog_void *)&cmd_rs_arg1, 
-//		NULL,
-//	},
-//};
+/* this structure is filled when cmd_rs is parsed successfully */
+struct cmd_rs_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+};
+
+/* function called when cmd_rs is parsed successfully */
+static void cmd_rs_parsed(void *parsed_result, void *data)
+{
+	//	struct cmd_rs_result *res = parsed_result;
+	do {
+		printf_P(PSTR("angle cons=% .6"PRIi32" in=% .6"PRIi32" out=% .6"PRIi32" / "),
+			 cs_get_consign(&mainboard.angle.cs),
+			 cs_get_filtered_feedback(&mainboard.angle.cs),
+			 cs_get_out(&mainboard.angle.cs));
+		printf_P(PSTR("distance cons=% .6"PRIi32" in=% .6"PRIi32" out=% .6"PRIi32" / "),
+			 cs_get_consign(&mainboard.distance.cs),
+			 cs_get_filtered_feedback(&mainboard.distance.cs),
+			 cs_get_out(&mainboard.distance.cs));
+		printf_P(PSTR("l=% .4"PRIi32" r=% .4"PRIi32"\r\n"), mainboard.dac_l,
+			 mainboard.dac_r);
+		wait_ms(100);
+	} while(!cmdline_keypressed());
+}
+
+prog_char str_rs_arg0[] = "rs";
+parse_pgm_token_string_t cmd_rs_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_rs_result, arg0, str_rs_arg0);
+prog_char str_rs_arg1[] = "show";
+parse_pgm_token_string_t cmd_rs_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_rs_result, arg1, str_rs_arg1);
+
+prog_char help_rs[] = "Show rs (robot system) values";
+parse_pgm_inst_t cmd_rs = {
+	.f = cmd_rs_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_rs,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_rs_arg0,
+		(prog_void *)&cmd_rs_arg1,
+		NULL,
+	},
+};
 
 /**********************************************************/
-/* I2cdebug */
+/* Clitoid */
 
-///* this structure is filled when cmd_i2cdebug is parsed successfully */
-//struct cmd_i2cdebug_result {
-//	fixed_string_t arg0;
-//};
-//
-///* function called when cmd_i2cdebug is parsed successfully */
-//static void cmd_i2cdebug_parsed(void * parsed_result, void * data)
-//{
-//	i2c_debug();
-//	i2c_protocol_debug();
-//}
-//
-//prog_char str_i2cdebug_arg0[] = "i2cdebug";
-//parse_pgm_token_string_t cmd_i2cdebug_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_i2cdebug_result, arg0, str_i2cdebug_arg0);
-//
-//prog_char help_i2cdebug[] = "I2c debug infos";
-//parse_pgm_inst_t cmd_i2cdebug = {
-//	.f = cmd_i2cdebug_parsed,  /* function to call */
-//	.data = NULL,      /* 2nd arg of func */
-//	.help_str = help_i2cdebug,
-//	.tokens = {        /* token list, NULL terminated */
-//		(prog_void *)&cmd_i2cdebug_arg0, 
-//		NULL,
-//	},
-//};
+/* this structure is filled when cmd_clitoid is parsed successfully */
+struct cmd_clitoid_result {
+	fixed_string_t arg0;
+	float alpha_deg;
+	float beta_deg;
+	float R_mm;
+	float Vd;
+	float Amax;
+	float d_inter_mm;
+};
+
+/* function called when cmd_test is parsed successfully */
+static void cmd_clitoid_parsed(void *parsed_result, void *data)
+{
+	struct cmd_clitoid_result *res = parsed_result;
+/* 	clitoid(res->alpha_deg, res->beta_deg, res->R_mm, */
+/* 		res->Vd, res->Amax, res->d_inter_mm); */
+	double x = position_get_x_double(&mainboard.pos);
+	double y = position_get_y_double(&mainboard.pos);
+	double a = position_get_a_rad_double(&mainboard.pos);
+
+	strat_set_speed(res->Vd, SPEED_ANGLE_FAST);
+	trajectory_clitoid(&mainboard.traj, x, y, a, 150.,
+			   res->alpha_deg, res->beta_deg, res->R_mm,
+			   res->d_inter_mm);
+}
+
+prog_char str_clitoid_arg0[] = "clitoid";
+parse_pgm_token_string_t cmd_clitoid_arg0 =
+	TOKEN_STRING_INITIALIZER(struct cmd_clitoid_result,
+				 arg0, str_clitoid_arg0);
+parse_pgm_token_num_t cmd_clitoid_alpha_deg =
+	TOKEN_NUM_INITIALIZER(struct cmd_clitoid_result,
+			      alpha_deg, FLOAT);
+parse_pgm_token_num_t cmd_clitoid_beta_deg =
+	TOKEN_NUM_INITIALIZER(struct cmd_clitoid_result,
+			      beta_deg, FLOAT);
+parse_pgm_token_num_t cmd_clitoid_R_mm =
+	TOKEN_NUM_INITIALIZER(struct cmd_clitoid_result,
+			      R_mm, FLOAT);
+parse_pgm_token_num_t cmd_clitoid_Vd =
+	TOKEN_NUM_INITIALIZER(struct cmd_clitoid_result,
+			      Vd, FLOAT);
+parse_pgm_token_num_t cmd_clitoid_Amax =
+	TOKEN_NUM_INITIALIZER(struct cmd_clitoid_result,
+			      Amax, FLOAT);
+parse_pgm_token_num_t cmd_clitoid_d_inter_mm =
+	TOKEN_NUM_INITIALIZER(struct cmd_clitoid_result,
+			      d_inter_mm, FLOAT);
+
+prog_char help_clitoid[] = "do a clitoid (alpha, beta, R, Vd, Amax, d_inter)";
+parse_pgm_inst_t cmd_clitoid = {
+	.f = cmd_clitoid_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_clitoid,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_clitoid_arg0,
+		(prog_void *)&cmd_clitoid_alpha_deg,
+		(prog_void *)&cmd_clitoid_beta_deg,
+		(prog_void *)&cmd_clitoid_R_mm,
+		(prog_void *)&cmd_clitoid_Vd,
+		(prog_void *)&cmd_clitoid_Amax,
+		(prog_void *)&cmd_clitoid_d_inter_mm,
+		NULL,
+	},
+};
+
+/**********************************************************/
+/* Time_Monitor */
+
+/* this structure is filled when cmd_time_monitor is parsed successfully */
+struct cmd_time_monitor_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+};
+
+/* function called when cmd_time_monitor is parsed successfully */
+static void cmd_time_monitor_parsed(void *parsed_result, void *data)
+{
+#ifndef HOST_VERSION
+	struct cmd_time_monitor_result *res = parsed_result;
+	uint16_t seconds;
+
+	if (!strcmp_P(res->arg1, PSTR("reset"))) {
+		eeprom_write_word(EEPROM_TIME_ADDRESS, 0);
+	}
+	seconds = eeprom_read_word(EEPROM_TIME_ADDRESS);
+	printf_P(PSTR("Running since %d mn %d\r\n"), seconds/60, seconds%60);
+#endif
+}
+
+prog_char str_time_monitor_arg0[] = "time_monitor";
+parse_pgm_token_string_t cmd_time_monitor_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_time_monitor_result, arg0, str_time_monitor_arg0);
+prog_char str_time_monitor_arg1[] = "show#reset";
+parse_pgm_token_string_t cmd_time_monitor_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_time_monitor_result, arg1, str_time_monitor_arg1);
+
+prog_char help_time_monitor[] = "Show since how long we are running";
+parse_pgm_inst_t cmd_time_monitor = {
+	.f = cmd_time_monitor_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_time_monitor,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_time_monitor_arg0,
+		(prog_void *)&cmd_time_monitor_arg1,
+		NULL,
+	},
+};
+
+
+/**********************************************************/
+/* Strat_Event */
+
+/* this structure is filled when cmd_strat_event is parsed successfully */
+struct cmd_strat_event_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+};
+
+/* function called when cmd_strat_event is parsed successfully */
+static void cmd_strat_event_parsed(void *parsed_result, void *data)
+{
+	struct cmd_strat_event_result *res = parsed_result;
+
+	if (!strcmp_P(res->arg1, PSTR("on")))
+		strat_event_enable();
+	else
+		strat_event_disable();
+}
+
+prog_char str_strat_event_arg0[] = "strat_event";
+parse_pgm_token_string_t cmd_strat_event_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_strat_event_result, arg0, str_strat_event_arg0);
+prog_char str_strat_event_arg1[] = "on#off";
+parse_pgm_token_string_t cmd_strat_event_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_strat_event_result, arg1, str_strat_event_arg1);
+
+prog_char help_strat_event[] = "Enable/disable strat_event callback";
+parse_pgm_inst_t cmd_strat_event = {
+	.f = cmd_strat_event_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_strat_event,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_strat_event_arg0,
+		(prog_void *)&cmd_strat_event_arg1,
+		NULL,
+	},
+};
+
+/**********************************************************/
+/* Sleep */
+
+/* this structure is filled when cmd_sleep is parsed successfully */
+struct cmd_sleep_result {
+	fixed_string_t arg0;
+	uint32_t ms;
+};
+
+/* function called when cmd_sleep is parsed successfully */
+static void cmd_sleep_parsed(void *parsed_result, void *data)
+{
+	struct cmd_sleep_result *res = parsed_result;
+	time_wait_ms(res->ms);
+}
+
+prog_char str_sleep_arg0[] = "sleep";
+parse_pgm_token_string_t cmd_sleep_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_sleep_result, arg0, str_sleep_arg0);
+parse_pgm_token_num_t cmd_sleep_ms = TOKEN_NUM_INITIALIZER(struct cmd_sleep_result, ms, UINT32);
+
+prog_char help_sleep[] = "Sleep during some miliseconds";
+parse_pgm_inst_t cmd_sleep = {
+	.f = cmd_sleep_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_sleep,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_sleep_arg0,
+		(prog_void *)&cmd_sleep_ms,
+		NULL,
+	},
+};
 
