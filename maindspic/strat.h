@@ -83,7 +83,7 @@
 #define MAMOOTH_2_X		700
 #define MAMOOTH_2_Y		0
 #define FRESCO_X			1500
-#define FRESCO_X			0
+#define FRESCO_Y			0
 #define HOME_RED_X		200
 #define HOME_RED_Y		300
 #define HOME_YELLOW_X		2800
