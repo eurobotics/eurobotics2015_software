@@ -130,8 +130,16 @@ void strat_set_bounding_box(uint8_t type)
 				strat_infos.area_bbox.y1,
 				strat_infos.area_bbox.x2,
 				strat_infos.area_bbox.y2);
-}
 
+#ifdef HOST_VERSION_OA_TEST
+
+  printf("boundingbox at: %d %d %d %d\n", 
+        strat_infos.area_bbox.x1,
+				strat_infos.area_bbox.y1,
+				strat_infos.area_bbox.x2,
+				strat_infos.area_bbox.y2);
+#endif
+}
 
 #ifndef HOST_VERSION_OA_TEST
 

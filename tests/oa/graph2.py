@@ -57,6 +57,7 @@ def graph(filename, stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x
     ax.plot(x, y, 'k-')
     
     # play area limits
+    """
     clerance = 230
     purple = 100
     red = 0
@@ -65,59 +66,24 @@ def graph(filename, stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x
 
     #x,y = build_poly([(240,240), (3000-240,240), (3000-240,2000-240-44), (240,2000-240-44)])
     ax.plot(x, y, 'c--')
-     
-    # sea
-    sea = [ Rectangle((0,0), 3000, 2000) ]
-        
-    # black lines
-    lines = [ Rectangle((500,450), 150, 20) ]
-    lines += [ Rectangle((3000-500,450), -150, 20) ]
-    lines += [ Rectangle((500+150-20,450+20), 20, 2000-(450+20)) ]
-    lines += [ Rectangle((3000-(500+150-20),450+20), -20, 2000-(450+20)) ]
-        
-    # bottles
-    red_bottles = draw_bottle(640, 2000)
-    red_bottles += draw_bottle(3000-640-477, 2000)
-    purple_bottles = draw_bottle(640+477, 2000)
-    purple_bottles += draw_bottle(3000-640, 2000)
-        
-    # isles
-    isles = [Circle((1100, 1000), 200)]   
-    isles += [Circle((1100+800, 1000), 200)]
-    isles += [Circle((1500, 1000), 150/2)]
-    isles += [Wedge((1500, 0), 300, 0, 180)]
+    """
     
-    # isles patch
-    isles_patch = [Wedge((1500, 1000-750), 550, 45, 135)]
-    isles_patch += [Wedge((1500, 1000+750), 550, 180+45, 180+135)]
-     
-    # beaches
-    beaches = [Circle((1100, 1000), 300)]   
-    beaches += [Circle((1100+800, 1000), 300)]
-    beaches += [Wedge((1500, 0), 400, 0, 180)]
-    beaches_patch = [Rectangle((1100, 1000-264.7), 800, 264.7*2)]
-       
-    # ships
-    ships = [ Polygon([(0,500), (400,500), (350,2000), (0,2000)]) ]
-    ships += [ Polygon([(3000-400,500), (3000,500), (3000,2000), (3000-350, 2000)]) ]
+    # ground
+    ground = [ Rectangle((0,0), 3000, 2000) ]
 
-    # barrier
-    barriers = [ Rectangle((0, 500), 400, 18, ls = 'solid') ]
-    barriers += [ Rectangle((3000, 500), -400, 18, ls = 'solid') ]
+    # start areas
+    start_area_yellow = [ Rectangle((0, 0), 400, 700) ]
+    start_area_red = [ Rectangle((3000-400, 0), 400, 700) ]     
 
-    # holds
-    holds = [ Rectangle((0, 2000), 340, -610, ls='solid') ]
-    holds += [ Rectangle((3000, 2000), -340, -610,ls='solid') ]
-        
-    # totems
-    totems = [ Rectangle((1100-125, 1000-125), 250, 250) ]
-    totems += [ Rectangle((1100+800-125, 1000-125), 250, 250) ]
-   
-    # start areas (captain bedroom)
-    start_area_red = [ Rectangle((0, 0), 500, 500) ]
-    start_area_purple = [ Rectangle((2500, 0), 500, 500) ]     
-     
-         
+    # baskets
+    basket_red = [ Rectangle((400, 0), 700, 300) ]
+    basket_yellow = [ Rectangle((3000-400-700, 0), 700, 300) ]     
+  
+    # heart of fire
+    heart_fire = [Circle((1500, 1050), 150)]   
+    heart_fire += [Wedge((0, 2000), 250, 270, 0)]
+    heart_fire += [Wedge((3000, 2000), 250, 180, 270)]
+    
     poly = None
     poly_wait_pts = 0
     start = None
@@ -133,6 +99,16 @@ def graph(filename, stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x
             dy = 150 * math.sin(a_rad)
             patches += [ Circle((x, y), 50) ]
             patches += [ Arrow(x, y, dx, dy, 50) ]
+
+        m = re.match("boundingbox at: (-?\d+) (-?\d+) (-?\d+) (-?\d+)", l)
+        if m:
+            x1,y1,x2,y2 = (int(m.groups()[0]), int(m.groups()[1]), int(m.groups()[2]), int(m.groups()[3]))
+            x,y = build_poly([(x1,y1), (x2,y1), (x2,y2), (x1,y2)])
+            ax.plot(x, y, 'c--')
+
+
+            dst_x,dst_y = (int(m.groups()[2]), int(m.groups()[3]))
+            patches += [ Circle((dst_x, dst_y), 50) ]
 
         m = re.match("oa_start_end_points\(\) \((-?\d+),(-?\d+)\) \((-?\d+),(-?\d+)\)", l)
         if m:
@@ -180,47 +156,22 @@ def graph(filename, stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x
             print((int(m.groups()[0])))
     
 
-    
-    p = PatchCollection(sea, cmap=matplotlib.cm.jet, alpha=1,  color='lightblue')
-    ax.add_collection(p)
-    
-    p = PatchCollection(ships, cmap=matplotlib.cm.jet, alpha=1,  color='brown')
-    ax.add_collection(p)
-       
-    p = PatchCollection(holds, cmap=matplotlib.cm.jet, alpha=0.5,  color='grey')
-    ax.add_collection(p)
-
-    p = PatchCollection(lines, cmap=matplotlib.cm.jet, alpha=1,  color='black')
-    ax.add_collection(p)
-
-    p = PatchCollection(beaches_patch, cmap=matplotlib.cm.jet, alpha=1,  color='yellow')
-    ax.add_collection(p)
-
-    p = PatchCollection(isles_patch, cmap=matplotlib.cm.jet, alpha=1,  color='lightblue')
-    ax.add_collection(p)
-    
-    p = PatchCollection(beaches, cmap=matplotlib.cm.jet, alpha=1,  color='yellow')
-    ax.add_collection(p)
-
-    p = PatchCollection(isles, cmap=matplotlib.cm.jet, alpha=1,  color='green')
-    ax.add_collection(p)
-
-    p = PatchCollection(totems, cmap=matplotlib.cm.jet, alpha=1,  color='brown')
-    ax.add_collection(p)
-    
-    p = PatchCollection(start_area_purple, cmap=matplotlib.cm.jet, alpha=1,  color='purple')
+    p = PatchCollection(ground, cmap=matplotlib.cm.jet, alpha=1,  color='green')
     ax.add_collection(p)
 
     p = PatchCollection(start_area_red, cmap=matplotlib.cm.jet, alpha=1,  color='red')
+    ax.add_collection(p)
+
+    p = PatchCollection(start_area_yellow, cmap=matplotlib.cm.jet, alpha=1,  color='yellow')
     ax.add_collection(p)   
-    
-    p = PatchCollection(red_bottles, cmap=matplotlib.cm.jet, alpha=1,  color='red')
-    ax.add_collection(p)   
-    
-    p = PatchCollection(purple_bottles, cmap=matplotlib.cm.jet, alpha=1,  color='purple')
-    ax.add_collection(p)   
-   
-    p = PatchCollection(patches, cmap=matplotlib.cm.jet, alpha=0.4)
+
+    p = PatchCollection(basket_red, cmap=matplotlib.cm.jet, alpha=1,  color='red')
+    ax.add_collection(p)
+
+    p = PatchCollection(basket_yellow, cmap=matplotlib.cm.jet, alpha=1,  color='yellow')
+    ax.add_collection(p)  
+
+    p = PatchCollection(heart_fire, cmap=matplotlib.cm.jet, alpha=1,  color='brown')
     ax.add_collection(p)
 
     x,y = build_path(path)
@@ -273,16 +224,6 @@ graph("go_in_area_5.png", 1500, 240, 0, 680, 1600, -1500, 0, -1500, 0, -1500, 0)
 print("go_in_area_6.png", 2300, 240, 0, 2000, 1400, -1500, 0, -1500, 0, -1500, 0)
 graph("go_in_area_6.png", 2300, 240, 0, 2000, 1400, -1500, 0, -1500, 0, -1500, 0)
 
-# op2_at_ship
-print("op2_at_ship_1.png", 1500, 350, 0, 1500, 1600, -1000, 0, 400, 700, -1500, 0)
-graph("op2_at_ship_1.png", 1500, 350, 0, 1500, 1600, -1000, 0, 400, 700, -1500, 0)
-print("op2_at_ship_2.png", 1500, 350, 0, 1500, 1600, -1000, 0, 400, 1000, -1500, 0)
-graph("op2_at_ship_2.png", 1500, 350, 0, 1500, 1600, -1000, 0, 400, 1000, -1500, 0)
-print("op2_at_ship_3.png", 1500, 350, 0, 1500, 1600, -1000, 0, 400, 1200, -1500, 0)
-graph("op2_at_ship_3.png", 1500, 350, 0, 1500, 1600, -1000, 0, 400, 1200, -1500, 0)
-print("op2_at_ship_4.png", 1500, 350, 0, 1500, 1600, -1000, 0, 500, 1600, -1500, 0)
-graph("op2_at_ship_4.png", 1500, 350, 0, 1500, 1600, -1000, 0, 500, 1600, -1500, 0)
-
 
 random
 random.seed(0)
@@ -295,4 +236,5 @@ for i in range(200):
     name = "random%d.png"%(i)
     print (name, stx, sty, 0, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x, robot_2nd_y)
     graph(name, stx, sty, 0, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x, robot_2nd_y)
+
    
