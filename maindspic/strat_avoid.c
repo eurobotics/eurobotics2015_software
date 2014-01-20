@@ -86,7 +86,7 @@
 #else
 /* /!\ half size */
 #define O_WIDTH  330
-#define O_LENGTH 220
+#define O_LENGTH 330 //220
 #endif
 
 #define ROBOT_2ND_WIDTH  330
@@ -451,7 +451,7 @@ static int8_t go_in_area(point_t *robot_pt)
 	/* Go in playground */
 	if (!is_in_boundingbox(robot_pt)){
 		NOTICE(E_USER_STRAT, "not in playground %"PRId32", %"PRId32"",
-		       robot_pt->x, robot_pt->y);
+		       (int32_t)robot_pt->x, (int32_t)robot_pt->y);
 
 		poly_area.l = 4;
 		poly_area.pts = poly_pts_area;
@@ -468,10 +468,10 @@ static int8_t go_in_area(point_t *robot_pt)
 		poly_pts_area[3].y = strat_infos.area_bbox.y2;
 
 		is_crossing_poly(*robot_pt, center_pt, &dst_pt, &poly_area);
-		NOTICE(E_USER_STRAT, "pt dst %"PRId32", %"PRId32"", dst_pt.x, dst_pt.y);
+		NOTICE(E_USER_STRAT, "pt dst %"PRId32", %"PRId32"", (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
 		NOTICE(E_USER_STRAT, "GOTO %"PRId32",%"PRId32"",
-		       dst_pt.x, dst_pt.y);
+		       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
 		/* scape from poly */
 #ifndef HOST_VERSION_OA_TEST		
@@ -656,9 +656,9 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 	dst_pt.y = robot_pt->y + escape_dy * ESCAPE_VECT_LEN;
 
 	NOTICE(E_USER_STRAT, "robot pt %"PRId32" %"PRId32,
-	       robot_pt->x, robot_pt->y);
+	       (int32_t)robot_pt->x, (int32_t)robot_pt->y);
 	NOTICE(E_USER_STRAT, "dst point %"PRId32",%"PRId32,
-	       dst_pt.x, dst_pt.y);
+	       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
 	if (in_opp1) {
 		if (is_crossing_poly(*robot_pt, dst_pt, &intersect_opp1_pt,
@@ -669,7 +669,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 			dst_pt.y = intersect_opp1_pt.y + escape_dy * 2;
 
 			NOTICE(E_USER_STRAT, "dst point %"PRId32",%"PRId32,
-			       dst_pt.x, dst_pt.y);
+			       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
          /* XXX check that destination point is not in an other poly */
 			if (is_point_in_poly(pol_opp2, dst_pt.x, dst_pt.y) != 1 &&
@@ -680,7 +680,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 					return -1;
 				
 				NOTICE(E_USER_STRAT, "GOTO %"PRId32",%"PRId32"",
-				       dst_pt.x, dst_pt.y);
+				       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
 				/* XXX comment for virtual scape from poly */
 #ifndef HOST_VERSION_OA_TEST
@@ -703,7 +703,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 			dst_pt.y = intersect_opp2_pt.y + escape_dy * 2;
 
 			NOTICE(E_USER_STRAT, "dst point %"PRId32",%"PRId32,
-			       dst_pt.x, dst_pt.y);
+			       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
          /* XXX check that destination point is not in an other poly */
 			if (is_point_in_poly(pol_opp1, dst_pt.x, dst_pt.y) != 1 &&
@@ -715,7 +715,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 					return -1;
 				
 				NOTICE(E_USER_STRAT, "GOTO %"PRId32",%"PRId32"",
-				       dst_pt.x, dst_pt.y);
+				       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
 				/* XXX comment for virtual scape from poly */
 #ifndef HOST_VERSION_OA_TEST
@@ -739,7 +739,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 			dst_pt.y = intersect_robot_2nd_pt.y + escape_dy * 2;
 
 			NOTICE(E_USER_STRAT, "dst point %"PRId32",%"PRId32,
-			       dst_pt.x, dst_pt.y);
+			       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
          /* XXX check that destination point is not in an other poly */
 			if (is_point_in_poly(pol_opp1, dst_pt.x, dst_pt.y) != 1 &&
@@ -751,7 +751,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 					return -1;
 				
 				NOTICE(E_USER_STRAT, "GOTO %"PRId32",%"PRId32"",
-				       dst_pt.x, dst_pt.y);
+				       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
 				/* XXX comment for virtual scape from poly */
 #ifndef HOST_VERSION_OA_TEST
@@ -774,7 +774,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 			dst_pt.y = intersect_heartfire_pt.y + escape_dy * 2;
 
 			NOTICE(E_USER_STRAT, "dst point %"PRId32",%"PRId32,
-			       dst_pt.x, dst_pt.y);
+			       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
          /* XXX check that destination point is not in an other poly */
 			if (is_point_in_poly(pol_opp1, dst_pt.x, dst_pt.y) != 1 &&
@@ -786,7 +786,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 					return -1;
 				
 				NOTICE(E_USER_STRAT, "GOTO %"PRId32",%"PRId32"",
-				       dst_pt.x, dst_pt.y);
+				       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
 				/* XXX comment for virtual scape from poly */
 #ifndef HOST_VERSION_OA_TEST
@@ -936,7 +936,7 @@ retry:
 		return END_ERROR;
 	}
   
-	/* TODO check if destination is in any poly */
+	/* check if destination is in any poly */
   	if (is_point_in_poly(pol_opp1, x, y)) {
 		NOTICE(E_USER_STRAT, " dst is in opp 1");
 		return END_ERROR;
@@ -950,6 +950,7 @@ retry:
 		NOTICE(E_USER_STRAT, " dst is in robot 2nd");
 		return END_ERROR;
 	}
+  /* TODO: destination is in fire of heard */
 
 
 	/* now start to avoid */
@@ -1038,15 +1039,15 @@ retry:
 //		}
 
 		if (direction == GO_AVOID_FORWARD){
-			DEBUG(E_USER_STRAT, "With avoidance %d: x=%"PRId32" y=%"PRId32" forward", i, p->x, p->y);
+			DEBUG(E_USER_STRAT, "With avoidance %d: x=%"PRId32" y=%"PRId32" forward", i, (int32_t)p->x, (int32_t)p->y);
 			trajectory_goto_forward_xy_abs(&mainboard.traj, p->x, p->y);
 		}
 		else if(direction == GO_AVOID_BACKWARD){
-			DEBUG(E_USER_STRAT, "With avoidance %d: x=%"PRId32" y=%"PRId32" backward", i, p->x, p->y);
+			DEBUG(E_USER_STRAT, "With avoidance %d: x=%"PRId32" y=%"PRId32" backward", i, (int32_t)p->x, (int32_t)p->y);
 			trajectory_goto_backward_xy_abs(&mainboard.traj, p->x, p->y);
 		}
 		else {
-			DEBUG(E_USER_STRAT, "With avoidance %d: x=%"PRId32" y=%"PRId32" forward", i, p->x, p->y);
+			DEBUG(E_USER_STRAT, "With avoidance %d: x=%"PRId32" y=%"PRId32" forward", i, (int32_t)p->x, (int32_t)p->y);
 			trajectory_goto_xy_abs(&mainboard.traj, p->x, p->y);
 		}
 		
@@ -1074,7 +1075,7 @@ retry:
 
 #endif /* HOST_VERSION_OA_TEST */
 
-		DEBUG(E_USER_STRAT, "With avoidance %d: x=%d y=%d", i, p->x, p->y);		
+		DEBUG(E_USER_STRAT, "With avoidance %d: x=%"PRId32" y=%"PRId32"", i, (int32_t)p->x, (int32_t)p->y);		
 
 		/* next point */
 		p++;

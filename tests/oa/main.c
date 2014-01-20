@@ -22,6 +22,7 @@
 #error only for host
 #endif
 
+
 #define M_2PI (M_PI*2)
 #define E_USER_STRAT 200
 
@@ -89,7 +90,7 @@ int main(void)
 	error_register_debug(mylog);
 	
 	/* set playground boundingbox */
-	strat_set_bounding_box(I2C_COLOR_PURPLE);
+	strat_set_bounding_box(I2C_COLOR_YELLOW);
 
 	/* goto and avoid */
 	DEBUG(E_USER_STRAT, "robot at: %d %d %d", robot_x, robot_y, robot_a_deg);

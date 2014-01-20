@@ -8,7 +8,8 @@ SRC  = $(TARGET).c
 
 ASRC = 
 
-CFLAGS += -Wall -Werror
+CFLAGS += -Wall -Werror -Wno-unused-but-set-variable -DHOST_VERSION_OA_TEST
+ 
 
 ########################################
 
