@@ -1,5 +1,5 @@
 import math, sys, time, os, random, re
-#from matplotlib.patches import Arrow, Circle, Wedge, Polygon, Rectangle
+from matplotlib.patches import Arrow, Circle, Wedge, Polygon, Rectangle
 from visual import *
 
 FLOAT = "([-+]?[0-9]*\.?[0-9]+)"
@@ -88,6 +88,7 @@ FRESCO_HEIGHT = 200.0
 HEARTFIRE_HEIGHT = 30.0
 TREETRUNK_HEIGHT = 320.0
 TREETOP_HEIGHT = 10.0
+FIRE_HEIGHT= 140.0
 
 def toggle_obj_disp():
     global area_objects
@@ -109,6 +110,32 @@ def toggle_obj_disp():
         c = box(pos=(-AREA_X/2+400+350,-AREA_Y/2-11,MAMUT_HEIGHT/2+70), size=mamutsize, color=(0.6, 0.3, 0.0))
         area_objects.append(c)
         c = box(pos=(AREA_X/2-400-350,-AREA_Y/2-11,MAMUT_HEIGHT/2+70), size=mamutsize, color=(0.6, 0.3, 0.0))
+        area_objects.append(c)
+	
+	fire = [ (0.0, 0.0, -0.5), (22.0,140.0, FIRE_HEIGHT) ]
+        firesize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , fire)
+        c = box(pos=(-AREA_X/2,-AREA_Y/2+800,FIRE_HEIGHT/2), size=firesize, color=(1, 1, 0.0))
+        area_objects.append(c)
+	c = box(pos=(AREA_X/2,-AREA_Y/2+800,FIRE_HEIGHT/2), size=firesize, color=(1, 0, 0.0))
+        area_objects.append(c)
+	c = box(pos=(-AREA_X/2+900,-AREA_Y/2+600,FIRE_HEIGHT/2), size=firesize, color=(1, 0.0, 0.0))
+        area_objects.append(c)
+	c = box(pos=(AREA_X/2-900,-AREA_Y/2+600,FIRE_HEIGHT/2), size=firesize, color=(1, 1, 0.0))
+        area_objects.append(c)
+	c = box(pos=(-AREA_X/2+900,600,FIRE_HEIGHT/2), size=firesize, color=(1, 0.0, 0.0))
+        area_objects.append(c)
+	c = box(pos=(AREA_X/2-900,600,FIRE_HEIGHT/2), size=firesize, color=(1,1, 0.0))
+        area_objects.append(c)
+	
+	fire2 = [ (0.0, 0.0, -0.5), (140.0,22.0, FIRE_HEIGHT) ]
+        firesize2 = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , fire2)
+        c = box(pos=(-AREA_X/2+400,100,FIRE_HEIGHT/2), size=firesize2, color=(1, 1, 0.0))
+        area_objects.append(c)
+	c = box(pos=(AREA_X/2-400,100,FIRE_HEIGHT/2), size=firesize2, color=(1, 0.0, 0.0))
+        area_objects.append(c)
+	c = box(pos=(-200,+AREA_Y/2,FIRE_HEIGHT/2), size=firesize2, color=(1,0.0, 0.0))
+        area_objects.append(c)
+	c = box(pos=(+200,+AREA_Y/2,FIRE_HEIGHT/2), size=firesize2, color=(1,1 , 0.0))
         area_objects.append(c)
 
         fresco = [ (0.0, 0.0, -0.5), (600.0, 22.0, FRESCO_HEIGHT) ]
