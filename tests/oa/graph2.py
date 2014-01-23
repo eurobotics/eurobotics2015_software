@@ -174,6 +174,9 @@ def graph(filename, stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x
     p = PatchCollection(heart_fire, cmap=matplotlib.cm.jet, alpha=1,  color='brown')
     ax.add_collection(p)
 
+    p = PatchCollection(patches, cmap=matplotlib.cm.jet, alpha=0.4)
+    ax.add_collection(p)
+
     x,y = build_path(path)
     ax.plot(x, y, 'bo-')
 
@@ -211,7 +214,7 @@ def random_opp_xy():
 
 
 # go in playground area
-print("go_in_area_1.png", 250, 250, 0, 2300, 1600, -1500, 0, -1500, 0, -1500, 0)
+print("go_in_area_1.png", 250, 250, 45, 2300, 1600, -1500, 0, -1500, 0, -1500, 0)
 graph("go_in_area_1.png", 250, 250, 0, 2300, 1600, -1500, 0, -1500, 0, -1500, 0)
 print("go_in_area_2.png", 250, 1000, 0, 2300, 1000, -1500, 0, -1500, 0, -1500, 0)
 graph("go_in_area_2.png", 250, 1000, 0, 2300, 1000, -1500, 0, -1500, 0, -1500, 0)
