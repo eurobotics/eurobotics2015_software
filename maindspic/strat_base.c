@@ -308,7 +308,7 @@ void strat_limit_speed_disable(void)
 /* called periodically */
 void strat_limit_speed(void)
 {
-#define SPEED_MIN	20
+#define SPEED_MIN	(20.0)
 
 #ifdef TWO_OPPONENTS
 #ifdef ROBOT_2ND
@@ -387,26 +387,36 @@ void strat_limit_speed(void)
 	}
 #else
 	if (opp_d < 500) {
-		if (speed_d > SPEED_MIN && (opp_a > 290 || opp_a < 70)) {
+    /* opp in front */
+		if ((speed_d > SPEED_MIN) && (opp_a > 290 || opp_a < 70)) {
+      //DEBUG(E_USER_STRAT, "opp in front < 500 (speed = %d)", speed_d);
 			lim_d = SPEED_DIST_VERY_SLOW;
 			lim_a = SPEED_ANGLE_VERY_SLOW;
 		}
-		else if (speed_d < -SPEED_MIN && (opp_a < 250 && opp_a > 110)) {
+    /* opp behind */
+		else if ((speed_d < -SPEED_MIN) && (opp_a < 250 && opp_a > 110)) {
+      //DEBUG(E_USER_STRAT, "opp behind < 500 (speed = %d)", speed_d);
 			lim_d = SPEED_DIST_VERY_SLOW;
 			lim_a = SPEED_ANGLE_VERY_SLOW;
 		}
-		else {
+    /* opp on the left/right */
+		else if (speed_d < -SPEED_MIN) {
+      //DEBUG(E_USER_STRAT, "opp on the left/right < 500 (speed = %d)", speed_d);
 			lim_d = SPEED_DIST_SLOW;
 			lim_a = SPEED_ANGLE_VERY_SLOW;
 		}
 	}
 #endif		
 	else if (opp_d < 800) {
-		if (speed_d > SPEED_MIN && (opp_a > 290 || opp_a < 70)) {
+    /* opp in front */
+		if ((speed_d > SPEED_MIN) && (opp_a > 290 || opp_a < 70)) {
+      //DEBUG(E_USER_STRAT, "opp in front < 800 (speed = %d)", speed_d);
 			lim_d = SPEED_DIST_SLOW;
 			lim_a = SPEED_ANGLE_SLOW;
 		}
-		else if (speed_d < -SPEED_MIN && (opp_a < 250 && opp_a > 110)) {
+    /* opp behind */
+		else if ((speed_d < -SPEED_MIN) && (opp_a < 250 && opp_a > 110)) {
+      //DEBUG(E_USER_STRAT, "opp behind < 800 (speed = %d)", speed_d);
 			lim_d = SPEED_DIST_SLOW;
 			lim_a = SPEED_ANGLE_SLOW;
 		}
@@ -550,16 +560,16 @@ uint8_t __strat_obstacle(uint8_t which)
 		return 0;
 #endif
 
-	/* opponent is in front of us */
-	if (mainboard.speed_d > 0 && (opp_a > 325 || opp_a < 35)) {
+	/* XXX opponent is in front of us */
+	if (mainboard.speed_d > 200 && (opp_a > 325 || opp_a < 35)) {
 		DEBUG(E_USER_STRAT, "opponent front d=%d, a=%d "
 		      "xrel=%d yrel=%d (speed_d=%d)", 
 		      opp_d, opp_a, x_rel, y_rel, mainboard.speed_d);
 		sensor_obstacle_disable();
 		return 1;
 	}
-	/* opponent is behind us */
-	if (mainboard.speed_d < 0 && (opp_a < 215 && opp_a > 145)) {
+	/* XXX opponent is behind us */
+	if (mainboard.speed_d < 200 && (opp_a < 215 && opp_a > 145)) {
 		DEBUG(E_USER_STRAT, "opponent behind d=%d, a=%d xrel=%d yrel=%d", 
 		      opp_d, opp_a, x_rel, y_rel);
 		sensor_obstacle_disable();
@@ -643,6 +653,7 @@ uint8_t test_traj_end(uint8_t why)
 	if (why & END_NEAR) {
 		int16_t d_near = 100;	
 		
+    /* XXX */
 		if (mainboard.speed_d >= 2000)
 			d_near = 150;
 		
