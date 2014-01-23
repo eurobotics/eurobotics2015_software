@@ -89,8 +89,13 @@
 #define O_LENGTH 330 //220
 #endif
 
+#ifdef IM_SECONDARY_ROBOT
+#define ROBOT_2ND_WIDTH  330
+#define ROBOT_2ND_LENGTH 330
+#else
 #define ROBOT_2ND_WIDTH  330
 #define ROBOT_2ND_LENGTH 220
+#endif
 
 #define CENTER_X 1500
 #define CENTER_Y 1000
@@ -883,9 +888,11 @@ retry:
 	get_opponent_xy(&opp1_x, &opp1_y);
   get_opponent2_xy(&opp2_x, &opp2_y);
 	
-	/* TODO: get second robot */
-	robot_2nd_x = I2C_OPPONENT_NOT_THERE;
-	robot_2nd_y = 0;
+	/* get second robot */
+	//robot_2nd_x = I2C_OPPONENT_NOT_THERE;
+	//robot_2nd_y = 0;
+  get_robot_2nd_xy(&robot_2nd_x, &robot_2nd_y);
+
 #endif
 
 	opp1_w = O_WIDTH;
@@ -950,8 +957,12 @@ retry:
 		NOTICE(E_USER_STRAT, " dst is in robot 2nd");
 		return END_ERROR;
 	}
-  /* TODO: destination is in fire of heard */
 
+  /* check if destination is in fire of heard */
+ 	if (is_point_in_poly(pol_heartfire, x, y)) {
+		NOTICE(E_USER_STRAT, " dst is in heart of fire");
+		return END_ERROR;
+	}
 
 	/* now start to avoid */
 	while (opp1_w && opp1_l && opp2_w && opp2_l) {

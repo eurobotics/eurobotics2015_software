@@ -93,7 +93,7 @@ int main(void)
 	strat_set_bounding_box(I2C_COLOR_YELLOW);
 
 	/* goto and avoid */
-	DEBUG(E_USER_STRAT, "robot at: %d %d %d", robot_x, robot_y, robot_a_deg);
+	DEBUG(E_USER_STRAT, "robot at: %d %d %d", robot_x, robot_y, (int16_t)robot_a_deg);
 	goto_and_avoid(dst_x, dst_y,
 					   robot_x, robot_y, robot_a,
 					   robot_2nd_x, robot_2nd_y,
