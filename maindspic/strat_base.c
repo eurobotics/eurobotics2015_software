@@ -386,21 +386,25 @@ void strat_limit_speed(void)
 		lim_a = SPEED_ANGLE_VERY_SLOW;
 	}
 #else
+
+#define A_OPP       60
+#define A_OPP_HALF  (A_OPP/2)
+
 	if (opp_d < 500) {
     /* opp in front */
-		if ((speed_d > SPEED_MIN) && (opp_a > 290 || opp_a < 70)) {
+		if ((speed_d > SPEED_MIN) && (opp_a > (360-A_OPP_HALF) || opp_a < A_OPP_HALF)) {
       //DEBUG(E_USER_STRAT, "opp in front < 500 (speed = %d)", speed_d);
 			lim_d = SPEED_DIST_VERY_SLOW;
 			lim_a = SPEED_ANGLE_VERY_SLOW;
 		}
     /* opp behind */
-		else if ((speed_d < -SPEED_MIN) && (opp_a < 250 && opp_a > 110)) {
+		else if ((speed_d < -SPEED_MIN) && (opp_a < (180+A_OPP_HALF) && opp_a > (180-A_OPP_HALF))) {
       //DEBUG(E_USER_STRAT, "opp behind < 500 (speed = %d)", speed_d);
 			lim_d = SPEED_DIST_VERY_SLOW;
 			lim_a = SPEED_ANGLE_VERY_SLOW;
 		}
     /* opp on the left/right */
-		else if (speed_d < -SPEED_MIN) {
+		else {
       //DEBUG(E_USER_STRAT, "opp on the left/right < 500 (speed = %d)", speed_d);
 			lim_d = SPEED_DIST_SLOW;
 			lim_a = SPEED_ANGLE_VERY_SLOW;
@@ -409,13 +413,13 @@ void strat_limit_speed(void)
 #endif		
 	else if (opp_d < 800) {
     /* opp in front */
-		if ((speed_d > SPEED_MIN) && (opp_a > 290 || opp_a < 70)) {
+		if ((speed_d > SPEED_MIN) && (opp_a > (360-A_OPP_HALF) || opp_a < A_OPP_HALF)) {
       //DEBUG(E_USER_STRAT, "opp in front < 800 (speed = %d)", speed_d);
 			lim_d = SPEED_DIST_SLOW;
 			lim_a = SPEED_ANGLE_SLOW;
 		}
     /* opp behind */
-		else if ((speed_d < -SPEED_MIN) && (opp_a < 250 && opp_a > 110)) {
+		else if ((speed_d < -SPEED_MIN) && (opp_a < (180+A_OPP_HALF) && opp_a > (180-A_OPP_HALF))) {
       //DEBUG(E_USER_STRAT, "opp behind < 800 (speed = %d)", speed_d);
 			lim_d = SPEED_DIST_SLOW;
 			lim_a = SPEED_ANGLE_SLOW;

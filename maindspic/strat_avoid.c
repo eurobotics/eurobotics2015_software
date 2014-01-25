@@ -1105,13 +1105,22 @@ uint8_t goto_and_avoid(int16_t x, int16_t y, uint8_t flags_intermediate,
 	double d,a;
 	abs_xy_to_rel_da(x, y, &d, &a); 
 
-	if (d < 300 && a < RAD(90) && a > RAD(-90))
-		return __goto_and_avoid(x, y, flags_intermediate,
-					flags_final, GO_AVOID_FORWARD);
-	else
-		return __goto_and_avoid(x, y, flags_intermediate,
-					flags_final, GO_AVOID_BACKWARD);
+
+  if(robots_near()) {
+      DEBUG(E_USER_STRAT, "Robots near");
+		  return __goto_and_avoid(x, y, flags_intermediate,
+					  flags_final, GO_AVOID_AUTO);
+  }
+  else { /* XXX specific 2014 */
+	  if (d < 300 && a < RAD(90) && a > RAD(-90))
+		  return __goto_and_avoid(x, y, flags_intermediate,
+					  flags_final, GO_AVOID_FORWARD);
+	  else
+		  return __goto_and_avoid(x, y, flags_intermediate,
+					  flags_final, GO_AVOID_BACKWARD);
+  }
 }
+
 
 #if 0
 /* go to a x,y point */
