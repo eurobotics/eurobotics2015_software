@@ -47,6 +47,7 @@
 #include <trajectory_manager.h>
 #include <trajectory_manager_utils.h>
 //#include <trajectory_manager_core.h>
+#include <f64.h>
 #include <vect_base.h>
 #include <lines.h>
 #include <polygon.h>
@@ -353,12 +354,16 @@ static void cmd_rs_gains_parsed(void * parsed_result, void * data)
 					 RIGHT_ENCODER, res->right); 	// increasing one turns to the right (en augmentant on tourne à droite)
 	}	
 	
-	/* XXX on dspic decimal part of negative values don`t print well, because compiler C30?? */	
+	/* XXX on dspic decimal part of negative values is not printed well, because compiler C30?? */
+#ifndef CONFIG_MODULE_ROBOT_SYSTEM_USE_F64	
+	printf_P(PSTR("rs_gains set %f %f \r\n"), mainboard.rs.left_ext_gain, mainboard.rs.right_ext_gain);
+#else
 	printf_P(PSTR("rs_gains set "));
 	f64_print(mainboard.rs.left_ext_gain);
 	printf_P(PSTR(" "));
 	f64_print(mainboard.rs.right_ext_gain);
 	printf_P(PSTR("\r\n"));
+#endif
 #endif
 }
 
@@ -821,39 +826,39 @@ static void auto_position(void)
 	strat_get_speed(&old_spdd, &old_spda);
 	strat_set_speed(AUTOPOS_SPEED_FAST, AUTOPOS_SPEED_FAST);
 
-	/* goto blocking to y axis */
+	/* goto blocking to x axis */
 	trajectory_d_rel(&mainboard.traj, -300);
 	err = wait_traj_end(END_INTR|END_TRAJ|END_BLOCKING);
 	if (err == END_INTR)
 		goto intr;
 	wait_ms(100);
 	
-	/* set y */
-	strat_reset_pos(0, COLOR_Y(ROBOT_DIS2_WALL), 90);
+	/* set x and angle */
+	strat_reset_pos(COLOR_X(ROBOT_DIS2_WALL), 0, COLOR_A_ABS(0));
 	
-	/* prepare to x axis */
-	trajectory_d_rel(&mainboard.traj, 250-ROBOT_CENTER_TO_BACK); //35 //195
+	/* prepare to y axis */
+	trajectory_d_rel(&mainboard.traj, 250-ROBOT_CENTER_TO_BACK); /* TODO */
 	err = wait_traj_end(END_INTR|END_TRAJ);
 	if (err == END_INTR)
 		goto intr;
 
-	trajectory_a_rel(&mainboard.traj, COLOR_A_REL(-90));
+	trajectory_a_rel(&mainboard.traj, COLOR_A_REL(90));
 	err = wait_traj_end(END_INTR|END_TRAJ);
 	if (err == END_INTR)
 		goto intr;
 
-	/* goto blocking to x axis */
+	/* goto blocking to y axis */
 	trajectory_d_rel(&mainboard.traj, -800);
 	err = wait_traj_end(END_INTR|END_TRAJ|END_BLOCKING);
 	if (err == END_INTR)
 		goto intr;
 	wait_ms(100);
 
-	/* set x and angle */
-	strat_reset_pos(COLOR_X(ROBOT_DIS2_WALL), DO_NOT_SET_POS, COLOR_A_ABS(0));
+	/* set y */
+	strat_reset_pos(DO_NOT_SET_POS, COLOR_Y(ROBOT_DIS2_WALL), 90);
 
 	/* goto start position */
-	trajectory_d_rel(&mainboard.traj, 500-(ROBOT_LENGTH));
+	trajectory_d_rel(&mainboard.traj, 500-(ROBOT_LENGTH)); /* TODO */
 	err = wait_traj_end(END_INTR|END_TRAJ);
 	if (err == END_INTR)
 		goto intr;

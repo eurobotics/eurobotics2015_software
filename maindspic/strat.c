@@ -334,9 +334,8 @@ void strat_event(void *dummy)
 /* strat main loop */
 uint8_t strat_main(void)
 {
-	uint8_t err;
-
 #if notyet /* TODO 2014 */
+	uint8_t err;
 
 #ifdef HOMOLOGATION
 

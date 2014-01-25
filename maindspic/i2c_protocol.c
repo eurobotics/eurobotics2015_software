@@ -428,28 +428,7 @@ void i2c_read_event(uint8_t * buf, uint16_t size)
 			if (size != sizeof (*ans))
 				goto *p_error_recv;
 	
-      	/* actuators blocking */
-      	slavedspic.fingers_floor_blocked = ans->fingers_floor_blocked;
-      	slavedspic.fingers_totem_blocked = ans->fingers_totem_blocked;
-      	slavedspic.arm_right_blocked = ans->arm_right_blocked;
-      	slavedspic.arm_left_blocked = ans->arm_left_blocked;
-      	slavedspic.lift_blocked = ans->lift_blocked;
-      
-      	/* sensors */
-      	slavedspic.turbine_sensors = ans->turbine_sensors;
-      
-      	/* infos */
-      	slavedspic.status = ans->status;
-      
-      	slavedspic.harvest_mode = ans->harvest_mode;
-      	slavedspic.store_mode = ans->store_mode;
-      	slavedspic.dump_mode = ans->dump_mode;
-      
-      	slavedspic.nb_goldbars_in_boot = ans->nb_goldbars_in_boot;
-      	slavedspic.nb_goldbars_in_mouth = ans->nb_goldbars_in_mouth;
-      	slavedspic.nb_coins_in_boot = ans->nb_coins_in_boot;
-      	slavedspic.nb_coins_in_mouth = ans->nb_coins_in_mouth;
-
+   
 			break;
 		}
 	

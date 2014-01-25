@@ -198,7 +198,7 @@ end:
 }
 #endif
 
-#ifdef 2012
+#ifdef TODO_2012
 uint8_t strat_begin(void)
 {   
    uint8_t err;
@@ -373,5 +373,5 @@ end:
 
    return err;
 }
-#endif 2012
+#endif /* TODO 2012 */
 
