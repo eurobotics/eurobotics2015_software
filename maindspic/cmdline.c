@@ -35,7 +35,9 @@
 #include <aversive.h>
 #include <aversive/error.h>
 
+#ifdef HOST_VERSION
 #include <hostsim.h>
+#endif
 
 #include <parse.h>
 #include <rdline.h>
@@ -114,7 +116,9 @@ void mylog(struct error * e, ...)
 {
 	va_list ap;
 #ifndef HOST_VERSION
+#ifndef DSPIC
 	u16 stream_flags = stdout->flags;
+#endif
 #endif
 	uint8_t i;
 	time_h tv;
@@ -145,7 +149,9 @@ void mylog(struct error * e, ...)
 	printf_P(PSTR("\r\n"));
 	va_end(ap);
 #ifndef HOST_VERSION
+#ifndef DSPIC
 	stdout->flags = stream_flags;
+#endif
 #endif
 }
 

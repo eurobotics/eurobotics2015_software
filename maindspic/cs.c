@@ -250,10 +250,10 @@ void maindspic_cs_init(void)
 	pid_set_out_shift(&mainboard.angle.pid, 6);	
 	pid_set_derivate_filter(&mainboard.angle.pid, 1);
 
-	/* QUADRAMP */
+	/* FIXME QUADRAMP */
 	quadramp_init(&mainboard.angle.qr);
-	quadramp_set_1st_order_vars(&mainboard.angle.qr, 4000, 4000); 	/* set speed */
-	quadramp_set_2nd_order_vars(&mainboard.angle.qr, 20, 20); 		/* set accel */
+	quadramp_set_1st_order_vars(&mainboard.angle.qr, 3000.0, 3000.0); 	/* set speed */
+	quadramp_set_2nd_order_vars(&mainboard.angle.qr, 20.0, 20.0); 		/* set accel */
 	//quadramp_set_1st_order_vars(&mainboard.angle.qr, 1000, 1000); 	/* set speed */
 	//quadramp_set_2nd_order_vars(&mainboard.angle.qr, 5, 5); 		/* set accel */
 
@@ -279,10 +279,10 @@ void maindspic_cs_init(void)
 	pid_set_out_shift(&mainboard.distance.pid, 6);
 	pid_set_derivate_filter(&mainboard.distance.pid, 1);
 
-	/* QUADRAMP */
+	/* FIXME QUADRAMP */
 	quadramp_init(&mainboard.distance.qr);
-	quadramp_set_1st_order_vars(&mainboard.distance.qr, 4000, 4000); 	/* set speed */
-	quadramp_set_2nd_order_vars(&mainboard.distance.qr, 35, 35); 	/* set accel */
+	quadramp_set_1st_order_vars(&mainboard.distance.qr, 3000.0, 3000.0); 	/* set speed */
+	quadramp_set_2nd_order_vars(&mainboard.distance.qr, 35.0, 35.0); 	/* set accel */
 	//quadramp_set_1st_order_vars(&mainboard.distance.qr, 1000, 1000); 	/* set speed */
 	//quadramp_set_2nd_order_vars(&mainboard.distance.qr, 5, 5); 	/* set accel */
 

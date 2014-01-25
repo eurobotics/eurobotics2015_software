@@ -45,6 +45,7 @@
 #include <quadramp.h>
 #include <control_system_manager.h>
 #include <trajectory_manager.h>
+#include <trajectory_manager_core.h>
 #include <trajectory_manager_utils.h>
 #include <vect_base.h>
 #include <lines.h>
@@ -53,7 +54,10 @@
 #include <blocking_detection_manager.h>
 #include <robot_system.h>
 #include <position_manager.h>
+
+#ifdef HOST_VERSION
 #include <hostsim.h>
+#endif
 
 #include <rdline.h>
 #include <parse.h>
@@ -1086,7 +1090,7 @@ static void print_pos(void)
 
 static void print_time(void)
 {
-	printf_P(PSTR("time %d\r\n"),time_get_s());
+	printf_P(PSTR("time %d\r\n"),(int16_t)time_get_s());
 }
 
 
@@ -1388,6 +1392,7 @@ struct cmd_time_monitor_result {
 static void cmd_time_monitor_parsed(void *parsed_result, void *data)
 {
 #ifndef HOST_VERSION
+/*
 	struct cmd_time_monitor_result *res = parsed_result;
 	uint16_t seconds;
 
@@ -1396,6 +1401,7 @@ static void cmd_time_monitor_parsed(void *parsed_result, void *data)
 	}
 	seconds = eeprom_read_word(EEPROM_TIME_ADDRESS);
 	printf_P(PSTR("Running since %d mn %d\r\n"), seconds/60, seconds%60);
+*/
 #endif
 }
 

@@ -44,7 +44,9 @@
 /* commands_gen.c */
 #ifdef COMPILE_COMMANDS_GEN
 
-//#include "./commands_gen.c"
+#ifndef HOST_VERSION
+#include "./commands_gen.c"
+#endif
 
 extern parse_pgm_inst_t cmd_reset;
 //TODO extern parse_pgm_inst_t cmd_bootloader;
@@ -65,7 +67,9 @@ extern parse_pgm_inst_t cmd_scheduler;
 /* commands_cs.c */
 #ifdef COMPILE_COMMANDS_CS
 
-//#include "./commands_cs.c"
+#ifndef HOST_VERSION
+#include "./commands_cs.c"
+#endif
 
 extern parse_pgm_inst_t cmd_gain;
 extern parse_pgm_inst_t cmd_gain_show;
@@ -87,7 +91,9 @@ extern parse_pgm_inst_t cmd_blocking_i_show;
 /* commands_mainboard.c */
 #ifdef COMPILE_COMMANDS_MAINBOARD
 
-//#include "./commands_mainboard.c"
+#ifndef HOST_VERSION
+#include "./commands_mainboard.c"
+#endif
 
 extern parse_pgm_inst_t cmd_event;
 // TODO extern parse_pgm_inst_t cmd_spi_test;
@@ -120,7 +126,9 @@ extern parse_pgm_inst_t cmd_sensor_robot;
 /* commands_traj.c */
 #ifdef COMPILE_COMMANDS_TRAJ
 
-//#include "./commands_traj.c"
+#ifndef HOST_VERSION
+#include "./commands_traj.c"
+#endif
 
 extern parse_pgm_inst_t cmd_traj_speed;
 extern parse_pgm_inst_t cmd_traj_speed_show;
