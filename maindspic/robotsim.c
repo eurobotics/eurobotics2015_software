@@ -78,7 +78,7 @@ static int fdr, fdw;
 /* */
 #define FILTER  98
 #define FILTER2 (100-FILTER)
-#define SHIFT   4
+#define SHIFT   2
 
 void robotsim_dump(void)
 {

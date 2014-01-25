@@ -712,6 +712,39 @@ uint8_t robots_infront(void)
 }
 
 
+uint8_t robots_near(void)
+{
+	int8_t opp_there, opp2_there=-1, r2nd_there=-1;
+	int16_t opp_d, opp_a;
+
+	opp_there = get_opponent_da(&opp_d, &opp_a);
+#ifdef TWO_OPPONENTS
+	int16_t opp2_d, opp2_a;
+	opp2_there = get_opponent2_da(&opp2_d, &opp2_a);
+#endif
+#ifdef ROBOT_2ND
+	int16_t robot_2nd_d, robot_2nd_a;
+	r2nd_there = get_robot_2nd_da(&robot_2nd_d, &robot_2nd_a);
+#endif
+	
+	if((opp_there == -1) && (opp2_there == -1) && (r2nd_there == -1))
+		return 0;
+
+	if (opp_d < 500)
+		return 1;
+
+#ifdef TWO_OPPONENTS
+	if (opp2_d < 500)
+		return 1;
+#endif
+
+#ifdef ROBOT_2ND
+	if (robot_2nd_d < 500)
+		return 1;
+#endif
+
+	return 0;
+}
 
 /* return 1 if opp is in area, XXX pass coordinates with COLOR macro */
 uint8_t opponent_is_in_area(int16_t x_up, int16_t y_up,

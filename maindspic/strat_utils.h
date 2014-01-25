@@ -100,6 +100,7 @@ uint8_t opponent_is_behind(void);
 uint8_t opponent_is_infront(void);
 uint8_t robots_behind(void);
 uint8_t robots_infront(void);
+uint8_t robots_near(void);
 /*
 uint8_t opponent_is_behind_side(uint8_t side);
 uint8_t opponent_is_infront_side(uint8_t side);

@@ -102,7 +102,7 @@ prog_char str_traj_speed_arg0[] = "traj_speed";
 parse_pgm_token_string_t cmd_traj_speed_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_traj_speed_result, arg0, str_traj_speed_arg0);
 prog_char str_traj_speed_arg1[] = "angle#distance";
 parse_pgm_token_string_t cmd_traj_speed_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_traj_speed_result, arg1, str_traj_speed_arg1);
-parse_pgm_token_num_t cmd_traj_speed_s = TOKEN_NUM_INITIALIZER(struct cmd_traj_speed_result, s, UINT16);
+parse_pgm_token_num_t cmd_traj_speed_s = TOKEN_NUM_INITIALIZER(struct cmd_traj_speed_result, s, FLOAT);
 
 prog_char help_traj_speed[] = "Set traj_speed values for trajectory manager";
 parse_pgm_inst_t cmd_traj_speed = {
