@@ -169,8 +169,8 @@ static void do_cs(void *dummy)
 
 void dump_cs_debug(const char *name, struct cs *cs)
 {
-	DEBUG(E_USER_CS, "%s cons=% .5"PRIi32" fcons=% .5"PRIi32" err=% .5"PRIi32" "
-	      "in=% .5"PRIi32" out=% .5"PRIi32"",
+	DEBUG(E_USER_CS, "%s cons= %+.5"PRIi32" fcons= %+.5"PRIi32" err= %+.5"PRIi32" "
+	      "in= %+.5"PRIi32" out= %+.5"PRIi32"",
 	      name, cs_get_consign(cs), cs_get_filtered_consign(cs),
 	      cs_get_error(cs), cs_get_filtered_feedback(cs),
 	      cs_get_out(cs));
@@ -178,8 +178,8 @@ void dump_cs_debug(const char *name, struct cs *cs)
 
 void dump_cs(const char *name, struct cs *cs)
 {
-	printf_P(PSTR("%s cons=% .5"PRIi32" fcons=% .5"PRIi32" err=% .5"PRIi32" "
-		      "in=% .5"PRIi32" out=% .5"PRIi32"\r\n"),
+	printf_P(PSTR("%s cons= %+.5"PRIi32" fcons= %+.5"PRIi32" err= %+.5"PRIi32" "
+		      "in= %+.5"PRIi32" out= %+.5"PRIi32"\r\n"),
 		 name, cs_get_consign(cs), cs_get_filtered_consign(cs),
 		 cs_get_error(cs), cs_get_filtered_feedback(cs),
 		 cs_get_out(cs));
@@ -187,7 +187,7 @@ void dump_cs(const char *name, struct cs *cs)
 
 void dump_pid(const char *name, struct pid_filter *pid)
 {
-	printf_P(PSTR("%s P=% .8"PRIi32" I=% .8"PRIi32" D=% .8"PRIi32" out=% .8"PRIi32"\r\n"),
+	printf_P(PSTR("%s P= %+.8"PRIi32" I= %+.8"PRIi32" D= %+.8"PRIi32" out= %+.8"PRIi32"\r\n"),
 		 name,
 		 pid_get_value_in(pid) * pid_get_gain_P(pid),
 		 pid_get_value_I(pid) * pid_get_gain_I(pid),
@@ -235,12 +235,11 @@ void maindspic_cs_init(void)
 	trajectory_init(&mainboard.traj, CS_HZ);
 	trajectory_set_cs(&mainboard.traj, &mainboard.distance.cs,
 			  &mainboard.angle.cs);
-	trajectory_set_robot_params(&mainboard.traj, &mainboard.rs, &mainboard.pos);
-	/* d, a */
-	trajectory_set_speed(&mainboard.traj, SPEED_DIST_FAST, SPEED_ANGLE_FAST); 		
+	trajectory_set_robot_params(&mainboard.traj, &mainboard.rs, &mainboard.pos); /* d, a */
+	trajectory_set_speed(&mainboard.traj, SPEED_DIST_FAST, SPEED_ANGLE_FAST);
+	trajectory_set_acc(&mainboard.traj, ACC_DIST, ACC_ANGLE); /* d, a */ 		
 	/* distance window, angle window, angle start */
-	//trajectory_set_windows(&mainboard.traj, 50., 5.0, 5.0);
-   	trajectory_set_windows(&mainboard.traj, 200., 5.0, 30.0);
+  trajectory_set_windows(&mainboard.traj, 200., 5.0, 30.0); //50., 5.0, 5.0
 
 	/* ---- CS angle */
 	/* PID */
@@ -250,13 +249,10 @@ void maindspic_cs_init(void)
 	pid_set_out_shift(&mainboard.angle.pid, 6);	
 	pid_set_derivate_filter(&mainboard.angle.pid, 1);
 
-	/* FIXME QUADRAMP */
+	/* QUADRAMP */
 	quadramp_init(&mainboard.angle.qr);
-	quadramp_set_1st_order_vars(&mainboard.angle.qr, 3000.0, 3000.0); 	/* set speed */
-	quadramp_set_2nd_order_vars(&mainboard.angle.qr, 20.0, 20.0); 		/* set accel */
-	//quadramp_set_1st_order_vars(&mainboard.angle.qr, 1000, 1000); 	/* set speed */
-	//quadramp_set_2nd_order_vars(&mainboard.angle.qr, 5, 5); 		/* set accel */
-
+	quadramp_set_1st_order_vars(&mainboard.angle.qr, 3000, 3000); 	/* set speed */
+	quadramp_set_2nd_order_vars(&mainboard.angle.qr, 20, 20); 		/* set accel */
 
 	/* CS */
 	cs_init(&mainboard.angle.cs);
@@ -279,12 +275,10 @@ void maindspic_cs_init(void)
 	pid_set_out_shift(&mainboard.distance.pid, 6);
 	pid_set_derivate_filter(&mainboard.distance.pid, 1);
 
-	/* FIXME QUADRAMP */
+	/* QUADRAMP */
 	quadramp_init(&mainboard.distance.qr);
-	quadramp_set_1st_order_vars(&mainboard.distance.qr, 3000.0, 3000.0); 	/* set speed */
-	quadramp_set_2nd_order_vars(&mainboard.distance.qr, 35.0, 35.0); 	/* set accel */
-	//quadramp_set_1st_order_vars(&mainboard.distance.qr, 1000, 1000); 	/* set speed */
-	//quadramp_set_2nd_order_vars(&mainboard.distance.qr, 5, 5); 	/* set accel */
+	quadramp_set_1st_order_vars(&mainboard.distance.qr, 3000, 3000); 	/* set speed */
+	quadramp_set_2nd_order_vars(&mainboard.distance.qr, 35, 35); 	/* set accel */
 
 	/* CS */
 	cs_init(&mainboard.distance.cs);

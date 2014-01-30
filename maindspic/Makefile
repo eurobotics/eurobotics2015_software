@@ -2,6 +2,7 @@ TARGET = main
 
 # repertoire des modules
 AVERSIVE_DIR = ../libs/aversive4dspic
+#AVERSIVE_DIR = ../libs/microb_2010
 
 SRC  = $(TARGET).c cmdline.c commands_gen.c
 SRC += commands_cs.c commands_mainboard.c commands_traj.c commands.c
@@ -15,7 +16,7 @@ endif
 ASRC = 
 
 CFLAGS += -Wall
-# -Werror
+#-Werror -Wno-unused-but-set-variable -Wno-unused-value -Wno-unused-result
 
 ########################################
 

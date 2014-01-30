@@ -286,6 +286,11 @@ void strat_set_speed(uint16_t d, uint16_t a)
 	IRQ_UNLOCK(flags);
 }
 
+void strat_set_acc(double d, double a)
+{
+	trajectory_set_acc(&mainboard.traj, d, a);
+}
+
 void strat_get_speed(uint16_t *d, uint16_t *a)
 {
 	uint8_t flags;

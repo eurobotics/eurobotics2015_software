@@ -129,56 +129,56 @@
 
 #define LAST_SECONDS_TIME	80
 
+/* default acc */
+#define ACC_DIST  35.
+#define ACC_ANGLE 20.
+
 /* default speeds */
 #ifdef HOMOLOGATION
-#define SPEED_DIST_FAST 		500//2000
-#define SPEED_ANGLE_FAST 		500//2000
+#define SPEED_DIST_FAST 		2000.
+#define SPEED_ANGLE_FAST 		2000.
 #else
 
-#define SPEED_DIST_FAST 		500//3000
-#define SPEED_ANGLE_FAST 		500//3000
+#define SPEED_DIST_FAST 		4000.
+#define SPEED_ANGLE_FAST 		4000.
 #endif
 
 //Do not change
-#define SPEED_DIST_SLOW 		500 //2000
-#define SPEED_ANGLE_SLOW 		500 //2000
-#define SPEED_DIST_VERY_SLOW 	500
-#define SPEED_ANGLE_VERY_SLOW 500
-
-// 2011 ??
-#define PLACE_D_SAFE	 140
+#define SPEED_DIST_SLOW 		  2000.
+#define SPEED_ANGLE_SLOW 		  2000.
+#define SPEED_DIST_VERY_SLOW 	500.
+#define SPEED_ANGLE_VERY_SLOW 500.
 
 
 /* zones */
-#define ZONE_TREE_1			   0
+#define ZONE_TREE_1			    0
 #define ZONE_TREE_2       	1
-#define ZONE_TREE_3			   2
-#define ZONE_TREE_4			   3
-#define ZONE_HEART_FIRE_1			   4
-#define ZONE_HEART_FIRE_2  	      5
-#define ZONE_HEART_FIRE_3 	      6
-#define ZONE_FIRE_1   	   7
-#define ZONE_FIRE_2	         8
-#define ZONE_FIRE_3	         9
-#define ZONE_FIRE_4	         10
-#define ZONE_FIRE_5			11
-#define ZONE_FIRE_6			      12
-#define ZONE_TORCH_1   			   13
-#define ZONE_TORCH_2			      14
-#define ZONE_TORCH_3			      15
-#define ZONE_TORCH_4          	      16
-#define ZONE_MOBILE_TORCH_1          	      17
-#define ZONE_MOBILE_TORCH_2        18
-#define ZONE_MOBILE_TORCH_3      19
-#define ZONE_BASKET_1      20
-#define ZONE_BASKET_2      21
+#define ZONE_TREE_3			    2
+#define ZONE_TREE_4			    3
+#define ZONE_HEART_FIRE_1		4
+#define ZONE_HEART_FIRE_2  	5
+#define ZONE_HEART_FIRE_3 	6
+#define ZONE_FIRE_1   	    7
+#define ZONE_FIRE_2	        8
+#define ZONE_FIRE_3	        9
+#define ZONE_FIRE_4	        10
+#define ZONE_FIRE_5			    11
+#define ZONE_FIRE_6			    12
+#define ZONE_TORCH_1   			13
+#define ZONE_TORCH_2			  14
+#define ZONE_TORCH_3			  15
+#define ZONE_TORCH_4        16
+#define ZONE_MOBILE_TORCH_1 17
+#define ZONE_MOBILE_TORCH_2 18
+#define ZONE_MOBILE_TORCH_3 19
+#define ZONE_BASKET_1       20
+#define ZONE_BASKET_2       21
 #define ZONE_MAMOOTH_1      22
 #define ZONE_MAMOOTH_2      23
-#define ZONE_FRESCO      	 24
-#define ZONE_HOME_RED      25
-#define ZONE_HOME_YELLOW      26
-
-#define ZONES_MAX		27
+#define ZONE_FRESCO      	  24
+#define ZONE_HOME_RED       25
+#define ZONE_HOME_YELLOW    26
+#define ZONES_MAX		        27
 
 
 /************************************************************* 
@@ -199,7 +199,7 @@ struct conf {
 /* depends on flags the robot
  * do one things or anothers */
 	uint8_t flags;
-   #define ENABLE_R2ND_POS				1 /* TODO: set by command */
+  #define ENABLE_R2ND_POS				  1 /* TODO: set by command */
 	#define ENABLE_DOWN_SIDE_ZONES	2
 };
 
