@@ -15,9 +15,9 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Revision : $Id: time_config.h,v 1.1 2009/02/20 21:10:01 zer0 Exp $
+ *  Revision : $Id: time_config.h,v 1.2.6.1 2006-11-26 21:06:01 zer0 Exp $
  *
  */
 
 /** precision of the time processor, in us */
-#define TIME_PRECISION 25000l
+#define TIME_PRECISION 10000l

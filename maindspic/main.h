@@ -202,7 +202,7 @@
 struct cs_block {
 	uint8_t on;
 	struct cs cs;
-  	struct pid_filter pid;
+  struct pid_filter pid;
 	struct quadramp_filter qr;
 	struct blocking_detection bd;
 };

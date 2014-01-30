@@ -39,6 +39,7 @@
 #include <dac_mc.h>
 #include <pwm_servo.h>
 
+
 #include <scheduler.h>
 #include <clock_time.h>
 
@@ -223,8 +224,8 @@ int main(void)
 	memset(&beaconboard, 0, sizeof(beaconboard));
 
 	/* init flags */
-	mainboard.flags = DO_ENCODERS | DO_RS | DO_BD
-							| DO_POS | DO_POWER;
+  mainboard.flags = DO_ENCODERS | DO_CS | DO_RS |
+		DO_POS | DO_POWER | DO_BD;
 	
 	beaconboard.opponent_x = I2C_OPPONENT_NOT_THERE;
 
