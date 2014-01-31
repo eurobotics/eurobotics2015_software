@@ -78,7 +78,7 @@ static int fdr, fdw;
 /* */
 #define FILTER  98
 #define FILTER2 (100-FILTER)
-#define SHIFT   2
+#define SHIFT   4
 
 void robotsim_dump(void)
 {
@@ -208,6 +208,7 @@ static void beacon_update(void)
        int16_t oppx, oppy;
        double oppa, oppd;
 
+       /* update opponent 1 */
        IRQ_LOCK(flags);
        if (beaconboard.opponent_x == I2C_OPPONENT_NOT_THERE) {
                IRQ_UNLOCK(flags);
@@ -220,6 +221,36 @@ static void beacon_update(void)
        if (beaconboard.opponent_a < 0)
                beaconboard.opponent_a += 360;
        beaconboard.opponent_d = oppd;
+       IRQ_UNLOCK(flags);
+
+       /* update opponent 2 */
+       IRQ_LOCK(flags);
+       if (beaconboard.opponent2_x == I2C_OPPONENT_NOT_THERE) {
+               IRQ_UNLOCK(flags);
+               return;
+       }
+       oppx = beaconboard.opponent2_x;
+       oppy = beaconboard.opponent2_y;
+       abs_xy_to_rel_da(oppx, oppy, &oppd, &oppa);
+       beaconboard.opponent2_a = DEG(oppa);
+       if (beaconboard.opponent2_a < 0)
+               beaconboard.opponent2_a += 360;
+       beaconboard.opponent2_d = oppd;
+       IRQ_UNLOCK(flags);
+
+       /* update robot mate */
+       IRQ_LOCK(flags);
+       if (beaconboard.robot_2nd_x == I2C_OPPONENT_NOT_THERE) {
+               IRQ_UNLOCK(flags);
+               return;
+       }
+       oppx = beaconboard.robot_2nd_x;
+       oppy = beaconboard.robot_2nd_y;
+       abs_xy_to_rel_da(oppx, oppy, &oppd, &oppa);
+       beaconboard.robot_2nd_a = DEG(oppa);
+       if (beaconboard.robot_2nd_a < 0)
+               beaconboard.robot_2nd_a += 360;
+       beaconboard.robot_2nd_d = oppd;
        IRQ_UNLOCK(flags);
 }
 
@@ -274,7 +305,7 @@ void robotsim_update(void)
 		robotsim_blocking = 1;
 */
 	if (cmd[0] == 'o') {
-		if (sscanf(cmd, "opp %d %d", &oppx, &oppy) == 2) {
+		if (sscanf(cmd, "opp_1 %d %d", &oppx, &oppy) == 2) {
 			abs_xy_to_rel_da(oppx, oppy, &oppd, &oppa);
 			IRQ_LOCK(flags);
 			beaconboard.opponent_x = oppx;
@@ -283,6 +314,32 @@ void robotsim_update(void)
 			if (beaconboard.opponent_a < 0)
 				beaconboard.opponent_a += 360;
 			beaconboard.opponent_d = oppd;
+			IRQ_UNLOCK(flags);
+		}
+		else if (sscanf(cmd, "opp_2 %d %d", &oppx, &oppy) == 2) {
+			abs_xy_to_rel_da(oppx, oppy, &oppd, &oppa);
+			IRQ_LOCK(flags);
+			beaconboard.opponent2_x = oppx;
+			beaconboard.opponent2_y = oppy;
+			beaconboard.opponent2_a = DEG(oppa);
+			if (beaconboard.opponent2_a < 0)
+				beaconboard.opponent2_a += 360;
+			beaconboard.opponent2_d = oppd;
+			IRQ_UNLOCK(flags);
+		}
+	}
+
+  /* XXX HACK, pos from the robot mate */
+	if (cmd[0] == 'r') {
+		if (sscanf(cmd, "r2nd %d %d", &oppx, &oppy) == 2) {
+			abs_xy_to_rel_da(oppx, oppy, &oppd, &oppa);
+			IRQ_LOCK(flags);
+			beaconboard.robot_2nd_x = oppx;
+			beaconboard.robot_2nd_y = oppy;
+			beaconboard.robot_2nd_a = DEG(oppa);
+			if (beaconboard.robot_2nd_a < 0)
+				beaconboard.robot_2nd_a += 360;
+			beaconboard.robot_2nd_d = oppd;
 			IRQ_UNLOCK(flags);
 		}
 	}
@@ -360,5 +417,18 @@ int robotsim_init(void)
 		close(fdw);
 		return -1;
 	}
+
+#if 0
+	mkfifo("/tmp/.robot_big2little", 0600);
+	mkfifo("/tmp/.robot_little2big", 0600);
+	fdw = open("/tmp/.robot_big2little", O_WRONLY, 0);
+	if (fdw < 0)
+		return -1;
+	fdr = open("/tmp/.robot_little2big", O_RDONLY | O_NONBLOCK, 0);
+	if (fdr < 0) {
+		close(fdw);
+		return -1;
+	}
+#endif
 	return 0;
 }

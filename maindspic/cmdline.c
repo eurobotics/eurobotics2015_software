@@ -163,7 +163,7 @@ int cmdline_interact(void)
 	int16_t c;
 	
 	rdline_init(&gen.rdl, write_char, valid_buffer, complete_buffer);
-	sprintf(gen.prompt, "maindspic > ");	
+	sprintf(gen.prompt, "main > ");	
 	rdline_newline(&gen.rdl, gen.prompt);
 
 	while (1){
