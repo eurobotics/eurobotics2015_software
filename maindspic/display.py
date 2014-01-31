@@ -10,8 +10,11 @@ AREA_Y = 2000.
 
 ROBOT_HEIGHT = 350.0
 WALL_HEIGHT = 70.0
+
 ROBOT_WIDTH  = 330.0
 ROBOT_LENGTH = 281.5
+ROBOT2_WIDTH  = 250.0
+ROBOT2_LENGTH = 150.0
 
 area = [ (0.0, 0.0, -0.2), (3000.0, 2000.0, 0.2) ]
 areasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , area)
@@ -21,14 +24,19 @@ scene.autoscale = 1
 
 # all positions of robot every 5ms
 save_pos = []
+save_pos2 = []
 
 robot = box(color=(0.4, 0.4, 0.4))
+robot2 = box(color=(0.4, 0.4, 0.4))
 #lspickle = box(color=(0.4, 0.4, 0.4))
 #rspickle = box(color=(0.4, 0.4, 0.4))
 
 opp = box(color=(0.7, 0.2, 0.2))
+opp2 = box(color=(0.2, 0.2, 0.7))
 
 last_pos = (0.,0.,0.)
+last_pos2 = (0.,0.,0.)
+
 hcenter_line = curve()
 hcenter_line.pos = [(-AREA_X/2, 0., 0.3), (AREA_X/2, 0., 0.3)]
 vcenter_line = curve()
@@ -72,18 +80,23 @@ sq2 = square(500)
 robot_x = 0.
 robot_y = 0.
 robot_a = 0.
+robot2_x = 0.
+robot2_y = 0.
+robot2_a = 0.
 #robot_lspickle_deployed = 0
 #robot_rspickle_deployed = 0
 #robot_lspickle_autoharvest = 0
 #robot_rspickle_autoharvest = 0 
 robot_trail = curve()
 robot_trail_list = []
+robot2_trail = curve()
+robot2_trail_list = []
 max_trail = 500
 
 area_objects = []
 
 BASKET_HEIGHT = 44.0
-MAMUT_HEIGHT = 50.0
+MAMUT_HEIGHT =  50.0
 FRESCO_HEIGHT = 200.0
 HEARTFIRE_HEIGHT = 30.0
 TREETRUNK_HEIGHT = 320.0
@@ -111,31 +124,31 @@ def toggle_obj_disp():
         area_objects.append(c)
         c = box(pos=(AREA_X/2-400-350,-AREA_Y/2-11,MAMUT_HEIGHT/2+70), size=mamutsize, color=(0.6, 0.3, 0.0))
         area_objects.append(c)
-	
-	fire = [ (0.0, 0.0, -0.5), (22.0,140.0, FIRE_HEIGHT) ]
+	      
+        fire = [ (0.0, 0.0, -0.5), (22.0,140.0, FIRE_HEIGHT) ]
         firesize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , fire)
         c = box(pos=(-AREA_X/2,-AREA_Y/2+800,FIRE_HEIGHT/2), size=firesize, color=(1, 1, 0.0))
         area_objects.append(c)
-	c = box(pos=(AREA_X/2,-AREA_Y/2+800,FIRE_HEIGHT/2), size=firesize, color=(1, 0, 0.0))
+        c = box(pos=(AREA_X/2,-AREA_Y/2+800,FIRE_HEIGHT/2), size=firesize, color=(1, 0, 0.0))
         area_objects.append(c)
-	c = box(pos=(-AREA_X/2+900,-AREA_Y/2+600,FIRE_HEIGHT/2), size=firesize, color=(1, 0.0, 0.0))
+        c = box(pos=(-AREA_X/2+900,-AREA_Y/2+600,FIRE_HEIGHT/2), size=firesize, color=(1, 0.0, 0.0))
         area_objects.append(c)
-	c = box(pos=(AREA_X/2-900,-AREA_Y/2+600,FIRE_HEIGHT/2), size=firesize, color=(1, 1, 0.0))
+        c = box(pos=(AREA_X/2-900,-AREA_Y/2+600,FIRE_HEIGHT/2), size=firesize, color=(1, 1, 0.0))
         area_objects.append(c)
-	c = box(pos=(-AREA_X/2+900,600,FIRE_HEIGHT/2), size=firesize, color=(1, 0.0, 0.0))
+        c = box(pos=(-AREA_X/2+900,600,FIRE_HEIGHT/2), size=firesize, color=(1, 0.0, 0.0))
         area_objects.append(c)
-	c = box(pos=(AREA_X/2-900,600,FIRE_HEIGHT/2), size=firesize, color=(1,1, 0.0))
+        c = box(pos=(AREA_X/2-900,600,FIRE_HEIGHT/2), size=firesize, color=(1,1, 0.0))
         area_objects.append(c)
-	
-	fire2 = [ (0.0, 0.0, -0.5), (140.0,22.0, FIRE_HEIGHT) ]
+
+        fire2 = [ (0.0, 0.0, -0.5), (140.0,22.0, FIRE_HEIGHT) ]
         firesize2 = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , fire2)
         c = box(pos=(-AREA_X/2+400,100,FIRE_HEIGHT/2), size=firesize2, color=(1, 1, 0.0))
         area_objects.append(c)
-	c = box(pos=(AREA_X/2-400,100,FIRE_HEIGHT/2), size=firesize2, color=(1, 0.0, 0.0))
+        c = box(pos=(AREA_X/2-400,100,FIRE_HEIGHT/2), size=firesize2, color=(1, 0.0, 0.0))
         area_objects.append(c)
-	c = box(pos=(-200,+AREA_Y/2,FIRE_HEIGHT/2), size=firesize2, color=(1,0.0, 0.0))
+        c = box(pos=(-200,+AREA_Y/2,FIRE_HEIGHT/2), size=firesize2, color=(1,0.0, 0.0))
         area_objects.append(c)
-	c = box(pos=(+200,+AREA_Y/2,FIRE_HEIGHT/2), size=firesize2, color=(1,1 , 0.0))
+        c = box(pos=(+200,+AREA_Y/2,FIRE_HEIGHT/2), size=firesize2, color=(1,1 , 0.0))
         area_objects.append(c)
 
         fresco = [ (0.0, 0.0, -0.5), (600.0, 22.0, FRESCO_HEIGHT) ]
@@ -220,6 +233,10 @@ def set_opp(x, y):
     opp.size = (300, 300, ROBOT_HEIGHT)
     opp.pos = (x, y, ROBOT_HEIGHT/2)
 
+def set_opp2(x, y):
+    opp2.size = (300, 300, ROBOT_HEIGHT)
+    opp2.pos = (x, y, ROBOT_HEIGHT/2)
+
 def set_robot():
     global robot, last_pos, robot_trail, robot_trail_list
     global save_pos, robot_x, robot_y, robot_a
@@ -273,6 +290,39 @@ def set_robot():
         robot_trail_list = robot_trail_list[robot_trail_l - max_trail:]
     robot_trail.pos = robot_trail_list
 
+def set_robot2():
+    global robot2, last_pos2, robot2_trail, robot2_trail_list
+    global save_pos2, robot2_x, robot2_y, robot2_a
+
+    if color == YELLOW:
+        tmp_x = robot2_x - AREA_X/2
+        tmp_y = robot2_y - AREA_Y/2
+        tmp_a = robot2_a
+    else:
+        tmp_x = -robot2_x + AREA_X/2
+        tmp_y = -robot2_y + AREA_Y/2
+        tmp_a = robot2_a
+
+    robot2.pos = (tmp_x, tmp_y, ROBOT_HEIGHT/2)
+    axis = (math.cos(tmp_a*math.pi/180),
+            math.sin(tmp_a*math.pi/180),
+            0)
+
+    robot2.axis = axis
+    robot2.size = (ROBOT2_LENGTH, ROBOT2_WIDTH, ROBOT_HEIGHT)
+
+    # save position
+    save_pos2.append((robot2.pos.x, robot2.pos.y, tmp_a))
+
+    pos2 = robot2.pos.x, robot2.pos.y, 0.3
+    if pos2 != last_pos2:
+        robot2_trail_list.append(pos2)
+        last_pos2 = pos2
+    robot2_trail_l = len(robot2_trail_list)
+    if robot2_trail_l > max_trail:
+        robot2_trail_list = robot2_trail_list[robot2_trail_l - max_trail:]
+    robot2_trail.pos = robot2_trail_list
+
 def graph():
     pass
 
@@ -293,12 +343,21 @@ toggle_obj_disp()
 while True:
     silent_mkfifo("/tmp/.robot_sim2dis")
     silent_mkfifo("/tmp/.robot_dis2sim")
+    silent_mkfifo("/tmp/.robot2_sim2dis")
+    silent_mkfifo("/tmp/.robot2_dis2sim")
+
     while True:
         fr = open("/tmp/.robot_sim2dis", "r")
         fw = open("/tmp/.robot_dis2sim", "w", 0)
+        fr2 = open("/tmp/.robot2_sim2dis", "r")
+        fw2 = open("/tmp/.robot2_dis2sim", "w", 0)
+
         while True:
+
+            # MAIN ROBOT MSGS
             m = None
             l = fr. readline()
+            l2 = fr2. readline()
 
             # parse position
             if not m:
@@ -308,8 +367,20 @@ while True:
                     robot_y = int(m.groups()[1])
                     robot_a = int(m.groups()[2])
                     set_robot()
+                    # XXX HACK, send pos robot mate
+                    fw2.write("r2nd %d %d"%(int(robot_x), int(robot_y)))
+                    
+                m = re.match("pos=%s,%s,%s"%(INT,INT,INT), l2)
+                if m:
+                    robot2_x = int(m.groups()[0])
+                    robot2_y = int(m.groups()[1])
+                    robot2_a = int(m.groups()[2])
+                    set_robot2()
+                    # XXX HACK, send pos robot mate
+                    fw.write("r2nd %d %d"%(int(robot2_x), int(robot2_y)))
+
             """
-            # parse ballboard
+            # TODO parse slavedspic
             if not m:
                 m = re.match("ballboard=%s"%(INT), l)
                 if m:
@@ -329,16 +400,33 @@ while True:
                         robot_rspickle_deployed = ((flags & 1) * 2)
                         robot_rspickle_autoharvest = ((flags & 2) != 0)
             """
+            # DISPLAY EVENTS
             if scene.mouse.events != 0:
-                oppx, oppy, oppz = scene.mouse.getevent().project(normal=(0,0,1))
-                set_opp(oppx, oppy)
-                try:
-                    if color == YELLOW:
-                        fw.write("opp %d %d"%(int(oppx + 1500), int(oppy + 1050)))
-                    else:
-                        fw.write("opp %d %d"%(int(1500 - oppx), int(1050 - oppy)))
-                except:
-                  print "not connected"
+                if not scene.mouse.getevent().shift:
+                  oppx, oppy, oppz = scene.mouse.getevent().project(normal=(0,0,1))
+                  set_opp(oppx, oppy)
+                  try:
+                      if color == YELLOW:
+                          fw.write("opp_1 %d %d"%(int(oppx + 1500), int(oppy + 1050)))
+                          fw2.write("opp_1 %d %d"%(int(oppx + 1500), int(oppy + 1050)))
+                      else:
+                          fw.write("opp_1 %d %d"%(int(1500 - oppx), int(1050 - oppy)))
+                          fw2.write("opp_1 %d %d"%(int(1500 - oppx), int(1050 - oppy)))
+                  except:
+                    print "not connected"
+                #elif scene.mouse.getevent().ctrl:
+                else:
+                  opp2x, opp2y, opp2z = scene.mouse.getevent().project(normal=(0,0,1))
+                  set_opp2(opp2x, opp2y)
+                  try:
+                      if color == YELLOW:
+                          fw.write("opp_2 %d %d"%(int(opp2x + 1500), int(opp2y + 1050)))
+                          fw2.write("opp_2 %d %d"%(int(opp2x + 1500), int(opp2y + 1050)))
+                      else:
+                          fw.write("opp_2 %d %d"%(int(1500 - opp2x), int(1050 - opp2y)))
+                          fw2.write("opp_2 %d %d"%(int(1500 - opp2x), int(1050 - opp2y)))
+                  except:
+                    print "not connected"
 
             if scene.kb.keys == 0:
                 continue
@@ -380,4 +468,5 @@ while True:
 
         fr.close()
         fw.close()
+
 

@@ -292,7 +292,7 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 {
 #define OPP1      0
 #define OPP2      1
-#define ROBOT2ND 2
+#define ROBOT2ND  2
 
 	int16_t x=0, y=0;
 	int8_t *name = NULL;
@@ -310,7 +310,7 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 	   name = opp2;
 	}
 	else if(type == ROBOT2ND) {
-		get_robot_2nd_xy(&x, &y);
+		 get_robot_2nd_xy(&x, &y);
 	   name = robot_2nd;
 	}
 #else

@@ -336,7 +336,8 @@ int main(void)
 	printf("Don't turn it on, take it a part!!\r\n");
 
 #ifdef HOST_VERSION
-	strat_reset_pos(400, COLOR_Y(400), COLOR_A_ABS(90));
+	strat_reset_pos(400, COLOR_Y(1000), COLOR_A_ABS(90));
+  strat_event_enable();
 #endif
 
 	/* process commands, never returns */
