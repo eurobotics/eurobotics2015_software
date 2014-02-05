@@ -125,13 +125,17 @@
 /* robot dimensions */
 #define IM_SECONDARY_ROBOT
 #define ROBOT_LENGTH      150.
-#define ROBOT_WIDTH 	    250.
+#define ROBOT_WIDTH 	    230.
 
 #define ROBOT_CENTER_TO_FRONT 162.5
 #define ROBOT_CENTER_TO_BACK  119.0
 
 #define ROBOT_HALF_LENGTH_FRONT ROBOT_CENTER_TO_FRONT
 #define ROBOT_HALF_LENGTH_REAR  ROBOT_CENTER_TO_BACK
+
+/* XXX obstacle clerance */
+#define OBS_CLERANCE       147.
+
 
 /* Some calculus:
  * it is a 3600 imps -> 14400 because we see 1/4 period
@@ -319,6 +323,7 @@ struct beaconboard
 	int16_t robot_2nd_x;
 	int16_t robot_2nd_y;
 	int16_t robot_2nd_a;
+  int16_t robot_2nd_a_abs;
 	int16_t robot_2nd_d;
 #endif
 

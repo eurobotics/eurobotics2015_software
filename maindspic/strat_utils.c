@@ -562,6 +562,31 @@ int8_t get_robot_2nd_da(int16_t *d, int16_t *a)
 	return 0;
 }
 
+int8_t get_robot_2nd_a_abs(int16_t *a)
+{
+#ifdef ROBOT_2ND
+	uint8_t flags;
+	int16_t x_tmp;
+
+	/* TODO if disable by strat return like it's not there */
+#if 0 
+	if((strat_infos.conf.flags & ENABLE_R2ND_POS) == 0) {
+		beaconboard.robot_2nd_x = I2C_OPPONENT_NOT_THERE;
+		beaconboard.robot_2nd_y = 0;
+		return -1;
+	}
+#endif
+
+	IRQ_LOCK(flags);
+	x_tmp = beaconboard.robot_2nd_x;
+	*a = beaconboard.robot_2nd_a_abs;
+	IRQ_UNLOCK(flags);
+	if (x_tmp == I2C_OPPONENT_NOT_THERE)
+		return -1;
+#endif
+	return 0;
+}
+
 /* get the da pos of the opponent robot */
 int8_t get_opponent_xyda(int16_t *x, int16_t *y, int16_t *d, int16_t *a)
 {

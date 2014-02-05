@@ -12,8 +12,8 @@ ROBOT_HEIGHT = 350.0
 WALL_HEIGHT = 70.0
 
 ROBOT_WIDTH  = 330.0
-ROBOT_LENGTH = 281.5
-ROBOT2_WIDTH  = 250.0
+ROBOT_LENGTH = 282.0
+ROBOT2_WIDTH  = 230.0
 ROBOT2_LENGTH = 150.0
 
 area = [ (0.0, 0.0, -0.2), (3000.0, 2000.0, 0.2) ]
@@ -368,7 +368,7 @@ while True:
                     robot_a = int(m.groups()[2])
                     set_robot()
                     # XXX HACK, send pos robot mate
-                    fw2.write("r2nd %d %d"%(int(robot_x), int(robot_y)))
+                    fw2.write("r2nd %d %d %d"%(int(robot_x), int(robot_y), int(robot_a)))
                     
                 m = re.match("pos=%s,%s,%s"%(INT,INT,INT), l2)
                 if m:
@@ -377,7 +377,7 @@ while True:
                     robot2_a = int(m.groups()[2])
                     set_robot2()
                     # XXX HACK, send pos robot mate
-                    fw.write("r2nd %d %d"%(int(robot2_x), int(robot2_y)))
+                    fw.write("r2nd %d %d %d"%(int(robot2_x), int(robot2_y), int(robot_a)))
 
             """
             # TODO parse slavedspic

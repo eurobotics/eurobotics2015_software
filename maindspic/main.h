@@ -132,6 +132,10 @@
 #define ROBOT_HALF_LENGTH_FRONT ROBOT_CENTER_TO_FRONT
 #define ROBOT_HALF_LENGTH_REAR  ROBOT_CENTER_TO_BACK
 
+/* XXX obstacle clerance */
+#define OBS_CLERANCE       242.
+
+
 /* Some calculus:
  * it is a 3600 imps -> 14400 because we see 1/4 period
  * and diameter: 55mm -> perimeter 173mm 
@@ -305,6 +309,7 @@ struct beaconboard
 	int16_t opponent_x;
 	int16_t opponent_y;
 	int16_t opponent_a;
+  int16_t robot_2nd_a_abs;
 	int16_t opponent_d;
 
 #ifdef TWO_OPPONENTS
