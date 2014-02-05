@@ -85,8 +85,8 @@
 #define O_LENGTH 550
 #else
 /* /!\ half size */
-#define O_WIDTH  330
-#define O_LENGTH 330 //220
+#define O_WIDTH  330 //360
+#define O_LENGTH 500
 #endif
 
 #ifdef IM_SECONDARY_ROBOT
@@ -104,7 +104,7 @@
 
 #define HEARTFIRE_X 1500
 #define HEARTFIRE_Y 1050
-#define HEARTFIRE_RAD (150+OBS_CLERANCE)
+#define HEARTFIRE_RAD (160+OBS_CLERANCE)
 
 /* don't care about polygons further than this distance for escape */
 #define ESCAPE_POLY_THRES 500
@@ -1051,25 +1051,17 @@ retry:
 
 		/* len < 0, try reduce opponent to get a valid path */
 		if (distance_between(robot_pt.x, robot_pt.y, opp1_x, opp1_y) < REDUCE_POLY_THRES ) {
-			if (opp1_w == 0) {
-				//opp1_l /= 2;
-				opp1_l *= 0.66;
-			}
-
-			//opp1_w /= 2;
-			opp1_l *= 0.66;
+			if (opp1_w == 0)
+				opp1_l /= 2;
+			opp1_w /= 2;
 
 			NOTICE(E_USER_STRAT, "reducing opponent 1 %d %d", opp1_w, opp1_l);
 			set_opponent_poly(OPP1, pol_opp1, &robot_pt, opp1_w, opp1_l);
 		}
 		if (distance_between(robot_pt.x, robot_pt.y, opp2_x, opp2_y) < REDUCE_POLY_THRES ) {
-			if (opp2_w == 0) {
-				//opp2_l /= 2;
-				opp2_l *= 0.66;
-			}
-
-			//opp2_w /= 2;
-			opp2_l *= 0.66;
+			if (opp2_w == 0)
+				opp2_l /= 2;
+			opp2_w /= 2;
 
 			NOTICE(E_USER_STRAT, "reducing opponent 2 %d %d", opp2_w, opp2_l);
 			set_opponent_poly(OPP2, pol_opp2, &robot_pt, opp2_w, opp2_l);

@@ -375,6 +375,10 @@ void strat_limit_speed(void)
 		/* skip opponents which not there */
 		if(ret[i] == -1)
 			continue;
+ 
+		/* skip secondary robot */
+		if(i == 2)
+			continue;
 
 		/* save limits */
 		lim_d_save = lim_d;
@@ -386,6 +390,24 @@ void strat_limit_speed(void)
 #endif
 	
 #ifdef HOMOLOGATION
+{
+	if(__strat_obstacle(OBSTACLE_OPP1))
+		return 1;
+#ifdef TWO_OPPONENTS
+	else if(__strat_obstacle(OBSTACLE_OPP2))
+		return 1;
+#ifdef ROBOT_2ND
+	else if(__strat_obstacle(OBSTACLE_R2ND))
+		return 1;
+#endif
+#endif
+	else
+		return 0;
+}
+
+void interrupt_traj(void)
+{
+	t
 	if (opp_d < 800) {
 		lim_d = SPEED_ANGLE_VERY_SLOW;
 		lim_a = SPEED_ANGLE_VERY_SLOW;
