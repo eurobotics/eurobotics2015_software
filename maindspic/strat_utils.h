@@ -92,6 +92,7 @@ int8_t get_robot_2nd_xy(int16_t *x, int16_t *y);
 int8_t get_opponent_da(int16_t *d, int16_t *a);
 int8_t get_opponent2_da(int16_t *d, int16_t *a);
 int8_t get_robot_2nd_da(int16_t *d, int16_t *a);
+int8_t get_robot_2nd_a_abs(int16_t *a);
 int8_t get_opponent_xyda(int16_t *x, int16_t *y, int16_t *d, int16_t *a);
 int8_t get_opponent2_xyda(int16_t *x, int16_t *y, int16_t *d, int16_t *a);
 int8_t get_robot_2nd_xyda(int16_t *x, int16_t *y, int16_t *d, int16_t *a);

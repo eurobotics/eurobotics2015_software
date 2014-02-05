@@ -66,10 +66,10 @@
 
 #else
 /* robot dimensions */
-#define ROBOT_LENGTH    281.5
-#define ROBOT_WIDTH 	   330.0
+#define ROBOT_LENGTH          281.5
+#define ROBOT_WIDTH 	        330.0
 #define ROBOT_CENTER_TO_FRONT 162.5
-#define ROBOT_CENTER_TO_BACK 119.0
+#define ROBOT_CENTER_TO_BACK  119.0
 #endif
 
 

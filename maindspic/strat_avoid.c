@@ -90,11 +90,13 @@
 #endif
 
 #ifdef IM_SECONDARY_ROBOT
-#define ROBOT_2ND_WIDTH  330
-#define ROBOT_2ND_LENGTH 330
+/* /!\ half size */
+#define ROBOT_2ND_WIDTH  ((330/2)+OBS_CLERANCE)
+#define ROBOT_2ND_LENGTH ((282/2)+OBS_CLERANCE)
 #else
-#define ROBOT_2ND_WIDTH  330
-#define ROBOT_2ND_LENGTH 220
+/* /!\ half size */
+#define ROBOT_2ND_WIDTH  ((230/2)+OBS_CLERANCE)
+#define ROBOT_2ND_LENGTH ((150/2)+OBS_CLERANCE)
 #endif
 
 #define CENTER_X 1500
@@ -211,6 +213,54 @@ void set_rotated_poly(poly_t *pol, const point_t *robot_pt,
 	oa_poly_set_point(pol, tmp_x, tmp_y, 3);
 }
 
+/* set rotated poly relative to robot coordinates */
+void set_rotated_poly_abs(poly_t *pol, int16_t a_abs, 
+		      int16_t w, int16_t l, int16_t x, int16_t y)
+
+{
+	double tmp_x, tmp_y;
+	double a_rad = 0.0;
+
+	/* calcule absolute of poly */
+	a_rad = RAD(a_abs);
+
+	DEBUG(E_USER_STRAT, "%s() x,y=%d,%d a_rad=%2.2f", 
+	      __FUNCTION__, x, y, a_rad);
+
+	/* point 1 */
+	tmp_x = w;
+	tmp_y = l;
+	rotate(&tmp_x, &tmp_y, a_rad);
+	tmp_x += x;
+	tmp_y += y;
+	oa_poly_set_point(pol, tmp_x, tmp_y, 0);
+	
+	/* point 2 */
+	tmp_x = -w;
+	tmp_y = l;
+	rotate(&tmp_x, &tmp_y, a_rad);
+	tmp_x += x;
+	tmp_y += y;
+	oa_poly_set_point(pol, tmp_x, tmp_y, 1);
+	
+	/* point 3 */
+	tmp_x = -w;
+	tmp_y = -l;
+	rotate(&tmp_x, &tmp_y, a_rad);
+	tmp_x += x;
+	tmp_y += y;
+	oa_poly_set_point(pol, tmp_x, tmp_y, 2);
+	
+	/* point 4 */
+	tmp_x = w;
+	tmp_y = -l;
+	rotate(&tmp_x, &tmp_y, a_rad);
+	tmp_x += x;
+	tmp_y += y;
+	oa_poly_set_point(pol, tmp_x, tmp_y, 3);
+}
+
+
 
 #if 0
 #define EDGE_NUMBER 5
@@ -294,7 +344,7 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 #define OPP2      1
 #define ROBOT2ND  2
 
-	int16_t x=0, y=0;
+	int16_t x=0, y=0, a_abs=0;
 	int8_t *name = NULL;
 	int8_t opp1[] = "opponent 1";
 	int8_t opp2[] = "opponent 2";
@@ -311,6 +361,7 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 	}
 	else if(type == ROBOT2ND) {
 		 get_robot_2nd_xy(&x, &y);
+     get_robot_2nd_a_abs(&a_abs);
 	   name = robot_2nd;
 	}
 #else
@@ -325,6 +376,7 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 	   name = opp2;
 	}
 	else if(type == ROBOT2ND) {
+     /* TODO abs angle */
 	   x = g_robot_2nd_x;
 	   y = g_robot_2nd_y;
 	   name = robot_2nd;
@@ -335,9 +387,11 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 
 	DEBUG(E_USER_STRAT, "%s at: %d %d", name, x, y);
 	
-	
 	/* place poly even if invalid, because it's -1000 */
-	set_rotated_poly(pol, robot_pt, w, l, x, y); 
+  if(type == ROBOT2ND)
+    set_rotated_poly_abs(pol, a_abs, w, l, x, y); 
+  else	
+  	set_rotated_poly(pol, robot_pt, w, l, x, y); 
 }
 
 /* set point of a rhombus, used for slot polys */

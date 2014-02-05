@@ -31,9 +31,7 @@
 #define AREA_X 3000
 #define AREA_Y 2000
 
-/* XXX obstacle clerance */
-#define OBS_CLERANCE       260.0
-//#define OBS_CLERANCE  205.0    /* when goes backwards */
+
 
 /* position of the tokens */
 #define TREE_1_X			3000
