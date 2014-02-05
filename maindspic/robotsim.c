@@ -260,7 +260,7 @@ void robotsim_update(void)
 	static int32_t l_pwm_shift[SHIFT];
 	static int32_t r_pwm_shift[SHIFT];
 	static int32_t l_speed, r_speed;
-	static unsigned i = 0;
+	static unsigned i = 0, j=0;
 	static unsigned cpt = 0;
 
 	uint8_t flags;
@@ -275,7 +275,7 @@ void robotsim_update(void)
 	double xrr, yrr; /* rear right */
 	double xfr, yfr; /* front right */
 
-	int oppx, oppy;
+	int oppx, oppy, oppa_abs;
 	double oppa, oppd;
 
 	beacon_update();
@@ -331,16 +331,20 @@ void robotsim_update(void)
 
   /* XXX HACK, pos from the robot mate */
 	if (cmd[0] == 'r') {
-		if (sscanf(cmd, "r2nd %d %d", &oppx, &oppy) == 2) {
+		if (sscanf(cmd, "r2nd %d %d %d", &oppx, &oppy, &oppa_abs) == 3) {
+
 			abs_xy_to_rel_da(oppx, oppy, &oppd, &oppa);
 			IRQ_LOCK(flags);
 			beaconboard.robot_2nd_x = oppx;
 			beaconboard.robot_2nd_y = oppy;
 			beaconboard.robot_2nd_a = DEG(oppa);
+      beaconboard.robot_2nd_a_abs = oppa_abs;
 			if (beaconboard.robot_2nd_a < 0)
 				beaconboard.robot_2nd_a += 360;
 			beaconboard.robot_2nd_d = oppd;
 			IRQ_UNLOCK(flags);
+
+
 		}
 	}
 

@@ -376,6 +376,10 @@ void strat_limit_speed(void)
 		if(ret[i] == -1)
 			continue;
 
+		/* skip secondary robot */
+		if(i == 2)
+			continue;
+
 		/* save limits */
 		lim_d_save = lim_d;
 		lim_a_save = lim_a;

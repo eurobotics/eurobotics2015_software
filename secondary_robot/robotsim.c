@@ -275,8 +275,8 @@ void robotsim_update(void)
 	double xrr, yrr; /* rear right */
 	double xfr, yfr; /* front right */
 
-	int oppx, oppy;
-	double oppa, oppa_abs, oppd;
+	int oppx, oppy, oppa_abs;
+	double oppa, oppd;
 
 	beacon_update();
 
@@ -331,14 +331,13 @@ void robotsim_update(void)
 
   /* XXX HACK, pos from the robot mate */
 	if (cmd[0] == 'r') {
-		if (sscanf(cmd, "r2nd %d %d %d", &oppx, &oppy, &oppa) == 3) {
-      oppa_abs = oppa;
+		if (sscanf(cmd, "r2nd %d %d %d", &oppx, &oppy, &oppa_abs) == 3) {
 			abs_xy_to_rel_da(oppx, oppy, &oppd, &oppa);
 			IRQ_LOCK(flags);
 			beaconboard.robot_2nd_x = oppx;
 			beaconboard.robot_2nd_y = oppy;
 			beaconboard.robot_2nd_a = DEG(oppa);
-      beaconboard.robot_2nd_a_abs = DEG(oppa_abs);
+      beaconboard.robot_2nd_a_abs = oppa_abs;
 			if (beaconboard.robot_2nd_a < 0)
 				beaconboard.robot_2nd_a += 360;
 			beaconboard.robot_2nd_d = oppd;

@@ -199,7 +199,7 @@ static void cmd_opponent_parsed(void *parsed_result, void *data)
 
 	int16_t x,y,d,a;
 	int16_t x2, y2, d2, a2;
-	int16_t x_r2nd,y_r2nd,d_r2nd,a_r2nd;
+	int16_t x_r2nd,y_r2nd,d_r2nd,a_r2nd, a_abs_r2nd;
 	int8_t opp1, opp2, r2nd;
 //	microseconds us;
 
@@ -216,6 +216,7 @@ static void cmd_opponent_parsed(void *parsed_result, void *data)
 		opp1 = get_opponent_xyda(&x, &y, &d, &a);
 		opp2 = get_opponent2_xyda(&x2, &y2, &d2, &a2);
 		r2nd = get_robot_2nd_xyda(&x_r2nd, &y_r2nd, &d_r2nd, &a_r2nd);
+    get_robot_2nd_a_abs(&a_abs_r2nd);
 	
 		if (opp1 == -1 && opp2 == -1)
 			printf_P(PSTR("No opponent"));
@@ -234,7 +235,7 @@ static void cmd_opponent_parsed(void *parsed_result, void *data)
 		if (r2nd == -1)
 			printf_P(PSTR(" / r2nd not there"));
 		else
-			printf_P(PSTR(" / r2nd x=%.4d y=%.4d, d=%.4d a=%+.3d"), x_r2nd, y_r2nd, d_r2nd, a_r2nd);
+			printf_P(PSTR(" / r2nd x=%.4d y=%.4d, d=%.4d a=%+.3d (%+.3d)"), x_r2nd, y_r2nd, d_r2nd, a_r2nd, a_abs_r2nd);
 	#endif
 	
 		printf("\n\r");
