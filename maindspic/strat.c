@@ -65,11 +65,39 @@
 #include "beacon.h"
 
 #else
+
+#ifndef IM_SECONDARY_ROBOT
 /* robot dimensions */
-#define ROBOT_LENGTH          281.5
-#define ROBOT_WIDTH 	        330.0
+#define ROBOT_LENGTH     281.5
+#define ROBOT_WIDTH 	   330.0
+
 #define ROBOT_CENTER_TO_FRONT 162.5
 #define ROBOT_CENTER_TO_BACK  119.0
+
+#define ROBOT_HALF_LENGTH_FRONT ROBOT_CENTER_TO_FRONT
+#define ROBOT_HALF_LENGTH_REAR  ROBOT_CENTER_TO_BACK
+
+/* XXX obstacle clerance */
+#define OBS_CLERANCE       242.
+
+#else
+/* robot dimensions */
+#define IM_SECONDARY_ROBOT
+#define ROBOT_LENGTH      150.
+#define ROBOT_WIDTH 	    230.
+
+#define ROBOT_CENTER_TO_FRONT 75.0
+#define ROBOT_CENTER_TO_BACK  75.0
+
+#define ROBOT_HALF_LENGTH_FRONT ROBOT_CENTER_TO_FRONT
+#define ROBOT_HALF_LENGTH_REAR  ROBOT_CENTER_TO_BACK
+
+/* XXX obstacle clerance */
+#define OBS_CLERANCE       147.
+
+#endif /* ! IM_SECONDARY_ROBOT */
+
+
 #endif
 
 

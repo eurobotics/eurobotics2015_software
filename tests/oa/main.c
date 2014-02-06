@@ -24,6 +24,9 @@
 
 
 #define M_2PI (M_PI*2)
+#define DEG(x) ((x) * (180.0 / M_PI))
+#define RAD(x) ((x) * (M_PI / 180.0))
+
 #define E_USER_STRAT 200
 
 #define ROBOT_X 		1000

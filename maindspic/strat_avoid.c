@@ -66,6 +66,10 @@
 
 #else
 
+#define M_2PI (M_PI*2)
+#define DEG(x) ((x) * (180.0 / M_PI))
+#define RAD(x) ((x) * (M_PI / 180.0))
+
 #define E_USER_STRAT 200
 
 #define END_TRAJ       1 /* traj successful */
@@ -724,8 +728,8 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 				     pol_opp1) == 1) {
 				     
 			/* we add 2 cm to be sure we are out of th polygon */
-			dst_pt.x = intersect_opp1_pt.x + escape_dx * 2;
-			dst_pt.y = intersect_opp1_pt.y + escape_dy * 2;
+			dst_pt.x = intersect_opp1_pt.x + escape_dx * 20;
+			dst_pt.y = intersect_opp1_pt.y + escape_dy * 20;
 
 			NOTICE(E_USER_STRAT, "dst point %"PRId32",%"PRId32,
 			       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
