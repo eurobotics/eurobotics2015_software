@@ -133,7 +133,7 @@
 #define ROBOT_HALF_LENGTH_REAR  ROBOT_CENTER_TO_BACK
 
 /* XXX obstacle clerance */
-#define OBS_CLERANCE       242.
+#define OBS_CLERANCE       (232.+10.)
 
 
 /* Some calculus:

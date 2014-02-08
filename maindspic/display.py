@@ -13,6 +13,7 @@ WALL_HEIGHT = 70.0
 
 ROBOT_WIDTH  = 330.0
 ROBOT_LENGTH = 282.0
+ROBOT_X_OFFSET = 21.75
 ROBOT2_WIDTH  = 230.0
 ROBOT2_LENGTH = 150.0
 
@@ -250,7 +251,7 @@ def set_robot():
         tmp_y = -robot_y + AREA_Y/2
         tmp_a = robot_a
 
-    robot.pos = (tmp_x, tmp_y, ROBOT_HEIGHT/2)
+    robot.pos = (tmp_x+ROBOT_X_OFFSET, tmp_y, ROBOT_HEIGHT/2)
     axis = (math.cos(tmp_a*math.pi/180),
             math.sin(tmp_a*math.pi/180),
             0)

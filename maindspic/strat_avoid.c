@@ -108,13 +108,32 @@
 
 #define HEARTFIRE_X 1500
 #define HEARTFIRE_Y 1050
-#define HEARTFIRE_RAD (160+OBS_CLERANCE)
+
+#ifndef IM_SECONDARY_ROBOT
+
+/* 
+  internal radius: ri = (150+OBS_CLERANCE-10) = 382 mm 
+  external radious: re = (ri^2*1.52))^.5 = 470 mm
+*/
+#define HEARTFIRE_RAD  470
+#define HEARTFIRE_RAD2 (150+OBS_CLERANCE+20)
+
+#else
+
+/* 
+  internal radius: ri = (150+OBS_CLERANCE-10) = 287 mm 
+  external radious: re = (ri^2*1.52))^.5 = 353 mm
+*/
+#define HEARTFIRE_RAD 353
+#define HEARTFIRE_RAD2 (150+OBS_CLERANCE+30)
+
+#endif /* !IM_SECONDARY_ROBOT */
 
 /* don't care about polygons further than this distance for escape */
 #define ESCAPE_POLY_THRES 500
 
-/* don't reduce opp if opp is too far */
-#define REDUCE_POLY_THRES 3000
+/* XXX don't reduce opp if opp is too far */
+#define REDUCE_POLY_THRES 3500
 
 /* has to be longer than any poly */
 #define ESCAPE_VECT_LEN 3000
@@ -335,10 +354,10 @@ void set_rotated_pentagon(poly_t *pol, const point_t *robot_pt,
 }
 
 /* set totem islands polygon */
-void set_heartfire_poly(poly_t *pol, point_t *robot_pt)
+void set_heartfire_poly(poly_t *pol, point_t *robot_pt, int16_t rad)
 {
   set_rotated_pentagon(pol, robot_pt,
-	  HEARTFIRE_RAD, HEARTFIRE_X, HEARTFIRE_Y);
+	  rad, HEARTFIRE_X, HEARTFIRE_Y);
 }
 
 /* set poly that represent the opponent */
@@ -762,8 +781,8 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 				     pol_opp2) == 1) {
 				     
 			/* we add 2 cm to be sure we are out of th polygon */
-			dst_pt.x = intersect_opp2_pt.x + escape_dx * 2;
-			dst_pt.y = intersect_opp2_pt.y + escape_dy * 2;
+			dst_pt.x = intersect_opp2_pt.x + escape_dx * 20;
+			dst_pt.y = intersect_opp2_pt.y + escape_dy * 20;
 
 			NOTICE(E_USER_STRAT, "dst point %"PRId32",%"PRId32,
 			       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
@@ -798,8 +817,8 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 				     pol_robot_2nd) == 1) {
 				     
 			/* we add 2 cm to be sure we are out of th polygon */
-			dst_pt.x = intersect_robot_2nd_pt.x + escape_dx * 2;
-			dst_pt.y = intersect_robot_2nd_pt.y + escape_dy * 2;
+			dst_pt.x = intersect_robot_2nd_pt.x + escape_dx * 20;
+			dst_pt.y = intersect_robot_2nd_pt.y + escape_dy * 20;
 
 			NOTICE(E_USER_STRAT, "dst point %"PRId32",%"PRId32,
 			       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
@@ -833,8 +852,8 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 				     pol_heartfire) == 1) {
 				     
 			/* we add 2 cm to be sure we are out of th polygon */
-			dst_pt.x = intersect_heartfire_pt.x + escape_dx * 2;
-			dst_pt.y = intersect_heartfire_pt.y + escape_dy * 2;
+			dst_pt.x = intersect_heartfire_pt.x + escape_dx * 20;
+			dst_pt.y = intersect_heartfire_pt.y + escape_dy * 20;
 
 			NOTICE(E_USER_STRAT, "dst point %"PRId32",%"PRId32,
 			       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
@@ -905,6 +924,7 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 
 	int16_t opp1_w, opp1_l;
 	int16_t opp2_w, opp2_l;
+  int16_t heartfire_r;
 #ifndef HOST_VERSION_OA_TEST
 	int16_t opp1_x, opp1_y;
 	int16_t opp2_x, opp2_y;
@@ -958,6 +978,8 @@ retry:
 	opp2_w = O_WIDTH;
 	opp2_l = O_LENGTH;
 
+  heartfire_r = HEARTFIRE_RAD;
+
 	/* robot info */
 #ifndef HOST_VERSION_OA_TEST
 	robot_pt.x = position_get_x_s16(&mainboard.pos);
@@ -981,7 +1003,7 @@ retry:
 
   /* static play elements poly */
   pol_heartfire = oa_new_poly(5);
-  set_heartfire_poly(pol_heartfire, &robot_pt);
+  set_heartfire_poly(pol_heartfire, &robot_pt, heartfire_r);
 
 	/* if we are not in the limited area, try to go in it. */
 	ret = go_in_area(&robot_pt);
@@ -1046,36 +1068,42 @@ retry:
 			/* proccesing path */
 			len = oa_process();
 	
-			if (len > 0) {		
-				   break;
-			}
-			else if(len == 0)
-			   break;
+			if (len >= 0)	
+			  break;
 		}
 
 		/* len < 0, try reduce opponent to get a valid path */
 		if (distance_between(robot_pt.x, robot_pt.y, opp1_x, opp1_y) < REDUCE_POLY_THRES ) {
-			if (opp1_w == 0)
+			if (opp1_w = 0)
 				opp1_l /= 2;
 			opp1_w /= 2;
 
 			NOTICE(E_USER_STRAT, "reducing opponent 1 %d %d", opp1_w, opp1_l);
 			set_opponent_poly(OPP1, pol_opp1, &robot_pt, opp1_w, opp1_l);
 		}
+
 		if (distance_between(robot_pt.x, robot_pt.y, opp2_x, opp2_y) < REDUCE_POLY_THRES ) {
-			if (opp2_w == 0)
+			if (opp2_w = 0)
 				opp2_l /= 2;
 			opp2_w /= 2;
 
 			NOTICE(E_USER_STRAT, "reducing opponent 2 %d %d", opp2_w, opp2_l);
 			set_opponent_poly(OPP2, pol_opp2, &robot_pt, opp2_w, opp2_l);
 		}
-		
+
+		if (distance_between(robot_pt.x, robot_pt.y, HEARTFIRE_X, HEARTFIRE_Y) < 600 ) {
+      heartfire_r = HEARTFIRE_RAD2;
+
+			NOTICE(E_USER_STRAT, "reducing heart of fire r=%d", heartfire_r);
+			set_heartfire_poly(pol_heartfire, &robot_pt, heartfire_r);
+		}
+
+	   /* TODO XXX don't try to reduce robot 2nd */
+	
+
 		if (distance_between(robot_pt.x, robot_pt.y, opp1_x, opp1_y) >= REDUCE_POLY_THRES 
 		    && distance_between(robot_pt.x, robot_pt.y, opp2_x, opp2_y) >= REDUCE_POLY_THRES)
       {
-		
-		   /* TODO XXX don't try to reduce robot 2nd */
 		
 			NOTICE(E_USER_STRAT, "oa_process() returned %d", len);
 			return END_ERROR;
