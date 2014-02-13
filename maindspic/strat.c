@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Baliñas Santos <javier@arc-robots.org> and Silvia Santano
+ *  Javier Baliï¿½as Santos <javier@arc-robots.org> and Silvia Santano
  */
 
 #include <stdio.h>
@@ -368,107 +368,16 @@ void strat_event(void *dummy)
 /* strat main loop */
 uint8_t strat_main(void)
 {
-#if notyet /* TODO 2014 */
 	uint8_t err;
 
-#ifdef HOMOLOGATION
+	//strat_begin();
 
-	trajectory_d_rel(&mainboard.traj, 300);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
-
-	/* */
-	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_TOTEM_OUR_SIDE_2].init_x), 
-								strat_infos.zones[ZONE_TOTEM_OUR_SIDE_2].init_y, 
-								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-	if (TRAJ_SUCCESS(err))
-	err = strat_empty_totem_side(COLOR_X(strat_infos.zones[ZONE_TOTEM_OUR_SIDE_2].x),
-									strat_infos.zones[ZONE_TOTEM_OUR_SIDE_2].y, STORE_BOOT, 0);
-
-	/* */
-	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_x), 
-								strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_y, 
-								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-	if (TRAJ_SUCCESS(err))
-	err = strat_save_treasure_generic(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].x), 
-												 strat_infos.zones[ZONE_SHIP_OUR_DECK_2].y);
-
-	/* */
-
-	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].init_x), 
-								strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].init_y, 
-								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-	if (TRAJ_SUCCESS(err))
-	err = strat_empty_totem_side(COLOR_X(strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].x),
-									strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].y, STORE_BOOT, 0);
-	/* */
-	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_x), 
-								strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_y, 
-								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-
-	if (TRAJ_SUCCESS(err))
-	err = strat_save_treasure_generic(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].x), 
-												 strat_infos.zones[ZONE_SHIP_OUR_DECK_2].y);
-	/* */
-	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_MIDDLE_COINS_GROUP].init_x), 
-								strat_infos.zones[ZONE_MIDDLE_COINS_GROUP].init_y, 
-								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-
-	if (TRAJ_SUCCESS(err))
-	err = strat_pickup_coins_floor(COLOR_X(strat_infos.zones[ZONE_MIDDLE_COINS_GROUP].x), 
-											strat_infos.zones[ZONE_MIDDLE_COINS_GROUP].y, GROUP);
-
-	/* */
-	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_x), 
-								strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_y, 
-								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-
-	if (TRAJ_SUCCESS(err))
-	err = strat_save_treasure_generic(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].x), 
-												 strat_infos.zones[ZONE_SHIP_OUR_DECK_2].y);
-
-	while(time_get_s() < 89);
-	strat_exit();
-	return 0;
-
-#else
-
-	strat_begin();
-
-	/* try to empty opp totem */
-   trajectory_goto_xy_abs(&mainboard.traj,
-								COLOR_X(strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].init_x),
-								strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].init_y);
-	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-
- 	err = strat_work_on_zone(ZONE_TOTEM_OPP_SIDE_2);
-	if (!TRAJ_SUCCESS(err)) {
-		DEBUG(E_USER_STRAT, "Work on zone %d fails", ZONE_TOTEM_OPP_SIDE_2);
-
-			strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].flags |= ZONE_CHECKED;
-         i2c_slavedspic_mode_turbine_angle(0,200);
-         i2c_slavedspic_wait_ready();
-         i2c_slavedspic_mode_lift_height(30);
-			i2c_slavedspic_wait_ready();
-         i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_TOTEM,I2C_FINGERS_MODE_HOLD,0);
-			i2c_slavedspic_wait_ready();
-         i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR,I2C_FINGERS_MODE_CLOSE,0);
-         i2c_slavedspic_wait_ready();
-	}
-
-	strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].flags |= ZONE_CHECKED;
 
 	/* auto-play */
 	do{
-		err = strat_smart();
+	//err = strat_smart();
 	}while((err & END_TIMER) == 0);
 
-
-
-#endif /* HOMOLOGATION */
-
-#endif /* notyet TODO 2014 */
-
-	/* end */
    strat_exit();
    return 0;
 }

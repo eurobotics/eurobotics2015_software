@@ -374,6 +374,7 @@ retry_on:
 		//beacon_cmd_color();
 	}
 
+	printf("strat_start\r\n");
 	strat_start();
 
 	gen.logs[NB_LOGS] = 0;
