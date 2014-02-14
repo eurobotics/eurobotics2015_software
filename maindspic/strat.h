@@ -330,7 +330,7 @@ void strat_event_disable(void);
 /********************************************
  * in strat_main.c 
  *******************************************/
-#if notyet /* TODO 2014 */
+
 uint8_t strat_main_loop(void);
 
 /* return new work zone, -1 if any zone is found */
@@ -345,8 +345,6 @@ uint8_t strat_work_on_zone(uint8_t zone_num);
 /* smart play */
 //#define DEBUG_STRAT_SMART
 uint8_t strat_smart(void);
-
-#endif /* notyet TODO 2014 */
 
 #else /* HOST_VERSION_OA_TEST */
 

@@ -76,6 +76,10 @@
 #include "actuator.h"
 #include "beacon.h"
 #include "robotsim.h"
+#include "strat_main.h"
+#include "strat_base.h"
+#include "strat_avoid.h"
+#include "strat_utils.h"
 
 extern int8_t beacon_connected;
 
@@ -311,7 +315,6 @@ static void cmd_start_parsed(void *parsed_result, void *data)
 {
 	struct cmd_start_result *res = parsed_result;
 	uint8_t old_level = gen.log_level;
-	int8_t c;
 	
 	gen.logs[NB_LOGS] = E_USER_STRAT;
 	if (!strcmp_P(res->debug, PSTR("debug"))) {
@@ -329,6 +332,7 @@ static void cmd_start_parsed(void *parsed_result, void *data)
 	}
 
 #ifndef HOST_VERSION
+	int8_t c;
 retry:
 	printf_P(PSTR("Press a key when beacon ready, 'q' for skip \r\n"));
 	c = -1;
@@ -1494,3 +1498,102 @@ parse_pgm_inst_t cmd_sleep = {
 	},
 };
 
+/**********************************************************/
+/* Goto zone */
+
+// this structure is filled when cmd_gotozone is parsed successfully 
+struct cmd_gotozone_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+};
+
+// function called when cmd_gotozone is parsed successfully 
+static void cmd_gotozone_parsed(void *parsed_result, void *data)
+{
+	struct cmd_gotozone_result *res = parsed_result;
+	uint8_t num=-1;
+	uint8_t i=0;
+	
+	for(i=0; i<ZONES_MAX; i++)
+	{
+		if(strcmp(numzone2name[i],res->arg1)==0)
+		{
+			num=i;
+			break;
+		}
+	}
+	if(num!=-1)
+	{
+		uint8_t result=strat_goto_zone(num);
+	}
+	else
+		printf("Error: can't find zone!\n\r");
+}
+
+prog_char str_gotozone_arg0[] = "gotozone";
+parse_pgm_token_string_t cmd_gotozone_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_gotozone_result, arg0, str_gotozone_arg0);
+prog_char str_gotozone_arg1[] = "TREE_1#TREE_2#TREE_3#TREE_4#HEART_FIRE_1#HEART_FIRE_2#HEART_FIRE_3#FIRE_1#FIRE_2#FIRE_3#FIRE_4#FIRE_5#FIRE_6#TORCH_1#TORCH_2#TORCH_3#TORCH_4#MOBILE_TORCH_1#MOBILE_TORCH_2#MOBILE_TORCH_3#BASKET_1#BASKET_2#MAMOOTH_1#MAMOOTH_2#FRESCO#HOME_RED#HOME_YELLOW";
+parse_pgm_token_string_t cmd_gotozone_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_gotozone_result, arg1, str_gotozone_arg1);
+
+
+prog_char help_gotozone[] = "Go to a zone of the field";
+parse_pgm_inst_t cmd_gotozone = {
+	.f = cmd_gotozone_parsed,  // function to call 
+	.data = NULL,      // 2nd arg of func 
+	.help_str = help_gotozone,
+	.tokens = {        // token list, NULL terminated 
+		(prog_void *)&cmd_gotozone_arg0,
+		(prog_void *)&cmd_gotozone_arg1,
+		NULL,
+	},
+};
+
+/**********************************************************/
+/* Work on a zone */
+
+// this structure is filled when cmd_workonzone is parsed successfully 
+struct cmd_workonzone_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+};
+
+// function called when cmd_workonzone is parsed successfully 
+static void cmd_workonzone_parsed(void *parsed_result, void *data)
+{
+	struct cmd_workonzone_result *res = parsed_result;
+	uint8_t num=-1;
+	uint8_t i=0;
+	
+	for(i=0; i<ZONES_MAX; i++)
+	{
+		if(strcmp(numzone2name[i],res->arg1)==0)
+		{
+			num=i;
+			break;
+		}
+	}
+	if(num!=-1)
+	{
+		uint8_t result=strat_work_on_zone(num);
+	}
+	else
+		printf("Error: can't find zone!\n\r");
+}
+
+prog_char str_workonzone_arg0[] = "workonzone";
+parse_pgm_token_string_t cmd_workonzone_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_workonzone_result, arg0, str_workonzone_arg0);
+prog_char str_workonzone_arg1[] = "TREE_1#TREE_2#TREE_3#TREE_4#HEART_FIRE_1#HEART_FIRE_2#HEART_FIRE_3#FIRE_1#FIRE_2#FIRE_3#FIRE_4#FIRE_5#FIRE_6#TORCH_1#TORCH_2#TORCH_3#TORCH_4#MOBILE_TORCH_1#MOBILE_TORCH_2#MOBILE_TORCH_3#BASKET_1#BASKET_2#MAMOOTH_1#MAMOOTH_2#FRESCO#HOME_RED#HOME_YELLOW";
+parse_pgm_token_string_t cmd_workonzone_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_workonzone_result, arg1, str_workonzone_arg1);
+
+
+prog_char help_workonzone[] = "Work on a zone of the field";
+parse_pgm_inst_t cmd_workonzone = {
+	.f = cmd_workonzone_parsed,  // function to call 
+	.data = NULL,      // 2nd arg of func 
+	.help_str = help_workonzone,
+	.tokens = {        // token list, NULL terminated 
+		(prog_void *)&cmd_workonzone_arg0,
+		(prog_void *)&cmd_workonzone_arg1,
+		NULL,
+	},
+};
