@@ -108,6 +108,8 @@ extern parse_pgm_inst_t cmd_clitoid;
 extern parse_pgm_inst_t cmd_time_monitor;
 extern parse_pgm_inst_t cmd_strat_event;
 extern parse_pgm_inst_t cmd_sleep;
+extern parse_pgm_inst_t cmd_gotozone;
+extern parse_pgm_inst_t cmd_workonzone;
 
 #ifdef notyet /* TODO 2014*/
 extern parse_pgm_inst_t cmd_slavedspic;
@@ -228,6 +230,8 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_time_monitor,
 	(parse_pgm_inst_t *)&cmd_strat_event,
 	(parse_pgm_inst_t *)&cmd_sleep,
+	(parse_pgm_inst_t *)&cmd_gotozone,
+	(parse_pgm_inst_t *)&cmd_workonzone,
 
 #ifdef notyet /* TODO 2014*/
 	(parse_pgm_inst_t *)&cmd_slavedspic,

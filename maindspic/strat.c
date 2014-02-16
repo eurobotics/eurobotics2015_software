@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Baliñas Santos <javier@arc-robots.org> and Silvia Santano
+ *  Javier Baliï¿½as Santos <javier@arc-robots.org> and Silvia Santano
  */
 
 #include <stdio.h>
@@ -111,32 +111,38 @@ struct strat_infos strat_infos = {
 	},
 
    /*zones[W] =			     			{type, x, x_down, x_up, y_down, y_up, init_x,init_y, prio, flags };                            */
-   .zones[ZONE_TREE_1]=        {ZONE_TYPE_TREE, TREE_1_X, TREE_1_Y, 2850, 3150,  1150,    1450   , 2600,  1300,   ZONE_PRIO_40, 0 },
-   .zones[ZONE_TREE_2]=        {ZONE_TYPE_TREE, TREE_2_X, TREE_2_Y, 2150, 2450,  1850,    2150   , 2300,  1600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_TREE_3]=        {ZONE_TYPE_TREE, TREE_3_X, TREE_3_Y, 550, 850,  1850,    2150   , 700,  1600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_TREE_4]=        {ZONE_TYPE_TREE, TREE_4_X, TREE_4_Y, -150, 150,  1150,    1450   , 400,  1300,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_HEART_FIRE_1]=  {ZONE_TYPE_HEART_FIRE, HEART_FIRE_1_X, HEART_FIRE_1_Y, 2750, 3000,  1750, 2000   , 2600,  1500,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_HEART_FIRE_2]=  {ZONE_TYPE_HEART_FIRE, HEART_FIRE_2_X, HEART_FIRE_2_Y, 0, 250,  1750,   2000   , 1100,  1050,   ZONE_PRIO_40, 0 },
-     .zones[ZONE_HEART_FIRE_3]= {ZONE_TYPE_HEART_FIRE, HEART_FIRE_3_X, HEART_FIRE_3_Y, 1350, 1650,  900,    1200   , 400,  1500,   ZONE_PRIO_40, 0 },
-     .zones[ZONE_FIRE_1]=       {ZONE_TYPE_FIRE, FIRE_1_X, FIRE_1_Y, 2530, 2670,  1085,  1115   , 2600,  700,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_FIRE_2]=        {ZONE_TYPE_FIRE, FIRE_2_X, FIRE_2_Y, 2085, 2115,  530,    670   , 2500,  600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_FIRE_3]=        {ZONE_TYPE_FIRE, FIRE_3_X, FIRE_3_Y, 2085, 2115,  1530,   1670   , 2500,  1600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_FIRE_4]=        {ZONE_TYPE_FIRE, FIRE_4_X, FIRE_4_Y, 885, 915,  530,    670   , 500,  600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_FIRE_5]=        {ZONE_TYPE_FIRE, FIRE_5_X, FIRE_5_Y, 885, 915,  1530,    1670   , 500,  1600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_FIRE_6]=        {ZONE_TYPE_FIRE, FIRE_6_X, FIRE_6_Y, 330, 470,  1085,    1115   , 400,  700,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_TORCH_1]=        {ZONE_TYPE_TORCH, TORCH_1_X, TORCH_1_Y, 2985, 3000,  730,    870   , 2600,  800,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_TORCH_2]=        {ZONE_TYPE_TORCH, TORCH_2_X, TORCH_2_Y, 1630, 1770,  1985,    2000   , 1700,  1600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_TORCH_3]=        {ZONE_TYPE_TORCH, TORCH_3_X, TORCH_3_Y, 1230, 1370,  1985,    2000   , 1300,  1600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_TORCH_4]=        {ZONE_TYPE_TORCH, TORCH_4_X, TORCH_4_Y, 0, 15,  900,    730   , 400,  800,   ZONE_PRIO_40, 0 },
+   .zones[ZONE_TREE_1]=        {ZONE_TYPE_TREE, TREE_1_X, TREE_1_Y,-150 , 150,  1150,    1450   , 400,  1300,   ZONE_PRIO_40, 0 },
+   .zones[ZONE_TREE_2]=        {ZONE_TYPE_TREE, TREE_2_X, TREE_2_Y, 550, 850,  1850,    2150   , 700 ,  1600,   ZONE_PRIO_40, 0 },
+    .zones[ZONE_TREE_3]=        {ZONE_TYPE_TREE, TREE_3_X, TREE_3_Y, 2150, 2450 ,  1850,    2150   ,2300 ,  1600,   ZONE_PRIO_40, 0 },
+    .zones[ZONE_TREE_4]=        {ZONE_TYPE_TREE, TREE_4_X, TREE_4_Y, 2850, 3150,  1150,    1450   , 2600,  1300,   ZONE_PRIO_40, 0 },
+    .zones[ZONE_HEART_FIRE_1]=  {ZONE_TYPE_HEART_FIRE, HEART_FIRE_1_X, HEART_FIRE_1_Y, 0, 250,  1750, 2000   ,1100 ,  1500,   ZONE_PRIO_40, 0 },
+    .zones[ZONE_HEART_FIRE_2]= {ZONE_TYPE_HEART_FIRE, HEART_FIRE_2_X, HEART_FIRE_2_Y, 1350, 1650,  900,    1200   , 400,  1500,   ZONE_PRIO_40, 0 },
+	.zones[ZONE_HEART_FIRE_3]=  {ZONE_TYPE_HEART_FIRE, HEART_FIRE_3_X, HEART_FIRE_3_Y, 2750,3000 ,  1750,   2000   ,2600 ,  1050,   ZONE_PRIO_40, 0 },
+	.zones[ZONE_FIRE_1]=        {ZONE_TYPE_FIRE, FIRE_1_X, FIRE_1_Y, 330, 470,  1085,    1115   , 400,  700,   ZONE_PRIO_40, 0 },
+	.zones[ZONE_FIRE_2]=        {ZONE_TYPE_FIRE, FIRE_2_X, FIRE_2_Y, 885, 915,  530,    670   , 500,  600,   ZONE_PRIO_40, 0 },
+    .zones[ZONE_FIRE_4]=        {ZONE_TYPE_FIRE, FIRE_4_X, FIRE_4_Y, 2085, 2115,  530,    670   , 2500,  600,   ZONE_PRIO_40, 0 },
+    .zones[ZONE_FIRE_3]=        {ZONE_TYPE_FIRE, FIRE_3_X, FIRE_3_Y, 885, 915,  1530,    1670   , 500,  1600,   ZONE_PRIO_40, 0 },
+    .zones[ZONE_FIRE_5]=        {ZONE_TYPE_FIRE, FIRE_5_X, FIRE_5_Y, 2085, 2115,  1530,   1670   , 2500,  1600,   ZONE_PRIO_40, 0 },
+    .zones[ZONE_FIRE_6]=       {ZONE_TYPE_FIRE, FIRE_6_X, FIRE_6_Y, 2530, 2670,  1085,  1115   , 2600,  700,   ZONE_PRIO_40, 0 },  
+	
+    .zones[ZONE_TORCH_1]=        {ZONE_TYPE_TORCH, TORCH_1_X, TORCH_1_Y, 0, 15,  900,    730   , 400,  800,   ZONE_PRIO_40, 0 },
+	.zones[ZONE_TORCH_2]=        {ZONE_TYPE_TORCH, TORCH_2_X, TORCH_2_Y, 1230, 1370,  1985,    2000   , 1300,  1600,   ZONE_PRIO_40, 0 },
+	.zones[ZONE_TORCH_3]=        {ZONE_TYPE_TORCH, TORCH_3_X, TORCH_3_Y, 1630, 1770,  1985,    2000   , 1700,  1600,   ZONE_PRIO_40, 0 },
+    .zones[ZONE_TORCH_4]=        {ZONE_TYPE_TORCH, TORCH_1_X, TORCH_1_Y, 2985, 3000,  730,    870   , 2600,  800,   ZONE_PRIO_40, 0 },
+
+
+
     .zones[ZONE_MOBILE_TORCH_1]= {ZONE_TYPE_MOBILE_TORCH, MOBILE_TORCH_1_X, MOBILE_TORCH_1_Y, 820, 980,  1020,   1180   , 2100,  700,   ZONE_PRIO_40, 0 },
     .zones[ZONE_MOBILE_TORCH_2]= {ZONE_TYPE_MOBILE_TORCH, MOBILE_TORCH_2_X, MOBILE_TORCH_2_Y, 2020, 2180,  1020, 1180   , 900,  700,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_BASKET_1]=        {ZONE_TYPE_BASKET, BASKET_1_X, BASKET_1_Y, 1900, 2600,  0,    300   , 2300,  600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_BASKET_2]=        {ZONE_TYPE_BASKET, BASKET_2_X, BASKET_2_Y, 400, 1100,  0,    300   , 700,  600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_MAMOOTH_1]=       {ZONE_TYPE_MAMOOTH, MAMOOTH_1_X, MAMOOTH_1_Y, 1900, 2600,  0,    300   , 2300,  600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_MAMOOTH_2]=       {ZONE_TYPE_MAMOOTH, MAMOOTH_2_X, MAMOOTH_2_Y, 400, 1100,  0,    300   , 700,  600,   ZONE_PRIO_40, 0 },
+ 
+    .zones[ZONE_BASKET_1]=        {ZONE_TYPE_BASKET, BASKET_1_X, BASKET_1_Y, 400, 1100,  0,    300   , 700,  600,   ZONE_PRIO_40, 0 },
+    .zones[ZONE_BASKET_2]=        {ZONE_TYPE_BASKET, BASKET_2_X, BASKET_2_Y, 1900, 2600,  0,    300   , 2300,  600,   ZONE_PRIO_40, 0 },
+	.zones[ZONE_MAMOOTH_1]=       {ZONE_TYPE_MAMOOTH, MAMOOTH_1_X, MAMOOTH_1_Y, 400, 1100,  0,    300   , 700,  600,   ZONE_PRIO_40, 0 },
+    .zones[ZONE_MAMOOTH_2]=       {ZONE_TYPE_MAMOOTH, MAMOOTH_2_X, MAMOOTH_2_Y, 1900, 2600,  0,    300   , 2300,  600,   ZONE_PRIO_40, 0 },
+
     .zones[ZONE_FRESCO]=          {ZONE_TYPE_FRESCO, FRESCO_X, FRESCO_Y, 1100, 1900,  0,    300   , 1500,  300,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_HOME_RED]=        {ZONE_TYPE_HOME, HOME_RED_X, HOME_RED_Y, 0, 400,  0,    690   , 2800,  600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_HOME_YELLOW]=     {ZONE_TYPE_HOME, HOME_YELLOW_X, HOME_YELLOW_Y, 2600, 3000,  0,   690   , 200,  600,   ZONE_PRIO_40, 0 },
+    .zones[ZONE_HOME_YELLOW]=        {ZONE_TYPE_HOME, HOME_RED_X, HOME_RED_Y, 0, 400,  0,    690   , 2800,  600,   ZONE_PRIO_40, 0 },
+    .zones[ZONE_HOME_RED]=     {ZONE_TYPE_HOME, HOME_YELLOW_X, HOME_YELLOW_Y, 2600, 3000,  0,   690   , 200,  600,   ZONE_PRIO_40, 0 },
 };
 
 
@@ -362,107 +368,16 @@ void strat_event(void *dummy)
 /* strat main loop */
 uint8_t strat_main(void)
 {
-#if notyet /* TODO 2014 */
 	uint8_t err;
 
-#ifdef HOMOLOGATION
+	//strat_begin();
 
-	trajectory_d_rel(&mainboard.traj, 300);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
-
-	/* */
-	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_TOTEM_OUR_SIDE_2].init_x), 
-								strat_infos.zones[ZONE_TOTEM_OUR_SIDE_2].init_y, 
-								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-	if (TRAJ_SUCCESS(err))
-	err = strat_empty_totem_side(COLOR_X(strat_infos.zones[ZONE_TOTEM_OUR_SIDE_2].x),
-									strat_infos.zones[ZONE_TOTEM_OUR_SIDE_2].y, STORE_BOOT, 0);
-
-	/* */
-	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_x), 
-								strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_y, 
-								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-	if (TRAJ_SUCCESS(err))
-	err = strat_save_treasure_generic(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].x), 
-												 strat_infos.zones[ZONE_SHIP_OUR_DECK_2].y);
-
-	/* */
-
-	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].init_x), 
-								strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].init_y, 
-								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-	if (TRAJ_SUCCESS(err))
-	err = strat_empty_totem_side(COLOR_X(strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].x),
-									strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].y, STORE_BOOT, 0);
-	/* */
-	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_x), 
-								strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_y, 
-								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-
-	if (TRAJ_SUCCESS(err))
-	err = strat_save_treasure_generic(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].x), 
-												 strat_infos.zones[ZONE_SHIP_OUR_DECK_2].y);
-	/* */
-	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_MIDDLE_COINS_GROUP].init_x), 
-								strat_infos.zones[ZONE_MIDDLE_COINS_GROUP].init_y, 
-								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-
-	if (TRAJ_SUCCESS(err))
-	err = strat_pickup_coins_floor(COLOR_X(strat_infos.zones[ZONE_MIDDLE_COINS_GROUP].x), 
-											strat_infos.zones[ZONE_MIDDLE_COINS_GROUP].y, GROUP);
-
-	/* */
-	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_x), 
-								strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_y, 
-								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-
-	if (TRAJ_SUCCESS(err))
-	err = strat_save_treasure_generic(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].x), 
-												 strat_infos.zones[ZONE_SHIP_OUR_DECK_2].y);
-
-	while(time_get_s() < 89);
-	strat_exit();
-	return 0;
-
-#else
-
-	strat_begin();
-
-	/* try to empty opp totem */
-   trajectory_goto_xy_abs(&mainboard.traj,
-								COLOR_X(strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].init_x),
-								strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].init_y);
-	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-
- 	err = strat_work_on_zone(ZONE_TOTEM_OPP_SIDE_2);
-	if (!TRAJ_SUCCESS(err)) {
-		DEBUG(E_USER_STRAT, "Work on zone %d fails", ZONE_TOTEM_OPP_SIDE_2);
-
-			strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].flags |= ZONE_CHECKED;
-         i2c_slavedspic_mode_turbine_angle(0,200);
-         i2c_slavedspic_wait_ready();
-         i2c_slavedspic_mode_lift_height(30);
-			i2c_slavedspic_wait_ready();
-         i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_TOTEM,I2C_FINGERS_MODE_HOLD,0);
-			i2c_slavedspic_wait_ready();
-         i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR,I2C_FINGERS_MODE_CLOSE,0);
-         i2c_slavedspic_wait_ready();
-	}
-
-	strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].flags |= ZONE_CHECKED;
 
 	/* auto-play */
 	do{
-		err = strat_smart();
+	//err = strat_smart();
 	}while((err & END_TIMER) == 0);
 
-
-
-#endif /* HOMOLOGATION */
-
-#endif /* notyet TODO 2014 */
-
-	/* end */
    strat_exit();
    return 0;
 }
