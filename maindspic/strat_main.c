@@ -88,11 +88,13 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 		return 0;
 
 	/* discard down side zones depends on strat config */
+/*
 	if((strat_infos.conf.flags & ENABLE_DOWN_SIDE_ZONES) == 0 
 		&& strat_infos.zones[zone_num].init_y < (AREA_Y/2)
 		&& zone_num != ZONE_SHIP_OUR_DECK_2
 		&& zone_num != ZONE_SHIP_OUR_DECK_1 )
 		return 0;
+*/
 /*
 	else if((strat_infos.conf.flags & ENABLE_DOWN_SIDE_ZONES) 
 		&& strat_infos.zones[zone_num].init_y > (AREA_Y/2) 
@@ -262,7 +264,7 @@ uint8_t strat_smart(void)
 
 	/* mark the zone as checked */
 		strat_infos.zones[strat_infos.current_zone].flags |= ZONE_CHECKED;
-	}
+	//}
 
 	DEBUG(E_USER_STRAT, "Work on zone %d successed!", strat_infos.current_zone);
 	return END_TRAJ;
