@@ -76,7 +76,6 @@
 #include "actuator.h"
 #include "beacon.h"
 #include "robotsim.h"
-#include "strat_main.h"
 #include "strat_base.h"
 #include "strat_avoid.h"
 #include "strat_utils.h"
@@ -1597,3 +1596,5 @@ parse_pgm_inst_t cmd_workonzone = {
 		NULL,
 	},
 };
+
+
