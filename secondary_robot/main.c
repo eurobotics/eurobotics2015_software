@@ -36,7 +36,7 @@
 #include <i2c_mem.h>
 
 #include <encoders_dspic.h>
-#include <dac_mc.h>
+#include <pwm_mc.h>
 #include <pwm_servo.h>
 
 
@@ -125,45 +125,39 @@ void io_pins_init(void)
 	 */
 
 	/* analog inputs */
-	/* by default all analog pins are digital */
+	/* XXX by default all analog pins are digital */
 	AD1PCFGL = 0xFF;	
 
 	/* leds */
-	_TRISA4 = 0;	/* MAIN_LED1 */
-	_TRISA8 = 0;	/* MAIN_LED2 */
-	_TRISC2 = 0;	/* MAIN_LED3 */
-	_TRISC8 = 0;	/* MAIN_LED4 */
+	_TRISA4 = 0;	/* LED5 */
 	
-	/* brushless motors */
-	_TRISA10 = 0; 	/* L_MOT_REV	*/
-	_TRISA7  = 0;   /* L_MOT_BREAK	*/
-	_LATA7 	 = 0;
-
-	_TRISB10 = 0; 	/* R_MOT_REV	*/
-	_TRISB11 = 0; 	/* R_MOT_BREAK	*/
-	_LATB11  = 0;
-
+	/* L6203 H bridges (outputs) */	_TRISA0 	= 0;	// MOT_1_IN1	_TRISA1 	= 0;	// MOT_1_IN2	_TRISB14	= 0;	// MOT_1_EN
+	_TRISA7 	= 0;	// MOT_2_IN1	_TRISB15	= 0;	// MOT_2_IN2	_TRISB12	= 0;	// MOT_2_EN
+	_TRISB13	= 0;	// MOT_3_IN1	_TRISA10	= 0;	// MOT_3_IN2	_TRISB10	= 0;	// MOT_3_EN
 	/* servos */
-	_RP22R = 0b10010; /* OC1 -> RP22(RC6) -> MAIN_SERVO_PWM_1 */
-	_RP23R = 0b10011; /* OC2 -> RP23(RC7) -> MAIN_SERVO_PWM_2 */
-	_TRISC6 = 0;
-	_TRISC7	= 0;
+	_RP18R = 0b10010; /* OC1 -> RP18(RC2) -> SERVO_1_PWM */
+	_RP17R = 0b10011; /* OC2 -> RP17(RC1) -> SERVO_2_PWM */
+	_RP16R = 0b10100; /* OC3 -> RP16(RC0) -> SERVO_3_PWM */
+	_RP3R  = 0b10101; /* OC4 -> RP3(RB3)  -> SERVO_4_PWM */
+
+	_TRISC2 = 0;
+	_TRISC1 = 0;
+	_TRISC0 = 0;
+	_TRISB3 = 0;
 	
 	/* encoders */	
-	_QEA1R 	= 21;	/* QEA1 <- RP21(RC5) <- R_ENC_CHA */
-	_TRISC5 = 1;	
-	_QEB1R 	= 20;	/* QEB1 <- RP20(RC4) <- R_ENC_CHB */
+	_QEA1R 	= 21;	/* QEA1 <- RP21(RC5) <- ENC_1_CHA */
+	_TRISC5  = 1;	
+	_QEB1R 	= 20;	/* QEB1 <- RP20(RC4) <- ENC_1_CHB */
 	_TRISC4	= 1;
 
-	_QEA2R 	= 19;	/* QEA2 <- RP19(RC3) <- L_ENC_CHA */
-	_TRISC3 = 1;	
-	_QEB2R 	= 4;	/* QEB2 <- RP4(RB4)  <- L_ENC_CHB */
-	_TRISB4	= 1;	
-	
-	/* lasers */
-	AD1PCFGL &= ~(_BV(7));	/* AN7 <- MAIN_LASER_1 */
-	AD1PCFGL &= ~(_BV(6));	/* AN6 <- MAIN_LASER_2 */
-			
+	_QEA2R 	= 19;	/* QEA2 <- RP19(RC3) <- ENC_2_CHA */
+	_TRISC3  = 1;	
+	_QEB2R 	= 4;	/* QEB2 <- RP4(RB4)  <- ENC_2_CHB */
+	_TRISB4	= 1;
+
+	/* TODO ENC 3 */
+				
 	/* i2c */
 	/* XXX open collector */
 	_ODCB6 = 1;
@@ -171,25 +165,17 @@ void io_pins_init(void)
 
 	/* uarts */
 	/* U1 is for cmdline and bootloader */
-	_U1RXR 	= 8;	/* U1RX <- RP8(RB8) <- MAIN_UART_RX	*/
+	_U1RXR 	= 8;	/* U1RX <- RP8(RB8) <- UART_RX	*/
 	_TRISB8 = 1;	/* U1RX is input	*/
-  _RP7R 	= 3;	/* U1TX -> RP7(RB7) -> MAIN_UART_TX	*/
+  	_RP7R 	= 3;	/* U1TX -> RP7(RB7) -> UART_TX	*/
 	_TRISB7	= 0;	/* U1TX is output	*/
 	
-	/* UART2 swap between BEACON and SLAVEDSPIC */
-	set_uart_mux(BEACON_CHANNEL);
+	/* UART SERVO AX12 */
+	_U2RXR 	= 9;	// U2RX <- RP9 <- SERVOS_AX12_UART
+  	_RP9R 	= 5;	// U2TX -> RP9 -> SERVOS_AX12_UART
+	_TRISB9	= 0;	// U2TX is output
+ 	_ODCB9 	= 1;	// For half-duplex mode RP9 is open collector
 
-//#if 1
-//	_U2RXR 	= 9;	/* U2RX <- RP9(RB9)  <- BEACON_UART_RX */
-//	_TRISB9 	= 1;	/* U2RX is input								*/
-//  	_RP25R 	= 5;	/* U2TX -> RP25(RC9) -> BEACON_UART_TX */
-//	_TRISC9	= 0;	/* U2TX is output								*/
-//#else
-//	_U2RXR 	= 2;	/* U2RX <- RP2(RB2) <- SLAVE_UART_TX	*/
-//	_TRISB2 	= 1;	/* U2RX is input								*/
-//  	_RP3R 	= 5;	/* U2TX -> RP3(RB3) -> SLAVE_UART_RX	*/
-//	_TRISB3	= 0;	/* U2TX is output								*/
-//#endif
 }
 #endif /* !HOST_VERSION */
 
@@ -212,9 +198,6 @@ int main(void)
 
 	/* LEDS */
 	LED1_OFF();
-	LED2_OFF();
-	LED3_OFF();
-	LED4_OFF();
 #endif
 
 	/* reset data structures */
@@ -260,20 +243,14 @@ int main(void)
 	i2c_register_write_event(i2c_write_event);
 	i2c_protocol_init();
 
-	/* DAC_MC */
-	dac_mc_channel_init(&gen.dac_mc_right, 1, CHANNEL_R,
-											DAC_MC_MODE_SIGNED|DAC_MC_MODE_SIGN_INVERTED,
-										 	&LATB, 10, NULL, 0);
-	
+	/* DAC_MC */	pwm_mc_channel_init(MOTOR_1,	                    PWM_MC_MODE_SIGNED, 	                    1, 1, &PORTA, 0, &PORTA, 1);
 
-	dac_mc_channel_init(&gen.dac_mc_left, 1, CHANNEL_L,
-											DAC_MC_MODE_SIGNED,
-										 	&LATA, 10, NULL, 0);
-	
-	dac_mc_set(&gen.dac_mc_right, 0);
-	dac_mc_set(&gen.dac_mc_left, 0);
-
-
+	pwm_mc_channel_init(MOTOR_2,	                    PWM_MC_MODE_SIGNED, 	                    1, 2, &PORTA, 7, &PORTB, 15);
+	pwm_mc_channel_init(MOTOR_3,	                    PWM_MC_MODE_SIGNED, 	                    1, 3, &PORTB, 13, &PORTA, 10);	pwm_mc_init(MOTOR_1, 15000, CH1_IND&PEN1H&PDIS1L &										 CH2_IND&PEN2H&PDIS2L &										 CH3_IND&PEN3H&PDIS3L);
+	pwm_mc_init(MOTOR_2, 15000, CH1_IND&PEN1H&PDIS1L &										 CH2_IND&PEN2H&PDIS2L &										 CH3_IND&PEN3H&PDIS3L);
+	pwm_mc_init(MOTOR_3, 15000, CH1_IND&PEN1H&PDIS1L &										 CH2_IND&PEN2H&PDIS2L &										 CH3_IND&PEN3H&PDIS3L);               												 	pwm_mc_set(MOTOR_1, 0);
+	pwm_mc_set(MOTOR_2, 0);
+	pwm_mc_set(MOTOR_3, 0);
 	/* MAIN TIMER */
 	main_timer_init();
 #endif
@@ -295,24 +272,24 @@ int main(void)
 	time_init(EVENT_PRIORITY_TIME);
 
 	/* all cs management */
-	maindspic_cs_init();
+	//maindspic_cs_init();
 
 	/* sensors, will also init hardware adc */
-	sensor_init();
+	//sensor_init();
 
 #ifndef HOST_VERSION
 	/* i2c slaves polling (gpios and slavedspic) */
-	scheduler_add_periodical_event_priority(i2c_poll_slaves, NULL,
-						EVENT_PERIOD_I2C_POLL / SCHEDULER_UNIT, EVENT_PRIORITY_I2C_POLL);
+	//scheduler_add_periodical_event_priority(i2c_poll_slaves, NULL,
+	//					EVENT_PERIOD_I2C_POLL / SCHEDULER_UNIT, EVENT_PRIORITY_I2C_POLL);
 
 	/* beacon commnads and polling */
-	scheduler_add_periodical_event_priority(beacon_protocol, NULL,
-					EVENT_PERIOD_BEACON_PULL / SCHEDULER_UNIT, EVENT_PRIORITY_BEACON_POLL);
+	//scheduler_add_periodical_event_priority(beacon_protocol, NULL,
+	//				EVENT_PERIOD_BEACON_PULL / SCHEDULER_UNIT, EVENT_PRIORITY_BEACON_POLL);
 #endif
 
 	/* strat-related event */
-	scheduler_add_periodical_event_priority(strat_event, NULL,
-						EVENT_PERIOD_STRAT / SCHEDULER_UNIT, EVENT_PRIORITY_STRAT);
+	//scheduler_add_periodical_event_priority(strat_event, NULL,
+	//					EVENT_PERIOD_STRAT / SCHEDULER_UNIT, EVENT_PRIORITY_STRAT);
 
 
 	/* log setup */
@@ -323,7 +300,7 @@ int main(void)
  	gen.log_level = 5;
 	
 	/* reset strat infos */
-	strat_reset_infos();
+	//strat_reset_infos();
 
 	/* enable interrupts */
 	sei();

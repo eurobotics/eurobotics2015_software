@@ -32,7 +32,7 @@
 
 #ifndef HOST_VERSION_OA_TEST
 #include <uart.h>
-#include <dac_mc.h>
+#include <pwm_mc.h>
 #include <pwm_servo.h>
 #include <clock_time.h>
 
@@ -58,7 +58,7 @@
 #include "main.h"
 #include "strat.h"
 #include "strat_base.h"
-#include "strat_avoid.h"
+#include "../maindspic/strat_avoid.h"
 #include "strat_utils.h"
 #include "sensor.h"
 #include "actuator.h"
@@ -275,8 +275,8 @@ void strat_exit(void)
 	IRQ_LOCK(flags);
 	mainboard.flags &= ~(DO_CS);
 	IRQ_UNLOCK(flags);
-	dac_mc_set(LEFT_MOTOR, 0);
-	dac_mc_set(RIGHT_MOTOR, 0);
+	//dac_mc_set(LEFT_MOTOR, 0);
+	//dac_mc_set(RIGHT_MOTOR, 0);
 #endif
 
 	/* stop beacon */

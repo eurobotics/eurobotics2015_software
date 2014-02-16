@@ -297,8 +297,8 @@ static uint64_t sensor_read(void)
 	/* 1 to 7 reserved */
 	tmp |= ((uint64_t)((uint16_t)gen.i2c_gpio0))<< 8;
 	tmp |= ((uint64_t)((uint16_t)gen.i2c_gpio1))<< 16;
-	tmp |= ((uint64_t)((uint16_t)gen.i2c_gpio2))<< 24;
-	tmp |= ((uint64_t)((uint16_t)gen.i2c_gpio3))<< 32;
+	//tmp |= ((uint64_t)((uint16_t)gen.i2c_gpio2))<< 24;
+	//tmp |= ((uint64_t)((uint16_t)gen.i2c_gpio3))<< 32;
 
 	/* add reserved sensors here */
 	return tmp;

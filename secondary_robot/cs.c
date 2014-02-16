@@ -35,7 +35,7 @@
 #include <aversive/error.h>
 
 #include <encoders_dspic.h>
-#include <dac_mc.h>
+#include <pwm_mc.h>
 #include <pwm_servo.h>
 //#include <timer.h>
 #include <scheduler.h>
@@ -138,8 +138,8 @@ static void do_cs(void *dummy)
 		if ((second >= MATCH_TIME + 2)) {
 
 			/* stop motors */
-			dac_mc_set(LEFT_MOTOR, 0);
-			dac_mc_set(RIGHT_MOTOR, 0);
+			pwm_mc_set(LEFT_MOTOR, 0);
+			pwm_mc_set(RIGHT_MOTOR, 0);
 
 			/* kill strat */
 			//strat_exit();

@@ -31,7 +31,7 @@
 #include <rdline.h>
 
 #include <encoders_dspic.h>
-#include <dac_mc.h>
+#include <pwm_mc.h>
 #include <pwm_servo.h>
 
 #include <pid.h>
@@ -54,7 +54,7 @@
 /* uart 0 is for cmds and uart 1 is 
  * multiplexed between beacon and slavedspic */
 #define CMDLINE_UART 	0
-#define MUX_UART 			1
+#define MUX_UART	1
 
 /* generic led toggle macro */
 #define LED_TOGGLE(port, bit) do {		\
@@ -69,18 +69,6 @@
 #define LED1_OFF()
 #define LED1_TOGGLE()
 
-#define LED2_ON()
-#define LED2_OFF()
-#define LED2_TOGGLE()
-
-#define LED3_ON()
-#define LED3_OFF()
-#define LED3_TOGGLE()
-
-#define LED4_ON()
-#define LED4_OFF()
-#define LED4_TOGGLE()
-
 #define BRAKE_DDR()
 #define BRAKE_ON()
 #define BRAKE_OFF()
@@ -92,22 +80,9 @@
 #define LED1_OFF() 		sbi(LATA, 4)
 #define LED1_TOGGLE() 	LED_TOGGLE(LATA, 4)
 
-#define LED2_ON() 		  cbi(LATA, 8)
-#define LED2_OFF() 			sbi(LATA, 8)
-#define LED2_TOGGLE() 	LED_TOGGLE(LATA, 8)
-
-#define LED3_ON() 		cbi(LATC, 2)
-#define LED3_OFF() 		sbi(LATC, 2)
-#define LED3_TOGGLE() 	LED_TOGGLE(LATC, 2)
-
-#define LED4_ON() 		cbi(LATC, 8)
-#define LED4_OFF() 		sbi(LATC, 8)
-#define LED4_TOGGLE() 	LED_TOGGLE(LATC, 8)
-
-
 /* brake motors */
-#define BRAKE_ON()      do {_LATA7 = 0; _LATB11 = 0;} while(0)
-#define BRAKE_OFF()     do {_LATA7 = 1; _LATB11 = 1;} while(0)
+#define BRAKE_ON()      do {_LATA0 = 0; _LATA1 = 0; _LATA7 = 0; _LATB15 = 0; _LATB13 = 0; _LATA10 = 0;} while(0)
+#define BRAKE_OFF()     do {_LATA0 = 1; _LATA1 = 1; _LATA7 = 1; _LATB15 = 1; _LATB13 = 1; _LATA10 = 1;} while(0)
 
 #endif /* !HOST_VERSION */
 
@@ -154,8 +129,13 @@
 #define RIGHT_ENCODER       ((void *)1)
 
 /* motor handles */
-#define LEFT_MOTOR          ((void *)&gen.dac_mc_left)
-#define RIGHT_MOTOR         ((void *)&gen.dac_mc_right)
+#define MOTOR_1         ((void *)&gen.pwm_mc_1)
+#define MOTOR_2         ((void *)&gen.pwm_mc_2)
+#define MOTOR_3         ((void *)&gen.pwm_mc_3)
+
+#define LEFT_MOTOR	MOTOR_1
+#define RIGHT_MOTOR	MOTOR_2
+
 
 /** ERROR NUMS */
 #define E_USER_STRAT        194
@@ -219,19 +199,18 @@ struct genboard
 	struct rdline rdl;
 	char prompt[RDLINE_PROMPT_SIZE];
 
-	/* motors */
-	struct dac_mc dac_mc_left;
-	struct dac_mc dac_mc_right;
+	/* motors */	struct pwm_mc pwm_mc_1;	struct pwm_mc pwm_mc_2;
+	struct pwm_mc pwm_mc_3;
 
 	/* servos */
 	struct pwm_servo pwm_servo_oc1;
 	struct pwm_servo pwm_servo_oc2;
+	struct pwm_servo pwm_servo_oc3;	
+	struct pwm_servo pwm_servo_oc4;
 
 	/* i2c gpios */
 	uint8_t i2c_gpio0;
 	uint8_t i2c_gpio1;
-	uint8_t i2c_gpio2;
-	uint8_t i2c_gpio3;
 
 	/* log */
 	uint8_t logs[NB_LOGS+1];

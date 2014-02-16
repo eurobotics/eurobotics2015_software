@@ -58,7 +58,7 @@
 #include "main.h"
 #include "strat.h"
 #include "strat_base.h"
-#include "strat_avoid.h"
+#include "../maindspic/strat_avoid.h"
 #include "strat_utils.h"
 #include "sensor.h"
 #include "actuator.h"

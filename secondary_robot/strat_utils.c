@@ -38,7 +38,7 @@
 #include <aversive/error.h>
 
 #include <uart.h>
-#include <dac_mc.h>
+#include <pwm_mc.h>
 #include <pwm_servo.h>
 #include <clock_time.h>
 

@@ -595,9 +595,9 @@ void beacon_protocol(void * dummy)
 	else {
 
 		/* led */
-		a++;
-		if (a & 0x4)
-			LED3_TOGGLE();
+		//a++;
+		//if (a & 0x4)
+		//	LED3_TOGGLE();
 
 		/* parse answers */
 		c = uart_recv_nowait(BEACON_UART);

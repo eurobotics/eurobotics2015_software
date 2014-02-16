@@ -35,7 +35,7 @@
 #include <aversive/error.h>
 
 #include <uart.h>
-#include <dac_mc.h>
+#include <pwm_mc.h>
 #include <i2c_mem.h>
 #include <clock_time.h>
 #include <pwm_servo.h>
@@ -250,9 +250,9 @@ void i2c_poll_slaves(void *dummy)
 	watchdog_cnt = 0;
 	
 	/* led debug */
-	a++;
-	if (a & 0x4)
-		LED2_TOGGLE();
+	//a++;
+	//if (a & 0x4)
+	//	LED2_TOGGLE();
 
 	/* if a command is ready to be sent, so send it */
 	if (command_size) {
@@ -410,8 +410,8 @@ void i2c_read_event(uint8_t * buf, uint16_t size)
 		}
 		/* GPIO_23 */
 		else if(gpio_addr == I2C_GPIOS_23_ADDR){
-			gen.i2c_gpio2 = ans->gpio0;
-			gen.i2c_gpio3 = ans->gpio1;
+		//	gen.i2c_gpio2 = ans->gpio0;
+		//	gen.i2c_gpio3 = ans->gpio1;
 		
 		}
 		

@@ -36,7 +36,7 @@
 #include <aversive/error.h>
 
 #include <uart.h>
-#include <dac_mc.h>
+#include <pwm_mc.h>
 #include <pwm_servo.h>
 #include <clock_time.h>
 #include <i2c_mem.h>
@@ -150,8 +150,8 @@ static void cmd_event_parsed(void *parsed_result, void *data)
 			robotsim_pwm(LEFT_MOTOR, 0);
 			robotsim_pwm(RIGHT_MOTOR, 0);
 #else
-		 	dac_mc_set(LEFT_MOTOR, 0);
-			dac_mc_set(RIGHT_MOTOR, 0);
+		 	//dac_mc_set(LEFT_MOTOR, 0);
+			//dac_mc_set(RIGHT_MOTOR, 0);
 #endif
 		}
 		mainboard.flags &= (~bit);

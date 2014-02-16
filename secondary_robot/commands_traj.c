@@ -36,7 +36,7 @@
 #include <aversive/error.h>
 
 #include <uart.h>
-#include <dac_mc.h>
+#include <pwm_mc.h>
 #include <pwm_servo.h>
 #include <clock_time.h>
 #include <encoders_dspic.h>
@@ -66,7 +66,7 @@
 #include "cmdline.h"
 #include "strat_utils.h"
 #include "strat_base.h"
-#include "strat_avoid.h"
+#include "../maindspic/strat_avoid.h"
 #include "strat.h"
 #include "../common/i2c_commands.h"
 

@@ -39,6 +39,7 @@
 #ifndef HOST_VERSION_OA_TEST
 #include <uart.h>
 #include <dac_mc.h>
+#include <pwm_mc.h>
 #include <pwm_servo.h>
 #include <clock_time.h>
 
@@ -1074,7 +1075,7 @@ retry:
 
 		/* len < 0, try reduce opponent to get a valid path */
 		if (distance_between(robot_pt.x, robot_pt.y, opp1_x, opp1_y) < REDUCE_POLY_THRES ) {
-			if (opp1_w = 0)
+			if (opp1_w == 0)
 				opp1_l /= 2;
 			opp1_w /= 2;
 
@@ -1083,7 +1084,7 @@ retry:
 		}
 
 		if (distance_between(robot_pt.x, robot_pt.y, opp2_x, opp2_y) < REDUCE_POLY_THRES ) {
-			if (opp2_w = 0)
+			if (opp2_w == 0)
 				opp2_l /= 2;
 			opp2_w /= 2;
 

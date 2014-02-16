@@ -34,7 +34,7 @@
 #include <aversive/error.h>
 
 #include <uart.h>
-#include <dac_mc.h>
+#include <pwm_mc.h>
 #include <pwm_servo.h>
 #include <clock_time.h>
 
@@ -60,7 +60,7 @@
 #include "main.h"
 #include "strat.h"
 #include "strat_base.h"
-#include "strat_avoid.h"
+#include "../maindspic/strat_avoid.h"
 #include "strat_utils.h"
 #include "sensor.h"
 #include "actuator.h"

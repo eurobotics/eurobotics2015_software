@@ -22,7 +22,7 @@
 
 #include <aversive.h>
 #include <encoders_dspic.h>
-#include <dac_mc.h>
+#include <pwm_mc.h>
 
 #include "i2c_protocol.h"
 #include "actuator.h"
@@ -74,7 +74,7 @@ void dac_set_and_save(void *dac, int32_t val)
 #ifdef HOST_VERSION
 	robotsim_pwm(dac, val);
 #else
-	dac_mc_set(dac, val);
+	//dac_mc_set(dac, val);
 #endif
 }
 
