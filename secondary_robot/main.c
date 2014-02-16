@@ -131,9 +131,20 @@ void io_pins_init(void)
 	/* leds */
 	_TRISA4 = 0;	/* LED5 */
 	
-	/* L6203 H bridges (outputs) */	_TRISA0 	= 0;	// MOT_1_IN1	_TRISA1 	= 0;	// MOT_1_IN2	_TRISB14	= 0;	// MOT_1_EN
-	_TRISA7 	= 0;	// MOT_2_IN1	_TRISB15	= 0;	// MOT_2_IN2	_TRISB12	= 0;	// MOT_2_EN
-	_TRISB13	= 0;	// MOT_3_IN1	_TRISA10	= 0;	// MOT_3_IN2	_TRISB10	= 0;	// MOT_3_EN
+	/* L6203 H bridges (outputs) */
+	_TRISA0 	= 0;	// MOT_1_IN1
+	_TRISA1 	= 0;	// MOT_1_IN2
+	_TRISB14	= 0;	// MOT_1_EN
+
+	_TRISA7 	= 0;	// MOT_2_IN1
+	_TRISB15	= 0;	// MOT_2_IN2
+	_TRISB12	= 0;	// MOT_2_EN
+
+	_TRISB13	= 0;	// MOT_3_IN1
+	_TRISA10	= 0;	// MOT_3_IN2
+	_TRISB10	= 0;	// MOT_3_EN
+
+
 	/* servos */
 	_RP18R = 0b10010; /* OC1 -> RP18(RC2) -> SERVO_1_PWM */
 	_RP17R = 0b10011; /* OC2 -> RP17(RC1) -> SERVO_2_PWM */
@@ -243,14 +254,33 @@ int main(void)
 	i2c_register_write_event(i2c_write_event);
 	i2c_protocol_init();
 
-	/* DAC_MC */	pwm_mc_channel_init(MOTOR_1,	                    PWM_MC_MODE_SIGNED, 	                    1, 1, &PORTA, 0, &PORTA, 1);
+	/* DAC_MC */
+	pwm_mc_channel_init(MOTOR_1,
+	                    PWM_MC_MODE_SIGNED, 
+	                    1, 1, &PORTA, 0, &PORTA, 1);
 
-	pwm_mc_channel_init(MOTOR_2,	                    PWM_MC_MODE_SIGNED, 	                    1, 2, &PORTA, 7, &PORTB, 15);
-	pwm_mc_channel_init(MOTOR_3,	                    PWM_MC_MODE_SIGNED, 	                    1, 3, &PORTB, 13, &PORTA, 10);	pwm_mc_init(MOTOR_1, 15000, CH1_IND&PEN1H&PDIS1L &										 CH2_IND&PEN2H&PDIS2L &										 CH3_IND&PEN3H&PDIS3L);
-	pwm_mc_init(MOTOR_2, 15000, CH1_IND&PEN1H&PDIS1L &										 CH2_IND&PEN2H&PDIS2L &										 CH3_IND&PEN3H&PDIS3L);
-	pwm_mc_init(MOTOR_3, 15000, CH1_IND&PEN1H&PDIS1L &										 CH2_IND&PEN2H&PDIS2L &										 CH3_IND&PEN3H&PDIS3L);               												 	pwm_mc_set(MOTOR_1, 0);
+	pwm_mc_channel_init(MOTOR_2,
+	                    PWM_MC_MODE_SIGNED, 
+	                    1, 2, &PORTA, 7, &PORTB, 15);
+
+	pwm_mc_channel_init(MOTOR_3,
+	                    PWM_MC_MODE_SIGNED, 
+	                    1, 3, &PORTB, 13, &PORTA, 10);
+
+	pwm_mc_init(MOTOR_1, 15000, CH1_IND&PEN1H&PDIS1L &
+										 CH2_IND&PEN2H&PDIS2L &
+										 CH3_IND&PEN3H&PDIS3L);
+	pwm_mc_init(MOTOR_2, 15000, CH1_IND&PEN1H&PDIS1L &
+										 CH2_IND&PEN2H&PDIS2L &
+										 CH3_IND&PEN3H&PDIS3L);
+	pwm_mc_init(MOTOR_3, 15000, CH1_IND&PEN1H&PDIS1L &
+										 CH2_IND&PEN2H&PDIS2L &
+										 CH3_IND&PEN3H&PDIS3L);
+               												 
+	pwm_mc_set(MOTOR_1, 0);
 	pwm_mc_set(MOTOR_2, 0);
-	pwm_mc_set(MOTOR_3, 0);
+	pwm_mc_set(MOTOR_3, 0);
+
 	/* MAIN TIMER */
 	main_timer_init();
 #endif
@@ -272,10 +302,10 @@ int main(void)
 	time_init(EVENT_PRIORITY_TIME);
 
 	/* all cs management */
-	//maindspic_cs_init();
+	maindspic_cs_init();
 
 	/* sensors, will also init hardware adc */
-	//sensor_init();
+	sensor_init();
 
 #ifndef HOST_VERSION
 	/* i2c slaves polling (gpios and slavedspic) */
