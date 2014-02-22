@@ -240,6 +240,10 @@ static void cmd_pwm_servo_parsed(void *parsed_result, void *show_range)
 			pwm_servo_ptr = &gen.pwm_servo_oc1;
 		else if (!strcmp_P(res->arg1, PSTR("oc2")))
 			pwm_servo_ptr = &gen.pwm_servo_oc2;
+		else if (!strcmp_P(res->arg1, PSTR("oc3")))
+			pwm_servo_ptr = &gen.pwm_servo_oc3;
+		else if (!strcmp_P(res->arg1, PSTR("oc4")))
+			pwm_servo_ptr = &gen.pwm_servo_oc4;
 	
 		if (pwm_servo_ptr)
 			pwm_servo_set(pwm_servo_ptr, res->arg2);
@@ -251,7 +255,7 @@ static void cmd_pwm_servo_parsed(void *parsed_result, void *show_range)
 
 prog_char str_pwm_servo_arg0[] = "pwm_servo";
 parse_pgm_token_string_t cmd_pwm_servo_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_pwm_servo_result, arg0, str_pwm_servo_arg0);
-prog_char str_pwm_servo_arg1[] = "oc1#oc2";
+prog_char str_pwm_servo_arg1[] = "oc1#oc2#oc3#oc4";
 parse_pgm_token_string_t cmd_pwm_servo_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_pwm_servo_result, arg1, str_pwm_servo_arg1);
 parse_pgm_token_num_t cmd_pwm_servo_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_pwm_servo_result, arg2, INT16);
 
@@ -332,7 +336,7 @@ parse_pgm_token_string_t cmd_pwm_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_pwm_
 parse_pgm_token_num_t cmd_pwm_arg1 = TOKEN_NUM_INITIALIZER(struct cmd_pwm_result, arg1, UINT8);
 parse_pgm_token_num_t cmd_pwm_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_pwm_result, arg2, INT16);
 
-prog_char help_pwm[] = "Set pwm values [-5332 : +5332]";
+prog_char help_pwm[] = "Set pwm values (channel [1,2,3], duty [-5332 : +5332])";
 parse_pgm_inst_t cmd_pwm = {
 	.f = cmd_pwm_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */

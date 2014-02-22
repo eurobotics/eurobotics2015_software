@@ -193,6 +193,7 @@ void io_pins_init(void)
 }
 #endif /* !HOST_VERSION */
 
+
 int main(void)
 {	
 	/* disable interrupts */

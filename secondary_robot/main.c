@@ -38,6 +38,7 @@
 #include <encoders_dspic.h>
 #include <pwm_mc.h>
 #include <pwm_servo.h>
+#include <ax12.h>
 
 
 #include <scheduler.h>
@@ -71,6 +72,7 @@
 #include "beacon.h"
 #include "robotsim.h"
 #include "strat_base.h"
+#include "ax12_user.h"
 
 
 struct genboard gen;
@@ -131,6 +133,11 @@ void io_pins_init(void)
 	/* leds */
 	_TRISA4 = 0;	/* LED5 */
 	
+	/* sensor inputs */
+	_TRISC9	= 0;	/* SENSOR_1 */
+	_TRISB2	= 0;	/* SENSOR_2 */
+	_TRISA8	= 0;	/* SENSOR_3 */
+
 	/* L6203 H bridges (outputs) */
 	_TRISA0 	= 0;	// MOT_1_IN1
 	_TRISA1 	= 0;	// MOT_1_IN2
@@ -144,6 +151,9 @@ void io_pins_init(void)
 	_TRISA10	= 0;	// MOT_3_IN2
 	_TRISB10	= 0;	// MOT_3_EN
 
+	/* wt11 */
+	_TRISA9 = 0;
+	_LATA9 = 0;
 
 	/* servos */
 	_RP18R = 0b10010; /* OC1 -> RP18(RC2) -> SERVO_1_PWM */
@@ -218,8 +228,12 @@ int main(void)
 	memset(&beaconboard, 0, sizeof(beaconboard));
 
 	/* init flags */
+#ifdef HOST_VERSION
   mainboard.flags = DO_ENCODERS | DO_CS | DO_RS |
 		DO_POS | DO_POWER | DO_BD;
+#else
+  mainboard.flags = DO_ENCODERS;
+#endif
 	
 	beaconboard.opponent_x = I2C_OPPONENT_NOT_THERE;
 
@@ -281,6 +295,18 @@ int main(void)
 	pwm_mc_set(MOTOR_2, 0);
 	pwm_mc_set(MOTOR_3, 0);
 
+	/* servos */
+	pwm_servo_init(&gen.pwm_servo_oc1, 1, 500, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc2, 2, 500, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc3, 3, 500, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc4, 4, 500, 2400);
+	pwm_servo_enable();
+
+	pwm_servo_set(&gen.pwm_servo_oc1, 0);
+	pwm_servo_set(&gen.pwm_servo_oc2, 0);
+	pwm_servo_set(&gen.pwm_servo_oc3, 0);
+	pwm_servo_set(&gen.pwm_servo_oc4, 0);
+
 	/* MAIN TIMER */
 	main_timer_init();
 #endif
@@ -301,6 +327,11 @@ int main(void)
 	/* time */
 	time_init(EVENT_PRIORITY_TIME);
 
+#ifndef HOST_VERSION
+	/* SERVOS AX12 */
+	ax12_user_init();
+#endif
+
 	/* all cs management */
 	maindspic_cs_init();
 
@@ -309,8 +340,8 @@ int main(void)
 
 #ifndef HOST_VERSION
 	/* i2c slaves polling (gpios and slavedspic) */
-	//scheduler_add_periodical_event_priority(i2c_poll_slaves, NULL,
-	//					EVENT_PERIOD_I2C_POLL / SCHEDULER_UNIT, EVENT_PRIORITY_I2C_POLL);
+	scheduler_add_periodical_event_priority(i2c_poll_slaves, NULL,
+						EVENT_PERIOD_I2C_POLL / SCHEDULER_UNIT, EVENT_PRIORITY_I2C_POLL);
 
 	/* beacon commnads and polling */
 	//scheduler_add_periodical_event_priority(beacon_protocol, NULL,
@@ -318,8 +349,8 @@ int main(void)
 #endif
 
 	/* strat-related event */
-	//scheduler_add_periodical_event_priority(strat_event, NULL,
-	//					EVENT_PERIOD_STRAT / SCHEDULER_UNIT, EVENT_PRIORITY_STRAT);
+	scheduler_add_periodical_event_priority(strat_event, NULL,
+						EVENT_PERIOD_STRAT / SCHEDULER_UNIT, EVENT_PRIORITY_STRAT);
 
 
 	/* log setup */
@@ -330,7 +361,7 @@ int main(void)
  	gen.log_level = 5;
 	
 	/* reset strat infos */
-	//strat_reset_infos();
+	strat_reset_infos();
 
 	/* enable interrupts */
 	sei();

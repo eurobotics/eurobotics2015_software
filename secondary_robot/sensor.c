@@ -207,14 +207,14 @@ struct sensor_filter {
 };
 
 static struct sensor_filter sensor_filter[SENSOR_MAX] = {
-	[S_START_SWITCH] = { 1, 0, 0, 1, 0, 1 }, /* 0 */
-	[S_RESERVED0] = { 0, 0, 0, 1, 0, 0 }, /* 1 */
-	[S_RESERVED1] = { 0, 0, 0, 1, 0, 0 }, /* 2 */
-	[S_RESERVED2] = { 0, 0, 0, 1, 0, 0 }, /* 3 */
-	[S_RESERVED3] = { 0, 0, 0, 1, 0, 0 }, /* 4 */
-	[S_RESERVED4] = { 0, 0, 0, 1, 0, 0 }, /* 5 */
-	[S_RESERVED5] = { 0, 0, 0, 1, 0, 0 }, /* 6 */
-	[S_RESERVED6] = { 0, 0, 0, 1, 0, 0 }, /* 7 */
+	[S_SENSOR_1] = { 1, 0, 0, 1, 0, 1 }, /* 0 */
+	[S_SENSOR_2] = { 1, 0, 0, 1, 0, 1 }, /* 1 */
+	[S_SENSOR_3] = { 1, 0, 0, 1, 0, 1 }, /* 2 */
+	[S_RESERVED4] = { 0, 0, 0, 1, 0, 0 }, /* 3 */
+	[S_RESERVED5] = { 0, 0, 0, 1, 0, 0 }, /* 4 */
+	[S_RESERVED6] = { 0, 0, 0, 1, 0, 0 }, /* 5 */
+	[S_RESERVED7] = { 0, 0, 0, 1, 0, 0 }, /* 6 */
+	[S_RESERVED8] = { 0, 0, 0, 1, 0, 0 }, /* 7 */
 		
 	[S_GP0_0] = { 1, 0, 0, 1, 0, 1 }, /* 8 */
 	[S_GP0_1] = { 1, 0, 0, 1, 0, 1 }, /*  */
@@ -233,25 +233,6 @@ static struct sensor_filter sensor_filter[SENSOR_MAX] = {
 	[S_GP1_5] = { 1, 0, 0, 1, 0, 1 }, /*  */
 	[S_GP1_6] = { 1, 0, 0, 1, 0, 1 }, /*  */
 	[S_GP1_7] = { 1, 0, 0, 1, 0, 1 }, /* 23 */
-
-	[S_GP2_0] = { 1, 0, 0, 1, 0, 0 }, /* 24 */
-	[S_GP2_1] = { 1, 0, 0, 1, 0, 0 }, /*  */
-	[S_GP2_2] = { 1, 0, 0, 1, 0, 0 }, /*  */
-	[S_GP2_3] = { 1, 0, 0, 1, 0, 0 }, /*  */
-	[S_GP2_4] = { 1, 0, 0, 1, 0, 0 }, /*  */
-	[S_GP2_5] = { 1, 0, 0, 1, 0, 0 }, /*  */
-	[S_GP2_6] = { 1, 0, 0, 1, 0, 0 }, /*  */
-	[S_GP2_7] = { 1, 0, 0, 1, 0, 0 }, /* 31 */
-
-	[S_GP3_0] = { 1, 0, 0, 1, 0, 1 }, /* 32 */
-	[S_GP3_1] = { 1, 0, 0, 1, 0, 1 }, /*  */
-	[S_GP3_2] = { 1, 0, 0, 1, 0, 0 }, /*  */
-	[S_GP3_3] = { 1, 0, 0, 1, 0, 1 }, /*  */
-	[S_GP3_4] = { 1, 0, 0, 1, 0, 1 }, /*  */
-	[S_GP3_5] = { 1, 0, 0, 1, 0, 0 }, /*  */
-	[S_GP3_6] = { 1, 0, 0, 1, 0, 0 }, /*  */
-	[S_GP3_7] = { 1, 0, 0, 1, 0, 0 }, /* 39 */
-
 };
 #endif /* !HOST_VERSION */
 
@@ -259,13 +240,17 @@ static struct sensor_filter sensor_filter[SENSOR_MAX] = {
 static uint64_t sensor_filtered = 0;
 
 /* sensor mapping : 
- * 0:  	  PORTA 9 (START)
- * 1-7:   reserved
+ * 0:  	 SENSOR 1 (RC9)
+ * 1:  	 SENSOR 2 (RB2)
+ * 2:  	 SENSOR 3 (RA8)
+ * 4-7:   reserved
  * 8-15:  i2c GP0
  * 16-23: i2c GP1
- * 24-31: i2c GP2
- * 32-39: i2c GP3
  */
+
+	_TRISC9	= 0;	/* SENSOR_1 */
+	_TRISB2	= 0;	/* SENSOR_2 */
+	_TRISA8	= 0;	/* SENSOR_3 */
 
 uint64_t sensor_get_all(void)
 {
@@ -292,6 +277,9 @@ uint8_t sensor_get(uint8_t i)
 static uint64_t sensor_read(void)
 {
 	uint64_t tmp = 0;
+
+
+
 
 	tmp |= (uint64_t)((PORTA & (_BV(9))) >> 9) << 0;
 	/* 1 to 7 reserved */

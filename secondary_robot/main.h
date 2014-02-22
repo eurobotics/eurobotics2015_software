@@ -33,6 +33,7 @@
 #include <encoders_dspic.h>
 #include <pwm_mc.h>
 #include <pwm_servo.h>
+#include <ax12.h>
 
 #include <pid.h>
 #include <quadramp.h>
@@ -143,6 +144,7 @@
 #define E_USER_SENSOR       196
 #define E_USER_CS           197
 #define E_USER_BEACON       198
+#define E_USER_AX12         199
 
 /* EVENTS PRIORITIES */
 #ifdef old_version
@@ -207,6 +209,9 @@ struct genboard
 	struct pwm_servo pwm_servo_oc2;
 	struct pwm_servo pwm_servo_oc3;	
 	struct pwm_servo pwm_servo_oc4;
+
+	/* ax12 servos */
+	AX12 ax12;
 
 	/* i2c gpios */
 	uint8_t i2c_gpio0;
