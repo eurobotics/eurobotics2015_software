@@ -69,6 +69,7 @@
 #include "strat_avoid.h"
 #include "strat.h"
 #include "../common/i2c_commands.h"
+#include "bt_protocol.h"
 
 
 /**********************************************************/
@@ -703,6 +704,50 @@ static void cmd_goto_parsed(void * parsed_result, void * data)
 	uint8_t err;
 	microseconds t1, t2;
 
+  if (!strcmp_P(res->arg0, PSTR("robot2_goto"))) {
+
+	  if (!strcmp_P(res->arg1, PSTR("a_rel"))) {
+		  bt_robot2_send_command("goto %s %d", res->arg1, res->arg2);
+	  }
+	  else if (!strcmp_P(res->arg1, PSTR("d_rel"))) {
+		  bt_robot2_send_command("goto %s %d", res->arg1, res->arg2);
+	  }
+	  else if (!strcmp_P(res->arg1, PSTR("a_abs"))) {
+		  bt_robot2_send_command("goto %s %d %d", res->arg1, res->arg2);
+	  }
+	  else if (!strcmp_P(res->arg1, PSTR("a_to_xy"))) {
+		  bt_robot2_send_command("goto %s %d %d", res->arg1, res->arg2, res->arg3);
+	  }
+	  else if (!strcmp_P(res->arg1, PSTR("a_behind_xy"))) {
+		  bt_robot2_send_command("goto %s %d %d", res->arg1, res->arg2, res->arg3);
+	  }
+	  else if (!strcmp_P(res->arg1, PSTR("xy_rel"))) {
+		  bt_robot2_send_command("goto %s %d %d", res->arg1, res->arg2, res->arg3);
+	  }
+	  else if (!strcmp_P(res->arg1, PSTR("xy_abs"))) {
+		  bt_robot2_send_command("goto %s %d %d", res->arg1, res->arg2, res->arg3);
+	  }
+	  else if (!strcmp_P(res->arg1, PSTR("avoid"))) {
+      bt_robot2_send_command("goto %s %d %d", res->arg1, res->arg2, res->arg3);
+	  }
+	  else if (!strcmp_P(res->arg1, PSTR("avoid_fw"))) {
+      bt_robot2_send_command("goto %s %d %d", res->arg1, res->arg2, res->arg3);
+	  }
+	  else if (!strcmp_P(res->arg1, PSTR("avoid_bw"))) {
+      bt_robot2_send_command("goto %s %d %d", res->arg1, res->arg2, res->arg3);
+	  }
+	  else if (!strcmp_P(res->arg1, PSTR("xy_abs_fow"))) {
+		  bt_robot2_send_command("goto %s %d", res->arg1, res->arg2, res->arg3);
+	  }
+	  else if (!strcmp_P(res->arg1, PSTR("xy_abs_back"))) {
+		  bt_robot2_send_command("goto %s %d %d", res->arg1, res->arg2, res->arg3);
+	  }
+	  else if (!strcmp_P(res->arg1, PSTR("da_rel"))) {
+		  bt_robot2_send_command("goto %s %d %d", res->arg1, res->arg2, res->arg3);
+	  }
+    return;
+  }
+
 	interrupt_traj_reset();
 	if (!strcmp_P(res->arg1, PSTR("a_rel"))) {
 		trajectory_a_rel(&mainboard.traj, res->arg2);
@@ -763,7 +808,7 @@ static void cmd_goto_parsed(void * parsed_result, void * data)
 	printf_P(PSTR("returned %s\r\n"), get_err(err));
 }
 
-prog_char str_goto_arg0[] = "goto";
+prog_char str_goto_arg0[] = "goto#robot2_goto";
 parse_pgm_token_string_t cmd_goto_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_goto_result, arg0, str_goto_arg0);
 prog_char str_goto_arg1_a[] = "d_rel#a_rel#a_abs";
 parse_pgm_token_string_t cmd_goto_arg1_a = TOKEN_STRING_INITIALIZER(struct cmd_goto_result, arg1, str_goto_arg1_a);

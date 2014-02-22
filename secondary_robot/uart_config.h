@@ -74,41 +74,9 @@
 #define UART0_STOP_BIT UART_STOP_BITS_1
 //#define UART0_STOP_BIT UART_STOP_BITS_2
 
-/*
- * UART1 definitions (dspic UART2) 
- */
-
-/* compile uart0 fonctions, undefine it to pass compilation */
-#define UART1_COMPILE  
-
-/* enable uart0 if == 1, disable if == 0 */
-#define UART1_ENABLED  1
-
-/* enable uart0 interrupts if == 1, disable if == 0 */
-#define UART1_INTERRUPT_ENABLED  1
-
-#define UART1_BAUDRATE 115200
-
-/* 
- * if you enable this, the maximum baudrate you can reach is 
- * higher, but the precision is lower. 
- */
-#define UART1_USE_DOUBLE_SPEED 0
-//#define UART0_USE_DOUBLE_SPEED 1
-
-#define UART1_RX_FIFO_SIZE 128
-#define UART1_TX_FIFO_SIZE 64
-
-#define UART1_NBITS 8
-//#define UART1_NBITS 9
-
-#define UART1_PARITY UART_PARTITY_NONE
-//#define UART1_PARITY UART_PARTITY_ODD
-//#define UART1_PARITY UART_PARTITY_EVEN
-
-#define UART1_STOP_BIT UART_STOP_BITS_1
-//#define UART1_STOP_BIT UART_STOP_BITS_2
-
+/*
+ * UART1 definitions (dspic UART2) 
+ *//* compile uart1 fonctions, undefine it to pass compilation */#define UART1_COMPILE  /* enable uart if == 1, disable if == 0 */#define UART1_ENABLED  1/* enable uart interrupts if == 1, disable if == 0 */#define UART1_INTERRUPT_ENABLED  1#define UART1_BAUDRATE 1000000/*  * if you enable this, the maximum baudrate you can reach is  * higher, but the precision is lower.  *///#define UART1_USE_DOUBLE_SPEED 0#define UART1_USE_DOUBLE_SPEED 1#define UART1_RX_FIFO_SIZE 127#define UART1_TX_FIFO_SIZE 127#define UART1_NBITS 8//#define UART1_NBITS 9#define UART1_PARITY UART_PARTITY_NONE//#define UART1_PARITY UART_PARTITY_ODD//#define UART1_PARITY UART_PARTITY_EVEN#define UART1_STOP_BIT UART_STOP_BITS_1//#define UART1_STOP_BIT UART_STOP_BITS_2
 
 #endif
 

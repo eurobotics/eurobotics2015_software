@@ -170,9 +170,17 @@ int cmdline_interact(void)
 
 		/* get character */
 		c = uart_recv_nowait(CMDLINE_UART);
-		
+	
 		if (c == -1) 
+#ifndef HOST_VERSION	
 			continue;
+#else
+    {
+		  c = robotsim_uart_recv_BT();
+		  if (c == -1) 
+			  continue;    
+    }
+#endif
 
 		/* process character in */
 		ret = rdline_char_in(&gen.rdl, c);
@@ -195,3 +203,5 @@ int cmdline_interact(void)
 
 	return 0;
 }
+
+

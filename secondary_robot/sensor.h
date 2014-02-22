@@ -34,14 +34,14 @@
 #define ADC_MAX       2
 
 /* synchronize with sensor.c */
-#define S_START_SWITCH 0
-#define S_RESERVED0    1
-#define S_RESERVED1    2
-#define S_RESERVED2    3
-#define S_RESERVED3    4
-#define S_RESERVED4    5
-#define S_RESERVED5    6
-#define S_RESERVED6    7
+#define S_SENSOR_1     0
+#define S_SENSOR_2     1
+#define S_SENSOR_3     2
+#define S_RESERVED4    3
+#define S_RESERVED5    4
+#define S_RESERVED6    5
+#define S_RESERVED7    6
+#define S_RESERVED8    7
 
 #define S_GP0_0		 8
 #define S_GP0_1		 9
@@ -61,24 +61,7 @@
 #define S_GP1_6		 22
 #define S_GP1_7		 23
 
-#define S_GP2_0		 24
-#define S_GP2_1		 25
-#define S_GP2_2		 26
-#define S_GP2_3		 27
-#define S_GP2_4		 28
-#define S_GP2_5		 29
-#define S_GP2_6		 30
-#define S_GP2_7		 31
-
-#define S_GP3_0		 32
-#define S_GP3_1		 33
-#define S_GP3_2		 34
-#define S_GP3_3		 35
-#define S_GP3_4		 36
-#define S_GP3_5		 37
-#define S_GP3_6		 38
-#define S_GP3_7		 39
-#define SENSOR_MAX    40
+#define SENSOR_MAX    24
 
 
 #if notyet /* TODO 2014 */

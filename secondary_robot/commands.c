@@ -38,6 +38,11 @@
 #define COMPILE_COMMANDS_TRAJ
 #define COMPILE_CODE
 
+#ifndef HOST_VERSION
+#define COMPILE_COMMANDS_AX12
+#endif
+
+
 #ifdef COMPILE_CODE /*---------------------------------------------------------------------------------------------*/
 #endif /* COMPILE_CODE --------------------------------------------------------------------------------------------*/
 
@@ -63,6 +68,19 @@ extern parse_pgm_inst_t cmd_log_type;
 extern parse_pgm_inst_t cmd_scheduler;
 
 #endif /* COMPILE_COMMANDS_GEN */
+
+/* commands_ax12.c */
+#ifdef COMPILE_COMMANDS_AX12
+#include "./commands_ax12.c"
+
+//extern parse_pgm_inst_t cmd_baudrate;
+extern parse_pgm_inst_t cmd_uint16_read;
+extern parse_pgm_inst_t cmd_uint16_write;
+extern parse_pgm_inst_t cmd_uint8_read;
+extern parse_pgm_inst_t cmd_uint8_write;
+extern parse_pgm_inst_t cmd_ax12_stress;
+extern parse_pgm_inst_t cmd_ax12_dump_stats;
+#endif /* COMPILE_COMMANDS_AX12 */
 
 /* commands_cs.c */
 #ifdef COMPILE_COMMANDS_CS
@@ -212,6 +230,17 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_blocking_i_show,
 
 #endif /* COMPILE_COMMANDS_CS */
+
+#ifdef COMPILE_COMMANDS_AX12
+	/* commands_ax12.c */
+	//(parse_pgm_inst_t *)&cmd_baudrate,
+	(parse_pgm_inst_t *)&cmd_uint16_read,
+	(parse_pgm_inst_t *)&cmd_uint16_write,
+	(parse_pgm_inst_t *)&cmd_uint8_read,
+	(parse_pgm_inst_t *)&cmd_uint8_write,
+	(parse_pgm_inst_t *)&cmd_ax12_stress,
+	(parse_pgm_inst_t *)&cmd_ax12_dump_stats,
+#endif
 
 #ifdef COMPILE_COMMANDS_MAINBOARD
 
