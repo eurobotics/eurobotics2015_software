@@ -140,7 +140,7 @@ int8_t strat_get_new_zone(void)
 {
 	uint16_t prio_max = 0;
 	int8_t zone_num = -1;
-	int8_t i;
+	int8_t i=0;
 	
 	/* evaluate zones */
 	for(i=0; i < ZONES_MAX; i++) 
@@ -165,10 +165,24 @@ int8_t strat_get_new_zone(void)
 uint8_t strat_goto_zone(uint8_t zone_num)
 {
 	int8_t err;
-
-	err = goto_and_avoid(COLOR_X(strat_infos.zones[zone_num].init_x), 
+	
+	/* update strat_infos */
+	strat_infos.current_zone=-1;
+	strat_infos.goto_zone=zone_num;
+	
+	err = goto_and_avoid(strat_infos.zones[zone_num].init_x, 
 				  strat_infos.zones[zone_num].init_y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 	
+	
+	/* update strat_infos */
+	strat_infos.last_zone=strat_infos.current_zone;
+	strat_infos.goto_zone=-1;
+	if (!TRAJ_SUCCESS(err)) {
+		strat_infos.current_zone=-1;
+	}
+	else{
+		strat_infos.current_zone=zone_num;
+	}
 	return err;
 }
 
@@ -177,24 +191,57 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 uint8_t strat_work_on_zone(uint8_t zone_num)
 {
 	uint8_t err = END_TRAJ;
-	int16_t x = strat_infos.zones[zone_num].x;
-	int16_t y = strat_infos.zones[zone_num].y;
-
-	static uint8_t first_time = 1;
-
-#ifdef DEBUG_STRAT_SMART
-	return END_TRAJ;
-#endif
 	
 #ifdef HOST_VERSION
 	printf_P(PSTR("press a key\r\n"));
 	while(!cmdline_keypressed());
 #else
-	/* TODO */
+	switch(zone_num)
+	{
+		case ZONE_TREE_1:
+		case ZONE_TREE_2:
+		case ZONE_TREE_3:
+		case ZONE_TREE_4:
+		/* harvest tree */
+			break;
+			
+		case ZONE_FIRE_1:
+		case ZONE_FIRE_2:
+		case ZONE_FIRE_3:
+		case ZONE_FIRE_4:
+		case ZONE_FIRE_5:
+		case ZONE_FIRE_6:
+		/* pick up fire from the ground */
+		/* turn fire */
+			break;
+			
+		case ZONE_TORCH_1:
+		case ZONE_TORCH_2:
+		case ZONE_TORCH_3:
+		case ZONE_TORCH_4:
+		/* take fire from the torch */
+			break;
+			
+		case ZONE_HEART_FIRE_1:
+		case ZONE_HEART_FIRE_2:
+		case ZONE_HEART_FIRE_3:
+		/* leave fire on heart of fire */
+		/* pick up fire from heart of fire */
+			break;
+			
+		case ZONE_MOBILE_TORCH_1:
+		case ZONE_MOBILE_TORCH_2:
+		case ZONE_MOBILE_TORCH_3:
+		/* leave fire on mobile torch */
+		/* pick up fire from heart of fire */
+			break;
+			
+		/* TODO rest of zones */
+		/* TODO define zones where to leave fire on the ground */
+	}
 #endif 
 	
 	return err;
-
 }
 
 /* debug state machines step to step */
@@ -210,19 +257,9 @@ void state_debug_wait_key_pressed(void)
 /* smart play */
 uint8_t strat_smart(void)
 {
-	int8_t zone_num;
+	uint8_t zone_num;
 	uint8_t err;
 
-	/* XXX DEBUG STEP BY STEP */
-	//state_debug_wait_key_pressed();
-
-
-	// If last seconds of the match
-	/*if(time_get_s() > LAST_SECONDS_TIME)
-	...
-	*/
-	
-	
 	/* get new zone */
 	zone_num = strat_get_new_zone();
 
@@ -245,7 +282,7 @@ uint8_t strat_smart(void)
 	
 	err = strat_goto_zone(strat_infos.goto_zone);
 	if (!TRAJ_SUCCESS(err)) {
-		DEBUG(E_USER_STRAT, "Can't reach zone %d", strat_infos.goto_zone);
+		DEBUG(E_USER_STRAT, "Can't reach zone %d.", strat_infos.goto_zone);
 		return END_TRAJ;
 	}
 
@@ -256,7 +293,7 @@ uint8_t strat_smart(void)
 
 	err = strat_work_on_zone(strat_infos.current_zone);
 	if (!TRAJ_SUCCESS(err)) {
-		DEBUG(E_USER_STRAT, "Work on zone %d fails", strat_infos.current_zone);
+		DEBUG(E_USER_STRAT, "Work on zone %d fails.", strat_infos.current_zone);
 
 		// Switch off devices, go back to normal state if anything was deployed
 		return err;
@@ -271,3 +308,39 @@ uint8_t strat_smart(void)
 }
 
 
+/* homologation */
+void strat_homologation(void)
+{
+	uint8_t zone_num;
+	uint8_t err;
+	#define ZONES_SEQUENCE_LENGTH 6
+	uint8_t zones_sequence[ZONES_SEQUENCE_LENGTH] = {ZONE_FIRE_1,ZONE_FIRE_3,ZONE_FIRE_5,ZONE_FIRE_6,ZONE_FIRE_4,ZONE_FIRE_2};
+	uint8_t i=0;
+	
+	for(i=0; i<ZONES_SEQUENCE_LENGTH; i++)
+	{
+		DEBUG(E_USER_STRAT, "Going to zone %s.",numzone2name[zones_sequence[i]]);
+		/* goto zone */
+		strat_dump_infos(__FUNCTION__);
+		
+		err = strat_goto_zone(zones_sequence[i]);
+		if (!TRAJ_SUCCESS(err)) {
+			DEBUG(E_USER_STRAT, "Can't reach zone %s.", numzone2name[zones_sequence[i]]);
+			return END_TRAJ;
+		}
+
+		/* work on zone */
+		strat_dump_infos(__FUNCTION__);
+		err = strat_work_on_zone(zones_sequence[i]);
+		if (!TRAJ_SUCCESS(err)) {
+			DEBUG(E_USER_STRAT, "Work on zone %s fails.", numzone2name[zones_sequence[i]]);
+
+			// Switch off devices, go back to normal state if anything was deployed
+			return err;
+		}
+
+		/* mark the zone as checked */
+		strat_infos.zones[i].flags |= ZONE_CHECKED;
+		DEBUG(E_USER_STRAT, "Work on zone %s successed!", numzone2name[zones_sequence[i]]);
+	}
+}

@@ -1531,7 +1531,7 @@ static void cmd_gotozone_parsed(void *parsed_result, void *data)
 
 prog_char str_gotozone_arg0[] = "gotozone";
 parse_pgm_token_string_t cmd_gotozone_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_gotozone_result, arg0, str_gotozone_arg0);
-prog_char str_gotozone_arg1[] = "TREE_1#TREE_2#TREE_3#TREE_4#HEART_FIRE_1#HEART_FIRE_2#HEART_FIRE_3#FIRE_1#FIRE_2#FIRE_3#FIRE_4#FIRE_5#FIRE_6#TORCH_1#TORCH_2#TORCH_3#TORCH_4#MOBILE_TORCH_1#MOBILE_TORCH_2#MOBILE_TORCH_3#BASKET_1#BASKET_2#MAMOOTH_1#MAMOOTH_2#FRESCO#HOME_RED#HOME_YELLOW";
+prog_char str_gotozone_arg1[] = "TREE_1#TREE_2#TREE_3#TREE_4#HEART_FIRE_1#HEART_FIRE_2#HEART_FIRE_3#FIRE_1#FIRE_2#FIRE_3#FIRE_4#FIRE_5#FIRE_6#TORCH_1#TORCH_2#TORCH_3#TORCH_4#MOBILE_TORCH_1#MOBILE_TORCH_2#BASKET_1#BASKET_2#MAMOOTH_1#MAMOOTH_2#FRESCO#HOME_RED#HOME_YELLOW";
 parse_pgm_token_string_t cmd_gotozone_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_gotozone_result, arg1, str_gotozone_arg1);
 
 
@@ -1581,7 +1581,7 @@ static void cmd_workonzone_parsed(void *parsed_result, void *data)
 
 prog_char str_workonzone_arg0[] = "workonzone";
 parse_pgm_token_string_t cmd_workonzone_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_workonzone_result, arg0, str_workonzone_arg0);
-prog_char str_workonzone_arg1[] = "TREE_1#TREE_2#TREE_3#TREE_4#HEART_FIRE_1#HEART_FIRE_2#HEART_FIRE_3#FIRE_1#FIRE_2#FIRE_3#FIRE_4#FIRE_5#FIRE_6#TORCH_1#TORCH_2#TORCH_3#TORCH_4#MOBILE_TORCH_1#MOBILE_TORCH_2#MOBILE_TORCH_3#BASKET_1#BASKET_2#MAMOOTH_1#MAMOOTH_2#FRESCO#HOME_RED#HOME_YELLOW";
+prog_char str_workonzone_arg1[] = "TREE_1#TREE_2#TREE_3#TREE_4#HEART_FIRE_1#HEART_FIRE_2#HEART_FIRE_3#FIRE_1#FIRE_2#FIRE_3#FIRE_4#FIRE_5#FIRE_6#TORCH_1#TORCH_2#TORCH_3#TORCH_4#MOBILE_TORCH_1#MOBILE_TORCH_2#BASKET_1#BASKET_2#MAMOOTH_1#MAMOOTH_2#FRESCO#HOME_RED#HOME_YELLOW";
 parse_pgm_token_string_t cmd_workonzone_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_workonzone_result, arg1, str_workonzone_arg1);
 
 
@@ -1596,5 +1596,38 @@ parse_pgm_inst_t cmd_workonzone = {
 		NULL,
 	},
 };
+
+
+
+/**********************************************************/
+/* Homologation sequence */
+
+// this structure is filled when cmd_homologation is parsed successfully 
+struct cmd_homologation_result {
+	fixed_string_t arg0;
+};
+
+// function called when cmd_homologation is parsed successfully 
+static void cmd_homologation_parsed(void *parsed_result, void *data)
+{
+	struct cmd_homologation_result *res = parsed_result;
+	strat_homologation();
+}
+
+prog_char str_homologation_arg0[] = "homologation";
+parse_pgm_token_string_t cmd_homologation_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_homologation_result, arg0, str_homologation_arg0);
+
+
+prog_char help_homologation[] = "Homologation routine";
+parse_pgm_inst_t cmd_homologation = {
+	.f = cmd_homologation_parsed,  // function to call 
+	.data = NULL,      // 2nd arg of func 
+	.help_str = help_homologation,
+	.tokens = {        // token list, NULL terminated 
+		(prog_void *)&cmd_homologation_arg0,
+		NULL,
+	},
+};
+
 
 

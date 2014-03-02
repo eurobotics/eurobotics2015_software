@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Bali�as Santos <javier@arc-robots.org> and Silvia Santano
+ *  Javier Balinas Santos <javier@arc-robots.org> and Silvia Santano
  */
 
 #include <stdio.h>
@@ -110,14 +110,14 @@ struct strat_infos strat_infos = {
 		.flags = 0,
 	},
 
-   /*zones[W] =			     			{type, x, x_down, x_up, y_down, y_up, init_x,init_y, prio, flags };                            */
+   /*zones[W] =			     			{type, x, y, x_down, x_up, y_down, y_up, init_x,init_y, prio, flags };                            */
    .zones[ZONE_TREE_1]=        {ZONE_TYPE_TREE, TREE_1_X, TREE_1_Y,-150 , 150,  1150,    1450   , 400,  1300,   ZONE_PRIO_40, 0 },
    .zones[ZONE_TREE_2]=        {ZONE_TYPE_TREE, TREE_2_X, TREE_2_Y, 550, 850,  1850,    2150   , 700 ,  1600,   ZONE_PRIO_40, 0 },
     .zones[ZONE_TREE_3]=        {ZONE_TYPE_TREE, TREE_3_X, TREE_3_Y, 2150, 2450 ,  1850,    2150   ,2300 ,  1600,   ZONE_PRIO_40, 0 },
     .zones[ZONE_TREE_4]=        {ZONE_TYPE_TREE, TREE_4_X, TREE_4_Y, 2850, 3150,  1150,    1450   , 2600,  1300,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_HEART_FIRE_1]=  {ZONE_TYPE_HEART_FIRE, HEART_FIRE_1_X, HEART_FIRE_1_Y, 0, 250,  1750, 2000   ,1100 ,  1500,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_HEART_FIRE_2]= {ZONE_TYPE_HEART_FIRE, HEART_FIRE_2_X, HEART_FIRE_2_Y, 1350, 1650,  900,    1200   , 400,  1500,   ZONE_PRIO_40, 0 },
-	.zones[ZONE_HEART_FIRE_3]=  {ZONE_TYPE_HEART_FIRE, HEART_FIRE_3_X, HEART_FIRE_3_Y, 2750,3000 ,  1750,   2000   ,2600 ,  1050,   ZONE_PRIO_40, 0 },
+    .zones[ZONE_HEART_FIRE_1]=  {ZONE_TYPE_HEART_FIRE, HEART_FIRE_1_X, HEART_FIRE_1_Y, 0, 250,  1750, 2000   ,400 ,  1800,   ZONE_PRIO_40, 0 },
+    .zones[ZONE_HEART_FIRE_2]= {ZONE_TYPE_HEART_FIRE, HEART_FIRE_2_X, HEART_FIRE_2_Y, 1350, 1650,  900,    1200   , 1100,  1100,   ZONE_PRIO_40, 0 },
+	.zones[ZONE_HEART_FIRE_3]=  {ZONE_TYPE_HEART_FIRE, HEART_FIRE_3_X, HEART_FIRE_3_Y, 2750,3000 ,  1750,   2000   ,2600 ,  1800,   ZONE_PRIO_40, 0 },
 	.zones[ZONE_FIRE_1]=        {ZONE_TYPE_FIRE, FIRE_1_X, FIRE_1_Y, 330, 470,  1085,    1115   , 400,  700,   ZONE_PRIO_40, 0 },
 	.zones[ZONE_FIRE_2]=        {ZONE_TYPE_FIRE, FIRE_2_X, FIRE_2_Y, 885, 915,  530,    670   , 500,  600,   ZONE_PRIO_40, 0 },
     .zones[ZONE_FIRE_4]=        {ZONE_TYPE_FIRE, FIRE_4_X, FIRE_4_Y, 2085, 2115,  530,    670   , 2500,  600,   ZONE_PRIO_40, 0 },
@@ -132,8 +132,8 @@ struct strat_infos strat_infos = {
 
 
 
-    .zones[ZONE_MOBILE_TORCH_1]= {ZONE_TYPE_MOBILE_TORCH, MOBILE_TORCH_1_X, MOBILE_TORCH_1_Y, 820, 980,  1020,   1180   , 2100,  700,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_MOBILE_TORCH_2]= {ZONE_TYPE_MOBILE_TORCH, MOBILE_TORCH_2_X, MOBILE_TORCH_2_Y, 2020, 2180,  1020, 1180   , 900,  700,   ZONE_PRIO_40, 0 },
+    .zones[ZONE_MOBILE_TORCH_1]= {ZONE_TYPE_MOBILE_TORCH, MOBILE_TORCH_1_X, MOBILE_TORCH_1_Y, 820, 980,    1020, 1180   , 900,  700,   ZONE_PRIO_40, 0 },
+    .zones[ZONE_MOBILE_TORCH_2]= {ZONE_TYPE_MOBILE_TORCH, MOBILE_TORCH_2_X, MOBILE_TORCH_2_Y, 2020, 2180,  1020, 1180   , 2100,  700,   ZONE_PRIO_40, 0 },
  
     .zones[ZONE_BASKET_1]=        {ZONE_TYPE_BASKET, BASKET_1_X, BASKET_1_Y, 400, 1100,  0,    300   , 700,  600,   ZONE_PRIO_40, 0 },
     .zones[ZONE_BASKET_2]=        {ZONE_TYPE_BASKET, BASKET_2_X, BASKET_2_Y, 1900, 2600,  0,    300   , 2300,  600,   ZONE_PRIO_40, 0 },
@@ -374,9 +374,9 @@ uint8_t strat_main(void)
 
 
 	/* auto-play */
-	do{
+	/*do{
 	//err = strat_smart();
-	}while((err & END_TIMER) == 0);
+	}while((err & END_TIMER) == 0);*/
 
    strat_exit();
    return 0;

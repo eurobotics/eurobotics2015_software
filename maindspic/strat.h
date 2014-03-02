@@ -273,6 +273,11 @@ struct strat_infos {
 	uint8_t opp_current_zone;
 	uint8_t opp2_current_zone;
 
+	/*/* secondary robot zone position 
+	uint8_t sec_x;
+	uint8_t sec_y;
+	uint8_t sec_current_zone;*/
+
 	/* opponent statistics */
 	uint32_t opp_time_zone_ms;
 
@@ -345,6 +350,9 @@ uint8_t strat_work_on_zone(uint8_t zone_num);
 /* smart play */
 //#define DEBUG_STRAT_SMART
 uint8_t strat_smart(void);
+
+/* homologation */
+void strat_homologation(void);
 
 #else /* HOST_VERSION_OA_TEST */
 
