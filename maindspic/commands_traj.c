@@ -707,43 +707,43 @@ static void cmd_goto_parsed(void * parsed_result, void * data)
   if (!strcmp_P(res->arg0, PSTR("robot2_goto"))) {
 
 	  if (!strcmp_P(res->arg1, PSTR("a_rel"))) {
-		  bt_robot2_send_command("goto %s %d", res->arg1, res->arg2);
+		  bt_robot_sec_send_ascii_cmd("goto %s %d", res->arg1, res->arg2);
 	  }
 	  else if (!strcmp_P(res->arg1, PSTR("d_rel"))) {
-		  bt_robot2_send_command("goto %s %d", res->arg1, res->arg2);
+		  bt_robot_sec_send_ascii_cmd("goto %s %d", res->arg1, res->arg2);
 	  }
 	  else if (!strcmp_P(res->arg1, PSTR("a_abs"))) {
-		  bt_robot2_send_command("goto %s %d %d", res->arg1, res->arg2);
+		  bt_robot_sec_send_ascii_cmd("goto %s %d %d", res->arg1, res->arg2);
 	  }
 	  else if (!strcmp_P(res->arg1, PSTR("a_to_xy"))) {
-		  bt_robot2_send_command("goto %s %d %d", res->arg1, res->arg2, res->arg3);
+		  bt_robot_sec_send_ascii_cmd("goto %s %d %d", res->arg1, res->arg2, res->arg3);
 	  }
 	  else if (!strcmp_P(res->arg1, PSTR("a_behind_xy"))) {
-		  bt_robot2_send_command("goto %s %d %d", res->arg1, res->arg2, res->arg3);
+		  bt_robot_sec_send_ascii_cmd("goto %s %d %d", res->arg1, res->arg2, res->arg3);
 	  }
 	  else if (!strcmp_P(res->arg1, PSTR("xy_rel"))) {
-		  bt_robot2_send_command("goto %s %d %d", res->arg1, res->arg2, res->arg3);
+		  bt_robot_sec_send_ascii_cmd("goto %s %d %d", res->arg1, res->arg2, res->arg3);
 	  }
 	  else if (!strcmp_P(res->arg1, PSTR("xy_abs"))) {
-		  bt_robot2_send_command("goto %s %d %d", res->arg1, res->arg2, res->arg3);
+		  bt_robot_sec_send_ascii_cmd("goto %s %d %d", res->arg1, res->arg2, res->arg3);
 	  }
 	  else if (!strcmp_P(res->arg1, PSTR("avoid"))) {
-      bt_robot2_send_command("goto %s %d %d", res->arg1, res->arg2, res->arg3);
+      bt_robot_sec_send_ascii_cmd("goto %s %d %d", res->arg1, res->arg2, res->arg3);
 	  }
 	  else if (!strcmp_P(res->arg1, PSTR("avoid_fw"))) {
-      bt_robot2_send_command("goto %s %d %d", res->arg1, res->arg2, res->arg3);
+      bt_robot_sec_send_ascii_cmd("goto %s %d %d", res->arg1, res->arg2, res->arg3);
 	  }
 	  else if (!strcmp_P(res->arg1, PSTR("avoid_bw"))) {
-      bt_robot2_send_command("goto %s %d %d", res->arg1, res->arg2, res->arg3);
+      bt_robot_sec_send_ascii_cmd("goto %s %d %d", res->arg1, res->arg2, res->arg3);
 	  }
 	  else if (!strcmp_P(res->arg1, PSTR("xy_abs_fow"))) {
-		  bt_robot2_send_command("goto %s %d", res->arg1, res->arg2, res->arg3);
+		  bt_robot_sec_send_ascii_cmd("goto %s %d", res->arg1, res->arg2, res->arg3);
 	  }
 	  else if (!strcmp_P(res->arg1, PSTR("xy_abs_back"))) {
-		  bt_robot2_send_command("goto %s %d %d", res->arg1, res->arg2, res->arg3);
+		  bt_robot_sec_send_ascii_cmd("goto %s %d %d", res->arg1, res->arg2, res->arg3);
 	  }
 	  else if (!strcmp_P(res->arg1, PSTR("da_rel"))) {
-		  bt_robot2_send_command("goto %s %d %d", res->arg1, res->arg2, res->arg3);
+		  bt_robot_sec_send_ascii_cmd("goto %s %d %d", res->arg1, res->arg2, res->arg3);
 	  }
     return;
   }
