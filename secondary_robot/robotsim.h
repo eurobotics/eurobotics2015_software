@@ -31,8 +31,8 @@ int8_t robotsim_i2c_cobboard_set_mode(uint8_t mode);
 int8_t robotsim_i2c_cobboard_set_spickles(uint8_t side, uint8_t flags);
 
 /* BT UART received char */
-int robotsim_uart_recv_BT(void);
+int16_t robotsim_uart_recv_BT(void);
 
 /* BT UART send char */
-int robotsim_uart_send_BT(char c);
+int16_t robotsim_uart_send_BT(char c);
 
