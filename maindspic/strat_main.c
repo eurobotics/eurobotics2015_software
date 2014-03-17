@@ -83,28 +83,13 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 	//static uint16_t opp_times[ZONES_MAX];
 	//static microseconds opp_time_us = 0;
 
-	/* discard actual zone */
+	/* discard current zone */
 	if(strat_infos.current_zone == zone_num)
 		return 0;
 
-	/* discard down side zones depends on strat config */
-/*
-	if((strat_infos.conf.flags & ENABLE_DOWN_SIDE_ZONES) == 0 
-		&& strat_infos.zones[zone_num].init_y < (AREA_Y/2)
-		&& zone_num != ZONE_SHIP_OUR_DECK_2
-		&& zone_num != ZONE_SHIP_OUR_DECK_1 )
-		return 0;
-*/
-/*
-	else if((strat_infos.conf.flags & ENABLE_DOWN_SIDE_ZONES) 
-		&& strat_infos.zones[zone_num].init_y > (AREA_Y/2) 
-		&& zone_num != ZONE_SHIP_OUR_DECK_2
-		&& zone_num != ZONE_SHIP_OUR_DECK_1 )
-		return 0;
-*/
 	/* discard if opp is in zone */
-	if(opponent_is_in_area(	COLOR_X(strat_infos.zones[zone_num].x_up),strat_infos.zones[zone_num].y_up,
-								COLOR_X(strat_infos.zones[zone_num].x_down),	strat_infos.zones[zone_num].y_down)) {
+	if(opponent_is_in_area(strat_infos.zones[zone_num].x_up,strat_infos.zones[zone_num].y_up,
+								strat_infos.zones[zone_num].x_down,	strat_infos.zones[zone_num].y_down)) {
 
 #if 0
 		if(time_get_us2() - opp_time_us < 100000UL)
@@ -116,29 +101,30 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 				strat_infos.zones[zone_num].flags |= ZONE_CHECKED_OPP;
 		}
 #endif
-		DEBUG(E_USER_STRAT, "Discarded zone %s, opp inside", numzone2name[zone_num]);
+		printf_P(PSTR("Discarded zone %s, opp inside\r\n"), numzone2name[zone_num]);
 		return 0;
 	}
 
-	/* discard our checked zones TODO*/
-	//if(strat_infos.zones[zone_num].flags & ZONE_CHECKED)
-	//	return 0;	
+	
+	/* discard if secondary robot is in zone  TODO */
+	/*if(strat_infos.sec_robot.zone==ZONE_NUM) 
+	{
+		DEBUG(E_USER_STRAT, "Discarded zone %s, sec robot inside", numzone2name[zone_num]);
+		return 0;
+	}*/
 
-	/* discard opp checked zones TODO*/
-	/*if(strat_infos.zones[zone_num].flags & ZONE_CHECKED_OPP)
-		return 0;*/	
-
-	/* discard avoid zones */
+	/* discard avoid and checked zones */
 	if(strat_infos.zones[zone_num].flags & ZONE_AVOID)
 		return 0;	
-		
+	if(strat_infos.zones[zone_num].flags & ZONE_CHECKED)
+		return 0;	
 	return 1;
 }
 
 /* return new work zone, -1 if any zone is found */
 int8_t strat_get_new_zone(void)
 {
-	uint16_t prio_max = 0;
+	uint8_t prio_max = 0;
 	int8_t zone_num = -1;
 	int8_t i=0;
 	
@@ -149,10 +135,9 @@ int8_t strat_get_new_zone(void)
 		if(!strat_is_valid_zone(i))	
 			continue;
 
-		/* check priority */
+		/* compare current priority */
 		if(strat_infos.zones[i].prio > prio_max) {
 
-			/* update zone candidate params */
 			prio_max = strat_infos.zones[i].prio;
 			zone_num = i;
 		}
@@ -170,9 +155,15 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 	strat_infos.current_zone=-1;
 	strat_infos.goto_zone=zone_num;
 	
+	/* go */
 	err = goto_and_avoid(strat_infos.zones[zone_num].init_x, 
 				  strat_infos.zones[zone_num].init_y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 	
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+			
+	trajectory_a_abs(&mainboard.traj, strat_infos.zones[zone_num].init_a);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	
 	/* update strat_infos */
 	strat_infos.last_zone=strat_infos.current_zone;
@@ -193,9 +184,10 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 	uint8_t err = END_TRAJ;
 	
 #ifdef HOST_VERSION
-	printf_P(PSTR("press a key\r\n"));
+	printf_P(PSTR("strat_work_on_zone %s: press a key\r\n"),numzone2name[zone_num]);
 	while(!cmdline_keypressed());
-#else
+#endif
+#ifdef NOTYET
 	switch(zone_num)
 	{
 		case ZONE_TREE_1:
@@ -231,7 +223,6 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 			
 		case ZONE_MOBILE_TORCH_1:
 		case ZONE_MOBILE_TORCH_2:
-		case ZONE_MOBILE_TORCH_3:
 		/* leave fire on mobile torch */
 		/* pick up fire from heart of fire */
 			break;
@@ -254,93 +245,221 @@ void state_debug_wait_key_pressed(void)
 	while(!cmdline_keypressed());
 }
 
+
+void recalculate_priorities(void)
+{
+	#ifdef NOTYET
+	uint8_t zone_num;
+	
+	for(zone_num=0; zone_num<ZONES_MAX; zone_num++)
+	{
+		/* 1. opp checked zone AFTER us */
+		if((strat_infos.zones[zone_num].flags & ZONE_CHECKED_OPP)&&
+		(strat_infos.zones[zone_num].flags & ZONE_CHECKED))
+		{
+				//TODO
+		}
+		
+		/* 2. checked zone */
+		else if(strat_infos.zones[zone_num].flags & ZONE_CHECKED)
+		{
+				//TODO
+		}
+		
+		/* 3. Points we can get now in this zone */
+		switch(strat_infos.zones[zone_num].type)
+		{
+			case ZONE_TYPE_HEART_FIRE:
+				if(strat_infos.zones[zone_num].flags & ZONE_CHECKED_OPP)
+					strat_zones_points[zone_num]=4;
+					
+				/* The robot has fires inside */
+				strat_zones_points[zone_num]+=(strat_infos.fires_inside*2);
+				break;
+				
+			case ZONE_TYPE_TREE:
+				/* If visited by the opponent: no points */
+				if(strat_infos.zones[zone_num].flags & ZONE_CHECKED_OPP)
+					strat_zones_points[zone_num]=0;
+				break;
+				
+			case ZONE_TYPE_FIRE:
+				if(strat_infos.zones[zone_num].flags & ZONE_CHECKED_OPP)
+					strat_zones_points[zone_num]=0;
+				break;
+				
+			case ZONE_TYPE_TORCH:
+				if(strat_infos.zones[zone_num].flags & ZONE_CHECKED_OPP)
+					strat_zones_points[zone_num]=0;
+				break;
+				
+			case ZONE_TYPE_MOBILE_TORCH:
+				if(strat_infos.zones[zone_num].flags & ZONE_CHECKED_OPP)
+					strat_zones_points[zone_num]=0;
+				break;
+				
+				
+				
+			case ZONE_TYPE_BASKET:
+				/* Save fruits on basket */
+				strat_zones_points[zone_num]=strat_infos.tree_fruits_inside*3;
+				
+				/* Opponent has given us toxic fruits */
+				// XXX Remove toxic fruits available???
+				if(((mainboard.our_color==I2C_COLOR_YELLOW) && (zone_num==ZONE_BASKET_2)) ||
+				((mainboard.our_color==I2C_COLOR_RED) && (zone_num==ZONE_BASKET_1)))
+				{
+					if(strat_infos.zones[zone_num].flags & ZONE_CHECKED_OPP)
+					{
+						if(strat_infos.zones[ZONE_TREE_1].flags & ZONE_CHECKED_OPP)
+							strat_zones_points[zone_num]+=2;
+						if(strat_infos.zones[ZONE_TREE_2].flags & ZONE_CHECKED_OPP)
+							strat_zones_points[zone_num]+=2;
+						if(strat_infos.zones[ZONE_TREE_3].flags & ZONE_CHECKED_OPP)
+							strat_zones_points[zone_num]+=2;
+						if(strat_infos.zones[ZONE_TREE_4].flags & ZONE_CHECKED_OPP)
+							strat_zones_points[zone_num]+=2;
+					}
+				}
+				break;
+				
+			/* Remain the same */
+			case ZONE_TYPE_FRESCO:
+			case ZONE_TYPE_MAMOOTH:
+			case ZONE_TYPE_HOME:
+				break;
+				
+			default:
+				break;
+		}
+		
+		/* 4. Distance from robot to the zone */
+		// TODO
+		//Give points to closest zones
+		
+		
+		
+		/* Recalculate priorities depending on strategy TODO*/
+		/***********************************************************/
+		/* Defensive: protect our points */
+		
+		/* Risky: try to get the maximum points without protecting */
+		
+		/* Moderate: combine defense and risk */
+		
+		/* Offensive: make the opponent lose points */
+		/***********************************************************/
+	}
+	#endif
+}
+
+
 /* smart play */
 uint8_t strat_smart(void)
 {
-	uint8_t zone_num;
+	int8_t zone_num;
 	uint8_t err;
 
+	/* recalculate priorities */
+	recalculate_priorities();
+	
 	/* get new zone */
 	zone_num = strat_get_new_zone();
 
+		printf_P(PSTR("zone: %d.\r\n"),zone_num);
 		
 	if(zone_num == -1) {
-		DEBUG(E_USER_STRAT, "No zone is found");
-		DEBUG(E_USER_STRAT, "Down side zones enabled");	
+		printf_P(PSTR("No zone is found\r\n"));
+		printf_P(PSTR("Down side zones enabled\r\n"));	
 		strat_infos.conf.flags |= ENABLE_DOWN_SIDE_ZONES;	
 		strat_infos.conf.flags |= ENABLE_R2ND_POS;
 
 		/* Enable all paths */
-		DEBUG(E_USER_STRAT, "All possible paths enabled");	
+		printf_P(PSTR("All possible paths enabled\r\n"));	
 		strat_set_bounding_box(-1);	
 		return END_TRAJ;
 	}
 
-	/* goto zone */
-	strat_infos.goto_zone = zone_num;
-	strat_dump_infos(__FUNCTION__);
-	
-	err = strat_goto_zone(strat_infos.goto_zone);
-	if (!TRAJ_SUCCESS(err)) {
-		DEBUG(E_USER_STRAT, "Can't reach zone %d.", strat_infos.goto_zone);
+	else
+	{
+		/* goto zone */
+		printf_P(PSTR("Going to zone %s.\r\n"),numzone2name[zone_num]);
+		strat_infos.goto_zone = zone_num;
+		strat_dump_infos(__FUNCTION__);
+		
+		err = strat_goto_zone(zone_num);
+		if (!TRAJ_SUCCESS(err)) {
+			printf_P(PSTR("Can't reach zone %d.\r\n"), zone_num);
+			return END_TRAJ;
+		}
+
+		/* work on zone */
+		strat_infos.last_zone = strat_infos.current_zone;
+		strat_infos.current_zone = strat_infos.goto_zone;
+		strat_dump_infos(__FUNCTION__);
+
+		err = strat_work_on_zone(zone_num);
+		if (!TRAJ_SUCCESS(err)) {
+			printf_P(PSTR("Work on zone %s fails.\r\n"), numzone2name[zone_num]);
+		}
+		else
+		{
+			// Switch off devices, go back to normal state if anything was deployed
+		}
+
+		/* mark the zone as checked */
+		strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
+		strat_infos.zones[zone_num].flags &= ~(ZONE_CHECKED_OPP);
+
+		printf_P(PSTR("Work on zone %s succeeded!\r\n"), numzone2name[zone_num]);
 		return END_TRAJ;
 	}
-
-	/* work on zone */
-	strat_infos.last_zone = strat_infos.current_zone;
-	strat_infos.current_zone = strat_infos.goto_zone;
-	strat_dump_infos(__FUNCTION__);
-
-	err = strat_work_on_zone(strat_infos.current_zone);
-	if (!TRAJ_SUCCESS(err)) {
-		DEBUG(E_USER_STRAT, "Work on zone %d fails.", strat_infos.current_zone);
-
-		// Switch off devices, go back to normal state if anything was deployed
-		return err;
-	}
-
-	/* mark the zone as checked */
-		strat_infos.zones[strat_infos.current_zone].flags |= ZONE_CHECKED;
-	//}
-
-	DEBUG(E_USER_STRAT, "Work on zone %d successed!", strat_infos.current_zone);
-	return END_TRAJ;
 }
 
 
-/* homologation */
+/* Homologation */
 void strat_homologation(void)
 {
-	uint8_t zone_num;
 	uint8_t err;
-	#define ZONES_SEQUENCE_LENGTH 6
-	uint8_t zones_sequence[ZONES_SEQUENCE_LENGTH] = {ZONE_FIRE_1,ZONE_FIRE_3,ZONE_FIRE_5,ZONE_FIRE_6,ZONE_FIRE_4,ZONE_FIRE_2};
 	uint8_t i=0;
+	#define ZONES_SEQUENCE_LENGTH 6
+	uint8_t zones_sequence[ZONES_SEQUENCE_LENGTH] = 						
+	{ZONE_TORCH_1,ZONE_FIRE_1,ZONE_FIRE_3,ZONE_FIRE_5,ZONE_TREE_3,ZONE_BASKET_2};
 	
 	for(i=0; i<ZONES_SEQUENCE_LENGTH; i++)
 	{
-		DEBUG(E_USER_STRAT, "Going to zone %s.",numzone2name[zones_sequence[i]]);
 		/* goto zone */
+		printf_P(PSTR("Going to zone %s.\r\n"),numzone2name[zones_sequence[i]]);
 		strat_dump_infos(__FUNCTION__);
-		
-		err = strat_goto_zone(zones_sequence[i]);
+		strat_infos.current_zone=-1;
+		strat_infos.goto_zone=i;
+		err = goto_and_avoid(COLOR_X(strat_infos.zones[i].init_x), strat_infos.zones[i].init_y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+		trajectory_a_abs(&mainboard.traj, strat_infos.zones[i].init_a);
+		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+		strat_infos.last_zone=strat_infos.current_zone;
+		strat_infos.goto_zone=-1;
 		if (!TRAJ_SUCCESS(err)) {
-			DEBUG(E_USER_STRAT, "Can't reach zone %s.", numzone2name[zones_sequence[i]]);
-			return END_TRAJ;
+			strat_infos.current_zone=-1;
+			printf_P(PSTR("Can't reach zone %s.\r\n"), numzone2name[zones_sequence[i]]);
+		}
+		else{
+			strat_infos.current_zone=i;
 		}
 
 		/* work on zone */
 		strat_dump_infos(__FUNCTION__);
 		err = strat_work_on_zone(zones_sequence[i]);
 		if (!TRAJ_SUCCESS(err)) {
-			DEBUG(E_USER_STRAT, "Work on zone %s fails.", numzone2name[zones_sequence[i]]);
-
+			printf_P(PSTR("Work on zone %s fails.\r\n"), numzone2name[zones_sequence[i]]);
+		}
+		else
+		{
 			// Switch off devices, go back to normal state if anything was deployed
-			return err;
 		}
 
 		/* mark the zone as checked */
 		strat_infos.zones[i].flags |= ZONE_CHECKED;
-		DEBUG(E_USER_STRAT, "Work on zone %s successed!", numzone2name[zones_sequence[i]]);
+		printf_P(PSTR("Work on zone %s succeeded!\r\n"), numzone2name[zones_sequence[i]]);
 	}
 }
+

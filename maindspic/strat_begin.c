@@ -73,180 +73,68 @@
 
 
 
-#ifdef 2012
 uint8_t strat_begin(void)
 {   
-   uint8_t err;
-	uint16_t old_spdd, old_spda;
-   uint32_t old_var_2nd_ord_pos, old_var_2nd_ord_neg;
-	int16_t posx, posy, posa;
-#ifdef CATCH_GOLDBAR
-	uint8_t n=0;
-	int8_t nb_tries;
-#endif
-
-   #define LONG_DISTANCE        5000
-   #define Y_BEGIN_CURVE        842
-   #define X_BEGIN_CURVE_HOME   325
-   #define X_END_CURVE          1150
-
-
-   DEBUG(E_USER_STRAT, "Start");
-   strat_limit_speed_disable();
-
-	/* save speed and aceleration values */
-	strat_get_speed(&old_spdd, &old_spda);
-   old_var_2nd_ord_pos = mainboard.angle.qr.var_2nd_ord_pos;
-   old_var_2nd_ord_neg = mainboard.angle.qr.var_2nd_ord_neg;
-
-   /* modify speed and quadramp */
-	strat_set_speed(4000,2000);
-   quadramp_set_2nd_order_vars(&mainboard.angle.qr, 20, 20);
-
-#ifdef CATCH_GOLDBAR
-	/* prepare fingers */
-	i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_PREPARE_GOLDBAR_FLOOR);
-#endif
-
-	/* robot describes curve trajectory until goldbar */
-   trajectory_d_rel(&mainboard.traj, LONG_DISTANCE);
-   err = WAIT_COND_OR_TRAJ_END(x_is_more_than(X_BEGIN_CURVE_HOME), TRAJ_FLAGS_STD);
-   if(err) {
-   	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);   	} 
-	else DEBUG(E_USER_STRAT, "X is more than X_BEGIN_CURVE_HOME");
-		
-#ifdef CATCH_GOLDBAR
-	(mainboard.our_color==I2C_COLOR_YELLOW)?
-		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_OPEN,-50) :
-		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_OPEN,-50);
-#endif
-
-   trajectory_only_a_abs(&mainboard.traj, COLOR_A_ABS(90));
-   err = WAIT_COND_OR_TRAJ_END(y_is_more_than(Y_BEGIN_CURVE), END_OBSTACLE|END_BLOCKING|END_INTR);
-   if(err) {
-   	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);  	}
-	else DEBUG(E_USER_STRAT, "Y is more than Y_BEGIN_CURVE");
-
-#ifdef CATCH_GOLDBAR
-	/* prepare fingers */
-	(mainboard.our_color==I2C_COLOR_YELLOW)?
-		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_OPEN,120):
-		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_OPEN,120);
-#endif
-
-   trajectory_only_a_abs(&mainboard.traj, COLOR_A_ABS(0));
-   err=WAIT_COND_OR_TRAJ_END(x_is_more_than(X_END_CURVE), TRAJ_FLAGS_NO_NEAR);
-	strat_hardstop();
-   if(err) {
-   	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);   	}  
-	else DEBUG(E_USER_STRAT, "X is more than X_END_CURVE");
-
-
-	DEBUG(E_USER_STRAT, "Correct position error");
-	//trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(0));
-	//err=wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-  	//if (!TRAJ_SUCCESS(err))
-	//	ERROUT(err);   	
-	posx=position_get_x_s16(&mainboard.pos);
-	posy=position_get_y_s16(&mainboard.pos);
-	posa=position_get_a_deg_s16(&mainboard.pos);
-	strat_reset_pos(posx+COLOR_SIGN(-20),posy+20,posa+COLOR_SIGN(3));
-
-	//trajectory_goto_xy_abs(&mainboard.traj,COLOR_X(1900), 1610);
-	//err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-	//if (!TRAJ_SUCCESS(err))
-	//	ERROUT(err);		
-
-
-#ifdef CATCH_GOLDBAR
-	/*catch goldbar */
-	DEBUG(E_USER_STRAT, "Catch goldbar");
-	(mainboard.our_color==I2C_COLOR_YELLOW)?
-		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_OPEN,0):
-		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_OPEN,0);
-
-	trajectory_a_rel(&mainboard.traj, COLOR_A_REL(-40));
-	err=wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-  	if (!TRAJ_SUCCESS(err))
-		ERROUT(err);   	
-	trajectory_d_rel(&mainboard.traj, 50);
-	err=wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-  	if (!TRAJ_SUCCESS(err))
-		ERROUT(err);   	
-
-	i2c_slavedspic_wait_ready();
-	DEBUG(E_USER_STRAT, "blockings: %d %d", slavedspic.fingers_floor_blocked, slavedspic.fingers_totem_blocked);
-
-	nb_tries = 2;
-
-retry:
-	DEBUG(E_USER_STRAT, "First finger");
-	(mainboard.our_color==I2C_COLOR_YELLOW)?
-		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_HOLD,0):
-		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_HOLD,0);
-
-	i2c_slavedspic_wait_ready();
-	DEBUG(E_USER_STRAT, "blockings: %d %d", slavedspic.fingers_floor_blocked, slavedspic.fingers_totem_blocked);
-
-	//time_wait_ms(100);
-	DEBUG(E_USER_STRAT, "Second finger");
-	(mainboard.our_color==I2C_COLOR_YELLOW)?
-		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_RIGHT,I2C_FINGERS_MODE_CLOSE,0):
-		i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR_LEFT,I2C_FINGERS_MODE_CLOSE,0);
-
-	do{
-		DEBUG(E_USER_STRAT, "Harvest goldbar floor");
-		i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_GOLDBAR_FLOOR);
-	   i2c_slavedspic_wait_ready();
-		DEBUG(E_USER_STRAT, "Store goldbar in boot");
-		i2c_slavedspic_mode_store(1,I2C_STORE_MODE_GOLDBAR_IN_BOOT);
-	   i2c_slavedspic_wait_ready();
-		//time_wait_ms(2000);
-		n++;
-		DEBUG(E_USER_STRAT, "Nb of goldbars in boot: %d", slavedspic.nb_goldbars_in_boot);
-	}while((slavedspic.nb_goldbars_in_boot==0) && (n<2));
-
-	if((slavedspic.fingers_floor_blocked || slavedspic.fingers_totem_blocked) && nb_tries) {
-
-		nb_tries --;
-
-		trajectory_d_rel(&mainboard.traj, -50);
-		err=wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-	  	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);   	
-
-		i2c_slavedspic_mode_harvest(I2C_HARVEST_MODE_PREPARE_GOLDBAR_FLOOR);
-		i2c_slavedspic_wait_ready();
-
-		trajectory_a_rel(&mainboard.traj, COLOR_A_REL(-40));
-		err=wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-	  	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);   	
-
-		goto retry;
+	uint8_t err;
+	uint8_t zone_num=0;
+	#define ZONES_SEQUENCE_LENGTH 6
+	uint8_t zones_sequence[ZONES_SEQUENCE_LENGTH] = 						
+	{ZONE_TORCH_1,ZONE_FIRE_1,ZONE_FIRE_2,ZONE_MOBILE_TORCH_1,ZONE_FIRE_3,ZONE_TORCH_3};
+	
+	if(mainboard.our_color==I2C_COLOR_RED)
+	{
+		zones_sequence[0]=ZONE_TORCH_4; zones_sequence[1]=ZONE_FIRE_6; zones_sequence[2]=ZONE_FIRE_4; 
+		zones_sequence[3]=ZONE_MOBILE_TORCH_2; zones_sequence[4]=ZONE_FIRE_5; zones_sequence[5]=ZONE_TORCH_2; 
 	}
+	
+	for(zone_num=0; zone_num<ZONES_SEQUENCE_LENGTH; zone_num++)
+	{
+		/* goto zone */
+		printf_P(PSTR("Going to zone %s.\r\n"),numzone2name[zones_sequence[zone_num]]);
+		strat_dump_infos(__FUNCTION__);
+		strat_infos.current_zone=-1;
+		strat_infos.goto_zone=zones_sequence[zone_num];
+		err = goto_and_avoid(strat_infos.zones[zones_sequence[zone_num]].init_x, strat_infos.zones[zones_sequence[zone_num]].init_y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+		trajectory_a_abs(&mainboard.traj, strat_infos.zones[zones_sequence[zone_num]].init_a);
+		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+		strat_infos.last_zone=strat_infos.current_zone;
+		strat_infos.goto_zone=-1;
+		if (!TRAJ_SUCCESS(err)) {
+			strat_infos.current_zone=-1;
+			printf_P(PSTR("Can't reach zone %s.\r\n"),numzone2name[zones_sequence[zone_num]]);
+		}
+		else{
+			strat_infos.current_zone=zones_sequence[zone_num];
+		}
 
-	if(!slavedspic.nb_goldbars_in_boot) {
-		err = strat_save_treasure_generic(COLOR_X(1500), 1700);
-	  	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);   	
+		/* work on zone */
+		strat_dump_infos(__FUNCTION__);
+		err = strat_work_on_zone(zones_sequence[zone_num]);
+		if (!TRAJ_SUCCESS(err)) {
+			printf_P(PSTR("Work on zone %s fails.\r\n"),numzone2name[zones_sequence[zone_num]]);
+		}
+		else
+		{
+			// Switch off devices, go back to normal state if anything was deployed
+		}
+
+		/* mark the zone as checked */
+		strat_infos.zones[zones_sequence[zone_num]].flags |= ZONE_CHECKED;
+		printf_P(PSTR("Work on zone %s succeeded!\r\n"),numzone2name[zones_sequence[zone_num]]);
 	}
-#endif /* CATCH_GOLDBAR */
-
-end:
-	if(slavedspic.nb_goldbars_in_boot)	
-		strat_infos.treasure_in_boot =1;
-
-   DEBUG(E_USER_STRAT, "End (%d goldbars catched)", slavedspic.nb_goldbars_in_boot);
-   /* restore speed and quadramp values */
-	strat_set_speed(old_spdd, old_spda);
-   strat_limit_speed_enable();
-   quadramp_set_2nd_order_vars(&mainboard.angle.qr,old_var_2nd_ord_pos,old_var_2nd_ord_neg);
-
-   return err;
+	return err;
 }
-#endif 2012
+
+
+
+
+
+
+
+
+
+
+
+
+
 

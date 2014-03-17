@@ -368,7 +368,7 @@ retry_on:
 	}
 #endif	
 
-	if (!strcmp_P(res->color, PSTR("yellow"))) {
+	if (!strcmp_P(res->color, PSTR("red"))) {
 		mainboard.our_color = I2C_COLOR_RED;
 		//beacon_cmd_color();
 	}
@@ -377,7 +377,7 @@ retry_on:
 		//beacon_cmd_color();
 	}
 
-	printf("strat_start\r\n");
+	printf("Strat_start\r\n");
 	strat_start();
 
 	gen.logs[NB_LOGS] = 0;

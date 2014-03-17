@@ -476,7 +476,6 @@ update:
 /* start the strat */
 void strat_start(void)
 { 
-	int8_t i;
 	uint8_t err;
 
 	strat_preinit();

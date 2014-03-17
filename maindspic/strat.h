@@ -150,34 +150,33 @@
 
 
 /* zones */
-#define ZONE_TREE_1			    0
+#define ZONE_TREE_1			0
 #define ZONE_TREE_2       	1
-#define ZONE_TREE_3			    2
-#define ZONE_TREE_4			    3
-#define ZONE_HEART_FIRE_1		4
+#define ZONE_TREE_3			2
+#define ZONE_TREE_4			3
+#define ZONE_HEART_FIRE_1	4
 #define ZONE_HEART_FIRE_2  	5
 #define ZONE_HEART_FIRE_3 	6
 #define ZONE_FIRE_1   	    7
 #define ZONE_FIRE_2	        8
 #define ZONE_FIRE_3	        9
 #define ZONE_FIRE_4	        10
-#define ZONE_FIRE_5			    11
-#define ZONE_FIRE_6			    12
-#define ZONE_TORCH_1   			13
-#define ZONE_TORCH_2			  14
-#define ZONE_TORCH_3			  15
+#define ZONE_FIRE_5			11
+#define ZONE_FIRE_6			12
+#define ZONE_TORCH_1   		13
+#define ZONE_TORCH_2		14
+#define ZONE_TORCH_3		15
 #define ZONE_TORCH_4        16
 #define ZONE_MOBILE_TORCH_1 17
 #define ZONE_MOBILE_TORCH_2 18
-#define ZONE_MOBILE_TORCH_3 19
-#define ZONE_BASKET_1       20
-#define ZONE_BASKET_2       21
-#define ZONE_MAMOOTH_1      22
-#define ZONE_MAMOOTH_2      23
-#define ZONE_FRESCO      	  24
-#define ZONE_HOME_RED       25
-#define ZONE_HOME_YELLOW    26
-#define ZONES_MAX		        27
+#define ZONE_BASKET_1       19
+#define ZONE_BASKET_2       20
+#define ZONE_MAMOOTH_1      21
+#define ZONE_MAMOOTH_2      22
+#define ZONE_FRESCO      	23
+#define ZONE_HOME_RED       24
+#define ZONE_HOME_YELLOW    25
+#define ZONES_MAX		    26
 
 
 /************************************************************* 
@@ -228,30 +227,38 @@ typedef struct {
 	int16_t y_down;
 	int16_t y_up;
 
-   	/* init point */
+	/* init point */
 	int16_t init_x;
 	int16_t init_y;
+	int16_t init_a;
 
 	/* priority */
 	uint8_t prio;
-   #define ZONE_PRIO_0		0
-   #define ZONE_PRIO_10		10
-   #define ZONE_PRIO_20		20
-   #define ZONE_PRIO_30		30
-   #define ZONE_PRIO_40		40
-   #define ZONE_PRIO_50		50
-   #define ZONE_PRIO_60		60
-   #define ZONE_PRIO_70		70
-   #define ZONE_PRIO_80		80
-   #define ZONE_PRIO_90		90
-   #define ZONE_PRIO_100	100
-   #define ZONE_PRIO_MAX	100
+	#define ZONE_PRIO_0			 0
+	#define ZONE_PRIO_10		10
+	#define ZONE_PRIO_20		20
+	#define ZONE_PRIO_30		30
+	#define ZONE_PRIO_40		40
+	#define ZONE_PRIO_50		50
+	#define ZONE_PRIO_60		60
+	#define ZONE_PRIO_70		70
+	#define ZONE_PRIO_80		80
+	#define ZONE_PRIO_90		90
+	#define ZONE_PRIO_100	   100
+	#define ZONE_PRIO_MAX	   100
 
 	uint16_t flags;
-   #define ZONE_CHECKED		    	1
-   #define ZONE_CHECKED_OPP		2
-   #define ZONE_SEC_ROBOT	   	4
-   #define ZONE_AVOID		    	8
+	#define ZONE_CHECKED		    	1
+	#define ZONE_CHECKED_OPP		2
+	#define ZONE_SEC_ROBOT	   	4
+	#define ZONE_AVOID		    	8
+  
+	/* which robots can perform this action */
+	#define MAIN_ROBOT 0
+	#define SEC_ROBOT 1
+	#define BOTH_ROBOTS 2
+	uint8_t robot;
+	
 } strat_zones;
 
 
@@ -263,7 +270,8 @@ struct strat_infos {
 
 	/* points areas */
 	strat_zones zones[ZONES_MAX];
-
+	
+	
 	/* our zone position */
 	uint8_t current_zone;
 	uint8_t goto_zone;
@@ -273,24 +281,25 @@ struct strat_infos {
 	uint8_t opp_current_zone;
 	uint8_t opp2_current_zone;
 
-	/*/* secondary robot zone position 
-	uint8_t sec_x;
-	uint8_t sec_y;
-	uint8_t sec_current_zone;*/
+	/* secondary robot structure */ 
+	
 
 	/* opponent statistics */
 	uint32_t opp_time_zone_ms;
 
 	/* state of the robot */
-	uint8_t fruits_inside;
-	uint8_t spears_inside;
+	uint8_t tree_fruits_inside; /* One unity per harvested tree */
+	uint8_t fires_inside; 		 /* One unity per fire */
 	uint8_t net_inside;
-	uint8_t fires_inside;
+	uint8_t spears_inside;
 };
 
 extern struct strat_infos strat_infos;
 
 extern char numzone2name[ZONES_MAX + 1][30];
+
+
+extern uint8_t strat_zones_points[ZONES_MAX];
 
 #ifndef HOST_VERSION_OA_TEST
 
@@ -350,6 +359,7 @@ uint8_t strat_work_on_zone(uint8_t zone_num);
 /* smart play */
 //#define DEBUG_STRAT_SMART
 uint8_t strat_smart(void);
+void recalculate_priorities(void);
 
 /* homologation */
 void strat_homologation(void);
