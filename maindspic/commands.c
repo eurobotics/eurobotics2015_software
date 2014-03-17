@@ -22,7 +22,7 @@
 
 /*  
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
- *  Javier Baliñas Santos <javier@arc-robots.org>
+ *  Javier Balias Santos <javier@arc-robots.org>
  *
  *  Code ported to family of microcontrollers dsPIC from
  *  commands.c,v 1.8 2009/05/27 20:04:07 zer0 Exp.
@@ -108,6 +108,7 @@ extern parse_pgm_inst_t cmd_clitoid;
 extern parse_pgm_inst_t cmd_time_monitor;
 extern parse_pgm_inst_t cmd_strat_event;
 extern parse_pgm_inst_t cmd_sleep;
+extern parse_pgm_inst_t cmd_wt11;
 extern parse_pgm_inst_t cmd_gotozone;
 extern parse_pgm_inst_t cmd_workonzone;
 extern parse_pgm_inst_t cmd_homologation;
@@ -231,6 +232,7 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_time_monitor,
 	(parse_pgm_inst_t *)&cmd_strat_event,
 	(parse_pgm_inst_t *)&cmd_sleep,
+	(parse_pgm_inst_t *)&cmd_wt11,
 	(parse_pgm_inst_t *)&cmd_gotozone,
 	(parse_pgm_inst_t *)&cmd_workonzone,
 	(parse_pgm_inst_t *)&cmd_homologation,
