@@ -23,8 +23,14 @@
 #ifndef __BT_PROTOCOL_H__
 #define __BT_PROTOCOL_H__
 
+/* send data in multiplexing mode thru a link */
+void bt_wt11_mux_send (uint8_t link_id, uint8_t *data, uint16_t length);
 
-void bt_robot2_send_command(const char * format, ...);
+/* receive data in multiplexing mode, 
+   returns data length, -1 if no data received */
+int16_t bt_wt11_mux_recv (uint8_t *link_id, uint8_t *data);
+
+void bt_robot_sec_send_ascii_cmd(const char * format, ...);
 
 
 #endif

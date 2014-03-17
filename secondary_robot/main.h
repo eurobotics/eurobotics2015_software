@@ -145,6 +145,8 @@
 #define E_USER_CS           197
 #define E_USER_BEACON       198
 #define E_USER_AX12         199
+#define E_USER_BT_WT11      199
+#define E_USER_BT_PROTO     200
 
 /* EVENTS PRIORITIES */
 #ifdef old_version
@@ -201,7 +203,9 @@ struct genboard
 	struct rdline rdl;
 	char prompt[RDLINE_PROMPT_SIZE];
 
-	/* motors */	struct pwm_mc pwm_mc_1;	struct pwm_mc pwm_mc_2;
+	/* motors */
+	struct pwm_mc pwm_mc_1;
+	struct pwm_mc pwm_mc_2;
 	struct pwm_mc pwm_mc_3;
 
 	/* servos */

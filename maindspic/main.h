@@ -162,6 +162,9 @@
 #define E_USER_SENSOR       196
 #define E_USER_CS           197
 #define E_USER_BEACON       198
+#define E_USER_BT_WT11      199
+#define E_USER_BT_PROTO     200
+
 
 /* EVENTS PRIORITIES */
 #ifdef old_version
@@ -309,7 +312,6 @@ struct beaconboard
 	int16_t opponent_x;
 	int16_t opponent_y;
 	int16_t opponent_a;
-  int16_t robot_2nd_a_abs;
 	int16_t opponent_d;
 
 #ifdef TWO_OPPONENTS
@@ -323,9 +325,36 @@ struct beaconboard
 	int16_t robot_2nd_x;
 	int16_t robot_2nd_y;
 	int16_t robot_2nd_a;
+  int16_t robot_2nd_a_abs;
 	int16_t robot_2nd_d;
 #endif
 
+};
+
+struct robot_sec
+{
+  /* status */
+  uint8_t status;
+
+  /* robot position */
+	int16_t robot_2nd_x;
+	int16_t robot_2nd_y;
+	int16_t robot_2nd_a;
+  int16_t robot_2nd_a_abs;
+	int16_t robot_2nd_d;
+
+  /* opponent pos */
+	int16_t opponent_x;
+	int16_t opponent_y;
+	int16_t opponent_a;
+	int16_t opponent_d;
+
+#ifdef TWO_OPPONENTS
+	int16_t opponent2_x;
+	int16_t opponent2_y;
+	int16_t opponent2_a;
+	int16_t opponent2_d;
+#endif
 };
 
 extern struct genboard gen;

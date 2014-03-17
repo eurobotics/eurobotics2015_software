@@ -409,7 +409,7 @@ int32_t robotsim_encoder_get(void *arg)
 }
 
 /* BT UART received char */
-int robotsim_uart_recv_BT(void)
+int16_t robotsim_uart_recv_BT(void)
 {
   char c = 0;
   int n;
@@ -423,7 +423,7 @@ int robotsim_uart_recv_BT(void)
 }
 
 /* BT UART send char */
-int robotsim_uart_send_BT(char c)
+int16_t robotsim_uart_send_BT(char c)
 {
   int n;
 
@@ -437,6 +437,7 @@ int robotsim_uart_send_BT(char c)
 
 int robotsim_init(void)
 {
+#if 1
 	mkfifo("/tmp/.robot2_sim2dis", 0600);
 	mkfifo("/tmp/.robot2_dis2sim", 0600);
 	fdw = open("/tmp/.robot2_sim2dis", O_WRONLY, 0);
@@ -447,17 +448,21 @@ int robotsim_init(void)
 		close(fdw);
 		return -1;
 	}
+#endif
 #if 1
 	mkfifo("/tmp/.robot_big2little", 0600);
 	mkfifo("/tmp/.robot_little2big", 0600);
-	//fd_btw = open("/tmp/.robot_little2big", O_WRONLY, 0);
-	//if (fd_btw < 0)
-	//	return -1;
+
 	fd_btr = open("/tmp/.robot_big2little", O_RDONLY | O_NONBLOCK, 0);
-	//if (fd_btr < 0) {
-	//	close(fd_btw);
-	//	return -1;
-	//}
+	if (fd_btr < 0)
+		return -1;
+
+	fd_btw = open("/tmp/.robot_little2big", O_WRONLY, 0);
+	if (fd_btw < 0) {
+    close (fd_btr);
+		return -1;
+  }
+
 #endif
 	return 0;
 }
