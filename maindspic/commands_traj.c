@@ -705,7 +705,7 @@ static void cmd_goto_parsed(void * parsed_result, void * data)
 	microseconds t1, t2;
 
   if (!strcmp_P(res->arg0, PSTR("robot2_goto"))) {
-
+#if 0
 	  if (!strcmp_P(res->arg1, PSTR("a_rel"))) {
 		  bt_robot_sec_send_ascii_cmd("goto %s %d", res->arg1, res->arg2);
 	  }
@@ -745,6 +745,7 @@ static void cmd_goto_parsed(void * parsed_result, void * data)
 	  else if (!strcmp_P(res->arg1, PSTR("da_rel"))) {
 		  bt_robot_sec_send_ascii_cmd("goto %s %d %d", res->arg1, res->arg2, res->arg3);
 	  }
+#endif
     return;
   }
 
