@@ -9,7 +9,7 @@ SRC += commands_cs.c commands_mainboard.c commands_traj.c commands.c
 SRC += i2c_mem.c i2c_protocol.c beacon.c sensor.c actuator.c cs.c
 SRC += strat_utils.c strat_base.c strat_avoid.c strat.c
 #SRC += strat_main.c strat_mamut.c strat_fresco.c
-SRC += bt_protocol.c
+#SRC += bt_protocol.c
 ifeq ($(H),1)
 SRC += robotsim.c
 endif

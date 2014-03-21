@@ -23,14 +23,19 @@
 #ifndef __BT_PROTOCOL_H__
 #define __BT_PROTOCOL_H__
 
-/* send data in multiplexing mode thru a link */
-void bt_wt11_mux_send (uint8_t link_id, uint8_t *data, uint16_t length);
+/* number of bt devices, maximun 4 */
+#define BT_PROTO_NUM_DEVICES 2
 
-/* receive data in multiplexing mode, 
-   returns data length, -1 if no data received */
-int16_t bt_wt11_mux_recv (uint8_t *link_id, uint8_t *data);
+/* bt device structure */
+struct bt_proto_device
+{
+  uint8_t number;
+  uint8_t link_id;
+  uint8_t addr[6];
+};
 
-void bt_robot_sec_send_ascii_cmd(const char * format, ...);
+
+//void bt_robot_sec_send_ascii_cmd(const char * format, ...);
 
 
 #endif

@@ -162,7 +162,7 @@
 #define E_USER_SENSOR       196
 #define E_USER_CS           197
 #define E_USER_BEACON       198
-#define E_USER_BT_WT11      199
+#define E_USER_WT11         199
 #define E_USER_BT_PROTO     200
 
 
@@ -331,17 +331,17 @@ struct beaconboard
 
 };
 
-struct robot_sec
+struct robot_2nd
 {
   /* status */
   uint8_t status;
 
   /* robot position */
-	int16_t robot_2nd_x;
-	int16_t robot_2nd_y;
-	int16_t robot_2nd_a;
-  int16_t robot_2nd_a_abs;
-	int16_t robot_2nd_d;
+	int16_t x;
+	int16_t y;
+  int16_t a_abs;
+	int16_t a;
+	int16_t d;
 
   /* opponent pos */
 	int16_t opponent_x;
@@ -361,6 +361,8 @@ extern struct genboard gen;
 extern struct mainboard mainboard;
 extern struct slavedspic slavedspic;
 extern struct beaconboard beaconboard;
+extern struct robot_2nd robot_2nd;
+
 
 ///* TODO start the bootloader */
 //void bootloader(void);
