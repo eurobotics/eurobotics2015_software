@@ -77,6 +77,7 @@ struct genboard gen;
 struct mainboard mainboard;
 struct slavedspic slavedspic;
 struct beaconboard beaconboard;
+struct robot_2nd robot_2nd;
 
 /***************************************************************/
 
@@ -307,8 +308,8 @@ int main(void)
 						EVENT_PERIOD_I2C_POLL / SCHEDULER_UNIT, EVENT_PRIORITY_I2C_POLL);
 
 	/* beacon commnads and polling */
-	scheduler_add_periodical_event_priority(beacon_protocol, NULL,
-					EVENT_PERIOD_BEACON_PULL / SCHEDULER_UNIT, EVENT_PRIORITY_BEACON_POLL);
+	//scheduler_add_periodical_event_priority(beacon_protocol, NULL,
+	//				EVENT_PERIOD_BEACON_PULL / SCHEDULER_UNIT, EVENT_PRIORITY_BEACON_POLL);
 #endif
 
 	/* strat-related event */
@@ -321,7 +322,7 @@ int main(void)
  	//gen.logs[1] = E_USER_BEACON;
  	//gen.logs[2] = E_USER_I2C_PROTO;
  	//gen.logs[3] = E_OA;
- 	gen.logs[1] = E_USER_BT_WT11;
+ 	gen.logs[1] = E_USER_WT11;
  	gen.logs[2] = E_USER_BT_PROTO;
  	gen.log_level = 5;
 	

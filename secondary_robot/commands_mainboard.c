@@ -1494,6 +1494,8 @@ parse_pgm_inst_t cmd_sleep = {
 	},
 };
 
+#ifdef notyet
+
 /**********************************************************/
 /* wt11 */
 
@@ -1544,5 +1546,5 @@ parse_pgm_inst_t cmd_wt11 = {
 		NULL,
 	},
 };
-
+#endif
 

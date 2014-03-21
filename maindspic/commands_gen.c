@@ -64,6 +64,7 @@
 #include "main.h"
 #include "cmdline.h"
 #include "sensor.h"
+#include "wt11.h"
 
 /**********************************************************/
 /* Reset */
@@ -455,6 +456,104 @@ parse_pgm_inst_t cmd_sensor = {
 	},
 };
 
+#ifdef notyet
+
+/**********************************************************/
+/* wt11 */
+
+/* this structure is filled when cmd_sleep is parsed successfully */
+struct cmd_wt11_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+};
+
+/* function called when cmd_wt11 is parsed successfully */
+static void cmd_wt11_parsed(void *parsed_result, void *data)
+{
+	struct cmd_wt11_result *res = parsed_result;
+  char buffer[32] = "hello world!!";
+  int16_t length, i;
+	int16_t c;
+	struct vt100 vt100;
+	int8_t cmd = 0;
+	
+	if(!strcmp_P(res->arg1, "raw")) {
+#ifdef HOST_VERSION
+	printf("not implemented\n");
+#else
+		/* init vt100 character set */
+		vt100_init(&vt100);
+		
+		/* interact */
+		while(cmd != KEY_CTRL_C) 
+		{
+			/* received from slave */
+			if((c = uart_recv_nowait(MUX_UART))!= -1)
+				/* echo */
+				uart_send_nowait(CMDLINE_UART,c);
+			
+			/* send to slavedspic */
+			c = cmdline_getchar();
+			if (c == -1) {
+				continue;
+			}
+
+			/* check exit cmd */
+			cmd = vt100_parser(&vt100, c);
+
+			/* send to slave */
+			uart_send_nowait(MUX_UART,c);	
+		}
+#endif
+  }
+  else if (!strcmp_P(res->arg1, PSTR("send_mux_test"))) {
+
+     for (i=0; i<3; i++)
+        wt11_send_mux(i, buffer, sizeof(buffer));			
+
+     wt11_send_mux(0xFF, buffer, sizeof(buffer));
+
+  }
+  else if (!strcmp_P(res->arg1, PSTR("recv_mux"))) {
+
+      length = wt11_recv_mux(&i, buffer);	
+      if (length == -1)
+        printf ("received nothing\n"); 
+      else 
+        printf ("%s\n", buffer);
+  }
+  else if (!strcmp_P(res->arg1, PSTR("reset"))) {
+      wt11_reset();
+  }
+  else if (!strcmp_P(res->arg1, PSTR("reset_mux"))) {
+      wt11_reset_mux();
+  }
+  else if (!strcmp_P(res->arg1, PSTR("mux_mode"))) {
+      wt11_enable_mux_mode();
+  }
+  else if (!strcmp_P(res->arg1, PSTR("normal_mode"))) {
+      wt11_disable_mux_mode();
+  }
+}
+
+prog_char str_wt11_arg0[] = "wt11";
+parse_pgm_token_string_t cmd_wt11_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_wt11_result, arg0, str_wt11_arg0);
+prog_char str_wt11_arg1[] = "raw#reset#reset_mux#mux_mode#normal_mode#send_mux_test#recv_mux";
+parse_pgm_token_string_t cmd_wt11_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_wt11_result, arg1, str_wt11_arg1);
+
+prog_char help_wt11[] = "wt11 functions";
+parse_pgm_inst_t cmd_wt11 = {
+	.f = cmd_wt11_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_wt11,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_wt11_arg0,
+		(prog_void *)&cmd_wt11_arg1,
+		NULL,
+	},
+};
+
+#endif
 
 /**********************************************************/
 /* Log */
