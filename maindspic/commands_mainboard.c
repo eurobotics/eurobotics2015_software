@@ -1498,57 +1498,6 @@ parse_pgm_inst_t cmd_sleep = {
 };
 
 /**********************************************************/
-/* wt11 */
-
-/* this structure is filled when cmd_sleep is parsed successfully */
-struct cmd_wt11_result {
-	fixed_string_t arg0;
-	fixed_string_t arg1;
-};
-
-/* function called when cmd_wt11 is parsed successfully */
-static void cmd_wt11_parsed(void *parsed_result, void *data)
-{
-	struct cmd_wt11_result *res = parsed_result;
-  char buffer[32] = "hello world!!";
-  int16_t length, i;
-	
-  if (!strcmp_P(res->arg1, PSTR("mux_send"))) {
-
-     for (i=0; i<3; i++)
-        bt_wt11_mux_send(i, buffer, sizeof(buffer));			
-
-     bt_wt11_mux_send(0xFF, buffer, sizeof(buffer));
-
-  }
-  else if (!strcmp_P(res->arg1, PSTR("mux_recv"))) {
-
-      length = bt_wt11_mux_recv(&i, buffer);	
-      if (length == -1)
-        printf ("received nothing\n"); 
-      else 
-        printf ("%s\n", buffer);
-  }
-}
-
-prog_char str_wt11_arg0[] = "wt11";
-parse_pgm_token_string_t cmd_wt11_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_wt11_result, arg0, str_wt11_arg0);
-prog_char str_wt11_arg1[] = "mux_send#mux_recv";
-parse_pgm_token_string_t cmd_wt11_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_wt11_result, arg1, str_wt11_arg1);
-
-prog_char help_wt11[] = "wt11 test functions";
-parse_pgm_inst_t cmd_wt11 = {
-	.f = cmd_wt11_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_wt11,
-	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_wt11_arg0,
-		(prog_void *)&cmd_wt11_arg1,
-		NULL,
-	},
-};
-
-/**********************************************************/
 /* Goto zone */
 
 // this structure is filled when cmd_gotozone is parsed successfully 

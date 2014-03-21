@@ -73,7 +73,7 @@
 
 
 
-#ifdef 2012
+#ifdef E2012
 uint8_t strat_begin(void)
 {   
    uint8_t err;
