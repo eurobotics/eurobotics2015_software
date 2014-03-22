@@ -128,7 +128,7 @@
 
 #define LAST_SECONDS_TIME	80
 
-#define CALIBRATION
+//#define CALIBRATION
 #ifdef CALIBRATION
 
 /* default acc */

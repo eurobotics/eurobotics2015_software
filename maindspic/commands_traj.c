@@ -870,7 +870,7 @@ static void auto_position(void)
 	strat_reset_pos(COLOR_X(ROBOT_DIS2_WALL), 0, COLOR_A_ABS(0));
 	
 	/* prepare to y axis */
-	trajectory_d_rel(&mainboard.traj, 250-ROBOT_CENTER_TO_BACK); /* TODO */
+	trajectory_d_rel(&mainboard.traj, 90);
 	err = wait_traj_end(END_INTR|END_TRAJ);
 	if (err == END_INTR)
 		goto intr;
@@ -891,12 +891,12 @@ static void auto_position(void)
 	strat_reset_pos(DO_NOT_SET_POS, COLOR_Y(ROBOT_DIS2_WALL), 90);
 
 	/* goto start position */
-	trajectory_d_rel(&mainboard.traj, 500-(ROBOT_LENGTH)); /* TODO */
+	trajectory_d_rel(&mainboard.traj, 200-25);
 	err = wait_traj_end(END_INTR|END_TRAJ);
 	if (err == END_INTR)
 		goto intr;
 	wait_ms(100);
-	
+
 	/* restore speeds */	
 	strat_set_speed(old_spdd, old_spda);
 	return;
