@@ -128,6 +128,23 @@
 
 #define LAST_SECONDS_TIME	80
 
+#define CALIBRATION
+#ifdef CALIBRATION
+
+/* default acc */
+#define ACC_DIST  1.
+#define ACC_ANGLE 1.
+
+/* default speeds */
+#define SPEED_DIST_FAST 		1000.
+#define SPEED_ANGLE_FAST 		1000.
+#define SPEED_DIST_SLOW 		1000.
+#define SPEED_ANGLE_SLOW 		1000.
+#define SPEED_DIST_VERY_SLOW 	1000.
+#define SPEED_ANGLE_VERY_SLOW	1000.
+
+#else
+
 /* default acc */
 #define ACC_DIST  35.
 #define ACC_ANGLE 20.
@@ -148,6 +165,7 @@
 #define SPEED_DIST_VERY_SLOW 	500.
 #define SPEED_ANGLE_VERY_SLOW 500.
 
+#endif
 
 /* zones */
 #define ZONE_TREE_1			0

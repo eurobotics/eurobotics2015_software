@@ -119,7 +119,9 @@
 
 /* distance between encoders weels,
  * decrease track to decrease angle */
-#define EXT_TRACK_MM      292.74161502079
+//#define EXT_TRACK_MM      292.74161502079 //2012
+#define EXT_TRACK_MM      293.51078578114
+
 #define VIRTUAL_TRACK_MM  EXT_TRACK_MM
 
 /* robot dimensions */

@@ -174,6 +174,8 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 	else{
 		strat_infos.current_zone=zone_num;
 	}
+
+end:
 	return err;
 }
 
