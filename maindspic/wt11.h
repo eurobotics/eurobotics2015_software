@@ -23,6 +23,8 @@
 #ifndef __WT11_H__
 #define __WT11_H__
 
+#if 0
+
 /* UART used for send and receive data */
 #define BT_UART   MUX_UART
 
@@ -88,6 +90,7 @@ inline void wt11_reset (void) {
 inline void wt11_reset_mux (void) {
   __wt11_reset ((uint8_t)WT11_MODE_MUX);
 }
+#endif
 
 #endif /* __WT11_H__ */
 
