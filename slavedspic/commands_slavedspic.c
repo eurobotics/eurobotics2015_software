@@ -120,7 +120,7 @@ parse_pgm_inst_t cmd_event = {
 	},
 };
 
-#if 0
+
 
 /**********************************************************/
 /* Color */
@@ -135,8 +135,8 @@ struct cmd_color_result {
 static void cmd_color_parsed(void *parsed_result, __attribute__((unused)) void *data)
 {
 	struct cmd_color_result *res = (struct cmd_color_result *) parsed_result;
-	if (!strcmp_P(res->color, PSTR("purple"))) {
-		slavedspic.our_color = I2C_COLOR_PURPLE;
+	if (!strcmp_P(res->color, PSTR("yellow"))) {
+		slavedspic.our_color = I2C_COLOR_YELLOW;
 	}
 	else if (!strcmp_P(res->color, PSTR("red"))) {
 		slavedspic.our_color = I2C_COLOR_RED;
@@ -146,7 +146,7 @@ static void cmd_color_parsed(void *parsed_result, __attribute__((unused)) void *
 
 prog_char str_color_arg0[] = "color";
 parse_pgm_token_string_t cmd_color_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_color_result, arg0, str_color_arg0);
-prog_char str_color_color[] = "purple#red";
+prog_char str_color_color[] = "yellow#red";
 parse_pgm_token_string_t cmd_color_color = TOKEN_STRING_INITIALIZER(struct cmd_color_result, color, str_color_color);
 
 prog_char help_color[] = "Set our color";
@@ -179,6 +179,8 @@ static void cmd_lift_parsed(__attribute__((unused)) void *parsed_result,
 	struct i2c_cmd_slavedspic_set_mode command;
 	//microseconds t1, t2;
 
+#if 0
+
 	if (!strcmp_P(res->arg0, PSTR("lift"))) {
 #if 0
 		lift_set_height(res->arg1);
@@ -200,7 +202,7 @@ static void cmd_lift_parsed(__attribute__((unused)) void *parsed_result,
 	}
 	else if (!strcmp_P(res->arg0, PSTR("lift_calibrate")))
 		lift_calibrate();
-
+#endif
 }
 
 prog_char str_lift_arg0[] = "lift#lift_calibrate";
@@ -220,363 +222,6 @@ parse_pgm_inst_t cmd_lift = {
 };
 
 /**********************************************************/
-/* turbine */
-
-/* this structure is filled when cmd_turbine is parsed successfully */
-struct cmd_turbine_result {
-	fixed_string_t arg0;
-	fixed_string_t arg1;
-	int16_t arg2;
-};
-
-/* function called when cmd_turbine is parsed successfully */
-static void cmd_turbine_parsed(__attribute__((unused)) void *parsed_result,
-			    __attribute__((unused)) void *data)
-{
-	struct cmd_turbine_result *res = (struct cmd_turbine_result *) parsed_result;
-	struct i2c_cmd_slavedspic_set_mode command;	
-
-	if(data) {
-		if (!strcmp_P(res->arg1, PSTR("on")))
-			turbine_power_on(&slavedspic.turbine);
-		else if (!strcmp_P(res->arg1, PSTR("off")))
-			turbine_power_off(&slavedspic.turbine);		
-	}
-	else {
-#if 0
-		if (!strcmp_P(res->arg1, PSTR("angle"))) {
-			turbine_set_angle(&slavedspic.turbine, res->arg2, slavedspic.turbine.angle_speed);
-			while(!turbine_check_angle_reached(&slavedspic.turbine));
-		}
-		else if (!strcmp_P(res->arg1, PSTR("speed_angle")))
-			slavedspic.turbine.angle_speed = res->arg2;
-		else if (!strcmp_P(res->arg1, PSTR("blow")))
-			turbine_set_blow_speed(&slavedspic.turbine, res->arg2);
-#else
-		if (!strcmp_P(res->arg1, PSTR("angle"))) {
-			command.mode = I2C_SLAVEDSPIC_MODE_TURBINE_ANGLE;
-			command.turbine.angle_deg = res->arg2;
-			command.turbine.angle_speed = slavedspic.turbine.angle_speed;
-			state_set_mode(&command);			
-		}
-		else if (!strcmp_P(res->arg1, PSTR("speed_angle"))) {
-			slavedspic.turbine.angle_speed = res->arg2;			
-		}
-		else if (!strcmp_P(res->arg1, PSTR("blow"))) {
-			command.mode = I2C_SLAVEDSPIC_MODE_TURBINE_BLOW;
-			command.turbine.blow_speed = res->arg2;
-			state_set_mode(&command);
-		}
-#endif
-	}
-
-	/* show */
-	printf("angle = %d (%d, %d)\n\r", turbine_get_angle(&slavedspic.turbine), slavedspic.turbine.angle_pos, slavedspic.turbine.angle_speed);
-	printf("blow = %d\n\r", turbine_get_blow_speed(&slavedspic.turbine));	
-
-}
-
-prog_char str_turbine_arg0[] = "turbine";
-parse_pgm_token_string_t cmd_turbine_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_turbine_result, arg0, str_turbine_arg0);
-prog_char str_turbine_arg1[] = "angle#speed_angle#blow";
-parse_pgm_token_string_t cmd_turbine_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_turbine_result, arg1, str_turbine_arg1);
-parse_pgm_token_num_t cmd_turbine_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_turbine_result, arg2, INT16);
-
-prog_char help_turbine[] = "set turbine angle and blow";
-parse_pgm_inst_t cmd_turbine = {
-	.f = cmd_turbine_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_turbine,
-	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_turbine_arg0, 
-		(prog_void *)&cmd_turbine_arg1,
-		(prog_void *)&cmd_turbine_arg2,
-		NULL,
-	},
-};
-
-/**********************************************************/
-/* turbine show/on/off */
-
-prog_char str_turbine_show_arg1[] = "on#off#show";
-parse_pgm_token_string_t cmd_turbine_show_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_turbine_result, arg1, str_turbine_show_arg1);
-
-prog_char help_turbine_show[] = "set turbine angle and blow";
-parse_pgm_inst_t cmd_turbine_show = {
-	.f = cmd_turbine_parsed,  /* function to call */
-	.data = (void *)1,      /* 2nd arg of func */
-	.help_str = help_turbine_show,
-	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_turbine_arg0, 
-		(prog_void *)&cmd_turbine_show_arg1,
-		NULL,
-	},
-};
-
-/**********************************************************/
-/* fingers */
-
-/* this structure is filled when cmd_fingers is parsed successfully */
-struct cmd_fingers_result {
-	fixed_string_t arg0;
-	fixed_string_t arg1;
-	fixed_string_t arg2;
-	int16_t arg3;
-};
-
-/* function called when cmd_fingers is parsed successfully */
-static void cmd_fingers_parsed(__attribute__((unused)) void *parsed_result,
-			    __attribute__((unused)) void *data)
-{
-	struct cmd_fingers_result *res = (struct cmd_fingers_result *) parsed_result;
-	struct i2c_cmd_slavedspic_set_mode command;	
-	//uint8_t mode;
-	//fingers_t *fingers = 0;
-	
-#if 0
-	if (!strcmp_P(res->arg1, PSTR("totem")))
-		fingers = &slavedspic.fingers_totem;
-	else if (!strcmp_P(res->arg1, PSTR("floor")))
-		fingers = &slavedspic.fingers_floor;
-
-	mode = fingers->mode;
-
-	if (!strcmp_P(res->arg2, PSTR("hug")))
-		mode = FINGERS_MODE_HUG;
-	else if (!strcmp_P(res->arg2, PSTR("open")))
-		mode = FINGERS_MODE_OPEN;
-	else if (!strcmp_P(res->arg2, PSTR("close")))
-		mode = FINGERS_MODE_CLOSE;
-	else if (!strcmp_P(res->arg2, PSTR("hold")))
-		mode = FINGERS_MODE_HOLD;
-	else if (!strcmp_P(res->arg2, PSTR("pushin")))
-		mode = FINGERS_MODE_PUSHIN;
-		
-
-	fingers_set_mode(fingers, mode, 0);
-	fingers_wait_end(fingers);
-	printf("done\n\r");
-
-#else
-	if (!strcmp_P(res->arg1, PSTR("totem"))) 
-		command.fingers.type = I2C_FINGERS_TYPE_TOTEM;
-	else if (!strcmp_P(res->arg1, PSTR("floor"))) 
-		command.fingers.type = I2C_FINGERS_TYPE_FLOOR;
-	else if (!strcmp_P(res->arg1, PSTR("left_totem")))
-		command.fingers.type = I2C_FINGERS_TYPE_TOTEM_LEFT;
-	else if (!strcmp_P(res->arg1, PSTR("right_totem")))
-		command.fingers.type = I2C_FINGERS_TYPE_TOTEM_RIGHT;
-	else if (!strcmp_P(res->arg1, PSTR("left_floor")))
-		command.fingers.type = I2C_FINGERS_TYPE_FLOOR_LEFT;
-	else if (!strcmp_P(res->arg1, PSTR("right_floor")))
-		command.fingers.type = I2C_FINGERS_TYPE_FLOOR_RIGHT;
-
-	if (!strcmp_P(res->arg2, PSTR("hug")))
-		command.fingers.mode = I2C_FINGERS_MODE_HUG;
-	else if (!strcmp_P(res->arg2, PSTR("open")))
-		command.fingers.mode = I2C_FINGERS_MODE_OPEN;
-	else if (!strcmp_P(res->arg2, PSTR("close")))
-		command.fingers.mode = I2C_FINGERS_MODE_CLOSE;
-	else if (!strcmp_P(res->arg2, PSTR("hold")))
-		command.fingers.mode = I2C_FINGERS_MODE_HOLD;
-	else if (!strcmp_P(res->arg2, PSTR("pushin")))
-		command.fingers.mode = I2C_FINGERS_MODE_PUSHIN;
-
-	command.mode = I2C_SLAVEDSPIC_MODE_FINGERS;
-	command.fingers.offset = res->arg3;
-	state_set_mode(&command);
-#endif
-}
-
-prog_char str_fingers_arg0[] = "fingers";
-parse_pgm_token_string_t cmd_fingers_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_fingers_result, arg0, str_fingers_arg0);
-prog_char str_fingers_arg1[] = "totem#floor#left_totem#right_totem#left_floor#right_floor";
-parse_pgm_token_string_t cmd_fingers_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_fingers_result, arg1, str_fingers_arg1);
-prog_char str_fingers_arg2[] = "hug#open#hold#close#pushin";
-parse_pgm_token_string_t cmd_fingers_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_fingers_result, arg2, str_fingers_arg2);
-parse_pgm_token_num_t cmd_fingers_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_fingers_result, arg3, INT16);
-
-
-prog_char help_fingers[] = "set fingers mode";
-parse_pgm_inst_t cmd_fingers = {
-	.f = cmd_fingers_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_fingers,
-	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_fingers_arg0, 
-		(prog_void *)&cmd_fingers_arg1,
-		(prog_void *)&cmd_fingers_arg2,
-		(prog_void *)&cmd_fingers_arg3,
-		NULL,
-	},
-};
-
-/**********************************************************/
-/* arm */
-
-/* this structure is filled when cmd_arm is parsed successfully */
-struct cmd_arm_result {
-	fixed_string_t arg0;
-	fixed_string_t arg1;
-	fixed_string_t arg2;
-	int16_t arg3;
-};
-
-/* function called when cmd_arm is parsed successfully */
-static void cmd_arm_parsed(__attribute__((unused)) void *parsed_result,
-			    __attribute__((unused)) void *data)
-{
-	struct cmd_arm_result *res = (struct cmd_arm_result *) parsed_result;
-	struct i2c_cmd_slavedspic_set_mode command;
-	//uint8_t mode;
-	//arm_t *arm = 0;
-
-#if 0
-	if (!strcmp_P(res->arg1, PSTR("right")))
-		arm = &slavedspic.arm_right;
-	else if (!strcmp_P(res->arg1, PSTR("left")))
-		arm = &slavedspic.arm_left;	
-
-	mode = arm->mode;
-
-	if (!strcmp_P(res->arg2, PSTR("hide")))
-		mode = ARM_MODE_HIDE;
-	else if (!strcmp_P(res->arg2, PSTR("show")))
-		mode = ARM_MODE_SHOW;
-	else if (!strcmp_P(res->arg2, PSTR("goldbar")))
-		mode = ARM_MODE_PUSH_GOLDBAR;
-	else if (!strcmp_P(res->arg2, PSTR("floor")))
-		mode = ARM_MODE_PUSH_FLOOR;
-		
-	arm_set_mode(arm, mode, 0);
-	arm_wait_end(arm);
-	printf("done\n\r");
-
-#else
-	if (!strcmp_P(res->arg1, PSTR("right")))
-		command.arm.type = I2C_ARM_TYPE_RIGHT;
-	else 
-		command.arm.type = I2C_ARM_TYPE_LEFT;
-
-	if (!strcmp_P(res->arg2, PSTR("hide")))
-		command.arm.mode = ARM_MODE_HIDE;
-	else if (!strcmp_P(res->arg2, PSTR("show")))
-		command.arm.mode = ARM_MODE_SHOW;
-	else if (!strcmp_P(res->arg2, PSTR("goldbar")))
-		command.arm.mode = ARM_MODE_PUSH_GOLDBAR;
-	else
-		command.arm.mode = ARM_MODE_PUSH_FLOOR;
-
-	command.mode = I2C_SLAVEDSPIC_MODE_ARM;
-	command.arm.offset = res->arg3;
-	state_set_mode(&command);
-#endif
-}
-
-prog_char str_arm_arg0[] = "arm";
-parse_pgm_token_string_t cmd_arm_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_arm_result, arg0, str_arm_arg0);
-prog_char str_arm_arg1[] = "left#right";
-parse_pgm_token_string_t cmd_arm_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_arm_result, arg1, str_arm_arg1);
-prog_char str_arm_arg2[] = "hide#show#goldbar#floor";
-parse_pgm_token_string_t cmd_arm_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_arm_result, arg2, str_arm_arg2);
-parse_pgm_token_num_t cmd_arm_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_arm_result, arg3, INT16);
-
-prog_char help_arm[] = "set arm mode";
-parse_pgm_inst_t cmd_arm = {
-	.f = cmd_arm_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_arm,
-	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_arm_arg0, 
-		(prog_void *)&cmd_arm_arg1,
-		(prog_void *)&cmd_arm_arg2,
-		(prog_void *)&cmd_arm_arg3,
-		NULL,
-	},
-};
-
-/**********************************************************/
-/* tray */
-
-/* this structure is filled when cmd_tray is parsed successfully */
-struct cmd_tray_result {
-	fixed_string_t arg0;
-	fixed_string_t arg1;
-	fixed_string_t arg2;
-};
-
-/* function called when cmd_tray is parsed successfully */
-static void cmd_tray_parsed(__attribute__((unused)) void *parsed_result,
-			    __attribute__((unused)) void *data)
-{
-	struct cmd_tray_result *res = (struct cmd_tray_result *) parsed_result;
-	struct i2c_cmd_slavedspic_set_mode command;
-	//uint8_t mode;
-	//tray_t *tray = 0;
-
-#if 0
-	if (!strcmp_P(res->arg1, PSTR("reception")))
-		tray = &slavedspic.tray_reception;
-	else if (!strcmp_P(res->arg1, PSTR("store")))
-		tray = &slavedspic.tray_store;	
-	else if (!strcmp_P(res->arg1, PSTR("boot")))
-		tray = &slavedspic.tray_boot;	
-
-	mode = tray->mode;
-
-	if (!strcmp_P(res->arg2, PSTR("up")))
-		mode = TRAY_MODE_UP;
-	else if (!strcmp_P(res->arg2, PSTR("down")))
-		mode = TRAY_MODE_DOWN;
-	else if (!strcmp_P(res->arg2, PSTR("vibrate")))
-		mode = TRAY_MODE_VIBRATE;
-		
-	tray_set_mode(tray, mode);
-	printf("done\n\r");
-
-#else
-
-	if (!strcmp_P(res->arg1, PSTR("reception")))
-		command.tray.type = I2C_TRAY_TYPE_RECEPTION;
-	else if (!strcmp_P(res->arg1, PSTR("store")))
-		command.tray.type = I2C_TRAY_TYPE_STORE;	
-	else
-		command.tray.type = I2C_TRAY_TYPE_BOOT;
-
-	if (!strcmp_P(res->arg2, PSTR("up")))
-		command.tray.mode = I2C_TRAY_MODE_UP;
-	else if (!strcmp_P(res->arg2, PSTR("down")))
-		command.tray.mode = I2C_TRAY_MODE_DOWN;
-	else
-		command.tray.mode = I2C_TRAY_MODE_VIBRATE;
-
-	command.mode = I2C_SLAVEDSPIC_MODE_TRAY;
-	state_set_mode(&command);
-
-#endif
-}
-
-prog_char str_tray_arg0[] = "tray";
-parse_pgm_token_string_t cmd_tray_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_tray_result, arg0, str_tray_arg0);
-prog_char str_tray_arg1[] = "reception#store#boot";
-parse_pgm_token_string_t cmd_tray_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_tray_result, arg1, str_tray_arg1);
-prog_char str_tray_arg2[] = "up#down#vibrate";
-parse_pgm_token_string_t cmd_tray_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_tray_result, arg2, str_tray_arg2);
-
-prog_char help_tray[] = "set tray mode";
-parse_pgm_inst_t cmd_tray = {
-	.f = cmd_tray_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_tray,
-	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_tray_arg0, 
-		(prog_void *)&cmd_tray_arg1,
-		(prog_void *)&cmd_tray_arg2,
-		NULL,
-	},
-};
-
-/**********************************************************/
 /* boot */
 
 /* this structure is filled when cmd_boot is parsed successfully */
@@ -591,39 +236,31 @@ static void cmd_boot_parsed(__attribute__((unused)) void *parsed_result,
 {
 	struct cmd_boot_result *res = (struct cmd_boot_result *) parsed_result;
 	struct i2c_cmd_slavedspic_set_mode command;
-	//uint8_t mode;
 
-#if 0
-	mode = slavedspic.boot.mode;
+	if (!strcmp_P(res->arg1, PSTR("door_open"))) {
+		command.boot_door.mode = I2C_BOOT_DOOR_MODE_OPEN;
+		command.mode = I2C_SLAVEDSPIC_MODE_BOOT_DOOR;
+	}	
+	else if (!strcmp_P(res->arg1, PSTR("door_close"))) {
+		command.boot_door.mode = I2C_BOOT_DOOR_MODE_CLOSE;	
+		command.mode = I2C_SLAVEDSPIC_MODE_BOOT_DOOR;
+	}	
+	else if (!strcmp_P(res->arg1, PSTR("tray_vibrate"))) {
+		command.boot_tray.mode = I2C_BOOT_TRAY_MODE_VIBRATE;	
+		command.mode = I2C_SLAVEDSPIC_MODE_BOOT_TRAY;
+	}	
+	else if (!strcmp_P(res->arg1, PSTR("tray_down"))) {
+		command.boot_tray.mode = I2C_BOOT_TRAY_MODE_DOWN;	
+		command.mode = I2C_SLAVEDSPIC_MODE_BOOT_TRAY;
+	}	
 
-	if (!strcmp_P(res->arg1, PSTR("full_open")))
-		mode = BOOT_MODE_OPEN_FULL;
-	else if (!strcmp_P(res->arg1, PSTR("hold_open")))
-		mode = BOOT_MODE_OPEN_HOLD;	
-	else if (!strcmp_P(res->arg1, PSTR("close")))
-		mode = BOOT_MODE_CLOSE;
-		
-	boot_set_mode(&slavedspic.boot, mode);
-	//while(!boot_check_mode_done(&slavedspic.boot));
-	printf("done\n\r");
-
-#else
-	if (!strcmp_P(res->arg1, PSTR("full_open")))
-		command.boot.mode = I2C_BOOT_MODE_OPEN_FULL;
-	else if (!strcmp_P(res->arg1, PSTR("hold_open")))
-		command.boot.mode = I2C_BOOT_MODE_OPEN_HOLD;	
-	else
-		command.boot.mode = I2C_BOOT_MODE_CLOSE;
-
-	command.mode = I2C_SLAVEDSPIC_MODE_BOOT;
 	state_set_mode(&command);
 
-#endif
 }
 
 prog_char str_boot_arg0[] = "boot";
 parse_pgm_token_string_t cmd_boot_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_boot_result, arg0, str_boot_arg0);
-prog_char str_boot_arg1[] = "full_open#hold_open#close";
+prog_char str_boot_arg1[] = "door_open#door_close#tray_vibrate#tray_down";
 parse_pgm_token_string_t cmd_boot_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_boot_result, arg1, str_boot_arg1);
 
 prog_char help_boot[] = "set boot mode";
@@ -640,70 +277,160 @@ parse_pgm_inst_t cmd_boot = {
 
 
 /**********************************************************/
-/* hook */
+/* combs */
 
-/* this structure is filled when cmd_hook is parsed successfully */
-struct cmd_hook_result {
+/* this structure is filled when cmd_combs is parsed successfully */
+struct cmd_combs_result {
 	fixed_string_t arg0;
 	fixed_string_t arg1;
+	int8_t arg2;
 };
 
-/* function called when cmd_hook is parsed successfully */
-static void cmd_hook_parsed(__attribute__((unused)) void *parsed_result,
+/* function called when cmd_combs is parsed successfully */
+static void cmd_combs_parsed(__attribute__((unused)) void *parsed_result,
 			    __attribute__((unused)) void *data)
 {
-	struct cmd_hook_result *res = (struct cmd_hook_result *) parsed_result;
+	struct cmd_combs_result *res = (struct cmd_combs_result *) parsed_result;
 	struct i2c_cmd_slavedspic_set_mode command;
-	//uint8_t mode;
-
-#if 0
-	mode = slavedspic.hook.mode;
 
 	if (!strcmp_P(res->arg1, PSTR("hide")))
-		mode = HOOK_MODE_HIDE;
-	else if (!strcmp_P(res->arg1, PSTR("show")))
-		mode = HOOK_MODE_SHOW;	
-	else if (!strcmp_P(res->arg1, PSTR("fuckyou")))
-		mode = HOOK_MODE_FUCKYOU;
-	else if (!strcmp_P(res->arg1, PSTR("open_hold")))
-		mode = HOOK_MODE_OPEN_HOLD;
-		
-	hook_set_mode(&slavedspic.hook, mode);
-	//while(!hook_check_mode_done(&slavedspic.hook));
-	printf("done\n\r");
+		command.combs.mode = I2C_COMBS_MODE_HIDE;
+	else if (!strcmp_P(res->arg1, PSTR("open")))
+		command.combs.mode = I2C_COMBS_MODE_OPEN;	
+	else if (!strcmp_P(res->arg1, PSTR("harvest_close")))
+		command.combs.mode = I2C_COMBS_MODE_HARVEST_CLOSE;	
+	else if (!strcmp_P(res->arg1, PSTR("harvest_open")))
+		command.combs.mode = I2C_COMBS_MODE_HARVEST_OPEN;	
 
-#else
-	if (!strcmp_P(res->arg1, PSTR("hide")))
-		command.hook.mode = I2C_HOOK_MODE_HIDE;
-	else if (!strcmp_P(res->arg1, PSTR("show")))
-		command.hook.mode = I2C_HOOK_MODE_SHOW;	
-	else if (!strcmp_P(res->arg1, PSTR("fuckyou")))
-		command.hook.mode = I2C_HOOK_MODE_FUCKYOU;
-	else
-		command.hook.mode = I2C_HOOK_MODE_OPEN_HOLD;
-
-	command.mode = I2C_SLAVEDSPIC_MODE_HOOK;
+	command.mode = I2C_SLAVEDSPIC_MODE_COMBS;
 	state_set_mode(&command);
-#endif
+
 }
 
-prog_char str_hook_arg0[] = "hook";
-parse_pgm_token_string_t cmd_hook_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_hook_result, arg0, str_hook_arg0);
-prog_char str_hook_arg1[] = "hide#show#fuckyou#open_hold";
-parse_pgm_token_string_t cmd_hook_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_hook_result, arg1, str_hook_arg1);
+prog_char str_combs_arg0[] = "combs";
+parse_pgm_token_string_t cmd_combs_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_combs_result, arg0, str_combs_arg0);
+prog_char str_combs_arg1[] = "hide#open#harvest_open#harvest_close";
+parse_pgm_token_string_t cmd_combs_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_combs_result, arg1, str_combs_arg1);
+parse_pgm_token_num_t cmd_combs_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_combs_result, arg2, INT8);
 
-prog_char help_hook[] = "set hook mode";
-parse_pgm_inst_t cmd_hook = {
-	.f = cmd_hook_parsed,  /* function to call */
+prog_char help_combs[] = "set combs mode, offset";
+parse_pgm_inst_t cmd_combs = {
+	.f = cmd_combs_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_hook,
+	.help_str = help_combs,
 	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_hook_arg0, 
-		(prog_void *)&cmd_hook_arg1,
+		(prog_void *)&cmd_combs_arg0, 
+		(prog_void *)&cmd_combs_arg1,
+		(prog_void *)&cmd_combs_arg2,
 		NULL,
 	},
 };
 
+/**********************************************************/
+/* tree tray */
+
+/* this structure is filled when cmd_tree_tray is parsed successfully */
+struct cmd_tree_tray_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+	int8_t arg2;
+};
+
+/* function called when cmd_tree_tray is parsed successfully */
+static void cmd_tree_tray_parsed(__attribute__((unused)) void *parsed_result,
+			    __attribute__((unused)) void *data)
+{
+	struct cmd_tree_tray_result *res = (struct cmd_tree_tray_result *) parsed_result;
+	struct i2c_cmd_slavedspic_set_mode command;
+
+	if (!strcmp_P(res->arg1, PSTR("open")))
+		command.tree_tray.mode = I2C_TREE_TRAY_MODE_OPEN;
+	else if (!strcmp_P(res->arg1, PSTR("close")))
+		command.tree_tray.mode = I2C_TREE_TRAY_MODE_CLOSE;	
+	else if (!strcmp_P(res->arg1, PSTR("harvest")))
+		command.tree_tray.mode = I2C_TREE_TRAY_MODE_HARVEST;	
+
+	command.mode = I2C_SLAVEDSPIC_MODE_TREE_TRAY;
+	state_set_mode(&command);
+
+}
+
+prog_char str_tree_tray_arg0[] = "tree_tray";
+parse_pgm_token_string_t cmd_tree_tray_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_tree_tray_result, arg0, str_tree_tray_arg0);
+prog_char str_tree_tray_arg1[] = "open#close#harvest";
+parse_pgm_token_string_t cmd_tree_tray_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_tree_tray_result, arg1, str_tree_tray_arg1);
+parse_pgm_token_num_t cmd_tree_tray_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_tree_tray_result, arg2, INT8);
+
+prog_char help_tree_tray[] = "set tree_tray mode, offset";
+parse_pgm_inst_t cmd_tree_tray = {
+	.f = cmd_tree_tray_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_tree_tray,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_tree_tray_arg0, 
+		(prog_void *)&cmd_tree_tray_arg1,
+		(prog_void *)&cmd_tree_tray_arg2,
+		NULL,
+	},
+};
+
+/**********************************************************/
+/* stick */
+
+/* this structure is filled when cmd_stick is parsed successfully */
+struct cmd_stick_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+	int8_t arg2;
+};
+
+/* function called when cmd_stick is parsed successfully */
+static void cmd_stick_parsed(__attribute__((unused)) void *parsed_result,
+			    __attribute__((unused)) void *data)
+{
+	struct cmd_stick_result *res = (struct cmd_stick_result *) parsed_result;
+	struct i2c_cmd_slavedspic_set_mode command;
+
+	if (!strcmp_P(res->arg0, PSTR("stick_left")))
+		command.stick.type = I2C_STICK_TYPE_RIGHT;
+	else if (!strcmp_P(res->arg0, PSTR("stick_right")))
+		command.stick.type = I2C_STICK_TYPE_LEFT;	
+
+	if (!strcmp_P(res->arg1, PSTR("hide")))
+		command.stick.mode = I2C_STICK_MODE_HIDE;
+	else if (!strcmp_P(res->arg1, PSTR("push_fire")))
+		command.stick.mode = I2C_STICK_MODE_PUSH_FIRE;	
+	else if (!strcmp_P(res->arg1, PSTR("push_torch")))
+		command.stick.mode = I2C_STICK_MODE_PUSH_TORCH_FIRE;	
+	else if (!strcmp_P(res->arg1, PSTR("clean_floor")))
+		command.stick.mode = I2C_STICK_MODE_CLEAN_FLOOR;	
+	else if (!strcmp_P(res->arg1, PSTR("clean_heart")))
+		command.stick.mode = I2C_STICK_MODE_CLEAN_HEART;
+
+	command.mode = I2C_SLAVEDSPIC_MODE_STICK;
+	state_set_mode(&command);
+}
+
+prog_char str_stick_arg0[] = "stick_left#stick_right";
+parse_pgm_token_string_t cmd_stick_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_stick_result, arg0, str_stick_arg0);
+prog_char str_stick_arg1[] = "hide#push_fire#push_torch#clean_floor#clean_heart";
+parse_pgm_token_string_t cmd_stick_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_stick_result, arg1, str_stick_arg1);
+parse_pgm_token_num_t cmd_stick_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_stick_result, arg2, INT8);
+
+prog_char help_stick[] = "set stick mode, offset";
+parse_pgm_inst_t cmd_stick = {
+	.f = cmd_stick_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_stick,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_stick_arg0, 
+		(prog_void *)&cmd_stick_arg1,
+		(prog_void *)&cmd_stick_arg2,
+		NULL,
+	},
+};
+
+#if 0
 /**********************************************************/
 /* harvest */
 

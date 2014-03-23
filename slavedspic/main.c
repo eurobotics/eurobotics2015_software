@@ -304,10 +304,10 @@ int main(void)
 	ax12_user_init();
 
 	/* LOGS */
- 	//gen.logs[0] = E_USER_ST_MACH;
-	//gen.logs[1] = E_USER_ACTUATORS;
+ 	gen.logs[0] = E_USER_ST_MACH;
+	gen.logs[1] = E_USER_ACTUATORS;
 	//gen.logs[2] = E_USER_CS;
-	//gen.log_level = 5;
+	gen.log_level = 5;
 
 	/* enable interrupt */
 	sei();
@@ -316,7 +316,7 @@ int main(void)
 	wait_ms(500);
 
 	/* ACTUATORS */
-	//actuator_init();
+	actuator_init();
 
 	printf("\r\n");
 	printf("Don't turn it on, take it a part!! \n");
@@ -327,7 +327,7 @@ int main(void)
 	/* main loop */
 	while(1)
 	{
-		//state_machines();
+		state_machines();
 		cmdline_interact_nowait();
 	}
 
