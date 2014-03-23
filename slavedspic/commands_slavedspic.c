@@ -31,7 +31,7 @@
 
 #include <ax12.h>
 #include <uart.h>
-#include <time.h>
+#include <clock_time.h>
 #include <rdline.h>
 #include <parse.h>
 #include <parse_string.h>
@@ -119,6 +119,8 @@ parse_pgm_inst_t cmd_event = {
 		NULL,
 	},
 };
+
+#if 0
 
 /**********************************************************/
 /* Color */
@@ -1061,6 +1063,8 @@ parse_pgm_inst_t cmd_state_debug = {
 		NULL,
 	},
 };
+
+#endif
 
 /**********************************************************/
 /* Test */

@@ -31,7 +31,7 @@
 
 #include <ax12.h>
 #include <uart.h>
-#include <time.h>
+#include <clock_time.h>
 
 #include <rdline.h>
 #include <parse.h>

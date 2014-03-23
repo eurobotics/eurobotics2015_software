@@ -26,7 +26,8 @@
 #include <aversive/pgmspace.h>
 #include <parse.h>
 
-//#define COMPILE_COMMANDS_CS
+#define COMPILE_COMMANDS_CS
+#define COMPILE_COMMANDS_AX12
 
 /* commands_gen.c */
 extern parse_pgm_inst_t cmd_reset;
@@ -77,6 +78,7 @@ extern parse_pgm_inst_t cmd_ax12_dump_stats;
 #endif /* COMPILE_COMMANDS_AX12 */
 
 /* commands_slavedspic.c */
+#if 0
 extern parse_pgm_inst_t cmd_event;
 extern parse_pgm_inst_t cmd_color;
 extern parse_pgm_inst_t cmd_lift;
@@ -96,7 +98,7 @@ extern parse_pgm_inst_t cmd_state2;
 extern parse_pgm_inst_t cmd_state3;
 //extern parse_pgm_inst_t cmd_state_machine;
 //extern parse_pgm_inst_t cmd_test;
-
+#endif
 
 /* in progmem */
 parse_pgm_ctx_t main_ctx[]  = {
@@ -147,6 +149,7 @@ parse_pgm_ctx_t main_ctx[]  = {
 #endif
 
 	/* commands_slavedspic.c */
+#if 0
 	(parse_pgm_inst_t *)&cmd_event,
 	(parse_pgm_inst_t *)&cmd_color,
 	(parse_pgm_inst_t *)&cmd_lift,
@@ -166,6 +169,6 @@ parse_pgm_ctx_t main_ctx[]  = {
 	(parse_pgm_inst_t *)&cmd_state3,
 	//(parse_pgm_inst_t *)&cmd_state_machine,
 	//(parse_pgm_inst_t *)&cmd_test,
-
+#endif
 	NULL,
 };

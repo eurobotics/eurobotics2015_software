@@ -24,7 +24,7 @@
 #define __MAIN_H__
 
 #include <aversive.h>#include <aversive/error.h>
-#include <time.h>#include <rdline.h>
+#include <clock_time.h>#include <rdline.h>
 #include <encoders_dspic.h>#include <dac_mc.h>#include <pwm_mc.h>
 #include <pwm_servo.h>
 #include <ax12.h>
@@ -58,11 +58,8 @@
 /* EUROBOT 2012 defines */
 #define LIFT_ENCODER						((void *)1)#define LIFT_DAC_MC						((void *)&gen.dac_mc_left)
 
-#define TURBINE_POWER_PIN				RELE_OUT_PIN
-#define TURBINE_SPEED_PWM_SERVO		&gen.pwm_servo_oc4
-#define TURBINE_ANGLE_PWM_SERVO		&gen.pwm_servo_oc3
-#define PWM_SERVO_TRAY_RECEPTION		&gen.pwm_servo_oc2	
-#define PWM_SERVO_TRAY_STORE  		&gen.pwm_servo_oc1#define PWM_MC_TRAY_BOOT				&gen.pwm_mc_mod2_ch1
+#define PWM_MC_BOOT_TRAY				((void *)&gen.pwm_mc_mod2_ch1)
+#define PWM_SERVO_BOOT_DOOR			&gen.pwm_servo_oc2	
 
 #define AX12_ID_FINGERS_TOTEM_R		4
 #define AX12_ID_FINGERS_TOTEM_L		7
@@ -73,13 +70,20 @@
 #define AX12_ID_BOOT						5
 #define AX12_ID_HOOK						6
 
+#define AX12_ID_STICK_L		1
+#define AX12_ID_STICK_R		3
+#define AX12_ID_COMB_L		6
+#define AX12_ID_COMB_R		4
+#define AX12_ID_TREE_TRAY	2
+
+#if 0
 #define S_TURBINE_LINE_A1	SENSOR5
 #define S_TURBINE_LINE_A2	SENSOR5
 #define S_TURBINE_LINE_B1	SENSOR2
 #define S_TURBINE_LINE_B2	SENSOR1
 #define S_TURBINE_LINE_A 	((1 << S_TURBINE_LINE_A1) & (1 << S_TURBINE_LINE_A2)) /* more close */
 #define S_TURBINE_LINE_B 	((1 << S_TURBINE_LINE_B1) & (1 << S_TURBINE_LINE_B2)) /* more far */
-
+#endif
 
 /** ERROR NUMS */
 #define E_USER_I2C_PROTO   195
@@ -147,27 +151,15 @@ struct slavedspic {
   	struct cs_block lift;
 
 	/* actuators */
-	turbine_t turbine;
-	fingers_t fingers_totem;
-	fingers_t fingers_floor;
-	arm_t arm_left;
-	arm_t arm_right;
+#if 0
+	combs_t combs;
+	stick_t stick_r, stick_l;
+	tree_tray_t tree_tray;
 	boot_t boot;
-	hook_t hook;
-	tray_t tray_reception;
-	tray_t tray_store;
-	tray_t tray_boot;
+#endif
 
 	/* infos */
 	uint8_t status;
-	uint8_t harvest_mode;
-	uint8_t store_mode;
-	uint8_t dump_mode;
-
-	int8_t nb_goldbars_in_boot;
-	int8_t nb_goldbars_in_mouth;
-	int8_t nb_coins_in_boot;
-	int8_t nb_coins_in_mouth;
 
 	/* infos */
 	uint8_t our_color;
