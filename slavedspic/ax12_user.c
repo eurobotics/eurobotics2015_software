@@ -30,7 +30,7 @@
 #include <i2c.h>
 #include <ax12.h>
 #include <uart.h>
-#include <time.h>
+#include <clock_time.h>
 
 #include <rdline.h>
 #include <parse.h>
@@ -86,7 +86,7 @@ static microseconds t_prev_msg = 0;
  */
 
 static volatile uint8_t ax12_state = AX12_STATE_READ;
-extern volatile struct cirbuf g_tx_fifo[]; /* uart fifo */
+//extern volatile struct cirbuf g_tx_fifo[]; /* uart fifo */
 static volatile uint8_t ax12_nsent = 0;
 
 /* Called by ax12 module to send a character on serial line. Count the

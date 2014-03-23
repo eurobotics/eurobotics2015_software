@@ -30,7 +30,7 @@
 #include <i2c_slave_lite.h>
 #include <ax12.h>
 #include <uart.h>
-#include <time.h>
+#include <clock_time.h>
 
 #include <rdline.h>
 #include <parse.h>
@@ -58,7 +58,7 @@ void i2c_led_control(uint8_t l, uint8_t state)
 
 static int8_t i2c_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd)
 {
-	state_set_mode(cmd);
+//	state_set_mode(cmd);
 	return 0;
 }
 
@@ -116,7 +116,7 @@ void i2c_read_event(uint8_t cmd_byte, uint8_t *buf)
 			struct i2c_slavedspic_status *cmd = void_cmd;
 			
 			(*cmd).hdr.cmd = I2C_ANS_SLAVEDSPIC_STATUS;
-
+#if 0
 			/* actuators blocking flags */
 			(*cmd).fingers_floor_blocked = slavedspic.fingers_floor.blocking;
 			(*cmd).fingers_totem_blocked = slavedspic.fingers_totem.blocking;
@@ -141,7 +141,7 @@ void i2c_read_event(uint8_t cmd_byte, uint8_t *buf)
 
 			/* XXX watchdog time */
 			i2c_watchdog_cnt = 5;
-			
+#endif			
 			break;
 		}
 		

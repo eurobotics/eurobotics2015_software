@@ -33,7 +33,7 @@
 #include <rdline.h>
 #include <ax12.h>
 #include <uart.h>
-#include <time.h>
+#include <clock_time.h>
 
 #include "../common/i2c_commands.h"
 #include "state.h"

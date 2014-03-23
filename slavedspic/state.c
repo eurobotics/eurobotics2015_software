@@ -33,7 +33,7 @@
 #include <uart.h>
 #include <timer.h>
 #include <scheduler.h>
-#include <time.h>
+#include <clock_time.h>
 
 #include <rdline.h>
 #include <vt100.h>
@@ -50,6 +50,8 @@
 #define STMCH_DEBUG(args...) DEBUG(E_USER_ST_MACH, args)
 #define STMCH_NOTICE(args...) NOTICE(E_USER_ST_MACH, args)
 #define STMCH_ERROR(args...) ERROR(E_USER_ST_MACH, args)
+
+#if 0
 
 /* shorter aliases for this file */
 #define INIT				I2C_SLAVEDSPIC_MODE_INIT
@@ -1300,3 +1302,4 @@ void state_init(void)
 	fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_CLOSE, 0);
 }
 
+#endif

@@ -153,5 +153,7 @@ void do_sensors(__attribute__((unused)) void *dummy)
 
 /* return true if object is cached by turbine */
 uint8_t sensor_object_is_catched(void) {
-	return ((sensor_get_all() & S_TURBINE_LINE_A) && (sensor_get_all() & S_TURBINE_LINE_B));
+
+//	return ((sensor_get_all() & S_TURBINE_LINE_A) && (sensor_get_all() & S_TURBINE_LINE_B));
+	return 0;
 }

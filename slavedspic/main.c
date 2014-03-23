@@ -41,7 +41,7 @@
 #include <i2c_slave_lite.h>
 #include <timer.h>
 #include <scheduler.h>
-#include <time.h>
+#include <clock_time.h>
 #include <parse.h>
 #include <rdline.h>
 
@@ -240,7 +240,7 @@ int main(void)
 	slavedspic_cs_init();
 
 	/* I2C */
-#if 1
+#if 0
 	i2c_init(I2C_SLAVEDSPIC_ADDR);
 	i2c_register_read_event(i2c_read_event);
 	i2c_register_write_event(i2c_write_event);
@@ -270,15 +270,15 @@ int main(void)
 	dac_mc_set(&gen.dac_mc_left, 0);
 
 	/* servos */
-	pwm_servo_init(&gen.pwm_servo_oc1, 1, 500, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc1, 1, 600, 2400);
 	pwm_servo_init(&gen.pwm_servo_oc2, 2, 600, 2400);
 	pwm_servo_init(&gen.pwm_servo_oc3, 3, 600, 2400);
-	pwm_servo_init(&gen.pwm_servo_oc4, 4, 700, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc4, 4, 600, 2400);
 	pwm_servo_enable();
-	pwm_servo_set(&gen.pwm_servo_oc1, 200);
-	pwm_servo_set(&gen.pwm_servo_oc2, 0);
-	pwm_servo_set(&gen.pwm_servo_oc3, 670);
-	pwm_servo_set(&gen.pwm_servo_oc4, 0);
+	pwm_servo_set(&gen.pwm_servo_oc1, 1000);
+	pwm_servo_set(&gen.pwm_servo_oc2, 1000);
+	pwm_servo_set(&gen.pwm_servo_oc3, 1000);
+	pwm_servo_set(&gen.pwm_servo_oc4, 1000);
 
 	/* SCHEDULER */
 	scheduler_init();
@@ -290,9 +290,9 @@ int main(void)
 	scheduler_add_periodical_event_priority(do_cs, NULL, 
 						CS_PERIOD / SCHEDULER_UNIT, 
 						CS_PRIO);
-	scheduler_add_periodical_event_priority(do_i2c_watchdog, NULL, 
-						8000L / SCHEDULER_UNIT, 
-						I2C_POLL_PRIO);
+	//scheduler_add_periodical_event_priority(do_i2c_watchdog, NULL, 
+	//					8000L / SCHEDULER_UNIT, 
+	//					I2C_POLL_PRIO);
 
 	scheduler_add_periodical_event_priority(do_sensors, NULL, 
 						10000L / SCHEDULER_UNIT, 
@@ -316,10 +316,10 @@ int main(void)
 	wait_ms(500);
 
 	/* ACTUATORS */
-	actuator_init();
+	//actuator_init();
 
 	printf("\r\n");
-	printf("Siempre falta tiempo para hacer pruebas. \r\n");
+	printf("Don't turn it on, take it a part!! \n");
 	
 	/* init cmdline */
 	cmdline_init();
@@ -327,7 +327,7 @@ int main(void)
 	/* main loop */
 	while(1)
 	{
-		state_machines();
+		//state_machines();
 		cmdline_interact_nowait();
 	}
 
