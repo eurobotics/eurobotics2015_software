@@ -51,24 +51,15 @@
 #define STMCH_NOTICE(args...) NOTICE(E_USER_ST_MACH, args)
 #define STMCH_ERROR(args...) ERROR(E_USER_ST_MACH, args)
 
-#if 0
 
 /* shorter aliases for this file */
 #define INIT				I2C_SLAVEDSPIC_MODE_INIT
 #define POWER_OFF			I2C_SLAVEDSPIC_MODE_POWER_OFF
-#define FINGERS			I2C_SLAVEDSPIC_MODE_FINGERS
-#define ARM				   I2C_SLAVEDSPIC_MODE_ARM
-#define HOOK				I2C_SLAVEDSPIC_MODE_HOOK
-#define BOOT				I2C_SLAVEDSPIC_MODE_BOOT
-#define TRAY				I2C_SLAVEDSPIC_MODE_TRAY
-#define TURBINE_ANGLE	I2C_SLAVEDSPIC_MODE_TURBINE_ANGLE
-#define TURBINE_BLOW		I2C_SLAVEDSPIC_MODE_TURBINE_BLOW
-#define LIFT_HEIGHT		I2C_SLAVEDSPIC_MODE_LIFT_HEIGHT
-
-#define HARVEST			I2C_SLAVEDSPIC_MODE_HARVEST
-#define STORE				I2C_SLAVEDSPIC_MODE_STORE
-#define DUMP				I2C_SLAVEDSPIC_MODE_DUMP
-#define SET_INFOS			I2C_SLAVEDSPIC_MODE_SET_INFOS
+#define BOOT_TRAY			I2C_SLAVEDSPIC_MODE_BOOT_TRAY
+#define BOOT_DOOR			I2C_SLAVEDSPIC_MODE_BOOT_DOOR
+#define COMBS				I2C_SLAVEDSPIC_MODE_COMBS
+#define TREE_TRAY			I2C_SLAVEDSPIC_MODE_TREE_TRAY
+#define STICK				I2C_SLAVEDSPIC_MODE_STICK
 
 static struct i2c_cmd_slavedspic_set_mode mainboard_command;
 static volatile uint8_t prev_state;
@@ -84,7 +75,6 @@ void state_set_status(uint8_t val)
 	IRQ_UNLOCK(flags);
 }
 
-
 /* set a new state, return 0 on success */
 int8_t state_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd)
 {
@@ -95,19 +85,12 @@ int8_t state_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd)
 	/* XXX power off mode */
 	if (mainboard_command.mode == POWER_OFF) {
 
-		/* turbine */
-		turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);
-		turbine_power_off(&slavedspic.turbine);
-
-		/* servos */
-		tray_set_mode(&slavedspic.tray_reception, TRAY_MODE_DOWN);
-		tray_set_mode(&slavedspic.tray_store, TRAY_MODE_DOWN);
-		tray_set_mode(&slavedspic.tray_boot, TRAY_MODE_DOWN);
-
 		/* lift */
+		#ifdef notyet
 		slavedspic.lift.on = 0;
 		dac_mc_set(&gen.dac_mc_left, 0);
 		BRAKE_ON();
+		#endif
 
 		/* ax12 */
 		ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_TORQUE_ENABLE, 0x00);
@@ -163,164 +146,101 @@ static void state_do_init(void)
   	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
-/* set fingers mode */
-void state_do_fingers_mode(void)
-{		
-	/* return if no update */
-	if (!state_check_update(FINGERS))
-		return;
 
-	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
-
-	/* set fingers mode */
-	if(mainboard_command.fingers.type == I2C_FINGERS_TYPE_FLOOR || mainboard_command.fingers.type == I2C_FINGERS_TYPE_FLOOR_LEFT || mainboard_command.fingers.type == I2C_FINGERS_TYPE_FLOOR_RIGHT) {
-		slavedspic.fingers_floor.type = mainboard_command.fingers.type;
-      if(fingers_set_mode(&slavedspic.fingers_floor, mainboard_command.fingers.mode, mainboard_command.fingers.offset))
-			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
-
-		fingers_wait_end(&slavedspic.fingers_floor);
-	}	
-	else if(mainboard_command.fingers.type == I2C_FINGERS_TYPE_TOTEM || mainboard_command.fingers.type == I2C_FINGERS_TYPE_TOTEM_LEFT || mainboard_command.fingers.type == I2C_FINGERS_TYPE_TOTEM_RIGHT) {
-		slavedspic.fingers_totem.type = mainboard_command.fingers.type;
-		if(fingers_set_mode(&slavedspic.fingers_totem, mainboard_command.fingers.mode, mainboard_command.fingers.offset))
-			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
-
-		fingers_wait_end(&slavedspic.fingers_totem);
-	}
-
-	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
-
-   state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
-}
-
-/* set arms mode */
-void state_do_arms_mode(void)
+/* set boot tray mode */
+void state_do_boot_tray_mode(void)
 {
 	/* return if no update */
-	if (!state_check_update(ARM))
+	if (!state_check_update(BOOT_TRAY))
 		return;
 
 	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
 
-	/* set fingers mode */
-	if(mainboard_command.arm.type == I2C_ARM_TYPE_RIGHT) {
-		if(arm_set_mode(&slavedspic.arm_right, mainboard_command.arm.mode, mainboard_command.arm.offset))
+	/* set boot tray mode */
+	boot_tray_set_mode(&slavedspic.boot, mainboard_command.boot_tray.mode);
+
+   state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
+}
+
+/* set boot door mode */
+void state_do_boot_door_mode(void)
+{
+	/* return if no update */
+	if (!state_check_update(BOOT_DOOR))
+		return;
+
+	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
+
+	/* set boot door mode */
+	boot_door_set_mode(&slavedspic.boot, mainboard_command.boot_door.mode);
+
+   state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
+}
+
+/* set stick mode */
+void state_do_stick_mode(void)
+{
+	/* return if no update */
+	if (!state_check_update(STICK))
+		return;
+
+	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
+
+	/* set stick mode */
+	if(mainboard_command.stick.type == I2C_STICK_TYPE_RIGHT) {
+		if(stick_set_mode(&slavedspic.stick_r, mainboard_command.stick.mode, mainboard_command.stick.offset))
 			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
 
-		arm_wait_end(&slavedspic.arm_right);
+		stick_wait_end(&slavedspic.stick_r);
 	}	
-	else if(mainboard_command.arm.type == I2C_ARM_TYPE_LEFT) {
-		if(arm_set_mode(&slavedspic.arm_left, mainboard_command.arm.mode, mainboard_command.arm.offset))
+	else if(mainboard_command.stick.type == I2C_STICK_TYPE_LEFT) {
+		if(stick_set_mode(&slavedspic.stick_l, mainboard_command.stick.mode, mainboard_command.stick.offset))
 			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
 
-		arm_wait_end(&slavedspic.arm_left);
-	}
+		stick_wait_end(&slavedspic.stick_l);
+	}	
    state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
-/* set lift heigh */
-void state_do_lift_height(void)
+/* set combs mode */
+void state_do_combs_mode(void)
 {
-	if (!state_check_update(LIFT_HEIGHT))
+	/* return if no update */
+	if (!state_check_update(COMBS))
 		return;
 
 	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
 
-	lift_set_height(mainboard_command.lift.height * 1000);
-	lift_wait_end();
+	/* set combs mode */
+	if(combs_set_mode(&slavedspic.combs, mainboard_command.combs.mode, mainboard_command.combs.offset))
+		STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
 
-	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
+	combs_wait_end(&slavedspic.combs);
+
    state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
-/* set turbine angle */
-void state_do_turbine_angle(void)
+/* set stick mode */
+void state_do_tree_tray_mode(void)
 {
-	if (!state_check_update(TURBINE_ANGLE))
+	/* return if no update */
+	if (!state_check_update(TREE_TRAY))
 		return;
 
+	/* set tree tray mode */
 	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
 
-	turbine_set_angle(&slavedspic.turbine, 
-							mainboard_command.turbine.angle_deg, mainboard_command.turbine.angle_speed);
+	/* set combs mode */
+	if(tree_tray_set_mode(&slavedspic.tree_tray, mainboard_command.tree_tray.mode, mainboard_command.tree_tray.offset))
+		STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
 
-   time_wait_ms(400);
-
-	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
+	tree_tray_wait_end(&slavedspic.tree_tray);
 
    state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
-/* set turbine blow speed */
-void state_do_turbine_blow(void)
-{
-	if (!state_check_update(TURBINE_BLOW))
-		return;
 
-	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
-
-	turbine_set_blow_speed(&slavedspic.turbine, mainboard_command.turbine.blow_speed << 2);
-
-	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
-
-   state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
-}
-
-/* set hook mode */
-void state_do_hook_mode(void)
-{
-	if (!state_check_update(HOOK))
-		return;
-
-	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
-
-	hook_set_mode(&slavedspic.hook, mainboard_command.hook.mode);
-
-	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
-
-   hook_wait_end(&slavedspic.hook);
-
-   state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
-}
-
-/* set boot mode */
-void state_do_boot_mode(void)
-{
-	if (!state_check_update(BOOT))
-		return;
-
-	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
-
-	boot_set_mode(&slavedspic.boot, mainboard_command.boot.mode);
-
-	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
-
-   boot_wait_end(&slavedspic.boot);
-
-   state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
-}
-
-/* set tray mode */
-void state_do_tray_mode(void)
-{
-	if (!state_check_update(TRAY))
-		return;
-
-	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
-
-	if(mainboard_command.tray.type == I2C_TRAY_TYPE_RECEPTION)
-		tray_set_mode(&slavedspic.tray_reception, mainboard_command.tray.mode);
-	else if(mainboard_command.tray.type == I2C_TRAY_TYPE_STORE)
-		tray_set_mode(&slavedspic.tray_store, mainboard_command.tray.mode);
-	else if(mainboard_command.tray.type == I2C_TRAY_TYPE_BOOT)
-		tray_set_mode(&slavedspic.tray_boot, mainboard_command.tray.mode);
-
-
-	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
-
-   state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
-}
-
+#if 0
 
 /* set harvest mode */
 void state_do_harvest_mode(void)
@@ -1239,6 +1159,7 @@ void state_do_set_infos(void)
    state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
+#endif
 
 /* state machines */
 void state_machines(void)
@@ -1246,20 +1167,19 @@ void state_machines(void)
 	state_do_init();
 
 	/* actuator level */
-	state_do_fingers_mode();
-	state_do_arms_mode();
-	state_do_lift_height();
-	state_do_turbine_angle();
-	state_do_turbine_blow();
-	state_do_hook_mode();
-	state_do_boot_mode();
-	state_do_tray_mode();
+	state_do_boot_tray_mode();
+	state_do_boot_door_mode();
+	state_do_stick_mode();
+	state_do_combs_mode();
+	state_do_tree_tray_mode();
 
 	/* abstract modes */
+#if 0
 	state_do_harvest_mode();
 	state_do_store_mode();
 	state_do_dump_mode();
 	state_do_set_infos();
+#endif
 }
 
 void state_init(void)
@@ -1267,39 +1187,22 @@ void state_init(void)
 	mainboard_command.mode = INIT;
 
 	pwm_servo_enable();
+#if 0
 	BRAKE_OFF();
 	slavedspic.lift.on = 1;
+#endif
+
 	ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_TORQUE_ENABLE, 0xFF);
 
 	time_wait_ms(100);
 
 	/* start positions */
-	fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_OPEN, 0);
-	fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_OPEN, 0);
-	fingers_wait_end(&slavedspic.fingers_totem);
+	/* TODO */
 
-	turbine_set_angle(&slavedspic.turbine, 0, TURBINE_ANGLE_SPEED_FAST);
-	turbine_set_blow_speed(&slavedspic.turbine, TURBINE_BLOW_SPEED_OFF);
-	turbine_power_on(&slavedspic.turbine);
-
-	time_wait_ms(500);
-
-	arm_set_mode(&slavedspic.arm_left, ARM_MODE_HIDE, 0);
-	arm_set_mode(&slavedspic.arm_right, ARM_MODE_HIDE, 0);
-
-	hook_set_mode(&slavedspic.hook, HOOK_MODE_HIDE);
-	boot_set_mode(&slavedspic.boot, BOOT_MODE_CLOSE);
-
-	tray_set_mode(&slavedspic.tray_reception, TRAY_MODE_DOWN);
-	tray_set_mode(&slavedspic.tray_store, TRAY_MODE_DOWN);
-	tray_set_mode(&slavedspic.tray_boot, TRAY_MODE_DOWN);
-
+#if 0
 	/* lift calibration */
 	lift_calibrate();
 	lift_set_height(LIFT_HEIGHT_MIN_mm);
-
-	fingers_set_mode(&slavedspic.fingers_floor, FINGERS_MODE_CLOSE, 0);
-	fingers_set_mode(&slavedspic.fingers_totem, FINGERS_MODE_CLOSE, 0);
+#endif
 }
 
-#endif

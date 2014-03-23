@@ -78,17 +78,19 @@ extern parse_pgm_inst_t cmd_ax12_dump_stats;
 #endif /* COMPILE_COMMANDS_AX12 */
 
 /* commands_slavedspic.c */
-#if 0
+
 extern parse_pgm_inst_t cmd_event;
 extern parse_pgm_inst_t cmd_color;
 extern parse_pgm_inst_t cmd_lift;
-extern parse_pgm_inst_t cmd_turbine;
-extern parse_pgm_inst_t cmd_turbine_show;
-extern parse_pgm_inst_t cmd_fingers;
-extern parse_pgm_inst_t cmd_arm;
-extern parse_pgm_inst_t cmd_tray;
 extern parse_pgm_inst_t cmd_boot;
-extern parse_pgm_inst_t cmd_hook;
+extern parse_pgm_inst_t cmd_combs;
+extern parse_pgm_inst_t cmd_tree_tray;
+extern parse_pgm_inst_t cmd_stick;
+
+
+
+
+#if 0
 extern parse_pgm_inst_t cmd_harvest;
 extern parse_pgm_inst_t cmd_store;
 extern parse_pgm_inst_t cmd_dump;
@@ -149,17 +151,14 @@ parse_pgm_ctx_t main_ctx[]  = {
 #endif
 
 	/* commands_slavedspic.c */
-#if 0
 	(parse_pgm_inst_t *)&cmd_event,
 	(parse_pgm_inst_t *)&cmd_color,
 	(parse_pgm_inst_t *)&cmd_lift,
-	(parse_pgm_inst_t *)&cmd_turbine,
-	(parse_pgm_inst_t *)&cmd_turbine_show,
-	(parse_pgm_inst_t *)&cmd_fingers,
-	(parse_pgm_inst_t *)&cmd_arm,
-	(parse_pgm_inst_t *)&cmd_tray,
 	(parse_pgm_inst_t *)&cmd_boot,
-	(parse_pgm_inst_t *)&cmd_hook,
+	(parse_pgm_inst_t *)&cmd_combs,
+	(parse_pgm_inst_t *)&cmd_tree_tray,
+	(parse_pgm_inst_t *)&cmd_stick,
+#if 0
 	(parse_pgm_inst_t *)&cmd_harvest,
 	(parse_pgm_inst_t *)&cmd_store,
 	(parse_pgm_inst_t *)&cmd_dump,

@@ -72,7 +72,7 @@
 
 #define AX12_ID_STICK_L		1
 #define AX12_ID_STICK_R		3
-#define AX12_ID_COMB_L		6
+#define AX12_ID_COMB_L		5
 #define AX12_ID_COMB_R		4
 #define AX12_ID_TREE_TRAY	2
 
@@ -151,12 +151,10 @@ struct slavedspic {
   	struct cs_block lift;
 
 	/* actuators */
-#if 0
 	combs_t combs;
 	stick_t stick_r, stick_l;
 	tree_tray_t tree_tray;
 	boot_t boot;
-#endif
 
 	/* infos */
 	uint8_t status;

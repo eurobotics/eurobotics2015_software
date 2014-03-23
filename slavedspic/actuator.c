@@ -148,7 +148,7 @@ uint8_t lift_wait_end()
 	return ret;
 }
 
-#if 0
+
 
 /**** combs funcions *********************************************************/
 
@@ -276,6 +276,7 @@ uint8_t combs_wait_end(combs_t *combs)
 	return ret;
 }
 
+
 /**** sticks funcions *********************************************************/
 uint16_t stick_ax12_pos[STICK_TYPE_MAX][STICK_MODE_MAX] = {
 	[STICK_TYPE_RIGHT][STICK_MODE_HIDE] 				= POS_STICK_R_HIDE,
@@ -316,15 +317,18 @@ uint8_t stick_set_mode(stick_t *stick, uint8_t mode, int16_t pos_offset)
 		stick->ax12_pos = stick_ax12_pos[stick->type][stick->mode] - pos_offset;
 	
 	/* saturate to position range */
-	if(stick->ax12_pos_l > stick_ax12_pos_l[STICK_MODE_L_POS_MAX])
-		stick->ax12_pos_l = stick_ax12_pos_l[STICK_MODE_L_POS_MAX];
-	if(stick->ax12_pos_l < stick_ax12_pos_l[STICK_MODE_L_POS_MIN])
-		stick->ax12_pos_l = stick_ax12_pos_l[STICK_MODE_L_POS_MIN];
-
-	if(stick->ax12_pos_r > stick_ax12_pos_r[STICK_MODE_R_POS_MAX])
-		stick->ax12_pos_r = stick_ax12_pos_r[STICK_MODE_R_POS_MAX];
-	if(stick->ax12_pos_r < stick_ax12_pos_r[STICK_MODE_R_POS_MIN])
-		stick->ax12_pos_r = stick_ax12_pos_r[STICK_MODE_R_POS_MIN];
+	if(stick->type == STICK_TYPE_LEFT) {
+		if(stick->ax12_pos > stick_ax12_pos[STICK_TYPE_LEFT][STICK_MODE_L_POS_MAX])
+			stick->ax12_pos = stick_ax12_pos[STICK_TYPE_LEFT][STICK_MODE_L_POS_MAX];
+		if(stick->ax12_pos < stick_ax12_pos[STICK_TYPE_LEFT][STICK_MODE_L_POS_MIN])
+			stick->ax12_pos = stick_ax12_pos[STICK_TYPE_LEFT][STICK_MODE_L_POS_MIN];
+	} 
+	else {
+		if(stick->ax12_pos > stick_ax12_pos[STICK_TYPE_RIGHT][STICK_MODE_R_POS_MAX])
+			stick->ax12_pos = stick_ax12_pos[STICK_TYPE_RIGHT][STICK_MODE_R_POS_MAX];
+		if(stick->ax12_pos < stick_ax12_pos[STICK_TYPE_RIGHT][STICK_MODE_R_POS_MIN])
+			stick->ax12_pos = stick_ax12_pos[STICK_TYPE_RIGHT][STICK_MODE_R_POS_MIN];
+	}
 
 	/* apply to ax12 */
 	err = ax12_user_write_int(&gen.ax12, ax12_id, AA_GOAL_POSITION_L, stick->ax12_pos);
@@ -387,20 +391,21 @@ uint8_t stick_wait_end(stick_t *stick)
 	return ret;
 }
 
+
 /**** boot funcions *********************************************************/
 
 /* set boot position depends on mode */
-uint8_t boot_door_set_mode(boot_t *boot, uint8_t door_mode)
+void boot_door_set_mode(boot_t *boot, uint8_t door_mode)
 {
 	uint8_t pos_saturated = 0;
 
 	switch(door_mode) {
-		case BOOT_MODE_OPEN:
+		case BOOT_DOOR_MODE_OPEN:
 			boot->door_servo_pos = pwm_servo_set(PWM_SERVO_BOOT_DOOR, POS_BOOT_DOOR_OPEN);
 			boot->door_mode = door_mode;
 			pos_saturated = boot->door_servo_pos != POS_BOOT_DOOR_OPEN? 1:0;
 			break;
-		case BOOT_MODE_CLOSE:
+		case BOOT_DOOR_MODE_CLOSE:
 			boot->door_servo_pos = pwm_servo_set(PWM_SERVO_BOOT_DOOR, POS_BOOT_DOOR_CLOSE);
 			boot->door_mode = door_mode;
 			pos_saturated = boot->door_servo_pos != POS_BOOT_DOOR_CLOSE? 1:0;
@@ -428,6 +433,8 @@ void boot_tray_set_mode(boot_t *boot, uint8_t tray_mode)
 			ACTUATORS_ERROR("Unknown BOOT TRAY MODE");
 			break;
 	}
+	if(pos_saturated)
+		ACTUATORS_ERROR("Boot tray position saturated");
 
 }
 
@@ -448,8 +455,8 @@ uint8_t tree_tray_set_mode(tree_tray_t *tree_tray, uint8_t mode, int16_t pos_off
 	ax12_id = AX12_ID_TREE_TRAY;
 
 	/* set ax12 possitions depends on mode and type */
-	if(mode >= TRAY_TREE_MODE_MAX) {
-		ACTUATORS_ERROR("Unknow %s STICK MODE", tree_tray->type == TRAY_TREE_TYPE_RIGHT? "RIGHT":"LEFT");
+	if(mode >= TREE_TRAY_MODE_MAX) {
+		ACTUATORS_ERROR("Unknow TREE TRAY MODE");
 		return -1;
 	}
 
@@ -458,10 +465,10 @@ uint8_t tree_tray_set_mode(tree_tray_t *tree_tray, uint8_t mode, int16_t pos_off
 
 	
 	/* saturate to position range */
-	if(tree_tray->ax12_pos > tree_tray_ax12_pos[TRAY_TREE_MODE_POS_MAX])
-		tree_tray->ax12_pos = tree_tray_ax12_pos[TRAY_TREE_MODE_POS_MAX];
-	if(tree_tray->ax12_pos < tree_tray_ax12_pos[TRAY_TREE_MODE_POS_MIN])
-		tree_tray->ax12_pos = tree_tray_ax12_pos[TRAY_TREE_MODE_POS_MIN];
+	if(tree_tray->ax12_pos > tree_tray_ax12_pos[TREE_TRAY_MODE_POS_MAX])
+		tree_tray->ax12_pos = tree_tray_ax12_pos[TREE_TRAY_MODE_POS_MAX];
+	if(tree_tray->ax12_pos < tree_tray_ax12_pos[TREE_TRAY_MODE_POS_MIN])
+		tree_tray->ax12_pos = tree_tray_ax12_pos[TREE_TRAY_MODE_POS_MIN];
 
 
 	/* apply to ax12 */
@@ -534,11 +541,8 @@ void actuator_init(void)
 	ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_TORQUE_ENABLE, 0xFF);	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_CW_ANGLE_LIMIT_L, 0x00);	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_CCW_ANGLE_LIMIT_L, 0x3FF);
 	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_MOVING_SPEED_L, 0x3FF);#endif
 
-
 	/* init structures */
 	slavedspic.stick_l.type = STICK_TYPE_LEFT;
 	slavedspic.stick_r.type = STICK_TYPE_RIGHT;
-
 }
 
-#endif

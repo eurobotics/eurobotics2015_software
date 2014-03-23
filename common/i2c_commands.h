@@ -130,17 +130,17 @@ struct i2c_cmd_slavedspic_set_mode {
 	struct i2c_cmd_hdr hdr;
 	
 #define I2C_SLAVEDSPIC_MODE_INIT		            0x01
-#define I2C_SLAVEDSPIC_MODE_POWER_OFF		        0x02
-
-#define I2C_SLAVEDSPIC_SET_ARM      		        0x02
-#define I2C_SLAVEDSPIC_SET_STICK    		        0x02
-#define I2C_SLAVEDSPIC_SET_COMB      		        0x02
-#define I2C_SLAVEDSPIC_SET_COMB_TRAY 		        0x02
-#define I2C_SLAVEDSPIC_SET_BOOT_DOOR 		        0x02
-#define I2C_SLAVEDSPIC_SET_VACUUM_MOTOR	        0x02
-#define I2C_SLAVEDSPIC_SET_VACUUM_PRESURE      	0x02
+#define I2C_SLAVEDSPIC_MODE_POWER_OFF		      0x02
 
 
+#define I2C_SLAVEDSPIC_MODE_BOOT_TRAY				0x03
+#define I2C_SLAVEDSPIC_MODE_BOOT_DOOR				0x04
+#define I2C_SLAVEDSPIC_MODE_COMBS					0x05
+#define I2C_SLAVEDSPIC_MODE_TREE_TRAY				0x06
+#define I2C_SLAVEDSPIC_MODE_STICK					0x07
+
+
+#if 0
 #define I2C_SLAVEDSPIC_MODE_PREP_PICKUP_FIRE	  0x03
 #define I2C_SLAVEDSPIC_MODE_PICKUP_FIRE         0x04
 #define I2C_SLAVEDSPIC_MODE_STORE_FIRE          0x04
@@ -160,15 +160,56 @@ struct i2c_cmd_slavedspic_set_mode {
 #define I2C_SLAVEDSPIC_MODE_PREP_TOXIC_FRUIT    0x04
 #define I2C_SLAVEDSPIC_MODE_PICKUP_TOXIC_FRUIT  0x04
 #define I2C_SLAVEDSPIC_MODE_DRAG_TOXIC_FRUIT    0x04
+#endif
 
 	uint8_t mode;
 	union{
 
-    /* TODO */
+		struct {
+			uint8_t mode;
+#define I2C_BOOT_DOOR_MODE_OPEN		0
+#define I2C_BOOT_DOOR_MODE_CLOSE		1
+		} boot_door;
 
 		struct {
+			uint8_t mode;
+#define I2C_BOOT_TRAY_MODE_DOWN		0
+#define I2C_BOOT_TRAY_MODE_VIBRATE	1
+		} boot_tray;
 
-		} fire;
+		struct {
+			uint8_t mode;
+#define I2C_COMBS_MODE_HIDE				0
+#define I2C_COMBS_MODE_OPEN				1
+#define I2C_COMBS_MODE_HARVEST_CLOSE	2
+#define I2C_COMBS_MODE_HARVEST_OPEN		3
+
+			int8_t offset;
+		} combs;
+
+		struct {
+			uint8_t mode;
+#define I2C_TREE_TRAY_MODE_OPEN 			0	
+#define I2C_TREE_TRAY_MODE_CLOSE 		1		
+#define I2C_TREE_TRAY_MODE_HARVEST		2	
+
+			int8_t offset;
+		} tree_tray;
+
+		struct {
+			uint8_t type;
+#define I2C_STICK_TYPE_RIGHT	0
+#define I2C_STICK_TYPE_LEFT	1	
+
+			uint8_t mode;
+#define I2C_STICK_MODE_HIDE					0
+#define I2C_STICK_MODE_PUSH_FIRE				1
+#define I2C_STICK_MODE_PUSH_TORCH_FIRE		2
+#define I2C_STICK_MODE_CLEAN_FLOOR			3
+#define I2C_STICK_MODE_CLEAN_HEART			4
+
+			int8_t offset;
+		} stick;
 
 		/* add more here */
 	};

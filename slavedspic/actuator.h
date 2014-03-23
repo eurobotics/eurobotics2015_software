@@ -28,7 +28,6 @@
 #include <clock_time.h>
 
 
-
 #define LIFT_SPEED						100
 #define LIFT_ACCEL						1
 #define LIFT_K_IMP_mm					-1.0
@@ -36,41 +35,38 @@
 #define LIFT_HEIGHT_MAX_mm				42000
 #define LIFT_HEIGHT_MIN_mm				500
 
-#if 0
+#define POS_COMB_R_OPEN				600
+#define POS_COMB_R_HARVEST_OPEN	556
+#define POS_COMB_R_HARVEST_CLOSE 513
+#define POS_COMB_R_HIDE				224
 
-#define POS_STICK_R_HIDE
-#define POS_STICK_R_PUSH_FIRE
-#define POS_STICK_R_PUSH_TORCH_FIRE
-#define POS_STICK_R_PUSH_CLEAN_FLOOR
-#define POS_STICK_R_PUSH_CLEAN_HEART
-
-#define POS_STICK_L_HIDE
-#define POS_STICK_L_PUSH_FIRE
-#define POS_STICK_L_PUSH_TORCH_FIRE
-#define POS_STICK_L_PUSH_CLEAN_FLOOR
-#define POS_STICK_R_PUSH_CLEAN_HEART
+#define POS_COMB_L_OPEN				420
+#define POS_COMB_L_HARVEST_OPEN	469
+#define POS_COMB_L_HARVEST_CLOSE 507
+#define POS_COMB_L_HIDE				792
 
 
-#define POS_COMB_R_HIDE
-#define POS_COMB_R_OPEN
-#define POS_COMB_R_HARVEST_CLOSE
-#define POS_COMB_R_HARVEST_OPEN
+#define POS_STICK_R_HIDE					542
+#define POS_STICK_R_PUSH_TORCH_FIRE		340				
+#define POS_STICK_R_PUSH_FIRE				325
+#define POS_STICK_R_CLEAN_HEART			295
+#define POS_STICK_R_CLEAN_FLOOR			210
 
-#define POS_COMB_L_HIDE
-#define POS_COMB_L_OPEN
-#define POS_COMB_L_HARVEST_CLOSE
-#define POS_COMB_L_HARVEST_OPEN
+#define POS_STICK_L_HIDE					241
+#define POS_STICK_L_PUSH_TORCH_FIRE		434
+#define POS_STICK_L_PUSH_FIRE				445
+#define POS_STICK_L_CLEAN_HEART			480
+#define POS_STICK_L_CLEAN_FLOOR			575
 
-#define POS_BOOT_OPEN			
-#define POS_BOOT_CLOSE
 
-#define POS_TRAY_TREE_CLOSE
-#define POS_TRAY_TREE_OPEN
-#define POS_TRAY_TREE_HARVEST
+#define POS_BOOT_DOOR_OPEN		700			
+#define POS_BOOT_DOOR_CLOSE	960
 
-#define BOOT_TRAY_VIBRATE_PWM				(2000)
+#define BOOT_TRAY_VIBRATE_PWM	(2000)
 
-#endif
+#define POS_TREE_TRAY_OPEN		800
+#define POS_TREE_TRAY_HARVEST	506
+#define POS_TREE_TRAY_CLOSE	358
 
 #define END_TRAJ		1
 #define END_BLOCKING	2
@@ -99,7 +95,7 @@ int8_t lift_check_height_reached(void);
 /* return END_TRAJ or END_BLOCKING */
 uint8_t lift_wait_end();
 
-#if 0
+
 
 /**** combs funcions *********************************************************/
 
@@ -111,11 +107,12 @@ typedef struct {
 #define COMBS_MODE_OPEN				1
 #define COMBS_MODE_HARVEST_CLOSE	2
 #define COMBS_MODE_HARVEST_OPEN	3
+#define COMBS_MODE_MAX				4
 
-#define COMBS_MODE_R_POS_MAX	
-#define COMBS_MODE_R_POS_MIN	
-#define COMBS_MODE_L_POS_MAX	
-#define COMBS_MODE_L_POS_MIN	
+#define COMBS_MODE_R_POS_MAX		1	
+#define COMBS_MODE_R_POS_MIN		0
+#define COMBS_MODE_L_POS_MAX		0
+#define COMBS_MODE_L_POS_MIN		1
 
 	microseconds time_us;
 
@@ -125,13 +122,13 @@ typedef struct {
 } combs_t;
 
 /* set combs position depends on mode */
-int8_t combs_set_mode(combs_t *fingers, uint8_t mode, int16_t pos_offset);
+int8_t combs_set_mode(combs_t *combs, uint8_t mode, int16_t pos_offset);
 
 /* return END_TRAJ or END_BLOCKING */
-int8_t combs_check_mode_done(combs_t *fingers);
+int8_t combs_check_mode_done(combs_t *combs);
 
 /* return END_TRAJ or END_BLOCKING */
-uint8_t combs_wait_end(combs_t *fingers);
+uint8_t combs_wait_end(combs_t *combs);
 
 
 
@@ -150,10 +147,10 @@ typedef struct {
 #define STICK_MODE_CLEAN_HEART		4
 #define STICK_MODE_MAX					5
 
-#define STICK_MODE_L_POS_MAX
-#define STICK_MODE_L_POS_MIN
-#define STICK_MODE_R_POS_MAX
-#define STICK_MODE_R_POS_MIN
+#define STICK_MODE_L_POS_MAX			3	
+#define STICK_MODE_L_POS_MIN			0
+#define STICK_MODE_R_POS_MAX			0
+#define STICK_MODE_R_POS_MIN			3
 
 	uint16_t ax12_pos;
 	microseconds time_us;
@@ -169,6 +166,8 @@ int8_t stick_check_mode_done(stick_t *stick);
 /* return END_TRAJ or END_BLOCKING */
 uint8_t stick_wait_end(stick_t *stick);
 
+
+
 /**** boot funcions *********************************************************/
 typedef struct {
 	uint8_t door_mode;
@@ -177,8 +176,8 @@ typedef struct {
 #define BOOT_DOOR_MODE_MAX			2
 
 	uint8_t tray_mode;
-#define BOOT_TRAY_MODE_OPEN		0
-#define BOOT_TRAY_MODE_CLOSE		1
+#define BOOT_TRAY_MODE_DOWN		0
+#define BOOT_TRAY_MODE_VIBRATE	1
 #define BOOT_TRAY_MODE_MAX			2
 
 	uint16_t door_servo_pos;
@@ -187,7 +186,7 @@ typedef struct {
 } boot_t;
 
 /* open/close boot door */
-uint8_t boot_door_set_mode(boot_t *boot, uint8_t door_mode);
+void boot_door_set_mode(boot_t *boot, uint8_t door_mode);
 
 /* enable/disable boot vibration */
 void boot_tray_set_mode(boot_t *boot, uint8_t tray_mode);
@@ -202,8 +201,8 @@ typedef struct {
 #define TREE_TRAY_MODE_HARVEST	2	
 #define TREE_TRAY_MODE_MAX			3
 
-#define TREE_TRAY_MODE_POS_MAX	
-#define TREE_TRAY_MODE_POS_MIN	
+#define TREE_TRAY_MODE_POS_MAX	0
+#define TREE_TRAY_MODE_POS_MIN	1
 
 	microseconds time_us;
 
@@ -219,8 +218,6 @@ int8_t tree_tray_check_mode_done(tree_tray_t *tree_tray);
 
 /* return END_TRAJ or END_BLOCKING */
 uint8_t tree_tray_wait_end(tree_tray_t *tree_tray);
-
-#endif
 
 #endif /* _ACTUATOR_H_ */
 
