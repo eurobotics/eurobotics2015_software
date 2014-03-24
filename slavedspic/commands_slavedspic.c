@@ -392,9 +392,9 @@ static void cmd_stick_parsed(__attribute__((unused)) void *parsed_result,
 	struct i2c_cmd_slavedspic_set_mode command;
 
 	if (!strcmp_P(res->arg0, PSTR("stick_left")))
-		command.stick.type = I2C_STICK_TYPE_RIGHT;
+		command.stick.type = I2C_STICK_TYPE_LEFT;
 	else if (!strcmp_P(res->arg0, PSTR("stick_right")))
-		command.stick.type = I2C_STICK_TYPE_LEFT;	
+		command.stick.type = I2C_STICK_TYPE_RIGHT;	
 
 	if (!strcmp_P(res->arg1, PSTR("hide")))
 		command.stick.mode = I2C_STICK_MODE_HIDE;
@@ -406,6 +406,8 @@ static void cmd_stick_parsed(__attribute__((unused)) void *parsed_result,
 		command.stick.mode = I2C_STICK_MODE_CLEAN_FLOOR;	
 	else if (!strcmp_P(res->arg1, PSTR("clean_heart")))
 		command.stick.mode = I2C_STICK_MODE_CLEAN_HEART;
+
+	command.stick.offset = res->arg2;
 
 	command.mode = I2C_SLAVEDSPIC_MODE_STICK;
 	state_set_mode(&command);

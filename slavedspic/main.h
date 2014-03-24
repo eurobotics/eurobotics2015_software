@@ -23,12 +23,22 @@
 #ifndef __MAIN_H__
 #define __MAIN_H__
 
-#include <aversive.h>#include <aversive/error.h>
-#include <clock_time.h>#include <rdline.h>
-#include <encoders_dspic.h>#include <dac_mc.h>#include <pwm_mc.h>
+#include <aversive.h>
+#include <aversive/error.h>
+
+#include <clock_time.h>
+#include <rdline.h>
+
+#include <encoders_dspic.h>
+#include <dac_mc.h>
+#include <pwm_mc.h>
 #include <pwm_servo.h>
-#include <ax12.h>
-#include <pid.h>#include <quadramp.h>#include <control_system_manager.h>#include <blocking_detection_manager.h>
+#include <ax12.h>
+
+#include <pid.h>
+#include <quadramp.h>
+#include <control_system_manager.h>
+#include <blocking_detection_manager.h>
 
 #include "actuator.h"
 
@@ -47,19 +57,26 @@
 
 #define RELE_OUT_PIN			_LATA9
 #define RELE_OUT_PIN_ON		0
-#define RELE_OUT_PIN_OFF	1
+#define RELE_OUT_PIN_OFF	1
+
 #define DRIVER_OUT_PIN		_LATA4
 #define DRIVER_OUT_PIN_ON	0
-#define DIVER_OUT_PIN_OFF	1
-#define BRAKE_ON()	do{					\								_LATA7 = 0; 	\							} while(0)
-#define BRAKE_OFF()	do{					\								_LATA7 = 1;		\
+#define DIVER_OUT_PIN_OFF	1
+
+#define BRAKE_ON()	do{					\
+								_LATA7 = 0; 	\
+							} while(0)
+#define BRAKE_OFF()	do{					\
+								_LATA7 = 1;		\
 							} while(0)
 
 /* EUROBOT 2012 defines */
-#define LIFT_ENCODER						((void *)1)#define LIFT_DAC_MC						((void *)&gen.dac_mc_left)
+#define LIFT_ENCODER						((void *)1)
+#define LIFT_DAC_MC						((void *)&gen.dac_mc_left)
 
 #define PWM_MC_BOOT_TRAY				((void *)&gen.pwm_mc_mod2_ch1)
-#define PWM_SERVO_BOOT_DOOR			&gen.pwm_servo_oc2	
+
+#define PWM_SERVO_BOOT_DOOR			&gen.pwm_servo_oc2	
 
 #define AX12_ID_FINGERS_TOTEM_R		4
 #define AX12_ID_FINGERS_TOTEM_L		7
@@ -110,8 +127,13 @@ struct genboard {
 	struct rdline rdl;
 	char prompt[RDLINE_PROMPT_SIZE];
 
-	/* dc motors */	struct pwm_mc pwm_mc_mod1_ch2;	struct pwm_mc pwm_mc_mod2_ch1;
-	/* brushless motors */	struct dac_mc dac_mc_left;	
+	/* dc motors */
+	struct pwm_mc pwm_mc_mod1_ch2;
+	struct pwm_mc pwm_mc_mod2_ch1;
+
+	/* brushless motors */
+	struct dac_mc dac_mc_left;
+	
 	/* servos */
 	struct pwm_servo pwm_servo_oc1;
 	struct pwm_servo pwm_servo_oc2;
@@ -158,6 +180,11 @@ struct slavedspic {
 
 	/* infos */
 	uint8_t status;
+	uint8_t harvest_tree_mode;
+	uint8_t stick_clean_mode;
+	uint8_t stick_push_mode;
+	uint8_t dump_fruits_mode;
+
 
 	/* infos */
 	uint8_t our_color;
