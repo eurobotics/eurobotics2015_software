@@ -67,9 +67,7 @@
 #define TREE_TRAY			I2C_SLAVEDSPIC_MODE_TREE_TRAY
 #define STICK				I2C_SLAVEDSPIC_MODE_STICK
 
-#define HARVEST_TREE 	I2C_SLAVEDSPIC_MODE_HARVEST_TREE
-#define STICK_PUSH 		I2C_SLAVEDSPIC_MODE_STICK_PUSH
-#define STICK_CLEAN		I2C_SLAVEDSPIC_MODE_STICK_CLEAN
+#define HARVEST_FRUITS 	I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS
 #define DUMP_FRUITS		I2C_SLAVEDSPIC_MODE_DUMP_FRUITS
 
 static struct i2c_cmd_slavedspic_set_mode mainboard_command;
@@ -160,7 +158,7 @@ static void state_do_init(void)
 
 
 /**
- * *************** actuators modes ***********
+ * *************** simple actuators modes ***********
  */
 
 /* set boot tray mode */
@@ -193,30 +191,6 @@ void state_do_boot_door_mode(void)
    state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
-/* set stick mode */
-void state_do_stick_mode(void)
-{
-	/* return if no update */
-	if (!state_check_update(STICK))
-		return;
-
-	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
-
-	/* set stick mode */
-	if(mainboard_command.stick.type == I2C_STICK_TYPE_RIGHT) {
-		if(stick_set_mode(&slavedspic.stick_r, mainboard_command.stick.mode, mainboard_command.stick.offset))
-			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
-
-		stick_wait_end(&slavedspic.stick_r);
-	}	
-	else if(mainboard_command.stick.type == I2C_STICK_TYPE_LEFT) {
-		if(stick_set_mode(&slavedspic.stick_l, mainboard_command.stick.mode, mainboard_command.stick.offset))
-			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
-
-		stick_wait_end(&slavedspic.stick_l);
-	}	
-   state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
-}
 
 /* set combs mode */
 void state_do_combs_mode(void)
@@ -255,28 +229,111 @@ void state_do_tree_tray_mode(void)
    state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
+/* set stick mode */
+void state_do_stick_mode(void)
+{
+#define STICK_MODES_NB_TRIES 3
+	uint8_t err = 0;
+	uint8_t nb_tries = 0;
+
+	/* return if no update */
+	if (!state_check_update(STICK))
+		return;
+
+	/* notice status and update mode*/
+	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
+	slavedspic.stick_mode = mainboard_command.stick.mode;
+	slavedspic.stick_offset = mainboard_command.stick.offset;
+
+	/* set stick mode */
+	if(mainboard_command.stick.type == I2C_STICK_TYPE_RIGHT) {
+		/* hide the other */
+retry_hide_left:
+		if(stick_set_mode(&slavedspic.stick_l, STICK_MODE_HIDE, 0))
+			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
+
+		err = stick_wait_end(&slavedspic.stick_l);
+
+		if((err & END_BLOCKING) && (nb_tries < STICK_MODES_NB_TRIES)) {
+			nb_tries ++;
+			time_wait_ms (200);
+			goto retry_hide_left;
+		}
+		/* set right */
+		nb_tries = 0;
+
+retry_right:
+		if(stick_set_mode(&slavedspic.stick_r, slavedspic.stick_mode, 
+								slavedspic.stick_offset))
+			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
+
+		err = stick_wait_end(&slavedspic.stick_r);
+
+		if((err & END_BLOCKING) && (nb_tries < STICK_MODES_NB_TRIES)) {
+			nb_tries ++;
+			time_wait_ms (200);
+			goto retry_right;
+		}
+	}	
+	else if(mainboard_command.stick.type == I2C_STICK_TYPE_LEFT) {
+		/* hide the other */
+retry_hide_right:
+		if(stick_set_mode(&slavedspic.stick_r, STICK_MODE_HIDE, 0))
+			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
+
+		err = stick_wait_end(&slavedspic.stick_r);
+
+		if((err & END_BLOCKING) && (nb_tries < STICK_MODES_NB_TRIES)) {
+			nb_tries ++;
+			time_wait_ms (200);
+			goto retry_hide_right;
+		}
+		/* set right */
+		nb_tries = 0;
+
+retry_left:
+		if(stick_set_mode(&slavedspic.stick_l, slavedspic.stick_mode, 
+								slavedspic.stick_offset))
+			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
+
+		err = stick_wait_end(&slavedspic.stick_l);
+
+		if((err & END_BLOCKING) && (nb_tries < STICK_MODES_NB_TRIES)) {
+			nb_tries ++;
+			time_wait_ms (200);
+			goto retry_left;
+		}
+	}	
+
+	if(err & END_BLOCKING)
+		STMCH_DEBUG("HARVEST TREE mode ends with BLOCKING");
+
+	/* notice status and update mode*/
+	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
+}
+
 
 /**
- * *************** abtract modes ***********
+ * *************** multiple actuators modes ***********
  */
 
 /* do harvest tree mode */
-void state_do_harvest_tree_mode(void)
+void state_do_harvest_fruits_mode(void)
 {
 	uint8_t err = 0;
 
-	if (!state_check_update(HARVEST_TREE))
+	if (!state_check_update(HARVEST_FRUITS))
 		return;
 
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
 
 	/* notice status and update mode*/
 	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
-	slavedspic.harvest_tree_mode = mainboard_command.harvest_tree.mode;
+	slavedspic.harvest_fruits_mode = mainboard_command.harvest_fruits.mode;
 
-	switch(slavedspic.harvest_tree_mode)
+	switch(slavedspic.harvest_fruits_mode)
 	{
-		case I2C_SLAVEDSPIC_HARVEST_TREE_READY:
+		case I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_READY:
 
 			tree_tray_set_mode(&slavedspic.tree_tray, TREE_TRAY_MODE_OPEN, 0);
 			time_wait_ms(100);
@@ -292,7 +349,7 @@ void state_do_harvest_tree_mode(void)
 
 			break;
 
-		case I2C_SLAVEDSPIC_HARVEST_TREE_DO:
+		case I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_DO:
 
 			combs_set_mode(&slavedspic.combs, COMBS_MODE_HARVEST_OPEN, 0);
 			time_wait_ms(200);
@@ -308,7 +365,7 @@ void state_do_harvest_tree_mode(void)
 
 			break;
 
-		case I2C_SLAVEDSPIC_HARVEST_TREE_END:
+		case I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_END:
 
 			tree_tray_set_mode(&slavedspic.tree_tray, TREE_TRAY_MODE_OPEN, 0);
 			time_wait_ms(200);
@@ -340,84 +397,10 @@ void state_do_harvest_tree_mode(void)
 	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
-/* do stick push mode */
-void state_do_stick_push_mode(void)
-{
-	uint8_t err = 0;
-
-	if (!state_check_update(STICK_PUSH))
-		return;
-
-	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
-
-	/* notice status and update mode*/
-	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
-	slavedspic.stick_push_mode = mainboard_command.stick_push.mode;
-
-	switch(slavedspic.stick_push_mode)
-	{
-		case I2C_SLAVEDSPIC_MODE_STICK_PUSH_FIRE:
-			break;
-
-		case I2C_SLAVEDSPIC_MODE_STICK_PUSH_TORCH:
-			break;
-
-		case I2C_SLAVEDSPIC_MODE_STICK_PUSH_END:
-			break;
-
-		default:
-			break;
-	}
-
-	if(err & END_BLOCKING)
-		STMCH_DEBUG("STICK PUSH mode ends with BLOCKING");
-
-	/* notice status and update mode*/
-	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
-}
-
-/* do stick clean mode */
-void state_do_stick_clean_mode(void)
-{
-	uint8_t err = 0;
-
-	if (!state_check_update(STICK_CLEAN))
-		return;
-
-	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
-
-	/* notice status and update mode*/
-	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
-	slavedspic.stick_clean_mode = mainboard_command.stick_clean.mode;
-
-	switch(slavedspic.stick_clean_mode)
-	{
-		case I2C_SLAVEDSPIC_MODE_STICK_CLEAN_FLOOR:
-			break;
-
-		case I2C_SLAVEDSPIC_MODE_STICK_CLEAN_HEART:
-			break;
-
-		case I2C_SLAVEDSPIC_MODE_STICK_CLEAN_END:
-			break;
-
-		default:
-			break;
-	}
-
-	if(err & END_BLOCKING)
-		STMCH_DEBUG("STICK CLEAN mode ends with BLOCKING");
-
-	/* notice status and update mode*/
-	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
-}
-
 
 /* do dump fruits mode */
 void state_do_dump_fruits_mode(void)
 {
-	uint8_t err = 0;
-
 	if (!state_check_update(DUMP_FRUITS))
 		return;
 
@@ -430,17 +413,18 @@ void state_do_dump_fruits_mode(void)
 	switch(slavedspic.dump_fruits_mode)
 	{
 		case I2C_SLAVEDSPIC_MODE_DUMP_FRUITS_DO:
+			boot_door_set_mode (&slavedspic.boot, BOOT_DOOR_MODE_OPEN);
+			boot_tray_set_mode (&slavedspic.boot, BOOT_TRAY_MODE_VIBRATE);
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_DUMP_FRUITS_END:
+			boot_door_set_mode (&slavedspic.boot, BOOT_DOOR_MODE_CLOSE);
+			boot_tray_set_mode (&slavedspic.boot, BOOT_TRAY_MODE_DOWN);
 			break;
 
 		default:
 			break;
 	}
-
-	if(err & END_BLOCKING)
-		STMCH_DEBUG("DUMP FRUITS mode ends with BLOCKING");
 
 	/* notice status and update mode*/
 	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
@@ -483,14 +467,18 @@ void state_machines(void)
 {
 	state_do_init();
 
-	/* actuator modes */
+	/* simple actuator modes */
 	state_do_boot_tray_mode();
 	state_do_boot_door_mode();
 	state_do_stick_mode();
 	state_do_combs_mode();
 	state_do_tree_tray_mode();
 
-	/* abstract modes */
+	/* multiple actuators modes */
+	state_do_harvest_fruits_mode();
+	state_do_dump_fruits_mode();
+
+
 #if 0
 	state_do_set_infos();
 #endif

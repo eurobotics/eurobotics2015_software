@@ -180,11 +180,10 @@ struct slavedspic {
 
 	/* infos */
 	uint8_t status;
-	uint8_t harvest_tree_mode;
-	uint8_t stick_clean_mode;
-	uint8_t stick_push_mode;
+	uint8_t stick_mode;
+	uint8_t stick_offset;
+	uint8_t harvest_fruits_mode;
 	uint8_t dump_fruits_mode;
-
 
 	/* infos */
 	uint8_t our_color;
