@@ -132,16 +132,16 @@ struct i2c_cmd_slavedspic_set_mode {
 #define I2C_SLAVEDSPIC_MODE_INIT		            0x01
 #define I2C_SLAVEDSPIC_MODE_POWER_OFF		      0x02
 
+/* simple actuator modes */
 #define I2C_SLAVEDSPIC_MODE_BOOT_TRAY				0x03
 #define I2C_SLAVEDSPIC_MODE_BOOT_DOOR				0x04
 #define I2C_SLAVEDSPIC_MODE_COMBS					0x05
 #define I2C_SLAVEDSPIC_MODE_TREE_TRAY				0x06
 #define I2C_SLAVEDSPIC_MODE_STICK					0x07
 
-#define I2C_SLAVEDSPIC_MODE_HARVEST_TREE   		0x08
-#define I2C_SLAVEDSPIC_MODE_STICK_PUSH				0x09
-#define I2C_SLAVEDSPIC_MODE_STICK_CLEAN			0x0A
-#define I2C_SLAVEDSPIC_MODE_DUMP_FRUITS			0x0A
+/* multiple actuator modes */
+#define I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS   	0x08
+#define I2C_SLAVEDSPIC_MODE_DUMP_FRUITS			0x0B
 
 
 
@@ -218,24 +218,10 @@ struct i2c_cmd_slavedspic_set_mode {
 
 		struct {
 			uint8_t mode;
-#define I2C_SLAVEDSPIC_HARVEST_TREE_READY	1
-#define I2C_SLAVEDSPIC_HARVEST_TREE_DO		2	
-#define I2C_SLAVEDSPIC_HARVEST_TREE_END	3
-		} harvest_tree;
-
-		struct {
-			uint8_t mode;
-#define I2C_SLAVEDSPIC_MODE_STICK_PUSH_FIRE	1
-#define I2C_SLAVEDSPIC_MODE_STICK_PUSH_TORCH	2
-#define I2C_SLAVEDSPIC_MODE_STICK_PUSH_END	3
-		} stick_push;
-
-		struct {
-			uint8_t mode;
-#define I2C_SLAVEDSPIC_MODE_STICK_CLEAN_FLOOR	1
-#define I2C_SLAVEDSPIC_MODE_STICK_CLEAN_HEART	2
-#define I2C_SLAVEDSPIC_MODE_STICK_CLEAN_END		3
-		} stick_clean;
+#define I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_READY	1
+#define I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_DO		2	
+#define I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_END		3
+		} harvest_fruits;
 
 		struct {
 			uint8_t mode;

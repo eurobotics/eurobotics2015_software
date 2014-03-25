@@ -20,7 +20,13 @@
  *  Olivier MATZ <zer0@droids-corp.org> 
  */
 
-/*   *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011) *  Javier Baliñas Santos <javier@arc-robots.org> * *  Code ported to family of microcontrollers dsPIC from *  commands.c,v 1.5 2009/05/27 20:04:07 zer0 Exp   */
+/*  
+ *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
+ *  Javier Baliñas Santos <javier@arc-robots.org>
+ *
+ *  Code ported to family of microcontrollers dsPIC from
+ *  commands.c,v 1.5 2009/05/27 20:04:07 zer0 Exp  
+ */
 
 #include <stdlib.h>
 #include <aversive/pgmspace.h>
@@ -45,8 +51,11 @@ extern parse_pgm_inst_t cmd_log_type;
 extern parse_pgm_inst_t cmd_scheduler;
 
 
-/* commands_cs.c */#ifdef COMPILE_COMMANDS_CS
-#include "./commands_cs.c"
+/* commands_cs.c */
+#ifdef COMPILE_COMMANDS_CS
+
+#include "./commands_cs.c"
+
 extern parse_pgm_inst_t cmd_gain;
 extern parse_pgm_inst_t cmd_gain_show;
 extern parse_pgm_inst_t cmd_speed;
@@ -60,7 +69,8 @@ extern parse_pgm_inst_t cmd_quadramp;
 extern parse_pgm_inst_t cmd_quadramp_show;
 extern parse_pgm_inst_t cmd_cs_status;
 extern parse_pgm_inst_t cmd_blocking_i;
-extern parse_pgm_inst_t cmd_blocking_i_show;
+extern parse_pgm_inst_t cmd_blocking_i_show;
+
 #endif /* COMPILE_COMMANDS_CS */
 
 /* commands_ax12.c */
@@ -87,6 +97,8 @@ extern parse_pgm_inst_t cmd_combs;
 extern parse_pgm_inst_t cmd_tree_tray;
 extern parse_pgm_inst_t cmd_stick;
 
+extern parse_pgm_inst_t cmd_harvest_fruits;
+extern parse_pgm_inst_t cmd_dump_fruits;
 
 
 
@@ -120,7 +132,8 @@ parse_pgm_ctx_t main_ctx[]  = {
 	(parse_pgm_inst_t *)&cmd_log_type,
 	(parse_pgm_inst_t *)&cmd_scheduler,
 
-#ifdef COMPILE_COMMANDS_CS
+#ifdef COMPILE_COMMANDS_CS
+
 	/* commands_cs.c */
 	(parse_pgm_inst_t *)&cmd_gain,
 	(parse_pgm_inst_t *)&cmd_gain_show,
@@ -135,7 +148,8 @@ parse_pgm_ctx_t main_ctx[]  = {
 	(parse_pgm_inst_t *)&cmd_quadramp_show,
 	(parse_pgm_inst_t *)&cmd_cs_status,
 	(parse_pgm_inst_t *)&cmd_blocking_i,
-	(parse_pgm_inst_t *)&cmd_blocking_i_show,
+	(parse_pgm_inst_t *)&cmd_blocking_i_show,
+
 #endif /* COMPILE_COMMANDS_CS */
 
 #ifdef COMPILE_COMMANDS_AX12
@@ -158,6 +172,11 @@ parse_pgm_ctx_t main_ctx[]  = {
 	(parse_pgm_inst_t *)&cmd_combs,
 	(parse_pgm_inst_t *)&cmd_tree_tray,
 	(parse_pgm_inst_t *)&cmd_stick,
+
+	(parse_pgm_inst_t *)&cmd_harvest_fruits,
+	(parse_pgm_inst_t *)&cmd_dump_fruits,
+
+
 #if 0
 	(parse_pgm_inst_t *)&cmd_harvest,
 	(parse_pgm_inst_t *)&cmd_store,

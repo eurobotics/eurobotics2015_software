@@ -20,7 +20,13 @@
  *  Olivier MATZ <zer0@droids-corp.org> 
  */
 
-/*   *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011) *  Javier Baliñas Santos <javier@arc-robots.org> * *  Code ported to family of microcontrollers dsPIC from *  commands_mechboard.c,v 1.5 2009/05/27 20:04:07 zer0 Exp */
+/*  
+ *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
+ *  Javier Baliñas Santos <javier@arc-robots.org>
+ *
+ *  Code ported to family of microcontrollers dsPIC from
+ *  commands_mechboard.c,v 1.5 2009/05/27 20:04:07 zer0 Exp
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -175,11 +181,12 @@ struct cmd_lift_result {
 static void cmd_lift_parsed(__attribute__((unused)) void *parsed_result,
 			    __attribute__((unused)) void *data)
 {
+#if 0
 	struct cmd_lift_result *res = (struct cmd_lift_result *) parsed_result;
 	struct i2c_cmd_slavedspic_set_mode command;
 	//microseconds t1, t2;
 
-#if 0
+
 
 	if (!strcmp_P(res->arg0, PSTR("lift"))) {
 #if 0
@@ -301,6 +308,8 @@ static void cmd_combs_parsed(__attribute__((unused)) void *parsed_result,
 		command.combs.mode = I2C_COMBS_MODE_HARVEST_CLOSE;	
 	else if (!strcmp_P(res->arg1, PSTR("harvest_open")))
 		command.combs.mode = I2C_COMBS_MODE_HARVEST_OPEN;	
+
+	command.combs.offset = res->arg2;
 
 	command.mode = I2C_SLAVEDSPIC_MODE_COMBS;
 	state_set_mode(&command);
@@ -428,6 +437,92 @@ parse_pgm_inst_t cmd_stick = {
 		(prog_void *)&cmd_stick_arg0, 
 		(prog_void *)&cmd_stick_arg1,
 		(prog_void *)&cmd_stick_arg2,
+		NULL,
+	},
+};
+
+/**********************************************************/
+/* harvest fruits */
+
+/* this structure is filled when cmd_harvest_fruits is parsed successfully */
+struct cmd_harvest_fruits_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+};
+
+/* function called when cmd_harvest_fruits is parsed successfully */
+static void cmd_harvest_fruits_parsed(__attribute__((unused)) void *parsed_result,
+			    __attribute__((unused)) void *data)
+{
+	struct cmd_harvest_fruits_result *res = (struct cmd_harvest_fruits_result *) parsed_result;
+	struct i2c_cmd_slavedspic_set_mode command;
+
+	if (!strcmp_P(res->arg1, PSTR("ready")))
+		command.harvest_fruits.mode = I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_READY;
+	else if (!strcmp_P(res->arg1, PSTR("do")))
+		command.harvest_fruits.mode = I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_DO;	
+	else if (!strcmp_P(res->arg1, PSTR("end")))
+		command.harvest_fruits.mode = I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_END;	
+
+	command.mode = I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS;
+	state_set_mode(&command);
+}
+
+prog_char str_harvest_fruits_arg0[] = "harvest_fruits";
+parse_pgm_token_string_t cmd_harvest_fruits_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_harvest_fruits_result, arg0, str_harvest_fruits_arg0);
+prog_char str_harvest_fruits_arg1[] = "ready#do#end";
+parse_pgm_token_string_t cmd_harvest_fruits_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_harvest_fruits_result, arg1, str_harvest_fruits_arg1);
+
+prog_char help_harvest_fruits[] = "set harvest tree mode";
+parse_pgm_inst_t cmd_harvest_fruits = {
+	.f = cmd_harvest_fruits_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_harvest_fruits,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_harvest_fruits_arg0, 
+		(prog_void *)&cmd_harvest_fruits_arg1,
+		NULL,
+	},
+};
+
+/**********************************************************/
+/* dump fruits */
+
+/* this structure is filled when cmd_dump_fruits is parsed successfully */
+struct cmd_dump_fruits_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+};
+
+/* function called when cmd_dump_fruits is parsed successfully */
+static void cmd_dump_fruits_parsed(__attribute__((unused)) void *parsed_result,
+			    __attribute__((unused)) void *data)
+{
+	struct cmd_dump_fruits_result *res = (struct cmd_dump_fruits_result *) parsed_result;
+	struct i2c_cmd_slavedspic_set_mode command;
+
+	if (!strcmp_P(res->arg1, PSTR("do")))
+		command.dump_fruits.mode = I2C_SLAVEDSPIC_MODE_DUMP_FRUITS_DO;
+	else if (!strcmp_P(res->arg1, PSTR("end")))
+		command.dump_fruits.mode = I2C_SLAVEDSPIC_MODE_DUMP_FRUITS_END;	
+
+	command.mode = I2C_SLAVEDSPIC_MODE_DUMP_FRUITS;
+	state_set_mode(&command);
+}
+
+prog_char str_dump_fruits_arg0[] = "dump_fruits";
+parse_pgm_token_string_t cmd_dump_fruits_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_dump_fruits_result, arg0, str_dump_fruits_arg0);
+prog_char str_dump_fruits_arg1[] = "do#end";
+parse_pgm_token_string_t cmd_dump_fruits_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_dump_fruits_result, arg1, str_dump_fruits_arg1);
+
+prog_char help_dump_fruits[] = "set dump fruits mode";
+parse_pgm_inst_t cmd_dump_fruits = {
+	.f = cmd_dump_fruits_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_dump_fruits,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_dump_fruits_arg0, 
+		(prog_void *)&cmd_dump_fruits_arg1,
 		NULL,
 	},
 };
