@@ -76,7 +76,7 @@
 #include "actuator.h"
 #include "beacon.h"
 #include "robotsim.h"
-#include "bt_protocol.h"
+//#include "bt_protocol.h"
 
 extern int8_t beacon_connected;
 
@@ -1288,8 +1288,8 @@ static void cmd_rs_parsed(void *parsed_result, void *data)
 			 cs_get_consign(&mainboard.distance.cs),
 			 cs_get_filtered_feedback(&mainboard.distance.cs),
 			 cs_get_out(&mainboard.distance.cs));
-		printf_P(PSTR("l=% .4"PRIi32" r=% .4"PRIi32"\r\n"), mainboard.dac_l,
-			 mainboard.dac_r);
+		printf_P(PSTR("l=% .4"PRIi32" r=% .4"PRIi32"\r\n"), mainboard.pwm_l,
+			 mainboard.pwm_r);
 		wait_ms(100);
 	} while(!cmdline_keypressed());
 }

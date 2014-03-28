@@ -29,52 +29,20 @@
 #include "main.h"
 #include "robotsim.h"
 
-void dac_set_and_save(void *dac, int32_t val)
+void dac_set_and_save(void *pwm_mc, int32_t val)
 {
-#ifdef EUROBOT2011_BOARD
-//#define RIGHT_MOTOR_OFFSET 2000 
-#define LEFT_MOTOR_OFFSET  0
-#else
-#define RIGHT_MOTOR_OFFSET	0 
-//#define LEFT_MOTOR_OFFSET  3500
-#define LEFT_MOTOR_OFFSET  0
-#endif
+	/* save value */	
+	if (pwm_mc == LEFT_MOTOR)
+		mainboard.pwm_l = val;
+	else if (pwm_mc == RIGHT_MOTOR)
+		mainboard.pwm_r = val;
 
-#define RIGHT_MOTOR_MAX		(65535-LEFT_MOTOR_OFFSET)
-#define LEFT_MOTOR_MAX		(65535-RIGHT_MOTOR_OFFSET)
-	
-	if (dac == LEFT_MOTOR) {
-		/* apply offset */
-		//val = val > 0? (val + LEFT_MOTOR_OFFSET):(val - LEFT_MOTOR_OFFSET);
-
-		/* we need to do the saturation here, before saving the value */
-		if (val > LEFT_MOTOR_MAX)
-			val = LEFT_MOTOR_MAX;
-		if (val < -LEFT_MOTOR_MAX)
-			val = -LEFT_MOTOR_MAX;
-
-		/* save value */
-		mainboard.dac_l = val;
-	}
-	else if (dac == RIGHT_MOTOR){
-		/* apply offset */
-		//val = val > 0? (val + RIGHT_MOTOR_OFFSET):(val - RIGHT_MOTOR_OFFSET);
-
-		/* we need to do the saturation here, before saving the value */
-		if (val > RIGHT_MOTOR_MAX)
-			val = RIGHT_MOTOR_MAX;
-		if (val < -RIGHT_MOTOR_MAX)
-			val = -RIGHT_MOTOR_MAX;
-
-		/* save value */
-		mainboard.dac_r = val;
-	}
 
 	/* set value */
 #ifdef HOST_VERSION
-	robotsim_pwm(dac, val);
+	robotsim_pwm(pwm_mc, val);
 #else
-	//dac_mc_set(dac, val);
+	pwm_mc_set(pwm_mc, val);
 #endif
 }
 

@@ -126,8 +126,8 @@
 #define LAST_SECONDS_TIME	80
 
 /* default acc */
-#define ACC_DIST  35.
-#define ACC_ANGLE 20.
+#define ACC_DIST  40.
+#define ACC_ANGLE 90.
 
 /* default speeds */
 #ifdef HOMOLOGATION
@@ -135,15 +135,15 @@
 #define SPEED_ANGLE_FAST 		2000.
 #else
 
-#define SPEED_DIST_FAST 		4000.
-#define SPEED_ANGLE_FAST 		4000.
+#define SPEED_DIST_FAST 		5000.
+#define SPEED_ANGLE_FAST 		5000.
 #endif
 
 //Do not change
-#define SPEED_DIST_SLOW 		  2000.
-#define SPEED_ANGLE_SLOW 		  2000.
-#define SPEED_DIST_VERY_SLOW 	500.
-#define SPEED_ANGLE_VERY_SLOW 500.
+#define SPEED_DIST_SLOW 		  	2500.
+#define SPEED_ANGLE_SLOW 		  	2500.
+#define SPEED_DIST_VERY_SLOW 		1000.
+#define SPEED_ANGLE_VERY_SLOW 	1000.
 
 
 /* zones */

@@ -566,7 +566,7 @@ void beacon_opponent_pulling(void)
 void beacon_protocol(void * dummy)
 {
 	int16_t i;
-	static uint8_t a = 0;
+	//static uint8_t a = 0;
 	volatile int16_t c = 0;
 	uint8_t ret = 0;
 	static microseconds pull_time_us = 0;

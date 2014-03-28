@@ -32,12 +32,12 @@
 
 
 #define I2C_SLAVEDSPIC_ADDR 	0x10
-#define I2C_GPIOS_01_ADDR 	  0x20
-#define I2C_GPIOS_23_ADDR 	  0x21
+#define I2C_GPIOS_01_ADDR 	  	0x20
+#define I2C_GPIOS_23_ADDR 	  	0x21
 
-#define I2C_COLOR_RED 	  0
+#define I2C_COLOR_RED 	  	0
 #define I2C_COLOR_YELLOW	1
-#define I2C_COLOR_MAX		  2
+#define I2C_COLOR_MAX		2
 
 #define I2C_OPPONENT_NOT_THERE (-1000)
 
