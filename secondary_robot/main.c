@@ -167,9 +167,12 @@ void io_pins_init(void)
 	_TRISB3 = 0;
 	
 	/* encoders */	
-	_QEA1R 	= 21;	/* QEA1 <- RP21(RC5) <- ENC_1_CHA */
+
+	/* XXX encoder 1 channels has been inverted for march with the other one */
+
+	_QEA1R 	= 20;	/* QEA1 <- RP21(RC5) <- ENC_1_CHA */
 	_TRISC5  = 1;	
-	_QEB1R 	= 20;	/* QEB1 <- RP20(RC4) <- ENC_1_CHB */
+	_QEB1R 	= 21;	/* QEB1 <- RP20(RC4) <- ENC_1_CHB */
 	_TRISC4	= 1;
 
 	_QEA2R 	= 19;	/* QEA2 <- RP19(RC3) <- ENC_2_CHA */
@@ -232,7 +235,8 @@ int main(void)
   mainboard.flags = DO_ENCODERS | DO_CS | DO_RS |
 		DO_POS | DO_POWER | DO_BD;
 #else
-  mainboard.flags = DO_ENCODERS;
+  mainboard.flags = DO_ENCODERS  | DO_RS |
+		DO_POS | DO_POWER; // | DO_CS | DO_BD;
 #endif
 	
 	beaconboard.opponent_x = I2C_OPPONENT_NOT_THERE;
@@ -274,7 +278,7 @@ int main(void)
 	                    1, 1, &PORTA, 0, &PORTA, 1);
 
 	pwm_mc_channel_init(MOTOR_2,
-	                    PWM_MC_MODE_SIGNED, 
+	                    PWM_MC_MODE_SIGNED | PWM_MC_MODE_SIGN_INVERTED, 
 	                    1, 2, &PORTA, 7, &PORTB, 15);
 
 	pwm_mc_channel_init(MOTOR_3,
@@ -377,7 +381,7 @@ int main(void)
 
 #ifdef HOST_VERSION
 	strat_reset_pos(400, COLOR_Y(1000), COLOR_A_ABS(90));
-  strat_event_enable();
+  	strat_event_enable();
 #endif
 
 	/* process commands, never returns */

@@ -66,7 +66,6 @@
 #endif
 
 
-#define I2C_STATE_MAX 			3
 #define I2C_TIMEOUT 				100 /* ms */
 #define I2C_WATCH_DOG_TIMEOUT	10
 
@@ -95,6 +94,7 @@ static volatile uint8_t i2c_state = 0;
 #define I2C_READ_GPIOS_01_VALUES 	0
 #define I2C_READ_GPIOS_23_VALUES 	1
 #define I2C_REQ_SLAVEDSPIC				2
+#define I2C_STATE_MAX 					1
 
 /* pulling counter */
 static volatile uint8_t i2c_poll_num = 0;

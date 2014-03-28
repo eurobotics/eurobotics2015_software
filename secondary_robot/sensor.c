@@ -248,10 +248,6 @@ static uint64_t sensor_filtered = 0;
  * 16-23: i2c GP1
  */
 
-	_TRISC9	= 0;	/* SENSOR_1 */
-	_TRISB2	= 0;	/* SENSOR_2 */
-	_TRISA8	= 0;	/* SENSOR_3 */
-
 uint64_t sensor_get_all(void)
 {
 	uint64_t tmp;
@@ -278,15 +274,10 @@ static uint64_t sensor_read(void)
 {
 	uint64_t tmp = 0;
 
-
-
-
 	tmp |= (uint64_t)((PORTA & (_BV(9))) >> 9) << 0;
 	/* 1 to 7 reserved */
 	tmp |= ((uint64_t)((uint16_t)gen.i2c_gpio0))<< 8;
 	tmp |= ((uint64_t)((uint16_t)gen.i2c_gpio1))<< 16;
-	//tmp |= ((uint64_t)((uint16_t)gen.i2c_gpio2))<< 24;
-	//tmp |= ((uint64_t)((uint16_t)gen.i2c_gpio3))<< 32;
 
 	/* add reserved sensors here */
 	return tmp;

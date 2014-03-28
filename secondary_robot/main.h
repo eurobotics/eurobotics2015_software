@@ -83,7 +83,7 @@
 
 /* brake motors */
 #define BRAKE_ON()      do {_LATA0 = 0; _LATA1 = 0; _LATA7 = 0; _LATB15 = 0; _LATB13 = 0; _LATA10 = 0;} while(0)
-#define BRAKE_OFF()     do {_LATA0 = 1; _LATA1 = 1; _LATA7 = 1; _LATB15 = 1; _LATB13 = 1; _LATA10 = 1;} while(0)
+#define BRAKE_OFF()     //do {_LATA0 = 1; _LATA1 = 1; _LATA7 = 1; _LATB15 = 1; _LATB13 = 1; _LATA10 = 1;} while(0)
 
 #endif /* !HOST_VERSION */
 
@@ -95,13 +95,13 @@
 
 /* distance between encoders weels,
  * decrease track to decrease angle */
-#define EXT_TRACK_MM      292.74161502079
+#define EXT_TRACK_MM      219.0
 #define VIRTUAL_TRACK_MM  EXT_TRACK_MM
 
 /* robot dimensions */
 #define IM_SECONDARY_ROBOT
-#define ROBOT_LENGTH      150.
-#define ROBOT_WIDTH 	    230.
+#define ROBOT_LENGTH      	150.
+#define ROBOT_WIDTH 	    	230.
 
 #define ROBOT_CENTER_TO_FRONT 75.
 #define ROBOT_CENTER_TO_BACK  75.
@@ -114,28 +114,28 @@
 
 
 /* Some calculus:
- * it is a 3600 imps -> 14400 because we see 1/4 period
- * and diameter: 55mm -> perimeter 173mm 
- * 14400/173 -> 832 imps/10 mm */
+ * it is a 5000 imps -> 20000 because we see 1/4 period
+ * and diameter: 53mm -> perimeter 166.5mm 
+ * 20000/163.5 -> 1201 imps/10 mm */
 
 /* increase it to go further */
-#define IMP_ENCODERS 		    3600.0
-#define WHEEL_DIAMETER_MM 	55.0
-#define WHEEL_PERIM_MM 	    (WHEEL_DIAMETER_MM * M_PI)
+#define IMP_ENCODERS 		  	5000.0
+#define WHEEL_DIAMETER_MM 		53.0
+#define WHEEL_PERIM_MM 	    	(WHEEL_DIAMETER_MM * M_PI)
 #define IMP_COEF 			      10.0
-#define DIST_IMP_MM 		    (((IMP_ENCODERS*4) / WHEEL_PERIM_MM) * IMP_COEF)
+#define DIST_IMP_MM 		    	(((IMP_ENCODERS*4) / WHEEL_PERIM_MM) * IMP_COEF)
 
 /* encoders handlers */
-#define LEFT_ENCODER        ((void *)2)
-#define RIGHT_ENCODER       ((void *)1)
+#define LEFT_ENCODER        ((void *)1)
+#define RIGHT_ENCODER       ((void *)2)
 
 /* motor handles */
-#define MOTOR_1         ((void *)&gen.pwm_mc_1)
-#define MOTOR_2         ((void *)&gen.pwm_mc_2)
-#define MOTOR_3         ((void *)&gen.pwm_mc_3)
+#define MOTOR_1     	((void *)&gen.pwm_mc_1)
+#define MOTOR_2     	((void *)&gen.pwm_mc_2)
+#define MOTOR_3     	((void *)&gen.pwm_mc_3)
 
-#define LEFT_MOTOR	MOTOR_1
-#define RIGHT_MOTOR	MOTOR_2
+#define LEFT_MOTOR	MOTOR_2
+#define RIGHT_MOTOR	MOTOR_3
 
 
 /** ERROR NUMS */
@@ -150,33 +150,33 @@
 
 /* EVENTS PRIORITIES */
 #ifdef old_version
-#define EVENT_PRIORITY_LED 			      170
-#define EVENT_PRIORITY_TIME           160
-#define EVENT_PRIORITY_I2C_POLL       140
-#define EVENT_PRIORITY_SENSORS        120
-#define EVENT_PRIORITY_CS             100
-#define EVENT_PRIORITY_BEACON_POLL    80
-#define EVENT_PRIORITY_STRAT         	70
+#define EVENT_PRIORITY_LED 			  	170
+#define EVENT_PRIORITY_TIME           	160
+#define EVENT_PRIORITY_I2C_POLL       	140
+#define EVENT_PRIORITY_SENSORS        	120
+#define EVENT_PRIORITY_CS             	100
+#define EVENT_PRIORITY_BEACON_POLL    	80
+#define EVENT_PRIORITY_STRAT       		70
 
 #else
 
-#define EVENT_PRIORITY_LED 			      170
-#define EVENT_PRIORITY_TIME           160
-#define EVENT_PRIORITY_I2C_POLL       140
-#define EVENT_PRIORITY_SENSORS        120
-#define EVENT_PRIORITY_CS             100
-#define EVENT_PRIORITY_STRAT         	30
-#define EVENT_PRIORITY_BEACON_POLL    20
+#define EVENT_PRIORITY_LED 			170
+#define EVENT_PRIORITY_TIME         160
+#define EVENT_PRIORITY_I2C_POLL     140
+#define EVENT_PRIORITY_SENSORS      120
+#define EVENT_PRIORITY_CS           100
+#define EVENT_PRIORITY_STRAT        30
+#define EVENT_PRIORITY_BEACON_POLL  20
 
 #endif
 
 /* EVENTS PERIODS */
-#define EVENT_PERIOD_LED 			    1000000L
-#define EVENT_PERIOD_STRAT			  25000L
-#define EVENT_PERIOD_BEACON_PULL	10000L
-#define EVENT_PERIOD_SENSORS		  10000L
-#define EVENT_PERIOD_I2C_POLL		  8000L
-#define EVENT_PERIOD_CS 			    5000L
+#define EVENT_PERIOD_LED 			   1000000L
+#define EVENT_PERIOD_STRAT			  	25000L
+#define EVENT_PERIOD_BEACON_PULL		10000L
+#define EVENT_PERIOD_SENSORS		  	10000L
+#define EVENT_PERIOD_I2C_POLL		  	8000L
+#define EVENT_PERIOD_CS 			   5000L
 
 #define CS_PERIOD ((EVENT_PERIOD_CS/SCHEDULER_UNIT)*SCHEDULER_UNIT) /* in microsecond */
 #define CS_HZ (1000000. / CS_PERIOD)
@@ -256,8 +256,8 @@ struct mainboard
 	volatile int16_t speed_a;  /* current angle speed */
 	volatile int16_t speed_d;  /* current dist speed */
 
-	int32_t dac_l;  /* current left dac */
-	int32_t dac_r;  /* current right dac */
+	int32_t pwm_l;  /* current left dac */
+	int32_t pwm_r;  /* current right dac */
 };
 
 
@@ -311,7 +311,7 @@ struct beaconboard
 	int16_t robot_2nd_x;
 	int16_t robot_2nd_y;
 	int16_t robot_2nd_a;
-  int16_t robot_2nd_a_abs;
+  	int16_t robot_2nd_a_abs;
 	int16_t robot_2nd_d;
 #endif
 
@@ -340,14 +340,14 @@ static inline void set_uart_mux(uint8_t channel)
 	if(channel == BEACON_CHANNEL){
 		_U2RXR 	= 9;	  /* U2RX <- RP9(RB9)  <- BEACON_UART_RX */
 		_TRISB9 	= 1;	/* U2RX is input								*/
-	  _RP25R 	= 5;	  /* U2TX -> RP25(RC9) -> BEACON_UART_TX */
+	  	_RP25R 	= 5;	  /* U2TX -> RP25(RC9) -> BEACON_UART_TX */
 		_TRISC9	= 0;	  /* U2TX is output								*/
 	}
 	else
 	{
 		_U2RXR 	= 2;	  /* U2RX <- RP2(RB2) <- SLAVE_UART_TX	*/
 		_TRISB2 	= 1;	/* U2RX is input								*/
-	  _RP3R 	= 5;	  /* U2TX -> RP3(RB3) -> SLAVE_UART_RX	*/
+	  	_RP3R 	= 5;	  /* U2TX -> RP3(RB3) -> SLAVE_UART_RX	*/
 		_TRISB3	= 0;	  /* U2TX is output								*/
 	}
 
