@@ -336,7 +336,6 @@ void state_do_harvest_fruits_mode(void)
 		case I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_READY:
 
 			tree_tray_set_mode(&slavedspic.tree_tray, TREE_TRAY_MODE_OPEN, 0);
-			time_wait_ms(100);
 			combs_set_mode(&slavedspic.combs, COMBS_MODE_OPEN, 0);
 			
 			err = combs_wait_end(&slavedspic.combs);
@@ -351,15 +350,18 @@ void state_do_harvest_fruits_mode(void)
 
 		case I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_DO:
 
-			combs_set_mode(&slavedspic.combs, COMBS_MODE_HARVEST_OPEN, 0);
-			time_wait_ms(200);
+			/* new speed */
+			combs_set_mode(&slavedspic.combs, COMBS_MODE_HARVEST_CLOSE, 0);
+
+			ax12_user_write_int(&gen.ax12, AX12_ID_TREE_TRAY, AA_MOVING_SPEED_L, 300);
 			tree_tray_set_mode(&slavedspic.tree_tray, TREE_TRAY_MODE_HARVEST, 0);
 
-			err = combs_wait_end(&slavedspic.combs);
+			err = tree_tray_wait_end (&slavedspic.tree_tray);
+			ax12_user_write_int(&gen.ax12, AX12_ID_TREE_TRAY, AA_MOVING_SPEED_L, 0x3FF);
 			if(err & END_BLOCKING)
 				break;
 
-			err = tree_tray_wait_end (&slavedspic.tree_tray);
+			err = combs_wait_end(&slavedspic.combs);
 			if(err & END_BLOCKING)
 				break;
 
@@ -367,15 +369,13 @@ void state_do_harvest_fruits_mode(void)
 
 		case I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_END:
 
-			tree_tray_set_mode(&slavedspic.tree_tray, TREE_TRAY_MODE_OPEN, 0);
-			time_wait_ms(200);
+			tree_tray_set_mode(&slavedspic.tree_tray, TREE_TRAY_MODE_OPEN, -126);
 			combs_set_mode(&slavedspic.combs, COMBS_MODE_HIDE, 0);
 
 			err = tree_tray_wait_end(&slavedspic.tree_tray);
-			if(err & END_BLOCKING)
-				break;
 
 			tree_tray_set_mode(&slavedspic.tree_tray, TREE_TRAY_MODE_CLOSE, 0);
+
 			err = tree_tray_wait_end(&slavedspic.tree_tray);
 			if(err & END_BLOCKING)
 				break;
@@ -488,20 +488,33 @@ void state_init(void)
 {
 	mainboard_command.mode = INIT;
 
+	/* enable pwm servos */
 	pwm_servo_enable();
+
+	/* enable ax12 torque */
+	ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_TORQUE_ENABLE, 0xFF);
+
+	/* start positions */
+
+	/* close gadgets */
+	boot_door_set_mode (&slavedspic.boot, BOOT_DOOR_MODE_CLOSE);
+
+	combs_set_mode(&slavedspic.combs, COMBS_MODE_HIDE, 0);
+	combs_wait_end(&slavedspic.combs);
+
+	tree_tray_set_mode(&slavedspic.tree_tray, TREE_TRAY_MODE_CLOSE, 0);
+	tree_tray_wait_end(&slavedspic.tree_tray);
+
+	stick_set_mode(&slavedspic.stick_l, STICK_MODE_HIDE, 0);
+	stick_wait_end(&slavedspic.stick_l);
+
+	stick_set_mode(&slavedspic.stick_r, STICK_MODE_HIDE, 0);
+	stick_wait_end(&slavedspic.stick_r);
+
 #if 0
 	BRAKE_OFF();
 	slavedspic.lift.on = 1;
-#endif
 
-	ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_TORQUE_ENABLE, 0xFF);
-
-	time_wait_ms(100);
-
-	/* start positions */
-	/* TODO */
-
-#if 0
 	/* lift calibration */
 	lift_calibrate();
 	lift_set_height(LIFT_HEIGHT_MIN_mm);

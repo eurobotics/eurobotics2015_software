@@ -185,7 +185,7 @@ int8_t combs_set_mode(combs_t *combs, uint8_t mode, int16_t pos_offset)
 	combs->mode_old = combs->mode;
 	combs->mode = mode;
 	combs->ax12_pos_l = combs_ax12_pos_l[combs->mode] + pos_offset;
-	combs->ax12_pos_r = combs_ax12_pos_r[combs->mode] + pos_offset;
+	combs->ax12_pos_r = combs_ax12_pos_r[combs->mode] - pos_offset;
 
 	/* set speed */
 #if 0
@@ -469,7 +469,6 @@ uint8_t tree_tray_set_mode(tree_tray_t *tree_tray, uint8_t mode, int16_t pos_off
 		tree_tray->ax12_pos = tree_tray_ax12_pos[TREE_TRAY_MODE_POS_MAX];
 	if(tree_tray->ax12_pos < tree_tray_ax12_pos[TREE_TRAY_MODE_POS_MIN])
 		tree_tray->ax12_pos = tree_tray_ax12_pos[TREE_TRAY_MODE_POS_MIN];
-
 
 	/* apply to ax12 */
 	err = ax12_user_write_int(&gen.ax12, ax12_id, AA_GOAL_POSITION_L, tree_tray->ax12_pos);

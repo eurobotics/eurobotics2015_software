@@ -357,7 +357,9 @@ static void cmd_tree_tray_parsed(__attribute__((unused)) void *parsed_result,
 	else if (!strcmp_P(res->arg1, PSTR("close")))
 		command.tree_tray.mode = I2C_TREE_TRAY_MODE_CLOSE;	
 	else if (!strcmp_P(res->arg1, PSTR("harvest")))
-		command.tree_tray.mode = I2C_TREE_TRAY_MODE_HARVEST;	
+		command.tree_tray.mode = I2C_TREE_TRAY_MODE_HARVEST;
+
+	command.tree_tray.offset = res->arg2;	
 
 	command.mode = I2C_SLAVEDSPIC_MODE_TREE_TRAY;
 	state_set_mode(&command);
@@ -527,172 +529,6 @@ parse_pgm_inst_t cmd_dump_fruits = {
 	},
 };
 
-#if 0
-/**********************************************************/
-/* harvest */
-
-/* this structure is filled when cmd_harvest is parsed successfully */
-struct cmd_harvest_result {
-	fixed_string_t arg0;
-	fixed_string_t arg1;
-};
-
-/* function called when cmd_harvest is parsed successfully */
-static void cmd_harvest_parsed(void *parsed_result,
-			      __attribute__((unused)) void *data)
-{
-	struct cmd_harvest_result *res = parsed_result;
-	struct i2c_cmd_slavedspic_set_mode command;
-
-	if (!strcmp(res->arg1, "prep_totem"))
-		command.harvest.mode = I2C_HARVEST_MODE_PREPARE_TOTEM;
-	else if (!strcmp(res->arg1, "prep_goldbar_totem"))
-		command.harvest.mode = I2C_HARVEST_MODE_PREPARE_GOLDBAR_TOTEM;
-	else if (!strcmp(res->arg1, "prep_goldbar_floor"))
-		command.harvest.mode = I2C_HARVEST_MODE_PREPARE_GOLDBAR_FLOOR;
-	else if (!strcmp(res->arg1, "prep_coins_totem"))
-		command.harvest.mode = I2C_HARVEST_MODE_PREPARE_COINS_TOTEM;
-	else if (!strcmp(res->arg1, "prep_coins_floor"))
-		command.harvest.mode = I2C_HARVEST_MODE_PREPARE_COINS_FLOOR;
-	else if (!strcmp(res->arg1, "coins_isle"))
-		command.harvest.mode = I2C_HARVEST_MODE_COINS_ISLE;
-	else if (!strcmp(res->arg1, "coins_floor"))
-		command.harvest.mode = I2C_HARVEST_MODE_COINS_FLOOR;
-	else if (!strcmp(res->arg1, "coins_totem"))
-		command.harvest.mode = I2C_HARVEST_MODE_COINS_TOTEM;
-	else if (!strcmp(res->arg1, "goldbar_totem"))
-		command.harvest.mode = I2C_HARVEST_MODE_GOLDBAR_TOTEM;
-	else if (!strcmp(res->arg1, "goldbar_floor"))
-		command.harvest.mode = I2C_HARVEST_MODE_GOLDBAR_FLOOR;
-
-	command.mode = I2C_SLAVEDSPIC_MODE_HARVEST;
-	state_set_mode(&command);
-}
-
-prog_char str_harvest_arg0[] = "harvest";
-parse_pgm_token_string_t cmd_harvest_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_harvest_result, arg0, str_harvest_arg0);
-prog_char str_harvest_arg1[] = "prep_totem#prep_goldbar_totem#prep_goldbar_floor#prep_coins_totem#prep_coins_floor#"
-										"coins_isle#coins_floor#coins_totem#goldbar_totem#goldbar_floor";
-parse_pgm_token_string_t cmd_harvest_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_harvest_result, arg1, str_harvest_arg1);
-
-
-prog_char help_harvest[] = "prepare for/or harvest something";
-parse_pgm_inst_t cmd_harvest = {
-	.f = cmd_harvest_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_harvest,
-	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_harvest_arg0, 
-		(prog_void *)&cmd_harvest_arg1, 
-		NULL,
-	},
-};
-
-/**********************************************************/
-/* store */
-
-/* this structure is filled when cmd_store is parsed successfully */
-struct cmd_store_result {
-	fixed_string_t arg0;
-	fixed_string_t arg1;
-	uint8_t arg2;
-};
-
-/* function called when cmd_store is parsed successfully */
-static void cmd_store_parsed(void *parsed_result,
-			      __attribute__((unused)) void *data)
-{
-	struct cmd_store_result *res = parsed_result;
-	struct i2c_cmd_slavedspic_set_mode command;
-
-	if (!strcmp(res->arg1, "goldbar_mouth"))
-		command.store.mode = I2C_STORE_MODE_GOLDBAR_IN_MOUTH;
-	else if (!strcmp(res->arg1, "goldbar_boot"))
-		command.store.mode = I2C_STORE_MODE_GOLDBAR_IN_BOOT;
-	else if (!strcmp(res->arg1, "mouth_in_boot"))
-		command.store.mode = I2C_STORE_MODE_MOUTH_IN_BOOT;
-
-	command.store.times = res->arg2;
-	command.mode = I2C_SLAVEDSPIC_MODE_STORE;
-	state_set_mode(&command);
-}
-
-prog_char str_store_arg0[] = "store";
-parse_pgm_token_string_t cmd_store_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_store_result, arg0, str_store_arg0);
-prog_char str_store_arg1[] = "goldbar_mouth#goldbar_boot#mouth_in_boot";
-parse_pgm_token_string_t cmd_store_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_store_result, arg1, str_store_arg1);
-parse_pgm_token_num_t cmd_store_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_store_result, arg2, UINT8);
-
-
-prog_char help_store[] = "store something in somewhere (n times)";
-parse_pgm_inst_t cmd_store = {
-	.f = cmd_store_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_store,
-	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_store_arg0, 
-		(prog_void *)&cmd_store_arg1, 
-		(prog_void *)&cmd_store_arg2, 
-		NULL,
-	},
-};
-
-
-/**********************************************************/
-/* dump */
-
-/* this structure is filled when cmd_dump is parsed successfully */
-struct cmd_dump_result {
-	fixed_string_t arg0;
-	fixed_string_t arg1;
-};
-
-/* function called when cmd_dump is parsed successfully */
-static void cmd_dump_parsed(void *parsed_result,
-			      __attribute__((unused)) void *data)
-{
-	struct cmd_dump_result *res = parsed_result;
-	struct i2c_cmd_slavedspic_set_mode command;
-
-	if (!strcmp(res->arg1, "prep_hold"))
-		command.dump.mode = I2C_DUMP_MODE_PREPARE_HOLD;
-	else if (!strcmp(res->arg1, "prep_mouth"))
-		command.dump.mode = I2C_DUMP_MODE_PREPARE_MOUTH;
-	else if (!strcmp(res->arg1, "prep_boot"))
-		command.dump.mode = I2C_DUMP_MODE_PREPARE_BOOT;
-	else if (!strcmp(res->arg1, "boot"))
-		command.dump.mode = I2C_DUMP_MODE_BOOT;
-	else if (!strcmp(res->arg1, "boot_blowing"))
-		command.dump.mode = I2C_DUMP_MODE_BOOT_BLOWING;
-	else if (!strcmp(res->arg1, "mouth_blowing"))
-		command.dump.mode = I2C_DUMP_MODE_MOUTH_BLOWING;
-	else if (!strcmp(res->arg1, "end_boot"))
-		command.dump.mode = I2C_DUMP_MODE_END_BOOT;
-	else if (!strcmp(res->arg1, "end_mouth"))
-		command.dump.mode = I2C_DUMP_MODE_END_MOUTH;
-
-	command.mode = I2C_SLAVEDSPIC_MODE_DUMP;
-	state_set_mode(&command);
-}
-
-prog_char str_dump_arg0[] = "dump";
-parse_pgm_token_string_t cmd_dump_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_dump_result, arg0, str_dump_arg0);
-prog_char str_dump_arg1[] = "prep_hold#prep_mouth#prep_boot#boot#boot_blowing#mouth_blowing#end_boot#end_mouth";
-parse_pgm_token_string_t cmd_dump_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_dump_result, arg1, str_dump_arg1);
-
-
-prog_char help_dump[] = "dump something to somewhere";
-parse_pgm_inst_t cmd_dump = {
-	.f = cmd_dump_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_dump,
-	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_dump_arg0, 
-		(prog_void *)&cmd_dump_arg1, 
-		NULL,
-	},
-};
-
 
 
 /**********************************************************/
@@ -724,6 +560,8 @@ static void cmd_state2_parsed(void *parsed_result,
 	}
 	else if (!strcmp(res->arg1, "status")) {
 
+		printf("not implemented");
+#if 0
 		/* actuators blocking flags */
 		printf("fingers_floor_blocked = %d\r\n", slavedspic.fingers_floor.blocking);
 		printf("fingers_totem_blocked = %d\r\n", slavedspic.fingers_totem.blocking);
@@ -745,6 +583,7 @@ static void cmd_state2_parsed(void *parsed_result,
 		printf("nb_goldbars_in_mouth = %d\r\n", slavedspic.nb_goldbars_in_mouth);
 		printf("nb_coins_in_boot = %d\r\n", slavedspic.nb_coins_in_boot);
 		printf("nb_coins_in_mouth = %d\r\n", slavedspic.nb_coins_in_mouth);
+#endif
 	}
 }
 
@@ -765,6 +604,7 @@ parse_pgm_inst_t cmd_state2 = {
 	},
 };
 
+#if 0
 
 /**********************************************************/
 /* State3 */
