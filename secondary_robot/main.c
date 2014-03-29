@@ -134,9 +134,9 @@ void io_pins_init(void)
 	_TRISA4 = 0;	/* LED5 */
 	
 	/* sensor inputs */
-	_TRISC9	= 0;	/* SENSOR_1 */
-	_TRISB2	= 0;	/* SENSOR_2 */
-	_TRISA8	= 0;	/* SENSOR_3 */
+	_TRISC9	= 1;	/* SENSOR_1 */
+	_TRISB2	= 1;	/* SENSOR_2 */
+	_TRISA8	= 1;	/* SENSOR_3 */
 
 	/* L6203 H bridges (outputs) */
 	_TRISA0 	= 0;	// MOT_1_IN1
@@ -236,7 +236,7 @@ int main(void)
 		DO_POS | DO_POWER | DO_BD;
 #else
   mainboard.flags = DO_ENCODERS  | DO_RS |
-		DO_POS | DO_POWER; // | DO_CS | DO_BD;
+		DO_POS | DO_POWER | DO_BD; // | DO_CS ;
 #endif
 	
 	beaconboard.opponent_x = I2C_OPPONENT_NOT_THERE;

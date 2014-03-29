@@ -335,8 +335,7 @@ parse_pgm_inst_t cmd_trajectory_show = {
 struct cmd_rs_gains_result {
 	fixed_string_t arg0;
 	fixed_string_t arg1;
-	float left;
-	float right;
+	float ed;
 };
 
 /* function called when cmd_rs_gains is parsed successfully */
@@ -345,25 +344,15 @@ static void cmd_rs_gains_parsed(void * parsed_result, void * data)
 #ifdef HOST_VERSION
 	printf("not implemented\n");
 #else
-	struct cmd_rs_gains_result * res = parsed_result;
-	
+	struct cmd_rs_gains_result * res = parsed_result;	double cl = 0.0, cr = 0.0, ed = 0.0;	
 	if (!strcmp_P(res->arg1, PSTR("set"))) {
+		ed = res->ed;		cl = (2.0/(ed + 1.0));		cr = (2.0 /((1.0 / ed) + 1.0));
+		/* increase gain to decrease dist, increase left and it will turn more left */
 		rs_set_left_ext_encoder(&mainboard.rs, encoders_dspic_get_value, 
-					LEFT_ENCODER, res->left); 		// increasing one turns to the left (en augmentant on tourne à gauche)
+					LEFT_ENCODER, IMP_COEF * cl);
 		rs_set_right_ext_encoder(&mainboard.rs, encoders_dspic_get_value, 
-					 RIGHT_ENCODER, res->right); 	// increasing one turns to the right (en augmentant on tourne à droite)
-	}	
-	
-	/* XXX on dspic decimal part of negative values is not printed well, because compiler C30?? */
-#ifndef CONFIG_MODULE_ROBOT_SYSTEM_USE_F64	
-	printf_P(PSTR("rs_gains set %f %f \r\n"), mainboard.rs.left_ext_gain, mainboard.rs.right_ext_gain);
-#else
-	printf_P(PSTR("rs_gains set "));
-	f64_print(mainboard.rs.left_ext_gain);
-	printf_P(PSTR(" "));
-	f64_print(mainboard.rs.right_ext_gain);
-	printf_P(PSTR("\r\n"));
-#endif
+					 RIGHT_ENCODER, IMP_COEF * cr);	}	
+	printf_P(PSTR("rs_gains set ed = %f, cr = %f, cl = %f\r\n"), ed, cr, cl);
 #endif
 }
 
@@ -371,8 +360,7 @@ prog_char str_rs_gains_arg0[] = "rs_gains";
 parse_pgm_token_string_t cmd_rs_gains_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_rs_gains_result, arg0, str_rs_gains_arg0);
 prog_char str_rs_gains_arg1[] = "set";
 parse_pgm_token_string_t cmd_rs_gains_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_rs_gains_result, arg1, str_rs_gains_arg1);
-parse_pgm_token_num_t cmd_rs_gains_l = TOKEN_NUM_INITIALIZER(struct cmd_rs_gains_result, left, FLOAT);
-parse_pgm_token_num_t cmd_rs_gains_r = TOKEN_NUM_INITIALIZER(struct cmd_rs_gains_result, right, FLOAT);
+parse_pgm_token_num_t cmd_rs_gains_ed = TOKEN_NUM_INITIALIZER(struct cmd_rs_gains_result, ed, FLOAT);
 
 prog_char help_rs_gains[] = "Set rs_gains (left, right)";
 parse_pgm_inst_t cmd_rs_gains = {
@@ -382,14 +370,12 @@ parse_pgm_inst_t cmd_rs_gains = {
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_rs_gains_arg0, 
 		(prog_void *)&cmd_rs_gains_arg1, 
-		(prog_void *)&cmd_rs_gains_l, 
-		(prog_void *)&cmd_rs_gains_r, 
+		(prog_void *)&cmd_rs_gains_ed,  
 		NULL,
 	},
 };
 
 /* show */
-
 prog_char str_rs_gains_show_arg[] = "show";
 parse_pgm_token_string_t cmd_rs_gains_show_arg = TOKEN_STRING_INITIALIZER(struct cmd_rs_gains_result, arg1, str_rs_gains_show_arg);
 
@@ -404,6 +390,7 @@ parse_pgm_inst_t cmd_rs_gains_show = {
 		NULL,
 	},
 };
+
 
 /**********************************************************/
 /* track configuration */

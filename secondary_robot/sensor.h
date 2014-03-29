@@ -64,41 +64,23 @@
 #define SENSOR_MAX    24
 
 
-#if notyet /* TODO 2014 */
+/* sensors map */
+#define S_START			S_GP0_4
+#define S_COLOR			S_SENSOR_3
+#define S_TURN				S_SENSOR_2
+#define S_BEACON			S_SENSOR_1
+#define S_OBS_FRONT_L	S_GP0_2
+#define S_OBS_FRONT_R	S_GP0_3
+#define S_OBS_REAR_L		S_GP0_0
+#define S_OBS_REAR_R		S_GP0_1
 
+#ifdef notyet
 /* lasers map */
 #define ADC_LASER_R		ADC_LASER_1
 #define ADC_LASER_L		ADC_LASER_2
 #define ADC_LASER_MAX	2
+#endif
 
-/* sensors map */
-#define S_TOKEN_FRONT_R			S_GP3_4
-#define S_TOKEN_FRONT_L			S_GP3_3
-#define S_TOKEN_FRONT_45R		S_GP1_1
-#define S_TOKEN_FRONT_45L		S_GP1_0
-#define S_TOKEN_FRONT_TOWER2H	S_GP0_6
-#define S_TOKEN_FRONT_TOWER1H	S_GP3_1
-#define S_TOKEN_FRONT_FIGURE	S_GP0_0
-
-#define S_TOKEN_REAR_R			S_GP2_6
-#define S_TOKEN_REAR_L			S_GP2_4
-#define S_TOKEN_REAR_45R		S_GP2_7
-#define S_TOKEN_REAR_45L		S_GP2_3
-#define S_TOKEN_REAR_TOWER2H	S_GP0_3
-#define S_TOKEN_REAR_TOWER1H	S_GP3_0
-#define S_TOKEN_REAR_FIGURE	S_GP0_1
-
-/* opponent sensors */
-#define S_OPPONENT_FRONT_R		S_GP1_7
-#define S_OPPONENT_FRONT_L		S_GP0_4
-
-#define S_OPPONENT_REAR_R		S_GP1_6
-#define S_OPPONENT_REAR_L		S_GP1_4
-
-#define S_OPPONENT_RIGHT		S_GP0_7
-#define S_OPPONENT_LEFT			S_GP1_3
-
-#endif /* notyet TODO 2014 */
 
 /* digital and analog */
 void sensor_init(void);

@@ -151,8 +151,8 @@ static void cmd_event_parsed(void *parsed_result, void *data)
 			robotsim_pwm(LEFT_MOTOR, 0);
 			robotsim_pwm(RIGHT_MOTOR, 0);
 #else
-		 	//dac_mc_set(LEFT_MOTOR, 0);
-			//dac_mc_set(RIGHT_MOTOR, 0);
+		 	pwm_mc_set(LEFT_MOTOR, 0);
+			pwm_mc_set(RIGHT_MOTOR, 0);
 #endif
 		}
 		mainboard.flags &= (~bit);
