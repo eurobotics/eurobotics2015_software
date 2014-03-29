@@ -518,20 +518,24 @@ uint8_t __strat_obstacle(uint8_t which)
 		return 0;
 
 
-#ifdef HOMOLOGATION
 	/* opponent is in front of us */
-	if (mainboard.speed_d > 0 && (sensor_get(S_OPPONENT_FRONT_R) || sensor_get(S_OPPONENT_FRONT_L))) {
+	if (mainboard.speed_d > 0 && (sensor_get(S_OBS_FRONT_R) || sensor_get(S_OBS_FRONT_L))) {
 		DEBUG(E_USER_STRAT, "opponent front");
-		//sensor_obstacle_disable();
+
+		/* TODO: put opp coords */
+
+		sensor_obstacle_disable();
 		return 1;
 	}
 	/* opponent is behind us */
-	if (mainboard.speed_d < 0 && (sensor_get(S_OPPONENT_REAR_R) || sensor_get(S_OPPONENT_REAR_L))) {
+	if (mainboard.speed_d < 0 && (sensor_get(S_OBS_REAR_R) || sensor_get(S_OBS_REAR_L))) {
 		DEBUG(E_USER_STRAT, "opponent behind");
-		//sensor_obstacle_disable();
+
+		/* TODO: put opp coords */
+
+		sensor_obstacle_disable();
 		return 1;
 	}
-#endif
 
 #ifdef TWO_OPPONENTS
 	if(which == OBSTACLE_OPP1)

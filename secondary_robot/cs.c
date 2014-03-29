@@ -206,7 +206,7 @@ void maindspic_cs_init(void)
 	rs_set_left_pwm(&mainboard.rs, dac_set_and_save, LEFT_MOTOR);
 	rs_set_right_pwm(&mainboard.rs,  dac_set_and_save, RIGHT_MOTOR);
 
-#define Ed	1.0 /* TODO */
+#define Ed	0.999
 #define Cl	(2.0/(Ed + 1.0))
 #define Cr  (2.0 /((1.0 / Ed) + 1.0))
 
@@ -227,7 +227,7 @@ void maindspic_cs_init(void)
 
 	/* POSITION MANAGER */
 	position_init(&mainboard.pos);
-	position_set_physical_params(&mainboard.pos, VIRTUAL_TRACK_MM, DIST_IMP_MM * 1.0); /* TODO */
+	position_set_physical_params(&mainboard.pos, VIRTUAL_TRACK_MM, DIST_IMP_MM * 0.9676691735);
 	position_set_related_robot_system(&mainboard.pos, &mainboard.rs);
 	position_set_centrifugal_coef(&mainboard.pos, 0.0); // 0.000016
 	position_use_ext(&mainboard.pos);
@@ -246,12 +246,12 @@ void maindspic_cs_init(void)
 	/* ---- CS angle */
 	/* PID */
 	pid_init(&mainboard.angle.pid);
-	pid_set_gains(&mainboard.angle.pid, 20, 5, 200); //360, 3, 3000
+	pid_set_gains(&mainboard.angle.pid, 40, 5, 200); //360, 3, 3000
 	pid_set_maximums(&mainboard.angle.pid, 0, 2650, 5332);
 	pid_set_out_shift(&mainboard.angle.pid, 6);	
 	pid_set_derivate_filter(&mainboard.angle.pid, 1);
 
-	/* TODO QUADRAMP */
+	/* QUADRAMP */
 	quadramp_init(&mainboard.angle.qr);
 	quadramp_set_1st_order_vars(&mainboard.angle.qr, SPEED_ANGLE_FAST, SPEED_ANGLE_FAST); //3000	/* set speed */
 	quadramp_set_2nd_order_vars(&mainboard.angle.qr, ACC_ANGLE, ACC_ANGLE); 	// 20	/* set accel */
@@ -266,8 +266,8 @@ void maindspic_cs_init(void)
 
 	/* Blocking detection */
 	bd_init(&mainboard.angle.bd);
-	bd_set_speed_threshold(&mainboard.angle.bd, 100);
-	bd_set_current_thresholds(&mainboard.angle.bd, 20, 8000, 1000000, 50);
+	bd_set_speed_threshold(&mainboard.angle.bd, 200);
+	bd_set_current_thresholds(&mainboard.angle.bd, 250, 5000, 1000000, 50);
 
 	/* ---- CS distance */
 	/* PID */
@@ -292,8 +292,9 @@ void maindspic_cs_init(void)
 
 	/* Blocking detection */
 	bd_init(&mainboard.distance.bd);
-	bd_set_speed_threshold(&mainboard.distance.bd, 100);
-	bd_set_current_thresholds(&mainboard.distance.bd, 20, 8000, 1000000, 50);
+	bd_set_speed_threshold(&mainboard.distance.bd, 200);
+	//bd_set_current_thresholds(struct blocking_detection *bd, int32_t k1, int32_t k2, uint32_t i_thres, uint16_t cpt_thres);
+	bd_set_current_thresholds(&mainboard.distance.bd, 250, 5000, 1000000, 50);
 
 	/* set them on !! */
 	mainboard.angle.on = 1;
