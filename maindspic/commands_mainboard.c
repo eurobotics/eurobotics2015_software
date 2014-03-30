@@ -1476,7 +1476,7 @@ static void cmd_stick_parsed(__attribute__((unused)) void *parsed_result,
 
 	if (!strcmp_P(res->arg0, PSTR("stick_left")))
 		type = I2C_STICK_TYPE_LEFT;
-	else if (!strcmp_P(res->arg0, PSTR("stick_right")))
+	else //if (!strcmp_P(res->arg0, PSTR("stick_right")))
 		type = I2C_STICK_TYPE_RIGHT;	
 
 	if (!strcmp_P(res->arg1, PSTR("hide")))

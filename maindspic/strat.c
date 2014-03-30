@@ -396,7 +396,12 @@ uint8_t strat_main(void)
 #else
 	
 	printf_P(PSTR("Strat begin\r\n"));
-	strat_begin();
+	do{
+		err = strat_begin_alcabot();
+	}while((err & END_TIMER) == 0);
+
+   strat_exit();
+   return 0;
 
 	/* auto-play */
 	printf_P(PSTR("\r\n\r\nStrat smart\r\n"));
