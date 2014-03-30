@@ -88,6 +88,8 @@
 #define HOME_YELLOW_X		200
 #define HOME_YELLOW_Y		300
 
+#define HEART_FIRE_2_RAD	150
+
 /* convert coords according to our color */
 #define COLOR_Y(y)     (y)
 #define COLOR_X(x)     ((mainboard.our_color==I2C_COLOR_YELLOW)? (x) : (AREA_X-(x)))
@@ -321,6 +323,7 @@ extern uint8_t strat_zones_points[ZONES_MAX];
 
 #ifndef HOST_VERSION_OA_TEST
 
+
 /************************************************************* 
  * Functions headers of strat files
  ************************************************************/
@@ -341,7 +344,9 @@ void strat_init(void);
 void strat_exit(void);
 
 uint8_t strat_main(void);
-uint8_t strat_beginning(void);
+uint8_t strat_begin(void);
+uint8_t strat_begin_alcabot (void);
+
 void strat_event(void *dummy);
 void strat_event_enable(void);
 void strat_event_disable(void);
