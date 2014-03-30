@@ -57,35 +57,47 @@ int8_t i2c_slavedspic_mode_init(void);
 int8_t i2c_slavedspic_mode_power_off(void);
 
 /* wait for slavedspic is ready */
-void i2c_slavedspic_wait_status(uint8_t status);
+void i2c_slavedspic_wait_ready(void);
 
+/****** SIMPLE ACTUATORS */
+
+/* set stick mode */
+int8_t i2c_slavedspic_mode_stick(uint8_t type, uint8_t mode, int8_t offset);
+
+/* set comb mode */
+int8_t i2c_slavedspic_mode_combs(uint8_t mode, int8_t offset);
+
+/* set tree tray */
+int8_t i2c_slavedspic_mode_tree_tray (uint8_t mode, int8_t offset);
+
+/* set boot tray mode */
+int8_t i2c_slavedspic_mode_boot_tray(uint8_t mode);
+
+/* set boot door mode*/
+int8_t i2c_slavedspic_mode_boot_door(uint8_t mode);
+
+
+/****** MULTIPLE ACTUATORS */
+
+/* set harvest fruits mode */
+int8_t i2c_slavedspic_mode_harvest_fruits(uint8_t mode);
+
+/* set dump fruits mode */
+int8_t i2c_slavedspic_mode_dump_fruits(uint8_t mode);
+
+
+#ifdef notyet
 
 /****** LOW LEVEL FUNCTIONS */
 
 /* set arms */
 int8_t i2c_slavedspic_set_arm(uint8_t side, uint8_t elbow_height_mm, uint8_t elbow_yaw_deg, int8_t wrist_roll_deg);
 
-/* set stick */
-int8_t i2c_slavedspic_set_stick(uint8_t side, uint8_t angle_deg);
-
-/* set comb */
-int8_t i2c_slavedspic_set_comb(uint8_t side, uint8_t angle_deg);
-
-/* set comb tray */
-int8_t i2c_slavedspic_set_comb_tray(uint8_t angle_deg);
-
-/* set boot tray */
-int8_t i2c_slavedspic_set_boot_tray(uint8_t duty);
-
-/* set boot tray */
-int8_t i2c_slavedspic_set_boot_door(uint8_t angle_deg);
-
 /* set vacum */
 int8_t i2c_slavedspic_set_vacuum_motor(uint8_t duty);
 
 /* set vacum flow */
 int8_t i2c_slavedspic_set_vacuum_presure(uint8_t on);
-
 
 
 /****** HI LEVEL FUNCTIONS */
@@ -122,18 +134,6 @@ int8_t i2c_slavedspic_mode_hide_arms(uint8_t side);
 
 /* TREES AND FRUITS STUFF */
 
-/* prepare for harvest tree's fruit */
-int8_t i2c_slavedspic_mode_prep_harvest_tree(void);
-
-/* harvest tree's fruit */
-int8_t i2c_slavedspic_mode_harvest_tree(void);
-
-/* dump fruit harvested */
-int8_t i2c_slavedspic_mode_dump_fruit(uint8_t vibration_duty);
-
-/* ends fruit dumping fruit */
-int8_t i2c_slavedspic_mode_end_dump_fruit(void);
-
 /* prepare for scanning toxic fruits */
 int8_t i2c_slavedspic_mode_prep_toxic_fruit(uint8_t side, uint8_t level, uint8_t elbow_yaw_deg);
 
@@ -144,14 +144,6 @@ int8_t i2c_slavedspic_mode_pickup_toxic_fruit(uint8_t side, uint8_t level, uint8
 int8_t i2c_slavedspic_mode_drop_toxic_fruit(uint8_t side);
 
 
-/* STICKS BROOMS STUFF */
-
-/* sticks are hidden */
-int8_t i2c_slavedspic_mode_sticks_hide(void); 
-
-/* use a stick for clean fires */
-int8_t i2c_slavedspic_mode_sticks_clean(uint8_t level);
-
-
+#endif /* notyet */
 
 #endif
