@@ -725,11 +725,11 @@ PID_DERIVATE_FILTER_MAX_SIZE::4	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eur
 PIN::(port)(*(&(port)-2))	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive.h	297;"	d	line:297
 POS_BOOT_DOOR_CLOSE::960	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	64;"	d	line:64
 POS_BOOT_DOOR_OPEN::700	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	63;"	d	line:63
-POS_COMB_L_HARVEST_CLOSE::507	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	46;"	d	line:46
+POS_COMB_L_HARVEST_CLOSE::524	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	46;"	d	line:46
 POS_COMB_L_HARVEST_OPEN::469	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	45;"	d	line:45
 POS_COMB_L_HIDE::792	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	47;"	d	line:47
 POS_COMB_L_OPEN::420	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	44;"	d	line:44
-POS_COMB_R_HARVEST_CLOSE::513	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	41;"	d	line:41
+POS_COMB_R_HARVEST_CLOSE::503	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	41;"	d	line:41
 POS_COMB_R_HARVEST_OPEN::556	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	40;"	d	line:40
 POS_COMB_R_HIDE::224	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	42;"	d	line:42
 POS_COMB_R_OPEN::600	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	39;"	d	line:39
@@ -744,7 +744,7 @@ POS_STICK_R_HIDE::542	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurob
 POS_STICK_R_PUSH_FIRE::330	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	52;"	d	line:52
 POS_STICK_R_PUSH_TORCH_FIRE::340	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	51;"	d	line:51
 POS_TREE_TRAY_CLOSE::358	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	70;"	d	line:70
-POS_TREE_TRAY_HARVEST::506	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	69;"	d	line:69
+POS_TREE_TRAY_HARVEST::530	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	69;"	d	line:69
 POS_TREE_TRAY_OPEN::800	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	68;"	d	line:68
 POWER_OFF::I2C_SLAVEDSPIC_MODE_POWER_OFF	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\state.c	63;"	d	line:63	file:
 PRIX16::"X"	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive\dspic\inttypes.h	70;"	d	line:70
@@ -1355,7 +1355,7 @@ __cirbuf_shift_right	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobo
 __offsetof::(type,field)((size_t)(&(type*)	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive\queue.h	41;"	d	line:41
 a	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\i2c_protocol.c	75;"	l	line:75	file:
 a	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\main.c	70;"	l	line:70	file:
-actuator_init	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	560;"	f	line:560	signature:(void)
+actuator_init	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	559;"	f	line:559	signature:(void)
 actuator_init	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	77;"	p	line:77	signature:(void)
 add_to_res	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse_num.c	74;"	f	line:74	file:	signature:(uint8_t c, uint32_t * res, uint8_t base)
 ap	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\cmdline.c	97;"	l	line:97
@@ -1375,9 +1375,10 @@ arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\s
 arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	236;"	m	line:236	struct:cmd_boot_result	file:
 arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	291;"	m	line:291	struct:cmd_combs_result	file:
 arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	343;"	m	line:343	struct:cmd_tree_tray_result	file:
-arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	391;"	m	line:391	struct:cmd_stick_result	file:
-arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	449;"	m	line:449	struct:cmd_harvest_fruits_result	file:
-arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	493;"	m	line:493	struct:cmd_dump_fruits_result	file:
+arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	393;"	m	line:393	struct:cmd_stick_result	file:
+arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	451;"	m	line:451	struct:cmd_harvest_fruits_result	file:
+arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	495;"	m	line:495	struct:cmd_dump_fruits_result	file:
+arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	539;"	m	line:539	struct:cmd_state2_result	file:
 arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	59;"	m	line:59	struct:cmd_event_result	file:
 arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	119;"	m	line:119	struct:cmd_encoders_result	file:
 arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	163;"	m	line:163	struct:cmd_scheduler_result	file:
@@ -1393,9 +1394,10 @@ arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\s
 arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	237;"	m	line:237	struct:cmd_boot_result	file:
 arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	292;"	m	line:292	struct:cmd_combs_result	file:
 arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	344;"	m	line:344	struct:cmd_tree_tray_result	file:
-arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	392;"	m	line:392	struct:cmd_stick_result	file:
-arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	450;"	m	line:450	struct:cmd_harvest_fruits_result	file:
-arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	494;"	m	line:494	struct:cmd_dump_fruits_result	file:
+arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	394;"	m	line:394	struct:cmd_stick_result	file:
+arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	452;"	m	line:452	struct:cmd_harvest_fruits_result	file:
+arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	496;"	m	line:496	struct:cmd_dump_fruits_result	file:
+arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	540;"	m	line:540	struct:cmd_state2_result	file:
 arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	60;"	m	line:60	struct:cmd_event_result	file:
 arg2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	197;"	m	line:197	struct:cmd_pwm_mc_result	file:
 arg2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	243;"	m	line:243	struct:cmd_pwm_servo_result	file:
@@ -1404,10 +1406,12 @@ arg2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\s
 arg2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	585;"	m	line:585	struct:cmd_log_type_result	file:
 arg2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	293;"	m	line:293	struct:cmd_combs_result	file:
 arg2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	345;"	m	line:345	struct:cmd_tree_tray_result	file:
-arg2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	393;"	m	line:393	struct:cmd_stick_result	file:
+arg2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	395;"	m	line:395	struct:cmd_stick_result	file:
+arg2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	541;"	m	line:541	struct:cmd_state2_result	file:
 arg2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	61;"	m	line:61	struct:cmd_event_result	file:
 arg3	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	465;"	m	line:465	struct:cmd_log_result	file:
 arg3	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	586;"	m	line:586	struct:cmd_log_type_result	file:
+arg3	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	542;"	m	line:542	struct:cmd_state2_result	file:
 ax12	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\main.h	144;"	m	line:144	struct:genboard
 ax12_dropped_logs	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\ax12_user.c	80;"	v	line:80	file:
 ax12_dump_stats	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\ax12_user.c	307;"	f	line:307	signature:(void)
@@ -1415,13 +1419,13 @@ ax12_dump_stats	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014
 ax12_id	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	325;"	l	line:325
 ax12_id	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	375;"	l	line:375
 ax12_id	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	478;"	l	line:478
-ax12_id	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	516;"	l	line:516
+ax12_id	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	515;"	l	line:515
 ax12_left_id	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	197;"	l	line:197
 ax12_left_id	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	257;"	l	line:257
 ax12_log	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	474;"	v	line:474	file:
 ax12_nsent	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\ax12_user.c	96;"	v	line:96	file:
 ax12_pos	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	374;"	l	line:374
-ax12_pos	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	515;"	l	line:515
+ax12_pos	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	514;"	l	line:514
 ax12_pos	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	156;"	m	line:156
 ax12_pos	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	210;"	m	line:210
 ax12_pos_l	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	256;"	l	line:256
@@ -1548,9 +1552,9 @@ cli::do{}while(0)	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot20
 cmd	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\common\i2c_commands.h	68;"	m	line:68	struct:i2c_cmd_hdr
 cmd	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\rdline\rdline.c	163;"	l	line:163
 cmd	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\vt100\vt100.c	74;"	l	line:74
-cmd	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\i2c_protocol.c	122;"	l	line:122
+cmd	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\i2c_protocol.c	123;"	l	line:123
 cmd	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\i2c_protocol.c	88;"	l	line:88
-cmd	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\i2c_protocol.c	98;"	l	line:98
+cmd	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\i2c_protocol.c	99;"	l	line:99
 cmd0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\vt100\vt100.c	34;"	v	line:34	file:
 cmd1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\vt100\vt100.c	35;"	v	line:35	file:
 cmd10	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\vt100\vt100.c	44;"	v	line:44	file:
@@ -1594,11 +1598,11 @@ cmd_dac_mc_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014
 cmd_dac_mc_arg2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	354;"	v	line:354
 cmd_dac_mc_parsed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	337;"	f	line:337	file:	signature:(void * parsed_result, __attribute__((unused)) void *data)
 cmd_dac_mc_result	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	330;"	s	line:330	file:
-cmd_dump_fruits	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	519;"	v	line:519
-cmd_dump_fruits_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	514;"	v	line:514
-cmd_dump_fruits_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	516;"	v	line:516
-cmd_dump_fruits_parsed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	498;"	f	line:498	file:	signature:(__attribute__((unused)) void *parsed_result, __attribute__((unused)) void *data)
-cmd_dump_fruits_result	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	492;"	s	line:492	file:
+cmd_dump_fruits	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	521;"	v	line:521
+cmd_dump_fruits_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	516;"	v	line:516
+cmd_dump_fruits_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	518;"	v	line:518
+cmd_dump_fruits_parsed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	500;"	f	line:500	file:	signature:(__attribute__((unused)) void *parsed_result, __attribute__((unused)) void *data)
+cmd_dump_fruits_result	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	494;"	s	line:494	file:
 cmd_encoders	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	146;"	v	line:146
 cmd_encoders_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	141;"	v	line:141
 cmd_encoders_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	143;"	v	line:143
@@ -1610,11 +1614,11 @@ cmd_event_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\
 cmd_event_arg2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	114;"	v	line:114
 cmd_event_parsed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	66;"	f	line:66	file:	signature:(void *parsed_result, __attribute__((unused)) void *data)
 cmd_event_result	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	58;"	s	line:58	file:
-cmd_harvest_fruits	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	477;"	v	line:477
-cmd_harvest_fruits_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	472;"	v	line:472
-cmd_harvest_fruits_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	474;"	v	line:474
-cmd_harvest_fruits_parsed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	454;"	f	line:454	file:	signature:(__attribute__((unused)) void *parsed_result, __attribute__((unused)) void *data)
-cmd_harvest_fruits_result	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	448;"	s	line:448	file:
+cmd_harvest_fruits	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	479;"	v	line:479
+cmd_harvest_fruits_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	474;"	v	line:474
+cmd_harvest_fruits_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	476;"	v	line:476
+cmd_harvest_fruits_parsed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	456;"	f	line:456	file:	signature:(__attribute__((unused)) void *parsed_result, __attribute__((unused)) void *data)
+cmd_harvest_fruits_result	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	450;"	s	line:450	file:
 cmd_lift	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	220;"	v	line:220
 cmd_lift_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	216;"	v	line:216
 cmd_lift_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	217;"	v	line:217
@@ -1669,16 +1673,21 @@ cmd_sensor_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014
 cmd_sensor_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	402;"	v	line:402
 cmd_sensor_parsed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	381;"	f	line:381	file:	signature:(void *parsed_result, __attribute__((unused)) void *data)
 cmd_sensor_result	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	375;"	s	line:375	file:
-cmd_stick	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	432;"	v	line:432
-cmd_stick_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	426;"	v	line:426
-cmd_stick_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	428;"	v	line:428
-cmd_stick_arg2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	429;"	v	line:429
-cmd_stick_parsed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	397;"	f	line:397	file:	signature:(__attribute__((unused)) void *parsed_result, __attribute__((unused)) void *data)
-cmd_stick_result	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	390;"	s	line:390	file:
-cmd_tree_tray	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	374;"	v	line:374
-cmd_tree_tray_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	368;"	v	line:368
-cmd_tree_tray_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	370;"	v	line:370
-cmd_tree_tray_arg2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	371;"	v	line:371
+cmd_state2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	596;"	v	line:596
+cmd_state2_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	591;"	v	line:591
+cmd_state2_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	593;"	v	line:593
+cmd_state2_parsed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	547;"	f	line:547	file:	signature:(void *parsed_result, __attribute__((unused)) void *data)
+cmd_state2_result	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	538;"	s	line:538	file:
+cmd_stick	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	434;"	v	line:434
+cmd_stick_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	428;"	v	line:428
+cmd_stick_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	430;"	v	line:430
+cmd_stick_arg2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	431;"	v	line:431
+cmd_stick_parsed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	399;"	f	line:399	file:	signature:(__attribute__((unused)) void *parsed_result, __attribute__((unused)) void *data)
+cmd_stick_result	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	392;"	s	line:392	file:
+cmd_tree_tray	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	376;"	v	line:376
+cmd_tree_tray_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	370;"	v	line:370
+cmd_tree_tray_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	372;"	v	line:372
+cmd_tree_tray_arg2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	373;"	v	line:373
 cmd_tree_tray_parsed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	349;"	f	line:349	file:	signature:(__attribute__((unused)) void *parsed_result, __attribute__((unused)) void *data)
 cmd_tree_tray_result	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	342;"	s	line:342	file:
 cmdline_getchar	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\cmdline.h	53;"	f	line:53	signature:(void)
@@ -1705,9 +1714,10 @@ command	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\softwar
 command	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	245;"	l	line:245
 command	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	301;"	l	line:301
 command	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	353;"	l	line:353
-command	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	401;"	l	line:401
-command	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	458;"	l	line:458
-command	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	502;"	l	line:502
+command	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	403;"	l	line:403
+command	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	460;"	l	line:460
+command	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	504;"	l	line:504
+command	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	551;"	l	line:551
 comment	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse.c	188;"	l	line:188
 complete	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse.c	291;"	f	line:291	signature:(parse_pgm_ctx_t ctx[], const char *buf, int16_t *state, char *dst, uint8_t size)
 complete	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse.h	160;"	p	line:160	signature:(parse_pgm_ctx_t ctx[], const char *buf, int16_t *state, char *dst, uint8_t size)
@@ -2035,10 +2045,10 @@ help_boot	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\softw
 help_color	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	158;"	v	line:158
 help_combs	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	325;"	v	line:325
 help_dac_mc	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	356;"	v	line:356
-help_dump_fruits	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	518;"	v	line:518
+help_dump_fruits	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	520;"	v	line:520
 help_encoders	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	145;"	v	line:145
 help_event	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	116;"	v	line:116
-help_harvest_fruits	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	476;"	v	line:476
+help_harvest_fruits	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	478;"	v	line:478
 help_lift	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	219;"	v	line:219
 help_log	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	553;"	v	line:553
 help_log_show	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	569;"	v	line:569
@@ -2050,11 +2060,12 @@ help_rele	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\softw
 help_reset	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	73;"	v	line:73
 help_scheduler	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	178;"	v	line:178
 help_sensor	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	404;"	v	line:404
-help_stick	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	431;"	v	line:431
+help_state2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	595;"	v	line:595
+help_stick	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	433;"	v	line:433
 help_str	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse.c	308;"	l	line:308
 help_str	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse.h	106;"	m	line:106	struct:inst
 help_str	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse.h	115;"	m	line:115	struct:inst_pgm
-help_tree_tray	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	373;"	v	line:373
+help_tree_tray	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	375;"	v	line:375
 history	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\rdline\rdline.h	97;"	m	line:97	struct:rdline
 history	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\cmdline.c	132;"	l	line:132
 history	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\cmdline.c	162;"	l	line:162
@@ -2109,7 +2120,7 @@ i2c_led_control	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014
 i2c_log	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	470;"	v	line:470	file:
 i2c_protocol_init	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\i2c_protocol.c	53;"	f	line:53	signature:(void)
 i2c_protocol_init	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\i2c_protocol.h	37;"	p	line:37	signature:(void)
-i2c_read_event	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\i2c_protocol.c	114;"	f	line:114	signature:(uint8_t cmd_byte, uint8_t *buf)
+i2c_read_event	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\i2c_protocol.c	115;"	f	line:115	signature:(uint8_t cmd_byte, uint8_t *buf)
 i2c_read_event	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\i2c_protocol.h	38;"	p	line:38	signature:(uint8_t cmd_byte, uint8_t *buf)
 i2c_register_read_event	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\i2c_slave_lite.c	42;"	f	line:42	signature:(void (*event)(uint8_t, uint8_t *))
 i2c_register_read_event	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\i2c_slave_lite.h	38;"	p	line:38	signature:(void (*event)(uint8_t, uint8_t *))
@@ -2191,7 +2202,7 @@ lognum	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software
 logs	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\main.h	147;"	m	line:147	struct:genboard
 loop	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	384;"	l	line:384
 main	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\main.c	206;"	f	line:206	signature:(void)
-main_ctx	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands.c	118;"	v	line:118
+main_ctx	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands.c	114;"	v	line:114
 main_timer_interrupt	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\main.c	91;"	f	line:91	file:	signature:(void)
 mainboard_command	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\state.c	73;"	v	line:73	file:
 match_command	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\vt100\vt100.c	72;"	f	line:72	file:	signature:(char * buf, uint8_t size)
@@ -2512,9 +2523,10 @@ res	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\sl
 res	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	244;"	l	line:244
 res	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	300;"	l	line:300
 res	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	352;"	l	line:352
-res	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	400;"	l	line:400
-res	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	457;"	l	line:457
-res	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	501;"	l	line:501
+res	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	402;"	l	line:402
+res	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	459;"	l	line:459
+res	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	503;"	l	line:503
+res	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	550;"	l	line:550
 res	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	70;"	l	line:70
 res1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse_num.c	94;"	l	line:94
 res2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse_num.c	94;"	l	line:94
@@ -2548,7 +2560,7 @@ ret	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\li
 ret	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	167;"	l	line:167
 ret	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	296;"	l	line:296
 ret	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	411;"	l	line:411
-ret	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	550;"	l	line:550
+ret	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	549;"	l	line:549
 ret	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	70;"	l	line:70
 ret	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\cmdline.c	133;"	l	line:133
 ret	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\cmdline.c	163;"	l	line:163
@@ -2699,15 +2711,15 @@ str_color_color	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014
 str_combs_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	319;"	v	line:319
 str_combs_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	321;"	v	line:321
 str_dac_mc_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	350;"	v	line:350
-str_dump_fruits_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	513;"	v	line:513
-str_dump_fruits_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	515;"	v	line:515
+str_dump_fruits_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	515;"	v	line:515
+str_dump_fruits_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	517;"	v	line:517
 str_encoders_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	140;"	v	line:140
 str_encoders_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	142;"	v	line:142
 str_event_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	109;"	v	line:109
 str_event_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	111;"	v	line:111
 str_event_arg2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	113;"	v	line:113
-str_harvest_fruits_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	471;"	v	line:471
-str_harvest_fruits_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	473;"	v	line:473
+str_harvest_fruits_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	473;"	v	line:473
+str_harvest_fruits_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	475;"	v	line:475
 str_lift_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	215;"	v	line:215
 str_log_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	547;"	v	line:547
 str_log_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	549;"	v	line:549
@@ -2727,10 +2739,12 @@ str_scheduler_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2
 str_scheduler_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	175;"	v	line:175
 str_sensor_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	399;"	v	line:399
 str_sensor_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_gen.c	401;"	v	line:401
-str_stick_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	425;"	v	line:425
-str_stick_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	427;"	v	line:427
-str_tree_tray_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	367;"	v	line:367
-str_tree_tray_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	369;"	v	line:369
+str_state2_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	590;"	v	line:590
+str_state2_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	592;"	v	line:592
+str_stick_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	427;"	v	line:427
+str_stick_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	429;"	v	line:429
+str_tree_tray_arg0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	369;"	v	line:369
+str_tree_tray_arg1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\commands_slavedspic.c	371;"	v	line:371
 strcat_P	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive\pgmspace.h	113;"	f	line:113	signature:(char *s1, const prog_char *s2)
 strcat_P::strcat	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive\pgmspace.h	52;"	d	line:52
 strcmp_P	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive\pgmspace.h	129;"	f	line:129	signature:(const char *s1, const prog_char *s2)
@@ -2827,12 +2841,12 @@ tray_motor_pwm	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\
 tree_tray	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\common\i2c_commands.h	202;"	m	line:202	union:i2c_cmd_slavedspic_set_mode::<anonymous>
 tree_tray	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\main.h	178;"	m	line:178	struct:slavedspic
 tree_tray_ax12_pos	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	469;"	v	line:469
-tree_tray_check_mode_done	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	512;"	f	line:512	signature:(tree_tray_t *tree_tray)
+tree_tray_check_mode_done	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	511;"	f	line:511	signature:(tree_tray_t *tree_tray)
 tree_tray_check_mode_done	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	218;"	p	line:218	signature:(tree_tray_t *tree_tray)
 tree_tray_set_mode	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	476;"	f	line:476	signature:(tree_tray_t *tree_tray, uint8_t mode, int16_t pos_offset)
 tree_tray_set_mode	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	215;"	p	line:215	signature:(tree_tray_t *tree_tray, uint8_t mode, int16_t pos_offset)
 tree_tray_t	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	212;"	t	line:212
-tree_tray_wait_end	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	548;"	f	line:548	signature:(tree_tray_t *tree_tray)
+tree_tray_wait_end	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	547;"	f	line:547	signature:(tree_tray_t *tree_tray)
 tree_tray_wait_end	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.h	221;"	p	line:221	signature:(tree_tray_t *tree_tray)
 true::TRUE	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive.h	291;"	d	line:291
 tv	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\cmdline.c	99;"	l	line:99
@@ -2912,7 +2926,7 @@ urxreg	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software
 us	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\base\time\clock_time.h	46;"	m	line:46
 us	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	255;"	l	line:255	file:
 us	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	373;"	l	line:373	file:
-us	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	514;"	l	line:514	file:
+us	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\actuator.c	513;"	l	line:513	file:
 us2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\base\time\time.c	51;"	v	line:51	file:
 use_double_speed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\comm\dspic\uart\uart.h	71;"	m	line:71	struct:uart_config
 usta	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\comm\dspic\uart\uart_private.h	48;"	m	line:48	struct:regs
@@ -2932,7 +2946,7 @@ var_2nd_ord_pos	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014
 var_2nd_ord_pos	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\control_system\filters\quadramp\quadramp.h	29;"	m	line:29	struct:quadramp_filter
 vfprintf_P	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive\pgmspace.h	145;"	f	line:145	signature:(FILE *stream, const prog_char *s, va_list ap)
 vfprintf_P::vfprintf	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive\pgmspace.h	57;"	d	line:57
-void_cmd	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\i2c_protocol.c	116;"	l	line:116
+void_cmd	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\i2c_protocol.c	117;"	l	line:117
 void_cmd	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\i2c_protocol.c	73;"	l	line:73
 vsprintf_P	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive\pgmspace.h	151;"	f	line:151	signature:(char *buf, const prog_char *s, va_list ap)
 vsprintf_P::vsprintf	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive\pgmspace.h	58;"	d	line:58

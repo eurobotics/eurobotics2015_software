@@ -89,7 +89,7 @@ int8_t state_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd)
 {
 	prev_state = mainboard_command.mode;
 	memcpy(&mainboard_command, cmd, sizeof(mainboard_command));
-	STMCH_DEBUG("%s mode=%d", __FUNCTION__, mainboard_command.mode);
+	//STMCH_DEBUG("%s mode=%d", __FUNCTION__, mainboard_command.mode); FIXME: bloking???
 
 	/* XXX power off mode */
 	if (mainboard_command.mode == POWER_OFF) {
@@ -109,9 +109,9 @@ int8_t state_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd)
       
       state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 	}
-	else
+	else {
 		mode_changed = 1;
-
+	}
 	return 0;
 }
 

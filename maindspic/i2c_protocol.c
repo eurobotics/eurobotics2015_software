@@ -552,6 +552,167 @@ int8_t i2c_led_control(uint8_t addr, uint8_t led, uint8_t state)
 	return i2c_send_command(addr, (uint8_t*)&buf, sizeof(buf));
 }
 
+/*******************************************************************************
+ * 2014 functions
+ ******************************************************************************/
+
+/****** GENERIC FUNCTIONS */
+
+int8_t i2c_slavedspic_mode_init(void)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_INIT;
+
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+int8_t i2c_slavedspic_mode_power_off(void)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_POWER_OFF;
+
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+/* wait for slavedspic is ready */
+void i2c_slavedspic_wait_ready(void)
+{ 
+#ifndef HOST_VERSION                   
+   //microseconds __us = time_get_us2();                 
+   //uint8_t __ret = 1;             
+    
+	/* DANGEROUS */
+   do{
+      i2cproto_wait_update();
+   } while(slavedspic.status == I2C_SLAVEDSPIC_STATUS_BUSY);
+
+	/*do{																			
+		i2cproto_wait_update();
+      if (time_get_us2() - __us > (1500)*1000L) 
+		{
+             __ret = 0;                            
+             break;                                
+      }                                 
+	} while(slavedspic.status == I2C_SLAVEDSPIC_STATUS_BUSY && __ret==1);   */
+#endif
+}
+
+/****** SIMPLE ACTUATORS */
+
+/* set stick mode */
+int8_t i2c_slavedspic_mode_stick(uint8_t type, uint8_t mode, int8_t offset)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_STICK;
+	buf.stick.mode = mode;
+	buf.stick.type = type;
+	buf.stick.offset = offset;
+	
+
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+
+/* set comb mode */
+int8_t i2c_slavedspic_mode_combs(uint8_t mode, int8_t offset)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_COMBS;
+	buf.combs.mode = mode;
+	buf.combs.offset = offset;
+	
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+/* set tree tray */
+int8_t i2c_slavedspic_mode_tree_tray (uint8_t mode, int8_t offset)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_TREE_TRAY;
+	buf.tree_tray.mode = mode;
+	buf.tree_tray.offset = offset;
+
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+/* set boot tray mode */
+int8_t i2c_slavedspic_mode_boot_tray(uint8_t mode)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_BOOT_TRAY;
+	buf.boot_tray.mode = mode;
+
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+/* set boot door mode*/
+int8_t i2c_slavedspic_mode_boot_door(uint8_t mode)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_BOOT_DOOR;
+	buf.boot_door.mode = mode;
+
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+
+/****** MULTIPLE ACTUATORS */
+
+/* set harvest fruits mode */
+int8_t i2c_slavedspic_mode_harvest_fruits(uint8_t mode)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS;
+	buf.harvest_fruits.mode = mode;
+
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+/* set dump fruits mode */
+int8_t i2c_slavedspic_mode_dump_fruits(uint8_t mode)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_DUMP_FRUITS;
+	buf.dump_fruits.mode = mode;
+
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
 
 /*******************************************************************************
  * 2012 functions

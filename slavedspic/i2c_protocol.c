@@ -19,7 +19,13 @@
  *
  */
 
-/*   *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011) *  Javier Baliñas Santos <javier@arc-robots.org> * *  Code ported to family of microcontrollers dsPIC from *  i2c_protocol.c,v 1.5 2009/05/27 20:04:07 zer0 Exp   */
+/*  
+ *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
+ *  Javier Baliñas Santos <javier@arc-robots.org>
+ *
+ *  Code ported to family of microcontrollers dsPIC from
+ *  i2c_protocol.c,v 1.5 2009/05/27 20:04:07 zer0 Exp  
+ */
 
 #include <string.h>
 
@@ -58,7 +64,8 @@ void i2c_led_control(uint8_t l, uint8_t state)
 
 static int8_t i2c_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd)
 {
-//	state_set_mode(cmd);
+
+	state_set_mode(cmd);
 	return 0;
 }
 
@@ -66,14 +73,14 @@ void i2c_write_event(uint8_t cmd_byte, uint8_t *buf, int16_t size)
 {
 	void *void_cmd = buf;
 	
-	static uint8_t a = 0;
+	//static uint8_t a = 0;
 	
-	a++;
-	if (a & 0x10)
-		LED1_TOGGLE();
+	//a++;
+	//if (a & 0x10)
+	//	LED1_TOGGLE();
 	
 	if(cmd_byte == I2C_CMD_GENERIC){
-	
+
 		switch (buf[0]) {
 	
 			/* Commands */
@@ -92,7 +99,8 @@ void i2c_write_event(uint8_t cmd_byte, uint8_t *buf, int16_t size)
 				struct i2c_cmd_slavedspic_set_mode *cmd = void_cmd;
 				if (size != sizeof (*cmd))
 					break;
-				
+			
+				LED1_TOGGLE();	
 				i2c_set_mode(cmd);
 				break;
 			}
@@ -138,10 +146,10 @@ void i2c_read_event(uint8_t cmd_byte, uint8_t *buf)
 			(*cmd).nb_goldbars_in_mouth = slavedspic.nb_goldbars_in_mouth;
 			(*cmd).nb_coins_in_boot = slavedspic.nb_coins_in_boot;
 			(*cmd).nb_coins_in_mouth = slavedspic.nb_coins_in_mouth;
-
+#endif
 			/* XXX watchdog time */
 			i2c_watchdog_cnt = 5;
-#endif			
+			
 			break;
 		}
 		

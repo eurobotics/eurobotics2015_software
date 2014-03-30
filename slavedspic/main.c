@@ -281,9 +281,9 @@ int main(void)
 	/* SCHEDULER */
 	scheduler_init();
 
-	scheduler_add_periodical_event_priority(do_led_blink, NULL, 
-						100000L / SCHEDULER_UNIT, 
-						LED_PRIO);
+	//scheduler_add_periodical_event_priority(do_led_blink, NULL, 
+	//					100000L / SCHEDULER_UNIT, 
+	//					LED_PRIO);
 
 	scheduler_add_periodical_event_priority(do_cs, NULL, 
 						CS_PERIOD / SCHEDULER_UNIT, 
@@ -318,7 +318,7 @@ int main(void)
 	actuator_init();
 
 	printf("\r\n");
-	printf("Don't turn it on, take it a part!! \n");
+	printf("Don't turn it on, take it a part!! \n\r");
 	
 	/* init cmdline */
 	cmdline_init();

@@ -33,7 +33,7 @@
 #include <parse.h>
 
 #define COMPILE_COMMANDS_GEN
-#define COMPILE_COMMANDS_CS
+//#define COMPILE_COMMANDS_CS
 #define COMPILE_COMMANDS_MAINBOARD
 #define COMPILE_COMMANDS_TRAJ
 #define COMPILE_CODE
@@ -113,13 +113,16 @@ extern parse_pgm_inst_t cmd_gotozone;
 extern parse_pgm_inst_t cmd_workonzone;
 extern parse_pgm_inst_t cmd_homologation;
 
+extern parse_pgm_inst_t cmd_boot;
+extern parse_pgm_inst_t cmd_combs;
+extern parse_pgm_inst_t cmd_tree_tray;
+extern parse_pgm_inst_t cmd_stick;
+
+extern parse_pgm_inst_t cmd_harvest_fruits;
+extern parse_pgm_inst_t cmd_dump_fruits;
+
 #ifdef notyet /* TODO 2014*/
 extern parse_pgm_inst_t cmd_slavedspic;
-extern parse_pgm_inst_t cmd_slavedspic_harvest;
-extern parse_pgm_inst_t cmd_slavedspic_store;
-extern parse_pgm_inst_t cmd_slavedspic_dump;	
-extern parse_pgm_inst_t cmd_fingers;
-extern parse_pgm_inst_t cmd_treasure;
 extern parse_pgm_inst_t cmd_sensor_robot;
 #endif
 
@@ -237,13 +240,17 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_workonzone,
 	(parse_pgm_inst_t *)&cmd_homologation,
 
-#ifdef notyet /* TODO 2014*/
+	(parse_pgm_inst_t *)&cmd_boot,
+	(parse_pgm_inst_t *)&cmd_combs,
+	(parse_pgm_inst_t *)&cmd_tree_tray,
+	(parse_pgm_inst_t *)&cmd_stick,
+
+	(parse_pgm_inst_t *)&cmd_harvest_fruits,
+	(parse_pgm_inst_t *)&cmd_dump_fruits,
+
 	(parse_pgm_inst_t *)&cmd_slavedspic,
-	(parse_pgm_inst_t *)&cmd_slavedspic_harvest,
-	(parse_pgm_inst_t *)&cmd_slavedspic_store,
-	(parse_pgm_inst_t *)&cmd_slavedspic_dump,
-	(parse_pgm_inst_t *)&cmd_fingers,
-	(parse_pgm_inst_t *)&cmd_treasure,
+
+#ifdef notyet /* TODO 2014*/
 	(parse_pgm_inst_t *)&cmd_sensor_robot,
 #endif
 

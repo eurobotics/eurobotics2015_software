@@ -137,7 +137,7 @@ void io_pins_init(void)
 	
 	/* brushless motors */
 	_TRISA10 = 0; 	/* L_MOT_REV	*/
-	_TRISA7  = 0;   /* L_MOT_BREAK	*/
+	_TRISA7  = 0;	/* L_MOT_BREAK	*/
 	_LATA7 	 = 0;
 
 	_TRISB10 = 0; 	/* R_MOT_REV	*/
@@ -173,8 +173,8 @@ void io_pins_init(void)
 	/* uarts */
 	/* U1 is for cmdline and bootloader */
 	_U1RXR 	= 8;	/* U1RX <- RP8(RB8) <- MAIN_UART_RX	*/
-	_TRISB8 = 1;	/* U1RX is input	*/
-  _RP7R 	= 3;	/* U1TX -> RP7(RB7) -> MAIN_UART_TX	*/
+	_TRISB8 	= 1;	/* U1RX is input	*/
+  	_RP7R 	= 3;	/* U1TX -> RP7(RB7) -> MAIN_UART_TX	*/
 	_TRISB7	= 0;	/* U1TX is output	*/
 	
 	/* UART2 swap between BEACON and SLAVEDSPIC */
@@ -308,8 +308,8 @@ int main(void)
 						EVENT_PERIOD_I2C_POLL / SCHEDULER_UNIT, EVENT_PRIORITY_I2C_POLL);
 
 	/* beacon commnads and polling */
-	//scheduler_add_periodical_event_priority(beacon_protocol, NULL,
-	//				EVENT_PERIOD_BEACON_PULL / SCHEDULER_UNIT, EVENT_PRIORITY_BEACON_POLL);
+	scheduler_add_periodical_event_priority(beacon_protocol, NULL,
+					EVENT_PERIOD_BEACON_PULL / SCHEDULER_UNIT, EVENT_PRIORITY_BEACON_POLL);
 #endif
 
 	/* strat-related event */
@@ -320,7 +320,7 @@ int main(void)
 	/* log setup */
  	gen.logs[0] = E_USER_STRAT;
  	//gen.logs[1] = E_USER_BEACON;
- 	//gen.logs[2] = E_USER_I2C_PROTO;
+ 	gen.logs[2] = E_USER_I2C_PROTO;
  	//gen.logs[3] = E_OA;
  	gen.logs[1] = E_USER_WT11;
  	gen.logs[2] = E_USER_BT_PROTO;
