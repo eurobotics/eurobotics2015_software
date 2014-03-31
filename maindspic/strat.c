@@ -110,11 +110,14 @@ struct strat_infos strat_infos = {
 		.flags = 0,
 	},
 
-   /*zones[W] =			     			{type, x, y, x_down, x_up, y_down, y_up, init_x, init_y, init_a, prio, flags, robot };                            */
-    .zones[ZONE_TREE_1]=        {ZONE_TYPE_TREE, TREE_1_X, TREE_1_Y, 0 , 400,  1100,    1500   , 400,  1300,   0, ZONE_PRIO_40, 0 ,MAIN_ROBOT},
-    .zones[ZONE_TREE_2]=        {ZONE_TYPE_TREE, TREE_2_X, TREE_2_Y, 500, 900,  1600,    2000   , 700 ,  1600,   -90,  ZONE_PRIO_40, 0 ,MAIN_ROBOT},
-    .zones[ZONE_TREE_3]=        {ZONE_TYPE_TREE, TREE_3_X, TREE_3_Y, 2100, 2500 ,  1600,    2000   ,2300 ,  1600,   -90,  ZONE_PRIO_40, 0 ,MAIN_ROBOT},
-    .zones[ZONE_TREE_4]=        {ZONE_TYPE_TREE, TREE_4_X, TREE_4_Y, 2600, 3000,  1100,    1500   , 2600,  1300,   180,  ZONE_PRIO_40, 0 ,MAIN_ROBOT},
+#define TREE_D_INIT 440
+
+   /*zones[W] =			     		{type, 				x, 			y, 			x_down, 	x_up,	y_down, 	y_up,	init_x, 					init_y, 					init_a, 	prio, 			flags, 	robot };                            */
+    .zones[ZONE_TREE_1]=        	{ZONE_TYPE_TREE, 	TREE_1_X, 	TREE_1_Y, 	0, 		400,  1100,    1500, TREE_D_INIT,  			TREE_1_Y,   			0,			ZONE_PRIO_40, 	0,			MAIN_ROBOT},
+    .zones[ZONE_TREE_2]=        	{ZONE_TYPE_TREE, 	TREE_2_X, 	TREE_2_Y, 	500, 		900,  1600,    2000, TREE_2_X,  				AREA_Y-TREE_D_INIT,  -90, 		ZONE_PRIO_40, 	0,			MAIN_ROBOT},
+    .zones[ZONE_TREE_3]=        	{ZONE_TYPE_TREE, 	TREE_3_X, 	TREE_3_Y, 	2100, 	2500, 1600,    2000,	TREE_3_X,  				AREA_Y-TREE_D_INIT,  -90, 		ZONE_PRIO_40, 	0,			MAIN_ROBOT},
+    .zones[ZONE_TREE_4]=        	{ZONE_TYPE_TREE, 	TREE_4_X, 	TREE_4_Y, 	2600, 	3000, 1100,    1500, AREA_X-TREE_D_INIT, 	TREE_4_Y,   			180, 		ZONE_PRIO_40, 	0,			MAIN_ROBOT},
+
     .zones[ZONE_HEART_FIRE_1]=  {ZONE_TYPE_HEART_FIRE, HEART_FIRE_1_X, HEART_FIRE_1_Y, 0, 250,  1750, 2000   ,400 ,  1800,   255,  ZONE_PRIO_40, 0 ,MAIN_ROBOT},
     .zones[ZONE_HEART_FIRE_2]= {ZONE_TYPE_HEART_FIRE, HEART_FIRE_2_X, HEART_FIRE_2_Y, 1350, 1650,  900,    1200   , 1100,  1100,   255,  ZONE_PRIO_40, 0 ,MAIN_ROBOT},
 	.zones[ZONE_HEART_FIRE_3]=  {ZONE_TYPE_HEART_FIRE, HEART_FIRE_3_X, HEART_FIRE_3_Y, 2750,3000 ,  1750,   2000   ,2600 ,  1800,   255,  ZONE_PRIO_40, 0 ,MAIN_ROBOT},

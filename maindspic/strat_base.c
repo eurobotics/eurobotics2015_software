@@ -683,7 +683,7 @@ uint8_t test_traj_end(uint8_t why)
 	if (why & END_NEAR) {
 		int16_t d_near = 100;	
 		
-    /* XXX */
+    	/* XXX */
 		if (mainboard.speed_d >= 2000)
 			d_near = 150;
 		

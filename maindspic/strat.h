@@ -321,6 +321,7 @@ extern char numzone2name[ZONES_MAX + 1][30];
 
 extern uint8_t strat_zones_points[ZONES_MAX];
 
+
 #ifndef HOST_VERSION_OA_TEST
 
 
@@ -356,7 +357,9 @@ void strat_event_disable(void);
 /********************************************
  * in strat_fruits.c 
  *******************************************/
- /* TODO 2014*/
+
+/* harvest fruits from trees */
+uint8_t strat_harvest_fruits(int16_t x, int16_t y);
 
 /********************************************
  * in strat_fire.c 
@@ -378,6 +381,9 @@ uint8_t strat_goto_zone(uint8_t zone_num);
 
 /* return END_TRAJ if the work is done */
 uint8_t strat_work_on_zone(uint8_t zone_num);
+
+/* debug state machines step to step */
+void state_debug_wait_key_pressed(void);
 
 /* smart play */
 //#define DEBUG_STRAT_SMART
