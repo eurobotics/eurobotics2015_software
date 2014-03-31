@@ -156,9 +156,18 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 	strat_infos.goto_zone=zone_num;
 	
 	/* go */
-	err = goto_and_avoid(strat_infos.zones[zone_num].init_x, 
-				  strat_infos.zones[zone_num].init_y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-	
+	if (zone_num == ZONE_TREE_1 || zone_num == ZONE_TREE_1 || zone_num == ZONE_TREE_1
+		|| zone_num == ZONE_TREE_1 || zone_num == ZONE_TREE_1 || zone_num == ZONE_TREE_1) 	{
+		err = goto_and_avoid_forward (strat_infos.zones[zone_num].init_x, 
+									strat_infos.zones[zone_num].init_y,  
+									TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+	}
+	else {
+		err = goto_and_avoid (strat_infos.zones[zone_num].init_x, 
+									strat_infos.zones[zone_num].init_y,  
+									TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+	}	
+
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 			
@@ -189,14 +198,15 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 	printf_P(PSTR("strat_work_on_zone %s: press a key\r\n"),numzone2name[zone_num]);
 	while(!cmdline_keypressed());
 #endif
-#ifdef NOTYET
+
 	switch(zone_num)
 	{
 		case ZONE_TREE_1:
 		case ZONE_TREE_2:
 		case ZONE_TREE_3:
 		case ZONE_TREE_4:
-		/* harvest tree */
+			err = strat_harvest_fruits (COLOR_X (strat_infos.zones[zone_num].x),
+										 		strat_infos.zones[zone_num].y);
 			break;
 			
 		case ZONE_FIRE_1:
@@ -232,7 +242,6 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 		/* TODO rest of zones */
 		/* TODO define zones where to leave fire on the ground */
 	}
-#endif 
 	
 	return err;
 }
