@@ -315,10 +315,7 @@ struct strat_infos {
 };
 
 extern struct strat_infos strat_infos;
-
-extern char numzone2name[ZONES_MAX + 1][30];
-
-
+extern char numzone2name[ZONES_MAX + 1][3];
 extern uint8_t strat_zones_points[ZONES_MAX];
 
 

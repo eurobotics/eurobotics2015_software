@@ -347,14 +347,23 @@ static void cmd_rs_gains_parsed(void * parsed_result, void * data)
 #ifdef HOST_VERSION
 	printf("not implemented\n");
 #else
-	struct cmd_rs_gains_result * res = parsed_result;	double cl = 0.0, cr = 0.0, ed = 0.0;	
+	struct cmd_rs_gains_result * res = parsed_result;
+	double cl = 0.0, cr = 0.0, ed = 0.0;	
+
 	if (!strcmp_P(res->arg1, PSTR("set"))) {
-		ed = res->ed;		cl = (2.0/(ed + 1.0));		cr = (2.0 /((1.0 / ed) + 1.0));
-		/* increase gain to decrease dist, increase left and it will turn more left */		rs_set_left_ext_encoder(&mainboard.rs, encoders_dspic_get_value, 
+		ed = res->ed;
+		cl = (2.0/(ed + 1.0));
+		cr = (2.0 /((1.0 / ed) + 1.0));
+
+		/* increase gain to decrease dist, increase left and it will turn more left */
+		rs_set_left_ext_encoder(&mainboard.rs, encoders_dspic_get_value, 
 					LEFT_ENCODER, IMP_COEF * cl);
 		rs_set_right_ext_encoder(&mainboard.rs, encoders_dspic_get_value, 
-					 RIGHT_ENCODER, IMP_COEF * -cr);	}	
-	printf_P(PSTR("rs_gains set ed = %f, cr = %f, cl = %f\r\n"), ed, cr, cl);#endif
+					 RIGHT_ENCODER, IMP_COEF * -cr);
+	}	
+
+	printf_P(PSTR("rs_gains set ed = %f, cr = %f, cl = %f\r\n"), ed, cr, cl);
+#endif
 }
 
 prog_char str_rs_gains_arg0[] = "rs_gains";
@@ -1323,3 +1332,141 @@ parse_pgm_inst_t cmd_subtraj2 = {
 };
 
 #endif /* notyet  TODO 2014*/
+
+
+/**********************************************************/
+/* Goto zone */
+
+// this structure is filled when cmd_gotozone is parsed successfully 
+struct cmd_gotozone_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+};
+
+// function called when cmd_gotozone is parsed successfully 
+static void cmd_gotozone_parsed(void *parsed_result, void *data)
+{
+	struct cmd_gotozone_result *res = parsed_result;
+	int8_t num=-1;
+	uint8_t i=0;
+	uint8_t err = 0;
+	
+	for(i=0; i<ZONES_MAX; i++)
+	{
+		if(strcmp(numzone2name[i],res->arg1)==0)
+		{
+			num=i;
+			break;
+		}
+	}
+	if(num!=-1)
+	{
+		err = strat_goto_zone (num);
+		printf_P(PSTR("goto_zone %s\r\n"), get_err(err));
+	}
+	else
+		printf("Error: can't find zone!\n\r");
+}
+
+prog_char str_gotozone_arg0[] = "goto_zone";
+parse_pgm_token_string_t cmd_gotozone_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_gotozone_result, arg0, str_gotozone_arg0);
+prog_char str_gotozone_arg1[] = "t1#t2#t3#t4#h1#h2#h3#f1#f1#f3#f4#f5#f6#tr1#tr2#tr3#tr4#mt1#mt2#b1#b2#m1#m2#fco#rd#yll";
+parse_pgm_token_string_t cmd_gotozone_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_gotozone_result, arg1, str_gotozone_arg1);
+
+
+prog_char help_gotozone[] = "Go to a zone of the field";
+parse_pgm_inst_t cmd_gotozone = {
+	.f = cmd_gotozone_parsed,  // function to call 
+	.data = NULL,      // 2nd arg of func 
+	.help_str = help_gotozone,
+	.tokens = {        // token list, NULL terminated 
+		(prog_void *)&cmd_gotozone_arg0,
+		(prog_void *)&cmd_gotozone_arg1,
+		NULL,
+	},
+};
+
+/**********************************************************/
+/* Work on a zone */
+
+// this structure is filled when cmd_workonzone is parsed successfully 
+struct cmd_workonzone_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+};
+
+// function called when cmd_workonzone is parsed successfully 
+static void cmd_workonzone_parsed(void *parsed_result, void *data)
+{
+	struct cmd_workonzone_result *res = parsed_result;
+	int8_t num=-1;
+	uint8_t i=0;
+	uint8_t err = 0;
+	
+	for(i=0; i<ZONES_MAX; i++)
+	{
+		if(strcmp(numzone2name[i],res->arg1)==0)
+		{
+			num=i;
+			break;
+		}
+	}
+	if(num!=-1)
+	{
+		err = strat_work_on_zone(num);
+		printf_P(PSTR("work_on_zone %s\r\n"), get_err(err));
+	}
+	else
+		printf("Error: can't find zone!\n\r");
+}
+
+prog_char str_workonzone_arg0[] = "workon_zone";
+parse_pgm_token_string_t cmd_workonzone_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_workonzone_result, arg0, str_workonzone_arg0);
+//prog_char str_workonzone_arg1[] = "t1#t2#t3#t4#h1#h2#h3#f1#f1#f3#f4#f5#f6#to1#to2#to3#to4#mt1#mt2#b1#b2#m1#m2#fco#red#yellow";
+parse_pgm_token_string_t cmd_workonzone_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_workonzone_result, arg1, str_gotozone_arg1);
+
+
+prog_char help_workonzone[] = "Work on a zone of the field";
+parse_pgm_inst_t cmd_workonzone = {
+	.f = cmd_workonzone_parsed,  // function to call 
+	.data = NULL,      // 2nd arg of func 
+	.help_str = help_workonzone,
+	.tokens = {        // token list, NULL terminated 
+		(prog_void *)&cmd_workonzone_arg0,
+		(prog_void *)&cmd_workonzone_arg1,
+		NULL,
+	},
+};
+
+
+
+/**********************************************************/
+/* Homologation sequence */
+
+// this structure is filled when cmd_homologation is parsed successfully 
+struct cmd_homologation_result {
+	fixed_string_t arg0;
+};
+
+// function called when cmd_homologation is parsed successfully 
+static void cmd_homologation_parsed(void *parsed_result, void *data)
+{
+	//struct cmd_homologation_result *res = parsed_result;
+	strat_homologation();
+}
+
+prog_char str_homologation_arg0[] = "homologation";
+parse_pgm_token_string_t cmd_homologation_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_homologation_result, arg0, str_homologation_arg0);
+
+
+prog_char help_homologation[] = "Homologation routine";
+parse_pgm_inst_t cmd_homologation = {
+	.f = cmd_homologation_parsed,  // function to call 
+	.data = NULL,      // 2nd arg of func 
+	.help_str = help_homologation,
+	.tokens = {        // token list, NULL terminated 
+		(prog_void *)&cmd_homologation_arg0,
+		NULL,
+	},
+};
+
