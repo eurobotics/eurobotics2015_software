@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Revision : $Id: i2c_commands.h,v 1.9 2009/05/27 20:04:06 zer0 Exp $
+ *  Revision : $Id$
  *
  */
 
@@ -93,7 +93,7 @@ struct i2c_slavedspic_status{
 	
   /* actuators */
 
-	/* rd sensors */
+   /* rd sensors */
 
   /* wr sensors */
 
@@ -102,13 +102,13 @@ struct i2c_slavedspic_status{
 #define I2C_SLAVEDSPIC_STATUS_BUSY		1
 #define I2C_SLAVEDSPIC_STATUS_READY		0
 
-	uint8_t fire_mode;
-	uint8_t fruit_mode;
-	uint8_t stick_mode;
+	//uint8_t fire_mode;
+	//uint8_t fruit_mode;
+	//uint8_t stick_mode;
 
   /* statistics */
-	int8_t nb_fires_l;
-	int8_t nb_fires_r;
+	//int8_t nb_fires_l;
+	//int8_t nb_fires_r;
 };
 
 
