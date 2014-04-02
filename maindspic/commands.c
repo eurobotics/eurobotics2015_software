@@ -33,7 +33,7 @@
 #include <parse.h>
 
 #define COMPILE_COMMANDS_GEN
-//#define COMPILE_COMMANDS_CS
+#define COMPILE_COMMANDS_CS
 #define COMPILE_COMMANDS_MAINBOARD
 #define COMPILE_COMMANDS_TRAJ
 #define COMPILE_CODE
@@ -109,9 +109,6 @@ extern parse_pgm_inst_t cmd_clitoid;
 extern parse_pgm_inst_t cmd_time_monitor;
 extern parse_pgm_inst_t cmd_strat_event;
 extern parse_pgm_inst_t cmd_sleep;
-extern parse_pgm_inst_t cmd_gotozone;
-extern parse_pgm_inst_t cmd_workonzone;
-extern parse_pgm_inst_t cmd_homologation;
 
 extern parse_pgm_inst_t cmd_boot;
 extern parse_pgm_inst_t cmd_combs;
@@ -177,6 +174,10 @@ extern parse_pgm_inst_t cmd_subtraj1;
 extern parse_pgm_inst_t cmd_subtraj2;
 #endif /* notyet TODO 2014 */
 
+extern parse_pgm_inst_t cmd_gotozone;
+extern parse_pgm_inst_t cmd_workonzone;
+extern parse_pgm_inst_t cmd_homologation;
+
 #endif /* COMPILE_COMMANDS_TRAJ*/
 
 /* in progmem */
@@ -236,9 +237,6 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_time_monitor,
 	(parse_pgm_inst_t *)&cmd_strat_event,
 	(parse_pgm_inst_t *)&cmd_sleep,
-	(parse_pgm_inst_t *)&cmd_gotozone,
-	(parse_pgm_inst_t *)&cmd_workonzone,
-	(parse_pgm_inst_t *)&cmd_homologation,
 
 	(parse_pgm_inst_t *)&cmd_boot,
 	(parse_pgm_inst_t *)&cmd_combs,
@@ -296,6 +294,11 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_subtraj1,
 	(parse_pgm_inst_t *)&cmd_subtraj2,
 #endif /* notyet TODO 2014 */
+
+	(parse_pgm_inst_t *)&cmd_gotozone,
+	(parse_pgm_inst_t *)&cmd_workonzone,
+	(parse_pgm_inst_t *)&cmd_homologation,
+
 
 #endif /* COMPILE_COMMANDS_TRAJ */
 

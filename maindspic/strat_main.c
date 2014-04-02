@@ -156,8 +156,8 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 	strat_infos.goto_zone=zone_num;
 	
 	/* go */
-	if (zone_num == ZONE_TREE_1 || zone_num == ZONE_TREE_1 || zone_num == ZONE_TREE_1
-		|| zone_num == ZONE_TREE_1 || zone_num == ZONE_TREE_1 || zone_num == ZONE_TREE_1) 	{
+	if (zone_num == ZONE_TREE_1 || zone_num == ZONE_TREE_2 
+		|| zone_num == ZONE_TREE_3 || zone_num == ZONE_TREE_4) 	{
 		err = goto_and_avoid_forward (strat_infos.zones[zone_num].init_x, 
 									strat_infos.zones[zone_num].init_y,  
 									TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
@@ -171,8 +171,8 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 			
-	trajectory_a_abs(&mainboard.traj, strat_infos.zones[zone_num].init_a);
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+	//trajectory_a_abs(&mainboard.traj, strat_infos.zones[zone_num].init_a);
+	//err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	
 	/* update strat_infos */
 	strat_infos.last_zone=strat_infos.current_zone;

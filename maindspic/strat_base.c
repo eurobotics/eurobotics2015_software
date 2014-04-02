@@ -220,7 +220,7 @@ uint8_t strat_calib(int16_t dist, uint8_t flags)
 	int32_t d = pid_get_gain_D(&mainboard.angle.pid);
 	uint8_t err;
 
-	pid_set_gains(&mainboard.angle.pid, 150, 0, 2000);
+	pid_set_gains(&mainboard.angle.pid, 50, 0, 1000);
 	trajectory_d_rel(&mainboard.traj, dist);
 	err = wait_traj_end(flags);
 	pid_set_gains(&mainboard.angle.pid, p, i, d);
