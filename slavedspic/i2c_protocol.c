@@ -124,6 +124,12 @@ void i2c_read_event(uint8_t cmd_byte, uint8_t *buf)
 			struct i2c_slavedspic_status *cmd = void_cmd;
 			
 			(*cmd).hdr.cmd = I2C_ANS_SLAVEDSPIC_STATUS;
+
+         /* XXX syncronized with maindspic */
+
+			/* infos */
+			(*cmd).status = slavedspic.status;
+
 #if 0
 			/* actuators blocking flags */
 			(*cmd).fingers_floor_blocked = slavedspic.fingers_floor.blocking;
@@ -134,10 +140,8 @@ void i2c_read_event(uint8_t cmd_byte, uint8_t *buf)
 		
 			/* sensors */
 			(*cmd).turbine_sensors = sensor_get_all();
-		
-			/* infos */
-			(*cmd).status = slavedspic.status;
-		
+
+         /* infos */
 			(*cmd).harvest_mode = slavedspic.harvest_mode;
 			(*cmd).store_mode = slavedspic.store_mode;
 			(*cmd).dump_mode = slavedspic.dump_mode;

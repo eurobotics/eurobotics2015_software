@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Revision : $Id: state.c,v 1.4 2009/05/27 20:04:07 zer0 Exp $
+ *  Revision : $Id$
  *
  */
 
@@ -79,9 +79,12 @@ uint8_t state_debug = 0;
 void state_set_status(uint8_t val)
 {
 	uint8_t flags;
+
 	IRQ_LOCK(flags);
    slavedspic.status = val;
 	IRQ_UNLOCK(flags);
+
+	STMCH_DEBUG("state = %s", slavedspic.status==I2C_SLAVEDSPIC_STATUS_BUSY? "BUSY":"READY");
 }
 
 /* set a new state, return 0 on success */
