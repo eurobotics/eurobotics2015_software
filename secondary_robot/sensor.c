@@ -220,7 +220,7 @@ static struct sensor_filter sensor_filter[SENSOR_MAX] = {
 	[S_GP0_1] = { 1, 0, 0, 1, 0, 1 }, /*  */
 	[S_GP0_2] = { 1, 0, 0, 1, 0, 1 }, /*  */
 	[S_GP0_3] = { 1, 0, 0, 1, 0, 1 }, /*  */
-	[S_GP0_4] = { 1, 0, 0, 1, 0, 1 }, /*  */
+	[S_GP0_4] = { 1, 0, 0, 1, 0, 0 }, /*  */
 	[S_GP0_5] = { 1, 0, 0, 1, 0, 1 }, /*  */
 	[S_GP0_6] = { 1, 0, 0, 1, 0, 1 }, /*  */
 	[S_GP0_7] = { 1, 0, 0, 1, 0, 1 }, /* 15 */
@@ -349,6 +349,7 @@ void sensor_obstacle_disable(void)
 
 void sensor_obstacle_enable(void)
 {
+	DEBUG(E_USER_STRAT, "re-enable sensor");
 	disable = 0;
 }
 

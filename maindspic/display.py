@@ -1,5 +1,5 @@
 import math, sys, time, os, random, re
-from matplotlib.patches import Arrow, Circle, Wedge, Polygon, Rectangle
+#from matplotlib.patches import Arrow, Circle, Wedge, Polygon, Rectangle
 from visual import *
 
 FLOAT = "([-+]?[0-9]*\.?[0-9]+)"

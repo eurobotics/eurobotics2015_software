@@ -302,14 +302,14 @@ int main(void)
 	/* servos */
 	pwm_servo_init(&gen.pwm_servo_oc1, 1, 500, 2400);
 	pwm_servo_init(&gen.pwm_servo_oc2, 2, 500, 2400);
-	pwm_servo_init(&gen.pwm_servo_oc3, 3, 500, 2400);
-	pwm_servo_init(&gen.pwm_servo_oc4, 4, 500, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc3, 3, 300, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc4, 4, 300, 2400);
 	pwm_servo_enable();
 
 	pwm_servo_set(&gen.pwm_servo_oc1, 0);
 	pwm_servo_set(&gen.pwm_servo_oc2, 0);
-	pwm_servo_set(&gen.pwm_servo_oc3, 0);
-	pwm_servo_set(&gen.pwm_servo_oc4, 0);
+	pwm_servo_set(&gen.pwm_servo_oc3, 1200);
+	pwm_servo_set(&gen.pwm_servo_oc4, 1300);
 
 	/* MAIN TIMER */
 	main_timer_init();
@@ -383,6 +383,10 @@ int main(void)
 	strat_reset_pos(400, COLOR_Y(1000), COLOR_A_ABS(90));
   	strat_event_enable();
 #endif
+
+
+	/* start */
+	strat_start_match(1);
 
 	/* process commands, never returns */
 	cmdline_interact();
