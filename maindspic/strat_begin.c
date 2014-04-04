@@ -172,6 +172,8 @@ uint8_t strat_begin_alcabot (void)
 		if (!TRAJ_SUCCESS(err))
 				ERROUT(err);
 
+		strat_infos.zones[ZONE_TORCH_1].flags |= ZONE_CHECKED;
+
 		state ++;	
 		break;			
 
@@ -198,6 +200,7 @@ uint8_t strat_begin_alcabot (void)
 		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 		if (!TRAJ_SUCCESS(err))
 				ERROUT(err);
+		strat_infos.zones[ZONE_FIRE_2].flags |= ZONE_CHECKED;
 
 		state ++;
 		break;
@@ -220,6 +223,7 @@ uint8_t strat_begin_alcabot (void)
 		i2c_slavedspic_mode_stick ( COLOR_INVERT(I2C_STICK_TYPE_LEFT),
  											 I2C_STICK_MODE_HIDE, 0);
 
+		strat_infos.zones[ZONE_FIRE_1].flags |= ZONE_CHECKED;
 		state ++;
 		break;
 
@@ -292,6 +296,7 @@ uint8_t strat_begin_alcabot (void)
 
 		i2c_slavedspic_wait_ready();
 
+		strat_infos.zones[ZONE_FIRE_6].flags |= ZONE_CHECKED;
 		state ++;
 		break;
 		
@@ -310,6 +315,7 @@ uint8_t strat_begin_alcabot (void)
 		
 		/* XXX i2c_slavedspic_wait_ready(); */
 
+		strat_infos.zones[ZONE_FIRE_5].flags |= ZONE_CHECKED;
 		state ++;
 		break;
 
@@ -353,6 +359,7 @@ uint8_t strat_begin_alcabot (void)
 		i2c_slavedspic_mode_stick ( COLOR_INVERT(I2C_STICK_TYPE_LEFT),
  											 I2C_STICK_MODE_HIDE, 0);
 
+		strat_infos.zones[ZONE_TORCH_3].flags |= ZONE_CHECKED;
 		state ++;
 		break;
 
@@ -375,6 +382,7 @@ uint8_t strat_begin_alcabot (void)
 		if (!TRAJ_SUCCESS(err))
 				ERROUT(err);
 
+		strat_infos.zones[ZONE_FIRE_3].flags |= ZONE_CHECKED;
 		state ++;
 		break;
 
@@ -419,6 +427,7 @@ uint8_t strat_begin_alcabot (void)
  											 I2C_STICK_MODE_HIDE, 0);
 		i2c_slavedspic_wait_ready();
 
+		strat_infos.zones[ZONE_MOBILE_TORCH_1].flags |= ZONE_CHECKED;
 		state ++;
 		break;
 		

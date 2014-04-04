@@ -118,6 +118,15 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 		return 0;	
 	if(strat_infos.zones[zone_num].flags & ZONE_CHECKED)
 		return 0;	
+
+	if(strat_infos.zones[zone_num].type==ZONE_TYPE_BASKET)
+	{
+		if(strat_infos.tree_fruits_inside==0) 
+			return 0;
+		else
+			strat_infos.zones[zone_num].prio += ZONE_PRIO_40*strat_infos.tree_fruits_inside;
+	}
+
 	return 1;
 }
 
@@ -136,7 +145,7 @@ int8_t strat_get_new_zone(void)
 			continue;
 
 		/* compare current priority */
-		if(strat_infos.zones[i].prio > prio_max) {
+		if(strat_infos.zones[i].prio >= prio_max) {
 
 			prio_max = strat_infos.zones[i].prio;
 			zone_num = i;
@@ -239,6 +248,14 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 		/* pick up fire from heart of fire */
 			break;
 			
+		case ZONE_BASKET_1:
+		case ZONE_BASKET_2:
+		/* leave fruits on basket */
+			strat_leave_fruits(zone_num, COLOR_X (strat_infos.zones[zone_num].x),
+										 		strat_infos.zones[zone_num].y);
+			break;
+
+
 		/* TODO rest of zones */
 		/* TODO define zones where to leave fire on the ground */
 	}
@@ -371,13 +388,13 @@ uint8_t strat_smart(void)
 	int8_t zone_num;
 	uint8_t err;
 
-	/* recalculate priorities */
-	recalculate_priorities();
+	/* recalculate priorities NOTYET */
+	//recalculate_priorities();
 	
 	/* get new zone */
 	zone_num = strat_get_new_zone();
 
-		printf_P(PSTR("zone: %d.\r\n"),zone_num);
+	printf_P(PSTR("zone: %d.\r\n"),zone_num);
 		
 	if(zone_num == -1) {
 		printf_P(PSTR("No zone is found\r\n"));
@@ -419,7 +436,8 @@ uint8_t strat_smart(void)
 		}
 
 		/* mark the zone as checked */
-		strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
+		if(strat_infos.zones[zone_num].type!=ZONE_TYPE_BASKET)
+			strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
 		strat_infos.zones[zone_num].flags &= ~(ZONE_CHECKED_OPP);
 
 		printf_P(PSTR("Work on zone %s succeeded!\r\n"), numzone2name[zone_num]);

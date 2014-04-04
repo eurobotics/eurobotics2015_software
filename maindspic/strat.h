@@ -309,7 +309,7 @@ struct strat_infos {
 
 	/* state of the robot */
 	uint8_t tree_fruits_inside; /* One unity per harvested tree */
-	uint8_t fires_inside; 		 /* One unity per fire */
+	uint8_t fires_inside; 		 /* One unity per fire inside */
 	uint8_t net_inside;
 	uint8_t spears_inside;
 };
@@ -357,6 +357,7 @@ void strat_event_disable(void);
 
 /* harvest fruits from trees */
 uint8_t strat_harvest_fruits(int16_t x, int16_t y);
+uint8_t strat_leave_fruits(uint8_t zone_num,int16_t x, int16_t y);
 
 /********************************************
  * in strat_fire.c 
