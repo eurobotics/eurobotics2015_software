@@ -464,13 +464,12 @@ void strat_start(void)
 	strat_preinit();
 
 #ifndef HOST_VERSION
-#if 0
 	/* if start sw not plugged */
-	if (sensor_get(S_START_SWITCH)) {
+	if (sensor_get(S_START)) {
 		printf_P(PSTR("No start switch, press a key or plug it\r\n"));
 
 		/* while start sw not plugged */
-		while (sensor_get(S_START_SWITCH)) {
+		while (sensor_get(S_START)) {
 			if (! cmdline_keypressed())
 				continue;
 
@@ -483,19 +482,21 @@ void strat_start(void)
 	}
 	
 	/* if start sw plugged */
-	if (!sensor_get(S_START_SWITCH)) {
+	if (!sensor_get(S_START)) {
 		printf_P(PSTR("Ready, unplug start switch to start\r\n"));
 		/* while start sw plugged */
-		while (!sensor_get(S_START_SWITCH));
+		while (!sensor_get(S_START));
 	}
-#endif
 #endif
 
 	/* reset infos, set traj speeds, set events ...*/
 	strat_init();
 	
 	/* go to play */
-	err = strat_main();
+	do{
+		err = strat_main();
+	}while((err & END_TIMER) == 0);
+
 	
 	NOTICE(E_USER_STRAT, "Finished !! returned %s", get_err(err));
 	strat_exit();

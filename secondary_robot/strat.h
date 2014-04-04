@@ -126,7 +126,7 @@
 #define LAST_SECONDS_TIME	80
 
 
-#define CALIBRATION
+//#define CALIBRATION
 #ifdef CALIBRATION
 
 /* default acc */
@@ -144,8 +144,8 @@
 #else
 
 /* default acc */
-#define ACC_DIST  40.
-#define ACC_ANGLE 90.
+#define ACC_DIST  30 //40.
+#define ACC_ANGLE 30 //90.
 
 /* default speeds */
 #ifdef HOMOLOGATION
@@ -329,6 +329,7 @@ uint8_t strat_beginning(void);
 void strat_event(void *dummy);
 void strat_event_enable(void);
 void strat_event_disable(void);
+void strat_start_match(uint8_t debug);
 
 
 

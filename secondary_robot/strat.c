@@ -63,6 +63,7 @@
 #include "sensor.h"
 #include "actuator.h"
 #include "beacon.h"
+#include "cmdline.h"
 
 #else
 /* robot dimensions */
@@ -244,8 +245,6 @@ void strat_event_disable(void)
 /* call it just before launching the strat */
 void strat_init(void)
 {
-	strat_reset_infos();
-
 	/* we consider that the color is correctly set */
 
 	strat_set_speed(SPEED_DIST_FAST, SPEED_ANGLE_FAST);
@@ -330,113 +329,198 @@ void strat_event(void *dummy)
 		goto end;		 \
 	} while(0)	
 
+/* debug state machines step to step */
+void state_debug_wait_key_pressed(void)
+{
+	if (!strat_infos.debug_step)
+		return;
+
+	printf_P(PSTR("press a key\r\n"));
+	while(!cmdline_keypressed());
+}
 
 /* strat main loop */
 uint8_t strat_main(void)
 {
-#if notyet /* TODO 2014 */
-	uint8_t err;
 
-#ifdef HOMOLOGATION
-
-	trajectory_d_rel(&mainboard.traj, 300);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
-
-	/* */
-	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_TOTEM_OUR_SIDE_2].init_x), 
-								strat_infos.zones[ZONE_TOTEM_OUR_SIDE_2].init_y, 
-								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-	if (TRAJ_SUCCESS(err))
-	err = strat_empty_totem_side(COLOR_X(strat_infos.zones[ZONE_TOTEM_OUR_SIDE_2].x),
-									strat_infos.zones[ZONE_TOTEM_OUR_SIDE_2].y, STORE_BOOT, 0);
-
-	/* */
-	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_x), 
-								strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_y, 
-								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-	if (TRAJ_SUCCESS(err))
-	err = strat_save_treasure_generic(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].x), 
-												 strat_infos.zones[ZONE_SHIP_OUR_DECK_2].y);
-
-	/* */
-
-	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].init_x), 
-								strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].init_y, 
-								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-	if (TRAJ_SUCCESS(err))
-	err = strat_empty_totem_side(COLOR_X(strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].x),
-									strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].y, STORE_BOOT, 0);
-	/* */
-	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_x), 
-								strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_y, 
-								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-
-	if (TRAJ_SUCCESS(err))
-	err = strat_save_treasure_generic(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].x), 
-												 strat_infos.zones[ZONE_SHIP_OUR_DECK_2].y);
-	/* */
-	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_MIDDLE_COINS_GROUP].init_x), 
-								strat_infos.zones[ZONE_MIDDLE_COINS_GROUP].init_y, 
-								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-
-	if (TRAJ_SUCCESS(err))
-	err = strat_pickup_coins_floor(COLOR_X(strat_infos.zones[ZONE_MIDDLE_COINS_GROUP].x), 
-											strat_infos.zones[ZONE_MIDDLE_COINS_GROUP].y, GROUP);
-
-	/* */
-	err = goto_and_avoid(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_x), 
-								strat_infos.zones[ZONE_SHIP_OUR_DECK_2].init_y, 
-								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-
-	if (TRAJ_SUCCESS(err))
-	err = strat_save_treasure_generic(COLOR_X(strat_infos.zones[ZONE_SHIP_OUR_DECK_2].x), 
-												 strat_infos.zones[ZONE_SHIP_OUR_DECK_2].y);
-
-	while(time_get_s() < 89);
-	strat_exit();
-	return 0;
-
+#define DEBUG_STRAT_HARVEST_FRUITS
+#ifdef DEBUG_STRAT_HARVEST_FRUITS 
+#define wait_press_key() state_debug_wait_key_pressed();
+	strat_infos.debug_step = 1;
 #else
+#define wait_press_key()
+#endif
 
-	strat_begin();
+#define BEGIN_LINE_Y 	450
+#define BEGIN_MAMOOTH_X	750
+#define BEGIN_FRESCO_X	1295
+#define SERVO_SHOOT_POS_UP 80
+#define SERVO_SHOOT_POS_DOWN 300
 
-	/* try to empty opp totem */
-   trajectory_goto_xy_abs(&mainboard.traj,
-								COLOR_X(strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].init_x),
-								strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].init_y);
-	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+   uint8_t err = 0;
+	uint16_t old_spdd, old_spda;
 
- 	err = strat_work_on_zone(ZONE_TOTEM_OPP_SIDE_2);
-	if (!TRAJ_SUCCESS(err)) {
-		DEBUG(E_USER_STRAT, "Work on zone %d fails", ZONE_TOTEM_OPP_SIDE_2);
+	static uint8_t mamooth_done =0;
+	static uint8_t fresco_done =0;
+	static uint8_t state = 0;
+ 
+	//wait_press_key();
 
-			strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].flags |= ZONE_CHECKED;
-         i2c_slavedspic_mode_turbine_angle(0,200);
-         i2c_slavedspic_wait_ready();
-         i2c_slavedspic_mode_lift_height(30);
-			i2c_slavedspic_wait_ready();
-         i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_TOTEM,I2C_FINGERS_MODE_HOLD,0);
-			i2c_slavedspic_wait_ready();
-         i2c_slavedspic_mode_fingers(I2C_FINGERS_TYPE_FLOOR,I2C_FINGERS_MODE_CLOSE,0);
-         i2c_slavedspic_wait_ready();
+
+	switch (state)
+	{
+		/* goto out of home */
+		case 0:
+			trajectory_goto_forward_xy_abs (&mainboard.traj, 
+										position_get_x_s16(&mainboard.pos),	BEGIN_LINE_Y);
+//			err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+			err = wait_traj_end(TRAJ_FLAGS_STD);
+			if (!TRAJ_SUCCESS(err))
+					ERROUT(err);
+
+			state ++;
+			break;
+
+		/* goto in front of mammut */
+		case 1:
+			trajectory_goto_forward_xy_abs (&mainboard.traj, 
+										COLOR_X(BEGIN_MAMOOTH_X), BEGIN_LINE_Y);
+			err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+			if (!TRAJ_SUCCESS(err))
+					ERROUT(err);
+
+
+			trajectory_a_abs (&mainboard.traj, COLOR_A_ABS(-90));
+			err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+			if (!TRAJ_SUCCESS(err))
+					ERROUT(err);
+			state ++;			
+			break;
+
+		/* shoot */
+		case 2:
+			pwm_servo_set(&gen.pwm_servo_oc3, SERVO_SHOOT_POS_UP);
+			pwm_servo_set(&gen.pwm_servo_oc4, SERVO_SHOOT_POS_DOWN);
+			time_wait_ms(1000);
+
+			mamooth_done=1;
+			state ++;			
+			break;
+
+		/* goto in front of fresco */
+		case 3:
+			trajectory_goto_forward_xy_abs (&mainboard.traj, 
+										COLOR_X(BEGIN_FRESCO_X), BEGIN_LINE_Y);
+//			err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+			err = wait_traj_end(TRAJ_FLAGS_STD);
+			if (!TRAJ_SUCCESS(err))
+					ERROUT(err);
+
+			state ++;			
+			break;
+
+		/* turn to fresco 1*/
+		case 4:
+			trajectory_a_abs (&mainboard.traj, COLOR_A_ABS(90));
+//			err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+			err = wait_traj_end(TRAJ_FLAGS_STD);
+			if (!TRAJ_SUCCESS(err))
+					ERROUT(err);
+
+			state ++;			
+			break;
+
+		/* turn to fresco 2*/
+		case 5:
+
+
+			trajectory_goto_backward_xy_abs (&mainboard.traj, 
+										COLOR_X(BEGIN_FRESCO_X), 430);
+			err = wait_traj_end(TRAJ_FLAGS_STD);
+			if (!TRAJ_SUCCESS(err))
+					ERROUT(err);
+
+			state ++;		
+			break;
+
+		/* paint fresco */
+		case 6:
+			sensor_obstacle_enable();
+			if (sensor_get (S_OBS_REAR_L) || sensor_get (S_OBS_REAR_R))
+				ERROUT(END_OBSTACLE);
+				
+			trajectory_goto_backward_xy_abs (&mainboard.traj, 
+										COLOR_X(BEGIN_FRESCO_X), ROBOT_CENTER_TO_BACK + 100);
+			err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+			if (!TRAJ_SUCCESS(err))
+					ERROUT(err);
+
+			/* save speed */
+			strat_get_speed(&old_spdd, &old_spda);
+			strat_set_speed(SPEED_DIST_VERY_SLOW, SPEED_ANGLE_FAST);
+			trajectory_d_rel(&mainboard.traj, -200);
+			err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+
+			strat_set_speed(old_spdd, old_spda);
+			fresco_done=1;
+
+			trajectory_goto_forward_xy_abs (&mainboard.traj, 
+										COLOR_X(BEGIN_FRESCO_X), ROBOT_CENTER_TO_BACK + 100);
+			err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+			if (!TRAJ_SUCCESS(err))
+					ERROUT(err);
+
+			state ++;
+			break;
+
+		default:
+			break;
 	}
 
-	strat_infos.zones[ZONE_TOTEM_OPP_SIDE_2].flags |= ZONE_CHECKED;
+	return err;
 
-	/* auto-play */
-	do{
-		err = strat_smart();
-	}while((err & END_TIMER) == 0);
+end:
+	time_wait_ms (500);
+	return err;	
+}
 
+/* start a match debuging or not */
+void strat_start_match(uint8_t debug)
+{
+	uint8_t old_level = gen.log_level;
 
+	time_wait_ms(1000);
 
-#endif /* HOMOLOGATION */
+	/* logs */
+	gen.logs[NB_LOGS] = E_USER_STRAT;
 
-#endif /* notyet TODO 2014 */
+	if (debug) {
+		strat_infos.dump_enabled = 1;
+		gen.log_level = 5;
+	}
+	else {
+		strat_infos.dump_enabled = 0;
+		gen.log_level = 0;
+	}	
 
-	/* end */
-   strat_exit();
-   return 0;
+	/* get color */
+	mainboard.our_color = sensor_get(S_COLOR);
+	printf_P(PSTR("COLOR is %s\r\n"), mainboard.our_color == I2C_COLOR_RED? "RED" : "YELLOW");
+
+	/* set x,y and angle */
+#define TRESPA_BAR 17
+	strat_reset_pos(COLOR_X(ROBOT_WIDTH/2 + TRESPA_BAR), TRESPA_BAR+(ROBOT_LENGTH/2), COLOR_A_ABS(90));	
+
+	printf_P(PSTR("x=%.2f y=%.2f a=%.2f\r\n"), 
+		 position_get_x_double(&mainboard.pos),
+		 position_get_y_double(&mainboard.pos),
+		 DEG(position_get_a_rad_double(&mainboard.pos)));
+
+	/* strat start */
+	strat_start();
+
+	/* restore logs */
+	gen.log_level = old_level;
 }
 
 #endif /* HOST_VERSION_OA_TEST */
