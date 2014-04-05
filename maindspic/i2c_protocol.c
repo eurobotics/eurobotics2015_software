@@ -623,6 +623,14 @@ int8_t i2c_slavedspic_mode_stick(uint8_t type, uint8_t mode, int8_t offset)
 	buf.stick.type = type;
 	buf.stick.offset = offset;
 	
+	if(mode==I2C_STICK_MODE_CLEAN_FLOOR) 
+	{
+		if(type==I2C_STICK_TYPE_RIGHT)
+			buf.stick.offset = 30;
+		else
+			buf.stick.offset = 40;
+	}
+		
 
 	/* send command and return */
 	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));

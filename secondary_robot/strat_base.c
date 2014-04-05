@@ -492,6 +492,8 @@ void strat_start(void)
 	/* reset infos, set traj speeds, set events ...*/
 	strat_init();
 	
+	time_wait_ms(6000);
+
 	/* go to play */
 	do{
 		err = strat_main();

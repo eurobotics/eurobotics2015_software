@@ -142,12 +142,12 @@ static void do_cs(void *dummy)
 			dac_mc_set(RIGHT_MOTOR, 0);
 
 			/* kill strat */
-			//strat_exit();
+			strat_exit();
 
 			printf_P(PSTR("END OF TIME\r\n"));
 	
 			/* never returns */
-			//while(1);
+			while(1);
 		}
 	}
 #endif	
@@ -291,7 +291,7 @@ void maindspic_cs_init(void)
 	/* Blocking detection */
 	bd_init(&mainboard.distance.bd);
 	bd_set_speed_threshold(&mainboard.distance.bd, 100);
-	bd_set_current_thresholds(&mainboard.distance.bd, 100, 2000, 1000000, 10); //20, 8000, 1000000, 50);
+	bd_set_current_thresholds(&mainboard.distance.bd, 100, 2000, 1000000, 30); //20, 8000, 1000000, 50);
 
 	/* set them on !! */
 	mainboard.angle.on = 1;

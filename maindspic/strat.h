@@ -73,9 +73,9 @@
 #define MOBILE_TORCH_1_Y		1100
 #define MOBILE_TORCH_2_X		2100
 #define MOBILE_TORCH_2_Y		1100
-#define BASKET_1_X		700
+#define BASKET_1_X		750
 #define BASKET_1_Y		150
-#define BASKET_2_X		2300
+#define BASKET_2_X		2250
 #define BASKET_2_Y		150
 #define MAMOOTH_1_X		700
 #define MAMOOTH_1_Y		0
@@ -148,7 +148,7 @@
 #else
 
 /* default acc */
-#define ACC_DIST  35.
+#define ACC_DIST  20. //35.
 #define ACC_ANGLE 20.
 
 /* default speeds */
@@ -157,8 +157,8 @@
 #define SPEED_ANGLE_FAST 		2000.
 #else
 
-#define SPEED_DIST_FAST 		4000.
-#define SPEED_ANGLE_FAST 		4000.
+#define SPEED_DIST_FAST 		3000.
+#define SPEED_ANGLE_FAST 		3000.
 #endif
 
 //Do not change
@@ -319,6 +319,7 @@ extern char numzone2name[ZONES_MAX + 1][3];
 extern uint8_t strat_zones_points[ZONES_MAX];
 
 
+
 #ifndef HOST_VERSION_OA_TEST
 
 
@@ -357,7 +358,7 @@ void strat_event_disable(void);
 
 /* harvest fruits from trees */
 uint8_t strat_harvest_fruits(int16_t x, int16_t y);
-uint8_t strat_leave_fruits(uint8_t zone_num,int16_t x, int16_t y);
+uint8_t strat_leave_fruits();
 
 /********************************************
  * in strat_fire.c 
