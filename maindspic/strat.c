@@ -110,7 +110,10 @@ struct strat_infos strat_infos = {
 		.flags = 0,
 	},
 
-#define TREE_D_INIT 440
+#define TREE_D_INIT 			440
+#define BASKET_D_INIT 		(440 + 300)
+
+
 
    /*zones[W] =			     		{type, 				x, 			y, 			x_down, 	x_up,	y_down, 	y_up,	init_x, 					init_y, 					init_a, 	prio, 			flags, 	robot };                            */
     .zones[ZONE_TREE_1]=        	{ZONE_TYPE_TREE, 	TREE_1_X, 	TREE_1_Y, 	0, 		400,  1100,    1500, TREE_D_INIT,  			TREE_1_Y,   			0,			ZONE_PRIO_40, 	0,			MAIN_ROBOT},
@@ -136,8 +139,8 @@ struct strat_infos strat_infos = {
     .zones[ZONE_MOBILE_TORCH_1]= {ZONE_TYPE_MOBILE_TORCH, MOBILE_TORCH_1_X, MOBILE_TORCH_1_Y, 600, 1200,    800, 1400   , 630,  910,   30,  ZONE_PRIO_0, 0 ,MAIN_ROBOT},
     .zones[ZONE_MOBILE_TORCH_2]= {ZONE_TYPE_MOBILE_TORCH, MOBILE_TORCH_2_X, MOBILE_TORCH_2_Y, 1800, 2400,  800, 1400   , 2370,  910,   150,  ZONE_PRIO_0, 0 ,MAIN_ROBOT},
  
-    .zones[ZONE_BASKET_1]=        {ZONE_TYPE_BASKET, BASKET_1_X, BASKET_1_Y, 400, 1100,  0,    500   , 750,  750,   -90,  ZONE_PRIO_40, 0 ,MAIN_ROBOT},
-    .zones[ZONE_BASKET_2]=        {ZONE_TYPE_BASKET, BASKET_2_X, BASKET_2_Y, 1900, 2600,  0,    500   , 2250,  750,   -90,  ZONE_PRIO_40, 0 ,MAIN_ROBOT},
+    .zones[ZONE_BASKET_1]=        {ZONE_TYPE_BASKET, BASKET_1_X, BASKET_1_Y, 400, 1100,  0,    500   , 750,  BASKET_D_INIT,   -90,  0, 0 ,MAIN_ROBOT},
+    .zones[ZONE_BASKET_2]=        {ZONE_TYPE_BASKET, BASKET_2_X, BASKET_2_Y, 1900, 2600,  0,    500   , 2250,  BASKET_D_INIT,   -90,  0, 0 ,MAIN_ROBOT},
 	.zones[ZONE_MAMOOTH_1]=       {ZONE_TYPE_MAMOOTH, MAMOOTH_1_X, MAMOOTH_1_Y, 400, 1100,  0,    500   , 750,  600,   -90,  ZONE_PRIO_40, 0 ,SEC_ROBOT},
     .zones[ZONE_MAMOOTH_2]=       {ZONE_TYPE_MAMOOTH, MAMOOTH_2_X, MAMOOTH_2_Y, 1900, 2600,  0,    500   , 2250,  600,   -90,  ZONE_PRIO_40, 0 ,SEC_ROBOT},
 
@@ -289,6 +292,7 @@ void strat_init(void)
 	interrupt_traj_reset();
 
 	/* init other devices (lasers...) */
+	i2c_slavedspic_mode_init();
 
 	/* used in strat_base for END_TIMER */
 	mainboard.flags = DO_ENCODERS | DO_CS | DO_RS | 
@@ -373,43 +377,33 @@ uint8_t strat_main(void)
 	uint8_t err, i;
 
 	// AVOID ZONES IN CURRENT STRATEGY
-	if(mainboard.our_color==I2C_COLOR_YELLOW)
-	{
-		strat_infos.zones[ZONE_TORCH_2].flags |= ZONE_AVOID;
-		strat_infos.zones[ZONE_TORCH_4].flags |= ZONE_AVOID;
-		strat_infos.zones[ZONE_MOBILE_TORCH_2].flags |= ZONE_AVOID;
-		strat_infos.zones[ZONE_BASKET_1].flags |= ZONE_AVOID;
-	}
-	else
-	{
-		strat_infos.zones[ZONE_TORCH_1].flags |= ZONE_AVOID;
-		strat_infos.zones[ZONE_TORCH_3].flags |= ZONE_AVOID;
-		strat_infos.zones[ZONE_MOBILE_TORCH_1].flags |= ZONE_AVOID;
-		strat_infos.zones[ZONE_BASKET_2].flags |= ZONE_AVOID;
-	}
+	strat_infos.zones[ZONE_TORCH_2].flags |= ZONE_AVOID;
+	strat_infos.zones[ZONE_TORCH_4].flags |= ZONE_AVOID;
+	strat_infos.zones[ZONE_MOBILE_TORCH_2].flags |= ZONE_AVOID;
+	strat_infos.zones[ZONE_BASKET_1].flags |= ZONE_AVOID;
+	strat_infos.zones[ZONE_FIRE_4].flags |= ZONE_AVOID;
+	strat_infos.zones[ZONE_HEART_FIRE_1].flags |= ZONE_AVOID;
+	strat_infos.zones[ZONE_HEART_FIRE_2].flags |= ZONE_AVOID;
+	strat_infos.zones[ZONE_HEART_FIRE_3].flags |= ZONE_AVOID;
+	
 	for(i=0; i<ZONES_MAX; i++)
 	{
 		if(strat_infos.zones[i].robot == SEC_ROBOT)
 			strat_infos.zones[i].flags |= ZONE_AVOID;
 	}
 	
-#ifdef HOMOLOGATION
-	printf_P(PSTR("Homologation\r\n"));
-	strat_homologation();
-#else
-	
 	printf_P(PSTR("Strat begin\r\n"));
 	do{
 		err = strat_begin_alcabot();
-	}while((err & END_TIMER) == 0);
+	}while((err & END_RESERVED) == 0);
 
+   strat_limit_speed_enable ();
 
 	/* auto-play */
 	printf_P(PSTR("\r\n\r\nStrat smart\r\n"));
 	do{
 		err = strat_smart();
 	}while((err & END_TIMER) == 0);
-#endif
 	
    strat_exit();
    return 0;

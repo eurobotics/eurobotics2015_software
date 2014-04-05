@@ -220,10 +220,14 @@ uint8_t strat_calib(int16_t dist, uint8_t flags)
 	int32_t d = pid_get_gain_D(&mainboard.angle.pid);
 	uint8_t err;
 
+	bd_set_current_thresholds(&mainboard.distance.bd, 100, 2000, 1000000, 10); //20, 8000, 1000000, 50);
+
 	pid_set_gains(&mainboard.angle.pid, 50, 0, 1000);
 	trajectory_d_rel(&mainboard.traj, dist);
 	err = wait_traj_end(flags);
 	pid_set_gains(&mainboard.angle.pid, p, i, d);
+
+	bd_set_current_thresholds(&mainboard.distance.bd, 100, 2000, 1000000, 25); //20, 8000, 1000000, 50);
 	return err;
 }
 
@@ -389,7 +393,7 @@ void strat_limit_speed(void)
 		opp_a = a[i];
 #endif
 	
-#ifdef HOMOLOGATION
+#ifdef __HOMOLOGATION
 {
 	if(__strat_obstacle(OBSTACLE_OPP1))
 		return 1;
@@ -533,7 +537,7 @@ uint8_t __strat_obstacle(uint8_t which)
 		return 0;
 
 
-#ifdef HOMOLOGATION
+#ifdef __HOMOLOGATION
 	/* opponent is in front of us */
 	if (mainboard.speed_d > 0 && (sensor_get(S_OPPONENT_FRONT_R) || sensor_get(S_OPPONENT_FRONT_L))) {
 		DEBUG(E_USER_STRAT, "opponent front");

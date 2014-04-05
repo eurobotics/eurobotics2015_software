@@ -88,8 +88,8 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 		return 0;
 
 	/* discard if opp is in zone */
-	if(opponent_is_in_area(strat_infos.zones[zone_num].x_up,strat_infos.zones[zone_num].y_up,
-								strat_infos.zones[zone_num].x_down,	strat_infos.zones[zone_num].y_down)) {
+	if(opponent_is_in_area(COLOR_X(strat_infos.zones[zone_num].x_up), strat_infos.zones[zone_num].y_up,
+								  COLOR_X(strat_infos.zones[zone_num].x_down),	strat_infos.zones[zone_num].y_down)) {
 
 #if 0
 		if(time_get_us2() - opp_time_us < 100000UL)
@@ -123,8 +123,6 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 	{
 		if(strat_infos.tree_fruits_inside==0) 
 			return 0;
-		else
-			strat_infos.zones[zone_num].prio += ZONE_PRIO_40*strat_infos.tree_fruits_inside;
 	}
 
 	return 1;
@@ -150,6 +148,9 @@ int8_t strat_get_new_zone(void)
 			prio_max = strat_infos.zones[i].prio;
 			zone_num = i;
 		}
+
+		if((time_get_s() > 75) && (strat_infos.tree_fruits_inside))
+			zone_num = ZONE_BASKET_2;
 	}
 
 	return zone_num;
@@ -158,6 +159,8 @@ int8_t strat_get_new_zone(void)
 /* return END_TRAJ if zone is reached, err otherwise */
 uint8_t strat_goto_zone(uint8_t zone_num)
 {
+#define BASKET_OFFSET_SIDE 175
+
 	int8_t err;
 	
 	/* update strat_infos */
@@ -167,12 +170,25 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 	/* go */
 	if (zone_num == ZONE_TREE_1 || zone_num == ZONE_TREE_2 
 		|| zone_num == ZONE_TREE_3 || zone_num == ZONE_TREE_4) 	{
-		err = goto_and_avoid_forward (strat_infos.zones[zone_num].init_x, 
+		err = goto_and_avoid_forward (COLOR_X(strat_infos.zones[zone_num].init_x), 
 									strat_infos.zones[zone_num].init_y,  
 									TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 	}
+	else if (zone_num == ZONE_BASKET_2) 	{
+		if (opp_x_is_more_than(3000-750) || opp2_x_is_more_than(3000-750) ) {
+			err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x - BASKET_OFFSET_SIDE), 
+										strat_infos.zones[zone_num].init_y,  
+										TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+		}
+		else {
+			err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x + BASKET_OFFSET_SIDE), 
+										strat_infos.zones[zone_num].init_y,  
+										TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+		}
+
+	}
 	else {
-		err = goto_and_avoid (strat_infos.zones[zone_num].init_x, 
+		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x), 
 									strat_infos.zones[zone_num].init_y,  
 									TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 	}	
@@ -251,8 +267,7 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 		case ZONE_BASKET_1:
 		case ZONE_BASKET_2:
 		/* leave fruits on basket */
-			strat_leave_fruits(zone_num, COLOR_X (strat_infos.zones[zone_num].x),
-										 		strat_infos.zones[zone_num].y);
+			strat_leave_fruits();
 			break;
 
 

@@ -236,6 +236,7 @@ end_harvesting:
 	}
 
 	strat_infos.tree_fruits_inside++;
+	strat_infos.zones[ZONE_BASKET_2].prio += ZONE_PRIO_30*strat_infos.tree_fruits_inside;
 	printf_P(PSTR("I have harvested %d trees in total\r\n"), strat_infos.tree_fruits_inside);
 
 	/* hide tools */
@@ -254,7 +255,7 @@ end:
 /* leave fruits from trees on basket*/
 /* TODO two different positions in basket */
 
-uint8_t strat_leave_fruits(uint8_t zone_num, int16_t x, int16_t y)
+uint8_t strat_leave_fruits(void)
 {
 #ifdef DEBUG_STRAT_HARVEST_FRUITS 
 #define wait_press_key() state_debug_wait_key_pressed();
@@ -262,9 +263,11 @@ uint8_t strat_leave_fruits(uint8_t zone_num, int16_t x, int16_t y)
 #else
 #define wait_press_key()
 #endif
+#define BASKET_1_CENTER_X	750
+#define BASKET_2_CENTER_X	2250
    uint8_t err = 0;
 	uint16_t old_spdd, old_spda, temp_spdd, temp_spda;
-   int16_t d, clean_floor_a_rel;
+   int16_t d, clean_floor_a_abs,clean_floor_a_rel;
 	uint8_t stick_type;
 
 	/* save speed */
@@ -272,63 +275,50 @@ uint8_t strat_leave_fruits(uint8_t zone_num, int16_t x, int16_t y)
    strat_limit_speed_disable ();
 	strat_set_speed (SPEED_DIST_SLOW,SPEED_ANGLE_FAST);
 
-
-#if 0
 	/* depending on basket type */
 
 	/* basket 1 left */
-	if (position_get_x_s16(&mainboard.pos) < ) {
-		stick_type = I2C_STICK_TYPE_RIGHT;
-		clean_floor_a_rel = 180; 
-	}
-	/* basket 2 right */
-	else 	if (position_get_x_s16(&mainboard.pos) > TREE_3_X) {
+	if (position_get_x_s16(&mainboard.pos) < BASKET_1_CENTER_X) {
 		stick_type = I2C_STICK_TYPE_LEFT;
-		clean_floor_a_rel = -180; 
+		clean_floor_a_abs = 180+20; 
+		clean_floor_a_rel = -90-20;
+	}
+	/* basket 1 right */
+	else 	if(position_get_x_s16(&mainboard.pos) > BASKET_1_CENTER_X
+				&& position_get_x_s16(&mainboard.pos) < CENTER_X){
+		stick_type = I2C_STICK_TYPE_RIGHT;
+		clean_floor_a_abs = 0-20; 
+		clean_floor_a_rel = 90+20;
 	}
 
 	/* basket 2 left */
-	else if (position_get_x_s16(&mainboard.pos) < CENTER_X
-				&& position_get_y_s16(&mainboard.pos) > TREE_1_Y) {
+	else if (position_get_x_s16(&mainboard.pos) < BASKET_2_CENTER_X
+				&& position_get_x_s16(&mainboard.pos) > CENTER_X) {
 		stick_type = I2C_STICK_TYPE_LEFT;
-		clean_floor_a_rel = -180; 
+		clean_floor_a_abs = 180+20; 
+		clean_floor_a_rel = -90-20;
 	}
 	/* basket 2 right */	
 	else { /* if (position_get_x_s16(&mainboard.pos) > CENTER_X
-				&& position_get_y_s16(&mainboard.pos) > TREE_4_Y) */
+				&& position_get_y_s16(&mainboard.pos) > BASKET_2_CENTER_X) */
 		stick_type = I2C_STICK_TYPE_RIGHT;
-		clean_floor_a_rel = 180; 
-	}
-
-
-	/* turn in front basket */
-#endif
-	/* deploy stick */
-	if(zone_num==ZONE_BASKET_1)
-	{
-		stick_type = I2C_STICK_TYPE_LEFT;
-		clean_floor_a_rel = -180; 
-	}
-	else
-	{
-		stick_type = I2C_STICK_TYPE_RIGHT;
-		clean_floor_a_rel = -180; 
+		clean_floor_a_abs = 0-20; 
+		clean_floor_a_rel = 90+20;
 	}
 
 	wait_press_key();
 
+	/* clean floor */
+	trajectory_a_abs (&mainboard.traj, clean_floor_a_abs);
+	err = wait_traj_end (TRAJ_FLAGS_SMALL_DIST);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+
 	/* turn in front of basket with stick deployed */
 	i2c_slavedspic_mode_stick (stick_type,
  										I2C_STICK_MODE_CLEAN_FLOOR, 0);
-	trajectory_turnto_xy (&mainboard.traj, x, y);
-	err = wait_traj_end (TRAJ_FLAGS_SMALL_DIST);
-	if (!TRAJ_SUCCESS(err))
-		ERROUT(err);
-	/* XXX don't wait because clean floor somtimes doesn't reach the possition */
-	//i2c_slavedspic_wait_ready();
-	time_wait_ms (100);
+	i2c_slavedspic_wait_ready();
 
-	/* clean floor */
 	trajectory_a_rel (&mainboard.traj, clean_floor_a_rel);
 	err = wait_traj_end (TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
@@ -336,19 +326,25 @@ uint8_t strat_leave_fruits(uint8_t zone_num, int16_t x, int16_t y)
 
 	i2c_slavedspic_mode_stick ( I2C_STICK_TYPE_LEFT,
  										 I2C_STICK_MODE_HIDE, 0);
-	i2cproto_wait_update ();
+	i2c_slavedspic_wait_ready();
 	i2c_slavedspic_mode_stick ( I2C_STICK_TYPE_RIGHT,
  										 I2C_STICK_MODE_HIDE, 0);
-	i2cproto_wait_update ();
+	i2c_slavedspic_wait_ready();
 
 	wait_press_key();
 
+	/* go near basket */
+	d = distance_from_robot(position_get_x_s16(&mainboard.pos), 300);
+	trajectory_d_rel(&mainboard.traj, -(d - 150));
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+   if (!TRAJ_SUCCESS(err))
+	   ERROUT(err);
+
 	/* go backwards until blocking */
-	trajectory_d_rel(&mainboard.traj, -500);
-	err = wait_traj_end(END_INTR|END_TRAJ|END_BLOCKING);
-	if (!TRAJ_BLOCKING(err))
-			ERROUT(err);
-	err = END_TRAJ;
+	strat_get_speed (&temp_spdd, &temp_spda);
+	strat_set_speed (500, temp_spda);
+	strat_calib(-100, TRAJ_FLAGS_SMALL_DIST);
+	strat_set_speed( temp_spdd, temp_spda);
 
 	wait_press_key();
 
@@ -359,17 +355,39 @@ uint8_t strat_leave_fruits(uint8_t zone_num, int16_t x, int16_t y)
 
 
 	/* go forward */
+	trajectory_d_rel(&mainboard.traj, 80);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+   if (!TRAJ_SUCCESS(err))
+	   ERROUT(err);
 
 	/* dump fruits end */
 	i2c_slavedspic_mode_dump_fruits(I2C_SLAVEDSPIC_MODE_DUMP_FRUITS_END);
 	i2c_slavedspic_wait_ready();
-	time_wait_ms (2000);
 
-end:
+	wait_press_key();
+
+	/* go backwards until blocking */
+	strat_get_speed (&temp_spdd, &temp_spda);
+	strat_set_speed (500, temp_spda);
+	strat_calib(-100, TRAJ_FLAGS_SMALL_DIST);
+	strat_set_speed( temp_spdd, temp_spda);
+
+	i2c_slavedspic_mode_dump_fruits(I2C_SLAVEDSPIC_MODE_DUMP_FRUITS_DO);
+	i2c_slavedspic_wait_ready();
+
+	trajectory_d_rel(&mainboard.traj, 250);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+   if (!TRAJ_SUCCESS(err))
+	   ERROUT(err);
+
 	/* update strat_infos */
 	strat_infos.tree_fruits_inside=0;
 	strat_infos.zones[ZONE_BASKET_1].prio=ZONE_PRIO_0;
 	strat_infos.zones[ZONE_BASKET_2].prio=ZONE_PRIO_0;
+
+end:
+	i2c_slavedspic_mode_dump_fruits(I2C_SLAVEDSPIC_MODE_DUMP_FRUITS_END);
+	i2c_slavedspic_wait_ready();
 
 	strat_set_speed(old_spdd, old_spda);
    strat_limit_speed_enable();

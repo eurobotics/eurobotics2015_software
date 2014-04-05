@@ -58,9 +58,9 @@ AA_TORQUE_LIMIT_L	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot20
 AA_UP_CALIBRATION_H	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\servo\ax12\ax12_address.h	30;"	e	line:30	enum:_AX12_ADDRESS
 AA_UP_CALIBRATION_L	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\servo\ax12\ax12_address.h	29;"	e	line:29	enum:_AX12_ADDRESS
 ABS::(val)({	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive.h	143;"	d	line:143
+ACC_ANGLE::30	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	148;"	d	line:148
 ACC_ANGLE::5.	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	134;"	d	line:134
-ACC_ANGLE::90.	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	148;"	d	line:148
-ACC_DIST::40.	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	147;"	d	line:147
+ACC_DIST::30	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	147;"	d	line:147
 ACC_DIST::5.	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	133;"	d	line:133
 ADC_CONF::(x)(x)	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.c	146;"	d	line:146	file:
 ADC_LASER_1::0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.h	32;"	d	line:32
@@ -73,9 +73,9 @@ ADDRWIDTH::ONE_BYTE	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot
 ALTI2C_ON	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\configuration_bits_config.h	59;"	v	line:59
 ANYSTRING_HELP::PSTR("AnySTRING")	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse_string.c	17;"	d	line:17	file:
 AREA_BBOX_4X4::1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	316;"	d	line:316
-AREA_BBOX_4X4::1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	370;"	d	line:370
+AREA_BBOX_4X4::1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	371;"	d	line:371
 AREA_BBOX_6X5::0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	315;"	d	line:315
-AREA_BBOX_6X5::0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	369;"	d	line:369
+AREA_BBOX_6X5::0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	370;"	d	line:370
 AREA_X::3000	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	31;"	d	line:31
 AREA_Y::2000	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	32;"	d	line:32
 AUTOCONF_INCLUDED	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\autoconf.h	4;"	d	line:4
@@ -165,6 +165,9 @@ BASKET_2_Y::150	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014
 BD_DEBUG::128	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.h	29;"	d	line:29
 BEACON_CHANNEL::0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\main.h	332;"	d	line:332
 BEACON_UART::MUX_UART	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\beacon.h	26;"	d	line:26
+BEGIN_FRESCO_X::1295	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	356;"	d	line:356	file:
+BEGIN_LINE_Y::450	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	354;"	d	line:354	file:
+BEGIN_MAMOOTH_X::750	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	355;"	d	line:355	file:
 BIN	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse_num.c	38;"	e	line:38	enum:num_parse_state_t	file:
 BIN_OK	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse_num.c	48;"	e	line:48	enum:num_parse_state_t	file:
 BIT_TOGGLE::(port,bit)do{	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive.h	282;"	d	line:282
@@ -174,7 +177,6 @@ BRAKE_OFF::	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\sof
 BRAKE_OFF::	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\main.h	86;"	d	line:86
 BRAKE_ON::	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\main.h	74;"	d	line:74
 BRAKE_ON::do{_LATA0=0;_LATA1=0;_LATA7=0;	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\main.h	85;"	d	line:85
-CALIBRATION	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	129;"	d	line:129
 CENTER_X::1500	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat_avoid.c	107;"	d	line:107	file:
 CENTER_X::1500	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	104;"	d	line:104
 CENTER_Y::1000	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat_avoid.c	108;"	d	line:108	file:
@@ -351,6 +353,7 @@ DEBUG::(num,text...)do{}while(0)	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eu
 DEBUG::0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\base\math\geometry\lines.c	33;"	d	line:33	file:
 DEBUG::0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\base\math\geometry\polygon.c	31;"	d	line:31	file:
 DEBUG::0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\control_system\control_system_manager\control_system_manager.c	24;"	d	line:24	file:
+DEBUG_STRAT_HARVEST_FRUITS	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	346;"	d	line:346	file:
 DEC_NEG	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse_num.c	37;"	e	line:37	enum:num_parse_state_t	file:
 DEC_NEG_OK	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse_num.c	49;"	e	line:49	enum:num_parse_state_t	file:
 DEC_POS_OK	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse_num.c	50;"	e	line:50	enum:num_parse_state_t	file:
@@ -372,7 +375,7 @@ DSPIC::1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\softwa
 DSPIC_FAMILY::1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\autoconf.h	15;"	d	line:15
 DUMP_EVENTS::do{}while(0)	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\base\scheduler\scheduler_private.h	70;"	d	line:70
 DUMP_EVENTS::scheduler_dump_events	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\base\scheduler\scheduler_private.h	67;"	d	line:67
-DUMP_RATE_LIMIT::(dump,last_print)	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	325;"	d	line:325	file:
+DUMP_RATE_LIMIT::(dump,last_print)	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	324;"	d	line:324	file:
 D_GOLDBAR::10	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_treasure.c	92;"	d	line:92	file:
 D_INI::295	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_treasure.c	1004;"	d	line:1004	file:
 D_PICKUP_GOLDBAR::180	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_treasure.c	342;"	d	line:342	file:
@@ -442,7 +445,7 @@ ERROR_SEVERITY_EMERG::0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eur
 ERROR_SEVERITY_ERROR::1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\debug\error\error.h	36;"	d	line:36
 ERROR_SEVERITY_NOTICE::3	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\debug\error\error.h	38;"	d	line:38
 ERROR_SEVERITY_WARNING::2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\debug\error\error.h	37;"	d	line:37
-ERROUT::(e)do{	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	331;"	d	line:331	file:
+ERROUT::(e)do{	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	330;"	d	line:330	file:
 ERROUT::(e)do{	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_begin.c	72;"	d	line:72	file:
 ERROUT::(e)do{	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_main.c	72;"	d	line:72	file:
 ERROUT::(e)do{	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_treasure.c	76;"	d	line:76	file:
@@ -789,9 +792,9 @@ NUMBER::26	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\soft
 NUMBER::26	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\beacon.c	363;"	d	line:363	file:
 NUMBER::34	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\beacon.c	352;"	d	line:352	file:
 N_BYTES_PAGINA_EEPROM::32	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\i2c_mem.c	74;"	d	line:74	file:
-OBSTACLE_OPP1::0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	507;"	d	line:507	file:
-OBSTACLE_OPP2::1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	508;"	d	line:508	file:
-OBSTACLE_R2ND::2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	509;"	d	line:509	file:
+OBSTACLE_OPP1::0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	510;"	d	line:510	file:
+OBSTACLE_OPP2::1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	511;"	d	line:511	file:
+OBSTACLE_R2ND::2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	512;"	d	line:512	file:
 OBS_CLERANCE::(137.+10.)	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\main.h	113;"	d	line:113
 OCR0A_BIT::6	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive\timers.h	186;"	d	line:186
 OCR0A_BIT::7	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive\timers.h	96;"	d	line:96
@@ -1019,17 +1022,17 @@ ROBOT_2ND_LENGTH::((150/2)+OBS_CLERANCE)	D:\Datos\Proyectos\ARC_Eurobotics\eurob
 ROBOT_2ND_LENGTH::((282/2)+OBS_CLERANCE)	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat_avoid.c	100;"	d	line:100	file:
 ROBOT_2ND_WIDTH::((230/2)+OBS_CLERANCE)	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat_avoid.c	103;"	d	line:103	file:
 ROBOT_2ND_WIDTH::((330/2)+OBS_CLERANCE)	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat_avoid.c	99;"	d	line:99	file:
-ROBOT_CENTER_TO_BACK::119.0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	72;"	d	line:72	file:
+ROBOT_CENTER_TO_BACK::119.0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	73;"	d	line:73	file:
 ROBOT_CENTER_TO_BACK::75.	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\main.h	107;"	d	line:107
-ROBOT_CENTER_TO_FRONT::162.5	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	71;"	d	line:71	file:
+ROBOT_CENTER_TO_FRONT::162.5	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	72;"	d	line:72	file:
 ROBOT_CENTER_TO_FRONT::75.	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\main.h	106;"	d	line:106
 ROBOT_DIS2_WALL::(int16_t)(119)	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	867;"	d	line:867	file:
 ROBOT_HALF_LENGTH_FRONT::ROBOT_CENTER_TO_FRONT	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\main.h	109;"	d	line:109
 ROBOT_HALF_LENGTH_REAR::ROBOT_CENTER_TO_BACK	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\main.h	110;"	d	line:110
 ROBOT_LENGTH::150.	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\main.h	103;"	d	line:103
-ROBOT_LENGTH::281.5	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	69;"	d	line:69	file:
+ROBOT_LENGTH::281.5	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	70;"	d	line:70	file:
 ROBOT_WIDTH::230.	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\main.h	104;"	d	line:104
-ROBOT_WIDTH::330.0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	70;"	d	line:70	file:
+ROBOT_WIDTH::330.0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	71;"	d	line:71	file:
 RS_IGNORE_EXT_GAIN::2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\robot_system\robot_system.h	40;"	d	line:40
 RS_IGNORE_MOT_GAIN::4	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\robot_system\robot_system.h	41;"	d	line:41
 RS_USE_EXT::1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\robot_system\robot_system.h	39;"	d	line:39
@@ -1139,6 +1142,8 @@ SCNxLEAST16::"x"	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot201
 SCNxLEAST32::"lx"	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive\dspic\inttypes.h	119;"	d	line:119
 SCNxPTR::SCNx16	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive\dspic\inttypes.h	123;"	d	line:123
 SENSOR_MAX::24	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.h	64;"	d	line:64
+SERVO_SHOOT_POS_DOWN::300	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	358;"	d	line:358	file:
+SERVO_SHOOT_POS_UP::80	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	357;"	d	line:357	file:
 SIDE_FRONT::I2C_SIDE_FRONT	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	108;"	d	line:108
 SIDE_MAX::I2C_SIDE_MAX	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	109;"	d	line:109
 SIDE_REAR::I2C_SIDE_REAR	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	107;"	d	line:107
@@ -1311,6 +1316,7 @@ TREE_3_X::700	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\s
 TREE_3_Y::2000	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	40;"	d	line:40
 TREE_4_X::0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	41;"	d	line:41
 TREE_4_Y::1300	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	42;"	d	line:42
+TRESPA_BAR::17	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	511;"	d	line:511	file:
 TRIGO::1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\trajectory_manager\trajectory_manager.h	66;"	d	line:66
 TRUE::1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive.h	287;"	d	line:287
 TWO_BYTE::2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\i2c_mem.c	62;"	d	line:62	file:
@@ -1708,11 +1714,11 @@ __goto_and_avoid	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot201
 __oa_start_end_points	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance\obstacle_avoidance.c	59;"	p	line:59	file:	signature:(int32_t st_x, int32_t st_y, int32_t en_x, int32_t en_y)
 __oa_start_end_points	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance\obstacle_avoidance.c	96;"	f	line:96	file:	signature:(int32_t st_x, int32_t st_y, int32_t en_x, int32_t en_y)
 __offsetof::(type,field)((size_t)(&(type*)	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive\queue.h	41;"	d	line:41
-__strat_obstacle	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	505;"	f	line:505	signature:(uint8_t which)
+__strat_obstacle	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	508;"	f	line:508	signature:(uint8_t which)
 __trajectory_goto_d_a_rel	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\trajectory_manager\trajectory_manager_core.c	68;"	f	line:68	signature:(struct trajectory *traj, double d_mm, double a_rad, uint8_t state, uint8_t flags)
 __trajectory_goto_d_a_rel	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\trajectory_manager\trajectory_manager_core.h	32;"	p	line:32	signature:(struct trajectory *traj, double d_mm, double a_rad, uint8_t state, uint8_t flags)
 __trajectory_line_abs	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\trajectory_manager\trajectory_manager_core.c	813;"	f	line:813	file:	signature:(struct trajectory *traj, double x1, double y1, double x2, double y2, double advance)
-__wait_traj_end_debug	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	687;"	f	line:687	signature:(uint8_t why, uint16_t line)
+__wait_traj_end_debug	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	690;"	f	line:690	signature:(uint8_t why, uint16_t line)
 __wait_traj_end_debug	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.h	101;"	p	line:101	signature:(uint8_t why, uint16_t line)
 _case	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_treasure.c	1006;"	l	line:1006	file:
 _circle	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\base\math\geometry\circles.h	25;"	s	line:25
@@ -2109,7 +2115,7 @@ csm_distance	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\so
 cur_poly_idx	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance\obstacle_avoidance.h	77;"	m	line:77	struct:obstacle_avoidance
 cur_pt_idx	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance\obstacle_avoidance.h	78;"	m	line:78	struct:obstacle_avoidance
 cur_size	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive\list.h	274;"	m	line:274	struct:list_hdr
-cur_timer	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	630;"	l	line:630
+cur_timer	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	633;"	l	line:633
 curbuf	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse.c	180;"	l	line:180
 current_time	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\base\scheduler\scheduler_private.h	52;"	m	line:52	struct:event_t
 current_zone	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	284;"	m	line:284	struct:strat_infos
@@ -2139,7 +2145,7 @@ d_consign	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\softw
 d_consign	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\trajectory_manager\trajectory_manager_core.c	71;"	l	line:71
 d_float	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\control_system\filters\quadramp\quadramp.c	90;"	l	line:90
 d_mm	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\trajectory_manager\trajectory_manager_core.c	878;"	l	line:878
-d_near	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	673;"	l	line:673
+d_near	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	676;"	l	line:676
 d_rel	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	166;"	l	line:166
 d_speed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\trajectory_manager\trajectory_manager.h	101;"	m	line:101	struct:trajectory
 d_speed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\trajectory_manager\trajectory_manager_core.c	552;"	l	line:552
@@ -2194,7 +2200,7 @@ do_adc	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software
 do_boolean_sensors	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.c	290;"	f	line:290	file:	signature:(void *dummy)
 do_cs	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\cs.c	69;"	f	line:69	file:	signature:(void *dummy)
 do_led_blink	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\main.c	86;"	f	line:86	signature:(void *dummy)
-do_sensors	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.c	364;"	f	line:364	file:	signature:(void *dummy)
+do_sensors	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.c	365;"	f	line:365	file:	signature:(void *dummy)
 dprintf::(args...)do{}while(0)	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\base\cirbuf\cirbuf.h	63;"	d	line:63
 dprintf::(fmt,...)printf("line%3.3d-"fm	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\base\cirbuf\cirbuf.h	61;"	d	line:61
 dst_angle	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\trajectory_manager\trajectory_manager_core.c	738;"	l	line:738
@@ -2251,7 +2257,7 @@ err	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\se
 err	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\i2c_protocol.c	508;"	l	line:508
 err	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\i2c_protocol.c	523;"	l	line:523
 err	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\i2c_protocol.c	534;"	l	line:534
-err	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	338;"	l	line:338
+err	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	360;"	l	line:360
 err	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	137;"	l	line:137
 err	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	221;"	l	line:221
 err	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	462;"	l	line:462
@@ -2461,7 +2467,7 @@ flags	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\
 flags	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\main.h	335;"	l	line:335
 flags	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.c	254;"	l	line:254
 flags	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.c	293;"	l	line:293
-flags	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	266;"	l	line:266
+flags	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	265;"	l	line:265
 flags	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	216;"	m	line:216	struct:conf
 flags	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	266;"	m	line:266
 flags	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	281;"	l	line:281
@@ -2477,6 +2483,7 @@ flags	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\
 flags	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	590;"	l	line:590
 flags	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	605;"	l	line:605
 flags	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	621;"	l	line:621
+fresco_done	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	364;"	l	line:364	file:
 fruits_inside	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	296;"	m	line:296	struct:strat_infos
 g_encoders_dspic_previous	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic\encoders_dspic.c	44;"	v	line:44
 g_encoders_dspic_values	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic\encoders_dspic.c	43;"	v	line:43
@@ -2760,9 +2767,9 @@ int32_t	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\softwar
 int64_t	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive\dspic\stdint.h	33;"	t	line:33
 int8_t	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive\dspic\stdint.h	27;"	t	line:27
 integral	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\control_system\filters\pid\pid.h	48;"	m	line:48	struct:pid_filter
-interrupt_traj	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	618;"	f	line:618	signature:(void)
+interrupt_traj	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	621;"	f	line:621	signature:(void)
 interrupt_traj	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.h	85;"	p	line:85	signature:(void)
-interrupt_traj_reset	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	623;"	f	line:623	signature:(void)
+interrupt_traj_reset	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	626;"	f	line:626	signature:(void)
 interrupt_traj_reset	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.h	86;"	p	line:86	signature:(void)
 intersect	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\trajectory_manager\trajectory_manager_core.c	883;"	l	line:883
 intersect_heartfire_pt	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat_avoid.c	598;"	l	line:598
@@ -2871,6 +2878,7 @@ mainboard	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\softw
 mainboard	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\main.h	231;"	s	line:231
 maindspic_cs_init	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\cs.c	202;"	f	line:202	signature:(void)
 maindspic_cs_init	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\cs.h	31;"	p	line:31	signature:(void)
+mamooth_done	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	363;"	l	line:363	file:
 match_command	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\vt100\vt100.c	72;"	f	line:72	file:	signature:(char * buf, uint8_t size)
 match_inst	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse.c	106;"	f	line:106	file:	signature:(parse_pgm_inst_t *inst, const char * buf, uint8_t nb_match_token, void * result_buf)
 max_I	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\control_system\filters\pid\pid.h	45;"	m	line:45	struct:pid_filter
@@ -2939,7 +2947,7 @@ num_data	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\softwa
 num_help	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse_num.c	65;"	v	line:65	file:
 num_parse_state_t	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse_num.c	35;"	g	line:35	file:
 numtype	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse_num.h	6;"	g	line:6
-numzone2name	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	177;"	v	line:177
+numzone2name	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	178;"	v	line:178
 oData	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\i2c_mem.c	87;"	m	line:87	file:
 oa	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance\obstacle_avoidance.c	53;"	v	line:53	file:
 oa	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance\obstacle_avoidance.c	56;"	v	line:56	file:
@@ -2970,6 +2978,8 @@ old	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\li
 old_a	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\cs.c	72;"	l	line:72	file:
 old_d	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\cs.c	72;"	l	line:72	file:
 old_l	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\base\math\geometry\vect_base.c	114;"	l	line:114
+old_level	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	490;"	l	line:490
+old_spda	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	361;"	l	line:361
 old_spda	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_begin.c	205;"	l	line:205
 old_spda	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_begin.c	79;"	l	line:79
 old_spda	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_treasure.c	254;"	l	line:254
@@ -2984,6 +2994,7 @@ old_spda	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\softwa
 old_spda	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_treasure.c	88;"	l	line:88
 old_spda	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_treasure.c	936;"	l	line:936
 old_spda	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	871;"	l	line:871
+old_spdd	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	361;"	l	line:361
 old_spdd	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_begin.c	205;"	l	line:205
 old_spdd	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_begin.c	79;"	l	line:79
 old_spdd	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_treasure.c	254;"	l	line:254
@@ -3046,8 +3057,8 @@ opp_a	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\
 opp_a	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\beacon.c	448;"	l	line:448	file:
 opp_a	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	142;"	l	line:142
 opp_a	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	327;"	l	line:327
-opp_a	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	513;"	l	line:513
-opp_a	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	690;"	l	line:690
+opp_a	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	516;"	l	line:516
+opp_a	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	693;"	l	line:693
 opp_a	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	648;"	l	line:648
 opp_a	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	664;"	l	line:664
 opp_a	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	698;"	l	line:698
@@ -3058,8 +3069,8 @@ opp_d	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\
 opp_d	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\beacon.c	448;"	l	line:448	file:
 opp_d	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	142;"	l	line:142
 opp_d	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	327;"	l	line:327
-opp_d	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	513;"	l	line:513
-opp_d	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	690;"	l	line:690
+opp_d	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	516;"	l	line:516
+opp_d	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	693;"	l	line:693
 opp_d	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	648;"	l	line:648
 opp_d	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	664;"	l	line:664
 opp_d	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	698;"	l	line:698
@@ -3075,16 +3086,16 @@ opp_time_zone_ms	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot201
 opp_x	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\beacon.c	229;"	l	line:229	file:
 opp_x	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\beacon.c	448;"	l	line:448	file:
 opp_x	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	142;"	l	line:142
-opp_x	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	513;"	l	line:513
-opp_x	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	690;"	l	line:690
+opp_x	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	516;"	l	line:516
+opp_x	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	693;"	l	line:693
 opp_x	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	785;"	l	line:785
 opp_x_is_more_than	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	280;"	f	line:280	signature:(int16_t x)
 opp_x_is_more_than	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.h	76;"	p	line:76	signature:(int16_t x)
 opp_y	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\beacon.c	229;"	l	line:229	file:
 opp_y	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\beacon.c	448;"	l	line:448	file:
 opp_y	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	142;"	l	line:142
-opp_y	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	513;"	l	line:513
-opp_y	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	690;"	l	line:690
+opp_y	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	516;"	l	line:516
+opp_y	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	693;"	l	line:693
 opp_y	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	785;"	l	line:785
 opp_y_is_more_than	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	352;"	f	line:352	signature:(int16_t y)
 opp_y_is_more_than	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.h	79;"	p	line:79	signature:(int16_t y)
@@ -3543,8 +3554,8 @@ ret	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\se
 ret	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\cmdline.c	162;"	l	line:162
 ret	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\cmdline.c	66;"	l	line:66
 ret	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	332;"	l	line:332
-ret	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	514;"	l	line:514
-ret	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	689;"	l	line:689
+ret	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	517;"	l	line:517
+ret	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	692;"	l	line:692
 ret1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\base\math\geometry\polygon.c	123;"	l	line:123
 ret2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\base\math\geometry\polygon.c	123;"	l	line:123
 right	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\robot_system\angle_distance.h	29;"	m	line:29	struct:rs_wheels
@@ -3597,7 +3608,7 @@ robot_is_in_area	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot201
 robot_physical_params	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\position_manager\position_manager.h	33;"	s	line:33
 robot_position	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\position_manager\position_manager.h	66;"	s	line:66
 robot_pt	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat_avoid.c	935;"	l	line:935
-robot_pt	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	631;"	l	line:631
+robot_pt	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	634;"	l	line:634
 robot_system	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\robot_system\robot_system.h	44;"	s	line:44
 robot_x	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\beacon.c	702;"	l	line:702
 robot_y	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\beacon.c	702;"	l	line:702
@@ -3750,13 +3761,13 @@ sensor_get_adc	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\
 sensor_get_adc	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.h	89;"	p	line:89	signature:(uint8_t i)
 sensor_get_all	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.c	251;"	f	line:251	signature:(void)
 sensor_get_all	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.h	92;"	p	line:92	signature:(void)
-sensor_init	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.c	373;"	f	line:373	signature:(void)
+sensor_init	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.c	374;"	f	line:374	signature:(void)
 sensor_init	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.h	86;"	p	line:86	signature:(void)
 sensor_obstacle_disable	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.c	344;"	f	line:344	signature:(void)
 sensor_obstacle_disable	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.h	97;"	p	line:97	signature:(void)
 sensor_obstacle_enable	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.c	350;"	f	line:350	signature:(void)
 sensor_obstacle_enable	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.h	98;"	p	line:98	signature:(void)
-sensor_obstacle_is_disabled	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.c	355;"	f	line:355	signature:(void)
+sensor_obstacle_is_disabled	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.c	356;"	f	line:356	signature:(void)
 sensor_obstacle_is_disabled	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.h	99;"	p	line:99	signature:(void)
 sensor_obstacle_update	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.c	335;"	f	line:335	signature:(void)
 sensor_read	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\sensor.c	273;"	f	line:273	file:	signature:(void)
@@ -3826,6 +3837,8 @@ state	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\
 state	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\beacon.c	228;"	l	line:228	file:
 state	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\beacon.c	447;"	l	line:447	file:
 state	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\i2c_mem.c	252;"	l	line:252	file:
+state	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	365;"	l	line:365	file:
+state_debug_wait_key_pressed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	333;"	f	line:333	signature:(void)
 state_debug_wait_key_pressed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_main.c	353;"	f	line:353	signature:(void)
 static_conf	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\comm\dspic\uart\uart_setconf.c	128;"	l	line:128
 status	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\common\i2c_commands.h	101;"	m	line:101	struct:i2c_slavedspic_status
@@ -3844,33 +3857,33 @@ strat_begin	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\sof
 strat_beginning	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	328;"	p	line:328	signature:(void)
 strat_calib	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	216;"	f	line:216	signature:(int16_t dist, uint8_t flags)
 strat_calib	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.h	63;"	p	line:63	signature:(int16_t d, uint8_t flags)
-strat_dump_conf	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	163;"	f	line:163	signature:(void)
+strat_dump_conf	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	164;"	f	line:164	signature:(void)
 strat_dump_conf	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	320;"	p	line:320	signature:(void)
-strat_dump_infos	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	209;"	f	line:209	signature:(const char *caller)
+strat_dump_infos	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	210;"	f	line:210	signature:(const char *caller)
 strat_dump_infos	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	319;"	p	line:319	signature:(const char *caller)
 strat_empty_totem_side	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_treasure.c	85;"	f	line:85	signature:(int16_t x, int16_t y, uint8_t store_goldbar, uint8_t step)
-strat_event	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	303;"	f	line:303	signature:(void *dummy)
+strat_event	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	302;"	f	line:302	signature:(void *dummy)
 strat_event	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	329;"	p	line:329	signature:(void *dummy)
-strat_event_disable	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	239;"	f	line:239	signature:(void)
+strat_event_disable	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	240;"	f	line:240	signature:(void)
 strat_event_disable	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	331;"	p	line:331	signature:(void)
-strat_event_enable	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	234;"	f	line:234	signature:(void)
+strat_event_enable	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	235;"	f	line:235	signature:(void)
 strat_event_enable	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	330;"	p	line:330	signature:(void)
-strat_exit	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	264;"	f	line:264	signature:(void)
+strat_exit	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	263;"	f	line:263	signature:(void)
 strat_exit	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	325;"	p	line:325	signature:(void)
 strat_game	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_treasure.c	1002;"	f	line:1002	signature:(void)
-strat_get_new_zone	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	353;"	p	line:353	signature:(void)
+strat_get_new_zone	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	354;"	p	line:354	signature:(void)
 strat_get_new_zone	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_main.c	170;"	f	line:170	signature:(void)
 strat_get_speed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	294;"	f	line:294	signature:(uint16_t *d, uint16_t *a)
 strat_get_speed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.h	82;"	p	line:82	signature:(uint16_t *d, uint16_t *a)
 strat_goto_xy_force	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	135;"	f	line:135	signature:(int16_t x, int16_t y)
 strat_goto_xy_force	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.h	72;"	p	line:72	signature:(int16_t x, int16_t y)
-strat_goto_zone	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	356;"	p	line:356	signature:(uint8_t zone_num)
+strat_goto_zone	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	357;"	p	line:357	signature:(uint8_t zone_num)
 strat_goto_zone	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_main.c	196;"	f	line:196	signature:(uint8_t zone_num)
 strat_hardstop	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	113;"	f	line:113	signature:(void)
 strat_hardstop	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.h	54;"	p	line:54	signature:(void)
-strat_infos	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	79;"	v	line:79
+strat_infos	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	80;"	v	line:80
 strat_infos	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	274;"	s	line:274
-strat_init	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	245;"	f	line:245	signature:(void)
+strat_init	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	246;"	f	line:246	signature:(void)
 strat_init	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	324;"	p	line:324	signature:(void)
 strat_is_valid_zone	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_main.c	80;"	f	line:80	signature:(uint8_t zone_num)
 strat_limit_speed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	314;"	f	line:314	signature:(void)
@@ -3882,21 +3895,21 @@ strat_limit_speed_disable	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\e
 strat_limit_speed_enable	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	303;"	f	line:303	signature:(void)
 strat_limit_speed_enable	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.h	89;"	p	line:89	signature:(void)
 strat_limit_speed_enabled	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	84;"	v	line:84	file:
-strat_main	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	335;"	f	line:335	signature:(void)
+strat_main	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	343;"	f	line:343	signature:(void)
 strat_main	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	327;"	p	line:327	signature:(void)
-strat_main_loop	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	350;"	p	line:350	signature:(void)
-strat_obstacle	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	602;"	f	line:602	signature:(void)
+strat_main_loop	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	351;"	p	line:351	signature:(void)
+strat_obstacle	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	605;"	f	line:605	signature:(void)
 strat_obstacle	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.h	78;"	p	line:78	signature:(void)
 strat_pickup_coins_floor	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_treasure.c	251;"	f	line:251	signature:(int16_t x, int16_t y, uint8_t group)
 strat_pickup_goldbar_floor	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_treasure.c	336;"	f	line:336	signature:(int16_t x, int16_t y, uint8_t store)
-strat_preinit	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	147;"	f	line:147	signature:(void)
+strat_preinit	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	148;"	f	line:148	signature:(void)
 strat_preinit	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	323;"	p	line:323	signature:(void)
 strat_raise_window	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_treasure.c	881;"	f	line:881	signature:(uint8_t window)
-strat_reset_infos	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	222;"	f	line:222	signature:(void)
+strat_reset_infos	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	223;"	f	line:223	signature:(void)
 strat_reset_infos	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	321;"	p	line:321	signature:(void)
 strat_reset_pos	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	191;"	f	line:191	signature:(int16_t x, int16_t y, int16_t a)
 strat_reset_pos	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.h	59;"	p	line:59	signature:(int16_t x, int16_t y, int16_t a)
-strat_running	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	76;"	v	line:76	file:
+strat_running	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	77;"	v	line:77	file:
 strat_save_treasure_arms	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_treasure.c	521;"	f	line:521	signature:(int16_t x, int16_t y, uint8_t arm_side)
 strat_save_treasure_generic	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_treasure.c	454;"	f	line:454	signature:(int16_t x, int16_t y)
 strat_save_treasure_in_deck_back	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_treasure.c	628;"	f	line:628	signature:(int16_t x, int16_t y)
@@ -3904,21 +3917,23 @@ strat_save_treasure_in_deck_back_blowing	D:\Datos\Proyectos\ARC_Eurobotics\eurob
 strat_save_treasure_in_hold_back	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_treasure.c	700;"	f	line:700	signature:(int16_t x, int16_t y)
 strat_send_message_bottle	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_treasure.c	394;"	f	line:394	signature:(int16_t x, int16_t y)
 strat_set_acc	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	289;"	f	line:289	signature:(double d, double a)
-strat_set_bounding_box	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	120;"	f	line:120	signature:(uint8_t type)
+strat_set_bounding_box	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	121;"	f	line:121	signature:(uint8_t type)
 strat_set_bounding_box	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	317;"	p	line:317	signature:(uint8_t type)
-strat_set_bounding_box	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	371;"	p	line:371	signature:(uint8_t type)
+strat_set_bounding_box	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	372;"	p	line:372	signature:(uint8_t type)
 strat_set_speed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	279;"	f	line:279	signature:(uint16_t d, uint16_t a)
 strat_set_speed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.h	81;"	p	line:81	signature:(uint16_t d, uint16_t a)
-strat_smart	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	363;"	p	line:363	signature:(void)
+strat_smart	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	364;"	p	line:364	signature:(void)
 strat_smart	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_main.c	363;"	f	line:363	signature:(void)
 strat_speed_a	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	79;"	v	line:79	file:
 strat_speed_d	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	80;"	v	line:80	file:
 strat_start	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	459;"	f	line:459	signature:(void)
 strat_start	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.h	66;"	p	line:66	signature:(void)
+strat_start_match	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	488;"	f	line:488	signature:(uint8_t debug)
+strat_start_match	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	332;"	p	line:332	signature:(uint8_t debug)
 strat_steal_treasure_hold	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_treasure.c	926;"	f	line:926	signature:(void)
 strat_stole_opp_treasure	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_treasure.c	933;"	f	line:933	signature:(int16_t x, int16_t y)
 strat_update_traj_speed	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	265;"	f	line:265	file:	signature:(void)
-strat_work_on_zone	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	359;"	p	line:359	signature:(uint8_t zone_num)
+strat_work_on_zone	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	360;"	p	line:360	signature:(uint8_t zone_num)
 strat_work_on_zone	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_main.c	244;"	f	line:244	signature:(uint8_t zone_num)
 strat_zones	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.h	271;"	t	line:271
 strcat_P	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive\pgmspace.h	113;"	f	line:113	signature:(char *s1, const prog_char *s2)
@@ -3943,7 +3958,7 @@ t_prev_msg	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\soft
 target	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\trajectory_manager\trajectory_manager.h	93;"	m	line:93	struct:trajectory
 target_pt	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\trajectory_manager\trajectory_manager_core.c	631;"	l	line:631
 tau	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\trajectory_manager\trajectory_manager_core.c	878;"	l	line:878
-test_traj_end	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	628;"	f	line:628	signature:(uint8_t why)
+test_traj_end	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	631;"	f	line:631	signature:(uint8_t why)
 test_traj_end	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.h	97;"	p	line:97	signature:(uint8_t why)
 text	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\debug\error\error.h	45;"	m	line:45	struct:error
 th_max	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\hardware\dspic\pwm_servo\pwm_servo.h	31;"	m	line:31	struct:pwm_servo
@@ -4305,6 +4320,8 @@ wait_4cyc::(n)do{volatileinta=0;a++;}whil	D:\Datos\Proyectos\ARC_Eurobotics\euro
 wait_ms	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive\wait.h	71;"	f	line:71	signature:(uint16_t n)
 wait_ms	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive\wait.h	85;"	f	line:85	signature:(uint16_t n)
 wait_ms::(n)host_wait_ms(n)	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive\wait.h	47;"	d	line:47
+wait_press_key::	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	351;"	d	line:351	file:
+wait_press_key::state_debug_wait_key_pressed;	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat.c	348;"	d	line:348	file:
 wait_traj_end::(why)__wait_traj_end_debug(why	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.h	100;"	d	line:100
 warning	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\debug\error\error.h	54;"	m	line:54	struct:error_fct
 watchdog_cnt	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\i2c_protocol.c	197;"	l	line:197	file:
@@ -4360,7 +4377,7 @@ x_opp	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\
 x_opp	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	354;"	l	line:354
 x_opp2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	305;"	l	line:305
 x_opp2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	369;"	l	line:369
-x_rel	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	512;"	l	line:512
+x_rel	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	515;"	l	line:515
 x_robot_2nd	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	330;"	l	line:330
 x_robot_2nd	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	386;"	l	line:386
 x_s16	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\position_manager\position_manager.c	123;"	l	line:123
@@ -4410,7 +4427,7 @@ y_opp	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\
 y_opp	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	354;"	l	line:354
 y_opp2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	305;"	l	line:305
 y_opp2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	369;"	l	line:369
-y_rel	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	512;"	l	line:512
+y_rel	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_base.c	515;"	l	line:515
 y_robot_2nd	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	330;"	l	line:330
 y_robot_2nd	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\secondary_robot\strat_utils.c	386;"	l	line:386
 y_s16	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\devices\robot\position_manager\position_manager.c	123;"	l	line:123
