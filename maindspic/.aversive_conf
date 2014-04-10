@@ -1,0 +1,17 @@
+# Aversive configuration
+MCU = 
+OPT = s
+FORMAT = ihex
+FORMAT_EXTENSION = hex
+MATH_LIB = -lm
+PRINTF_LDFLAGS = -Wl,-u,vfprintf -lprintf_flt
+PTHREAD_CFLAGS = -pthread
+PTHREAD_LDFLAGS = -pthread
+AVRDUDE_PROGRAMMER = 
+AVRDUDE_PORT = 
+AVRDUDE_BAUDRATE = 
+AVRDUDE_FLAGS_SIGNATURE_CHECK = -F
+AVARICE_PORT = 
+AVARICE_DEBUG_PORT = 
+MODULES = base/hostsim ihm/parse ihm/rdline ihm/vt100 devices/robot/trajectory_manager devices/robot/blocking_detection_manager devices/robot/obstacle_avoidance devices/robot/position_manager devices/robot/robot_system devices/control_system/filters/pid devices/control_system/filters/quadramp devices/control_system/control_system_manager base/time base/scheduler comm/uart hardware/dspic/oscillator hardware/dspic/configuration_bits hardware/dspic/pwm_mc hardware/dspic/pwm_servo hardware/dspic/dac_mc devices/encoders/dspic/encoders_dspic base/cirbuf debug/diagnostic debug/error base/math/fixed_point base/math/geometry base/math/vect2
+
