@@ -117,6 +117,8 @@ extern parse_pgm_inst_t cmd_stick;
 
 extern parse_pgm_inst_t cmd_harvest_fruits;
 extern parse_pgm_inst_t cmd_dump_fruits;
+extern parse_pgm_inst_t cmd_update_zones;
+
 
 #ifdef notyet /* TODO 2014*/
 extern parse_pgm_inst_t cmd_slavedspic;
@@ -246,7 +248,9 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_harvest_fruits,
 	(parse_pgm_inst_t *)&cmd_dump_fruits,
 
-	(parse_pgm_inst_t *)&cmd_slavedspic,
+	(parse_pgm_inst_t *)&cmd_update_zones,
+
+	//(parse_pgm_inst_t *)&cmd_slavedspic,
 
 #ifdef notyet /* TODO 2014*/
 	(parse_pgm_inst_t *)&cmd_sensor_robot,
