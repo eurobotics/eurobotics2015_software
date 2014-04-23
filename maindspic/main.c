@@ -308,8 +308,8 @@ int main(void)
 						EVENT_PERIOD_I2C_POLL / SCHEDULER_UNIT, EVENT_PRIORITY_I2C_POLL);
 
 	/* beacon commnads and polling */
-	scheduler_add_periodical_event_priority(beacon_protocol, NULL,
-					EVENT_PERIOD_BEACON_PULL / SCHEDULER_UNIT, EVENT_PRIORITY_BEACON_POLL);
+	//scheduler_add_periodical_event_priority(beacon_protocol, NULL,
+	//				EVENT_PERIOD_BEACON_PULL / SCHEDULER_UNIT, EVENT_PRIORITY_BEACON_POLL);
 #endif
 
 	/* strat-related event */

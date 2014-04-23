@@ -488,12 +488,12 @@ static void cmd_wt11_parsed(void *parsed_result, void *data)
 		/* interact */
 		while(cmd != KEY_CTRL_C) 
 		{
-			/* received from slave */
-			if((c = uart_recv_nowait(MUX_UART))!= -1)
-				/* echo */
+			/* link --> cmd line */
+			//if((c = uart_recv_nowait(MUX_UART))!= -1)
+			if((wt11_recv_mux (0, &c))!= -1)
 				uart_send_nowait(CMDLINE_UART,c);
 			
-			/* send to slavedspic */
+			/* cmd line --> link */
 			c = cmdline_getchar();
 			if (c == -1) {
 				continue;
@@ -502,8 +502,9 @@ static void cmd_wt11_parsed(void *parsed_result, void *data)
 			/* check exit cmd */
 			cmd = vt100_parser(&vt100, c);
 
-			/* send to slave */
-			uart_send_nowait(MUX_UART,c);	
+			/* send to link */
+			//uart_send_nowait(MUX_UART,c);	
+			wt11_send_mux(0, &c, 1);
 		}
 #endif
   }
@@ -540,18 +541,18 @@ static void cmd_wt11_parsed(void *parsed_result, void *data)
   else if (!strcmp_P(res->arg1, PSTR("mode_normal"))) {
       wt11_disable_mux_mode();
   }
-  else if (!strcmp_P(res->arg1, PSTR("beacon_open"))) {
-      wt11_open_link(beacon_addr, &beacon_link_id);
+  else if (!strcmp_P(res->arg1, PSTR("open_link"))) {
+      wt11_open_link_mux(beacon_addr, &beacon_link_id);
   }
-  else if (!strcmp_P(res->arg1, PSTR("beacon_close"))) {
-      wt11_close_link(beacon_link_id);
+  else if (!strcmp_P(res->arg1, PSTR("close_link"))) {
+      wt11_close_link_mux(beacon_link_id);
   }
 
 }
 
 prog_char str_wt11_arg0[] = "wt11";
 parse_pgm_token_string_t cmd_wt11_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_wt11_result, arg0, str_wt11_arg0);
-prog_char str_wt11_arg1[] = "raw#reset#reset_mux#mode_mux#mode_normal#beacon_open#beacon_close";
+prog_char str_wt11_arg1[] = "raw#reset#reset_mux#mode_mux#mode_normal#open_link#close_link";
 parse_pgm_token_string_t cmd_wt11_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_wt11_result, arg1, str_wt11_arg1);
 
 prog_char help_wt11[] = "wt11 functions";
