@@ -469,9 +469,8 @@ struct cmd_wt11_result {
 static void cmd_wt11_parsed(void *parsed_result, void *data)
 {
 	struct cmd_wt11_result *res = parsed_result;
-  	char buffer[32] = "hello world!!";
-  	int16_t length, i;
-	int16_t c;
+  	//char buffer[32] = "hello world!!";
+  	int16_t c;
 	struct vt100 vt100;
 	int8_t cmd = 0;
 
@@ -485,13 +484,16 @@ static void cmd_wt11_parsed(void *parsed_result, void *data)
 		/* init vt100 character set */
 		vt100_init(&vt100);
 		
+		wt11_flush ();
+
 		/* interact */
 		while(cmd != KEY_CTRL_C) 
 		{
 			/* link --> cmd line */
 			//if((c = uart_recv_nowait(MUX_UART))!= -1)
-			if((wt11_recv_mux (0, &c))!= -1)
-				uart_send_nowait(CMDLINE_UART,c);
+			//		uart_send_nowait(CMDLINE_UART, c);
+
+			wt11_bypass_to_stdo (beacon_link_id);
 			
 			/* cmd line --> link */
 			c = cmdline_getchar();
@@ -504,7 +506,7 @@ static void cmd_wt11_parsed(void *parsed_result, void *data)
 
 			/* send to link */
 			//uart_send_nowait(MUX_UART,c);	
-			wt11_send_mux(0, &c, 1);
+			wt11_send_mux(beacon_link_id, (uint8_t *)&c, 1);
 		}
 #endif
   }
@@ -527,9 +529,7 @@ static void cmd_wt11_parsed(void *parsed_result, void *data)
   }
 #endif
   else if (!strcmp_P(res->arg1, PSTR("reset"))) {
-      wt11_reset();
-  }
-  else if (!strcmp_P(res->arg1, PSTR("reset_mux"))) {
+      //wt11_reset();
       wt11_reset_mux();
   }
   else if (!strcmp_P(res->arg1, PSTR("mode_mux"))) {
@@ -552,7 +552,7 @@ static void cmd_wt11_parsed(void *parsed_result, void *data)
 
 prog_char str_wt11_arg0[] = "wt11";
 parse_pgm_token_string_t cmd_wt11_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_wt11_result, arg0, str_wt11_arg0);
-prog_char str_wt11_arg1[] = "raw#reset#reset_mux#mode_mux#mode_normal#open_link#close_link";
+prog_char str_wt11_arg1[] = "raw#reset#mode_mux#mode_normal#open_link#close_link";
 parse_pgm_token_string_t cmd_wt11_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_wt11_result, arg1, str_wt11_arg1);
 
 prog_char help_wt11[] = "wt11 functions";

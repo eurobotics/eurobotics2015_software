@@ -71,7 +71,7 @@ uint8_t bt_send_cmd (uint8_t link_id, uint8_t *data, uint16_t size)
    * that there is a command to send */	
 	IRQ_LOCK(flags);
 	cmd_size[link_id] = size;
-  IRQ_UNLOCK(flags);
+  	IRQ_UNLOCK(flags);
 
   return 0;
 }
@@ -79,7 +79,7 @@ uint8_t bt_send_cmd (uint8_t link_id, uint8_t *data, uint16_t size)
 /* fill a link id buffer with formated data to be send */
 int8_t bt_send_ascii_cmd (uint8_t link_id, const char * format, ...)
 {
-  char buffer[256];
+  char buffer[100];
   va_list args;
   uint16_t i, n;
 
@@ -89,8 +89,6 @@ int8_t bt_send_ascii_cmd (uint8_t link_id, const char * format, ...)
   ret = bt_send_cmd (link_id, data, n);
 
   va_end (args);
-
-
 }
 
 /* TODO */

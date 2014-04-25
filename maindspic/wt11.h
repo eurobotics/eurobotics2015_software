@@ -34,17 +34,24 @@
 #define WT11_MODE_MUX     1
 
 /* maximun size of message */
-#define WT11_MUX_LENGTH_MAX 128
+#define WT11_MUX_LENGTH_MAX 100
 
 /* send data in norma mode, any protocol is used */
-void wt11_send (uint8_t *data, uint16_t length);
+void wt11_send (uint8_t *buff, uint16_t length);
 
 /* send data using multiplexing mode protocol */
-void wt11_send_mux (uint8_t link_id, uint8_t *data, uint16_t length);
+void wt11_send_mux (uint8_t link_id, uint8_t *buff, uint16_t length);
+
+/* flush recevied buffer */
+void wt11_flush (void);
 
 /* receive data using multiplexing mode protocol, 
    returns data length, -1 if no data received */
-int16_t wt11_recv_mux (uint8_t *link_id, uint8_t *data);
+int16_t wt11_recv_mux (uint8_t *link_id, uint8_t *buff, uint16_t buff_size);
+
+/* receive data using multiplexing mode protocol and redirect to STDO,
+   returns data length, -1 if no data received */
+int16_t wt11_bypass_to_stdo (uint8_t link_id);
 
 /* receive data in data mode, 
    returns data length, -1 if no data received */
