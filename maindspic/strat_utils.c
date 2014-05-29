@@ -807,24 +807,22 @@ uint8_t robots_are_near(void)
 
 /* check if a robot is in area */
 /* return 1 if there are opponents in area, XXX pass coordinates with COLOR macro */
-uint8_t opponents_are_in_area(int16_t x_up, int16_t y_up,
-									 int16_t x_down, int16_t y_down)
+uint8_t opponents_are_in_area(int16_t x_up, int16_t y_up,int16_t x_down, int16_t y_down)
 {
 	int8_t opp1_there, opp2_there;
 	int16_t opp_x, opp_y;
 	int16_t opp2_x, opp2_y;
 
-
 	/* get robot coordenates */
 	opp1_there = get_opponent1_xy(&opp_x, &opp_y);
 	opp2_there = get_opponent2_xy(&opp2_x, &opp2_y);
-
+	
 	/* return if no robots */
 	if(opp1_there == -1 && opp2_there == -1)
 		return 0;
 
 	/* Opponent 1 */
-	if (mainboard.our_color == I2C_COLOR_YELLOW) {
+	if (mainboard.our_color == I2C_COLOR_RED) {
 		if ((opp_x > x_up && opp_x < x_down)
 			&& (opp_y < y_up && opp_y > y_down) )
 			return 1;
@@ -834,9 +832,9 @@ uint8_t opponents_are_in_area(int16_t x_up, int16_t y_up,
 			 && (opp_y < y_up && opp_y > y_down) )
 			return 1;
 	}
-
+	
 	/* Opponent 2 */
-	if (mainboard.our_color == I2C_COLOR_YELLOW) {
+	if (mainboard.our_color == I2C_COLOR_RED) {
 		if ((opp2_x > x_up && opp2_x < x_down)
 			&& (opp2_y < y_up && opp2_y > y_down) )
 			return 1;
@@ -877,8 +875,7 @@ uint8_t opponent1_is_in_area(int16_t x_up, int16_t y_up, int16_t x_down, int16_t
 
 	return 0;
 }
-uint8_t opponent2_is_in_area(int16_t x_up, int16_t y_up,
-									 int16_t x_down, int16_t y_down)
+uint8_t opponent2_is_in_area(int16_t x_up, int16_t y_up, int16_t x_down, int16_t y_down)
 {
 	int8_t opp2_there;
 	int16_t opp2_x, opp2_y;
