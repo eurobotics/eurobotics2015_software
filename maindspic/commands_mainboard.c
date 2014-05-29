@@ -2070,6 +2070,12 @@ static void cmd_update_zones_parsed(__attribute__((unused)) void *parsed_result,
                                     __attribute__((unused)) void *data)
 {
     //struct cmd_update_zones_result *res = parsed_result;
+	//printf_P("Time_get_us2: %ld\n",time_get_us2());
+    time_reset();
+	//printf_P("Time_get_us2: %ld\n",time_get_us2());
+	//printf_P("Time_get_us2: %ld\n",time_get_us2());
+	//printf_P("Time_get_us2: %ld\n",time_get_us2());
+	//printf_P("Time_get_us2: %ld\n",time_get_us2());
     strat_opp_tracking();
 
 }

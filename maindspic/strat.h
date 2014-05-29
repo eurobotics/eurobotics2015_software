@@ -23,6 +23,7 @@
 #ifndef _STRAT_H_
 #define _STRAT_H_
 
+#include <clock_time.h>
 /* compilation flavours */
 //#define HOMOLOGATION
 
@@ -175,29 +176,29 @@
 #endif
 
 /* zones */
-#define ZONE_TREE_1			0
+#define ZONE_TREE_1		0
 #define ZONE_TREE_2       	1
-#define ZONE_TREE_3			2
-#define ZONE_TREE_4			3
-#define ZONE_HEART_1	4
-#define ZONE_HEART_2  	5
-#define ZONE_HEART_3 	6
-#define ZONE_FIRE_1   	    7
+#define ZONE_TREE_3		2
+#define ZONE_TREE_4		3
+#define ZONE_HEART_1		4
+#define ZONE_HEART_2  		5
+#define ZONE_HEART_3 		6
+#define ZONE_FIRE_1   	    	7
 #define ZONE_FIRE_2	        8
 #define ZONE_FIRE_3	        9
 #define ZONE_FIRE_4	        10
-#define ZONE_FIRE_5			11
-#define ZONE_FIRE_6			12
+#define ZONE_FIRE_5		11
+#define ZONE_FIRE_6		12
 #define ZONE_TORCH_1   		13
 #define ZONE_TORCH_2		14
 #define ZONE_TORCH_3		15
-#define ZONE_TORCH_4        16
-#define ZONE_M_TORCH_1 17
-#define ZONE_M_TORCH_2 18
-#define ZONE_BASKET_1       19
-#define ZONE_BASKET_2       20
-#define ZONE_MAMOOTH_1      21
-#define ZONE_MAMOOTH_2      22
+#define ZONE_TORCH_4        	16
+#define ZONE_M_TORCH_1 		17
+#define ZONE_M_TORCH_2 		18
+#define ZONE_BASKET_1    	19
+#define ZONE_BASKET_2       	20
+#define ZONE_MAMOOTH_1      	21
+#define ZONE_MAMOOTH_2      	22
 #define ZONE_FRESCO      	23
 //#define ZONE_HOME_RED       24
 //#define ZONE_HOME_YELLOW    25
@@ -287,8 +288,8 @@ typedef struct {
   
   
 	/* opponent statistics */
-	int32_t opp_time_zone_ms;
-	int32_t last_time_opp_here; 	/*in ms, since beginning of the match*/
+	microseconds opp_time_zone_us;
+	microseconds last_time_opp_here; 	/*in us, since beginning of the match*/
 	
 	/* which robots can perform this action */
 	uint8_t robot;
