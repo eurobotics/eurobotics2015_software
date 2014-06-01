@@ -86,7 +86,7 @@ void strat_event_schedule_single (void (*f)(void *), void * data)
 	IRQ_UNLOCK(flags);
 }
 
-/* schedule a periodical strat tevent */
+/* schedule a periodical strat event */
 void strat_event_schedule_periodical(void (*f)(void *), void * data)
 {
 	uint8_t flags;
@@ -134,24 +134,61 @@ void strat_goto_xy_abs_event (void *data)
 	bt_status_set_cmd_ret (err);
 }
 
-void strat_patrol_and_paint_fresco_event (void *data)
+void strat_patrol_fresco_mamooth_event (void *data)
 {
-	/* TODO */
+	int16_t *arg = (int16_t*)data;
+	uint8_t err;
+	err=strat_patrol_fresco_mamooth(arg[0], arg[1]);
+
+	/* return value */
+	bt_status_set_cmd_ret (err);
 }
 
 
-void strat_paint_fresco_event (void *data)
+void strat_fresco_event (void *data)
 {
-	/* TODO */
+	uint8_t err;
+ 
+	err=strat_paint_fresco();
+
+	/* return value */
+	bt_status_set_cmd_ret (END_TRAJ);
 }
 
 
-void strat_patrol_between_event (void *data)
+void strat_patrol_event (void *data)
 {	
-	/* TODO */
+	//int16_t *arg = (int16_t*)data;
+	uint8_t err;
+ 
+	//err=strat_patrol_between(arg[0], arg[1],arg[2], arg[3]);
+
+	/* return value */
+	bt_status_set_cmd_ret (err);
 }
 
-void strat_shoot_mamooth_event (void *data)
+void strat_mamooth_event (void *data)
+{
+	int16_t *arg = (int16_t*)data;
+	uint8_t err;
+ 
+	err=strat_shoot_mamooth(arg[0], arg[1]);
+
+	/* return value */
+	bt_status_set_cmd_ret (err);
+}
+
+void strat_protect_h1_event (void *data)
+{
+	uint8_t err;
+ 
+	err=strat_patrol_between(400,1300,400,1800);
+
+	/* return value */
+	bt_status_set_cmd_ret (err);
+}
+
+void strat_net_event (void *data)
 {
 	/* TODO */
 }

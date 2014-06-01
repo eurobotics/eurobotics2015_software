@@ -267,6 +267,7 @@ uint8_t strat_begin_alcabot (void)
 		/* fire fire 6 */
       case 4:
 #define TORCH_2_D_MARGIN 	50
+#define HEART_2_Y		 	1050
 #define FIRE_6_A_REL_STICK	-140
 
 		/* avoid heart fire 2 */
