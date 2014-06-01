@@ -577,7 +577,9 @@ int8_t get_opponent2_da(int16_t *d, int16_t *a)
 	*a = beaconboard.opponent2_a;
     IRQ_UNLOCK(flags);
 #else
-	get_best_opponent1_xyda (&x_tmp, NULL, d, a);
+	//get_best_opponent1_xyda (&x_tmp, NULL, d, a);  
+	//XXX
+	get_best_opponent2_xyda (&x_tmp, NULL, d, a);
 #endif
 
 	if (x_tmp == I2C_OPPONENT_NOT_THERE)
@@ -650,7 +652,9 @@ int8_t get_opponent2_xyda(int16_t *x, int16_t *y, int16_t *d, int16_t *a)
 	*a = beaconboard.opponent2_a;
 	IRQ_UNLOCK(flags);
 #else
-	get_best_opponent1_xyda (x, y, d, a);
+	//get_best_opponent1_xyda (x, y, d, a);
+	//XXX
+	get_best_opponent2_xyda (x, y, d, a);
 #endif
 
 	if (*x == I2C_OPPONENT_NOT_THERE)

@@ -57,7 +57,7 @@ extern parse_pgm_ctx_t main_ctx[];
 /* generic write char function */
 static void write_char(char c) 
 {
-	uart_send(CMDLINE_UART, c);
+	//uart_send(CMDLINE_UART, c);
 #ifdef HOST_VERSION
 	robotsim_uart_send_BT(c);
 #endif

@@ -340,10 +340,10 @@ void strat_start_match(uint8_t debug);
 void strat_auto_position (void);
 
 /* match tasks */
-uint8_t strat_patrol_and_paint_fresco(void);
+uint8_t strat_patrol_fresco_mamooth(uint8_t balls_mamooth_1, uint8_t balls_mamooth_2);
 uint8_t strat_paint_fresco(void);
 uint8_t strat_patrol_between(int16_t x1, int16_t y1,int16_t x2, int16_t y2);
-
+uint8_t strat_shoot_mamooth(uint8_t balls_mamooth_1, uint8_t balls_mamooth_2);
 
 /********************************************
  * in strat_event.c 
@@ -368,11 +368,12 @@ void strat_goto_xy_abs_event (void *data);
 
 /* match tasks */
 void strat_patrol_and_paint_fresco_event (void *data);
-void strat_paint_fresco_event (void *data);
-void strat_patrol_between_event (void *data);
-void strat_shoot_mamooth_event (void *data);
-
-
+void strat_fresco_event (void *data);
+void strat_patrol_event (void *data);
+void strat_mamooth_event (void *data);
+void strat_protect_h1_event(void *data);
+void strat_patrol_fresco_mamooth_event(void *data);
+void strat_net_event (void *data);
 
 #else /* HOST_VERSION_OA_TEST */
 

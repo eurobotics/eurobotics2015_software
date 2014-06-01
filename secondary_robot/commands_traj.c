@@ -984,106 +984,184 @@ parse_pgm_inst_t cmd_position_set = {
 };
 
 /**********************************************************/
-/* Subtraj 1 */
+/* Subtraj*/
 
-/* this structure is filled when cmd_subtraj1 is parsed successfully */
-struct cmd_subtraj1_result {
+/* this structure is filled when cmd_subtraj is parsed successfully */
+struct cmd_subtraj_result {
 	fixed_string_t arg0;
 	fixed_string_t arg1;
- 	//int32_t arg2;
- 	//int32_t arg3;
 };
 
-/* function called when cmd_subtraj1 is parsed successfully */
-static void cmd_subtraj1_parsed(void *parsed_result, void *data)
+/* function called when cmd_subtraj is parsed successfully */
+static void cmd_subtraj_parsed(void *parsed_result, void *data)
 {
-	struct cmd_subtraj1_result *res = parsed_result;
+	struct cmd_subtraj_result *res = parsed_result;
 	uint8_t err = 0;
 
 
-	if (strcmp_P(res->arg1, PSTR("mamut1")) == 0) {
-		printf ("not implemented");
-	}
-	else if (strcmp_P(res->arg1, PSTR("mamut2")) == 0) {
-		printf ("not implemented");
-	}
-	else if (strcmp_P(res->arg1, PSTR("fresco")) == 0) {
-		printf ("not implemented");
-	}
-
-	printf_P(PSTR("substrat returned %s\r\n"), get_err(err));
+	printf_P(PSTR("subtraj returned %s\r\n"), get_err(err));
 	trajectory_hardstop(&mainboard.traj);
 }
 
-prog_char str_subtraj1_arg0[] = "subtraj";
-parse_pgm_token_string_t cmd_subtraj1_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg0, str_subtraj1_arg0);
-prog_char str_subtraj1_arg1[] = "mamut1#mamut2#fresco";
-parse_pgm_token_string_t cmd_subtraj1_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg1, str_subtraj1_arg1);
-//parse_pgm_token_num_t cmd_subtraj1_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg2, INT32);
-//parse_pgm_token_num_t cmd_subtraj1_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg3, INT32);
-prog_char help_subtraj1[] = "Test sub-trajectories";
-parse_pgm_inst_t cmd_subtraj1 = {
-	.f = cmd_subtraj1_parsed,  /* function to call */
+prog_char str_subtraj_arg0[] = "subtraj";
+parse_pgm_token_string_t cmd_subtraj_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj_result, arg0, str_subtraj_arg0);
+prog_char str_subtraj_arg1[] = "";
+parse_pgm_token_string_t cmd_subtraj_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj_result, arg1, str_subtraj_arg1);
+prog_char help_subtraj[] = "Test sub-trajectories";
+parse_pgm_inst_t cmd_subtraj = {
+	.f = cmd_subtraj_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_subtraj1,
+	.help_str = help_subtraj,
 	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_subtraj1_arg0, 
-		(prog_void *)&cmd_subtraj1_arg1,
- 		//(prog_void *)&cmd_subtraj1_arg2, 
- 		//(prog_void *)&cmd_subtraj1_arg3,  
+		(prog_void *)&cmd_subtraj_arg0, 
+		(prog_void *)&cmd_subtraj_arg1,
+		NULL,
+	},
+};
+
+/**********************************************************/
+/* BT Task 1 - 2 PARAMETERS + CHECKSUM */
+
+/* this structure is filled when cmd_bt_task1 is parsed successfully */
+struct cmd_bt_task1_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+ 	int32_t arg2;
+ 	int32_t arg3;
+ 	int32_t arg4;
+};
+
+/* function called when cmd_bt_task1 is parsed successfully */
+static void cmd_bt_task1_parsed(void *parsed_result, void *data)
+{
+	struct cmd_bt_task1_result *res = parsed_result;
+
+
+	if (strcmp_P(res->arg1, PSTR("mamooth")) == 0) {
+		bt_mamooth(res->arg2,res->arg3, res->arg4);
+	}
+	else if (strcmp_P(res->arg1, PSTR("patrol_fr_mam")) == 0) {
+		bt_patrol_fresco_mamooth(res->arg2,res->arg3, res->arg4);
+		printf_P("patrol_fr_mam\n");
+	}
+	printf("next point\r\n");
+
+}
+
+prog_char str_bt_task1_arg0[] = "bt_task";
+parse_pgm_token_string_t cmd_bt_task1_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task1_result, arg0, str_bt_task1_arg0);
+prog_char str_bt_task1_arg1[] = "mamooth#patrol_fr_mam";
+parse_pgm_token_string_t cmd_bt_task1_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task1_result, arg1, str_bt_task1_arg1);
+parse_pgm_token_num_t cmd_bt_task1_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task1_result, arg2, INT32);
+parse_pgm_token_num_t cmd_bt_task1_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task1_result, arg3, INT32);
+parse_pgm_token_num_t cmd_bt_task1_arg4 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task1_result, arg4, INT32);
+prog_char help_bt_task1[] = "bt_task (a,b,c,d,e: specific params)";
+parse_pgm_inst_t cmd_bt_task1 = {
+	.f = cmd_bt_task1_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_bt_task1,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_bt_task1_arg0, 
+		(prog_void *)&cmd_bt_task1_arg1,
+ 		(prog_void *)&cmd_bt_task1_arg2, 
+ 		(prog_void *)&cmd_bt_task1_arg3, 
+ 		(prog_void *)&cmd_bt_task1_arg4, 
 		NULL,
 	},
 };
 
 
 /**********************************************************/
-/* Subtraj 2 */
+/* BT Task 2 - 4 PARAMETERS */
 
-/* this structure is filled when cmd_subtraj2 is parsed successfully */
-struct cmd_subtraj2_result {
+/* this structure is filled when cmd_bt_task2 is parsed successfully */
+struct cmd_bt_task2_result {
 	fixed_string_t arg0;
 	fixed_string_t arg1;
 	int16_t arg2;
 	int16_t arg3;
 	int16_t arg4;
 	int16_t arg5;
+	int16_t arg6;
 };
 
-/* function called when cmd_subtraj2 is parsed successfully */
-static void cmd_subtraj2_parsed(void *parsed_result, void *data)
+/* function called when cmd_bt_task2 is parsed successfully */
+static void cmd_bt_task2_parsed(void *parsed_result, void *data)
 {
-	struct cmd_subtraj2_result *res = parsed_result;
-	uint8_t err = 0;
+	struct cmd_bt_task2_result *res = parsed_result;
 
-	if (strcmp_P(res->arg1, PSTR("patrol_between")) == 0) {
-		err = strat_patrol_between(res->arg2,res->arg3,res->arg4,res->arg5);
+	if (strcmp_P(res->arg1, PSTR("patrol")) == 0) {
+		//
 	}
-
-	printf_P(PSTR("substrat returned %s\r\n"), get_err(err));
-	trajectory_hardstop(&mainboard.traj);
 }
 
-prog_char str_subtraj2_arg0[] = "subtraj";
-parse_pgm_token_string_t cmd_subtraj2_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj2_result, arg0, str_subtraj2_arg0);
-prog_char str_subtraj2_arg1[] = "patrol_between";
-parse_pgm_token_string_t cmd_subtraj2_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj2_result, arg1, str_subtraj2_arg1);
-parse_pgm_token_num_t cmd_subtraj2_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj2_result, arg2, INT16);
-parse_pgm_token_num_t cmd_subtraj2_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj2_result, arg3, INT16);
-parse_pgm_token_num_t cmd_subtraj2_arg4 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj2_result, arg4, INT16);
-parse_pgm_token_num_t cmd_subtraj2_arg5 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj2_result, arg5, INT16);
+prog_char str_bt_task2_arg0[] = "bt_task";
+parse_pgm_token_string_t cmd_bt_task2_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task2_result, arg0, str_bt_task2_arg0);
+prog_char str_bt_task2_arg1[] = "patrol";
+parse_pgm_token_string_t cmd_bt_task2_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task2_result, arg1, str_bt_task2_arg1);
+parse_pgm_token_num_t cmd_bt_task2_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task2_result, arg2, INT16);
+parse_pgm_token_num_t cmd_bt_task2_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task2_result, arg3, INT16);
+parse_pgm_token_num_t cmd_bt_task2_arg4 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task2_result, arg4, INT16);
+parse_pgm_token_num_t cmd_bt_task2_arg5 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task2_result, arg5, INT16);
+parse_pgm_token_num_t cmd_bt_task2_arg6 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task2_result, arg6, INT32);
 
-prog_char help_subtraj2[] = "Test sub-trajectories (a,b,c,d: specific params)";
-parse_pgm_inst_t cmd_subtraj2 = {
-	.f = cmd_subtraj2_parsed,  /* function to call */
+prog_char help_bt_task2[] = "bt_task (a,b,c,d,e: specific params)";
+parse_pgm_inst_t cmd_bt_task2 = {
+	.f = cmd_bt_task2_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_subtraj2,
+	.help_str = help_bt_task2,
 	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_subtraj2_arg0, 
-		(prog_void *)&cmd_subtraj2_arg1, 
-		(prog_void *)&cmd_subtraj2_arg2, 
-		(prog_void *)&cmd_subtraj2_arg3, 
-		(prog_void *)&cmd_subtraj2_arg4, 
-		(prog_void *)&cmd_subtraj2_arg5, 
+		(prog_void *)&cmd_bt_task2_arg0, 
+		(prog_void *)&cmd_bt_task2_arg1, 
+		(prog_void *)&cmd_bt_task2_arg2, 
+		(prog_void *)&cmd_bt_task2_arg3, 
+		(prog_void *)&cmd_bt_task2_arg4, 
+		(prog_void *)&cmd_bt_task2_arg5, 
+		(prog_void *)&cmd_bt_task2_arg6, 
+		NULL,
+	},
+};
+
+
+/**********************************************************/
+/* BT Task 3 - 0 PARAMETERS */ 
+
+/* this structure is filled when cmd_bt_task3 is parsed successfully */
+struct cmd_bt_task3_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+};
+
+/* function called when cmd_bt_task3 is parsed successfully */
+static void cmd_bt_task3_parsed(void *parsed_result, void *data)
+{
+	struct cmd_bt_task3_result *res = parsed_result;
+
+
+	if (strcmp_P(res->arg1, PSTR("fresco")) == 0) {
+		bt_fresco();
+	}
+	else if (strcmp_P(res->arg1, PSTR("net")) == 0) {
+		printf("Not implemented.\n");
+	}
+	else if (strcmp_P(res->arg1, PSTR("protect_h1")) == 0) {
+		bt_protect_h1();
+		
+	}
+}
+
+prog_char str_bt_task3_arg0[] = "bt_task";
+parse_pgm_token_string_t cmd_bt_task3_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task3_result, arg0, str_bt_task3_arg0);
+prog_char str_bt_task3_arg1[] = "fresco#net#protect_h1";
+parse_pgm_token_string_t cmd_bt_task3_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task3_result, arg1, str_bt_task3_arg1);
+prog_char help_bt_task3[] = "bt_task";
+parse_pgm_inst_t cmd_bt_task3 = {
+	.f = cmd_bt_task3_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_bt_task3,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_bt_task3_arg0, 
+		(prog_void *)&cmd_bt_task3_arg1, 
 		NULL,
 	},
 };
