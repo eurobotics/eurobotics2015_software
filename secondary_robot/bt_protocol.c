@@ -159,7 +159,7 @@ void bt_send_status (void)
 
 void bt_auto_position (void)
 {
-	/* implicit checksum in cmdline because arguments are acii tokens
+	/* implicit checksum in cmdline because arguments are ascii tokens
 	   pe. "color yellow" or "color red" */
 
 	/* set ACK */
@@ -217,6 +217,154 @@ void bt_trajectory_goto_xy_abs (int16_t x, int16_t y, int16_t args_checksum)
 
 	}
 }
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+void bt_fresco(void)
+{
+	/* set ACK */
+	bt_status_set_cmd_ack (0);
+
+	/* execute command: can be a variable assigment, non blocking funtion 
+	   or a single o periodical schedule event if it's a blocking funtion */
+
+	/**
+	 * schedule events have a data array asigned where the arguments are 
+	 * passed to the final function 
+	 */
+	// No arguments
+
+	strat_event_schedule_periodical (strat_fresco_event,
+						 (void *)mainboard.strat_event_data);
+}
+
+void bt_mamooth(int16_t balls_mamooth_1, int16_t balls_mamooth_2, int16_t args_checksum)
+{
+	/* check args checksum */
+	if ((balls_mamooth_1+balls_mamooth_2) == args_checksum) {
+
+		/* set ACK */
+		bt_status_set_cmd_ack (0);
+
+		/* execute command: can be a variable assigment, non blocking funtion 
+		   or a single o periodical schedule event if it's a blocking funtion */
+
+		/**
+		 * schedule events have a data array asigned where the arguments are 
+		 * passed to the final function 
+		 */
+		mainboard.strat_event_data[0] = balls_mamooth_1;
+		mainboard.strat_event_data[1] = balls_mamooth_2;
+
+		strat_event_schedule_single (strat_mamooth_event,
+							 (void *)mainboard.strat_event_data);
+	}
+	else {
+		/* set ACK */
+		bt_status_set_cmd_ack (END_ERROR);
+
+	}
+}
+
+void bt_patrol_fresco_mamooth(int16_t balls_mamooth_1, int16_t balls_mamooth_2, int16_t args_checksum)
+{
+	/* check args checksum */
+	if ((balls_mamooth_1+balls_mamooth_2) == args_checksum) {
+
+		/* set ACK */
+		bt_status_set_cmd_ack (0);
+
+		/* execute command: can be a variable assigment, non blocking funtion 
+		   or a single o periodical schedule event if it's a blocking funtion */
+
+		/**
+		 * schedule events have a data array asigned where the arguments are 
+		 * passed to the final function 
+		 */
+		mainboard.strat_event_data[0] = balls_mamooth_1;
+		mainboard.strat_event_data[1] = balls_mamooth_2;
+		
+		strat_event_schedule_periodical (strat_patrol_fresco_mamooth_event,
+							 (void *)mainboard.strat_event_data);
+	}
+	else {
+		/* set ACK */
+		bt_status_set_cmd_ack (END_ERROR);
+
+	}
+}
+
+void bt_net(void)
+{
+	/* set ACK */
+	bt_status_set_cmd_ack (0);
+
+	/* execute command: can be a variable assigment, non blocking funtion 
+	   or a single o periodical schedule event if it's a blocking funtion */
+
+	/**
+	 * schedule events have a data array asigned where the arguments are 
+	 * passed to the final function 
+	 */
+	// No arguments
+	strat_event_schedule_single (strat_net_event,
+						 (void *)mainboard.strat_event_data);
+}
+
+// XXX four arguments!
+void bt_patrol(int16_t x1, int16_t y1,int16_t x2, int16_t y2, int16_t args_checksum)
+{
+	/* check args checksum */
+	if ((x1+y1+x2+y2) == args_checksum) {
+
+		/* set ACK */
+		bt_status_set_cmd_ack (0);
+
+		/* execute command: can be a variable assigment, non blocking funtion 
+		   or a single o periodical schedule event if it's a blocking funtion */
+
+		/**
+		 * schedule events have a data array asigned where the arguments are 
+		 * passed to the final function 
+		 */
+
+
+		/*mainboard.strat_event_data[0] = x1;
+		mainboard.strat_event_data[1] = y1;
+		mainboard.strat_event_data[2] = x2;
+		mainboard.strat_event_data[3] = y2;*/
+		//
+		//strat_event_schedule_periodical (strat_patrol_event,
+		//					 (void *)mainboard.strat_event_data);
+	}
+	else {
+		/* set ACK */
+		bt_status_set_cmd_ack (END_ERROR);
+
+	}
+}
+
+void bt_protect_h1(void)
+{
+	/* set ACK */
+	bt_status_set_cmd_ack (0);
+
+	/* execute command: can be a variable assigment, non blocking funtion 
+	   or a single o periodical schedule event if it's a blocking funtion */
+
+	/**
+	 * schedule events have a data array asigned where the arguments are 
+	 * passed to the final function 
+	 */
+	// No arguments
+	
+	strat_event_schedule_periodical (strat_protect_h1_event,
+						 (void *)mainboard.strat_event_data);
+}
+
 
 /* TODO bt_trajectory_XXXX and bt_goto_avoid_XXXX functions */
 

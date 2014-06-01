@@ -252,7 +252,10 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 			break;
 			
 		case ZONE_HEART_1:
-		case ZONE_HEART_2:
+		case ZONE_HEART_2_UP:
+		case ZONE_HEART_2_LEFT:
+		case ZONE_HEART_2_DOWN:
+		case ZONE_HEART_2_RIGHT:
 		case ZONE_HEART_3:
 		/* leave fire on heart of fire */
 		/* pick up fire from heart of fire */

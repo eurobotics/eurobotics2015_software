@@ -206,8 +206,9 @@ extern parse_pgm_inst_t cmd_bt_goto2;
 extern parse_pgm_inst_t cmd_position;
 extern parse_pgm_inst_t cmd_position_set;
 
-extern parse_pgm_inst_t cmd_subtraj1;
-extern parse_pgm_inst_t cmd_subtraj2;
+extern parse_pgm_inst_t cmd_bt_task1;
+extern parse_pgm_inst_t cmd_bt_task2;
+extern parse_pgm_inst_t cmd_bt_task3;
 
 /* TODO 2014 */
 #if 0 
@@ -339,8 +340,9 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_bt_goto2,
 	(parse_pgm_inst_t *)&cmd_position,
 	(parse_pgm_inst_t *)&cmd_position_set,
-	(parse_pgm_inst_t *)&cmd_subtraj1,
-	(parse_pgm_inst_t *)&cmd_subtraj2,
+	(parse_pgm_inst_t *)&cmd_bt_task1,
+	(parse_pgm_inst_t *)&cmd_bt_task2,
+	(parse_pgm_inst_t *)&cmd_bt_task3,
 
 /* TODO 2014 */
 #if 0 

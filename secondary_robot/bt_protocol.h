@@ -44,6 +44,20 @@ void bt_set_color (uint8_t color);
 
 void bt_trajectory_goto_xy_abs (int16_t x, int16_t y, int16_t args_checksum);
 
+void bt_fresco(void);
+
+void bt_mamooth(int16_t balls_mamooth_1, int16_t balls_mamooth_2, int16_t args_checksum);
+
+void bt_patrol_fresco_mamooth(int16_t balls_mamooth_1, int16_t balls_mamooth_2, int16_t args_checksum);
+
+void bt_net(void);
+
+void bt_patrol(int16_t x1, int16_t y1,int16_t x2, int16_t y2, int16_t args_checksum);
+
+void bt_protect_h1(void);
+
+
+
 /* TODO bt_trajectory_XXXX and bt_goto_avoid_XXXX functions */
 
 

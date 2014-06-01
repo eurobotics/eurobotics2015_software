@@ -991,8 +991,8 @@ static void cmd_robot_2nd_goto_parsed(void * parsed_result, void * data)
 		printf_P(PSTR("bt cmd ERROR"));
 
 	/* wait end traj */
-	err = bt_robot_2nd_wait_end();
-    printf_P(PSTR("traj returned %s\r\n"), get_err(err));
+	//err = bt_robot_2nd_wait_end();
+    //printf_P(PSTR("traj returned %s\r\n"), get_err(err));
 }
 
 prog_char str_robot_2nd_goto_arga[] = "robot_2nd";
@@ -1041,6 +1041,82 @@ parse_pgm_inst_t cmd_robot_2nd_goto2 = {
     },
 };
 
+
+/**********************************************************/
+/* Robot 2nd task function */
+
+/* this structure is filled when cmd_goto is parsed successfully */
+struct cmd_robot_2nd_bt_task_result
+{
+    fixed_string_t arga;
+    fixed_string_t arg0;
+    fixed_string_t arg1;
+    int32_t arg2;
+    int32_t arg3;
+};
+
+/* function called when cmd_bt_task is parsed successfully */
+static void cmd_robot_2nd_bt_task_parsed(void * parsed_result, void * data)
+{
+    struct cmd_robot_2nd_bt_task_result * res = parsed_result;
+    uint8_t err = END_ERROR;
+
+    /* TODO commented functions */
+
+    if (!strcmp_P(res->arg1, PSTR("mamooth")))
+    {
+        err=bt_robot_2nd_bt_task_mamooth(res->arg2, res->arg3);
+    }
+    else if (!strcmp_P(res->arg1, PSTR("patrol_fr_mam")))
+    {
+        err=bt_robot_2nd_bt_patrol_fr_mam(res->arg2, res->arg3);
+    }
+    else if (!strcmp_P(res->arg1, PSTR("protect_h1")))
+    {
+        err=bt_robot_2nd_bt_protect_h1();
+    }
+    else if (!strcmp_P(res->arg1, PSTR("net")))
+    {
+        err=bt_robot_2nd_bt_net();
+    
+	}
+    else if (!strcmp_P(res->arg1, PSTR("fresco")))
+    {
+        err=bt_robot_2nd_bt_fresco();
+    
+	}
+
+	/* check if command has been received */
+	if (err)
+		printf_P(PSTR("bt cmd ERROR"));
+}
+
+prog_char str_robot_2nd_bt_task_arga[] = "robot_2nd";
+parse_pgm_token_string_t cmd_robot_2nd_bt_task_arga = TOKEN_STRING_INITIALIZER(struct cmd_robot_2nd_bt_task_result, arga, str_robot_2nd_bt_task_arga);
+
+prog_char str_robot_2nd_bt_task_arg0[] = "bt_task";
+parse_pgm_token_string_t cmd_robot_2nd_bt_task_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_robot_2nd_bt_task_result, arg0, str_robot_2nd_bt_task_arg0);
+prog_char str_robot_2nd_bt_task_arg1[] = "mamooth#fresco#net#protect_h1#patrol_fr_mam";
+parse_pgm_token_string_t cmd_robot_2nd_bt_task_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_robot_2nd_bt_task_result, arg1, str_robot_2nd_bt_task_arg1);
+parse_pgm_token_num_t cmd_robot_2nd_bt_task_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_robot_2nd_bt_task_result, arg2, INT32);
+parse_pgm_token_num_t cmd_robot_2nd_bt_task_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_robot_2nd_bt_task_result, arg3, INT32);
+
+/* 1 params */
+prog_char help_robot_2nd_bt_task[] = "robot_2nd tasks";
+parse_pgm_inst_t cmd_robot_2nd_bt_task = {
+    .f = cmd_robot_2nd_bt_task_parsed, /* function to call */
+    .data = NULL, /* 2nd arg of func */
+    .help_str = help_robot_2nd_bt_task,
+    .tokens =
+    { /* token list, NULL terminated */
+		(prog_void *) & cmd_robot_2nd_bt_task_arga,
+        (prog_void *) & cmd_robot_2nd_bt_task_arg0,
+        (prog_void *) & cmd_robot_2nd_bt_task_arg1,
+        (prog_void *) & cmd_robot_2nd_bt_task_arg2,
+        (prog_void *) & cmd_robot_2nd_bt_task_arg3,
+        NULL,
+    },
+};
 
 
 /**********************************************************/
