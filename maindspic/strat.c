@@ -408,9 +408,13 @@ uint8_t strat_main(void)
     strat_infos.zones[ZONE_FIRE_4].flags |= ZONE_AVOID;
     strat_infos.zones[ZONE_HEART_3].flags |= ZONE_AVOID;
 
+	err=robots_position_exchange(0);
+	printf_P(PSTR("end\r\n"));
+	while(1);
+	
     do{
         //err = strat_begin_alcabot();
-        err = strat_begin();
+        //err = strat_begin();
     }while((err & END_RESERVED) == 0);
 
     strat_limit_speed_enable ();

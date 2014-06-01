@@ -380,6 +380,7 @@ void strat_event_disable(void);
 /* harvest fruits from trees */
 uint8_t strat_harvest_fruits(int16_t x, int16_t y);
 uint8_t strat_leave_fruits(void);
+uint8_t strat_leave_fruits_clean(void);
 
 /********************************************
  * in strat_fire.c 
@@ -415,6 +416,12 @@ void strat_opp_tracking (void);
 
 /* homologation */
 void strat_homologation(void);
+
+
+uint8_t position_exchange_main_down(void);
+uint8_t position_exchange_main_up(void);
+uint8_t robots_position_exchange(uint8_t protect_zone_num);
+
 
 #else /* HOST_VERSION_OA_TEST */
 

@@ -228,7 +228,7 @@ int main(void)
 
 	/* init flags */
   	mainboard.flags = DO_ENCODERS  | DO_RS |
-		DO_POS | DO_POWER | DO_BD; //| DO_CS
+		DO_POS | DO_POWER | DO_BD | DO_CS;
 	
 	/* bt protocol */
 	beaconboard.link_id = 0xFF;
