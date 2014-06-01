@@ -64,6 +64,7 @@
 #include "actuator.h"
 #include "beacon.h"
 #include "cmdline.h"
+#include "bt_protocol.h"
 
 
 #define ERROUT(e) do {\
@@ -591,3 +592,156 @@ void strat_homologation(void)
 	}
 }
 
+
+uint8_t robots_position_exchange(uint8_t protect_zone_num)
+{
+	int8_t err;
+	
+	/* Divide field in 2 parts (Y) and see where are the opponents: */
+	/* Both opponents upper part */
+	if(opp1_y_is_more_than(1500) && opp2_y_is_more_than(1500))
+	{
+		/* down */
+		err=position_exchange_main_down();
+	}
+	
+	/* Both opponents lower part */
+	else if(!opp1_y_is_more_than(1500) && !opp2_y_is_more_than(1500))
+	{
+		/* up */
+		err=position_exchange_main_up();
+	}
+	
+	/* One opponents upper part and one lower part */
+	else
+	{
+		/* Check if there is a robot blocking the way up */
+		if(opponents_are_in_area(2100,1850,900,1300))
+		{
+			/* down */ 
+			err=position_exchange_main_down();
+		}
+		
+		/* Check if there is a robot blocking the way down */
+		else if(opponents_are_in_area(2100,300,900,800))
+		{
+			/* Alternative strategy */
+			printf_P("Oh no, both robots are blocking me :(.\n");
+		}
+		
+		else
+		{
+			/* up */
+			err=position_exchange_main_up();
+		}
+	}
+	
+end:
+	return err;
+}
+
+
+
+uint8_t position_exchange_main_up(void)
+{
+	#define PROTECT_H1_X 400
+	#define PROTECT_H1_Y 1600
+	#define BASKET_INIT_X 	 2700
+	#define BASKET_INIT_Y 	 543
+	//#define BASKET_INIT_Y 	 ROBOT_WIDTH/2+350
+	
+	int8_t err;
+	int16_t x;
+	
+	bt_robot_2nd_goto_xy_abs(COLOR_X(FIRE_1_X),FIRE_1_Y);
+	bt_robot_2nd_wait_end();
+	bt_robot_2nd_goto_xy_abs(COLOR_X(PROTECT_H1_X),PROTECT_H1_Y);
+	bt_robot_2nd_wait_end();
+	bt_robot_2nd_bt_protect_h1();
+	//bt_robot_2nd_wait_end();
+	
+	
+	err=goto_and_avoid (COLOR_X(FIRE_3_X),FIRE_3_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_STD);	
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+	
+	err=goto_and_avoid (COLOR_X(FIRE_5_X),FIRE_5_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_STD);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+	
+	
+	err=goto_and_avoid (COLOR_X(FIRE_6_X),FIRE_6_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_STD);	
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+	
+	
+	err=goto_and_avoid (COLOR_X(BASKET_INIT_X),BASKET_INIT_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);	
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+		
+	err=goto_and_avoid (COLOR_X(BASKET_INIT_X-700),BASKET_INIT_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+	
+	
+	x = 2600 - ROBOT_WIDTH/2;
+	err=goto_and_avoid (COLOR_X(x),position_get_y_s16(&mainboard.pos),TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+	
+	err=strat_leave_fruits();
+	
+end:
+	return err;
+}
+
+
+uint8_t position_exchange_main_down(void)
+{
+	#define PROTECT_H1_X 400
+	#define PROTECT_H1_Y 1600
+	#define BASKET_INIT_X 	 1650
+	#define BASKET_INIT_Y 	 543
+	//#define BASKET_INIT_Y 	 ROBOT_WIDTH/2+350
+	int8_t err;
+	int16_t x;
+	
+		
+	bt_robot_2nd_goto_xy_abs(COLOR_X(FIRE_1_X),FIRE_1_Y);
+	bt_robot_2nd_wait_end();
+	bt_robot_2nd_goto_xy_abs(COLOR_X(PROTECT_H1_X),PROTECT_H1_Y);
+	bt_robot_2nd_wait_end();
+	bt_robot_2nd_bt_protect_h1();
+	bt_robot_2nd_wait_end();
+	
+	
+	err=goto_and_avoid (COLOR_X(FIRE_3_X),FIRE_3_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_STD);	
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+	
+	err=goto_and_avoid (COLOR_X(FIRE_2_X),FIRE_2_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_STD);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+	
+	err=goto_and_avoid (COLOR_X(BASKET_INIT_X),BASKET_INIT_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
+	printf_P("err:%d\n",err);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+		
+	err=goto_and_avoid (COLOR_X(BASKET_INIT_X+700),BASKET_INIT_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
+	printf_P("err:%d\n",err);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+	
+	
+	x = 1900 + ROBOT_WIDTH/2;
+	err=goto_and_avoid (COLOR_X(x),position_get_y_s16(&mainboard.pos),TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
+	printf_P("err:%d\n",err);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+	
+	err=strat_leave_fruits();
+	
+end:
+	return err;
+}

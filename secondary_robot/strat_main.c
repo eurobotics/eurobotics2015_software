@@ -200,8 +200,7 @@ uint8_t strat_paint_fresco(void)
 		/* go in front of fresco */
 		case 0:
 			//printf_P("fresco case 0");
-			trajectory_goto_xy_abs (&mainboard.traj, 
-										BEGIN_FRESCO_X, BEGIN_LINE_Y);
+			trajectory_goto_xy_abs (&mainboard.traj,  COLOR_X(BEGIN_FRESCO_X), BEGIN_LINE_Y);
 			err = wait_traj_end(TRAJ_FLAGS_STD);
 			if (!TRAJ_SUCCESS(err))
 					ERROUT(err);
@@ -213,7 +212,7 @@ uint8_t strat_paint_fresco(void)
 		/* turn to fresco 1 */
 		case 1:
 			//printf_P("fresco case 1");
-			trajectory_a_abs (&mainboard.traj, COLOR_A_ABS(90));
+			trajectory_a_abs (&mainboard.traj, 90);
 			err = wait_traj_end(TRAJ_FLAGS_STD);
 			if (!TRAJ_SUCCESS(err))
 					ERROUT(err);
@@ -352,7 +351,7 @@ uint8_t strat_shoot_mamooth(uint8_t balls_mamooth_1, uint8_t balls_mamooth_2)
 		if (!TRAJ_SUCCESS(err))
 				ERROUT(err);
 	
-		trajectory_a_abs (&mainboard.traj, COLOR_A_ABS(-90));
+		trajectory_a_abs (&mainboard.traj, -90);
 		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 		if (!TRAJ_SUCCESS(err))
 				ERROUT(err);
@@ -374,7 +373,7 @@ uint8_t strat_shoot_mamooth(uint8_t balls_mamooth_1, uint8_t balls_mamooth_2)
 		if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 	
-		trajectory_a_abs (&mainboard.traj, COLOR_A_ABS(-90));
+		trajectory_a_abs (&mainboard.traj, -90);
 		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 		if (!TRAJ_SUCCESS(err))
 				ERROUT(err);

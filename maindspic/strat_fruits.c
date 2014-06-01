@@ -249,9 +249,6 @@ end:
 
 
 
-
-
-
 /* leave fruits from trees on basket*/
 /* TODO two different positions in basket */
 
@@ -265,14 +262,103 @@ uint8_t strat_leave_fruits(void)
 #endif
 #define BASKET_1_CENTER_X	750
 #define BASKET_2_CENTER_X	2250
-   uint8_t err = 0;
+    uint8_t err = 0;
 	uint16_t old_spdd, old_spda, temp_spdd, temp_spda;
-   int16_t d, clean_floor_a_abs,clean_floor_a_rel;
+    int16_t d;
+
+	/* save speed */
+	strat_get_speed (&old_spdd, &old_spda);
+    strat_limit_speed_disable ();
+	strat_set_speed (SPEED_DIST_SLOW,SPEED_ANGLE_FAST);
+
+	/* turn */
+	trajectory_a_abs(&mainboard.traj, 90);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+	
+	/* go near basket */
+	d = distance_from_robot(position_get_x_s16(&mainboard.pos), 300);
+	trajectory_d_rel(&mainboard.traj, -(d - 150));
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+    if (!TRAJ_SUCCESS(err))
+	   ERROUT(err);
+
+	/* go backwards until blocking */
+	strat_get_speed (&temp_spdd, &temp_spda);
+	strat_set_speed (500, temp_spda);
+	strat_calib(-100, TRAJ_FLAGS_SMALL_DIST);
+	strat_set_speed( temp_spdd, temp_spda);
+
+	/* dump fruits do */
+	i2c_slavedspic_mode_dump_fruits(I2C_SLAVEDSPIC_MODE_DUMP_FRUITS_DO);
+	i2c_slavedspic_wait_ready();
+	time_wait_ms (2000);
+
+
+	/* go forward */
+	trajectory_d_rel(&mainboard.traj, 80);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+   if (!TRAJ_SUCCESS(err))
+	   ERROUT(err);
+
+	/* dump fruits end */
+	i2c_slavedspic_mode_dump_fruits(I2C_SLAVEDSPIC_MODE_DUMP_FRUITS_END);
+	i2c_slavedspic_wait_ready();
+
+
+	/* go backwards until blocking */
+	strat_get_speed (&temp_spdd, &temp_spda);
+	strat_set_speed (500, temp_spda);
+	strat_calib(-100, TRAJ_FLAGS_SMALL_DIST);
+	strat_set_speed( temp_spdd, temp_spda);
+
+	i2c_slavedspic_mode_dump_fruits(I2C_SLAVEDSPIC_MODE_DUMP_FRUITS_DO);
+	i2c_slavedspic_wait_ready();
+
+	trajectory_d_rel(&mainboard.traj, 250);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+   if (!TRAJ_SUCCESS(err))
+	   ERROUT(err);
+
+	/* update strat_infos */
+	strat_infos.harvested_trees=0;
+	strat_infos.zones[ZONE_BASKET_1].prio=ZONE_PRIO_0;
+	strat_infos.zones[ZONE_BASKET_2].prio=ZONE_PRIO_0;
+
+end:
+	i2c_slavedspic_mode_dump_fruits(I2C_SLAVEDSPIC_MODE_DUMP_FRUITS_END);
+	i2c_slavedspic_wait_ready();
+
+	strat_set_speed(old_spdd, old_spda);
+   strat_limit_speed_enable();
+	return err;
+}
+
+
+
+
+/* leave fruits from trees on basket*/
+/* TODO two different positions in basket */
+
+uint8_t strat_leave_fruits_clean(void)
+{
+#ifdef DEBUG_STRAT_HARVEST_FRUITS 
+#define wait_press_key() state_debug_wait_key_pressed();
+	strat_infos.debug_step = 1;
+#else
+#define wait_press_key()
+#endif
+#define BASKET_1_CENTER_X	750
+#define BASKET_2_CENTER_X	2250
+    uint8_t err = 0;
+	uint16_t old_spdd, old_spda, temp_spdd, temp_spda;
+    int16_t d, clean_floor_a_abs,clean_floor_a_rel;
 	uint8_t stick_type;
 
 	/* save speed */
 	strat_get_speed (&old_spdd, &old_spda);
-   strat_limit_speed_disable ();
+    strat_limit_speed_disable ();
 	strat_set_speed (SPEED_DIST_SLOW,SPEED_ANGLE_FAST);
 
 	/* depending on basket type */
@@ -306,7 +392,6 @@ uint8_t strat_leave_fruits(void)
 		clean_floor_a_rel = 90+20;
 	}
 
-	wait_press_key();
 
 	/* clean floor */
 	trajectory_a_abs (&mainboard.traj, clean_floor_a_abs);
@@ -331,7 +416,6 @@ uint8_t strat_leave_fruits(void)
  										 I2C_STICK_MODE_HIDE, 0);
 	i2c_slavedspic_wait_ready();
 
-	wait_press_key();
 
 	/* go near basket */
 	d = distance_from_robot(position_get_x_s16(&mainboard.pos), 300);
@@ -345,8 +429,6 @@ uint8_t strat_leave_fruits(void)
 	strat_set_speed (500, temp_spda);
 	strat_calib(-100, TRAJ_FLAGS_SMALL_DIST);
 	strat_set_speed( temp_spdd, temp_spda);
-
-	wait_press_key();
 
 	/* dump fruits do */
 	i2c_slavedspic_mode_dump_fruits(I2C_SLAVEDSPIC_MODE_DUMP_FRUITS_DO);
@@ -364,7 +446,6 @@ uint8_t strat_leave_fruits(void)
 	i2c_slavedspic_mode_dump_fruits(I2C_SLAVEDSPIC_MODE_DUMP_FRUITS_END);
 	i2c_slavedspic_wait_ready();
 
-	wait_press_key();
 
 	/* go backwards until blocking */
 	strat_get_speed (&temp_spdd, &temp_spda);
