@@ -181,15 +181,15 @@ struct cmd_lift_result {
 static void cmd_lift_parsed(__attribute__((unused)) void *parsed_result,
 			    __attribute__((unused)) void *data)
 {
-#if 0
+
 	struct cmd_lift_result *res = (struct cmd_lift_result *) parsed_result;
 	struct i2c_cmd_slavedspic_set_mode command;
-	//microseconds t1, t2;
+	microseconds t1, t2;
 
 
 
 	if (!strcmp_P(res->arg0, PSTR("lift"))) {
-#if 0
+#if 1
 		lift_set_height(res->arg1);
 	
 		t1 = time_get_us2();
@@ -209,7 +209,6 @@ static void cmd_lift_parsed(__attribute__((unused)) void *parsed_result,
 	}
 	else if (!strcmp_P(res->arg0, PSTR("lift_calibrate")))
 		lift_calibrate();
-#endif
 }
 
 prog_char str_lift_arg0[] = "lift#lift_calibrate";
@@ -429,7 +428,7 @@ prog_char str_tree_tray_arg1[] = "open#close#harvest";
 parse_pgm_token_string_t cmd_tree_tray_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_tree_tray_result, arg1, str_tree_tray_arg1);
 parse_pgm_token_num_t cmd_tree_tray_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_tree_tray_result, arg2, INT8);
 
-prog_char help_tree_tray[] = "set tree_tray mode, offset";
+prog_char help_tree_tray[] = "set arm";
 parse_pgm_inst_t cmd_tree_tray = {
 	.f = cmd_tree_tray_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
@@ -496,6 +495,106 @@ parse_pgm_inst_t cmd_stick = {
 		(prog_void *)&cmd_stick_arg0, 
 		(prog_void *)&cmd_stick_arg1,
 		(prog_void *)&cmd_stick_arg2,
+		NULL,
+	},
+};
+
+
+/**********************************************************/
+/* arm */
+
+/* this structure is filled when cmd_arm is parsed successfully */
+struct cmd_arm_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+	int16_t arg2;
+	int16_t arg3;
+	int16_t arg4;
+	int16_t arg5;
+};
+
+/* function called when cmd_arm is parsed successfully */
+static void cmd_arm_parsed(__attribute__((unused)) void *parsed_result,
+			    __attribute__((unused)) void *data)
+{
+	struct cmd_arm_result *res = (struct cmd_arm_result *) parsed_result;
+
+	if (!strcmp_P(res->arg1, PSTR("shoulder_a"))) {
+		arm_shoulder_goto_a_abs (res->arg2);
+		arm_shoulder_wait_traj_end (END_TRAJ|END_TIME);
+	}
+	else if (!strcmp_P(res->arg1, PSTR("elbow_a"))) {
+		arm_elbow_goto_a_abs (res->arg2);
+		arm_elbow_wait_traj_end (END_TRAJ|END_TIME);
+	}
+	else if (!strcmp_P(res->arg1, PSTR("elbow_a_rel"))) {
+		arm_elbow_goto_a_rel (res->arg2);
+		arm_elbow_wait_traj_end (END_TRAJ|END_TIME);
+	}
+	else if (!strcmp_P(res->arg1, PSTR("wrist_a"))) {
+		arm_wrist_goto_a_abs (res->arg2);
+		arm_wrist_wait_traj_end (END_TRAJ|END_TIME);
+	}
+	else if (!strcmp_P(res->arg1, PSTR("wrist_a_rel"))) {
+		arm_wrist_goto_a_rel (res->arg2);
+		arm_wrist_wait_traj_end (END_TRAJ|END_TIME);
+	}
+	else if (!strcmp_P(res->arg1, PSTR("goto_x"))) {
+		arm_goto_x (res->arg2);
+		arm_xy_wait_traj_end (END_TRAJ|END_TIME);
+	}
+	else if (!strcmp_P(res->arg1, PSTR("goto_y"))) {
+		arm_goto_y (res->arg2);
+		arm_xy_wait_traj_end (END_TRAJ|END_TIME);
+	}
+	else if (!strcmp_P(res->arg1, PSTR("goto_h"))) {
+		arm_goto_h (res->arg2);
+		arm_h_wait_traj_end ();
+	}
+	else if (!strcmp_P(res->arg1, PSTR("goto_hxaa"))) {
+		arm_goto_hxaa (res->arg2, res->arg3, res->arg4, res->arg5);
+	}
+}
+
+prog_char str_arm_arg0[] = "arm";
+parse_pgm_token_string_t cmd_arm_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_arm_result, arg0, str_arm_arg0);
+prog_char str_arm_arg1[] = "shoulder_a#elbow_a#elbow_a_rel#wrist_a#wrist_a_rel#goto_x#goto_y#goto_h";
+parse_pgm_token_string_t cmd_arm_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_arm_result, arg1, str_arm_arg1);
+parse_pgm_token_num_t cmd_arm_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_arm_result, arg2, INT16);
+
+prog_char help_arm[] = "arm joins";
+parse_pgm_inst_t cmd_arm = {
+	.f = cmd_arm_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_arm,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_arm_arg0, 
+		(prog_void *)&cmd_arm_arg1,
+		(prog_void *)&cmd_arm_arg2,
+		NULL,
+	},
+};
+
+prog_char str_arm_goto_arg1[] = "goto_hxaa";
+parse_pgm_token_string_t cmd_arm_goto_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_arm_result, arg1, str_arm_goto_arg1);
+
+
+parse_pgm_token_num_t cmd_arm_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_arm_result, arg3, INT16);
+parse_pgm_token_num_t cmd_arm_arg4 = TOKEN_NUM_INITIALIZER(struct cmd_arm_result, arg4, INT16);
+parse_pgm_token_num_t cmd_arm_arg5 = TOKEN_NUM_INITIALIZER(struct cmd_arm_result, arg5, INT16);
+
+prog_char help_arm_goto[] = "arm high level goto";
+parse_pgm_inst_t cmd_arm_goto = {
+	.f = cmd_arm_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_arm,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_arm_arg0, 
+		(prog_void *)&cmd_arm_goto_arg1,
+		(prog_void *)&cmd_arm_arg2,
+		(prog_void *)&cmd_arm_arg3,
+		(prog_void *)&cmd_arm_arg4,
+		(prog_void *)&cmd_arm_arg5,
 		NULL,
 	},
 };
@@ -586,6 +685,50 @@ parse_pgm_inst_t cmd_dump_fruits = {
 	},
 };
 
+
+/**********************************************************/
+/* arm mode */
+
+/* this structure is filled when cmd_arm_mode is parsed successfully */
+struct cmd_arm_mode_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+};
+
+/* function called when cmd_arm_mode is parsed successfully */
+static void cmd_arm_mode_parsed(__attribute__((unused)) void *parsed_result,
+			    __attribute__((unused)) void *data)
+{
+	struct cmd_arm_mode_result *res = (struct cmd_arm_mode_result *) parsed_result;
+	struct i2c_cmd_slavedspic_set_mode command;
+
+	if (!strcmp_P(res->arg1, PSTR("pickup_torch_ready")))
+		command.arm.mode = I2C_SLAVEDSPIC_MODE_ARM_PICKUP_TORCH_READY;
+	else if (!strcmp_P(res->arg1, PSTR("pickup_torch_do")))
+		command.arm.mode = I2C_SLAVEDSPIC_MODE_ARM_PICKUP_TORCH_DO;	
+	else if (!strcmp_P(res->arg1, PSTR("store_torch")))
+		command.arm.mode = I2C_SLAVEDSPIC_MODE_ARM_STORE_TORCH;	
+
+	command.mode = I2C_SLAVEDSPIC_MODE_ARM;
+	state_set_mode(&command);
+}
+
+prog_char str_arm_mode_arg0[] = "arm";
+parse_pgm_token_string_t cmd_arm_mode_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_arm_mode_result, arg0, str_arm_mode_arg0);
+prog_char str_arm_mode_arg1[] = "pickup_torch_ready#pickup_torch_do#store_torch";
+parse_pgm_token_string_t cmd_arm_mode_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_arm_mode_result, arg1, str_arm_mode_arg1);
+
+prog_char help_arm_mode[] = "set arm mode";
+parse_pgm_inst_t cmd_arm_mode = {
+	.f = cmd_arm_mode_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_arm_mode,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_arm_mode_arg0, 
+		(prog_void *)&cmd_arm_mode_arg1,
+		NULL,
+	},
+};
 
 
 /**********************************************************/

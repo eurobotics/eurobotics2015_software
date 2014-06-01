@@ -29,39 +29,44 @@
 #include <clock_time.h>
 
 
+#define old_version
+
 #define LIFT_SPEED						100
 #define LIFT_ACCEL						1
-#define LIFT_K_IMP_mm					-1.0
+#define LIFT_K_IMP_mm					(-51474.0/250.0)
 #define LIFT_CALIB_IMP_MAX				0
-#define LIFT_HEIGHT_MAX_mm				42000
-#define LIFT_HEIGHT_MIN_mm				500
+#define LIFT_HEIGHT_MAX_mm				250L
+#define LIFT_HEIGHT_MIN_mm				1L
+
+
 
 #define POS_COMB_R_OPEN				600
-#define POS_COMB_R_HARVEST_OPEN	556
-#define POS_COMB_R_HARVEST_CLOSE 503
+#define POS_COMB_R_HARVEST_OPEN		556
+#define POS_COMB_R_HARVEST_CLOSE 	503
 #define POS_COMB_R_HIDE				224
 
 #define POS_COMB_L_OPEN				420
-#define POS_COMB_L_HARVEST_OPEN	469
-#define POS_COMB_L_HARVEST_CLOSE 524
+#define POS_COMB_L_HARVEST_OPEN		469
+#define POS_COMB_L_HARVEST_CLOSE 	524
 #define POS_COMB_L_HIDE				792
 
+#define POS_STICK_R_OFFSET				(770-542) /* after stick repair */
+#define POS_STICK_R_HIDE				(542 + POS_STICK_R_OFFSET)
+#define POS_STICK_R_PUSH_TORCH_FIRE		(350 + POS_STICK_R_OFFSET)				
+#define POS_STICK_R_PUSH_FIRE			(335 + POS_STICK_R_OFFSET)
+#define POS_STICK_R_CLEAN_HEART			(311 + POS_STICK_R_OFFSET)
+#define POS_STICK_R_CLEAN_FLOOR			(260 + POS_STICK_R_OFFSET)
 
-#define POS_STICK_R_HIDE					542
-#define POS_STICK_R_PUSH_TORCH_FIRE		340				
-#define POS_STICK_R_PUSH_FIRE				330
-#define POS_STICK_R_CLEAN_HEART			301
-#define POS_STICK_R_CLEAN_FLOOR			210
-
-#define POS_STICK_L_HIDE					241
-#define POS_STICK_L_PUSH_TORCH_FIRE		434
-#define POS_STICK_L_PUSH_FIRE				445
-#define POS_STICK_L_CLEAN_HEART			480
-#define POS_STICK_L_CLEAN_FLOOR			575
+#define POS_STICK_L_OFFSET				(246-241) /* after stick repair */
+#define POS_STICK_L_HIDE				(241 + POS_STICK_L_OFFSET)
+#define POS_STICK_L_PUSH_TORCH_FIRE		(439 + POS_STICK_L_OFFSET)
+#define POS_STICK_L_PUSH_FIRE			(455 + POS_STICK_L_OFFSET)
+#define POS_STICK_L_CLEAN_HEART			(480 + POS_STICK_L_OFFSET)
+#define POS_STICK_L_CLEAN_FLOOR			(525 + POS_STICK_L_OFFSET)
 
 
 #define POS_BOOT_DOOR_OPEN		700			
-#define POS_BOOT_DOOR_CLOSE	960
+#define POS_BOOT_DOOR_CLOSE		960
 
 #define BOOT_TRAY_VIBRATE_PWM	(2000)
 
@@ -69,8 +74,13 @@
 #define POS_TREE_TRAY_HARVEST	530 //506
 #define POS_TREE_TRAY_CLOSE	358
 
-#define END_TRAJ		1
-#define END_BLOCKING	2
+
+/* test end traj */
+#define END_TRAJ   		1
+#define END_NEAR   		2
+#define END_TIME   		4
+#define END_BLOCKING   	5
+
 
 
 /* init actuators */
@@ -107,7 +117,7 @@ typedef struct {
 #define COMBS_MODE_HIDE				0
 #define COMBS_MODE_OPEN				1
 #define COMBS_MODE_HARVEST_CLOSE	2
-#define COMBS_MODE_HARVEST_OPEN	3
+#define COMBS_MODE_HARVEST_OPEN	    3
 #define COMBS_MODE_MAX				4
 
 #define COMBS_MODE_R_POS_MAX		1	
@@ -115,20 +125,15 @@ typedef struct {
 #define COMBS_MODE_L_POS_MAX		0
 #define COMBS_MODE_L_POS_MIN		1
 
-	microseconds time_us;
-
 	uint16_t ax12_pos_l;
 	uint16_t ax12_pos_r;
-	uint8_t blocking;
+
 } combs_t;
 
 /* set combs position depends on mode */
 int8_t combs_set_mode(combs_t *combs, uint8_t mode, int16_t pos_offset);
 
-/* return END_TRAJ or END_BLOCKING */
-int8_t combs_check_mode_done(combs_t *combs);
-
-/* return END_TRAJ or END_BLOCKING */
+/* return END_TRAJ or END_TIMER */
 uint8_t combs_wait_end(combs_t *combs);
 
 
@@ -143,9 +148,9 @@ typedef struct {
 	uint8_t mode;
 #define STICK_MODE_HIDE					0
 #define STICK_MODE_PUSH_FIRE			1
-#define STICK_MODE_PUSH_TORCH_FIRE	2
-#define STICK_MODE_CLEAN_FLOOR		3
-#define STICK_MODE_CLEAN_HEART		4
+#define STICK_MODE_PUSH_TORCH_FIRE		2
+#define STICK_MODE_CLEAN_FLOOR			3
+#define STICK_MODE_CLEAN_HEART			4
 #define STICK_MODE_MAX					5
 
 #define STICK_MODE_L_POS_MAX			3	
@@ -154,17 +159,14 @@ typedef struct {
 #define STICK_MODE_R_POS_MIN			3
 
 	uint16_t ax12_pos;
-	microseconds time_us;
-	uint8_t blocking;
+
 } stick_t;
 
 /* set stick position depends on mode */
 uint8_t stick_set_mode(stick_t *stick, uint8_t mode, int16_t pos_offset);
 
-/* return END_TRAJ or END_BLOCKING */
-int8_t stick_check_mode_done(stick_t *stick);
 
-/* return END_TRAJ or END_BLOCKING */
+/* return END_TRAJ or END_TIME */
 uint8_t stick_wait_end(stick_t *stick);
 
 
@@ -172,13 +174,13 @@ uint8_t stick_wait_end(stick_t *stick);
 /**** boot funcions *********************************************************/
 typedef struct {
 	uint8_t door_mode;
-#define BOOT_DOOR_MODE_OPEN		0
+#define BOOT_DOOR_MODE_OPEN			0
 #define BOOT_DOOR_MODE_CLOSE		1
 #define BOOT_DOOR_MODE_MAX			2
 
 	uint8_t tray_mode;
-#define BOOT_TRAY_MODE_DOWN		0
-#define BOOT_TRAY_MODE_VIBRATE	1
+#define BOOT_TRAY_MODE_DOWN			0
+#define BOOT_TRAY_MODE_VIBRATE		1
 #define BOOT_TRAY_MODE_MAX			2
 
 	uint16_t door_servo_pos;
@@ -205,17 +207,21 @@ typedef struct {
 #define TREE_TRAY_MODE_POS_MAX	0
 #define TREE_TRAY_MODE_POS_MIN	1
 
+#if 0
 	microseconds time_us;
+	uint8_t blocking;
+#endif
 
 	uint16_t ax12_pos;
-	uint8_t blocking;
 } tree_tray_t;
 
 /* set stick position depends on mode */
 uint8_t tree_tray_set_mode(tree_tray_t *tree_tray, uint8_t mode, int16_t pos_offset);
 
+#if 0
 /* return END_TRAJ or END_BLOCKING */
 int8_t tree_tray_check_mode_done(tree_tray_t *tree_tray);
+#endif
 
 /* return END_TRAJ or END_BLOCKING */
 uint8_t tree_tray_wait_end(tree_tray_t *tree_tray);
@@ -229,6 +235,46 @@ void vacuum_ev_set (uint8_t num, uint8_t on);
 void vacuum_system_enable (uint8_t num);
 void vacuum_system_disable (uint8_t num);
 
+
+
+/*** arm functions ************************************************************/
+
+/* shoulder angle */
+void arm_shoulder_goto_a_abs (int16_t a);
+uint8_t arm_shoulder_wait_traj_end (uint8_t flags);
+
+/* elbow angle */
+void arm_elbow_goto_a_abs (int16_t a);
+void arm_elbow_goto_a_rel (int16_t a);
+uint8_t arm_elbow_wait_traj_end (uint8_t flags);
+
+/* wrist angle */
+void arm_wrist_goto_a_abs (int16_t a);
+void arm_wrist_goto_a_rel (int16_t a);
+uint8_t arm_wrist_wait_traj_end (uint8_t flags);
+
+/* set height, sucker reference 
+ * XXX elbow angle is taken in account */
+
+/* arm (x,y,h) */
+
+/* set height, relative to sucker  
+ * XXX elbow angle is taken in account */
+void arm_goto_h (int16_t h);
+uint8_t arm_h_wait_traj_end (void);
+
+/* goto x coordinate, relative to robot zero coordinates.
+ * XXX suposes elbow angle of 0 deg (sucker in parallel with ground) */
+void arm_goto_x (int16_t x);
+
+/* goto y coordinate, relative to robot zero coordinates.
+ * XXX suposes elbow angle of 0 deg (sucker in parallel with ground) */
+void arm_goto_y (int16_t y);
+
+uint8_t arm_xy_wait_traj_end (uint8_t flags);
+
+/* ARM goto high level */
+void arm_goto_hxaa (int16_t h, int16_t x, int16_t elbow_a, int16_t wrist_a);
 
 #endif /* _ACTUATOR_H_ */
 
