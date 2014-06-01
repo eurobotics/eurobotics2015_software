@@ -393,12 +393,12 @@ uint8_t strat_main(void)
 				// WHILE (NO COMMAND FROM MASTER ROBOT) 
 				while(!cmdline_keypressed())
 				{	
-					strat_patrol_and_paint_fresco();
+					strat_patrol_fresco_mamooth(3,3); 		//XXX
 				}
 			#else
 				while(!cmdline_keypressed())
 				{	
-					strat_patrol_and_paint_fresco();
+					strat_patrol_fresco_mamooth(3,3); 		//XXX
 				}
 			#endif
 			beaconboard.opponent1_x = COLOR_X(750);

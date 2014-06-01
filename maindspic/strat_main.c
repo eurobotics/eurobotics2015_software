@@ -64,6 +64,7 @@
 #include "actuator.h"
 #include "beacon.h"
 #include "cmdline.h"
+#include "bt_protocol.h"
 
 
 #define ERROUT(e) do {\
@@ -252,7 +253,10 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 			break;
 			
 		case ZONE_HEART_1:
-		case ZONE_HEART_2:
+		case ZONE_HEART_2_UP:
+		case ZONE_HEART_2_LEFT:
+		case ZONE_HEART_2_DOWN:
+		case ZONE_HEART_2_RIGHT:
 		case ZONE_HEART_3:
 		/* leave fire on heart of fire */
 		/* pick up fire from heart of fire */
@@ -457,67 +461,65 @@ uint8_t strat_smart(void)
 
 void strat_opp_tracking (void) 
 {
-#define MAX_TIME_BETWEEN_VISITS	4000
-#define TIME_MS_TREE			1500
-#define TIME_MS_HEART			1000
-#define TIME_MS_BASKET			1500
-#define UPDATE_ZONES_PERIOD_MS	25	
-
-    uint8_t flags;
-	int8_t zone_opp;
+#define MAX_TIME_BETWEEN_VISITS_MS	4000
+#define TIME_MS_TREE				1500
+#define TIME_MS_HEART				1500
+#define TIME_MS_BASKET				1000
+#define UPDATE_ZONES_PERIOD_MS		25	
 	
+	uint8_t flags;
+	uint8_t zone_opp;
 	
     /* check if there are opponents in every zone */
-    for(zone_opp = 0; zone_opp <  ZONES_MAX; zone_opp++)
+    for(zone_opp = 0; zone_opp <  ZONES_MAX-1; zone_opp++)
     {
-        if(opponent1_is_in_area(strat_infos.zones[zone_opp].x_up, strat_infos.zones[zone_opp].y_up,
-                                     strat_infos.zones[zone_opp].x_down, strat_infos.zones[zone_opp].y_down))
-		{
-			printf_P("OPP IN AREA: %s\n", numzone2name[zone_opp]);
+	   
+	if(opponents_are_in_area(COLOR_X(strat_infos.zones[zone_opp].x_up), strat_infos.zones[zone_opp].y_up,
+                                     COLOR_X(strat_infos.zones[zone_opp].x_down), strat_infos.zones[zone_opp].y_down)){
 			
-			#if 0
-			//if(strat_infos.zones[zone_opp].flags & ~(ZONE_CHECKED_OPP))
+			if(!(strat_infos.zones[zone_opp].flags & (ZONE_CHECKED_OPP)))
 			{
-				if((time_get_us2()/1000L - strat_infos.zones[zone_opp].last_time_opp_here) < MAX_TIME_BETWEEN_VISITS)
+				IRQ_LOCK(flags);
+				strat_infos.zones[zone_opp].last_time_opp_here=time_get_us2();
+				IRQ_UNLOCK(flags);
+				if((time_get_us2() - strat_infos.zones[zone_opp].last_time_opp_here) < MAX_TIME_BETWEEN_VISITS_MS*1000L)
 				{
-					printf_P("	time < marca\n");
 					/* Opponent continues in the same zone: */
-					/* update zone time */
+					/* update zone time */ 
 					IRQ_LOCK(flags);
-					strat_infos.zones[zone_opp].opp_time_zone_ms += UPDATE_ZONES_PERIOD_MS;
-					strat_infos.zones[zone_opp].last_time_opp_here=time_get_s();
+					strat_infos.zones[zone_opp].opp_time_zone_us += UPDATE_ZONES_PERIOD_MS*1000L;
 					IRQ_UNLOCK(flags);
-					
-					
+
 					/* Mark zone as checked and sum points */
 					switch(strat_infos.zones[zone_opp].type)
 					{
 						case ZONE_TYPE_TREE:
-							if(strat_infos.zones[zone_opp].opp_time_zone_ms>=TIME_MS_TREE)
+							if(strat_infos.zones[zone_opp].opp_time_zone_us>=TIME_MS_TREE*1000L)
 							{
 								strat_infos.zones[zone_opp].flags |= ZONE_CHECKED_OPP;
 								strat_infos.opp_harvested_trees++;
-								printf_P("		OPP approximated score: %d\n", strat_infos.opp_score);
+								printf_P("opp_harvested_trees=%d\n",strat_infos.opp_harvested_trees);
+								printf_P("OPP approximated score: %d\n", strat_infos.opp_score);
 							}
 							break;
 						case ZONE_TYPE_BASKET:
 							if(((mainboard.our_color==I2C_COLOR_YELLOW) && (zone_opp==ZONE_BASKET_1)) ||
 							((mainboard.our_color==I2C_COLOR_RED) && (zone_opp==ZONE_BASKET_2)))
 							{
-								if(strat_infos.zones[zone_opp].opp_time_zone_ms>=TIME_MS_BASKET)
+								if(strat_infos.zones[zone_opp].opp_time_zone_us>=TIME_MS_BASKET*1000L)
 								{
 									if(strat_infos.opp_harvested_trees!=0)
 									{
-										strat_infos.zones[zone_opp].flags |= ZONE_CHECKED_OPP;
 										strat_infos.opp_score += strat_infos.opp_harvested_trees * 3;
 										strat_infos.opp_harvested_trees=0;
+										printf_P("opp_harvested_trees=%d\n",strat_infos.opp_harvested_trees);
 										printf_P("OPP approximated score: %d\n", strat_infos.opp_score);
 									}
 								}
 							}
 							break;
 						case ZONE_TYPE_HEART:
-							if(strat_infos.zones[zone_opp].opp_time_zone_ms>=TIME_MS_HEART)
+							if(strat_infos.zones[zone_opp].opp_time_zone_us>= TIME_MS_HEART*1000L)
 							{
 								strat_infos.zones[zone_opp].flags |= ZONE_CHECKED_OPP;
 								strat_infos.opp_score += 4;
@@ -528,20 +530,19 @@ void strat_opp_tracking (void)
 							break;
 					}
 				}
-					
+							
 				/* Zone has changed */
 				else
 				{
 					/* reset zone time */
 					IRQ_LOCK(flags);
-					strat_infos.zones[zone_opp].opp_time_zone_ms = 0;
+					strat_infos.zones[zone_opp].opp_time_zone_us = 0;
 					IRQ_UNLOCK(flags);
 				}
 			}
-			#endif
 		}
 	}
-	
+
 }
 
 
@@ -591,3 +592,156 @@ void strat_homologation(void)
 	}
 }
 
+
+uint8_t robots_position_exchange(uint8_t protect_zone_num)
+{
+	int8_t err;
+	
+	/* Divide field in 2 parts (Y) and see where are the opponents: */
+	/* Both opponents upper part */
+	if(opp1_y_is_more_than(1500) && opp2_y_is_more_than(1500))
+	{
+		/* down */
+		err=position_exchange_main_down();
+	}
+	
+	/* Both opponents lower part */
+	else if(!opp1_y_is_more_than(1500) && !opp2_y_is_more_than(1500))
+	{
+		/* up */
+		err=position_exchange_main_up();
+	}
+	
+	/* One opponents upper part and one lower part */
+	else
+	{
+		/* Check if there is a robot blocking the way up */
+		if(opponents_are_in_area(2100,1850,900,1300))
+		{
+			/* down */ 
+			err=position_exchange_main_down();
+		}
+		
+		/* Check if there is a robot blocking the way down */
+		else if(opponents_are_in_area(2100,300,900,800))
+		{
+			/* Alternative strategy */
+			printf_P("Oh no, both robots are blocking me :(.\n");
+		}
+		
+		else
+		{
+			/* up */
+			err=position_exchange_main_up();
+		}
+	}
+	
+end:
+	return err;
+}
+
+
+
+uint8_t position_exchange_main_up(void)
+{
+	#define PROTECT_H1_X 400
+	#define PROTECT_H1_Y 1600
+	#define BASKET_INIT_X 	 2700
+	#define BASKET_INIT_Y 	 543
+	//#define BASKET_INIT_Y 	 ROBOT_WIDTH/2+350
+	
+	int8_t err;
+	int16_t x;
+	
+	bt_robot_2nd_goto_xy_abs(COLOR_X(FIRE_1_X),FIRE_1_Y);
+	bt_robot_2nd_wait_end();
+	bt_robot_2nd_goto_xy_abs(COLOR_X(PROTECT_H1_X),PROTECT_H1_Y);
+	bt_robot_2nd_wait_end();
+	bt_robot_2nd_bt_protect_h1();
+	//bt_robot_2nd_wait_end();
+	
+	
+	err=goto_and_avoid (COLOR_X(FIRE_3_X),FIRE_3_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_STD);	
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+	
+	err=goto_and_avoid (COLOR_X(FIRE_5_X),FIRE_5_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_STD);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+	
+	
+	err=goto_and_avoid (COLOR_X(FIRE_6_X),FIRE_6_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_STD);	
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+	
+	
+	err=goto_and_avoid (COLOR_X(BASKET_INIT_X),BASKET_INIT_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);	
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+		
+	err=goto_and_avoid (COLOR_X(BASKET_INIT_X-700),BASKET_INIT_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+	
+	
+	x = 2600 - ROBOT_WIDTH/2;
+	err=goto_and_avoid (COLOR_X(x),position_get_y_s16(&mainboard.pos),TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+	
+	err=strat_leave_fruits();
+	
+end:
+	return err;
+}
+
+
+uint8_t position_exchange_main_down(void)
+{
+	#define PROTECT_H1_X 400
+	#define PROTECT_H1_Y 1600
+	#define BASKET_INIT_X 	 1650
+	#define BASKET_INIT_Y 	 543
+	//#define BASKET_INIT_Y 	 ROBOT_WIDTH/2+350
+	int8_t err;
+	int16_t x;
+	
+		
+	bt_robot_2nd_goto_xy_abs(COLOR_X(FIRE_1_X),FIRE_1_Y);
+	bt_robot_2nd_wait_end();
+	bt_robot_2nd_goto_xy_abs(COLOR_X(PROTECT_H1_X),PROTECT_H1_Y);
+	bt_robot_2nd_wait_end();
+	bt_robot_2nd_bt_protect_h1();
+	bt_robot_2nd_wait_end();
+	
+	
+	err=goto_and_avoid (COLOR_X(FIRE_3_X),FIRE_3_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_STD);	
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+	
+	err=goto_and_avoid (COLOR_X(FIRE_2_X),FIRE_2_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_STD);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+	
+	err=goto_and_avoid (COLOR_X(BASKET_INIT_X),BASKET_INIT_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
+	printf_P("err:%d\n",err);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+		
+	err=goto_and_avoid (COLOR_X(BASKET_INIT_X+700),BASKET_INIT_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
+	printf_P("err:%d\n",err);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+	
+	
+	x = 1900 + ROBOT_WIDTH/2;
+	err=goto_and_avoid (COLOR_X(x),position_get_y_s16(&mainboard.pos),TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
+	printf_P("err:%d\n",err);
+	if (!TRAJ_SUCCESS(err))
+			ERROUT(err);
+	
+	err=strat_leave_fruits();
+	
+end:
+	return err;
+}

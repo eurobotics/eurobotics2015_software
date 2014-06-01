@@ -138,11 +138,13 @@ intr:
 }
 
 
-uint8_t strat_patrol_and_paint_fresco(void)
+/* TODO MAMOOTH!!!! */
+uint8_t strat_patrol_fresco_mamooth(uint8_t balls_mamooth_1, uint8_t balls_mamooth_2)
 {
 	#define BEGIN_FRESCO_X	1295
 	#define REFERENCE_DISTANCE_TO_ROBOT 800
 	static uint8_t fresco_done =0;
+	static uint8_t mamooth_done=0;
 	int16_t d1,d2;
 	int16_t a1,a2;
 	int16_t opp1_x, opp1_y, opp2_x, opp2_y;
@@ -151,24 +153,43 @@ uint8_t strat_patrol_and_paint_fresco(void)
 	get_opponent2_da(&d2,&a2);
 	
 	if(d2>REFERENCE_DISTANCE_TO_ROBOT && d1>REFERENCE_DISTANCE_TO_ROBOT && fresco_done!=1)
-		return (fresco_done=strat_paint_fresco());
-		
+	{
+		fresco_done=strat_paint_fresco();
+		return (fresco_done);
+	}
+	else if(d2>REFERENCE_DISTANCE_TO_ROBOT && d1>REFERENCE_DISTANCE_TO_ROBOT && mamooth_done!=1){
+		mamooth_done=strat_shoot_mamooth(balls_mamooth_1,balls_mamooth_2);
+		return (mamooth_done);
+	}
+	
 	else
 	{
 		get_opponent1_xy(&opp1_x, &opp1_y);
 		get_opponent2_xy(&opp2_x, &opp2_y);
-		if((opp1_y<300) || (opp2_y<300) && (fresco_done!=1))
-			return (fresco_done=strat_paint_fresco());
+		if(((opp1_y<300) || (opp2_y<300)) && ((fresco_done!=1)||(mamooth_done!=1)))
+		{
+			if(fresco_done!=1)
+			{
+				fresco_done=strat_paint_fresco();
+				return (fresco_done);
+			}
+			else if(mamooth_done!=1)
+			{
+				mamooth_done=strat_shoot_mamooth(balls_mamooth_1,balls_mamooth_2);
+				return (mamooth_done);
+			}
+		}
 			
-		else
+		else{
 			return strat_patrol_between(COLOR_X(BEGIN_FRESCO_X),300,COLOR_X(BEGIN_FRESCO_X),900);
+		}
 	}
 }
 
 
 uint8_t strat_paint_fresco(void)
 {
-	static uint8_t state = 1;
+	static uint8_t state = 0;
 	uint16_t old_spdd, old_spda, temp_spdd, temp_spda;
 	uint8_t err = 0;
 #define BEGIN_LINE_Y 	450
@@ -177,22 +198,9 @@ uint8_t strat_paint_fresco(void)
 	switch (state)
 	{
 		/* go in front of fresco */
-		/*case 0:
-			printf_P("State 0\n");
-			trajectory_goto_forward_xy_abs (&mainboard.traj, 
-										BEGIN_FRESCO_X, BEGIN_LINE_Y);
-			err = wait_traj_end(TRAJ_FLAGS_STD);
-			if (!TRAJ_SUCCESS(err))
-					ERROUT(err);
-
-			state ++;	
-			return 0;		
-			break;*/
-
-		/* turn to fresco 1*/
-		case 1:
-			printf_P("State 1\n");
-			trajectory_a_abs (&mainboard.traj, COLOR_A_ABS(90));
+		case 0:
+			//printf_P("fresco case 0");
+			trajectory_goto_xy_abs (&mainboard.traj,  COLOR_X(BEGIN_FRESCO_X), BEGIN_LINE_Y);
 			err = wait_traj_end(TRAJ_FLAGS_STD);
 			if (!TRAJ_SUCCESS(err))
 					ERROUT(err);
@@ -201,21 +209,21 @@ uint8_t strat_paint_fresco(void)
 			return 0;		
 			break;
 
-		/* paint fresco 1*/
-		case 2:
-			printf_P("State 2\n");
-			trajectory_goto_backward_xy_abs (&mainboard.traj, 
-										COLOR_X(BEGIN_FRESCO_X), 430);
+		/* turn to fresco 1 */
+		case 1:
+			//printf_P("fresco case 1");
+			trajectory_a_abs (&mainboard.traj, 90);
 			err = wait_traj_end(TRAJ_FLAGS_STD);
 			if (!TRAJ_SUCCESS(err))
 					ERROUT(err);
-			state ++;		
-			return 0;	
+
+			state ++;	
+			return 0;		
 			break;
 
 		/* paint fresco 2*/
-		case 3:
-			printf_P("State 3\n");
+		case 2:
+			//printf_P("fresco case 2");
 			sensor_obstacle_enable();
 			if (sensor_get (S_OBS_REAR_L) || sensor_get (S_OBS_REAR_R))
 				ERROUT(END_OBSTACLE);
@@ -240,14 +248,28 @@ uint8_t strat_paint_fresco(void)
 			if (!TRAJ_SUCCESS(err))
 					ERROUT(err);
 					
-					
-			trajectory_goto_forward_xy_abs (&mainboard.traj, COLOR_X(BEGIN_FRESCO_X),600);
-			err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-			if (!TRAJ_SUCCESS(err))
-					ERROUT(err);
-					
-			state++;
-			return 1;
+				
+			state ++;		
+			return 0;	
+			break;
+
+		/* leave fresco */
+		case 3:	
+			//printf_P("fresco case 3");
+			if(opponent2_is_infront()==0 && opponent2_is_infront()==0)
+			{
+				trajectory_goto_forward_xy_abs (&mainboard.traj, COLOR_X(BEGIN_FRESCO_X),600);
+				err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+				if (!TRAJ_SUCCESS(err))
+						ERROUT(err);
+						
+				state++;
+				printf_P("fresco done");
+				return 1;
+			}
+			
+			else
+				return 0;
 			break;
 			
 		default:
@@ -261,44 +283,45 @@ end:
 uint8_t strat_patrol_between(int16_t x1, int16_t y1,int16_t x2, int16_t y2)
 {	
 	#define REFERENCE_DISTANCE_TO_ROBOT 800
-	int8_t opp1_there, r2nd_there;
 	int16_t opp1_x, opp1_y, opp2_x, opp2_y, reference_x;
 	uint16_t old_spdd, old_spda, temp_spdd, temp_spda;
 	uint8_t err = 0;
 	int16_t d,d2;
 	int16_t a,a2;
-	
+
 	/* save speed */
 	strat_get_speed (&old_spdd, &old_spda);
   	strat_limit_speed_disable ();
 	strat_set_speed(SPEED_DIST_SLOW, SPEED_ANGLE_VERY_SLOW);
 	
 	/* get robot coordinates */
-	opp1_there = get_opponent1_xy(&opp1_x, &opp1_y);
+	get_opponent1_xy(&opp1_x, &opp1_y);
 	get_opponent2_xy(&opp2_x, &opp2_y);
-	/*if(opp1_there == -1 )
-		printf_P("Opp is not there");*/
 	
 	get_opponent1_da(&d,&a);
 	get_opponent2_da(&d2,&a2);
 	
-	if(d<(REFERENCE_DISTANCE_TO_ROBOT))
-	{
-		if((opp1_y_is_more_than(y1)&&!opp1_y_is_more_than(y2))||(!opp1_y_is_more_than(y1)&&opp1_y_is_more_than(y2)))
+		if(d<(REFERENCE_DISTANCE_TO_ROBOT))
 		{
-			trajectory_goto_xy_abs (&mainboard.traj,(x1+x2)/2,opp1_y); 
+			if((opp1_y_is_more_than(y1)&&!opp1_y_is_more_than(y2))||(!opp1_y_is_more_than(y1)&&opp1_y_is_more_than(y2)))
+			{
+				trajectory_goto_xy_abs(&mainboard.traj,(x1+x2)/2,opp1_y);
+			}
 		}
-	}else if(d2<(REFERENCE_DISTANCE_TO_ROBOT))
-	{
-		if((opp2_y_is_more_than(y1)&&!opp2_y_is_more_than(y2))||(!opp2_y_is_more_than(y1)&&opp2_y_is_more_than(y2)))
-		{
-			trajectory_goto_xy_abs (&mainboard.traj,(x1+x2)/2,opp2_y); 
-		}
-	}
 		
-	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+		if(d2<(REFERENCE_DISTANCE_TO_ROBOT))
+		{
+			if((opp2_y_is_more_than(y1)&&!opp2_y_is_more_than(y2))||(!opp2_y_is_more_than(y1)&&opp2_y_is_more_than(y2)))
+			{
+				trajectory_goto_xy_abs(&mainboard.traj,(x1+x2)/2,opp2_y); 
+			}
+		}
+	
+	err = test_traj_end(TRAJ_FLAGS_NO_NEAR);
+	
 	if (!TRAJ_SUCCESS(err))
 		ERROUT(err);
+	
 end:
 	strat_set_speed(old_spdd, old_spda);	
 	strat_limit_speed_enable();
@@ -307,12 +330,12 @@ end:
 
 uint8_t strat_shoot_mamooth(uint8_t balls_mamooth_1, uint8_t balls_mamooth_2)
 {
+    uint8_t err = 0;
+
 #define BEGIN_LINE_Y 	450
 #define BEGIN_MAMOOTH_X	750
 #define SERVO_SHOOT_POS_UP 80
 #define SERVO_SHOOT_POS_DOWN 300
-
-    uint8_t err = 0;
 
 	if(mainboard.our_color == I2C_COLOR_RED)
 	{
@@ -328,20 +351,19 @@ uint8_t strat_shoot_mamooth(uint8_t balls_mamooth_1, uint8_t balls_mamooth_2)
 		if (!TRAJ_SUCCESS(err))
 				ERROUT(err);
 	
-		trajectory_a_abs (&mainboard.traj, COLOR_A_ABS(-90));
+		trajectory_a_abs (&mainboard.traj, -90);
 		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 		if (!TRAJ_SUCCESS(err))
 				ERROUT(err);
 				
-		printf_P("Shooting %d balls to mamooth 1\r\n", balls_mamooth_1);
 		/* TODO: on slavedspic: possibility to select the number of balls to be thrown */
 		#ifndef HOST_VERSION
 			pwm_servo_set(&gen.pwm_servo_oc3, SERVO_SHOOT_POS_UP);
 			pwm_servo_set(&gen.pwm_servo_oc4, SERVO_SHOOT_POS_DOWN);
-			time_wait_ms(1000);
-		#else
-			time_wait_ms(2000);
+
 		#endif
+		if(balls_mamooth_2 == 0)
+			return 1;
 	}
 	
 	if(balls_mamooth_2 > 0)
@@ -351,20 +373,20 @@ uint8_t strat_shoot_mamooth(uint8_t balls_mamooth_1, uint8_t balls_mamooth_2)
 		if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 	
-		trajectory_a_abs (&mainboard.traj, COLOR_A_ABS(-90));
+		trajectory_a_abs (&mainboard.traj, -90);
 		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 		if (!TRAJ_SUCCESS(err))
 				ERROUT(err);
 				
-		printf_P("Shooting %d balls to mamooth 2\r\n", balls_mamooth_2);
 		#ifndef HOST_VERSION
 			pwm_servo_set(&gen.pwm_servo_oc3, SERVO_SHOOT_POS_UP);
 			pwm_servo_set(&gen.pwm_servo_oc4, SERVO_SHOOT_POS_DOWN);
-			time_wait_ms(1000);
-		#else
-			time_wait_ms(2000);
 		#endif
+		
+		return 1;
 	}
+	
+	return 0;
 end:	
 	return err;
 }

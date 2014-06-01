@@ -23,6 +23,7 @@
 #ifndef _STRAT_H_
 #define _STRAT_H_
 
+#include <clock_time.h>
 /* compilation flavours */
 //#define HOMOLOGATION
 
@@ -42,8 +43,14 @@
 
 #define HEART_1_X		    140
 #define HEART_1_Y		    1860
-#define HEART_2_X		    1500
-#define HEART_2_Y		    1050
+#define HEART_2_UP_X		    1500
+#define HEART_2_UP_Y		    1350
+#define HEART_2_LEFT_X		    1200
+#define HEART_2_LEFT_Y		    1050
+#define HEART_2_DOWN_X		    1500
+#define HEART_2_DOWN_Y		    750
+#define HEART_2_RIGHT_X		    1800
+#define HEART_2_RIGHT_Y		    1050
 #define HEART_3_X		    2860
 #define HEART_3_Y		    1860
 
@@ -175,33 +182,36 @@
 #endif
 
 /* zones */
-#define ZONE_TREE_1			0
-#define ZONE_TREE_2       	1
-#define ZONE_TREE_3			2
-#define ZONE_TREE_4			3
-#define ZONE_HEART_1	4
-#define ZONE_HEART_2  	5
-#define ZONE_HEART_3 	6
-#define ZONE_FIRE_1   	    7
-#define ZONE_FIRE_2	        8
-#define ZONE_FIRE_3	        9
-#define ZONE_FIRE_4	        10
-#define ZONE_FIRE_5			11
-#define ZONE_FIRE_6			12
-#define ZONE_TORCH_1   		13
-#define ZONE_TORCH_2		14
-#define ZONE_TORCH_3		15
-#define ZONE_TORCH_4        16
-#define ZONE_M_TORCH_1 17
-#define ZONE_M_TORCH_2 18
-#define ZONE_BASKET_1       19
-#define ZONE_BASKET_2       20
-#define ZONE_MAMOOTH_1      21
-#define ZONE_MAMOOTH_2      22
-#define ZONE_FRESCO      	23
-//#define ZONE_HOME_RED       24
-//#define ZONE_HOME_YELLOW    25
-#define ZONES_MAX		    24
+#define ZONE_TREE_1				0
+#define ZONE_TREE_2       		1
+#define ZONE_TREE_3				2
+#define ZONE_TREE_4				3
+#define ZONE_HEART_1			4
+#define ZONE_HEART_2_UP 		5
+#define ZONE_HEART_2_LEFT		6
+#define ZONE_HEART_2_DOWN		7
+#define ZONE_HEART_2_RIGHT		8
+#define ZONE_HEART_3  			9
+#define ZONE_FIRE_1   	    	10
+#define ZONE_FIRE_2	        	11
+#define ZONE_FIRE_3	        	12
+#define ZONE_FIRE_4	        	13
+#define ZONE_FIRE_5				14
+#define ZONE_FIRE_6				15
+#define ZONE_TORCH_1   			16
+#define ZONE_TORCH_2			17
+#define ZONE_TORCH_3			18
+#define ZONE_TORCH_4        	19
+#define ZONE_M_TORCH_1 			20
+#define ZONE_M_TORCH_2 			21
+#define ZONE_BASKET_1    		22
+#define ZONE_BASKET_2       	23
+#define ZONE_MAMOOTH_1      	24
+#define ZONE_MAMOOTH_2      	25
+#define ZONE_FRESCO      		26
+//#define ZONE_HOME_RED       	27
+//#define ZONE_HOME_YELLOW    	28
+#define ZONES_MAX		    	27
 
 /* max number of each elements */
 #define TREE_NB_MAX     4
@@ -241,9 +251,9 @@ typedef struct {
 	uint16_t type;
 	#define ZONE_TYPE_TREE			0
 	#define ZONE_TYPE_FIRE			1
-	#define ZONE_TYPE_HEART	2
+	#define ZONE_TYPE_HEART			2
 	#define ZONE_TYPE_TORCH			3
-	#define ZONE_TYPE_M_TORCH	4
+	#define ZONE_TYPE_M_TORCH		4
 	#define ZONE_TYPE_FRESCO		5
 	#define ZONE_TYPE_MAMOOTH		6
 	#define ZONE_TYPE_BASKET		7
@@ -287,8 +297,8 @@ typedef struct {
   
   
 	/* opponent statistics */
-	int32_t opp_time_zone_ms;
-	int32_t last_time_opp_here; 	/*in ms, since beginning of the match*/
+	microseconds opp_time_zone_us;
+	microseconds last_time_opp_here; 	/*in us, since beginning of the match*/
 	
 	/* which robots can perform this action */
 	uint8_t robot;
@@ -370,6 +380,7 @@ void strat_event_disable(void);
 /* harvest fruits from trees */
 uint8_t strat_harvest_fruits(int16_t x, int16_t y);
 uint8_t strat_leave_fruits(void);
+uint8_t strat_leave_fruits_clean(void);
 
 /********************************************
  * in strat_fire.c 
@@ -405,6 +416,12 @@ void strat_opp_tracking (void);
 
 /* homologation */
 void strat_homologation(void);
+
+
+uint8_t position_exchange_main_down(void);
+uint8_t position_exchange_main_up(void);
+uint8_t robots_position_exchange(uint8_t protect_zone_num);
+
 
 #else /* HOST_VERSION_OA_TEST */
 
