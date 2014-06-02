@@ -106,24 +106,19 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 		return 0;
 	}
 
-	
-	/* discard if secondary robot is in zone  TODO */
-	/*if(strat_infos.sec_robot.zone==ZONE_NUM) 
-	{
-		DEBUG(E_USER_STRAT, "Discarded zone %s, sec robot inside", numzone2name[zone_num]);
-		return 0;
-	}*/
-
 	/* discard avoid and checked zones */
 	if(strat_infos.zones[zone_num].flags & ZONE_AVOID)
-		return 0;	
-	if(strat_infos.zones[zone_num].flags & ZONE_CHECKED)
 		return 0;	
 
 	if(strat_infos.zones[zone_num].type==ZONE_TYPE_BASKET)
 	{
 		if(strat_infos.harvested_trees==0) 
 			return 0;
+	}
+	else
+	{
+		if(strat_infos.zones[zone_num].flags & ZONE_CHECKED)
+			return 0;	
 	}
 
 	return 1;
@@ -412,12 +407,9 @@ uint8_t strat_smart(void)
 	
 	/* get new zone */
 	zone_num = strat_get_new_zone();
-
-	printf_P(PSTR("zone: %d.\r\n"),zone_num);
 		
 	if(zone_num == -1) {
 		printf_P(PSTR("No zone is found\r\n"));
-
 		return END_TRAJ;
 	}
 
@@ -546,7 +538,6 @@ void strat_opp_tracking (void)
 }
 
 
-/* Homologation */
 void strat_homologation(void)
 {
 	uint8_t err;

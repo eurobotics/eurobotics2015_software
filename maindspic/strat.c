@@ -275,8 +275,7 @@ void strat_dump_infos(const char *caller)
 
 
     /* add here print infos */
-	/*printf_P("OPP approximated score: %d\n", strat_infos.opp_score);
-	printf_P("time ms %ld\n", time_get_us2()/1000L);*/
+	printf_P("%d %d\n", opponent1_is_infront(),opponent2_is_infront());
 	
 }
 
@@ -407,14 +406,13 @@ uint8_t strat_main(void)
     strat_infos.zones[ZONE_BASKET_1].flags |= ZONE_AVOID;
     strat_infos.zones[ZONE_FIRE_4].flags |= ZONE_AVOID;
     strat_infos.zones[ZONE_HEART_3].flags |= ZONE_AVOID;
-
-	err=robots_position_exchange(0);
-	printf_P(PSTR("end\r\n"));
+	
+	robots_position_exchange(0);
 	while(1);
 	
     do{
         //err = strat_begin_alcabot();
-        //err = strat_begin();
+        err = strat_begin();
     }while((err & END_RESERVED) == 0);
 
     strat_limit_speed_enable ();

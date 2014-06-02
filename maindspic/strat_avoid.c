@@ -378,10 +378,20 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
    if(type == OPP1) {
 	   get_opponent1_xy(&x, &y);
 	   name = opp1;
+
+       if (y < 500) {
+         w = ROBOT_2ND_WIDTH;
+         l = ROBOT_2ND_LENGTH;
+       }
 	}
 	else if(type == OPP2) {
 	   get_opponent2_xy(&x, &y);
 	   name = opp2;
+
+       if (y < 500) {
+         w = ROBOT_2ND_WIDTH;
+         l = ROBOT_2ND_LENGTH;
+       }
 	}
 	else if(type == ROBOT2ND) {
 		 get_robot_2nd_xy(&x, &y);
