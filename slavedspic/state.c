@@ -488,13 +488,13 @@ void state_do_arm_mode(void)
 	{
 		case I2C_SLAVEDSPIC_MODE_ARM_PICKUP_TORCH_READY:
 
-			/* initial check */
+			/* check if there is room */
 			if (slavedspic.nb_stored_fires >=7) {
 				STMCH_DEBUG("no more room, %d fires stored", slavedspic.nb_stored_fires);
 				break;
 			}
 
-						
+            /* return if both suckers are busy */
 			if (sensor_get (get_sucker_sensor[I2C_SLAVEDSPIC_SUCKER_TYPE_LONG]) &&
 				sensor_get (get_sucker_sensor[I2C_SLAVEDSPIC_SUCKER_TYPE_SHORT]) ) {
 
@@ -502,6 +502,7 @@ void state_do_arm_mode(void)
 				break;
 			}
 
+            /* swap sucker if the one requested is busy */
 			if (sensor_get (get_sucker_sensor[slavedspic.arm_sucker_type])) {
 
 				STMCH_DEBUG("sucker requested is busy, change to the other one");
@@ -512,6 +513,7 @@ void state_do_arm_mode(void)
 					slavedspic.arm_sucker_type=I2C_SLAVEDSPIC_SUCKER_TYPE_LONG;
 			}
 
+            /* decrease shoulder speed if any fire are catched */
 			if (sensor_get (get_sucker_sensor[I2C_SLAVEDSPIC_SUCKER_TYPE_LONG]) ||
 				sensor_get (get_sucker_sensor[I2C_SLAVEDSPIC_SUCKER_TYPE_SHORT]) ) {
 				/* decrease shoulder angle speed */
@@ -541,6 +543,7 @@ void state_do_arm_mode(void)
 			arm_goto_h (slavedspic.arm_h);
 			arm_h_wait_traj_end();
 
+            /* center the fire */
 			slavedspic.arm_wrist_a += SUCKER_A_REL(30);
 			arm_wrist_goto_a_rel (SUCKER_A_REL(30));
 			arm_wrist_wait_traj_end (END_TRAJ);
@@ -549,18 +552,19 @@ void state_do_arm_mode(void)
 
 		case I2C_SLAVEDSPIC_MODE_ARM_STORE:
 
-			/* initial check */
+			/* check if there is room */
 			if (slavedspic.nb_stored_fires >= 7) {
 				/* never should be reach */
 				break;
 			}
 			
+            /* swap sucker if the one requested is busy 
 			if (sensor_get (get_sucker_sensor[slavedspic.arm_sucker_type])) {
 				if (slavedspic.arm_sucker_type==I2C_SLAVEDSPIC_SUCKER_TYPE_LONG)
 					slavedspic.arm_sucker_type=I2C_SLAVEDSPIC_SUCKER_TYPE_SHORT;
 				else
 					slavedspic.arm_sucker_type=I2C_SLAVEDSPIC_SUCKER_TYPE_LONG;
-			}
+			} */
 
 			/* refresh vacuum */
 			vacuum_system_enable (get_vacuum_system[slavedspic.arm_sucker_type]);
@@ -610,17 +614,16 @@ void state_do_arm_mode(void)
 				/* goto above storage */
 				slavedspic.arm_h = 240; //225
 				slavedspic.arm_x = -75;
-				slavedspic.arm_elbow_a = get_elbow_a[slavedspic.arm_sucker_type];
+				slavedspic.arm_elbow_a = arm_elbow_get_a(); 
 				slavedspic.arm_wrist_a = arm_wrist_get_a();
 	
 				arm_goto_hxaa (slavedspic.arm_h, slavedspic.arm_x, 
 							   slavedspic.arm_elbow_a, slavedspic.arm_wrist_a);
 
 				/* goto inside storage */
-				slavedspic.arm_h = 23 + ((slavedspic.nb_stored_fires+1) * 30); //200;
+				slavedspic.arm_h = 25 + ((slavedspic.nb_stored_fires+1) * 30); //200;
 				slavedspic.arm_x = -75;
-				slavedspic.arm_elbow_a = get_elbow_a[slavedspic.arm_sucker_type];
-
+		
 				arm_goto_hxaa (slavedspic.arm_h, slavedspic.arm_x, 
 							   slavedspic.arm_elbow_a, slavedspic.arm_wrist_a);
 
@@ -653,7 +656,7 @@ void state_do_arm_mode(void)
 				/* goto above storage */
 				slavedspic.arm_h = 240; //225
 				slavedspic.arm_x = -70;
-				slavedspic.arm_elbow_a = get_elbow_a[slavedspic.arm_sucker_type];
+				slavedspic.arm_elbow_a = arm_elbow_get_a(); 
 				slavedspic.arm_wrist_a = arm_wrist_get_a();
 	
 				arm_goto_hxaa (slavedspic.arm_h, slavedspic.arm_x, 
@@ -671,12 +674,13 @@ void state_do_arm_mode(void)
 
 		case I2C_SLAVEDSPIC_MODE_ARM_PICKUP_FIRE_READY:
 
-			/* initial check */
+			/* check if there is room */
 			if (slavedspic.nb_stored_fires >=7) {
 				STMCH_DEBUG("no more room, %d fires stored", slavedspic.nb_stored_fires);
 				break;
 			}
 
+            /* return if both suckers are busy */
 			if (sensor_get (get_sucker_sensor[I2C_SLAVEDSPIC_SUCKER_TYPE_LONG]) &&
 				sensor_get (get_sucker_sensor[I2C_SLAVEDSPIC_SUCKER_TYPE_SHORT]) ) {
 
@@ -684,6 +688,7 @@ void state_do_arm_mode(void)
 				break;
 			}
 
+            /* swap sucker if the one requested is busy */
 			if (sensor_get (get_sucker_sensor[slavedspic.arm_sucker_type])) {
 
 				STMCH_DEBUG("sucker requested is busy, change to the other one");
@@ -694,6 +699,7 @@ void state_do_arm_mode(void)
 					slavedspic.arm_sucker_type=I2C_SLAVEDSPIC_SUCKER_TYPE_LONG;
 			}
 
+            /* decrease shoulder speed if any fire are catched */
 			if (sensor_get (get_sucker_sensor[I2C_SLAVEDSPIC_SUCKER_TYPE_LONG]) ||
 				sensor_get (get_sucker_sensor[I2C_SLAVEDSPIC_SUCKER_TYPE_SHORT]) ) {
 				/* decrease shoulder angle speed */
@@ -752,20 +758,7 @@ void state_do_arm_mode(void)
 
 		case I2C_SLAVEDSPIC_MODE_ARM_LOAD_FIRE:
 
-			/* turn on vacuum */
-			vacuum_system_enable (get_vacuum_system[slavedspic.arm_sucker_type]);
-pickup:
-			/* goto above storage */
-			slavedspic.arm_h = 225;
-			slavedspic.arm_x = -75;
-			slavedspic.arm_elbow_a = get_elbow_a[slavedspic.arm_sucker_type];
-			slavedspic.arm_wrist_a = 0;
-
-			arm_goto_hxaa (slavedspic.arm_h, slavedspic.arm_x, 
-						   slavedspic.arm_elbow_a, slavedspic.arm_wrist_a);
-
-
-            /* check if there are fires storaged */
+            /* return if there are no fires stored */
             if (slavedspic.nb_stored_fires == 0) {
 
                 STMCH_DEBUG("%d fires stored", slavedspic.nb_stored_fires);
@@ -775,55 +768,62 @@ pickup:
 			    break;
             }
 
-			/* pickup fire */
-			slavedspic.arm_h = 23 + (slavedspic.nb_stored_fires * 30);
+            /* return if already stored */
+            if (sensor_get (get_sucker_sensor[slavedspic.arm_sucker_type]))
+                break;
 
-			arm_goto_hxaa (slavedspic.arm_h, slavedspic.arm_x, 
-						   slavedspic.arm_elbow_a, slavedspic.arm_wrist_a);
+            /* decrease shoulder speed if any fire are catched */
+			if (sensor_get (get_sucker_sensor[I2C_SLAVEDSPIC_SUCKER_TYPE_LONG]) ||
+				sensor_get (get_sucker_sensor[I2C_SLAVEDSPIC_SUCKER_TYPE_SHORT]) ) {
+				/* decrease shoulder angle speed */
+				ax12_user_write_int(&gen.ax12, AX12_ID_SHOULDER, AA_MOVING_SPEED_L, 125);
+			}
+            
+			/* turn on vacuum */
+			vacuum_system_enable (get_vacuum_system[slavedspic.arm_sucker_type]);
+pickup:		    
+            /* select sucker */
+		    slavedspic.arm_h = 225;
+		    slavedspic.arm_x = -65;
+		    slavedspic.arm_elbow_a = get_elbow_a[slavedspic.arm_sucker_type];
+		    slavedspic.arm_wrist_a = 0;
 
-			/* goto avove storage */
-			slavedspic.arm_h = 240;
-			arm_goto_hxaa (slavedspic.arm_h, slavedspic.arm_x, 
-						   slavedspic.arm_elbow_a, slavedspic.arm_wrist_a);
+		    arm_goto_hxaa (slavedspic.arm_h, slavedspic.arm_x, 
+					       slavedspic.arm_elbow_a, slavedspic.arm_wrist_a);
 
+            /* goto above storage */
+		    slavedspic.arm_x = -75;
+		    arm_goto_hxaa (slavedspic.arm_h, slavedspic.arm_x, 
+					       slavedspic.arm_elbow_a, slavedspic.arm_wrist_a);
 
+		    /* pickup fire */
+		    slavedspic.arm_h = 25 + ((slavedspic.nb_stored_fires+1) * 30);
+		    arm_goto_hxaa (slavedspic.arm_h, slavedspic.arm_x, 
+					       slavedspic.arm_elbow_a, slavedspic.arm_wrist_a);
+            time_wait_ms (100);
 
-
-			/* decrease shoulder angle speed */
-			ax12_user_write_int(&gen.ax12, AX12_ID_SHOULDER, AA_MOVING_SPEED_L, 300);
-
-			/* goto a bit out and reset wrist angle */
-			slavedspic.arm_h = 240;
-			slavedspic.arm_x = -20;
-			slavedspic.arm_wrist_a = 0;
-			arm_goto_hxaa (slavedspic.arm_h, slavedspic.arm_x, 
-						   slavedspic.arm_elbow_a, slavedspic.arm_wrist_a);
-
-            /* check fire is catched */
+            /* check fire */
             if (!sensor_get (get_sucker_sensor[slavedspic.arm_sucker_type])) {
-                STMCH_DEBUG("finding fire 1st try");
-	            slavedspic.arm_wrist_a += SUCKER_A_REL(15);
-			    arm_wrist_goto_a_rel (SUCKER_A_REL(15));
-			    arm_wrist_wait_traj_end (END_TRAJ);
-                time_wait_ms (100);
+                STMCH_DEBUG("fire %d not found", slavedspic.nb_stored_fires);
 
-			    if (!sensor_get (get_sucker_sensor[slavedspic.arm_sucker_type])) {
-                    STMCH_DEBUG("finding fire 2nd try");
-	                slavedspic.arm_wrist_a += SUCKER_A_REL(15);
-			        arm_wrist_goto_a_rel (SUCKER_A_REL(15));
-			        arm_wrist_wait_traj_end (END_TRAJ);
-                    time_wait_ms (100);
-
-			        if (!sensor_get (get_sucker_sensor[slavedspic.arm_sucker_type])) {
-					        slavedspic.nb_stored_fires --;
-					        STMCH_DEBUG("fire not found");
-					        STMCH_DEBUG("%d fires stored", slavedspic.nb_stored_fires);
-					        goto pickup;			
-			        }
-			    }
+                slavedspic.nb_stored_fires --;
+                STMCH_DEBUG("go next (%d)", slavedspic.nb_stored_fires);
+                goto pickup;
             }
 
+		    /* goto avove storage */
+		    slavedspic.arm_h = 225;
+		    arm_goto_hxaa (slavedspic.arm_h, slavedspic.arm_x, 
+					       slavedspic.arm_elbow_a, slavedspic.arm_wrist_a);
 
+		    /* decrease shoulder angle speed */
+		    ax12_user_write_int(&gen.ax12, AX12_ID_SHOULDER, AA_MOVING_SPEED_L, 125);
+
+		    /* goto safe position */
+		    slavedspic.arm_x = -65;
+		    arm_goto_hxaa (slavedspic.arm_h, slavedspic.arm_x, 
+					       slavedspic.arm_elbow_a, slavedspic.arm_wrist_a);
+    
 			/* restore shoulder angle speed */
 			ax12_user_write_int(&gen.ax12, AX12_ID_SHOULDER, AA_MOVING_SPEED_L, 0x3ff);
 
