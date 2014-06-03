@@ -106,12 +106,12 @@ extern parse_pgm_inst_t cmd_arm_mode;
 extern parse_pgm_inst_t cmd_arm_mode2;
 extern parse_pgm_inst_t cmd_arm_mode3;
 extern parse_pgm_inst_t cmd_state2;
-
+extern parse_pgm_inst_t cmd_state3;
 
 #if 0
 //extern parse_pgm_inst_t cmd_state_debug;
 //extern parse_pgm_inst_t cmd_state1;
-extern parse_pgm_inst_t cmd_state3;
+
 //extern parse_pgm_inst_t cmd_state_machine;
 //extern parse_pgm_inst_t cmd_test;
 #endif
@@ -184,13 +184,14 @@ parse_pgm_ctx_t main_ctx[]  = {
 	(parse_pgm_inst_t *)&cmd_arm_mode2,
 	(parse_pgm_inst_t *)&cmd_arm_mode3,
 	(parse_pgm_inst_t *)&cmd_state2,
+	(parse_pgm_inst_t *)&cmd_state3,
 
 #if 0
 
 	//(parse_pgm_inst_t *)&cmd_state_debug,
 	//(parse_pgm_inst_t *)&cmd_state1,
 	(parse_pgm_inst_t *)&cmd_state2,	
-	(parse_pgm_inst_t *)&cmd_state3,
+
 	//(parse_pgm_inst_t *)&cmd_state_machine,
 	//(parse_pgm_inst_t *)&cmd_test,
 #endif
