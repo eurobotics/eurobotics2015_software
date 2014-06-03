@@ -706,6 +706,10 @@ void state_do_arm_mode(void)
 					slavedspic.arm_sucker_type=I2C_SLAVEDSPIC_SUCKER_TYPE_LONG;
 			}
 
+
+			/* turn on vacuum */
+			vacuum_system_enable (get_vacuum_system[slavedspic.arm_sucker_type]);
+
             /* decrease shoulder speed if any fire are catched */
 			if (sensor_get (get_sucker_sensor[I2C_SLAVEDSPIC_SUCKER_TYPE_LONG]) ||
 				sensor_get (get_sucker_sensor[I2C_SLAVEDSPIC_SUCKER_TYPE_SHORT]) ) {
@@ -723,8 +727,6 @@ void state_do_arm_mode(void)
 			arm_goto_hxaa (slavedspic.arm_h, slavedspic.arm_x, 
 						   slavedspic.arm_elbow_a, slavedspic.arm_wrist_a);
 
-			/* turn on vacuum */
-			vacuum_system_enable (get_vacuum_system[slavedspic.arm_sucker_type]);
 
 			break;
 
@@ -746,20 +748,9 @@ void state_do_arm_mode(void)
 						   slavedspic.arm_elbow_a, slavedspic.arm_wrist_a);
 
 			/* go up a little */
-			arm_goto_hxaa (slavedspic.arm_h + 20, slavedspic.arm_x, 
+			arm_goto_hxaa (slavedspic.arm_h + 30, slavedspic.arm_x, 
 						   slavedspic.arm_elbow_a, slavedspic.arm_wrist_a);
-
-			/* XXX dependint on fire orientation, turn wrist */
-			if (slavedspic.arm_level==I2C_SLAVEDSPIC_LEVEL_FIRE_GROUND_PUSH) {
-				slavedspic.arm_wrist_a += SUCKER_A_REL(-15);
-				arm_wrist_goto_a_rel (SUCKER_A_REL(-15));
-			}
-			else {
-				slavedspic.arm_wrist_a += SUCKER_A_REL(-50);
-				arm_wrist_goto_a_rel (SUCKER_A_REL(-50));
-			}
-			arm_wrist_wait_traj_end (END_TRAJ|END_TIME);
-			
+		
 			break;
 
 
@@ -837,7 +828,7 @@ pickup:
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_ARM_FLIP_FIRE:
-
+            /* TODO */
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_ARM_PUTDOWN_FIRE:
@@ -850,7 +841,7 @@ pickup:
 
 			/* put down fire */
 			slavedspic.arm_level = mainboard_command.arm.level;
-			slavedspic.arm_h = get_shoulder_h[slavedspic.arm_level];
+			slavedspic.arm_h = 10 + get_shoulder_h[slavedspic.arm_level];
 
 			slavedspic.arm_x =  ((uint16_t)mainboard_command.arm.x_msb << 8) & 0xFF00;
 			slavedspic.arm_x |= ((uint16_t)mainboard_command.arm.x_lsb) & 0x00FF;
@@ -860,20 +851,68 @@ pickup:
             /* set fire angle */
 			slavedspic.arm_sucker_angle = mainboard_command.arm.sucker_angle;
 			slavedspic.arm_wrist_a = slavedspic.arm_sucker_angle;
-            //slavedspic.arm_wrist_a = arm_wrist_get_a ();
+            //arm_wrist_a (slavedspic.arm_wrist_a)
             //arm_wrist_wait_traj_end(END_TRAJ);
 
             /* putdown fire */
 			arm_goto_hxaa (slavedspic.arm_h, slavedspic.arm_x, 
 						   slavedspic.arm_elbow_a, slavedspic.arm_wrist_a);
 
+            break;
+
+		case I2C_SLAVEDSPIC_MODE_ARM_PUTDOWN_FIRE_INV:
+
+			/* refresh vacuum */
+			vacuum_system_enable (get_vacuum_system[slavedspic.arm_sucker_type]);
+
+			/* decrease shoulder angle speed */
+			ax12_user_write_int(&gen.ax12, AX12_ID_SHOULDER, AA_MOVING_SPEED_L, 125);
+
+			/* put down fire with 45 deg elbow angle relative to ground  */
+			slavedspic.arm_level = mainboard_command.arm.level;
+			slavedspic.arm_h = 10 + get_shoulder_h[slavedspic.arm_level];
+
+			slavedspic.arm_x =  ((uint16_t)mainboard_command.arm.x_msb << 8) & 0xFF00;
+			slavedspic.arm_x |= ((uint16_t)mainboard_command.arm.x_lsb) & 0x00FF;
+			
+			slavedspic.arm_elbow_a =
+             (slavedspic.arm_sucker_type==I2C_SLAVEDSPIC_SUCKER_TYPE_LONG? 45:135);
+
+            /* set fire angle */
+			slavedspic.arm_sucker_angle = mainboard_command.arm.sucker_angle;
+			slavedspic.arm_wrist_a = slavedspic.arm_sucker_angle;
+            //arm_wrist_a (slavedspic.arm_wrist_a)
+            //arm_wrist_wait_traj_end(END_TRAJ);
+
+            /* putdown fire */
+			arm_goto_hxaa (slavedspic.arm_h, slavedspic.arm_x, 
+						   slavedspic.arm_elbow_a, slavedspic.arm_wrist_a);
+
+            break;
+
+		case I2C_SLAVEDSPIC_MODE_ARM_RELEASE_FIRE:
+
 			/* turn off vacuum */
 			vacuum_system_disable (get_vacuum_system[slavedspic.arm_sucker_type]);
             time_wait_ms (100);
 
+            /* turn elbow, case of inverted color */
+			slavedspic.arm_elbow_a = get_elbow_a[slavedspic.arm_sucker_type]; 
+            arm_elbow_a (slavedspic.arm_elbow_a)
+            arm_elbow_wait_traj_end(END_TRAJ);
+
 			/* go up */
-			arm_goto_hxaa (slavedspic.arm_h+50, slavedspic.arm_x, 
+			slavedspic.arm_h = 100 + get_shoulder_h[slavedspic.arm_level];
+			slavedspic.arm_wrist_a = arm_wrist_get_a();
+
+			slavedspic.arm_x =  ((uint16_t)mainboard_command.arm.x_msb << 8) & 0xFF00;
+			slavedspic.arm_x |= ((uint16_t)mainboard_command.arm.x_lsb) & 0x00FF;
+
+			arm_goto_hxaa (slavedspic.arm_h, slavedspic.arm_x, 
 						   slavedspic.arm_elbow_a, slavedspic.arm_wrist_a);
+
+            /* decrease the number of stored fires */
+            slavedspic.nb_stored_fires--;            
 
 			break;
 
