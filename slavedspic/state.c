@@ -888,6 +888,9 @@ pickup:
 	/* restore shoulder angle speed */
 	ax12_user_write_int(&gen.ax12, AX12_ID_SHOULDER, AA_MOVING_SPEED_L, 0x3ff);
 
+	/* restore elbow angle speed */
+	//ax12_user_write_int(&gen.ax12, AX12_ID_ELBOW, AA_MOVING_SPEED_L, 0x3ff);
+
 	/* notice status and update mode*/
 	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
