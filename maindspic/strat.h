@@ -43,6 +43,8 @@
 
 #define HEART_1_X		    140
 #define HEART_1_Y		    1860
+#define HEART_2_X		    1500
+#define HEART_2_Y   		1050
 #define HEART_2_UP_X		    1500
 #define HEART_2_UP_Y		    1350
 #define HEART_2_LEFT_X		    1200

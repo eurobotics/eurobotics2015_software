@@ -331,6 +331,7 @@ end:
 uint8_t strat_goto_mobile_torch (uint8_t zone_num)
 {
     int16_t robot_x, robot_y, x, y;
+    double temp_x, temp_y;
 
     /* depending on robot and mobiel torch position */
     position_get_x_s16(&robot_x),
@@ -341,16 +342,19 @@ uint8_t strat_goto_mobile_torch (uint8_t zone_num)
     /* 3 init points depending on robot position */
 
     /* top */
-    x -= MOBIL_TORCH_X_OFFSET;
-    y += DIST_MOBIL_TORCH_OVER;
+    temp_x = -MOBIL_TORCH_X_OFFSET;
+    temo_y = DIST_MOBIL_TORCH_OVER;
 
     /* bottom-right */
     if ((robot_y < y) && (robot_x > x))
-        rotate(x, y, RAD(-120));
+        rotate(&x, &y, RAD(-120));
 
     /* bottom-left */
     else
-        rotate(x, y, RAD(120));
+        rotate(&x, &y, RAD(120));
+
+    x += temp_x;
+    y += temp_y;
 
     /* ready for pickup */
     i2c_slavedspic_wait_ready();
@@ -438,5 +442,56 @@ inline uint8_t strat_pickup_mobile_torch_mid (uint8_t zone_num) {
 inline uint8_t strat_pickup_mobile_torch_bot (uint8_t zone_num) {
     return __strat_pickup_mobile_torch (zone_num, I2C_SLAVEDSPIC_LEVEL_FIRE_TORCH_DOWN);
 }
+
+
+/* goto heart of fire */
+uint8_t strat_goto_mobile_torch (uint8_t zone_num)
+{
+    int16_t robot_x, robot_y, x, y;
+
+    /* depending on robot and mobiel torch position */
+    position_get_x_s16(&robot_x),
+	position_get_y_s16(&robot_y),
+    x = COLOR_X(strat_infos.zones[zone_num].x);
+    y = strat_infos.zones[zone_num].y;
+
+    /* color inversion */
+    if (mainboard.our_color == I2C_COLOR_RED) {
+        if (zone_num == ZONE_HEART_1)
+            zone_num = ZONE_HEART_3;
+        else if (zone_num == ZONE_HEART_3)
+            zone_num = ZONE_HEART_1;
+    }
+
+    /* corner hearts */
+    if (zone_num == ZONE_HEART_1) {
+        x = HEART_FIRE_OFFSET_X;
+        y = AREA_Y - HEART_FIRE_OFFSET_Y;
+    }
+    else if (zone_num == ZONE_HEART_3) {
+        x = AREA_X - HEART_FIRE_OFFSET_Y;
+        y = AREA_Y - HEART_FIRE_OFFSET_X;
+    }
+    /* central heart */
+    else {
+        x = HEART_FIRE_OFFSET_X;
+        y = -HEART_FIRE_OFFSET_Y;
+        
+        if (zone_num == ZONE_HEART_2_UP)
+            rotate(&x, &y, RAD(135));
+        else if (zone_num == ZONE_HEART_2_DOWN)
+            rotate(&x, &y, RAD(-45));
+        else if (zone_num == ZONE_HEART_2_RIGHT)
+            rotate(&x, &y, RAD(45));
+        else if (zone_num == ZONE_HEART_2_LEFT)
+            rotate(&x, &y, RAD(-135));
+
+        x += HEART_2_X;
+        y += HEART_2_Y;
+    }
+
+}
+
+
 
 
