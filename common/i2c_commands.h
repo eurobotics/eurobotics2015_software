@@ -71,20 +71,12 @@ struct i2c_gpios_status {
 struct i2c_slavedspic_status{
 	struct i2c_cmd_hdr hdr;
 
-
-  	/* TODO */
-	
-  	/* actuators */
-
-   	/* rd sensors */
-
-  	/* wr sensors */
-
 	/* infos */
 	uint8_t status;
 #define I2C_SLAVEDSPIC_STATUS_BUSY		1
 #define I2C_SLAVEDSPIC_STATUS_READY		0
-
+    
+    uint8_t nb_stored_fires;
 };
 
 
