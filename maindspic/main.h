@@ -271,6 +271,8 @@ struct mainboard
 
 	int32_t dac_l;  /* current left dac */
 	int32_t dac_r;  /* current right dac */
+
+	uint8_t stored_fire_color[10];
 };
 
 
