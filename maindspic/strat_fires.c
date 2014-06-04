@@ -167,7 +167,7 @@ uint8_t strat_goto_orphan_fire (uint8_t zone_num)
 }
 
 /* harvest orphan fires  */
-uint8_t strat_harvest_orphan_fire(int16_t x, int16_t y)
+uint8_t strat_harvest_orphan_fire (int16_t x, int16_t y)
 {
 //#define DEBUG_STRAT_FIRES
 #ifdef DEBUG_STRAT_FIRES
@@ -195,14 +195,32 @@ uint8_t strat_harvest_orphan_fire(int16_t x, int16_t y)
 		ERROUT(err);
 
     /* ready for push/pull */
-    i2c_slavedspic_mode_ready_for_pickup_fire(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG, level);
-
+    i2c_slavedspic_mode_ready_for_pickup_fire(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG, 
+                                              I2C_SLAVEDSPIC_LEVEL_FIRE_PUSH_PULL);
+    i2c_slavedspic_wait_ready();
 
     /* push/pull fire */
+    if (distance_from_robot (x,y) < DIST_ORPHAN_FIRE_PUSH) {
+        d = -DIST_ORPHAN_FIRE_AVOBE;
+        level = I2C_SLAVEDSPIC_LEVEL_FIRE_GROUND_PULL;
+    }
+    else {
+        d = DIST_ORPHAN_FIRE_AVOBE;
+        level = I2C_SLAVEDSPIC_LEVEL_FIRE_GROUND_PUSH;
+    }
+    trajectory_d_rel(&mainboard.traj, d);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+    if (!TRAJ_SUCCESS(err))
+	   ERROUT(err);
 
     /* pickup fire */
+    i2c_slavedspic_mode_pickup_fire(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG, level);
+    i2c_slavedspic_wait_ready();
 
 	/* store fire */
+    i2c_slavedspic_mode_store_fire(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG);
+    i2c_slavedspic_wait_ready();
+
 
 end:
 	strat_set_speed(old_spdd, old_spda);	
