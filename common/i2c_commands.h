@@ -216,9 +216,12 @@ struct i2c_cmd_slavedspic_set_mode {
 #define I2C_SLAVEDSPIC_MODE_ARM_RELEASE_FIRE		10
 #define I2C_SLAVEDSPIC_MODE_ARM_HIDE				11
 
-			uint8_t x_lsb;
-			uint8_t x_msb;
-	
+			uint8_t sucker_type;
+#define I2C_SLAVEDSPIC_SUCKER_TYPE_SHORT	0
+#define I2C_SLAVEDSPIC_SUCKER_TYPE_LONG		1
+#define I2C_SLAVEDSPIC_SUCKER_TYPE_MAX		2
+#define I2C_SLAVEDSPIC_SUCKER_TYPE_AUTO		3
+
 			uint8_t level;
 #define I2C_SLAVEDSPIC_LEVEL_FIRE_GROUND_PUSH	0
 #define I2C_SLAVEDSPIC_LEVEL_FIRE_GROUND_PULL	1
@@ -231,13 +234,11 @@ struct i2c_cmd_slavedspic_set_mode {
 #define I2C_SLAVEDSPIC_LEVEL_FIRE_PUSH_PULL		8
 #define I2C_SLAVEDSPIC_LEVEL_MAX				9
 
-			uint8_t sucker_type;
-#define I2C_SLAVEDSPIC_SUCKER_TYPE_SHORT	0
-#define I2C_SLAVEDSPIC_SUCKER_TYPE_LONG		1
-#define I2C_SLAVEDSPIC_SUCKER_TYPE_MAX		2
-#define I2C_SLAVEDSPIC_SUCKER_TYPE_AUTO		3
-
+			uint8_t x_lsb;
+			uint8_t x_msb;
+	
 			int8_t sucker_angle; /* XXX +/- 90 deg */
+
 		} arm;
 
 		/* add more here */

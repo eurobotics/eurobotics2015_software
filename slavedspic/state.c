@@ -102,18 +102,18 @@ int8_t state_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd)
 	if (mainboard_command.mode == POWER_OFF) {
 
 		/* lift */
-		#ifdef notyet
 		slavedspic.lift.on = 0;
 		dac_mc_set(&gen.dac_mc_left, 0);
 		BRAKE_ON();
-		#endif
 
 		/* ax12 */
 		ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_TORQUE_ENABLE, 0x00);
 
 		wait_ms(100);
 		pwm_servo_disable();
-      
+        vacuum_system_disable (1);
+        vacuum_system_disable (2);
+
       state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 	}
 	else {
@@ -938,7 +938,7 @@ pickup:
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_ARM_HIDE:
-			arm_goto_hxaa (200, -75, 180, 0);
+			arm_goto_hxaa (200, -75, get_elbow_a[slavedspic.arm_sucker_type], 0);
 			break;
 
 		default:
@@ -949,7 +949,7 @@ pickup:
 	ax12_user_write_int(&gen.ax12, AX12_ID_SHOULDER, AA_MOVING_SPEED_L, 0x3ff);
 
 	/* restore elbow angle speed */
-	//ax12_user_write_int(&gen.ax12, AX12_ID_ELBOW, AA_MOVING_SPEED_L, 0x3ff);
+	ax12_user_write_int(&gen.ax12, AX12_ID_ELBOW, AA_MOVING_SPEED_L, 0x3ff);
 
 	/* notice status and update mode*/
 	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);

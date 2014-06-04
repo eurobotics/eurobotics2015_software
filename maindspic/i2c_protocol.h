@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Revision : $Id: i2c_protocol.h,v 1.5 2009/05/27 20:04:07 zer0 Exp $
+ *  Revision : $Id$
  *
  */
 
@@ -86,64 +86,24 @@ int8_t i2c_slavedspic_mode_harvest_fruits(uint8_t mode);
 int8_t i2c_slavedspic_mode_dump_fruits(uint8_t mode);
 
 
-#ifdef notyet
-
-/****** LOW LEVEL FUNCTIONS */
-
-/* set arms */
-int8_t i2c_slavedspic_set_arm(uint8_t side, uint8_t elbow_height_mm, uint8_t elbow_yaw_deg, int8_t wrist_roll_deg);
-
-/* set vacum */
-int8_t i2c_slavedspic_set_vacuum_motor(uint8_t duty);
-
-/* set vacum flow */
-int8_t i2c_slavedspic_set_vacuum_presure(uint8_t on);
+/* fires and torches modes */
+int8_t i2c_slavedspic_mode_ready_for_pickup_torch (uint8_t sucker_type);
+int8_t i2c_slavedspic_mode_pickup_torch (uint8_t sucker_type);
 
 
-/****** HI LEVEL FUNCTIONS */
+int8_t i2c_slavedspic_mode_ready_for_pickup_fire (uint8_t sucker_type, uint8_t level);
+int8_t i2c_slavedspic_mode_pickup_fire (uint8_t sucker_type, uint8_t level);
 
-/* FIRES STUFF */
-
-/* prepare for pick up fire */
-int8_t i2c_slavedspic_mode_prep_pickup_fire(uint8_t side, uint8_t level, uint8_t elbow_yaw_deg, int8_t wrist_roll_deg);
-
-/* pick up fire */
-int8_t i2c_slavedspic_mode_pickup_fire(uint8_t side, uint8_t level);
-
-/* store fire */
-int8_t i2c_slavedspic_mode_store_fire(uint8_t side);
-
-/* load fires on arms */
-int8_t i2c_slavedspic_mode_load_fire(uint8_t nb_left, uint8_t nb_right);
-
-/* prepare for drag fires */
-int8_t i2c_slavedspic_mode_prep_drag_fire(uint8_t side, uint8_t level, uint8_t elbow_yaw_deg, int8_t wrist_yaw_deg);
-
-/* drag fires */
-int8_t i2c_slavedspic_mode_drag_fire(uint8_t side, uint8_t level);
-
-/* prepare for turn fires */
-int8_t i2c_slavedspic_mode_prep_turn_fires(uint8_t side, uint8_t level, uint8_t elbow_yaw_deg);
-
-/* turn fires */
-int8_t i2c_slavedspic_mode_turn_fires(uint8_t side, uint8_t level);
-
-/* hide arm */
-int8_t i2c_slavedspic_mode_hide_arms(uint8_t side);
+int8_t i2c_slavedspic_mode_store_fire (uint8_t sucker_type);
+int8_t i2c_slavedspic_mode_load_fire (uint8_t sucker_type);
 
 
-/* TREES AND FRUITS STUFF */
+int8_t i2c_slavedspic_mode_putdown_fire 
+        (uint8_t sucker_type, uint8_t level, int16_t x, int8_t sucker_angle);
+int8_t i2c_slavedspic_mode_putdown_fire_inv
+        (uint8_t sucker_type, uint8_t level, int16_t x);
 
-/* prepare for scanning toxic fruits */
-int8_t i2c_slavedspic_mode_prep_toxic_fruit(uint8_t side, uint8_t level, uint8_t elbow_yaw_deg);
+int8_t i2c_slavedspic_mode_release_fire (uint8_t sucker_type);
 
-/* pickup toxic fruit */
-int8_t i2c_slavedspic_mode_pickup_toxic_fruit(uint8_t side, uint8_t level, uint8_t elbow_yaw_deg);
-
-/* drag toxic fruit */
-int8_t i2c_slavedspic_mode_drop_toxic_fruit(uint8_t side);
-
-
-#endif /* notyet */
 
 #endif
