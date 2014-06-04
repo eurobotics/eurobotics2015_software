@@ -215,7 +215,7 @@ uint8_t strat_harvest_orphan_fire (int16_t x, int16_t y)
     i2c_slavedspic_wait_ready();
 
     /* push/pull fire */
-    if (distance_from_robot (x,y) < DIST_ORPHAN_FIRE_PUSH) {
+    if (ABS(distance_from_robot (x,y) - DIST_ORPHAN_FIRE_PUSH) > 30) {
         d = -DIST_ORPHAN_FIRE_OVER;
         level = I2C_SLAVEDSPIC_LEVEL_FIRE_GROUND_PULL;
     }
@@ -257,8 +257,8 @@ uint8_t strat_goto_torch (uint8_t zone_num)
     y = strat_infos.zones[zone_num].y;
 
     /* init x,y correction */
-    if (zone_num == ZONE_TORCH_1)       { x += COLOR_SIGN(DIST_ORPHAN_FIRE_PUSH); y+=COLOR_SIGN(5); }
-    else if (zone_num == ZONE_TORCH_4)  { x -= COLOR_SIGN(DIST_ORPHAN_FIRE_PUSH); y-=COLOR_SIGN(5); }
+    if (zone_num == ZONE_TORCH_1)       { x += COLOR_SIGN(DIST_ORPHAN_FIRE_PUSH); y+=5; }
+    else if (zone_num == ZONE_TORCH_4)  { x -= COLOR_SIGN(DIST_ORPHAN_FIRE_PUSH); y+=5; }
 
     else if ((zone_num == ZONE_TORCH_2) || (zone_num == ZONE_TORCH_3))
     	{ x +=5 ; y-=DIST_ORPHAN_FIRE_PUSH; }
@@ -285,7 +285,7 @@ uint8_t strat_harvest_torch (uint8_t zone_num)
 #define wait_press_key()
 #endif
 
-#define DIST_TORCH_OVER 140
+#define DIST_TORCH_OVER 70
 
     uint8_t err = 0;
 	uint16_t old_spdd, old_spda;
@@ -362,7 +362,7 @@ uint8_t strat_goto_mobile_torch (uint8_t zone_num)
 
     /* top */
     temp_x = -MOBIL_TORCH_X_OFFSET;
-    temp_y = MOBIL_TORCH_X_OFFSET;
+    temp_y = MOBIL_TORCH_Y_OFFSET;
 
     /* bottom-right */
     if ((robot_y < y) && (robot_x > x))
@@ -420,6 +420,9 @@ static uint8_t __strat_pickup_mobile_torch (uint8_t zone_num, uint8_t level)
 
     /* ready for pickup */
     i2c_slavedspic_wait_ready();
+    i2c_slavedspic_mode_ready_for_pickup_fire(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG,
+                                              level);
+
 
     /* pickup fire */
     i2c_slavedspic_mode_pickup_fire(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG, level);

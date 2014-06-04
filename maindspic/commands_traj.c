@@ -1283,8 +1283,10 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
     else if (!strcmp_P(res->arg1, PSTR("fire")))
         zone_num = ZONE_FIRE_1 + res->arg2 - 1;
 
-    else if (!strcmp_P(res->arg1, PSTR("heart")))
+    else if (!strcmp_P(res->arg1, PSTR("heart"))) {
         zone_num = ZONE_HEART_1 + res->arg2 - 1;
+		strat_make_puzzle_on_heart (ZONE_HEART_1);
+	}
 
     else if (!strcmp_P(res->arg1, PSTR("torch")))
         zone_num = ZONE_TORCH_1 + res->arg2 - 1;
@@ -1303,10 +1305,10 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 
 
     if (zone_num < ZONES_MAX) {
-        err = strat_goto_zone(ZONE_FIRE_1 + res->arg2 - 1);
+        err = strat_goto_zone(zone_num);
         printf_P(PSTR("goto returned %s\r\n"), get_err(err));    
 
-        err = strat_work_on_zone(ZONE_FIRE_1 + res->arg2 - 1);
+        err = strat_work_on_zone(zone_num);
         printf_P(PSTR("work returned %s\r\n"), get_err(err));
     }
 

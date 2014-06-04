@@ -535,7 +535,7 @@ void state_do_arm_mode(void)
 			if (sensor_get (get_sucker_sensor[I2C_SLAVEDSPIC_SUCKER_TYPE_LONG]) ||
 				sensor_get (get_sucker_sensor[I2C_SLAVEDSPIC_SUCKER_TYPE_SHORT]) ) {
 				/* decrease shoulder angle speed */
-				ax12_user_write_int(&gen.ax12, AX12_ID_SHOULDER, AA_MOVING_SPEED_L, 310);
+				ax12_user_write_int(&gen.ax12, AX12_ID_SHOULDER, AA_MOVING_SPEED_L, 150);
 			}
 
 			/* goto position and turn on the vaccum */
@@ -580,7 +580,7 @@ void state_do_arm_mode(void)
 			vacuum_system_enable (get_vacuum_system[slavedspic.arm_sucker_type]);
 
 			/* decrease shoulder angle speed */
-			ax12_user_write_int(&gen.ax12, AX12_ID_SHOULDER, AA_MOVING_SPEED_L, 310);
+			ax12_user_write_int(&gen.ax12, AX12_ID_SHOULDER, AA_MOVING_SPEED_L, 150);
 
 			/* stack up to 5 fires + 2 more on arm */
 			if (slavedspic.nb_stored_fires < 5)
@@ -687,7 +687,7 @@ void state_do_arm_mode(void)
 			if (sensor_get (get_sucker_sensor[I2C_SLAVEDSPIC_SUCKER_TYPE_LONG]) ||
 				sensor_get (get_sucker_sensor[I2C_SLAVEDSPIC_SUCKER_TYPE_SHORT]) ) {
 				/* decrease shoulder angle speed */
-				ax12_user_write_int(&gen.ax12, AX12_ID_SHOULDER, AA_MOVING_SPEED_L, 310);
+				ax12_user_write_int(&gen.ax12, AX12_ID_SHOULDER, AA_MOVING_SPEED_L, 150);
 			}
 
 			/* goto position */
@@ -768,7 +768,7 @@ pickup:
 			if (sensor_get (get_sucker_sensor[I2C_SLAVEDSPIC_SUCKER_TYPE_LONG]) ||
 				sensor_get (get_sucker_sensor[I2C_SLAVEDSPIC_SUCKER_TYPE_SHORT]) ) {
 				/* decrease shoulder angle speed */
-				ax12_user_write_int(&gen.ax12, AX12_ID_SHOULDER, AA_MOVING_SPEED_L, 310);
+				ax12_user_write_int(&gen.ax12, AX12_ID_SHOULDER, AA_MOVING_SPEED_L, 150);
 			}
             
 			/* turn on vacuum */
@@ -828,7 +828,7 @@ pickup:
 			arm_h_wait_traj_end();
 
 		    /* decrease shoulder angle speed */
-		    ax12_user_write_int(&gen.ax12, AX12_ID_SHOULDER, AA_MOVING_SPEED_L, 310);
+		    ax12_user_write_int(&gen.ax12, AX12_ID_SHOULDER, AA_MOVING_SPEED_L, 150);
 
 		    /* goto safe position */
 		    slavedspic.arm_x = -65;
@@ -850,7 +850,7 @@ pickup:
 			vacuum_system_enable (get_vacuum_system[slavedspic.arm_sucker_type]);
 
 			/* decrease shoulder angle speed */
-			ax12_user_write_int(&gen.ax12, AX12_ID_SHOULDER, AA_MOVING_SPEED_L, 310);
+			ax12_user_write_int(&gen.ax12, AX12_ID_SHOULDER, AA_MOVING_SPEED_L, 150);
 
 			/* put down fire */
 			slavedspic.arm_level = mainboard_command.arm.level;
@@ -877,7 +877,7 @@ pickup:
 			vacuum_system_enable (get_vacuum_system[slavedspic.arm_sucker_type]);
 
 			/* decrease shoulder angle speed */
-			ax12_user_write_int(&gen.ax12, AX12_ID_SHOULDER, AA_MOVING_SPEED_L, 310);
+			ax12_user_write_int(&gen.ax12, AX12_ID_SHOULDER, AA_MOVING_SPEED_L, 150);
 
 			/* put down fire with 45 deg elbow angle relative to ground  */
 			slavedspic.arm_level = mainboard_command.arm.level;

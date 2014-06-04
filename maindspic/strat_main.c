@@ -183,6 +183,18 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 		}
 
 	}
+	else if (strat_infos.zones[zone_num].type == ZONE_TYPE_FIRE) {
+		strat_goto_orphan_fire (zone_num);
+	}
+	else if (strat_infos.zones[zone_num].type == ZONE_TYPE_TORCH) {
+		strat_goto_torch (zone_num);
+	}
+	else if (strat_infos.zones[zone_num].type == ZONE_TYPE_HEART) {
+		strat_goto_heart_fire (zone_num);
+	}
+	else if (strat_infos.zones[zone_num].type == ZONE_TYPE_M_TORCH) {
+		strat_goto_mobile_torch (zone_num);
+	}
 	else {
 		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x), 
 									strat_infos.zones[zone_num].init_y,  
@@ -236,36 +248,41 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 		case ZONE_FIRE_4:
 		case ZONE_FIRE_5:
 		case ZONE_FIRE_6:
-		/* pick up fire from the ground */
-		/* turn fire */
+			strat_harvest_orphan_fire (COLOR_X (strat_infos.zones[zone_num].x),
+										 		strat_infos.zones[zone_num].y);
 			break;
 			
 		case ZONE_TORCH_1:
 		case ZONE_TORCH_2:
 		case ZONE_TORCH_3:
 		case ZONE_TORCH_4:
-		/* take fire from the torch */
+			strat_harvest_torch (zone_num);
 			break;
 			
 		case ZONE_HEART_1:
+		case ZONE_HEART_3:
+			strat_make_puzzle_on_heart (zone_num);
+			break;
+
 		case ZONE_HEART_2_UP:
 		case ZONE_HEART_2_LEFT:
 		case ZONE_HEART_2_DOWN:
 		case ZONE_HEART_2_RIGHT:
-		case ZONE_HEART_3:
-		/* leave fire on heart of fire */
-		/* pick up fire from heart of fire */
+			/* TODO */
+			/* leave fire on heart of fire */
+			/* pick up fire from heart of fire */
 			break;
 			
 		case ZONE_M_TORCH_1:
 		case ZONE_M_TORCH_2:
-		/* leave fire on mobile torch */
-		/* pick up fire from heart of fire */
+			strat_pickup_mobile_torch_top(zone_num);
+			strat_pickup_mobile_torch_mid(zone_num);
+			strat_pickup_mobile_torch_bot(zone_num);
 			break;
 			
 		case ZONE_BASKET_1:
 		case ZONE_BASKET_2:
-		/* leave fruits on basket */
+			/* leave fruits on basket */
 			strat_leave_fruits();
 			break;
 
