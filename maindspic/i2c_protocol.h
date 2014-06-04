@@ -99,9 +99,11 @@ int8_t i2c_slavedspic_mode_load_fire (uint8_t sucker_type);
 
 
 int8_t i2c_slavedspic_mode_putdown_fire 
-        (uint8_t sucker_type, uint8_t level, int16_t x, int8_t sucker_angle);
+        (uint8_t sucker_type, uint8_t level,
+         int16_t x, int16_t *y, int16_t *a, int8_t sucker_angle);
+
 int8_t i2c_slavedspic_mode_putdown_fire_inv
-        (uint8_t sucker_type, uint8_t level, int16_t x);
+        (uint8_t sucker_type, uint8_t level, int16_t x, int16_t *y, int16_t *a);
 
 int8_t i2c_slavedspic_mode_release_fire (uint8_t sucker_type);
 

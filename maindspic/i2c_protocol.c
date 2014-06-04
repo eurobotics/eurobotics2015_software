@@ -832,8 +832,32 @@ int8_t i2c_slavedspic_mode_load_fire (uint8_t sucker_type)
 }
 
 
+static void arm_x_to_ay (int16_t x, int16_t *a, int16_t *y)
+{
+/* XXX keep syncronized with slavedspic/actuators.c */
+#define SHOULDER_JOIN_X   (165-21) // 144
+#define SHOULDER_JOIN_Y   (130)
+#define ARM_LENGTH        (219.0)
+#define SUCKER_LENGTH_0	  (46.5)
+#define SUCKER_LENGTH_180 (55.5)
+
+    double a1, x1, y1;
+
+	x1 = (double) (x - SHOULDER_JOIN_X);
+    a1 = acos (x1 / ARM_LENGTH);
+    y1 = ARM_LENGTH * sin(a1);
+
+	//printf ("a1 = %f, x1 = %f, y1 = %f\n\r", DEG(a1), x1, y1);
+
+    *a = (int16_t)DEG(a1);
+    *y = (int16_t)y1 + SHOULDER_JOIN_Y; 
+
+	//printf ("a = %d, y = %d\n\r", *a, *y);  
+}
+
 int8_t i2c_slavedspic_mode_putdown_fire 
-        (uint8_t sucker_type, uint8_t level, int16_t x, int8_t sucker_angle)
+        (uint8_t sucker_type, uint8_t level,
+         int16_t x, int16_t *y, int16_t *a, int8_t sucker_angle)
 {
 	struct i2c_cmd_slavedspic_set_mode buf;
 
@@ -847,13 +871,16 @@ int8_t i2c_slavedspic_mode_putdown_fire
     buf.arm.x_msb = (uint8_t)((uint16_t)(x >> 8) & 0x00FF);
     buf.arm.sucker_angle = sucker_angle;
 
+    /* y,a final positions */
+    arm_x_to_ay (x, a, y);
+
 	/* send command and return */
 	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
 }
 
 
 int8_t i2c_slavedspic_mode_putdown_fire_inv
-        (uint8_t sucker_type, uint8_t level, int16_t x)
+        (uint8_t sucker_type, uint8_t level, int16_t x, int16_t *y, int16_t *a)
 {
 	struct i2c_cmd_slavedspic_set_mode buf;
 
@@ -866,6 +893,9 @@ int8_t i2c_slavedspic_mode_putdown_fire_inv
     buf.arm.x_lsb = (uint8_t)((uint16_t)x & 0x00FF);
     buf.arm.x_msb = (uint8_t)((uint16_t)(x >> 8) & 0x00FF);
     buf.arm.sucker_angle = 0;
+
+    /* y,a final positions */
+    arm_x_to_ay (x, a, y);
 
 	/* send command and return */
 	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
