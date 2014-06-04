@@ -432,7 +432,7 @@ void i2c_read_event(uint8_t * buf, uint16_t size)
 
          	/* infos */
          	slavedspic.status = ans->status;
-         
+            slavedspic.nb_stored_fires = ans->nb_stored_fires;
 			break;
 		}
 	

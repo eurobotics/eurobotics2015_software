@@ -814,8 +814,8 @@ pickup:
             /* check fire */
             if (!sensor_get (get_sucker_sensor[slavedspic.arm_sucker_type])) {
                 STMCH_DEBUG("fire %d not found", slavedspic.nb_stored_fires);
-
-                slavedspic.nb_stored_fires --;
+                if (slavedspic.nb_stored_fires > 0)
+                    slavedspic.nb_stored_fires --;
                 STMCH_DEBUG("go next (%d)", slavedspic.nb_stored_fires);
                 goto pickup;
             }
@@ -927,7 +927,8 @@ pickup:
 			arm_wrist_wait_traj_end(END_TRAJ);
 
             /* decrease the number of stored fires */
-            slavedspic.nb_stored_fires--;            
+            if (slavedspic.nb_stored_fires > 0)
+                slavedspic.nb_stored_fires--;            
 
 
 			/* decrease elbow speed only for short sucker */
