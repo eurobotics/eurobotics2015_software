@@ -74,11 +74,17 @@
 /* goto orphan fire */
 uint8_t strat_goto_orphan_fire (uint8_t zone_num) 
 {
+#define DIST_ORPHAN_FIRE_PUSH	360
+#define DIST_ORPHAN_FIRE_PULL	210
+
     int16_t robot_x, robot_y, x, y;
+	uint8_t color, level, err = 0;
 
     /* depending on robot and fire position */
-    position_get_x_s16(&robot_x),
-	position_get_y_s16(&robot_y),
+    robot_x = position_get_x_s16(&mainboard.pos);
+	robot_y = position_get_y_s16(&mainboard.pos);
+
+	/* position depending on color */
     x = COLOR_X(strat_infos.zones[zone_num].x);
     y = strat_infos.zones[zone_num].y;
 
@@ -87,13 +93,13 @@ uint8_t strat_goto_orphan_fire (uint8_t zone_num)
             
             /* infront color */
             switch (zone_num) {
-                case ZONE_FIRE_1: color = I2C_COLOR_RED; break;
-                case ZONE_FIRE_6: color = I2C_COLOR_YELLOW; break;
-                default: color = I2C_COLOR_YELLOW;
+                case ZONE_FIRE_1: color = COLOR_INVERT(I2C_COLOR_RED); break;
+                case ZONE_FIRE_6: color = COLOR_INVERT(I2C_COLOR_YELLOW); break;
+                default: color = COLOR_INVERT(I2C_COLOR_YELLOW);
             }
 
             /* y correction */  
-            if (color == maindspic.our_color)
+            if (color == mainboard.our_color)
                 y += DIST_ORPHAN_FIRE_PUSH;
             else
                 y += DIST_ORPHAN_FIRE_PULL;
@@ -103,13 +109,13 @@ uint8_t strat_goto_orphan_fire (uint8_t zone_num)
 
             /* infront color */
             switch (zone_num) {
-                case ZONE_FIRE_1: color = I2C_COLOR_YELLOW; break;
-                case ZONE_FIRE_6: color = I2C_COLOR_RED; break;
-                default: color = I2C_COLOR_YELLOW;
+                case ZONE_FIRE_1: color = COLOR_INVERT(I2C_COLOR_YELLOW); break;
+                case ZONE_FIRE_6: color = COLOR_INVERT(I2C_COLOR_RED); break;
+                default: color = COLOR_INVERT(I2C_COLOR_YELLOW);
             }
 
             /* y correction */   
-            if (color == maindspic.our_color)         
+            if (color == mainboard.our_color)         
                 y -= DIST_ORPHAN_FIRE_PUSH;
             else
                 y -= DIST_ORPHAN_FIRE_PULL;
@@ -120,15 +126,15 @@ uint8_t strat_goto_orphan_fire (uint8_t zone_num)
 
             /* infront color */
             switch (zone_num) {
-                case ZONE_FIRE_2: color = I2C_COLOR_RED; break;
-                case ZONE_FIRE_3: color = I2C_COLOR_YELLOW; break;
-                case ZONE_FIRE_4: color = I2C_COLOR_RED; break;
-                case ZONE_FIRE_5: color = I2C_COLOR_YELLOW; break;
-                default: color = I2C_COLOR_YELLOW;
+                case ZONE_FIRE_2: color = COLOR_INVERT(I2C_COLOR_RED); break;
+                case ZONE_FIRE_3: color = COLOR_INVERT(I2C_COLOR_YELLOW); break;
+                case ZONE_FIRE_4: color = COLOR_INVERT(I2C_COLOR_RED); break;
+                case ZONE_FIRE_5: color = COLOR_INVERT(I2C_COLOR_YELLOW); break;
+                default: color = COLOR_INVERT(I2C_COLOR_YELLOW);
             }
 
             /* x correction */  
-            if (color == maindspic.our_color)
+            if (color == mainboard.our_color)
                 x += DIST_ORPHAN_FIRE_PUSH;
             else
                 x += DIST_ORPHAN_FIRE_PULL;
@@ -136,15 +142,15 @@ uint8_t strat_goto_orphan_fire (uint8_t zone_num)
         else {
             /* infront color */
             switch (zone_num) {
-                case ZONE_FIRE_2: color = I2C_COLOR_YELLOW; break;
-                case ZONE_FIRE_3: color = I2C_COLOR_RED; break;
-                case ZONE_FIRE_4: color = I2C_COLOR_YELLOW; break;
-                case ZONE_FIRE_5: color = I2C_COLOR_RED; break;
-                default: color = I2C_COLOR_YELLOW;
+                case ZONE_FIRE_2: color = COLOR_INVERT(I2C_COLOR_YELLOW); break;
+                case ZONE_FIRE_3: color = COLOR_INVERT(I2C_COLOR_RED); break;
+                case ZONE_FIRE_4: color = COLOR_INVERT(I2C_COLOR_YELLOW); break;
+                case ZONE_FIRE_5: color = COLOR_INVERT(I2C_COLOR_RED); break;
+                default: color = COLOR_INVERT(I2C_COLOR_YELLOW);
             }
 
             /* x correction */  
-            if (color == maindspic.our_color)
+            if (color == mainboard.our_color)
                 x -= DIST_ORPHAN_FIRE_PUSH;
             else
                 x -= DIST_ORPHAN_FIRE_PULL;
@@ -154,7 +160,7 @@ uint8_t strat_goto_orphan_fire (uint8_t zone_num)
     DEBUG (E_USER_STRAT, "fire is %s", color==I2C_COLOR_RED? "R":"Y");
 
     /* select level of sucker depending on infront color */
-    if (color == maindspic.our_color)
+    if (color == mainboard.our_color)
         level = I2C_SLAVEDSPIC_LEVEL_FIRE_PUSH_PULL;
     else
         level = I2C_SLAVEDSPIC_LEVEL_FIRE_STANDUP;
@@ -166,7 +172,11 @@ uint8_t strat_goto_orphan_fire (uint8_t zone_num)
 
     /* go near */
     err = goto_and_avoid_forward (x, y, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+
+    return err;
 }
+
+
 
 /* harvest orphan fires  */
 uint8_t strat_harvest_orphan_fire (int16_t x, int16_t y)
@@ -179,10 +189,12 @@ uint8_t strat_harvest_orphan_fire (int16_t x, int16_t y)
 #define wait_press_key()
 #endif
 
+#define DIST_ORPHAN_FIRE_OVER 140
+
     uint8_t err = 0;
-	uint16_t old_spdd, old_spda, temp_spdd, temp_spda;
-    int16_t d, clean_floor_a_rel;
-	uint8_t stick_type;
+	uint16_t old_spdd, old_spda;
+    int16_t d;
+	uint8_t level;
 
 	/* save speed */
 	strat_get_speed (&old_spdd, &old_spda);
@@ -238,17 +250,18 @@ end:
 uint8_t strat_goto_torch (uint8_t zone_num)
 {
     int16_t x, y;
+	uint8_t err;
 
     /*  position */
     x = COLOR_X(strat_infos.zones[zone_num].x);
     y = strat_infos.zones[zone_num].y;
 
     /* init x,y correction */
-    if (zone_num == ZONE_TORCH_1)       { x += DIST_ORPHAN_FIRE_PUSH ; y+=5 }
-    else if (zone_num == ZONE_TORCH_2)  { x -= DIST_ORPHAN_FIRE_PUSH ; y-=5 }
+    if (zone_num == ZONE_TORCH_1)       { x += COLOR_SIGN(DIST_ORPHAN_FIRE_PUSH); y+=COLOR_SIGN(5); }
+    else if (zone_num == ZONE_TORCH_4)  { x -= COLOR_SIGN(DIST_ORPHAN_FIRE_PUSH); y-=COLOR_SIGN(5); }
 
-    else if ((zone_num == ZONE_TORCH_3) ||
-             (zone_num == ZONE_TORCH_4))  { x +=5 ; y-=DIST_ORPHAN_FIRE_PUSH }
+    else if ((zone_num == ZONE_TORCH_2) || (zone_num == ZONE_TORCH_3))
+    	{ x +=5 ; y-=DIST_ORPHAN_FIRE_PUSH; }
 
     /* ready for pickup */
     i2c_slavedspic_wait_ready();
@@ -256,6 +269,8 @@ uint8_t strat_goto_torch (uint8_t zone_num)
 
     /* go near */
     err = goto_and_avoid (x, y, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+
+	return err;
 }
 
 
@@ -270,11 +285,11 @@ uint8_t strat_harvest_torch (uint8_t zone_num)
 #define wait_press_key()
 #endif
 
+#define DIST_TORCH_OVER 140
+
     uint8_t err = 0;
-	uint16_t old_spdd, old_spda, temp_spdd, temp_spda;
-    int16_t d, clean_floor_a_rel;
-	uint8_t stick_type;
-    int16_t x, int16_t y;
+	uint16_t old_spdd, old_spda;
+    int16_t x, y;
 
     x = COLOR_X(strat_infos.zones[zone_num].x);
     y = strat_infos.zones[zone_num].y;
@@ -303,14 +318,14 @@ uint8_t strat_harvest_torch (uint8_t zone_num)
 	   ERROUT(err);
 
     /* pickup fire */
-    i2c_slavedspic_mode_pickup_torch(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG, level);
+    i2c_slavedspic_mode_pickup_torch(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG);
     i2c_slavedspic_wait_ready();
 
     /* XXX set color of fire */
     if (zone_num == ZONE_TORCH_1 || zone_num == ZONE_TORCH_3)
-        mainboard.stored_fire_color[slavedspic.nb_stored_fires+1] = I2C_COLOR_RED;
+        mainboard.stored_fire_color[slavedspic.nb_stored_fires+1] = COLOR_INVERT(I2C_COLOR_RED);
     else
-       mainboard.stored_fire_color[slavedspic.nb_stored_fires+1] = I2C_COLOR_YELLOW;
+       mainboard.stored_fire_color[slavedspic.nb_stored_fires+1] = COLOR_INVERT(I2C_COLOR_YELLOW);
         
 	/* store fire */
     i2c_slavedspic_mode_store_fire(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG);
@@ -332,10 +347,14 @@ uint8_t strat_goto_mobile_torch (uint8_t zone_num)
 {
     int16_t robot_x, robot_y, x, y;
     double temp_x, temp_y;
+	uint8_t err = 0;
+
+#define MOBIL_TORCH_X_OFFSET 55
+#define MOBIL_TORCH_Y_OFFSET 255
 
     /* depending on robot and mobiel torch position */
-    position_get_x_s16(&robot_x),
-	position_get_y_s16(&robot_y),
+    robot_x = position_get_x_s16(&mainboard.pos);
+	robot_y = position_get_y_s16(&mainboard.pos);
     x = COLOR_X(strat_infos.zones[zone_num].x);
     y = strat_infos.zones[zone_num].y;
 
@@ -343,15 +362,15 @@ uint8_t strat_goto_mobile_torch (uint8_t zone_num)
 
     /* top */
     temp_x = -MOBIL_TORCH_X_OFFSET;
-    temo_y = DIST_MOBIL_TORCH_OVER;
+    temp_y = MOBIL_TORCH_X_OFFSET;
 
     /* bottom-right */
     if ((robot_y < y) && (robot_x > x))
-        rotate(&x, &y, RAD(-120));
+        rotate(&temp_x, &temp_y, RAD(-120));
 
     /* bottom-left */
     else
-        rotate(&x, &y, RAD(120));
+        rotate(&temp_x, &temp_y, RAD(120));
 
     x += temp_x;
     y += temp_y;
@@ -363,7 +382,10 @@ uint8_t strat_goto_mobile_torch (uint8_t zone_num)
 
     /* go near */
     err = goto_and_avoid (x, y, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+
+	return err;
 }
+
 
 /* pickup mobile torch fires */
 static uint8_t __strat_pickup_mobile_torch (uint8_t zone_num, uint8_t level)
@@ -377,10 +399,9 @@ static uint8_t __strat_pickup_mobile_torch (uint8_t zone_num, uint8_t level)
 #endif
 
     uint8_t err = 0;
-	uint16_t old_spdd, old_spda, temp_spdd, temp_spda;
-    int16_t d, clean_floor_a_rel;
-	uint8_t stick_type;
-    int16_t x, int16_t y;
+	uint16_t old_spdd, old_spda;
+    int16_t x, y;
+	uint8_t color;
 
     x = COLOR_X(strat_infos.zones[zone_num].x);
     y = strat_infos.zones[zone_num].y;
@@ -401,23 +422,23 @@ static uint8_t __strat_pickup_mobile_torch (uint8_t zone_num, uint8_t level)
     i2c_slavedspic_wait_ready();
 
     /* pickup fire */
-    i2c_slavedspic_mode_pickup_torch(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG, level);
+    i2c_slavedspic_mode_pickup_fire(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG, level);
     i2c_slavedspic_wait_ready();
 
     /* XXX set color of fire */
     if (zone_num == ZONE_M_TORCH_1) 
     {
-        if (level == I2C_SLAVEDSPIC_LEVEL_FIRE_TORCH_MID) 
-             color = (mainboard.our_color == I2C_COLOR_YELLOW? I2C_COLOR_RED:I2C_COLOR_YELLOW);
-        else color = (mainboard.our_color == I2C_COLOR_YELLOW? I2C_COLOR_YELLOW:I2C_COLOR_RED);
+        if (level == I2C_SLAVEDSPIC_LEVEL_FIRE_TORCH_MIDDLE) 
+             color = COLOR_INVERT(I2C_COLOR_RED);
+        else color = COLOR_INVERT(I2C_COLOR_YELLOW);
     }
     else {
-        if (level == I2C_SLAVEDSPIC_LEVEL_FIRE_TORCH_MID) 
-             color = (mainboard.our_color == I2C_COLOR_YELLOW? I2C_COLOR_YELLOW:I2C_COLOR_RED);
-        else color = (mainboard.our_color == I2C_COLOR_YELLOW? I2C_COLOR_RED:I2C_COLOR_YELLOW);
+        if (level == I2C_SLAVEDSPIC_LEVEL_FIRE_TORCH_MIDDLE) 
+             color = COLOR_INVERT(I2C_COLOR_YELLOW);
+        else color = COLOR_INVERT(I2C_COLOR_RED);
     }
 
-    mainboard.stored_fire_color[slavedspic.nb_stored_fires+1] = fire_color;
+    mainboard.stored_fire_color[slavedspic.nb_stored_fires+1] = color;
 
 	/* store fire */
     i2c_slavedspic_mode_store_fire(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG);
@@ -445,13 +466,18 @@ inline uint8_t strat_pickup_mobile_torch_bot (uint8_t zone_num) {
 
 
 /* goto heart of fire */
-uint8_t strat_goto_mobile_torch (uint8_t zone_num)
+uint8_t strat_goto_heart_fire (uint8_t zone_num)
 {
     int16_t robot_x, robot_y, x, y;
+	double temp_x, temp_y;
+    uint8_t err;
+
+#define HEART_FIRE_OFFSET_X 290
+#define HEART_FIRE_OFFSET_Y 425
 
     /* depending on robot and mobiel torch position */
-    position_get_x_s16(&robot_x),
-	position_get_y_s16(&robot_y),
+    robot_x = position_get_x_s16(&mainboard.pos);
+	robot_y = position_get_y_s16(&mainboard.pos);
     x = COLOR_X(strat_infos.zones[zone_num].x);
     y = strat_infos.zones[zone_num].y;
 
@@ -461,6 +487,10 @@ uint8_t strat_goto_mobile_torch (uint8_t zone_num)
             zone_num = ZONE_HEART_3;
         else if (zone_num == ZONE_HEART_3)
             zone_num = ZONE_HEART_1;
+       	else if (zone_num == ZONE_HEART_2_RIGHT)
+            zone_num = ZONE_HEART_2_LEFT;
+       	else if (zone_num == ZONE_HEART_2_LEFT)
+            zone_num = ZONE_HEART_2_RIGHT;
     }
 
     /* corner hearts */
@@ -474,24 +504,122 @@ uint8_t strat_goto_mobile_torch (uint8_t zone_num)
     }
     /* central heart */
     else {
-        x = HEART_FIRE_OFFSET_X;
-        y = -HEART_FIRE_OFFSET_Y;
+        temp_x = HEART_FIRE_OFFSET_X;
+        temp_y = -HEART_FIRE_OFFSET_Y;
         
         if (zone_num == ZONE_HEART_2_UP)
-            rotate(&x, &y, RAD(135));
+            rotate(&temp_x, &temp_y, RAD(135));
         else if (zone_num == ZONE_HEART_2_DOWN)
-            rotate(&x, &y, RAD(-45));
+            rotate(&temp_x, &temp_y, RAD(-45));
         else if (zone_num == ZONE_HEART_2_RIGHT)
-            rotate(&x, &y, RAD(45));
+            rotate(&temp_x, &temp_y, RAD(45));
         else if (zone_num == ZONE_HEART_2_LEFT)
-            rotate(&x, &y, RAD(-135));
+            rotate(&temp_x, &temp_y, RAD(-135));
 
-        x += HEART_2_X;
-        y += HEART_2_Y;
+        x = HEART_2_X + temp_x;
+        y = HEART_2_Y + temp_y;
     }
+
+    /* go near */
+    err = goto_and_avoid (x, y, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+
+	return err;
 
 }
 
+/* dump stored fires on heart of fire making a puzzle */
+uint8_t strat_make_puzzle_on_heart (uint8_t zone_num)
+{
+//#define DEBUG_STRAT_FIRES
+#ifdef DEBUG_STRAT_FIRES
+#define wait_press_key() state_debug_wait_key_pressed();
+	strat_infos.debug_step = 1;
+#else
+#define wait_press_key()
+#endif
 
+    uint8_t err = 0, i;
+	uint16_t old_spdd, old_spda;
+    int16_t a_abs;
+	uint8_t sucker_type;
+    int16_t arm_a, arm_y;
+
+	int16_t fire_x[5] = 	{+55,	+30, 	-35, 	+162,   +80	};
+	int8_t  fire_a[5] = 	{-20, 	+45, 	+10, 	+15,    -35 };
+	int16_t fire_d_fw[5] = 	{+100,	+50,	+100,	+30,	+100};
+	int16_t fire_d_bw[6] = 	{-100,	+50,	+130, 	-130,	-100};
+
+
+	/* save speed */
+	strat_get_speed (&old_spdd, &old_spda);
+    strat_limit_speed_disable ();
+	strat_set_speed (SPEED_DIST_VERY_SLOW,SPEED_ANGLE_FAST);
+   
+    /* color inversion */
+    if (mainboard.our_color == I2C_COLOR_RED) {
+        if (zone_num == ZONE_HEART_1)
+            zone_num = ZONE_HEART_3;
+        else if (zone_num == ZONE_HEART_3)
+            zone_num = ZONE_HEART_1;
+       	else if (zone_num == ZONE_HEART_2_RIGHT)
+            zone_num = ZONE_HEART_2_LEFT;
+       	else if (zone_num == ZONE_HEART_2_LEFT)
+            zone_num = ZONE_HEART_2_RIGHT;
+    }
+
+	/* set proper angle */
+	if (zone_num == ZONE_HEART_1)
+		a_abs = 135;
+	else if (zone_num == ZONE_HEART_3)
+		a_abs = 45;
+    else
+        a_abs = 90;
+
+	trajectory_a_abs (&mainboard.traj, a_abs);
+	if (!TRAJ_SUCCESS(err))
+		ERROUT(err);
+
+	/* make puzzle :) */
+	for (i=0; i<5; i++) 
+	{	
+		/* load 1st fire */
+		if (slavedspic.nb_stored_fires > 6)
+			 sucker_type = I2C_SLAVEDSPIC_SUCKER_TYPE_SHORT;
+		else sucker_type = I2C_SLAVEDSPIC_SUCKER_TYPE_LONG;
+
+		i2c_slavedspic_mode_load_fire(sucker_type);
+
+		/* wait go forward ends */
+		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+		//if (!TRAJ_SUCCESS(err))
+		//   ERROUT(err);
+
+		/* putdown */
+		i2c_slavedspic_wait_ready();
+		i2c_slavedspic_mode_putdown_fire (sucker_type, 
+										  I2C_SLAVEDSPIC_LEVEL_FIRE_HEART, 
+										  fire_x[i], &arm_y, &arm_a, fire_a[i]);
+		/* go forward */
+	   	trajectory_d_rel(&mainboard.traj, fire_d_fw[i]);
+		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+		//if (!TRAJ_SUCCESS(err))
+		//   ERROUT(err);
+
+		/* release */
+		i2c_slavedspic_mode_release_fire (sucker_type);
+		i2c_slavedspic_wait_ready();
+
+		/* go backward */
+	   	trajectory_d_rel(&mainboard.traj, fire_d_bw[i]);
+	}
+
+	/* hide arm */
+	i2c_slavedspic_mode_hide_arm(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG);
+
+end:
+	strat_set_speed(old_spdd, old_spda);	
+    strat_limit_speed_enable();
+    return err;
+}
 
 

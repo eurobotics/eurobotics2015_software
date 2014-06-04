@@ -450,7 +450,7 @@ uint16_t get_shoulder_h [I2C_SLAVEDSPIC_LEVEL_MAX] = {
 	[I2C_SLAVEDSPIC_LEVEL_FIRE_TORCH_TOP] = 126,
 	[I2C_SLAVEDSPIC_LEVEL_MOBILE_TORCH] = 36,
 	[I2C_SLAVEDSPIC_LEVEL_FIRE_STANDUP] = 110,
-	[I2C_SLAVEDSPIC_LEVEL_FIRE_PUSH_PULL] = 95,
+	[I2C_SLAVEDSPIC_LEVEL_FIRE_PUSH_PULL] = 100,
 };
 
 int16_t get_elbow_a [I2C_SLAVEDSPIC_SUCKER_TYPE_MAX] = {
@@ -854,7 +854,7 @@ pickup:
 
 			/* put down fire */
 			slavedspic.arm_level = mainboard_command.arm.level;
-			slavedspic.arm_h = 10 + get_shoulder_h[slavedspic.arm_level];
+			slavedspic.arm_h = 30 + get_shoulder_h[slavedspic.arm_level];
 
 			slavedspic.arm_x =  ((uint16_t)mainboard_command.arm.x_msb << 8) & 0xFF00;
 			slavedspic.arm_x |= ((uint16_t)mainboard_command.arm.x_lsb) & 0x00FF;

@@ -377,7 +377,7 @@ uint8_t bt_robot_2nd_test_ack (void) {
 /* send command, and return after received ack */
 uint8_t bt_robot_2nd_cmd (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 {
-	uint8_t nb_tries = 3;
+//	uint8_t nb_tries = 3;
 	int8_t ret;
 
 //retry:

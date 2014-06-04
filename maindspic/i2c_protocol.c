@@ -727,7 +727,8 @@ int8_t i2c_slavedspic_mode_dump_fruits(uint8_t mode)
 }
 
 
-/* set dump fruits mode */
+/* ARM-FIRES modes */
+
 int8_t i2c_slavedspic_mode_hide_arm (uint8_t sucker_type) 
 {
 	struct i2c_cmd_slavedspic_set_mode buf;
@@ -741,8 +742,6 @@ int8_t i2c_slavedspic_mode_hide_arm (uint8_t sucker_type)
 	/* send command and return */
 	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
 }
-
-/* ARM-FIRES modes */
 
 int8_t i2c_slavedspic_mode_ready_for_pickup_torch (uint8_t sucker_type)
 {

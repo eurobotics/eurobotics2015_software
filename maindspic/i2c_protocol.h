@@ -87,6 +87,8 @@ int8_t i2c_slavedspic_mode_dump_fruits(uint8_t mode);
 
 
 /* fires and torches modes */
+int8_t i2c_slavedspic_mode_hide_arm (uint8_t sucker_type);
+
 int8_t i2c_slavedspic_mode_ready_for_pickup_torch (uint8_t sucker_type);
 int8_t i2c_slavedspic_mode_pickup_torch (uint8_t sucker_type);
 

@@ -637,8 +637,8 @@ uint8_t position_exchange_main_up(void)
 {
 	#define PROTECT_H1_X 400
 	#define PROTECT_H1_Y 1600
-	#define BASKET_INIT_X 	 2700
-	#define BASKET_INIT_Y 	 543
+	#define BASKET_INIT_X_UP 	 2700
+	#define BASKET_INIT_Y_UP 	 543
 	//#define BASKET_INIT_Y 	 ROBOT_WIDTH/2+350
 	
 	int8_t err;
@@ -666,11 +666,11 @@ uint8_t position_exchange_main_up(void)
 			ERROUT(err);
 	
 	
-	err=goto_and_avoid (COLOR_X(BASKET_INIT_X),BASKET_INIT_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);	
+	err=goto_and_avoid (COLOR_X(BASKET_INIT_X_UP),BASKET_INIT_Y_UP,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 		
-	err=goto_and_avoid (COLOR_X(BASKET_INIT_X-700),BASKET_INIT_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
+	err=goto_and_avoid (COLOR_X(BASKET_INIT_X_UP-700),BASKET_INIT_Y_UP,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 	
@@ -691,8 +691,8 @@ uint8_t position_exchange_main_down(void)
 {
 	#define PROTECT_H1_X 400
 	#define PROTECT_H1_Y 1600
-	#define BASKET_INIT_X 	 1650
-	#define BASKET_INIT_Y 	 543
+	#define BASKET_INIT_X_DOWN 	 1650
+	#define BASKET_INIT_Y_DOWN 	 543
 	//#define BASKET_INIT_Y 	 ROBOT_WIDTH/2+350
 	int8_t err;
 	int16_t x;
@@ -714,12 +714,12 @@ uint8_t position_exchange_main_down(void)
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 	
-	err=goto_and_avoid (COLOR_X(BASKET_INIT_X),BASKET_INIT_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
+	err=goto_and_avoid (COLOR_X(BASKET_INIT_X_DOWN),BASKET_INIT_Y_DOWN,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
 	printf_P("err:%d\n",err);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 		
-	err=goto_and_avoid (COLOR_X(BASKET_INIT_X+700),BASKET_INIT_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
+	err=goto_and_avoid (COLOR_X(BASKET_INIT_X_DOWN+700),BASKET_INIT_Y_DOWN,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
 	printf_P("err:%d\n",err);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
