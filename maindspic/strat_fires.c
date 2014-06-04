@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Balias Santos <javier@arc-robots.org> and Silvia Santano and Miguel Ortiz
+ *  Javier Balias Santos <javier@arc-robots.org> and Silvia Santano
  */
 
 #include <stdio.h>
@@ -80,13 +80,11 @@ uint8_t strat_goto_orphan_fire (uint8_t zone_num)
     /* depending on robot and fire position */
     position_get_x_s16(&robot_x),
 	position_get_y_s16(&robot_y),
-    x = strat_infos.zones[zone_num].init_x;
+    x = COLOR_X(strat_infos.zones[zone_num].init_x);
     y = strat_infos.zones[zone_num].init_y;
 
     if ((zone_num == ZONE_FIRE_1) || (zone_num == ZONE_FIRE_6)) {
         if (robot_y > y) {
-            /* y correction */  
-            y += DIST_ORPHAN_FIRE;
             
             /* infront color */
             switch (zone_num) {
@@ -95,10 +93,14 @@ uint8_t strat_goto_orphan_fire (uint8_t zone_num)
                 default: color = I2C_COLOR_YELLOW;
             }
 
+            /* y correction */  
+            if (color == maindspic.our_color)
+                y += DIST_ORPHAN_FIRE_PUSH;
+            else
+                y += DIST_ORPHAN_FIRE_PULL;
+
         }
         else {  
-            /* y correction */            
-            y -= DIST_ORPHAN_FIRE;
 
             /* infront color */
             switch (zone_num) {
@@ -106,13 +108,16 @@ uint8_t strat_goto_orphan_fire (uint8_t zone_num)
                 case ZONE_FIRE_6: color = I2C_COLOR_RED; break;
                 default: color = I2C_COLOR_YELLOW;
             }
+
+            /* y correction */   
+            if (color == maindspic.our_color)         
+                y -= DIST_ORPHAN_FIRE_PUSH;
+            else
+                y -= DIST_ORPHAN_FIRE_PULL;
         } 
     }
     else {
         if (robot_x > x) {
-
-            /* x correction */ 
-            x += DIST_ORPHAN_FIRE;
 
             /* infront color */
             switch (zone_num) {
@@ -122,11 +127,14 @@ uint8_t strat_goto_orphan_fire (uint8_t zone_num)
                 case ZONE_FIRE_5: color = I2C_COLOR_YELLOW; break;
                 default: color = I2C_COLOR_YELLOW;
             }
+
+            /* x correction */  
+            if (color == maindspic.our_color)
+                x += DIST_ORPHAN_FIRE_PUSH;
+            else
+                x += DIST_ORPHAN_FIRE_PULL;
         }
         else {
-            /* x correction */ 
-            x -= DIST_ORPHAN_FIRE;
-
             /* infront color */
             switch (zone_num) {
                 case ZONE_FIRE_2: color = I2C_COLOR_YELLOW; break;
@@ -135,20 +143,27 @@ uint8_t strat_goto_orphan_fire (uint8_t zone_num)
                 case ZONE_FIRE_5: color = I2C_COLOR_RED; break;
                 default: color = I2C_COLOR_YELLOW;
             }
+
+            /* x correction */  
+            if (color == maindspic.our_color)
+                x -= DIST_ORPHAN_FIRE_PUSH;
+            else
+                x -= DIST_ORPHAN_FIRE_PULL;
         }
     }
 
     /* select level of sucker depending on infront color */
     if (color == maindspic.our_color)
         level = I2C_SLAVEDSPIC_LEVEL_FIRE_PUSH_PULL;
-    else
+    else  {
         level = I2C_SLAVEDSPIC_LEVEL_FIRE_STANDUP;
-
+    }
+    
     /* ready for pickup */
     i2c_slavedspic_mode_ready_for_pickup_fire(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG, level);
 
     /* go near */
-    err = goto_and_avoid_forward (COLOR_X(x), y, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+    err = goto_and_avoid_forward (x, y, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 }
 
 /* harvest orphan fires  */
@@ -173,11 +188,22 @@ uint8_t strat_harvest_orphan_fire(int16_t x, int16_t y)
 	strat_set_speed (SPEED_DIST_SLOW,SPEED_ANGLE_FAST);
    
 
-	/* depending on tree type */
+	/* turn to infront of fire */
+    trajectory_turnto_xy (&mainboard.traj, x, y);
+	err = wait_traj_end (TRAJ_FLAGS_SMALL_DIST);
+	if (!TRAJ_SUCCESS(err))
+		ERROUT(err);
+
+    /* ready for push/pull */
+    i2c_slavedspic_mode_ready_for_pickup_fire(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG, level);
 
 
+    /* push/pull fire */
 
-	/* hide tools */
+    /* pickup fire */
+
+	/* store fire */
+
 end:
 	strat_set_speed(old_spdd, old_spda);	
     strat_limit_speed_enable();
