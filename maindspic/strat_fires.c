@@ -76,12 +76,11 @@ uint8_t strat_goto_orphan_fire (uint8_t zone_num)
 {
     int16_t robot_x, robot_y, x, y;
 
-
     /* depending on robot and fire position */
     position_get_x_s16(&robot_x),
 	position_get_y_s16(&robot_y),
-    x = COLOR_X(strat_infos.zones[zone_num].init_x);
-    y = strat_infos.zones[zone_num].init_y;
+    x = COLOR_X(strat_infos.zones[zone_num].x);
+    y = strat_infos.zones[zone_num].y;
 
     if ((zone_num == ZONE_FIRE_1) || (zone_num == ZONE_FIRE_6)) {
         if (robot_y > y) {
@@ -152,12 +151,14 @@ uint8_t strat_goto_orphan_fire (uint8_t zone_num)
         }
     }
 
+    DEBUG (E_USER_STRAT, "fire is %s", color==I2C_COLOR_RED? "R":"Y");
+
     /* select level of sucker depending on infront color */
     if (color == maindspic.our_color)
         level = I2C_SLAVEDSPIC_LEVEL_FIRE_PUSH_PULL;
-    else  {
+    else
         level = I2C_SLAVEDSPIC_LEVEL_FIRE_STANDUP;
-    }
+
     
     /* ready for pickup */
     i2c_slavedspic_mode_ready_for_pickup_fire(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG, level);
@@ -229,10 +230,87 @@ end:
 }
 
 
+/* goto torch */
+uint8_t strat_goto_torch (uint8_t zone_num)
+{
+    int16_t x, y;
+
+    /*  position */
+    x = COLOR_X(strat_infos.zones[zone_num].x);
+    y = strat_infos.zones[zone_num].y;
+
+    /* init x,y correction */
+    if (zone_num == ZONE_TORCH_1)       { x += DIST_ORPHAN_FIRE_PUSH ; y+=5 }
+    else if (zone_num == ZONE_TORCH_2)  { x -= DIST_ORPHAN_FIRE_PUSH ; y-=5 }
+
+    else if ((zone_num == ZONE_TORCH_3) ||
+             (zone_num == ZONE_TORCH_4))  { x +=5 ; y-=DIST_ORPHAN_FIRE_PUSH }
+
+    /* ready for pickup */
+    i2c_slavedspic_mode_ready_for_pickup_torch(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG);
+
+    /* go near */
+    err = goto_and_avoid (x, y, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+}
 
 
+/* harvest torch  */
+uint8_t strat_harvest_torch (int16_t x, int16_t y)
+{
+//#define DEBUG_STRAT_FIRES
+#ifdef DEBUG_STRAT_FIRES
+#define wait_press_key() state_debug_wait_key_pressed();
+	strat_infos.debug_step = 1;
+#else
+#define wait_press_key()
+#endif
 
+    uint8_t err = 0;
+	uint16_t old_spdd, old_spda, temp_spdd, temp_spda;
+    int16_t d, clean_floor_a_rel;
+	uint8_t stick_type;
 
+	/* save speed */
+	strat_get_speed (&old_spdd, &old_spda);
+    strat_limit_speed_disable ();
+	strat_set_speed (SPEED_DIST_SLOW,SPEED_ANGLE_FAST);
+   
+
+	/* turn to infront of torch */
+    trajectory_turnto_xy (&mainboard.traj, x, y);
+	err = wait_traj_end (TRAJ_FLAGS_SMALL_DIST);
+	if (!TRAJ_SUCCESS(err))
+		ERROUT(err);
+
+    /* ready for pickup */
+    i2c_slavedspic_mode_ready_for_pickup_torch(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG);
+    i2c_slavedspic_wait_ready();
+
+    /* push/pull fire */
+    trajectory_d_rel(&mainboard.traj, DIST_TORCH_AVOBE);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+    if (!TRAJ_SUCCESS(err))
+	   ERROUT(err);
+
+    /* pickup fire */
+    i2c_slavedspic_mode_pickup_torch(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG, level);
+    i2c_slavedspic_wait_ready();
+
+	/* store fire */
+    i2c_slavedspic_mode_store_fire(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG);
+    i2c_slavedspic_wait_ready();
+
+    /* XXX return inside boundinbox */
+    trajectory_d_rel(&mainboard.traj, -DIST_TORCH_AVOBE);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+    if (!TRAJ_SUCCESS(err))
+	   ERROUT(err);
+    
+end:
+	strat_set_speed(old_spdd, old_spda);	
+    strat_limit_speed_enable();
+    return err;
+}
 
 
 
