@@ -271,33 +271,18 @@ struct mainboard
 
 	int32_t dac_l;  /* current left dac */
 	int32_t dac_r;  /* current right dac */
+
+	uint8_t stored_fire_color[10];
 };
 
 
 /* state of slavedspic, synchronized through i2c */
 struct slavedspic 
 {
-	/* actuators blocking */
-	uint8_t fingers_floor_blocked;
-	uint8_t fingers_totem_blocked;
-	uint8_t arm_right_blocked;
-	uint8_t arm_left_blocked;
-	uint8_t lift_blocked;
-
-	/* sensors */
-	uint8_t turbine_sensors;
-
 	/* infos */
 	uint8_t status;
+    uint8_t nb_stored_fires;
 
-	uint8_t harvest_mode;
-	uint8_t store_mode;
-	uint8_t dump_mode;
-
-	int8_t nb_goldbars_in_boot;
-	int8_t nb_goldbars_in_mouth;
-	int8_t nb_coins_in_boot;
-	int8_t nb_coins_in_mouth;
 };
 
 /* state of beaconboard, synchronized through i2c */

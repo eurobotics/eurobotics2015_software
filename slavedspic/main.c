@@ -306,9 +306,9 @@ int main(void)
 						CS_PERIOD / SCHEDULER_UNIT, 
 						CS_PRIO);
 
-	//scheduler_add_periodical_event_priority(do_i2c_watchdog, NULL,
-	//					8000L / SCHEDULER_UNIT,
-	//					I2C_POLL_PRIO);
+	scheduler_add_periodical_event_priority(do_i2c_watchdog, NULL,
+						8000L / SCHEDULER_UNIT,
+						I2C_POLL_PRIO);
 
 	scheduler_add_periodical_event_priority(do_sensors, NULL, 
 						10000L / SCHEDULER_UNIT, 

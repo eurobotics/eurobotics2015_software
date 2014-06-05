@@ -43,6 +43,8 @@
 
 #define HEART_1_X		    140
 #define HEART_1_Y		    1860
+#define HEART_2_X		    1500
+#define HEART_2_Y   		1050
 #define HEART_2_UP_X		    1500
 #define HEART_2_UP_Y		    1350
 #define HEART_2_LEFT_X		    1200
@@ -187,11 +189,11 @@
 #define ZONE_TREE_3				2
 #define ZONE_TREE_4				3
 #define ZONE_HEART_1			4
-#define ZONE_HEART_2_UP 		5
-#define ZONE_HEART_2_LEFT		6
-#define ZONE_HEART_2_DOWN		7
-#define ZONE_HEART_2_RIGHT		8
-#define ZONE_HEART_3  			9
+#define ZONE_HEART_2_LEFT 		5
+#define ZONE_HEART_3  			6
+#define ZONE_HEART_2_UP			7
+#define ZONE_HEART_2_DOWN		8
+#define ZONE_HEART_2_RIGHT		9
 #define ZONE_FIRE_1   	    	10
 #define ZONE_FIRE_2	        	11
 #define ZONE_FIRE_3	        	12
@@ -336,6 +338,8 @@ struct strat_infos {
 	/* opponent statistics */
 	uint8_t opp_score;
 	uint8_t opp_harvested_trees;
+
+    uint8_t tree_harvesting_interrumped;
 };
 
 extern struct strat_infos strat_infos;
@@ -385,7 +389,35 @@ uint8_t strat_leave_fruits_clean(void);
 /********************************************
  * in strat_fire.c 
  *******************************************/
- /* TODO 2014*/
+/* goto orphan fire */
+uint8_t strat_goto_orphan_fire (uint8_t zone_num) ;
+
+/* harvest orphan fires  */
+uint8_t strat_harvest_orphan_fire (int16_t x, int16_t y);
+
+/* goto torch */
+uint8_t strat_goto_torch (uint8_t zone_num);
+
+/* harvest torch  */
+uint8_t strat_harvest_torch (uint8_t zone_num);
+
+/* goto mobile torch */
+uint8_t strat_goto_mobile_torch (uint8_t zone_num);
+
+/* pickup mobile torch, top fire */
+uint8_t strat_pickup_mobile_torch_top (uint8_t zone_num);
+
+/* pickup mobile torch, middle fire */
+uint8_t strat_pickup_mobile_torch_mid (uint8_t zone_num);
+
+/* pickup mobile torch, bottom fire */
+inline uint8_t strat_pickup_mobile_torch_bot (uint8_t zone_num);
+
+/* goto heart of fire */
+uint8_t strat_goto_heart_fire (uint8_t zone_num);
+
+/* dump stored fires on heart of fire making a puzzle */
+uint8_t strat_make_puzzle_on_heart (uint8_t zone_num);
 
 
 /********************************************

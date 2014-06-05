@@ -148,6 +148,7 @@ int8_t strat_get_new_zone(void)
 			zone_num = i;
 		}
 
+        /* XXX force go to basket if timeout */
 		if((time_get_s() > 75) && (strat_infos.harvested_trees))
 			zone_num = ZONE_BASKET_2;
 	}
@@ -186,6 +187,18 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 		}
 
 	}
+	else if (strat_infos.zones[zone_num].type == ZONE_TYPE_FIRE) {
+		strat_goto_orphan_fire (zone_num);
+	}
+	else if (strat_infos.zones[zone_num].type == ZONE_TYPE_TORCH) {
+		strat_goto_torch (zone_num);
+	}
+	else if (strat_infos.zones[zone_num].type == ZONE_TYPE_HEART) {
+		strat_goto_heart_fire (zone_num);
+	}
+	else if (strat_infos.zones[zone_num].type == ZONE_TYPE_M_TORCH) {
+		strat_goto_mobile_torch (zone_num);
+	}
 	else {
 		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x), 
 									strat_infos.zones[zone_num].init_y,  
@@ -209,6 +222,7 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 	}
 
 end:
+    /* TODO XXX if error put arm in safe position */
 	return err;
 }
 
@@ -223,14 +237,25 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 	while(!cmdline_keypressed());
 #endif
 
+    /* XXX if before the tree harvesting was interruped by opponent */    
+    if (strat_infos.tree_harvesting_interrumped) {
+        strat_infos.tree_harvesting_interrumped = 0;
+        i2c_slavedspic_wait_ready();
+        i2c_slavedspic_mode_harvest_fruits (I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_END);
+    }
+    
 	switch(zone_num)
 	{
 		case ZONE_TREE_1:
 		case ZONE_TREE_2:
+			err = strat_harvest_fruits (COLOR_X (strat_infos.zones[zone_num].x),
+										 		strat_infos.zones[zone_num].y, 0);
+            break;
+
 		case ZONE_TREE_3:
 		case ZONE_TREE_4:
 			err = strat_harvest_fruits (COLOR_X (strat_infos.zones[zone_num].x),
-										 		strat_infos.zones[zone_num].y);
+										 		strat_infos.zones[zone_num].y, 1);
 			break;
 			
 		case ZONE_FIRE_1:
@@ -239,37 +264,42 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 		case ZONE_FIRE_4:
 		case ZONE_FIRE_5:
 		case ZONE_FIRE_6:
-		/* pick up fire from the ground */
-		/* turn fire */
+			err = strat_harvest_orphan_fire (COLOR_X (strat_infos.zones[zone_num].x),
+										 		strat_infos.zones[zone_num].y);
 			break;
 			
 		case ZONE_TORCH_1:
 		case ZONE_TORCH_2:
 		case ZONE_TORCH_3:
 		case ZONE_TORCH_4:
-		/* take fire from the torch */
+			err = strat_harvest_torch (zone_num);
 			break;
 			
 		case ZONE_HEART_1:
+		case ZONE_HEART_3:
+			err = strat_make_puzzle_on_heart (zone_num);
+			break;
+
 		case ZONE_HEART_2_UP:
 		case ZONE_HEART_2_LEFT:
 		case ZONE_HEART_2_DOWN:
 		case ZONE_HEART_2_RIGHT:
-		case ZONE_HEART_3:
-		/* leave fire on heart of fire */
-		/* pick up fire from heart of fire */
+			/* TODO */
+			/* leave fire on heart of fire */
+			/* pick up fire from heart of fire */
 			break;
 			
 		case ZONE_M_TORCH_1:
 		case ZONE_M_TORCH_2:
-		/* leave fire on mobile torch */
-		/* pick up fire from heart of fire */
+			err = strat_pickup_mobile_torch_top(zone_num);
+			err = strat_pickup_mobile_torch_mid(zone_num);
+			err = strat_pickup_mobile_torch_bot(zone_num);
 			break;
 			
 		case ZONE_BASKET_1:
 		case ZONE_BASKET_2:
-		/* leave fruits on basket */
-			strat_leave_fruits();
+			/* leave fruits on basket */
+			err = strat_leave_fruits();
 			break;
 
 
@@ -640,8 +670,8 @@ uint8_t position_exchange_main_up(void)
 {
 	#define PROTECT_H1_X 400
 	#define PROTECT_H1_Y 1600
-	#define BASKET_INIT_X 	 2700
-	#define BASKET_INIT_Y 	 543
+	#define BASKET_INIT_X_UP 	 2700
+	#define BASKET_INIT_Y_UP 	 543
 	//#define BASKET_INIT_Y 	 ROBOT_WIDTH/2+350
 	
 	int8_t err;
@@ -669,11 +699,11 @@ uint8_t position_exchange_main_up(void)
 			ERROUT(err);
 	
 	
-	err=goto_and_avoid (COLOR_X(BASKET_INIT_X),BASKET_INIT_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);	
+	err=goto_and_avoid (COLOR_X(BASKET_INIT_X_UP),BASKET_INIT_Y_UP,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 		
-	err=goto_and_avoid (COLOR_X(BASKET_INIT_X-700),BASKET_INIT_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
+	err=goto_and_avoid (COLOR_X(BASKET_INIT_X_UP-700),BASKET_INIT_Y_UP,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 	
@@ -694,8 +724,8 @@ uint8_t position_exchange_main_down(void)
 {
 	#define PROTECT_H1_X 400
 	#define PROTECT_H1_Y 1600
-	#define BASKET_INIT_X 	 1650
-	#define BASKET_INIT_Y 	 543
+	#define BASKET_INIT_X_DOWN 	 1650
+	#define BASKET_INIT_Y_DOWN 	 543
 	//#define BASKET_INIT_Y 	 ROBOT_WIDTH/2+350
 	int8_t err;
 	int16_t x;
@@ -717,12 +747,12 @@ uint8_t position_exchange_main_down(void)
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 	
-	err=goto_and_avoid (COLOR_X(BASKET_INIT_X),BASKET_INIT_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
+	err=goto_and_avoid (COLOR_X(BASKET_INIT_X_DOWN),BASKET_INIT_Y_DOWN,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
 	printf_P("err:%d\n",err);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 		
-	err=goto_and_avoid (COLOR_X(BASKET_INIT_X+700),BASKET_INIT_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
+	err=goto_and_avoid (COLOR_X(BASKET_INIT_X_DOWN+700),BASKET_INIT_Y_DOWN,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
 	printf_P("err:%d\n",err);
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);

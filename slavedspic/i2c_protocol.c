@@ -129,28 +129,8 @@ void i2c_read_event(uint8_t cmd_byte, uint8_t *buf)
 
 			/* infos */
 			(*cmd).status = slavedspic.status;
+			(*cmd).nb_stored_fires = slavedspic.nb_stored_fires;
 
-#if 0
-			/* actuators blocking flags */
-			(*cmd).fingers_floor_blocked = slavedspic.fingers_floor.blocking;
-			(*cmd).fingers_totem_blocked = slavedspic.fingers_totem.blocking;
-			(*cmd).arm_right_blocked = slavedspic.arm_right.blocking;
-			(*cmd).arm_left_blocked = slavedspic.arm_left.blocking;
-			(*cmd).lift_blocked = slavedspic.lift.blocking;
-		
-			/* sensors */
-			(*cmd).turbine_sensors = sensor_get_all();
-
-         /* infos */
-			(*cmd).harvest_mode = slavedspic.harvest_mode;
-			(*cmd).store_mode = slavedspic.store_mode;
-			(*cmd).dump_mode = slavedspic.dump_mode;
-		
-			(*cmd).nb_goldbars_in_boot = slavedspic.nb_goldbars_in_boot;
-			(*cmd).nb_goldbars_in_mouth = slavedspic.nb_goldbars_in_mouth;
-			(*cmd).nb_coins_in_boot = slavedspic.nb_coins_in_boot;
-			(*cmd).nb_coins_in_mouth = slavedspic.nb_coins_in_mouth;
-#endif
 			/* XXX watchdog time */
 			i2c_watchdog_cnt = 5;
 			

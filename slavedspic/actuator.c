@@ -616,7 +616,7 @@ void vacuum_system_disable (uint8_t num) {
 #define ARM_H_MAX   (LIFT_HEIGHT_MAX_mm)
 #define ARM_H_MIN   (LIFT_HEIGHT_MAX_mm)
 
-#define ARM_SHOULDER_A_MAX   (180)
+#define ARM_SHOULDER_A_MAX   (185)
 #define ARM_SHOULDER_A_MIN   (0)
 
 #define ARM_ELBOW_A_MAX (180)

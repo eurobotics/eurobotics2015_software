@@ -71,20 +71,12 @@ struct i2c_gpios_status {
 struct i2c_slavedspic_status{
 	struct i2c_cmd_hdr hdr;
 
-
-  	/* TODO */
-	
-  	/* actuators */
-
-   	/* rd sensors */
-
-  	/* wr sensors */
-
 	/* infos */
 	uint8_t status;
 #define I2C_SLAVEDSPIC_STATUS_BUSY		1
 #define I2C_SLAVEDSPIC_STATUS_READY		0
-
+    
+    uint8_t nb_stored_fires;
 };
 
 
@@ -123,26 +115,6 @@ struct i2c_cmd_slavedspic_set_mode {
 #define I2C_SLAVEDSPIC_MODE_ARM					0x0B
 
 
-
-#if 0
-#define I2C_SLAVEDSPIC_MODE_PREP_PICKUP_FIRE	  	0x00
-#define I2C_SLAVEDSPIC_MODE_PICKUP_FIRE         0x00
-#define I2C_SLAVEDSPIC_MODE_STORE_FIRE          0x00
-#define I2C_SLAVEDSPIC_MODE_LOAD_FIRE           0x00
-#define I2C_SLAVEDSPIC_MODE_PREP_DRAG_FIRE      0x00
-#define I2C_SLAVEDSPIC_MODE_DRAG_FIRE           0x00
-#define I2C_SLAVEDSPIC_MODE_PREP_TURN_FIRE      0x00
-#define I2C_SLAVEDSPIC_MODE_TURN_FIRE           0x00
-#define I2C_SLAVEDSPIC_MODE_PREP_TURN_FIRE      0x00
-
-#define I2C_SLAVEDSPIC_MODE_HIDE_ARMS           0x00
-
-
-#define I2C_SLAVEDSPIC_MODE_PREP_TOXIC_FRUIT    0x00
-#define I2C_SLAVEDSPIC_MODE_PICKUP_TOXIC_FRUIT  0x00
-#define I2C_SLAVEDSPIC_MODE_DRAG_TOXIC_FRUIT    0x00
-#endif
-
 	uint8_t mode;
 	union{
 
@@ -180,11 +152,11 @@ struct i2c_cmd_slavedspic_set_mode {
 		struct {
 			uint8_t type;
 #define I2C_STICK_TYPE_RIGHT	0
-#define I2C_STICK_TYPE_LEFT	1	
+#define I2C_STICK_TYPE_LEFT		1	
 
 			uint8_t mode;
 #define I2C_STICK_MODE_HIDE					0
-#define I2C_STICK_MODE_PUSH_FIRE				1
+#define I2C_STICK_MODE_PUSH_FIRE			1
 #define I2C_STICK_MODE_PUSH_TORCH_FIRE		2
 #define I2C_STICK_MODE_CLEAN_FLOOR			3
 #define I2C_STICK_MODE_CLEAN_HEART			4
@@ -232,11 +204,16 @@ struct i2c_cmd_slavedspic_set_mode {
 #define I2C_SLAVEDSPIC_MODE_ARM_LOAD_FIRE			6
 #define I2C_SLAVEDSPIC_MODE_ARM_FLIP_FIRE			7
 #define I2C_SLAVEDSPIC_MODE_ARM_PUTDOWN_FIRE		8
-#define I2C_SLAVEDSPIC_MODE_ARM_HIDE				9
+#define I2C_SLAVEDSPIC_MODE_ARM_PUTDOWN_FIRE_INV	9
+#define I2C_SLAVEDSPIC_MODE_ARM_RELEASE_FIRE		10
+#define I2C_SLAVEDSPIC_MODE_ARM_HIDE				11
 
-			uint8_t x_lsb;
-			uint8_t x_msb;
-	
+			uint8_t sucker_type;
+#define I2C_SLAVEDSPIC_SUCKER_TYPE_SHORT	0
+#define I2C_SLAVEDSPIC_SUCKER_TYPE_LONG		1
+#define I2C_SLAVEDSPIC_SUCKER_TYPE_MAX		2
+#define I2C_SLAVEDSPIC_SUCKER_TYPE_AUTO		3
+
 			uint8_t level;
 #define I2C_SLAVEDSPIC_LEVEL_FIRE_GROUND_PUSH	0
 #define I2C_SLAVEDSPIC_LEVEL_FIRE_GROUND_PULL	1
@@ -245,14 +222,15 @@ struct i2c_cmd_slavedspic_set_mode {
 #define I2C_SLAVEDSPIC_LEVEL_FIRE_TORCH_MIDDLE	4
 #define I2C_SLAVEDSPIC_LEVEL_FIRE_TORCH_TOP		5
 #define I2C_SLAVEDSPIC_LEVEL_MOBILE_TORCH		6
-#define I2C_SLAVEDSPIC_LEVEL_MAX				7
+#define I2C_SLAVEDSPIC_LEVEL_FIRE_STANDUP		7
+#define I2C_SLAVEDSPIC_LEVEL_FIRE_PUSH_PULL		8
+#define I2C_SLAVEDSPIC_LEVEL_MAX				9
 
-			uint8_t sucker_type;
-#define I2C_SLAVEDSPIC_SUCKER_TYPE_SHORT	0
-#define I2C_SLAVEDSPIC_SUCKER_TYPE_LONG		1
-#define I2C_SLAVEDSPIC_SUCKER_TYPE_MAX		2
-
+			uint8_t x_lsb;
+			uint8_t x_msb;
+	
 			int8_t sucker_angle; /* XXX +/- 90 deg */
+
 		} arm;
 
 		/* add more here */
