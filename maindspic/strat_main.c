@@ -233,6 +233,13 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 	while(!cmdline_keypressed());
 #endif
 
+    /* XXX if before the tree harvesting was interruped by opponent */    
+    if (strat_infos.tree_harvesting_interrumped) {
+        strat_infos.tree_harvesting_interrumped = 0;
+        i2c_slavedspic_wait_ready();
+        i2c_slavedspic_mode_harvest_fruits (I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_END);
+    }
+    
 	switch(zone_num)
 	{
 		case ZONE_TREE_1:

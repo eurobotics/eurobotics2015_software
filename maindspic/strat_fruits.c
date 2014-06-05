@@ -71,6 +71,29 @@
 	} while(0)
 
 
+/* 
+ * decrease gain on angle PID, and go forward until we reach the
+ * border.
+ */
+uint8_t strat_calib_tree(int16_t dist, uint8_t flags)
+{
+	int32_t p = pid_get_gain_P(&mainboard.angle.pid);
+	int32_t i = pid_get_gain_I(&mainboard.angle.pid);
+	int32_t d = pid_get_gain_D(&mainboard.angle.pid);
+	uint8_t err;
+
+	bd_set_current_thresholds(&mainboard.distance.bd, 100, 2000, 1000000, 10); //20, 8000, 1000000, 50);
+
+	pid_set_gains(&mainboard.angle.pid, 50, 0, 1000);
+	trajectory_d_rel(&mainboard.traj, dist);
+    err = WAIT_COND_OR_TRAJ_END(sensor_get (S_TREE_TOP), flags);
+    strat_hardstop();
+	pid_set_gains(&mainboard.angle.pid, p, i, d);
+
+	bd_set_current_thresholds(&mainboard.distance.bd, 100, 2000, 1000000, 25); //20, 8000, 1000000, 50);
+	return err;
+}
+
 /* harvest fruits from trees */
 uint8_t strat_harvest_fruits(int16_t x, int16_t y, uint8_t clean_before)
 {
@@ -122,18 +145,18 @@ uint8_t strat_harvest_fruits(int16_t x, int16_t y, uint8_t clean_before)
 	    }
 
 	    /* turn in front of tree with stick deployed */
+        i2c_slavedspic_wait_ready();
 	    i2c_slavedspic_mode_stick (stick_type, I2C_STICK_MODE_CLEAN_FLOOR, 0);
 
+        /* turn to infront of tree */
 	    trajectory_turnto_xy (&mainboard.traj, x, y);
 	    err = wait_traj_end (TRAJ_FLAGS_SMALL_DIST);
 	    if (!TRAJ_SUCCESS(err))
 		    ERROUT(err);
 
-        /* TODO check we are centered with trunk */
-
-	    /* XXX don't wait because clean floor somtimes doesn't reach the possition */
-	    //i2c_slavedspic_wait_ready();
-	    time_wait_ms (100);
+ 	    /* XXX somtimes the stick doesn't reach the possition */
+	    i2c_slavedspic_wait_ready();
+	    //time_wait_ms (100);
 
 	    wait_press_key();
 
@@ -143,11 +166,11 @@ uint8_t strat_harvest_fruits(int16_t x, int16_t y, uint8_t clean_before)
 	    if (!TRAJ_SUCCESS(err))
 			    ERROUT(err);
 
-	    i2c_slavedspic_mode_stick ( I2C_STICK_TYPE_LEFT,
-     										 I2C_STICK_MODE_HIDE, 0);
-	    //i2cproto_wait_update ();
-	    i2c_slavedspic_mode_stick ( I2C_STICK_TYPE_RIGHT,
-     										 I2C_STICK_MODE_HIDE, 0);
+	    i2c_slavedspic_mode_stick ( stick_type,	 I2C_STICK_MODE_HIDE, 0);
+	    i2cproto_wait_update ();
+	    i2c_slavedspic_mode_stick ( 
+         (stick_type == I2C_STICK_TYPE_RIGHT? I2C_STICK_TYPE_LEFT:I2C_STICK_TYPE_RIGHT),
+     	 I2C_STICK_MODE_HIDE, 0);
 
 	    //i2cproto_wait_update ();
 	    wait_press_key();
@@ -165,14 +188,45 @@ uint8_t strat_harvest_fruits(int16_t x, int16_t y, uint8_t clean_before)
 	i2c_slavedspic_mode_harvest_fruits(I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_READY);
 	wait_press_key();
 
-	
-    /* TODO turn to tree and measure truck angle */
+    /* turn to behind tree */
+    trajectory_turnto_xy (&mainboard.traj, x, y);
+    err = wait_traj_end (TRAJ_FLAGS_SMALL_DIST);
+    if (!TRAJ_SUCCESS(err))
+	    ERROUT(err);	
 
-    /* TODO make a correction if it's necesary */
+    /* center to trunk if it's necessary */
+    if (!sensor_get (S_TREE_TRUNK))
+    {
+	    trajectory_a_rel (&mainboard.traj, 15);
+	    err = wait_traj_end (TRAJ_FLAGS_SMALL_DIST);
+	    if (!TRAJ_SUCCESS(err))
+			    ERROUT(err);
+
+        /* set slow angle speed */
+        strat_get_speed (&temp_spdd, &temp_spda);
+	    strat_set_speed (SPEED_DIST_SLOW,SPEED_ANGLE_VERY_SLOW);
+
+	    trajectory_a_rel (&mainboard.traj, -30);
+
+        /* return 0 if cond become true */
+        err = WAIT_COND_OR_TRAJ_END(sensor_get (S_TREE_TRUNK), TRAJ_FLAGS_SMALL_DIST);
+        strat_hardstop();
+        
+        /* restore speed */
+        strat_set_speed (temp_spdd,temp_spda);
+
+        /* if not sensor detected, it's supposed the tree is centered */
+        if (err != 0) {
+            /* turn to behind tree */
+            trajectory_turnto_xy (&mainboard.traj, x, y);
+            err = wait_traj_end (TRAJ_FLAGS_SMALL_DIST);
+            if (!TRAJ_SUCCESS(err))
+	            ERROUT(err);	
+        }  
+    }
 
 
-
-	/* XXX what if we are near than HARVEST_TREE_D_NEAR */
+	/* go to near tree */
 	d = distance_from_robot(x,y);
 	trajectory_d_rel(&mainboard.traj, -(d - HARVEST_TREE_D_NEAR));
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
@@ -180,20 +234,27 @@ uint8_t strat_harvest_fruits(int16_t x, int16_t y, uint8_t clean_before)
 	   ERROUT(err);
 
 
-	/* TODO XXX goto near truck, sensor detection or blocking */
+	/* XXX go to near truck, ends with sensor detection or blocking */
 	strat_get_speed (&temp_spdd, &temp_spda);
 	strat_set_speed (HARVEST_TREE_SPEED_DIST, temp_spda);
-	strat_calib(-HARVEST_TREE_D_BLOCKING, TRAJ_FLAGS_SMALL_DIST);
+
+    /* return 0 if cond become true */
+	err = strat_calib_tree(-HARVEST_TREE_D_BLOCKING, TRAJ_FLAGS_SMALL_DIST);
 	strat_set_speed( temp_spdd, temp_spda);
 
-	trajectory_d_rel(&mainboard.traj, 10);
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-    if (!TRAJ_SUCCESS(err))
-	   ERROUT(err);
+    /* check stop condition */
+    if (err != 0) {
+        /* no sensor detecton, ends in blocking, go backward a bit */
+	    trajectory_d_rel(&mainboard.traj, 10);
+	    err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+        if (!TRAJ_SUCCESS(err))
+	       ERROUT(err);
 
-	time_wait_ms (300);
+        /* we just blocking wit truck, wait for fruit stabilization */	
+        time_wait_ms (300);
+    }
 
-	/* should stay very close to tree */
+	/* should stay very close to tree, not centering blocking case */
 	if (distance_from_robot(x,y) > HARVEST_TREE_D_CLOSE)
 		goto end_harvesting;
 
@@ -202,7 +263,6 @@ uint8_t strat_harvest_fruits(int16_t x, int16_t y, uint8_t clean_before)
 	/* pick up the fruits and go backward */
 	i2c_slavedspic_mode_harvest_fruits(I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_DO);
 	i2c_slavedspic_wait_ready();
-	//time_wait_ms (200);
 
 	wait_press_key();
 
@@ -211,39 +271,24 @@ end_harvesting:
 	/* check if opponent is behind and harvest fruits */
 	strat_set_speed (HARVEST_TREE_SPEED_DIST, temp_spda);
 
-    /* TODO */
-#ifdef TODO	
+    /* check opponent behind */
 	if (opponent_is_infront()) {
+        time_wait_ms (2000);
 
-		strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_VERY_SLOW);
+        if (opponent_is_infront())
+		    strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_VERY_SLOW);
 
-		/* can be ends blocking */
-		trajectory_d_rel(&mainboard.traj, -HARVEST_TREE_D_FAR);
-		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-
-		if (distance_from_robot(x,y) < HARVEST_TREE_D_NEAR) {
-			trajectory_d_rel(&mainboard.traj, );
-			
-		}
-
-		/* try to escape from */
-		if (TRAJ_BLOCKING(err)) {
-
-		}
-
-
+        strat_infos.tree_harvesting_interrumped = 1;
 	}
-	else 
-#endif 
-	{
-		trajectory_d_rel(&mainboard.traj, HARVEST_TREE_D_FAR);
-		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-		if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
 
-		/* time to fruits fall into */
-		time_wait_ms (200);
-	}
+    /* return to init position */
+	trajectory_d_rel(&mainboard.traj, HARVEST_TREE_D_FAR);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+	if (!TRAJ_SUCCESS(err))
+		ERROUT(err);
+
+	/* wait for fruits fall into */
+	time_wait_ms (250);
 
 	strat_infos.harvested_trees++;
 	strat_infos.zones[ZONE_BASKET_2].prio += ZONE_PRIO_30*strat_infos.harvested_trees;
@@ -253,8 +298,8 @@ end_harvesting:
 end:
 	i2c_slavedspic_mode_harvest_fruits (I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_END);
 	strat_set_speed(old_spdd, old_spda);	
-   strat_limit_speed_enable();
-   return err;
+    strat_limit_speed_enable();
+    return err;
 }
 
 
