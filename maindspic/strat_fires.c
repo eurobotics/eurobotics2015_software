@@ -190,7 +190,8 @@ uint8_t strat_harvest_orphan_fire (zone_num)
 #define wait_press_key()
 #endif
 
-#define DIST_ORPHAN_FIRE_OVER 140
+#define DIST_ORPHAN_FIRE_OVER_PUSH 150 //140
+#define DIST_ORPHAN_FIRE_OVER_PULL 150
 
     uint8_t err = 0;
 	uint16_t old_spdd, old_spda;
@@ -274,11 +275,11 @@ uint8_t strat_harvest_orphan_fire (zone_num)
 
     /* push/pull fire */
     if (ABS(distance_from_robot (x,y) - DIST_ORPHAN_FIRE_PUSH) > 30) {
-        d = -DIST_ORPHAN_FIRE_OVER;
+        d = -DIST_ORPHAN_FIRE_OVER_PULL;
         level = I2C_SLAVEDSPIC_LEVEL_FIRE_GROUND_PULL;
     }
     else {
-        d = DIST_ORPHAN_FIRE_OVER;
+        d = DIST_ORPHAN_FIRE_OVER_PUSH;
         level = I2C_SLAVEDSPIC_LEVEL_FIRE_GROUND_PUSH;
     }
     trajectory_d_rel(&mainboard.traj, d);
@@ -316,11 +317,11 @@ uint8_t strat_goto_torch (uint8_t zone_num)
     y = strat_infos.zones[zone_num].y;
 
     /* init x,y correction */
-    if (zone_num == ZONE_TORCH_1)       { x += COLOR_SIGN(DIST_ORPHAN_FIRE_PUSH); y+=5; }
-    else if (zone_num == ZONE_TORCH_4)  { x -= COLOR_SIGN(DIST_ORPHAN_FIRE_PUSH); y+=5; }
+    if (zone_num == ZONE_TORCH_1)       { x += COLOR_SIGN(DIST_ORPHAN_FIRE_PUSH); }//y+=5; }
+    else if (zone_num == ZONE_TORCH_4)  { x -= COLOR_SIGN(DIST_ORPHAN_FIRE_PUSH); }//y+=5; }
 
     else if ((zone_num == ZONE_TORCH_2) || (zone_num == ZONE_TORCH_3))
-    	{ x +=5 ; y-=DIST_ORPHAN_FIRE_PUSH; }
+    	{ y-=DIST_ORPHAN_FIRE_PUSH; } //x +=5;}
 
     /* ready for pickup */
     i2c_slavedspic_wait_ready();
@@ -411,8 +412,9 @@ uint8_t strat_goto_mobile_torch (uint8_t zone_num)
     double temp_x, temp_y;
 	uint8_t err = 0;
 
-#define MOBIL_TORCH_X_OFFSET 55
-#define MOBIL_TORCH_Y_OFFSET 255
+#define MOBIL_TORCH_X_OFFSET    55
+#define MOBIL_TORCH_Y_OFFSET    255
+#define DIST_MOBIL_TORCH_SAFE	360
 
     /* depending on robot and mobiel torch position */
     robot_x = position_get_x_s16(&mainboard.pos);
@@ -424,7 +426,7 @@ uint8_t strat_goto_mobile_torch (uint8_t zone_num)
 
     /* top */
     temp_x = -MOBIL_TORCH_X_OFFSET;
-    temp_y = MOBIL_TORCH_Y_OFFSET;
+    temp_y = MOBIL_TORCH_Y_OFFSET + DIST_MOBIL_TORCH_SAFE;
 
     /* bottom-right */
     if ((robot_y < y) && (robot_x > x))
@@ -481,11 +483,20 @@ static uint8_t __strat_pickup_mobile_torch (uint8_t zone_num, uint8_t level)
 	if (!TRAJ_SUCCESS(err))
 		ERROUT(err);
 
+    /* go over fires if we are not yet */
+    if (ABS(distance_from_robot (x,y) - MOBIL_TORCH_Y_OFFSET) > 30) 
+    {
+        trajectory_d_rel(&mainboard.traj, 
+                        ABS(distance_from_robot (x,y) - MOBIL_TORCH_Y_OFFSET);
+        err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+        if (!TRAJ_SUCCESS(err))
+           ERROUT(err);    
+    }
+
     /* ready for pickup */
     i2c_slavedspic_wait_ready();
     i2c_slavedspic_mode_ready_for_pickup_fire(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG,
                                               level);
-
 
     /* pickup fire */
     i2c_slavedspic_mode_pickup_fire(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG, level);
