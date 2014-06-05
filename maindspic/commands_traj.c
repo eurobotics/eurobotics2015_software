@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Revision : $Id: commands_traj.c,v 1.7 2009/05/27 20:04:07 zer0 Exp $
+ *  Revision : $Id$
  *
  *  Olivier MATZ <zer0@droids-corp.org> 
  */
@@ -1285,7 +1285,6 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 
     else if (!strcmp_P(res->arg1, PSTR("heart"))) {
         zone_num = ZONE_HEART_1 + res->arg2 - 1;
-		strat_make_puzzle_on_heart (ZONE_HEART_1);
 	}
 
     else if (!strcmp_P(res->arg1, PSTR("torch")))

@@ -249,7 +249,7 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 		case ZONE_FIRE_4:
 		case ZONE_FIRE_5:
 		case ZONE_FIRE_6:
-			strat_harvest_orphan_fire (COLOR_X (strat_infos.zones[zone_num].x),
+			err = strat_harvest_orphan_fire (COLOR_X (strat_infos.zones[zone_num].x),
 										 		strat_infos.zones[zone_num].y);
 			break;
 			
@@ -257,12 +257,12 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 		case ZONE_TORCH_2:
 		case ZONE_TORCH_3:
 		case ZONE_TORCH_4:
-			strat_harvest_torch (zone_num);
+			err = strat_harvest_torch (zone_num);
 			break;
 			
 		case ZONE_HEART_1:
 		case ZONE_HEART_3:
-			strat_make_puzzle_on_heart (zone_num);
+			err = strat_make_puzzle_on_heart (zone_num);
 			break;
 
 		case ZONE_HEART_2_UP:
@@ -276,15 +276,15 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 			
 		case ZONE_M_TORCH_1:
 		case ZONE_M_TORCH_2:
-			strat_pickup_mobile_torch_top(zone_num);
-			strat_pickup_mobile_torch_mid(zone_num);
-			strat_pickup_mobile_torch_bot(zone_num);
+			err = strat_pickup_mobile_torch_top(zone_num);
+			err = strat_pickup_mobile_torch_mid(zone_num);
+			err = strat_pickup_mobile_torch_bot(zone_num);
 			break;
 			
 		case ZONE_BASKET_1:
 		case ZONE_BASKET_2:
 			/* leave fruits on basket */
-			strat_leave_fruits();
+			err = strat_leave_fruits();
 			break;
 
 
