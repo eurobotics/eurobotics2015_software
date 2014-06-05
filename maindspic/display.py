@@ -30,9 +30,15 @@ save_pos2 = []
 robot = box(color=(0.4, 0.4, 0.4))
 robot2 = box(color=(0.4, 0.4, 0.4))
 
+steam_shovel = box(color=(0.6, 0.6, 0.6))
+
 lstick = box(color=(0.4, 0.4, 0.4))
 rstick = box(color=(0.4, 0.4, 0.4))
 arm = box(color=(0.06,0.3,0.54))
+harvester = frame()
+box(frame=harvester, color=(0.6,0.6,0.6),size=(150,100,30), pos=(0, -ROBOT_WIDTH/2+75, 0))
+box(frame=harvester, color=(0.6,0.6,0.6),size=(150,100,30), pos=(0, ROBOT_WIDTH/2-75, 0))
+box(frame=harvester, color=(0.6,0.6,0.6),size=(60,90,30), pos=(45, 0, 0))
 
 opp = box(color=(0.7, 0.2, 0.2))
 opp.opacity = 0.7
@@ -90,13 +96,15 @@ robot2_a = 0.
 robot_lstick_deployed = 0
 robot_rstick_deployed = 0
 
-lstick_offset = 0
 lstick_deployed = 0
-rstick_offset = 0
 rstick_deployed = 0
 
+lstick_offset = 0
+rstick_offset = 0
 arm_offset = -4
-arm_deployed = 0
+harvester_offset = 0
+
+steam_shovel_offset = 0
 
 robot_trail = curve()
 robot_trail_list = []
@@ -252,62 +260,71 @@ def set_opp2(x, y):
 
 def set_lstick():
     global arm_offset
-    global arm_deployed 
-    global rstick_offset
-    global rstick_deployed 
-    global lstick_offset
-    global lstick_deployed   
+    global harvester_offset
+    global rstick_offset, rstick_deployed
+    global lstick_offset, lstick_deployed
 
-    if lstick_deployed == 20:
-	lstick_deployed = 0
+    if lstick_offset == 3:
 	lstick_offset = 0
+	lstick_deployed = 0
     else:
-    	lstick_deployed = 20
     	lstick_offset = 3 
-	rstick_deployed = 0
+	lstick_deployed = 20
     	rstick_offset = 0
-	arm_deployed = 0
+	rstick_deployed = 0
 	arm_offset = -4
-
+	harvester_offset = 0
 
 def set_rstick():
     global arm_offset
-    global arm_deployed 
-    global rstick_offset
-    global rstick_deployed 
-    global lstick_offset
-    global lstick_deployed
+    global harvester_offset
+    global rstick_offset, rstick_deployed
+    global lstick_offset, lstick_deployed
  
-    if rstick_deployed == 20:
-	rstick_deployed = 0
+    if rstick_offset == 3:
 	rstick_offset = 0
+	rstick_deployed = 0
     else:
-    	rstick_deployed = 20
     	rstick_offset = 3
-    	lstick_deployed = 0
+	rstick_deployed = 20
     	lstick_offset = 0
-	arm_deployed = 0
+	lstick_deployed = 0
 	arm_offset = -4
-
+	harvester_offset = 0
 
 def set_arm():
     global arm_offset
-    global arm_deployed 
-    global rstick_offset
-    global rstick_deployed 
-    global lstick_offset
-    global lstick_deployed 
+    global harvester_offset
+    global rstick_offset, rstick_deployed
+    global lstick_offset, lstick_deployed
 
-    if arm_deployed == 30:
-	arm_deployed = 0
+    if arm_offset == 10:
 	arm_offset = -4
     else:
-    	arm_deployed = 30
     	arm_offset = 10
-    	lstick_deployed = 0
+    	lstick_offset = 0
+	lstick_deployed = 0
+	rstick_deployed = 0
+    	rstick_offset = 0
+	harvester_offset = 0
+
+def set_harvester():
+    global arm_offset
+    global rstick_offset, rstick_deployed
+    global harvester_offset
+    global lstick_offset, lstick_deployed
+
+    if harvester_offset == -3:
+	harvester_offset = 0
+    else:
+	arm_offset = -4
+	lstick_deployed = 0
     	lstick_offset = 0
 	rstick_deployed = 0
     	rstick_offset = 0
+	harvester_offset = -3
+
+
 
 
 def set_robot():
@@ -361,7 +378,11 @@ def set_robot():
 
     arm.size = (220, 40, 20)
 
+    harvester.pos = (tmp_x + ROBOT_X_OFFSET + (harvester_offset * 60) * math.cos((tmp_a)*math.pi/180),
+		    tmp_y + (harvester_offset * 60) * math.sin((tmp_a)*math.pi/180),
+		    ROBOT_HEIGHT/4)
 
+    harvester.axis = axis 
     # save position
     save_pos.append((robot.pos.x, robot.pos.y, tmp_a))
 
@@ -374,10 +395,20 @@ def set_robot():
         robot_trail_list = robot_trail_list[robot_trail_l - max_trail:]
     robot_trail.pos = robot_trail_list
 
+
+
+def set_steam_shovel():
+    global steam_shovel_rotateZ, steam_shovel_offset
+
+    if steam_shovel_offset == 0:
+        steam_shovel_offset = 6
+    else:
+	steam_shovel_offset = 0	
+
 def set_robot2():
     global robot2, last_pos2, robot2_trail, robot2_trail_list
     global save_pos2, robot2_x, robot2_y, robot2_a
-
+    global steam_shovel_rotateZ, steam_shovel_offset
     if color == YELLOW:
         tmp_x = robot2_x - AREA_X/2
         tmp_y = robot2_y - AREA_Y/2
@@ -394,7 +425,15 @@ def set_robot2():
 
     robot2.axis = axis
     robot2.size = (ROBOT2_LENGTH, ROBOT2_WIDTH, ROBOT_HEIGHT)
-
+    
+    steam_shovel.pos = (tmp_x + (steam_shovel_offset * 15) * math.cos((tmp_a)*math.pi/180),
+		    tmp_y + (steam_shovel_offset * 15) * math.sin((tmp_a)*math.pi/180),
+    ROBOT_HEIGHT/6)
+    steam_shovel.axis = (math.cos(tmp_a*math.pi/180),
+            math.sin(tmp_a*math.pi/180),
+            0)
+    steam_shovel.size=(70, ROBOT2_WIDTH, 15)
+    
     # save position
     save_pos2.append((robot2.pos.x, robot2.pos.y, tmp_a))
 
@@ -548,6 +587,10 @@ while True:
 		set_lstick()
 	    elif k == "r":
 		set_rstick()
+	    elif k == "p":
+		set_steam_shovel()
+	    elif k == "f":
+		set_harvester()
             elif k == "1":
                 set_opp_nb = 1;
             elif k == "2":
