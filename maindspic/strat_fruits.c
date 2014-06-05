@@ -72,7 +72,7 @@
 
 
 /* harvest fruits from trees */
-uint8_t strat_harvest_fruits(int16_t x, int16_t y)
+uint8_t strat_harvest_fruits(int16_t x, int16_t y, uint8_t clean_before)
 {
 //#define DEBUG_STRAT_HARVEST_FRUITS
 #ifdef DEBUG_STRAT_HARVEST_FRUITS 
@@ -82,96 +82,105 @@ uint8_t strat_harvest_fruits(int16_t x, int16_t y)
 #define wait_press_key()
 #endif
 
-   uint8_t err = 0;
+    uint8_t err = 0;
 	uint16_t old_spdd, old_spda, temp_spdd, temp_spda;
-   int16_t d, clean_floor_a_rel;
+    int16_t d, clean_floor_a_rel;
 	uint8_t stick_type;
 
 	/* save speed */
 	strat_get_speed (&old_spdd, &old_spda);
-   strat_limit_speed_disable ();
+    strat_limit_speed_disable ();
 	strat_set_speed (SPEED_DIST_SLOW,SPEED_ANGLE_FAST);
    
+    /* clean floor if requested */
+    if (clean_before)
+    {
+	    /* depending on tree type */
 
-	/* depending on tree type */
+	    /* tree 1 */
+	    if (position_get_x_s16(&mainboard.pos) < TREE_2_X) {
+		    stick_type = I2C_STICK_TYPE_RIGHT;
+		    clean_floor_a_rel = 180; 
+	    }
+	    /* tree 4 */
+	    else 	if (position_get_x_s16(&mainboard.pos) > TREE_3_X) {
+		    stick_type = I2C_STICK_TYPE_LEFT;
+		    clean_floor_a_rel = -180; 
+	    }
 
-	/* tree 1 */
-	if (position_get_x_s16(&mainboard.pos) < TREE_2_X) {
-		stick_type = I2C_STICK_TYPE_RIGHT;
-		clean_floor_a_rel = 180; 
-	}
-	/* tree 4 */
-	else 	if (position_get_x_s16(&mainboard.pos) > TREE_3_X) {
-		stick_type = I2C_STICK_TYPE_LEFT;
-		clean_floor_a_rel = -180; 
-	}
+	    /* tree 2 */
+	    else if (position_get_x_s16(&mainboard.pos) < CENTER_X
+				    && position_get_y_s16(&mainboard.pos) > TREE_1_Y) {
+		    stick_type = I2C_STICK_TYPE_LEFT;
+		    clean_floor_a_rel = -180; 
+	    }
+	    /* tree 3 */	
+	    else { /* if (position_get_x_s16(&mainboard.pos) > CENTER_X
+				    && position_get_y_s16(&mainboard.pos) > TREE_4_Y) */
+		    stick_type = I2C_STICK_TYPE_RIGHT;
+		    clean_floor_a_rel = 180; 
+	    }
 
-	/* tree 2 */
-	else if (position_get_x_s16(&mainboard.pos) < CENTER_X
-				&& position_get_y_s16(&mainboard.pos) > TREE_1_Y) {
-		stick_type = I2C_STICK_TYPE_LEFT;
-		clean_floor_a_rel = -180; 
-	}
-	/* tree 3 */	
-	else { /* if (position_get_x_s16(&mainboard.pos) > CENTER_X
-				&& position_get_y_s16(&mainboard.pos) > TREE_4_Y) */
-		stick_type = I2C_STICK_TYPE_RIGHT;
-		clean_floor_a_rel = 180; 
-	}
+	    /* turn in front of tree with stick deployed */
+	    i2c_slavedspic_mode_stick (stick_type, I2C_STICK_MODE_CLEAN_FLOOR, 0);
 
+	    trajectory_turnto_xy (&mainboard.traj, x, y);
+	    err = wait_traj_end (TRAJ_FLAGS_SMALL_DIST);
+	    if (!TRAJ_SUCCESS(err))
+		    ERROUT(err);
 
-	/* turn in front of tree with stick deployed */
-	i2c_slavedspic_mode_stick (stick_type,
- 										I2C_STICK_MODE_CLEAN_FLOOR, 0);
+        /* TODO check we are centered with trunk */
 
-	trajectory_turnto_xy (&mainboard.traj, x, y);
-	err = wait_traj_end (TRAJ_FLAGS_SMALL_DIST);
-	if (!TRAJ_SUCCESS(err))
-		ERROUT(err);
+	    /* XXX don't wait because clean floor somtimes doesn't reach the possition */
+	    //i2c_slavedspic_wait_ready();
+	    time_wait_ms (100);
 
-	/* XXX don't wait because clean floor somtimes doesn't reach the possition */
-	//i2c_slavedspic_wait_ready();
-	time_wait_ms (100);
+	    wait_press_key();
 
-	wait_press_key();
+	    /* clean floor */
+	    trajectory_a_rel (&mainboard.traj, clean_floor_a_rel);
+	    err = wait_traj_end (TRAJ_FLAGS_SMALL_DIST);
+	    if (!TRAJ_SUCCESS(err))
+			    ERROUT(err);
 
-	/* clean floor */
-	trajectory_a_rel (&mainboard.traj, clean_floor_a_rel);
-	err = wait_traj_end (TRAJ_FLAGS_SMALL_DIST);
-	if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
+	    i2c_slavedspic_mode_stick ( I2C_STICK_TYPE_LEFT,
+     										 I2C_STICK_MODE_HIDE, 0);
+	    //i2cproto_wait_update ();
+	    i2c_slavedspic_mode_stick ( I2C_STICK_TYPE_RIGHT,
+     										 I2C_STICK_MODE_HIDE, 0);
 
-	i2c_slavedspic_mode_stick ( I2C_STICK_TYPE_LEFT,
- 										 I2C_STICK_MODE_HIDE, 0);
-	//i2cproto_wait_update ();
-	i2c_slavedspic_mode_stick ( I2C_STICK_TYPE_RIGHT,
- 										 I2C_STICK_MODE_HIDE, 0);
+	    //i2cproto_wait_update ();
+	    wait_press_key();
+    }
 
-	//i2cproto_wait_update ();
-	wait_press_key();
-
-	/* go to hug the tree ready for harvesting */
+	/* prepare for for harvesting */
 #define HARVEST_TREE_D_NEAR		(350)
 #define HARVEST_TREE_SPEED_DIST	(500)
 #define HARVEST_TREE_D_CLOSE	 	(200)
 #define HARVEST_TREE_D_FAR			(500-160)
 #define HARVEST_TREE_D_BLOCKING	(250)
 
-	i2c_slavedspic_mode_harvest_fruits(I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_READY);
+    /* open back system */
 	i2c_slavedspic_wait_ready();
-
+	i2c_slavedspic_mode_harvest_fruits(I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_READY);
 	wait_press_key();
 
 	
+    /* TODO turn to tree and measure truck angle */
+
+    /* TODO make a correction if it's necesary */
+
+
+
 	/* XXX what if we are near than HARVEST_TREE_D_NEAR */
 	d = distance_from_robot(x,y);
 	trajectory_d_rel(&mainboard.traj, -(d - HARVEST_TREE_D_NEAR));
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-   if (!TRAJ_SUCCESS(err))
+    if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
 
 
-	/* XXX should end blocking */
+	/* TODO XXX goto near truck, sensor detection or blocking */
 	strat_get_speed (&temp_spdd, &temp_spda);
 	strat_set_speed (HARVEST_TREE_SPEED_DIST, temp_spda);
 	strat_calib(-HARVEST_TREE_D_BLOCKING, TRAJ_FLAGS_SMALL_DIST);
@@ -179,7 +188,7 @@ uint8_t strat_harvest_fruits(int16_t x, int16_t y)
 
 	trajectory_d_rel(&mainboard.traj, 10);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-   if (!TRAJ_SUCCESS(err))
+    if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
 
 	time_wait_ms (300);
@@ -202,6 +211,7 @@ end_harvesting:
 	/* check if opponent is behind and harvest fruits */
 	strat_set_speed (HARVEST_TREE_SPEED_DIST, temp_spda);
 
+    /* TODO */
 #ifdef TODO	
 	if (opponent_is_infront()) {
 
