@@ -145,6 +145,7 @@ int8_t strat_get_new_zone(void)
 			zone_num = i;
 		}
 
+        /* XXX force go to basket if timeout */
 		if((time_get_s() > 75) && (strat_infos.harvested_trees))
 			zone_num = ZONE_BASKET_2;
 	}
@@ -244,10 +245,14 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 	{
 		case ZONE_TREE_1:
 		case ZONE_TREE_2:
+			err = strat_harvest_fruits (COLOR_X (strat_infos.zones[zone_num].x),
+										 		strat_infos.zones[zone_num].y, 0);
+            break;
+
 		case ZONE_TREE_3:
 		case ZONE_TREE_4:
 			err = strat_harvest_fruits (COLOR_X (strat_infos.zones[zone_num].x),
-										 		strat_infos.zones[zone_num].y);
+										 		strat_infos.zones[zone_num].y, 1);
 			break;
 			
 		case ZONE_FIRE_1:
