@@ -218,6 +218,7 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 	}
 
 end:
+    /* TODO XXX if error put arm in safe position */
 	return err;
 }
 

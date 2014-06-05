@@ -99,10 +99,10 @@ uint8_t strat_goto_orphan_fire (uint8_t zone_num)
             }
 
             /* y correction */  
-            if (color == mainboard.our_color)
+            //if (color == mainboard.our_color)
                 y += DIST_ORPHAN_FIRE_PUSH;
-            else
-                y += DIST_ORPHAN_FIRE_PULL;
+            //else
+            //    y += DIST_ORPHAN_FIRE_PULL;
 
         }
         else {  
@@ -115,10 +115,10 @@ uint8_t strat_goto_orphan_fire (uint8_t zone_num)
             }
 
             /* y correction */   
-            if (color == mainboard.our_color)         
+            //if (color == mainboard.our_color)         
                 y -= DIST_ORPHAN_FIRE_PUSH;
-            else
-                y -= DIST_ORPHAN_FIRE_PULL;
+            //else
+            //    y -= DIST_ORPHAN_FIRE_PULL;
         } 
     }
     else {
@@ -134,10 +134,10 @@ uint8_t strat_goto_orphan_fire (uint8_t zone_num)
             }
 
             /* x correction */  
-            if (color == mainboard.our_color)
+            //if (color == mainboard.our_color)
                 x += DIST_ORPHAN_FIRE_PUSH;
-            else
-                x += DIST_ORPHAN_FIRE_PULL;
+            //else
+            //    x += DIST_ORPHAN_FIRE_PULL;
         }
         else {
             /* infront color */
@@ -150,10 +150,10 @@ uint8_t strat_goto_orphan_fire (uint8_t zone_num)
             }
 
             /* x correction */  
-            if (color == mainboard.our_color)
+            //if (color == mainboard.our_color)
                 x -= DIST_ORPHAN_FIRE_PUSH;
-            else
-                x -= DIST_ORPHAN_FIRE_PULL;
+            //else
+            //    x -= DIST_ORPHAN_FIRE_PULL;
         }
     }
 
@@ -173,13 +173,14 @@ uint8_t strat_goto_orphan_fire (uint8_t zone_num)
     /* go near */
     err = goto_and_avoid_forward (x, y, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 
+    /* TODO XXX if error put arm in safe position */
     return err;
 }
 
 
 
 /* harvest orphan fires  */
-uint8_t strat_harvest_orphan_fire (int16_t x, int16_t y)
+uint8_t strat_harvest_orphan_fire (zone_num)
 {
 //#define DEBUG_STRAT_FIRES
 #ifdef DEBUG_STRAT_FIRES
@@ -194,7 +195,16 @@ uint8_t strat_harvest_orphan_fire (int16_t x, int16_t y)
     uint8_t err = 0;
 	uint16_t old_spdd, old_spda;
     int16_t d;
-	uint8_t level;
+	uint8_t level, color;
+    int16_t robot_x, robot_y, x, y;
+
+	/* position depending on color */
+    x = COLOR_X(strat_infos.zones[zone_num].x);
+    y = strat_infos.zones[zone_num].y;
+
+    /* depending on robot and fire position */
+    robot_x = position_get_x_s16(&mainboard.pos);
+	robot_y = position_get_y_s16(&mainboard.pos);
 
 	/* save speed */
 	strat_get_speed (&old_spdd, &old_spda);
@@ -207,6 +217,54 @@ uint8_t strat_harvest_orphan_fire (int16_t x, int16_t y)
 	err = wait_traj_end (TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 		ERROUT(err);
+
+    /* get the in front color */
+    if ((zone_num == ZONE_FIRE_1) || (zone_num == ZONE_FIRE_6)) {
+        if (robot_y > y) {
+            switch (zone_num) {
+                case ZONE_FIRE_1: color = COLOR_INVERT(I2C_COLOR_RED); break;
+                case ZONE_FIRE_6: color = COLOR_INVERT(I2C_COLOR_YELLOW); break;
+                default: color = COLOR_INVERT(I2C_COLOR_YELLOW);
+            }
+        }
+        else {  
+            switch (zone_num) {
+                case ZONE_FIRE_1: color = COLOR_INVERT(I2C_COLOR_YELLOW); break;
+                case ZONE_FIRE_6: color = COLOR_INVERT(I2C_COLOR_RED); break;
+                default: color = COLOR_INVERT(I2C_COLOR_YELLOW);
+            }
+        } 
+    }
+    else {
+        if (robot_x > x) {
+            switch (zone_num) {
+                case ZONE_FIRE_2: color = COLOR_INVERT(I2C_COLOR_RED); break;
+                case ZONE_FIRE_3: color = COLOR_INVERT(I2C_COLOR_YELLOW); break;
+                case ZONE_FIRE_4: color = COLOR_INVERT(I2C_COLOR_RED); break;
+                case ZONE_FIRE_5: color = COLOR_INVERT(I2C_COLOR_YELLOW); break;
+                default: color = COLOR_INVERT(I2C_COLOR_YELLOW);
+            }
+        }
+        else {
+            /* infront color */
+            switch (zone_num) {
+                case ZONE_FIRE_2: color = COLOR_INVERT(I2C_COLOR_YELLOW); break;
+                case ZONE_FIRE_3: color = COLOR_INVERT(I2C_COLOR_RED); break;
+                case ZONE_FIRE_4: color = COLOR_INVERT(I2C_COLOR_YELLOW); break;
+                case ZONE_FIRE_5: color = COLOR_INVERT(I2C_COLOR_RED); break;
+                default: color = COLOR_INVERT(I2C_COLOR_YELLOW);
+            }
+        }
+    }
+
+    /* in case it's not our color go to pull distance */
+    if (color != mainboard.our_color) {
+        trajectory_d_rel(&mainboard.traj, 
+                         ABS(DIST_ORPHAN_FIRE_PUSH-DIST_ORPHAN_FIRE_PULL) );
+	    err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+        if (!TRAJ_SUCCESS(err))
+	        ERROUT(err);
+    }
 
     /* ready for push/pull */
     i2c_slavedspic_wait_ready();
@@ -240,6 +298,7 @@ uint8_t strat_harvest_orphan_fire (int16_t x, int16_t y)
     i2c_slavedspic_mode_store_fire(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG);
 
 end:
+    /* TODO XXX if error put arm in safe position */
 	strat_set_speed(old_spdd, old_spda);	
     strat_limit_speed_enable();
     return err;
@@ -269,6 +328,8 @@ uint8_t strat_goto_torch (uint8_t zone_num)
 
     /* go near */
     err = goto_and_avoid (x, y, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+
+    /* TODO XXX if error put arm in safe position */
 
 	return err;
 }
@@ -337,6 +398,7 @@ uint8_t strat_harvest_torch (uint8_t zone_num)
 	   ERROUT(err);
     
 end:
+    /* TODO XXX if error put arm in safe position */
 	strat_set_speed(old_spdd, old_spda);	
     strat_limit_speed_enable();
     return err;
@@ -383,6 +445,7 @@ uint8_t strat_goto_mobile_torch (uint8_t zone_num)
     /* go near */
     err = goto_and_avoid (x, y, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 
+    /* TODO XXX if error put arm in safe position */
 	return err;
 }
 
@@ -450,6 +513,7 @@ end:
 	strat_set_speed(old_spdd, old_spda);	
     strat_limit_speed_enable();
     return err;
+    /* TODO XXX if error put arm in safe position */
 }
 
 /* pickup mobile torch, top fire */
@@ -526,8 +590,8 @@ uint8_t strat_goto_heart_fire (uint8_t zone_num)
     /* go near */
     err = goto_and_avoid (x, y, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 
+    /* TODO XXX if error put arm in safe position */
 	return err;
-
 }
 
 /* dump stored fires on heart of fire making a puzzle */
@@ -620,6 +684,7 @@ uint8_t strat_make_puzzle_on_heart (uint8_t zone_num)
 	i2c_slavedspic_mode_hide_arm(I2C_SLAVEDSPIC_SUCKER_TYPE_LONG);
 
 end:
+    /* TODO XXX if error put arm in safe position */
 	strat_set_speed(old_spdd, old_spda);	
     strat_limit_speed_enable();
     return err;
