@@ -321,7 +321,7 @@ uint8_t strat_goto_torch (uint8_t zone_num)
     else if (zone_num == ZONE_TORCH_4)  { x -= COLOR_SIGN(DIST_ORPHAN_FIRE_PUSH); }//y+=5; }
 
     else if ((zone_num == ZONE_TORCH_2) || (zone_num == ZONE_TORCH_3))
-    	{ y-=DIST_ORPHAN_FIRE_PUSH; } //x +=5;}
+    	{ y-=DIST_ORPHAN_FIRE_PUSH; x +=10;}
 
     /* ready for pickup */
     i2c_slavedspic_wait_ready();
@@ -412,9 +412,10 @@ uint8_t strat_goto_mobile_torch (uint8_t zone_num)
     double temp_x, temp_y;
 	uint8_t err = 0;
 
-#define MOBIL_TORCH_X_OFFSET    55
-#define MOBIL_TORCH_Y_OFFSET    255
-#define DIST_MOBIL_TORCH_SAFE	360
+#define MOBIL_TORCH_X_OFFSET    (25.0) //45
+#define MOBIL_TORCH_Y_OFFSET    (255.0)
+//#define DIST_MOBIL_TORCH_SAFE	(360.0)
+#define K_DIST_SAFE				(1.4)
 
     /* depending on robot and mobiel torch position */
     robot_x = position_get_x_s16(&mainboard.pos);
@@ -425,15 +426,15 @@ uint8_t strat_goto_mobile_torch (uint8_t zone_num)
     /* 3 init points depending on robot position */
 
     /* top */
-    temp_x = -MOBIL_TORCH_X_OFFSET;
-    temp_y = MOBIL_TORCH_Y_OFFSET + DIST_MOBIL_TORCH_SAFE;
+    temp_x = -(MOBIL_TORCH_X_OFFSET*K_DIST_SAFE);
+    temp_y = (MOBIL_TORCH_Y_OFFSET*K_DIST_SAFE);
 
     /* bottom-right */
     if ((robot_y < y) && (robot_x > x))
         rotate(&temp_x, &temp_y, RAD(-120));
 
     /* bottom-left */
-    else
+    else if ((robot_y < y) && (robot_x < x))
         rotate(&temp_x, &temp_y, RAD(120));
 
     x += temp_x;
@@ -465,11 +466,16 @@ static uint8_t __strat_pickup_mobile_torch (uint8_t zone_num, uint8_t level)
 
     uint8_t err = 0;
 	uint16_t old_spdd, old_spda;
-    int16_t x, y;
+    int16_t x, y, robot_x, robot_y;
 	uint8_t color;
+	uint16_t a_abs;
+	double a_rel_rad, d_rel, d;
 
     x = COLOR_X(strat_infos.zones[zone_num].x);
     y = strat_infos.zones[zone_num].y;
+
+    robot_x = position_get_x_s16(&mainboard.pos);
+	robot_y = position_get_y_s16(&mainboard.pos);
 
 	/* save speed */
 	strat_get_speed (&old_spdd, &old_spda);
@@ -478,16 +484,29 @@ static uint8_t __strat_pickup_mobile_torch (uint8_t zone_num, uint8_t level)
    
 
 	/* turn to infront of torch */
-    trajectory_turnto_xy (&mainboard.traj, x, y);
+    /* top */
+	a_abs = -90;
+
+    /* bottom-right */
+    if ((robot_y < y) && (robot_x > x))
+		a_abs = 120;
+    /* bottom-left */
+    else if ((robot_y < y) && (robot_x < x))
+		a_abs = 30;
+
+	trajectory_a_abs (&mainboard.traj, a_abs);
 	err = wait_traj_end (TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 		ERROUT(err);
 
     /* go over fires if we are not yet */
-    if (ABS(distance_from_robot (x,y) - MOBIL_TORCH_Y_OFFSET) > 30) 
+	abs_xy_to_rel_da(x, y, &d_rel, &a_rel_rad);
+	d = d_rel * cos(a_rel_rad);
+
+    if (ABS((int16_t)d - MOBIL_TORCH_Y_OFFSET) > 30) 
     {
         trajectory_d_rel(&mainboard.traj, 
-                        ABS(distance_from_robot (x,y) - MOBIL_TORCH_Y_OFFSET));
+                        ABS((int16_t)d - MOBIL_TORCH_Y_OFFSET));
         err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
         if (!TRAJ_SUCCESS(err))
            ERROUT(err);    
