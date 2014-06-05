@@ -338,6 +338,8 @@ struct strat_infos {
 	/* opponent statistics */
 	uint8_t opp_score;
 	uint8_t opp_harvested_trees;
+
+    uint8_t tree_harvesting_interrumped;
 };
 
 extern struct strat_infos strat_infos;
