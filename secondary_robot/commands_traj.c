@@ -1042,9 +1042,8 @@ static void cmd_bt_task1_parsed(void *parsed_result, void *data)
 	}
 	else if (strcmp_P(res->arg1, PSTR("patrol_fr_mam")) == 0) {
 		bt_patrol_fresco_mamooth(res->arg2,res->arg3, res->arg4);
-		printf_P("patrol_fr_mam\n");
 	}
-	printf("next point\r\n");
+	//printf("next point\r\n");
 
 }
 

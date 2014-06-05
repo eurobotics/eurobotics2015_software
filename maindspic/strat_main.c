@@ -121,6 +121,9 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 			return 0;	
 	}
 
+	if((strat_infos.zones[zone_num].type==ZONE_TYPE_TREE) && (strat_infos.zones[zone_num].flags & ZONE_CHECKED_OPP))
+		return 0;
+		
 	return 1;
 }
 
@@ -445,7 +448,7 @@ uint8_t strat_smart(void)
 			strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
 		strat_infos.zones[zone_num].flags &= ~(ZONE_CHECKED_OPP);
 
-		printf_P(PSTR("Work on zone %s succeeded!\r\n"), numzone2name[zone_num]);
+		//printf_P(PSTR("Work on zone %s succeeded!\r\n"), numzone2name[zone_num]);
 		return END_TRAJ;
 	}
 }
@@ -544,17 +547,22 @@ void strat_homologation(void)
 	uint8_t i=0;
 	#define ZONES_SEQUENCE_LENGTH 6
 	uint8_t zones_sequence[ZONES_SEQUENCE_LENGTH] = 						
-	{ZONE_TORCH_1,ZONE_FIRE_1,ZONE_FIRE_3,ZONE_FIRE_5,ZONE_TREE_3,ZONE_BASKET_2};
+	{ZONE_TORCH_1,ZONE_FIRE_1,ZONE_FIRE_3,ZONE_TORCH_2,ZONE_TORCH_3,ZONE_FIRE_5};
+	
+	/* Secondary robot */
+	bt_robot_2nd_bt_patrol_fr_mam(6,0);
+	time_wait_ms(2000);
+	trajectory_d_rel(&mainboard.traj,250);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	
 	for(i=0; i<ZONES_SEQUENCE_LENGTH; i++)
 	{
 		/* goto zone */
-		printf_P(PSTR("Going to zone %s.\r\n"),numzone2name[zones_sequence[i]]);
+		//printf_P(PSTR("Going to zone %s.\r\n"),numzone2name[zones_sequence[i]]);
 		strat_dump_infos(__FUNCTION__);
 		strat_infos.current_zone=-1;
 		strat_infos.goto_zone=i;
 		err = goto_and_avoid(COLOR_X(strat_infos.zones[i].init_x), strat_infos.zones[i].init_y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-		//trajectory_a_abs(&mainboard.traj, strat_infos.zones[i].init_a);
 		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 		strat_infos.last_zone=strat_infos.current_zone;
 		strat_infos.goto_zone=-1;
@@ -572,14 +580,9 @@ void strat_homologation(void)
 		if (!TRAJ_SUCCESS(err)) {
 			printf_P(PSTR("Work on zone %s fails.\r\n"), numzone2name[zones_sequence[i]]);
 		}
-		else
-		{
-			// Switch off devices, go back to normal state if anything was deployed
-		}
 
 		/* mark the zone as checked */
 		strat_infos.zones[i].flags |= ZONE_CHECKED;
-		printf_P(PSTR("Work on zone %s succeeded!\r\n"), numzone2name[zones_sequence[i]]);
 	}
 }
 
