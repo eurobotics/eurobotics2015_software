@@ -180,7 +180,7 @@ uint8_t strat_goto_orphan_fire (uint8_t zone_num)
 
 
 /* harvest orphan fires  */
-uint8_t strat_harvest_orphan_fire (zone_num)
+uint8_t strat_harvest_orphan_fire (uint8_t zone_num)
 {
 //#define DEBUG_STRAT_FIRES
 #ifdef DEBUG_STRAT_FIRES
@@ -487,7 +487,7 @@ static uint8_t __strat_pickup_mobile_torch (uint8_t zone_num, uint8_t level)
     if (ABS(distance_from_robot (x,y) - MOBIL_TORCH_Y_OFFSET) > 30) 
     {
         trajectory_d_rel(&mainboard.traj, 
-                        ABS(distance_from_robot (x,y) - MOBIL_TORCH_Y_OFFSET);
+                        ABS(distance_from_robot (x,y) - MOBIL_TORCH_Y_OFFSET));
         err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
         if (!TRAJ_SUCCESS(err))
            ERROUT(err);    
@@ -599,7 +599,7 @@ uint8_t strat_goto_heart_fire (uint8_t zone_num)
     }
 
     /* go near */
-    err = goto_and_avoid (x, y, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+    err = goto_and_avoid_forward (x, y, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 
     /* TODO XXX if error put arm in safe position */
 	return err;
@@ -624,8 +624,8 @@ uint8_t strat_make_puzzle_on_heart (uint8_t zone_num)
 
 	int16_t fire_x[5] = 	{+55,	+30, 	-35, 	+162,   +80	};
 	int8_t  fire_a[5] = 	{-20, 	+45, 	+10, 	+15,    -35 };
-	int16_t fire_d_fw[5] = 	{+100,	+50,	+100,	+30,	+100};
-	int16_t fire_d_bw[6] = 	{-100,	+50,	+130, 	-130,	-100};
+	int16_t fire_d_fw[5] = 	{+90,	+50,	+95,	+30,	+100};
+	int16_t fire_d_bw[5] = 	{-90,	-50,	-125, 	-130,	-100};
 
 
 	/* save speed */
@@ -653,30 +653,34 @@ uint8_t strat_make_puzzle_on_heart (uint8_t zone_num)
     else
         a_abs = 90;
 
+
 	trajectory_a_abs (&mainboard.traj, a_abs);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 		ERROUT(err);
+
+
+	i2c_slavedspic_wait_ready();
 
 	/* make puzzle :) */
 	for (i=0; i<5; i++) 
 	{	
-		/* load 1st fire */
-		if (slavedspic.nb_stored_fires > 6)
-			 sucker_type = I2C_SLAVEDSPIC_SUCKER_TYPE_SHORT;
-		else sucker_type = I2C_SLAVEDSPIC_SUCKER_TYPE_LONG;
+		if (i==0) {
+			/* load 1st fire */
+			if (slavedspic.nb_stored_fires > 6)
+				 sucker_type = I2C_SLAVEDSPIC_SUCKER_TYPE_SHORT;
+			else sucker_type = I2C_SLAVEDSPIC_SUCKER_TYPE_LONG;
 
-		i2c_slavedspic_mode_load_fire(sucker_type);
-
-		/* wait go forward ends */
-		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-		//if (!TRAJ_SUCCESS(err))
-		//   ERROUT(err);
+			i2c_slavedspic_mode_load_fire(sucker_type);
+		}
+		i2c_slavedspic_wait_ready();
 
 		/* putdown */
-		i2c_slavedspic_wait_ready();
 		i2c_slavedspic_mode_putdown_fire (sucker_type, 
 										  I2C_SLAVEDSPIC_LEVEL_FIRE_HEART, 
 										  fire_x[i], &arm_y, &arm_a, fire_a[i]);
+		i2c_slavedspic_wait_ready();
+
 		/* go forward */
 	   	trajectory_d_rel(&mainboard.traj, fire_d_fw[i]);
 		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
@@ -687,8 +691,19 @@ uint8_t strat_make_puzzle_on_heart (uint8_t zone_num)
 		i2c_slavedspic_mode_release_fire (sucker_type);
 		i2c_slavedspic_wait_ready();
 
+		/* load fire */
+		i2c_slavedspic_mode_load_fire(sucker_type);
+
 		/* go backward */
+retry_bw:
 	   	trajectory_d_rel(&mainboard.traj, fire_d_bw[i]);
+		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+		if (err & END_BLOCKING)
+			goto retry_bw;
+		//if (!TRAJ_SUCCESS(err))
+		//   ERROUT(err);
+
+		DEBUG (E_USER_STRAT, "fire %d", i);
 	}
 
 	/* hide arm */

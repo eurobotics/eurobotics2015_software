@@ -80,6 +80,10 @@
 #define S_GP3_7		 39
 #define SENSOR_MAX    40
 
+#define S_TREE_TOP		0
+#define S_TREE_TRUNK	0
+
+
 
 #if notyet /* TODO 2014 */
 

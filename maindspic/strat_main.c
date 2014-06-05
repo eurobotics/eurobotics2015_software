@@ -158,7 +158,7 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 {
 #define BASKET_OFFSET_SIDE 175
 
-	int8_t err;
+	int8_t err=0;
 	
 	/* update strat_infos */
 	strat_infos.current_zone=-1;
@@ -185,13 +185,13 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 
 	}
 	else if (strat_infos.zones[zone_num].type == ZONE_TYPE_FIRE) {
-		strat_goto_orphan_fire (zone_num);
+		err = strat_goto_orphan_fire (zone_num);
 	}
 	else if (strat_infos.zones[zone_num].type == ZONE_TYPE_TORCH) {
-		strat_goto_torch (zone_num);
+		err = strat_goto_torch (zone_num);
 	}
 	else if (strat_infos.zones[zone_num].type == ZONE_TYPE_HEART) {
-		strat_goto_heart_fire (zone_num);
+		err = strat_goto_heart_fire (zone_num);
 	}
 	else if (strat_infos.zones[zone_num].type == ZONE_TYPE_M_TORCH) {
 		strat_goto_mobile_torch (zone_num);
@@ -261,8 +261,7 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 		case ZONE_FIRE_4:
 		case ZONE_FIRE_5:
 		case ZONE_FIRE_6:
-			err = strat_harvest_orphan_fire (COLOR_X (strat_infos.zones[zone_num].x),
-										 		strat_infos.zones[zone_num].y);
+			err = strat_harvest_orphan_fire (zone_num);
 			break;
 			
 		case ZONE_TORCH_1:
@@ -616,7 +615,7 @@ void strat_homologation(void)
 
 uint8_t robots_position_exchange(uint8_t protect_zone_num)
 {
-	int8_t err;
+	int8_t err = 0;
 	
 	/* Divide field in 2 parts (Y) and see where are the opponents: */
 	/* Both opponents upper part */
