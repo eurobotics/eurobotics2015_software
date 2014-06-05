@@ -158,7 +158,7 @@ static void i2cproto_next_state(uint8_t inc)
 	}
 }
 
-#define _WAIT_COND_OR_TIMEOUT(cond, timeout)                   \
+#define I2C_WAIT_COND_OR_TIMEOUT(cond, timeout)                   \
 ({                                                            \
         microseconds __us = time_get_us2();                   \
         uint8_t __ret = 1;                                    \
@@ -168,12 +168,9 @@ static void i2cproto_next_state(uint8_t inc)
                         break;                                \
                 }                                             \
         }                                                     \
-	if (__ret)					      \
-		DEBUG(E_USER_I2C_PROTO, "cond is true at line %d",\
-		      __LINE__);			      \
-	else						      \
-		DEBUG(E_USER_I2C_PROTO, "timeout at line %d",     \
-		      __LINE__);			      \
+	if (!__ret)					      					      \
+		DEBUG(E_USER_I2C_PROTO, "%s timeout",     \
+		      __FUNCTION__);			      \
 							      \
         __ret;                                                \
 })
@@ -184,8 +181,10 @@ void i2cproto_wait_update(void)
 {
 	uint8_t poll_num;
 	poll_num = i2c_poll_num;
-	_WAIT_COND_OR_TIMEOUT((i2c_poll_num-poll_num) > 1, 150);
+	I2C_WAIT_COND_OR_TIMEOUT((i2c_poll_num-poll_num) > 1, 200);
 }
+
+
 
 /* called periodically : the goal of this 'thread' is to send requests
  * and read answers on i2c slaves in the correct order. 						*/
@@ -597,15 +596,6 @@ void i2c_slavedspic_wait_ready(void)
    do{
       i2cproto_wait_update();
    } while(slavedspic.status == I2C_SLAVEDSPIC_STATUS_BUSY);
-
-	/*do{																			
-		i2cproto_wait_update();
-      if (time_get_us2() - __us > (1500)*1000L) 
-		{
-             __ret = 0;                            
-             break;                                
-      }                                 
-	} while(slavedspic.status == I2C_SLAVEDSPIC_STATUS_BUSY && __ret==1);   */
 #endif
 }
 
