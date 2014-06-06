@@ -424,7 +424,7 @@ uint8_t strat_leave_fruits_clean(void);
 uint8_t strat_goto_orphan_fire (uint8_t zone_num) ;
 
 /* harvest orphan fires  */
-uint8_t strat_harvest_orphan_fire (int16_t x, int16_t y);
+uint8_t strat_harvest_orphan_fire (uint8_t zone_num);
 
 /* goto torch */
 uint8_t strat_goto_torch (uint8_t zone_num);
