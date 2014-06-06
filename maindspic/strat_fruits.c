@@ -274,10 +274,10 @@ end_harvesting:
 	strat_set_speed (HARVEST_TREE_SPEED_DIST, temp_spda);
 
     /* check opponent behind */
-	if (opponent_is_infront()) {
+	if (opponent1_is_infront() || opponent2_is_infront()) {
         time_wait_ms (2000);
 
-        if (opponent_is_infront())
+        if (opponent1_is_infront() || opponent2_is_infront())
 		    strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_VERY_SLOW);
 
         strat_infos.tree_harvesting_interrumped = 1;
