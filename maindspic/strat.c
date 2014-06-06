@@ -99,7 +99,7 @@
 #define ROBOT_HALF_LENGTH_FRONT ROBOT_CENTER_TO_FRONT
 #define ROBOT_HALF_LENGTH_REAR  ROBOT_CENTER_TO_BACK
 
-/* XXX obstacle clerance */
+/* XXX obstacle clearance */
 #define OBS_CLERANCE            (137.+10.)
 
 #endif /* ! IM_SECONDARY_ROBOT */
@@ -121,46 +121,45 @@ struct strat_infos strat_infos = {
 #define BASKET_D_INIT         (440 + 300)
 
 
-
    /*zones[W] =                 {type,            x,            y,            x_down,   x_up,  y_down,    y_up,      init_x,                 init_y,                       prio,             flags,        opp_time_zone_us,	last_time_opp_here,	robot };                            */
-    .zones[ZONE_TREE_1]=        {ZONE_TYPE_TREE,  TREE_1_X,     TREE_1_Y,     0,         400,    1100,    1500,      TREE_D_INIT,            TREE_1_Y,                     ZONE_PRIO_40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_TREE_2]=        {ZONE_TYPE_TREE,  TREE_2_X,     TREE_2_Y,     500,       900,    1600,    2000,      TREE_2_X,               AREA_Y-TREE_D_INIT,           ZONE_PRIO_40,     0,             0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_TREE_3]=        {ZONE_TYPE_TREE,  TREE_3_X,     TREE_3_Y,     2100,     2500,    1600,    2000,      TREE_3_X,               AREA_Y-TREE_D_INIT,           ZONE_PRIO_40,     0,             0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_TREE_4]=        {ZONE_TYPE_TREE,  TREE_4_X,     TREE_4_Y,     2600,     3000,    1100,    1500,      AREA_X-TREE_D_INIT,     		TREE_4_Y,                     ZONE_PRIO_40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_TREE_1]=        {ZONE_TYPE_TREE,  TREE_1_X,     TREE_1_Y,     0,         400,    1100,    1500,      TREE_D_INIT,            TREE_1_Y,                     PRIO_TREE_1,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_TREE_2]=        {ZONE_TYPE_TREE,  TREE_2_X,     TREE_2_Y,     500,       900,    1600,    2000,      TREE_2_X,               AREA_Y-TREE_D_INIT,           PRIO_TREE_2,     0,             0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_TREE_3]=        {ZONE_TYPE_TREE,  TREE_3_X,     TREE_3_Y,     2100,     2500,    1600,    2000,      TREE_3_X,               AREA_Y-TREE_D_INIT,           PRIO_TREE_3,     0,             0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_TREE_4]=        {ZONE_TYPE_TREE,  TREE_4_X,     TREE_4_Y,     2600,     3000,    1100,    1500,      AREA_X-TREE_D_INIT,     		TREE_4_Y,                     PRIO_TREE_4,     0,            0,					(9000*1000L),					MAIN_ROBOT},
 
    /*zones[W] =                 {type,             x,         y,         					x_down,    x_up,   y_down, y_up,  init_x,       init_y, prio,         flags,        opp_time_zone_us,	last_time_opp_here,	robot };  */
-    .zones[ZONE_HEART_1]=       {ZONE_TYPE_HEART,  HEART_1_X, HEART_1_Y, 					0,         500,    1500,   2000   ,400 ,          1800,   ZONE_PRIO_40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_HEART_2_UP]=       {ZONE_TYPE_HEART,  HEART_2_UP_X, HEART_2_UP_Y, 			1350,      1650,   1050,   1500   ,HEART_2_UP_X,  1600,   ZONE_PRIO_40,     0,             0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_HEART_2_LEFT]=       {ZONE_TYPE_HEART,  HEART_2_LEFT_X, HEART_2_LEFT_Y, 	1050,      1500,   900,    1200   ,950,    HEART_2_LEFT_Y,   ZONE_PRIO_40,     0,             0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_HEART_2_DOWN]=       {ZONE_TYPE_HEART,  HEART_2_DOWN_X, HEART_2_DOWN_Y, 	1350,      1650,   600,    1050   ,HEART_2_DOWN_X, 500,   ZONE_PRIO_40,     0,             0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_HEART_2_RIGHT]=       {ZONE_TYPE_HEART,  HEART_2_RIGHT_X, HEART_2_RIGHT_Y, 	1500,      1950,   900,    1200   ,2050,   HEART_2_RIGHT_Y,   ZONE_PRIO_40,     0,             0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_HEART_3]=       {ZONE_TYPE_HEART,  HEART_3_X, HEART_3_Y, 					2500,      3000 ,  1500,   2000   ,2600 ,  1800,   ZONE_PRIO_40,     0,            0,					(9000*1000L),				MAIN_ROBOT},
+    .zones[ZONE_HEART_1]=       {ZONE_TYPE_HEART,  HEART_1_X, HEART_1_Y, 					0,         500,    1500,   2000   ,400 ,          1800,   PRIO_HEART_1,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_HEART_2_UP]=       {ZONE_TYPE_HEART,  HEART_2_UP_X, HEART_2_UP_Y, 			1350,      1650,   1050,   1500   ,HEART_2_UP_X,  1600,   PRIO_HEART_2_UP,     0,             0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_HEART_2_LEFT]=       {ZONE_TYPE_HEART,  HEART_2_LEFT_X, HEART_2_LEFT_Y, 	1050,      1500,   900,    1200   ,950,    HEART_2_LEFT_Y,   PRIO_HEART_2_LEFT,     0,             0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_HEART_2_DOWN]=       {ZONE_TYPE_HEART,  HEART_2_DOWN_X, HEART_2_DOWN_Y, 	1350,      1650,   600,    1050   ,HEART_2_DOWN_X, 500,   PRIO_HEART_2_DOWN,     0,             0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_HEART_2_RIGHT]=       {ZONE_TYPE_HEART,  HEART_2_RIGHT_X, HEART_2_RIGHT_Y, 	1500,      1950,   900,    1200   ,2050,   HEART_2_RIGHT_Y,   PRIO_HEART_2_RIGHT,     0,             0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_HEART_3]=       {ZONE_TYPE_HEART,  HEART_3_X, HEART_3_Y, 					2500,      3000 ,  1500,   2000   ,2600 ,  1800,   PRIO_HEART_3,     0,            0,					(9000*1000L),				MAIN_ROBOT},
 
    /*zones[W] =                 {type,           x,        y,        x_down,    x_up,   y_down, y_up,   init_x, init_y, prio,         flags,        opp_time_zone_us,	last_time_opp_here,	robot };  */
-    .zones[ZONE_FIRE_1]=        {ZONE_TYPE_FIRE, FIRE_1_X, FIRE_1_Y, 100,       700,    800,    1400,   630,    910,    ZONE_PRIO_40,     0,            0,					0,					BOTH_ROBOTS},
-    .zones[ZONE_FIRE_2]=        {ZONE_TYPE_FIRE, FIRE_2_X, FIRE_2_Y, 600,       1200,   300,    900,    630,    910,    ZONE_PRIO_40,     0,            0,					0,					BOTH_ROBOTS},
-    .zones[ZONE_FIRE_3]=        {ZONE_TYPE_FIRE, FIRE_3_X, FIRE_3_Y, 600,       1200,   1300,   1900,   1060,   1160,   ZONE_PRIO_40,     0,            0,					0,					BOTH_ROBOTS},
-    .zones[ZONE_FIRE_4]=        {ZONE_TYPE_FIRE, FIRE_4_X, FIRE_4_Y, 1800,      2400,   300,    900,    2370,   910,    ZONE_PRIO_40,     0,            0,					0,					BOTH_ROBOTS},
-    .zones[ZONE_FIRE_5]=        {ZONE_TYPE_FIRE, FIRE_5_X, FIRE_5_Y, 1800,      2400,   1300,   1900,   1940,   1160,   ZONE_PRIO_40,     0,            0,					0,					BOTH_ROBOTS},
-    .zones[ZONE_FIRE_6]=        {ZONE_TYPE_FIRE, FIRE_6_X, FIRE_6_Y, 2300,      2900,   800,    1400,   2370,   910,    ZONE_PRIO_40,     0,            0,					0,					BOTH_ROBOTS},  
+    .zones[ZONE_FIRE_1]=        {ZONE_TYPE_FIRE, FIRE_1_X, FIRE_1_Y, 100,       700,    800,    1400,   630,    910,    PRIO_FIRE_1,     0,            0,					0,					MAIN_ROBOT},
+    .zones[ZONE_FIRE_2]=        {ZONE_TYPE_FIRE, FIRE_2_X, FIRE_2_Y, 600,       1200,   300,    900,    630,    910,    PRIO_FIRE_2,     0,            0,					0,					MAIN_ROBOT},
+    .zones[ZONE_FIRE_3]=        {ZONE_TYPE_FIRE, FIRE_3_X, FIRE_3_Y, 600,       1200,   1300,   1900,   1060,   1160,   PRIO_FIRE_3,     0,            0,					0,					MAIN_ROBOT},
+    .zones[ZONE_FIRE_4]=        {ZONE_TYPE_FIRE, FIRE_4_X, FIRE_4_Y, 1800,      2400,   300,    900,    2370,   910,    PRIO_FIRE_4,     0,            0,					0,					MAIN_ROBOT},
+    .zones[ZONE_FIRE_5]=        {ZONE_TYPE_FIRE, FIRE_5_X, FIRE_5_Y, 1800,      2400,   1300,   1900,   1940,   1160,   PRIO_FIRE_5,     0,            0,					0,					MAIN_ROBOT},
+    .zones[ZONE_FIRE_6]=        {ZONE_TYPE_FIRE, FIRE_6_X, FIRE_6_Y, 2300,      2900,   800,    1400,   2370,   910,    PRIO_FIRE_6,     0,            0,					0,					MAIN_ROBOT},  
 
    /*zones[W] =                 {type,            x,         y,         x_down, x_up,   y_down, y_up,   init_x, init_y, prio,         flags,        opp_time_zone_us,	last_time_opp_here,	robot };  */
-    .zones[ZONE_TORCH_1]=       {ZONE_TYPE_TORCH, TORCH_1_X, TORCH_1_Y, 0,      400,    600,    1000,   340,    560,    ZONE_PRIO_40,     0,            0,					0,					MAIN_ROBOT},
-    .zones[ZONE_TORCH_2]=       {ZONE_TYPE_TORCH, TORCH_2_X, TORCH_2_Y, 1100,   1500,   1600,   2000,   980,    1710,   ZONE_PRIO_40,     0,            0,					0,					MAIN_ROBOT},
-    .zones[ZONE_TORCH_3]=       {ZONE_TYPE_TORCH, TORCH_3_X, TORCH_3_Y, 1500,   1900,   1600,   2000,   2020,   1710,   ZONE_PRIO_40,     0,            0,					0,					MAIN_ROBOT},
-    .zones[ZONE_TORCH_4]=       {ZONE_TYPE_TORCH, TORCH_4_X, TORCH_4_Y, 2600,   3000,   600,    1000,   2660,   560,    ZONE_PRIO_40,     0,            0,					0,					MAIN_ROBOT},
+    .zones[ZONE_TORCH_1]=       {ZONE_TYPE_TORCH, TORCH_1_X, TORCH_1_Y, 0,      400,    600,    1000,   340,    560,    PRIO_TORCH_1,     0,            0,					0,					MAIN_ROBOT},
+    .zones[ZONE_TORCH_2]=       {ZONE_TYPE_TORCH, TORCH_2_X, TORCH_2_Y, 1100,   1500,   1600,   2000,   980,    1710,   PRIO_TORCH_2,     0,            0,					0,					MAIN_ROBOT},
+    .zones[ZONE_TORCH_3]=       {ZONE_TYPE_TORCH, TORCH_3_X, TORCH_3_Y, 1500,   1900,   1600,   2000,   2020,   1710,   PRIO_TORCH_3,     0,            0,					0,					MAIN_ROBOT},
+    .zones[ZONE_TORCH_4]=       {ZONE_TYPE_TORCH, TORCH_4_X, TORCH_4_Y, 2600,   3000,   600,    1000,   2660,   560,    PRIO_TORCH_4,     0,            0,					0,					MAIN_ROBOT},
 
    /*zones[W] =                 {type,              x,           y,           x_down,   x_up,   y_down, y_up,   init_x, init_y, prio,        flags,        opp_time_zone_us,	last_time_opp_here,	robot };  */ 
-    .zones[ZONE_M_TORCH_1]=     {ZONE_TYPE_M_TORCH, M_TORCH_1_X, M_TORCH_1_Y, 600,      1200,   800,    1400,   630,    910,    ZONE_PRIO_0,     0,            0,					0,					MAIN_ROBOT},
-    .zones[ZONE_M_TORCH_2]=     {ZONE_TYPE_M_TORCH, M_TORCH_2_X, M_TORCH_2_Y, 1800,     2400,   800,    1400,   2370,   910,    ZONE_PRIO_0,     0,            0,					0,					MAIN_ROBOT},
+    .zones[ZONE_M_TORCH_1]=     {ZONE_TYPE_M_TORCH, M_TORCH_1_X, M_TORCH_1_Y, 600,      1200,   800,    1400,   630,    910,    PRIO_M_TORCH_1,     0,            0,					0,					MAIN_ROBOT},
+    .zones[ZONE_M_TORCH_2]=     {ZONE_TYPE_M_TORCH, M_TORCH_2_X, M_TORCH_2_Y, 1800,     2400,   800,    1400,   2370,   910,    PRIO_M_TORCH_2,     0,            0,					0,					MAIN_ROBOT},
  
-    .zones[ZONE_BASKET_1]=      {ZONE_TYPE_BASKET,  BASKET_1_X,  BASKET_1_Y,  400,      1100,   300,     600,    750,    BASKET_D_INIT,   ZONE_PRIO_0,     0,             0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_BASKET_2]=      {ZONE_TYPE_BASKET,  BASKET_2_X,  BASKET_2_Y,  1900,     2600,   300,     600,    2250,   BASKET_D_INIT,   ZONE_PRIO_0,     0,             0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_BASKET_1]=      {ZONE_TYPE_BASKET,  BASKET_1_X,  BASKET_1_Y,  400,      1100,   300,     600,    750,    BASKET_D_INIT,   PRIO_BASKET_1,     0,             0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_BASKET_2]=      {ZONE_TYPE_BASKET,  BASKET_2_X,  BASKET_2_Y,  1900,     2600,   300,     600,    2250,   BASKET_D_INIT,   PRIO_BASKET_2,     0,             0,					(9000*1000L),					MAIN_ROBOT},
 
-    .zones[ZONE_MAMOOTH_1]=     {ZONE_TYPE_MAMOOTH, MAMOOTH_1_X, MAMOOTH_1_Y, 400,  	1100,  300,     600,    750,    600,    ZONE_PRIO_40,     0,            0,					0,					SEC_ROBOT},
-    .zones[ZONE_MAMOOTH_2]=     {ZONE_TYPE_MAMOOTH, MAMOOTH_2_X, MAMOOTH_2_Y, 1900, 	2600,  300,     600,    2250,   600,    ZONE_PRIO_40,     0,            0,					0,					SEC_ROBOT},
+    .zones[ZONE_MAMOOTH_1]=     {ZONE_TYPE_MAMOOTH, MAMOOTH_1_X, MAMOOTH_1_Y, 400,  	1100,  300,     600,    750,    600,    PRIO_MAMOOTH_1,     0,            0,					0,					SEC_ROBOT},
+    .zones[ZONE_MAMOOTH_2]=     {ZONE_TYPE_MAMOOTH, MAMOOTH_2_X, MAMOOTH_2_Y, 1900, 	2600,  300,     600,    2250,   600,    PRIO_MAMOOTH_2,     0,            0,					0,					SEC_ROBOT},
 
-    .zones[ZONE_FRESCO]=        {ZONE_TYPE_FRESCO,  FRESCO_X,    FRESCO_Y,    1100, 	1900,  	0,   	500,    1500,   300,    ZONE_PRIO_40,     0,            0,					0,					SEC_ROBOT},
+    .zones[ZONE_FRESCO]=        {ZONE_TYPE_FRESCO,  FRESCO_X,    FRESCO_Y,    1100, 	1900,  	0,   	500,    1500,   300,    PRIO_FRESCO,     0,            0,					0,					SEC_ROBOT},
 
     //.zones[ZONE_HOME_YELLOW]=        {ZONE_TYPE_HOME, HOME_RED_X, HOME_RED_Y, 0, 400,  0,    690   , 2800,  600,   -90,  ZONE_PRIO_0,     0,            0,					0,					BOTH_ROBOTS},
     //.zones[ZONE_HOME_RED]=     {ZONE_TYPE_HOME, HOME_YELLOW_X, HOME_YELLOW_Y, 2600, 3000,  0,   690   , 200,  600,   -90,  ZONE_PRIO_0,     0,            0,					0,					BOTH_ROBOTS},
@@ -411,7 +410,6 @@ uint8_t strat_main(void)
 	while(1);
 	
     do{
-        //err = strat_begin_alcabot();
         err = strat_begin();
     }while((err & END_RESERVED) == 0);
 

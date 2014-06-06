@@ -75,6 +75,8 @@
  * decrease gain on angle PID, and go forward until we reach the
  * border.
  */
+ 
+#if 0
 uint8_t strat_calib_tree(int16_t dist, uint8_t flags)
 {
 	int32_t p = pid_get_gain_P(&mainboard.angle.pid);
@@ -290,9 +292,6 @@ end_harvesting:
 	/* wait for fruits fall into */
 	time_wait_ms (250);
 
-	strat_infos.harvested_trees++;
-	strat_infos.zones[ZONE_BASKET_2].prio += ZONE_PRIO_30*strat_infos.harvested_trees;
-	printf_P(PSTR("I have harvested %d trees in total\r\n"), strat_infos.harvested_trees);
 
 	/* hide tools */
 end:
@@ -301,7 +300,7 @@ end:
     strat_limit_speed_enable();
     return err;
 }
-
+#endif
 
 
 /* leave fruits from trees on basket*/
@@ -376,10 +375,6 @@ uint8_t strat_leave_fruits(void)
    if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
 
-	/* update strat_infos */
-	strat_infos.harvested_trees=0;
-	strat_infos.zones[ZONE_BASKET_1].prio=ZONE_PRIO_0;
-	strat_infos.zones[ZONE_BASKET_2].prio=ZONE_PRIO_0;
 
 end:
 	i2c_slavedspic_mode_dump_fruits(I2C_SLAVEDSPIC_MODE_DUMP_FRUITS_END);
@@ -516,10 +511,6 @@ uint8_t strat_leave_fruits_clean(void)
    if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
 
-	/* update strat_infos */
-	strat_infos.harvested_trees=0;
-	strat_infos.zones[ZONE_BASKET_1].prio=ZONE_PRIO_0;
-	strat_infos.zones[ZONE_BASKET_2].prio=ZONE_PRIO_0;
 
 end:
 	i2c_slavedspic_mode_dump_fruits(I2C_SLAVEDSPIC_MODE_DUMP_FRUITS_END);

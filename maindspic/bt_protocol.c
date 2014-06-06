@@ -306,7 +306,7 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 #define BT_MAMOOTH						11 	
 #define BT_NET							12	
 #define BT_DO_OPP_FIRES					13
-#define BT_PROTECT_HEART_1				14 	
+#define BT_PROTECT_HEART				14 	
 
     uint8_t flags;
 	//DEBUG (E_USER_BT_PROTO, "TX cmd: id %d arg0 %d arg1 %d", cmd_id, arg0, arg1);
@@ -333,8 +333,8 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 	else if (cmd_id == BT_FRESCO)
 		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task fresco");
 
-	else if (cmd_id == BT_PROTECT_HEART_1)
-		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task protect_h1");
+	else if (cmd_id == BT_PROTECT_HEART)
+		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task protect_h");
 
 	else if (cmd_id == BT_NET)
 		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task net");
@@ -440,8 +440,8 @@ inline uint8_t bt_robot_2nd_bt_task_mamooth (int16_t arg1, int16_t arg2) {
 inline uint8_t bt_robot_2nd_bt_patrol_fr_mam(int16_t arg1, int16_t arg2) {
 	return bt_robot_2nd_cmd (BT_PATROL_FRESCO_MAMOOTH, arg1, arg2);
 }
-inline uint8_t bt_robot_2nd_bt_protect_h1() {
-	return bt_robot_2nd_cmd (BT_PROTECT_HEART_1, 0,0);
+inline uint8_t bt_robot_2nd_bt_protect_h(uint8_t heart) {
+	return bt_robot_2nd_cmd (BT_PROTECT_HEART, heart,0);
 }
 inline uint8_t bt_robot_2nd_bt_net() {
 	return bt_robot_2nd_cmd (BT_NET, 0,0);

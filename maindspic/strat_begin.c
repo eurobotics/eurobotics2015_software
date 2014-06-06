@@ -78,33 +78,21 @@ uint8_t strat_begin(void)
 	uint8_t zone_num=0;
 	#define ZONES_SEQUENCE_LENGTH 6
 	uint8_t zones_sequence[ZONES_SEQUENCE_LENGTH] = 						
-	{ZONE_TORCH_1,ZONE_FIRE_1,ZONE_FIRE_2,ZONE_M_TORCH_1,ZONE_FIRE_3,ZONE_TORCH_3};
+	{ZONE_TORCH_1,ZONE_FIRE_1,ZONE_FIRE_3,ZONE_TORCH_2,ZONE_TORCH_3,ZONE_M_TORCH_1};
 	
-	if(mainboard.our_color==I2C_COLOR_RED)
-	{
-		zones_sequence[0]=ZONE_TORCH_4; zones_sequence[1]=ZONE_FIRE_6; zones_sequence[2]=ZONE_FIRE_4; 
-		zones_sequence[3]=ZONE_M_TORCH_2; zones_sequence[4]=ZONE_FIRE_5; zones_sequence[5]=ZONE_TORCH_2; 
-	}
+	
+	/* Secondary robot */
+	bt_robot_2nd_bt_patrol_fr_mam(6,0);
+	time_wait_ms(2000);
+	
+	/* Leave home */
+	trajectory_d_rel(&mainboard.traj,250);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	
 	for(zone_num=0; zone_num<ZONES_SEQUENCE_LENGTH; zone_num++)
 	{
 		/* goto zone */
-		printf_P(PSTR("Going to zone %s.\r\n"),numzone2name[zones_sequence[zone_num]]);
-		strat_dump_infos(__FUNCTION__);
-		strat_infos.current_zone=-1;
-		strat_infos.goto_zone=zones_sequence[zone_num];
-		err = goto_and_avoid(strat_infos.zones[zones_sequence[zone_num]].init_x, strat_infos.zones[zones_sequence[zone_num]].init_y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-		//trajectory_a_abs(&mainboard.traj, strat_infos.zones[zones_sequence[zone_num]].init_a);
-		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-		strat_infos.last_zone=strat_infos.current_zone;
-		strat_infos.goto_zone=-1;
-		if (!TRAJ_SUCCESS(err)) {
-			strat_infos.current_zone=-1;
-			printf_P(PSTR("Can't reach zone %s.\r\n"),numzone2name[zones_sequence[zone_num]]);
-		}
-		else{
-			strat_infos.current_zone=zones_sequence[zone_num];
-		}
+		goto_zone(zone_num);
 
 		/* work on zone */
 		strat_dump_infos(__FUNCTION__);
@@ -112,14 +100,9 @@ uint8_t strat_begin(void)
 		if (!TRAJ_SUCCESS(err)) {
 			printf_P(PSTR("Work on zone %s fails.\r\n"),numzone2name[zones_sequence[zone_num]]);
 		}
-		else
-		{
-			// Switch off devices, go back to normal state if anything was deployed
-		}
 
 		/* mark the zone as checked */
 		strat_infos.zones[zones_sequence[zone_num]].flags |= ZONE_CHECKED;
-		printf_P(PSTR("Work on zone %s succeeded!\r\n"),numzone2name[zones_sequence[zone_num]]);
 	}
 	return err;
 }

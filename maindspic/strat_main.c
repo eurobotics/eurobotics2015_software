@@ -73,7 +73,7 @@
 	} while(0)
 
 
-/* Add here the main strategic, the inteligence of robot */
+/* Add here the main strategy, the intelligence of robot */
 
 
 /* return 1 if is a valid zone and 0 otherwise */
@@ -160,6 +160,10 @@ int8_t strat_get_new_zone(void)
 uint8_t strat_goto_zone(uint8_t zone_num)
 {
 #define BASKET_OFFSET_SIDE 175
+#define BEGIN_LINE_Y 	450
+#define BEGIN_FRESCO_X	1295
+#define PROTECT_H1_X 400
+#define PROTECT_H1_Y 1500
 
 	int8_t err;
 	
@@ -167,49 +171,81 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 	strat_infos.current_zone=-1;
 	strat_infos.goto_zone=zone_num;
 	
-	/* go */
-	if (zone_num == ZONE_TREE_1 || zone_num == ZONE_TREE_2 
-		|| zone_num == ZONE_TREE_3 || zone_num == ZONE_TREE_4) 	{
-		err = goto_and_avoid_forward (COLOR_X(strat_infos.zones[zone_num].init_x), 
-									strat_infos.zones[zone_num].init_y,  
-									TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+	/* Secondary robot */
+	if(strat_infos.zones[zone_num].robot==SEC_ROBOT)
+	{
+		if(strat_infos.zones[zone_num].type==ZONE_TYPE_FRESCO)
+			trajectory_goto_xy_abs (&mainboard.traj,  COLOR_X(BEGIN_FRESCO_X), BEGIN_LINE_Y);
+			
+		else if(strat_infos.zones[zone_num].type==ZONE_TYPE_MAMOOTH);
+			//Not needed, goto mamooth and work in mamooth are in the same function in sec robot
+			
+		else if(strat_infos.zones[zone_num].type==ZONE_TYPE_HEART)
+		{
+			if(zone_num==ZONE_HEART_1)
+			{
+				bt_robot_2nd_goto_xy_abs(COLOR_X(FIRE_1_X),FIRE_1_Y);
+				bt_robot_2nd_wait_end();
+				bt_robot_2nd_goto_xy_abs(COLOR_X(PROTECT_H1_X),PROTECT_H1_Y);
+				bt_robot_2nd_wait_end();
+			}
+			else if  (zone_num==ZONE_HEART_3)
+			{
+				bt_robot_2nd_goto_xy_abs(COLOR_X(3000-FIRE_1_X),FIRE_1_Y);
+				bt_robot_2nd_wait_end();
+				bt_robot_2nd_goto_xy_abs(COLOR_X(3000-PROTECT_H1_X),PROTECT_H1_Y);
+				bt_robot_2nd_wait_end();
+			}
+			
+			else if(zone_num==ZONE_HEART_2_DOWN || zone_num==ZONE_HEART_2_UP || zone_num==ZONE_HEART_2_RIGHT || zone_num==ZONE_HEART_2_LEFT)
+			{
+			 /* TODO : remove fires from opponent. At the moment only protect ours */
+			}
+		}
 	}
-	else if (zone_num == ZONE_BASKET_2) 	{
-		if (opp1_x_is_more_than(3000-750) || opp2_x_is_more_than(3000-750) ) {
-			err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x - BASKET_OFFSET_SIDE), 
+	
+	else
+	{
+		/* go */
+		if (zone_num == ZONE_TREE_1 || zone_num == ZONE_TREE_2 
+			|| zone_num == ZONE_TREE_3 || zone_num == ZONE_TREE_4) 	{
+			err = goto_and_avoid_forward (COLOR_X(strat_infos.zones[zone_num].init_x), 
 										strat_infos.zones[zone_num].init_y,  
 										TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+		}
+		else if (zone_num == ZONE_BASKET_2) 	{
+			if (opp1_x_is_more_than(3000-750) || opp2_x_is_more_than(3000-750) ) {
+				err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x - BASKET_OFFSET_SIDE), 
+											strat_infos.zones[zone_num].init_y,  
+											TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+			}
+			else {
+				err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x + BASKET_OFFSET_SIDE), 
+											strat_infos.zones[zone_num].init_y,  
+											TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+			}
+
+		}
+		else if (strat_infos.zones[zone_num].type == ZONE_TYPE_FIRE) {
+			strat_goto_orphan_fire (zone_num);
+		}
+		else if (strat_infos.zones[zone_num].type == ZONE_TYPE_TORCH) {
+			strat_goto_torch (zone_num);
+		}
+		else if (strat_infos.zones[zone_num].type == ZONE_TYPE_HEART) {
+			strat_goto_heart_fire (zone_num);
+		}
+		else if (strat_infos.zones[zone_num].type == ZONE_TYPE_M_TORCH) {
+			strat_goto_mobile_torch (zone_num);
 		}
 		else {
-			err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x + BASKET_OFFSET_SIDE), 
-										strat_infos.zones[zone_num].init_y,  
-										TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-		}
-
+			if(strat_infos.zones[zone_num].robot==MAIN_ROBOT)
+				err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),  strat_infos.zones[zone_num].init_y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+		}	
 	}
-	else if (strat_infos.zones[zone_num].type == ZONE_TYPE_FIRE) {
-		strat_goto_orphan_fire (zone_num);
-	}
-	else if (strat_infos.zones[zone_num].type == ZONE_TYPE_TORCH) {
-		strat_goto_torch (zone_num);
-	}
-	else if (strat_infos.zones[zone_num].type == ZONE_TYPE_HEART) {
-		strat_goto_heart_fire (zone_num);
-	}
-	else if (strat_infos.zones[zone_num].type == ZONE_TYPE_M_TORCH) {
-		strat_goto_mobile_torch (zone_num);
-	}
-	else {
-		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x), 
-									strat_infos.zones[zone_num].init_y,  
-									TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-	}	
-
+	
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
-			
-	//trajectory_a_abs(&mainboard.traj, strat_infos.zones[zone_num].init_a);
-	//err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	
 	/* update strat_infos */
 	strat_infos.last_zone=strat_infos.current_zone;
@@ -237,74 +273,121 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 	while(!cmdline_keypressed());
 #endif
 
-    /* XXX if before the tree harvesting was interruped by opponent */    
+    /* XXX if before the tree harvesting was interrupted by opponent */    
     if (strat_infos.tree_harvesting_interrumped) {
         strat_infos.tree_harvesting_interrumped = 0;
         i2c_slavedspic_wait_ready();
         i2c_slavedspic_mode_harvest_fruits (I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_END);
     }
     
-	switch(zone_num)
+	/* Secondary robot */
+	if(strat_infos.zones[zone_num].robot==SEC_ROBOT)
 	{
-		case ZONE_TREE_1:
-		case ZONE_TREE_2:
-			err = strat_harvest_fruits (COLOR_X (strat_infos.zones[zone_num].x),
-										 		strat_infos.zones[zone_num].y, 0);
-            break;
+		if(strat_infos.zones[zone_num].type==ZONE_TYPE_FRESCO)
+			bt_robot_2nd_bt_fresco();
+			
+		else if(strat_infos.zones[zone_num].type==ZONE_TYPE_MAMOOTH)
+			bt_robot_2nd_bt_task_mamooth(6,0);
+		
+		if(strat_infos.zones[zone_num].type==ZONE_TYPE_HEART)
+		{
+			if(zone_num==ZONE_HEART_1)
+			{
+				bt_robot_2nd_bt_protect_h(1);
+				strat_infos.zones[ZONE_HEART_1].prio=ZONE_PRIO_0;
+			}
+			else if(zone_num==ZONE_HEART_3)
+			{
+				bt_robot_2nd_bt_protect_h(3);
+				strat_infos.zones[ZONE_HEART_3].prio=ZONE_PRIO_0;
+			}
+				
+			else if(zone_num==ZONE_HEART_2_DOWN || zone_num==ZONE_HEART_2_UP || zone_num==ZONE_HEART_2_RIGHT || zone_num==ZONE_HEART_2_LEFT)
+			{
+			/* TODO : remove fires from opponent. At the moment only protect ours */
+			}
+		}
+	}
+	
+	else
+	{
+		switch(zone_num)
+		{
+			case ZONE_TREE_1:
+			case ZONE_TREE_2:
+				err = strat_harvest_fruits (COLOR_X (strat_infos.zones[zone_num].x),
+													strat_infos.zones[zone_num].y, 0);
+				if(TRAJ_SUCCESS(err))
+				{
+					strat_infos.harvested_trees++;
+					strat_infos.zones[ZONE_BASKET_2].prio+=PRIO_BASKET_AFTER_ONE_TREE;
+				}
+				break;
 
-		case ZONE_TREE_3:
-		case ZONE_TREE_4:
-			err = strat_harvest_fruits (COLOR_X (strat_infos.zones[zone_num].x),
-										 		strat_infos.zones[zone_num].y, 1);
-			break;
-			
-		case ZONE_FIRE_1:
-		case ZONE_FIRE_2:
-		case ZONE_FIRE_3:
-		case ZONE_FIRE_4:
-		case ZONE_FIRE_5:
-		case ZONE_FIRE_6:
-			err = strat_harvest_orphan_fire (COLOR_X (strat_infos.zones[zone_num].x),
-										 		strat_infos.zones[zone_num].y);
-			break;
-			
-		case ZONE_TORCH_1:
-		case ZONE_TORCH_2:
-		case ZONE_TORCH_3:
-		case ZONE_TORCH_4:
-			err = strat_harvest_torch (zone_num);
-			break;
-			
-		case ZONE_HEART_1:
-		case ZONE_HEART_3:
-			err = strat_make_puzzle_on_heart (zone_num);
-			break;
+			case ZONE_TREE_3:
+			case ZONE_TREE_4:
+				err = strat_harvest_fruits (COLOR_X (strat_infos.zones[zone_num].x),
+													strat_infos.zones[zone_num].y, 1);
+				if(TRAJ_SUCCESS(err))
+				{
+					strat_infos.harvested_trees++;
+					strat_infos.zones[ZONE_BASKET_2].prio+=PRIO_BASKET_AFTER_ONE_TREE;
+				}
+				break;
+				
+			case ZONE_FIRE_1:
+			case ZONE_FIRE_2:
+			case ZONE_FIRE_3:
+			case ZONE_FIRE_4:
+			case ZONE_FIRE_5:
+			case ZONE_FIRE_6:
+				err = strat_harvest_orphan_fire (COLOR_X (strat_infos.zones[zone_num].x),
+													strat_infos.zones[zone_num].y);
+				break;
+				
+			case ZONE_TORCH_1:
+			case ZONE_TORCH_2:
+			case ZONE_TORCH_3:
+			case ZONE_TORCH_4:
+				err = strat_harvest_torch (zone_num);
+				break;
+				
+			case ZONE_HEART_1:
+			case ZONE_HEART_3:
+				err = strat_make_puzzle_on_heart (zone_num);
+				if(TRAJ_SUCCESS(err))
+				{
+					strat_infos.zones[zone_num].prio=PRIO_HEART_AFTER_PUZZLE;
+					strat_infos.zones[zone_num].robot=SEC_ROBOT;
+				}
+				break;
 
-		case ZONE_HEART_2_UP:
-		case ZONE_HEART_2_LEFT:
-		case ZONE_HEART_2_DOWN:
-		case ZONE_HEART_2_RIGHT:
-			/* TODO */
-			/* leave fire on heart of fire */
-			/* pick up fire from heart of fire */
-			break;
-			
-		case ZONE_M_TORCH_1:
-		case ZONE_M_TORCH_2:
-			err = strat_pickup_mobile_torch_top(zone_num);
-			err = strat_pickup_mobile_torch_mid(zone_num);
-			err = strat_pickup_mobile_torch_bot(zone_num);
-			break;
-			
-		case ZONE_BASKET_1:
-		case ZONE_BASKET_2:
-			/* leave fruits on basket */
-			err = strat_leave_fruits();
-			break;
-
-
-		/* TODO rest of zones */
-		/* TODO define zones where to leave fire on the ground */
+			case ZONE_HEART_2_UP:
+			case ZONE_HEART_2_LEFT:
+			case ZONE_HEART_2_DOWN:
+			case ZONE_HEART_2_RIGHT:
+				/* wipe by main or by sec  */
+				break;
+				
+			case ZONE_M_TORCH_1:
+			case ZONE_M_TORCH_2:
+				err = strat_pickup_mobile_torch_top(zone_num);
+				err = strat_pickup_mobile_torch_mid(zone_num);
+				err = strat_pickup_mobile_torch_bot(zone_num);
+				break;
+				
+			case ZONE_BASKET_1:
+			case ZONE_BASKET_2:
+				err = robots_position_exchange(zone_num);
+				
+				/* update strat_infos */
+				if(TRAJ_SUCCESS(err))
+				{
+					strat_infos.harvested_trees=0;
+					strat_infos.zones[ZONE_BASKET_2].prio=ZONE_PRIO_0;
+					break;
+				}
+		}
 	}
 	
 	return err;
@@ -476,7 +559,7 @@ uint8_t strat_smart(void)
 		/* mark the zone as checked */
 		if(strat_infos.zones[zone_num].type!=ZONE_TYPE_BASKET)
 			strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
-		strat_infos.zones[zone_num].flags &= ~(ZONE_CHECKED_OPP);
+		//strat_infos.zones[zone_num].flags &= ~(ZONE_CHECKED_OPP);
 
 		//printf_P(PSTR("Work on zone %s succeeded!\r\n"), numzone2name[zone_num]);
 		return END_TRAJ;

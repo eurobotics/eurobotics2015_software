@@ -1043,13 +1043,17 @@ static void cmd_bt_task1_parsed(void *parsed_result, void *data)
 	else if (strcmp_P(res->arg1, PSTR("patrol_fr_mam")) == 0) {
 		bt_patrol_fresco_mamooth(res->arg2,res->arg3, res->arg4);
 	}
+	else if (strcmp_P(res->arg1, PSTR("protect_h")) == 0) {
+		bt_protect_h(res->arg2);
+		
+	}
 	//printf("next point\r\n");
 
 }
 
 prog_char str_bt_task1_arg0[] = "bt_task";
 parse_pgm_token_string_t cmd_bt_task1_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task1_result, arg0, str_bt_task1_arg0);
-prog_char str_bt_task1_arg1[] = "mamooth#patrol_fr_mam";
+prog_char str_bt_task1_arg1[] = "mamooth#patrol_fr_mam#protect_h";
 parse_pgm_token_string_t cmd_bt_task1_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task1_result, arg1, str_bt_task1_arg1);
 parse_pgm_token_num_t cmd_bt_task1_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task1_result, arg2, INT32);
 parse_pgm_token_num_t cmd_bt_task1_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task1_result, arg3, INT32);
@@ -1143,15 +1147,11 @@ static void cmd_bt_task3_parsed(void *parsed_result, void *data)
 	else if (strcmp_P(res->arg1, PSTR("net")) == 0) {
 		printf("Not implemented.\n");
 	}
-	else if (strcmp_P(res->arg1, PSTR("protect_h1")) == 0) {
-		bt_protect_h1();
-		
-	}
 }
 
 prog_char str_bt_task3_arg0[] = "bt_task";
 parse_pgm_token_string_t cmd_bt_task3_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task3_result, arg0, str_bt_task3_arg0);
-prog_char str_bt_task3_arg1[] = "fresco#net#protect_h1";
+prog_char str_bt_task3_arg1[] = "fresco#net";
 parse_pgm_token_string_t cmd_bt_task3_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task3_result, arg1, str_bt_task3_arg1);
 prog_char help_bt_task3[] = "bt_task";
 parse_pgm_inst_t cmd_bt_task3 = {
