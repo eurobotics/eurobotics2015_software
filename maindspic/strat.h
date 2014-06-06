@@ -31,6 +31,37 @@
 #define AREA_X 3000
 #define AREA_Y 2000
 
+/* INITIAL PRIORITIES */
+#define PRIO_BASKET_AFTER_ONE_TREE 40
+#define PRIO_HEART_AFTER_PUZZLE 90
+#define PRIO_TREE_1 							ZONE_PRIO_50
+#define PRIO_TREE_2 							ZONE_PRIO_50
+#define PRIO_TREE_3 							ZONE_PRIO_50
+#define PRIO_TREE_4 							ZONE_PRIO_50
+#define PRIO_FIRE_1 							ZONE_PRIO_30
+#define PRIO_FIRE_2 							ZONE_PRIO_10
+#define PRIO_FIRE_3 							ZONE_PRIO_30
+#define PRIO_FIRE_4 							ZONE_PRIO_20
+#define PRIO_FIRE_5							ZONE_PRIO_20
+#define PRIO_FIRE_6							ZONE_PRIO_20
+#define PRIO_TORCH_1 							ZONE_PRIO_30
+#define PRIO_TORCH_2 							ZONE_PRIO_30
+#define PRIO_TORCH_3						ZONE_PRIO_30
+#define PRIO_TORCH_4 							ZONE_PRIO_20
+#define PRIO_M_TORCH_1 							ZONE_PRIO_60
+#define PRIO_M_TORCH_2 							ZONE_PRIO_20
+#define PRIO_BASKET_1 							ZONE_PRIO_0
+#define PRIO_BASKET_2						ZONE_PRIO_0
+#define PRIO_MAMOOTH_1 							ZONE_PRIO_80
+#define PRIO_MAMOOTH_2						ZONE_PRIO_80
+#define PRIO_FRESCO						ZONE_PRIO_80
+#define PRIO_HEART_1						ZONE_PRIO_40
+#define PRIO_HEART_2_UP						ZONE_PRIO_0
+#define PRIO_HEART_2_LEFT						ZONE_PRIO_0
+#define PRIO_HEART_2_DOWN						ZONE_PRIO_0
+#define PRIO_HEART_2_RIGHT						ZONE_PRIO_0
+#define PRIO_HEART_3						ZONE_PRIO_0
+
 /* position of the elements */
 #define TREE_1_X			0
 #define TREE_1_Y			1300
@@ -382,7 +413,7 @@ void strat_event_disable(void);
  *******************************************/
 
 /* harvest fruits from trees */
-uint8_t strat_harvest_fruits(int16_t x, int16_t y);
+uint8_t strat_harvest_fruits(int16_t x, int16_t y, uint8_t clean_before);
 uint8_t strat_leave_fruits(void);
 uint8_t strat_leave_fruits_clean(void);
 

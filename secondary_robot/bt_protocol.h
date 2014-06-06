@@ -54,7 +54,7 @@ void bt_net(void);
 
 void bt_patrol(int16_t x1, int16_t y1,int16_t x2, int16_t y2, int16_t args_checksum);
 
-void bt_protect_h1(void);
+void bt_protect_h(uint8_t heart);
 
 
 

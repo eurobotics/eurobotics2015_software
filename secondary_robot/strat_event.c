@@ -178,12 +178,16 @@ void strat_mamooth_event (void *data)
 	bt_status_set_cmd_ret (err);
 }
 
-void strat_protect_h1_event (void *data)
+void strat_protect_h_event (void *data)
 {
 	uint8_t err;
+	int16_t *arg = (int16_t*)data;
  
-	err=strat_patrol_between(400,1300,400,1800);
-
+	if(arg[0]==3)
+		err=strat_patrol_between(COLOR_X(3000-400),1300,COLOR_X(3000-400),1800);
+	else
+		err=strat_patrol_between(COLOR_X(400),1300,COLOR_X(400),1800);
+		
 	/* return value */
 	bt_status_set_cmd_ret (err);
 }

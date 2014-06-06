@@ -347,7 +347,7 @@ void bt_patrol(int16_t x1, int16_t y1,int16_t x2, int16_t y2, int16_t args_check
 	}
 }
 
-void bt_protect_h1(void)
+void bt_protect_h(uint8_t heart)
 {
 	/* set ACK */
 	bt_status_set_cmd_ack (0);
@@ -359,9 +359,10 @@ void bt_protect_h1(void)
 	 * schedule events have a data array asigned where the arguments are 
 	 * passed to the final function 
 	 */
-	// No arguments
 	
-	strat_event_schedule_periodical (strat_protect_h1_event,
+	mainboard.strat_event_data[0] = heart;
+	
+	strat_event_schedule_periodical (strat_protect_h_event,
 						 (void *)mainboard.strat_event_data);
 }
 

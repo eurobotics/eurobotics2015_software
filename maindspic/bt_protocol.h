@@ -80,7 +80,7 @@ void bt_robot_2nd_req_status(void);
 
 uint8_t bt_robot_2nd_bt_task_mamooth (int16_t arg1, int16_t arg2);
 uint8_t bt_robot_2nd_bt_patrol_fr_mam(int16_t arg1, int16_t arg2);
-uint8_t bt_robot_2nd_bt_protect_h1();
+uint8_t bt_robot_2nd_bt_protect_h(uint8_t heart);
 uint8_t bt_robot_2nd_bt_net();
 uint8_t bt_robot_2nd_bt_fresco();
 uint8_t bt_robot_2nd_autopos (void);

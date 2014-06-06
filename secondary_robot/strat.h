@@ -371,7 +371,7 @@ void strat_patrol_and_paint_fresco_event (void *data);
 void strat_fresco_event (void *data);
 void strat_patrol_event (void *data);
 void strat_mamooth_event (void *data);
-void strat_protect_h1_event(void *data);
+void strat_protect_h_event(void *data);
 void strat_patrol_fresco_mamooth_event(void *data);
 void strat_net_event (void *data);
 
