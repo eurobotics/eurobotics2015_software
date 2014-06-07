@@ -406,9 +406,14 @@ uint8_t strat_main(void)
     strat_infos.zones[ZONE_FIRE_4].flags |= ZONE_AVOID;
     strat_infos.zones[ZONE_HEART_3].flags |= ZONE_AVOID;
 
+	
     strat_begin();
-
     strat_limit_speed_enable ();
+	
+    strat_infos.zones[ZONE_TREE_1].flags &= ~ZONE_CHECKED;
+    strat_infos.zones[ZONE_TREE_2].flags &= ~ZONE_CHECKED;
+    strat_infos.zones[ZONE_TREE_3].flags &= ~ZONE_CHECKED;
+    strat_infos.zones[ZONE_TREE_4].flags &= ~ZONE_CHECKED;
 	
     /* auto-play  */
     printf_P(PSTR("\r\n\r\nStrat smart\r\n"));

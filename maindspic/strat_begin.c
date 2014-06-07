@@ -79,7 +79,7 @@ uint8_t strat_begin(void)
 	uint8_t i=0;
 	#define ZONES_SEQUENCE_LENGTH 4
 	uint8_t zones_sequence[ZONES_SEQUENCE_LENGTH] = 	
-	{ZONE_FIRE_1,ZONE_FIRE_3,ZONE_TORCH_2,ZONE_FIRE_5};
+	{ZONE_FIRE_1,ZONE_FIRE_3,ZONE_TORCH_2,ZONE_M_TORCH_1};
 	
 	/* Secondary robot */
     bt_robot_2nd_bt_fresco();
