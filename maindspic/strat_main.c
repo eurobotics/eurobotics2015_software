@@ -121,8 +121,10 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 			return 0;	
 	}
 
-	if((strat_infos.zones[zone_num].type==ZONE_TYPE_TREE) && (strat_infos.zones[zone_num].flags & ZONE_CHECKED_OPP))
+	if((strat_infos.zones[zone_num].type==ZONE_TYPE_TREE) && ((strat_infos.zones[zone_num].flags & ZONE_CHECKED_OPP)==1))
+	{
 		return 0;
+	}
 		
 	return 1;
 }
@@ -146,7 +148,7 @@ int8_t strat_get_new_zone(void)
 
 			prio_max = strat_infos.zones[i].prio;
 			zone_num = i;
-		}
+			}
 
         /* XXX force go to basket if timeout */
 		if((time_get_s() > 75) && (strat_infos.harvested_trees))
@@ -269,8 +271,8 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 	uint8_t err = END_TRAJ;
 	
 #ifdef HOST_VERSION
-	printf_P(PSTR("strat_work_on_zone %s: press a key\r\n"),numzone2name[zone_num]);
-	while(!cmdline_keypressed());
+	//printf_P(PSTR("strat_work_on_zone %d %s: press a key\r\n"),zone_num,numzone2name[zone_num]);
+	//while(!cmdline_keypressed());
 #endif
 
     /* XXX if before the tree harvesting was interrupted by opponent */    
@@ -516,10 +518,24 @@ uint8_t strat_smart(void)
 	uint8_t err;
 
 	/* recalculate priorities NOTYET */
-	//recalculate_priorities();
+	
+	/* Tasks secondary robot */
+	if((robot_2nd.done_flags & BT_FRESCO_DONE) ==0)
+	{
+		strat_infos.zones[ZONE_FRESCO].flags |= ZONE_CHECKED;
+		strat_infos.zones[ZONE_FRESCO].prio = ZONE_PRIO_0;
+	}
+	if((robot_2nd.done_flags & BT_MAMOOTH_DONE) ==0)
+	{
+		strat_infos.zones[ZONE_MAMOOTH_1].flags |= ZONE_CHECKED;
+		strat_infos.zones[ZONE_MAMOOTH_1].prio = ZONE_PRIO_0;
+		strat_infos.zones[ZONE_MAMOOTH_2].flags |= ZONE_CHECKED;
+		strat_infos.zones[ZONE_MAMOOTH_2].prio = ZONE_PRIO_0;
+	}
 	
 	/* get new zone */
 	zone_num = strat_get_new_zone();
+	printf_P(PSTR("Zone: %d. Priority: %d\r\n"),zone_num,strat_infos.zones[zone_num].prio);
 		
 	if(zone_num == -1) {
 		printf_P(PSTR("No zone is found\r\n"));
@@ -529,7 +545,7 @@ uint8_t strat_smart(void)
 	else
 	{
 		/* goto zone */
-		printf_P(PSTR("Going to zone %s.\r\n"),numzone2name[zone_num]);
+		//printf_P(PSTR("Going to zone %s.\r\n"),numzone2name[zone_num]);
 		strat_infos.goto_zone = zone_num;
 		strat_dump_infos(__FUNCTION__);
 		
@@ -538,7 +554,7 @@ uint8_t strat_smart(void)
 			printf_P(PSTR("Can't reach zone %d.\r\n"), zone_num);
 			return END_TRAJ;
 		}
-
+		
 		/* work on zone */
 		strat_infos.last_zone = strat_infos.current_zone;
 		strat_infos.current_zone = strat_infos.goto_zone;
@@ -556,9 +572,7 @@ uint8_t strat_smart(void)
 		/* mark the zone as checked */
 		if(strat_infos.zones[zone_num].type!=ZONE_TYPE_BASKET)
 			strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
-		//strat_infos.zones[zone_num].flags &= ~(ZONE_CHECKED_OPP);
 
-		//printf_P(PSTR("Work on zone %s succeeded!\r\n"), numzone2name[zone_num]);
 		return END_TRAJ;
 	}
 }

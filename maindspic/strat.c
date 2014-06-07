@@ -231,32 +231,32 @@ void strat_dump_conf(void)
 
 
 char numzone2name[ZONES_MAX + 1][3] = {
-[ZONE_TREE_1]="t1",
-[ZONE_TREE_2]="t2",
-[ZONE_TREE_3]="t3",
-[ZONE_TREE_4]="t4",
-[ZONE_HEART_1]="h1",
+[ZONE_TREE_1]="te1",
+[ZONE_TREE_2]="te2",
+[ZONE_TREE_3]="te3",
+[ZONE_TREE_4]="te4",
+[ZONE_HEART_1]="he1",
 [ZONE_HEART_2_UP]="h2u",
 [ZONE_HEART_2_LEFT]="h2l",
 [ZONE_HEART_2_DOWN]="h2d",
 [ZONE_HEART_2_RIGHT]="h2r",
-[ZONE_HEART_3]="h3",
-[ZONE_FIRE_1]="f1",
-[ZONE_FIRE_2]="f2",
-[ZONE_FIRE_3]="f3",
-[ZONE_FIRE_4]="f3",
-[ZONE_FIRE_5]="f5",
-[ZONE_FIRE_6]="f6",
+[ZONE_HEART_3]="he3",
+[ZONE_FIRE_1]="fi1",
+[ZONE_FIRE_2]="fi2",
+[ZONE_FIRE_3]="fi3",
+[ZONE_FIRE_4]="fi3",
+[ZONE_FIRE_5]="fi5",
+[ZONE_FIRE_6]="fi6",
 [ZONE_TORCH_1]="tr1",
 [ZONE_TORCH_2]="tr2",
 [ZONE_TORCH_3]="tr3",
 [ZONE_TORCH_4]="tr4",
 [ZONE_M_TORCH_1]="mt1",
 [ZONE_M_TORCH_2]="mt2",
-[ZONE_BASKET_1]="b1",
-[ZONE_BASKET_2]="b2",
-[ZONE_MAMOOTH_1]="m1",
-[ZONE_MAMOOTH_2]="m2",
+[ZONE_BASKET_1]="ba1",
+[ZONE_BASKET_2]="ba2",
+[ZONE_MAMOOTH_1]="ma1",
+[ZONE_MAMOOTH_2]="ma2",
 [ZONE_FRESCO]="fco",
 //[ZONE_HOME_RED]="rd",
 //[ZONE_HOME_YELLOW]="yll",
@@ -406,15 +406,8 @@ uint8_t strat_main(void)
     strat_infos.zones[ZONE_FIRE_4].flags |= ZONE_AVOID;
     strat_infos.zones[ZONE_HEART_3].flags |= ZONE_AVOID;
 
-	strat_homologation();
-	while(1);
-	
-	/*
-    do{
-        err = strat_begin();
-    }while((err & END_RESERVED) == 0);
+    strat_begin();
 
-    strat_limit_speed_enable ();*/
     strat_limit_speed_enable ();
 	
     /* auto-play  */
@@ -426,7 +419,6 @@ uint8_t strat_main(void)
 
    strat_exit();
    return 0;
-   
 }
 
 

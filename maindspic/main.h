@@ -329,6 +329,10 @@ struct robot_2nd
 
 	/* strat info */
 	uint8_t color;
+	
+#define BT_MAMOOTH_DONE		1
+#define BT_OPP_FIRES_DONE	2
+#define BT_FRESCO_DONE		4
 	uint16_t done_flags;
 
   	/* robot position */

@@ -1303,6 +1303,7 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
         zone_num = ZONE_FRESCO;
 
 
+	printf_P(PSTR("%d %s\r\n"),zone_num,numzone2name[zone_num]);
     if (zone_num < ZONES_MAX) {
         err = strat_goto_zone(zone_num);
         printf_P(PSTR("goto returned %s\r\n"), get_err(err));    
