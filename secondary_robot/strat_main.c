@@ -543,7 +543,6 @@ retry:
 		/* goto in front of fresco */
 		trajectory_goto_forward_xy_abs (&mainboard.traj,x,y);
 	    err = wait_traj_end(TRAJ_FLAGS_STD);
-		time_wait_ms (3000);
 
         if (!TRAJ_SUCCESS(err))
 		   goto retry;
@@ -609,7 +608,6 @@ uint8_t strat_paint_fresco2 (void)
 	/* task flag done */
 	robot_2nd.done_flags |= BT_FRESCO_DONE;
 
-	while(robots_are_near());
 
 	/* check opponent */
 	if (opponent1_is_infront() || opponent2_is_infront())
@@ -629,12 +627,10 @@ scape:
 		if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 
-	while(robots_are_near());
 
 		strat_get_speed(&old_spdd, &old_spda);
 		strat_set_speed(SPEED_DIST_VERY_SLOW, SPEED_ANGLE_VERY_SLOW);
 
-		time_wait_ms(8000);
 
 		/* return to start position */
 		strat_set_speed(old_spdd, old_spda);
@@ -652,8 +648,6 @@ scape:
 		if (!TRAJ_SUCCESS(err))
 				ERROUT(err);
 
-
-	while(robots_are_near());
 
 		/* return to start position */
 		strat_set_speed(old_spdd, old_spda);

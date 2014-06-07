@@ -52,6 +52,7 @@ hcenter_line.pos = [(-AREA_X/2, 0., 0.3), (AREA_X/2, 0., 0.3)]
 vcenter_line = curve()
 vcenter_line.pos = [(0., -AREA_Y/2, 0.3), (0., AREA_Y/2, 0.3)]
 
+
 yellowarea = [ (0.0, 0.0, -0.5), (400.0, 700.0, 0.5) ]
 yellowareasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , yellowarea)
 yellowarea_box = box(pos=(-AREA_X/2+200,-AREA_Y/2+350,0), size=yellowareasize, color=(1.0, 1.0, 0.0))
