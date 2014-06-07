@@ -93,19 +93,20 @@ uint8_t strat_begin(void)
 		//printf_P(PSTR("Going to zone %s.\r\n"),numzone2name[zones_sequence[i]]);
 		strat_dump_infos(__FUNCTION__);
 		strat_infos.current_zone=-1;
-		strat_infos.goto_zone=i;
+		strat_infos.goto_zone=zones_sequence[i];
 
 		strat_goto_zone (zones_sequence[i]);
 		err = wait_traj_end(TRAJ_FLAGS_STD);
+		strat_infos.last_zone=strat_infos.current_zone;
+		
 		if (!TRAJ_SUCCESS(err)) {
 			strat_infos.current_zone=-1;
-			printf_P(PSTR("Can't reach zone %s. err=%s\r\n"), numzone2name[zones_sequence[i]],get_err(err));
+			//printf_P(PSTR("Can't reach zone %s. err=%s\r\n"), numzone2name[zones_sequence[i]],get_err(err));
 		}
 		else{
-			strat_infos.current_zone=i;
+			strat_infos.current_zone=zones_sequence[i];
 		}
 
-		strat_infos.last_zone=strat_infos.current_zone;
 		strat_infos.goto_zone=-1;
 
 
@@ -113,11 +114,11 @@ uint8_t strat_begin(void)
 		strat_dump_infos(__FUNCTION__);
 		err = strat_work_on_zone(zones_sequence[i]);
 		if (!TRAJ_SUCCESS(err)) {
-			printf_P(PSTR("Work on zone %s fails.\r\n"), numzone2name[zones_sequence[i]]);
+			//printf_P(PSTR("Work on zone %s fails.\r\n"), numzone2name[zones_sequence[i]]);
 		}
 
 		/* mark the zone as checked */
-		strat_infos.zones[i].flags |= ZONE_CHECKED;
+		strat_infos.zones[zones_sequence[i]].flags |= ZONE_CHECKED;
 		//printf_P(PSTR("finished zone %d.\r\n"),i);
 	}
 end:
