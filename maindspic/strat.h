@@ -25,7 +25,7 @@
 
 #include <clock_time.h>
 /* compilation flavours */
-#define HOMOLOGATION
+//#define HOMOLOGATION
 
 /* area */
 #define AREA_X 3000
@@ -34,10 +34,10 @@
 /* INITIAL PRIORITIES */
 #define PRIO_BASKET_AFTER_ONE_TREE 				40
 #define PRIO_HEART_AFTER_PUZZLE 				90
-#define PRIO_TREE_1 							ZONE_PRIO_50
+#define PRIO_TREE_1 							51
 #define PRIO_TREE_2 							ZONE_PRIO_50
-#define PRIO_TREE_3 							ZONE_PRIO_50
-#define PRIO_TREE_4 							ZONE_PRIO_50
+#define PRIO_TREE_3 							ZONE_PRIO_40
+#define PRIO_TREE_4 							ZONE_PRIO_40
 #define PRIO_FIRE_1 							ZONE_PRIO_30
 #define PRIO_FIRE_2 							ZONE_PRIO_10
 #define PRIO_FIRE_3 							ZONE_PRIO_30

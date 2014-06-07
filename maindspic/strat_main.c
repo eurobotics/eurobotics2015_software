@@ -79,20 +79,23 @@
 /* return 1 if is a valid zone and 0 otherwise */
 uint8_t strat_is_valid_zone(uint8_t zone_num)
 {
-#define OPP_WAS_IN_ZONE_TIMES	
+//#define OPP_WAS_IN_ZONE_TIMES	
 
 	//static uint16_t opp_times[ZONES_MAX];
 	//static microseconds opp_time_us = 0;
 
 	/* discard current zone */
-	if(strat_infos.current_zone == zone_num)
-		return 0;
+	if((strat_infos.current_zone == zone_num) && (zone_num!=ZONE_HEART_1))
+	{
+		//printf_P("zone num: %d. current_zone.\n");
+		return 0;	
+	}
 
 	/* discard if opp is in zone */
 	if(opponents_are_in_area(COLOR_X(strat_infos.zones[zone_num].x_up), strat_infos.zones[zone_num].y_up,
 								  COLOR_X(strat_infos.zones[zone_num].x_down),	strat_infos.zones[zone_num].y_down)) {
 
-#if 0
+/*#if 0
 		if(time_get_us2() - opp_time_us < 100000UL)
 		{
 			opp_time_us = time_get_us2();
@@ -101,14 +104,17 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 			if(opp_times[zone_num] > OPP_WAS_IN_ZONE_TIMES)
 				strat_infos.zones[zone_num].flags |= ZONE_CHECKED_OPP;
 		}
-#endif
-		printf_P(PSTR("Discarded zone %s, opp inside\r\n"), numzone2name[zone_num]);
+#endif*/
+		//printf_P(PSTR("Discarded zone %s, opp inside\r\n"), numzone2name[zone_num]);
 		return 0;
 	}
 
 	/* discard avoid and checked zones */
 	if(strat_infos.zones[zone_num].flags & ZONE_AVOID)
+	{
+		//printf_P("zone num: %d. avoid.\n");
 		return 0;	
+	}
 
 	if(strat_infos.zones[zone_num].type==ZONE_TYPE_BASKET)
 	{
@@ -118,11 +124,15 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 	else
 	{
 		if(strat_infos.zones[zone_num].flags & ZONE_CHECKED)
+		{
+			//printf_P("zone num: %d. CHECKED.\n",zone_num);
 			return 0;	
+		}
 	}
 
 	if((strat_infos.zones[zone_num].type==ZONE_TYPE_TREE) && ((strat_infos.zones[zone_num].flags & ZONE_CHECKED_OPP)==1))
 	{
+		//printf_P("zone num: %d. CHECKED_OPP.\n");
 		return 0;
 	}
 		
@@ -139,6 +149,8 @@ int8_t strat_get_new_zone(void)
 	/* evaluate zones */
 	for(i=0; i < ZONES_MAX; i++) 
 	{
+		//printf_P("---i: %d\n",i);
+		
 		/* check if is a valid zone */
 		if(!strat_is_valid_zone(i))	
 			continue;
@@ -148,7 +160,8 @@ int8_t strat_get_new_zone(void)
 
 			prio_max = strat_infos.zones[i].prio;
 			zone_num = i;
-			}
+			//printf_P("---zone num chosen: %d\n",zone_num);
+		}
 
         /* XXX force go to basket if timeout */
 		if((time_get_s() > 75) && (strat_infos.harvested_trees))
@@ -520,7 +533,7 @@ uint8_t strat_smart(void)
 	/* recalculate priorities NOTYET */
 	
 	/* Tasks secondary robot */
-	if((robot_2nd.done_flags & BT_FRESCO_DONE) ==0)
+	/*if((robot_2nd.done_flags & BT_FRESCO_DONE) ==0)
 	{
 		strat_infos.zones[ZONE_FRESCO].flags |= ZONE_CHECKED;
 		strat_infos.zones[ZONE_FRESCO].prio = ZONE_PRIO_0;
@@ -531,11 +544,11 @@ uint8_t strat_smart(void)
 		strat_infos.zones[ZONE_MAMOOTH_1].prio = ZONE_PRIO_0;
 		strat_infos.zones[ZONE_MAMOOTH_2].flags |= ZONE_CHECKED;
 		strat_infos.zones[ZONE_MAMOOTH_2].prio = ZONE_PRIO_0;
-	}
+	}*/
 	
 	/* get new zone */
 	zone_num = strat_get_new_zone();
-	printf_P(PSTR("Zone: %d. Priority: %d\r\n"),zone_num,strat_infos.zones[zone_num].prio);
+	//printf_P(PSTR("Zone: %d. Priority: %d\r\n"),zone_num,strat_infos.zones[zone_num].prio);
 		
 	if(zone_num == -1) {
 		printf_P(PSTR("No zone is found\r\n"));
