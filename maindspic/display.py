@@ -19,7 +19,7 @@ ROBOT2_LENGTH = 150.0
 
 area = [ (0.0, 0.0, -0.2), (3000.0, 2000.0, 0.2) ]
 areasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , area)
-area_box = box(size=areasize, color=(0.0, 0.54, 0.0))
+area_box = box(size=areasize, color=(0.09, 0.38, 0.671))
 
 scene.autoscale = 1
 
@@ -36,9 +36,6 @@ lstick = box(color=(0.4, 0.4, 0.4))
 rstick = box(color=(0.4, 0.4, 0.4))
 arm = box(color=(0.06,0.3,0.54))
 harvester = frame()
-box(frame=harvester, color=(0.6,0.6,0.6),size=(150,100,30), pos=(0, -ROBOT_WIDTH/2+75, 0))
-box(frame=harvester, color=(0.6,0.6,0.6),size=(150,100,30), pos=(0, ROBOT_WIDTH/2-75, 0))
-box(frame=harvester, color=(0.6,0.6,0.6),size=(60,90,30), pos=(45, 0, 0))
 
 opp = box(color=(0.7, 0.2, 0.2))
 opp.opacity = 0.7
@@ -53,27 +50,29 @@ vcenter_line = curve()
 vcenter_line.pos = [(0., -AREA_Y/2, 0.3), (0., AREA_Y/2, 0.3)]
 
 
-yellowarea = [ (0.0, 0.0, -0.5), (400.0, 700.0, 0.5) ]
+yellowarea = [ (0.0, 0.0, -0.5), (400.0,444.0 , 0.5) ]
 yellowareasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , yellowarea)
-yellowarea_box = box(pos=(-AREA_X/2+200,-AREA_Y/2+350,0), size=yellowareasize, color=(1.0, 1.0, 0.0))
+yellowarea_box = box(pos=(-AREA_X/2+200,-AREA_Y/2+1000,0), size=yellowareasize, color=(0.988, 0.741, 0.122))
 
-redarea = [ (0.0, 0.0, -0.5), (400.0, 700.0, 0.5) ]
-redareasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , redarea)
-redarea_box = box(pos=(AREA_X/2-200,-AREA_Y/2+350,0), size=redareasize, color=(1.0, 0.0, 0.0))
+
+
+greenarea = [ (0.0, 0.0, -0.5), (400.0,444.0 , 0.5) ]
+greenareasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , greenarea)
+greenarea_box = box(pos=(AREA_X/2-200,-AREA_Y/2+1000,0), size=greenareasize, color=(0.31, 0.659, 0.2))
 
 wallx = [ (0.0, 0.0, -0.5), (AREA_X+44, 22, WALL_HEIGHT) ]
 wallxsize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , wallx)
-wallx1_box = box(pos=(0,-AREA_Y/2-11, WALL_HEIGHT/2), size=wallxsize, color=(0.5, 0.5, 0.5))
-wallx2_box = box(pos=(0,AREA_Y/2+11, WALL_HEIGHT/2), size=wallxsize, color=(0.5, 0.5, 0.5))
+wallx1_box = box(pos=(0,-AREA_Y/2-11, WALL_HEIGHT/2), size=wallxsize, color=(0.78, 0.09, 0.071))
+wallx2_box = box(pos=(0,AREA_Y/2+11, WALL_HEIGHT/2), size=wallxsize, color=(0.78, 0.09, 0.071))
 
 wally = [ (0.0, 0.0, -0.5), (22, AREA_Y+44, WALL_HEIGHT) ]
 wallysize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , wally)
-wally1_box = box(pos=(-AREA_X/2-11, 0, WALL_HEIGHT/2), size=wallysize, color=(0.5, 0.5, 0.5))
-wally2_box = box(pos=(AREA_X/2+11, 0, WALL_HEIGHT/2), size=wallysize, color=(0.5, 0.5, 0.5))
+wally1_box = box(pos=(-AREA_X/2-11, 0, WALL_HEIGHT/2), size=wallysize, color=(0.78, 0.09, 0.071))
+wally2_box = box(pos=(AREA_X/2+11, 0, WALL_HEIGHT/2), size=wallysize, color=(0.78, 0.09, 0.071))
 
 
 YELLOW = 0
-RED    = 1
+GREEN    = 1
 color = YELLOW
 
 def square(sz):
@@ -115,141 +114,189 @@ max_trail = 500
 
 area_objects = []
 
-BASKET_HEIGHT = 44.0
+STEP_1_HEIGHT = 22.0
+STEP_2_HEIGHT = 44.0
+STEP_3_HEIGHT = 66.0
+STEP_4_HEIGHT = 88.0
 MAMUT_HEIGHT =  50.0
 FRESCO_HEIGHT = 200.0
 HEARTFIRE_HEIGHT = 30.0
 TREETRUNK_HEIGHT = 320.0
 TREETOP_HEIGHT = 10.0
 FIRE_HEIGHT= 140.0
-
-set_opp_nb = 1;
+CLAP_HEIGHT= 138.0
+BASKET_HEIGHT = 33.0
+CLAP_STICK_HEIGHT=290.0
+STAND_HEIGHT=150.0
+set_opp_nb = 1
 
 def toggle_obj_disp():
     global area_objects
-
-    
     if area_objects == []:
-        yellowbasket = [ (0.0, 0.0, -0.5), (700.0, 300.0, BASKET_HEIGHT) ]
-        yellowbasketsize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , yellowbasket)
-        c = box(pos=(AREA_X/2-400-350,-AREA_Y/2+150,BASKET_HEIGHT/2), size=yellowbasketsize, color=(1.0, 1.0, 0.0))
-        area_objects.append(c)
+    
 
-        redbasket = [ (0.0, 0.0, -0.5), (700.0, 300.0, BASKET_HEIGHT) ]
-        redbasketsize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , redbasket)
-        c = box(pos=(-AREA_X/2+400+350,-AREA_Y/2+150,BASKET_HEIGHT/2), size=redbasketsize, color=(1.0, 0.0, 0.0))
-        area_objects.append(c)
-
-        mamut = [ (0.0, 0.0, -0.5), (700.0, 22.0, MAMUT_HEIGHT) ]
-        mamutsize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , mamut)
-        c = box(pos=(-AREA_X/2+400+350,-AREA_Y/2-11,MAMUT_HEIGHT/2+70), size=mamutsize, color=(0.6, 0.3, 0.0))
-        area_objects.append(c)
-        c = box(pos=(AREA_X/2-400-350,-AREA_Y/2-11,MAMUT_HEIGHT/2+70), size=mamutsize, color=(0.6, 0.3, 0.0))
-        area_objects.append(c)
-	      
-        fire = [ (0.0, 0.0, -0.5), (22.0,140.0, FIRE_HEIGHT) ]
-        firesize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , fire)
-        c = box(pos=(-AREA_X/2,-AREA_Y/2+800,FIRE_HEIGHT/2), size=firesize, color=(1, 1, 0.0))
-        area_objects.append(c)
-        c = box(pos=(AREA_X/2,-AREA_Y/2+800,FIRE_HEIGHT/2), size=firesize, color=(1, 0, 0.0))
-        area_objects.append(c)
-        c = box(pos=(-AREA_X/2+900,-AREA_Y/2+600,FIRE_HEIGHT/2), size=firesize, color=(1, 0.0, 0.0))
-        area_objects.append(c)
-        c = box(pos=(AREA_X/2-900,-AREA_Y/2+600,FIRE_HEIGHT/2), size=firesize, color=(1, 1, 0.0))
-        area_objects.append(c)
-        c = box(pos=(-AREA_X/2+900,600,FIRE_HEIGHT/2), size=firesize, color=(1, 0.0, 0.0))
-        area_objects.append(c)
-        c = box(pos=(AREA_X/2-900,600,FIRE_HEIGHT/2), size=firesize, color=(1,1, 0.0))
-        area_objects.append(c)
-
-        fire2 = [ (0.0, 0.0, -0.5), (140.0,22.0, FIRE_HEIGHT) ]
-        firesize2 = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , fire2)
-        c = box(pos=(-AREA_X/2+400,100,FIRE_HEIGHT/2), size=firesize2, color=(1, 1, 0.0))
-        area_objects.append(c)
-        c = box(pos=(AREA_X/2-400,100,FIRE_HEIGHT/2), size=firesize2, color=(1, 0.0, 0.0))
-        area_objects.append(c)
-        c = box(pos=(-200,+AREA_Y/2,FIRE_HEIGHT/2), size=firesize2, color=(1,0.0, 0.0))
-        area_objects.append(c)
-        c = box(pos=(+200,+AREA_Y/2,FIRE_HEIGHT/2), size=firesize2, color=(1,1 , 0.0))
-        area_objects.append(c)
-
-        fresco = [ (0.0, 0.0, -0.5), (600.0, 22.0, FRESCO_HEIGHT) ]
-        frescosize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , fresco)
-        c = box(pos=(0,-AREA_Y/2-11, FRESCO_HEIGHT/2+70), size=frescosize, color=(0.5, 0.5, 0.5))
-        area_objects.append(c)
-
-        c = cylinder(axis=(0,0,1), length=HEARTFIRE_HEIGHT,
-                     radius=150, color=(0.6, 0.3, 0.0),
-                     pos=(0,50,HEARTFIRE_HEIGHT/2))
-        area_objects.append(c)
-
-        c = cylinder(axis=(0,0,1), length=HEARTFIRE_HEIGHT,
-                     radius=250, color=(0.6, 0.3, 0.0),
-                     pos=(-AREA_X/2,AREA_Y/2, 0))
-        area_objects.append(c)
-
-        c = cylinder(axis=(0,0,1), length=HEARTFIRE_HEIGHT,
-                     radius=250, color=(0.6, 0.3, 0.0),
-                     pos=(AREA_X/2,AREA_Y/2, 0))
-        area_objects.append(c)
-
-        # tree trunks
-        c = cylinder(axis=(0,0,1), length=TREETRUNK_HEIGHT,
-                     radius=25, color=(0.6, 0.3, 0.0),
-                     pos=(-AREA_X/2,-AREA_Y/2+1300, 0))
-        area_objects.append(c)
-
-        c = cylinder(axis=(0,0,1), length=TREETRUNK_HEIGHT,
-                     radius=25, color=(0.6, 0.3, 0.0),
-                     pos=(AREA_X/2,-AREA_Y/2+1300, 0))
-        area_objects.append(c)
-
-        c = cylinder(axis=(0,0,1), length=TREETRUNK_HEIGHT,
-                     radius=25, color=(0.6, 0.3, 0.0),
-                     pos=(-AREA_X/2+700, AREA_Y/2, 0))
-        area_objects.append(c)
-
-        c = cylinder(axis=(0,0,1), length=TREETRUNK_HEIGHT,
-                     radius=25, color=(0.6, 0.3, 0.0),
-                     pos=(AREA_X/2-700, AREA_Y/2, 0))
-        area_objects.append(c)
-
-        # tree top
-        c = cylinder(axis=(0,0,1), length=TREETOP_HEIGHT,
-                     radius=150, color=(0.0, 0.8, 0.0),
-                     pos=(-AREA_X/2,-AREA_Y/2+1300, TREETRUNK_HEIGHT))
-        area_objects.append(c)
-
-        c = cylinder(axis=(0,0,1), length=TREETOP_HEIGHT,
-                     radius=150, color=(0.0, 0.8, 0.0),
-                     pos=(AREA_X/2,-AREA_Y/2+1300, TREETRUNK_HEIGHT))
-        area_objects.append(c)
-
-        c = cylinder(axis=(0,0,1), length=TREETOP_HEIGHT,
-                     radius=150, color=(0.0, 0.8, 0.0),
-                     pos=(-AREA_X/2+700, AREA_Y/2, TREETRUNK_HEIGHT))
-        area_objects.append(c)
-
-        c = cylinder(axis=(0,0,1), length=TREETOP_HEIGHT,
-                     radius=150, color=(0.0, 0.8, 0.0),
-                     pos=(AREA_X/2-700, AREA_Y/2, TREETRUNK_HEIGHT))
-        area_objects.append(c)
-
-
+		set_home_areas()
+		step_func(1,STEP_1_HEIGHT,YELLOW)
+		step_func(2,STEP_2_HEIGHT,YELLOW)
+		step_func(3,STEP_3_HEIGHT,YELLOW)
+		step_func(4,STEP_4_HEIGHT,YELLOW)
+		step_func(1,STEP_1_HEIGHT,GREEN)
+		step_func(2,STEP_2_HEIGHT,GREEN)
+		step_func(3,STEP_3_HEIGHT,GREEN)
+		step_func(4,STEP_4_HEIGHT,GREEN)
+		clap(-AREA_X/2+325,-AREA_Y/2,YELLOW,-80)
+		clap(-AREA_X/2+620,-AREA_Y/2,GREEN,-80)
+		clap(-AREA_X/2+920,-AREA_Y/2,YELLOW,-80)
+		clap(+AREA_X/2-325,-AREA_Y/2,YELLOW,+80)
+		clap(+AREA_X/2-620,-AREA_Y/2,GREEN,+80)
+		clap(+AREA_X/2-920,-AREA_Y/2,YELLOW,+80)
+		stand_yellow(-AREA_X/2+850,+AREA_Y/2-100)
+		stand_yellow(-AREA_X/2+850,+AREA_Y/2-200)
+		stand_yellow(-AREA_X/2+90,+AREA_Y/2-200)
+		stand_green(+AREA_X/2-850,+AREA_Y/2-100)
+		stand_green(+AREA_X/2-850,+AREA_Y/2-200)
+		stand_green(+AREA_X/2-90,+AREA_Y/2-200)
+		stand_green(+AREA_X/2-90,-AREA_Y/2+250)
+		stand_green(+AREA_X/2-90,-AREA_Y/2+150)
+		stand_yellow(-AREA_X/2+90,-AREA_Y/2+250)
+		stand_yellow(-AREA_X/2+90,-AREA_Y/2+150)
+		stand_yellow(-AREA_X/2+870,+AREA_Y/2-1355)
+		stand_green(+AREA_X/2-870,+AREA_Y/2-1355)
+		stand_yellow(-250,+AREA_Y/2-1400)
+		stand_green(250,+AREA_Y/2-1400)
+		stand_yellow(-400,-AREA_Y/2+330)
+		stand_green(400,-AREA_Y/2+330)
+		popcorn_func(-590,200)
+		popcorn_func(590,200)
+		popcorn_func(0,-650)
+		popcorn_func(+AREA_X/2-250,-750)
+		popcorn_func(-AREA_X/2+250,-750)
+		cinema(-AREA_X/2+200,AREA_Y/2-400-189,GREEN)
+		cinema(-AREA_X/2+200,-AREA_Y/2+400+189,GREEN)
+		cinema(AREA_X/2-200,AREA_Y/2-400-189,YELLOW)
+		cinema(AREA_X/2-200,-AREA_Y/2+400+189,YELLOW)
+		popcorn_machine(-AREA_X/2+300,AREA_Y/2)
+		popcorn_machine(-AREA_X/2+600,AREA_Y/2)
+		popcorn_machine(+AREA_X/2-300,AREA_Y/2)
+		popcorn_machine(+AREA_X/2-600,AREA_Y/2)
+		platform()
+		
     else:
         for o in area_objects:
-            if o.visible:
-                o.visible = 0
-            else:
-                o.visible = 1
-
+			if o.visible:
+				o.visible = 0
+			else:
+				o.visible = 1
+				
 def toggle_color():
     global color
-    global RED, YELLOW
+    global GREEN, YELLOW
     if color == YELLOW:
-        color = RED
+        color = GREEN
     else:
         color = YELLOW
+def popcorn_machine(x,y):
+	global area_objects 
+	base = [(0.0, 0.0,0.0),(48,48 ,170)]
+	base_size = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]),base)
+	c = box(pos=(x,y, 170/2), size=base_size,color =(0.09, 0.38, 0.671))
+	area_objects.append(c)
+	base_up = [(0.0, 0.0,0.0),(70,70 ,120)]
+	base_up_size = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]),base_up)
+	c = box(pos=(x,y,120/2+170+60), size=base_up_size,color =(0.09, 0.38, 0.671))
+	c.opacity= 0.5
+	area_objects.append(c)
+	for i in range(5):
+		c = sphere(pos=(x,y,170+25+i*50), radius=25)
+		area_objects.append(c)
+def set_home_areas():
+	global area_objects 
+	base = [(0.0, 0.0,0.0),(400,22 ,22)]
+	base_size = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]),base)
+	c = box(pos=(-AREA_X/2+200,-AREA_Y/2+1000-444/2,22), size=base_size,color =(0.988, 0.741, 0.2))
+	area_objects.append(c)
+	c = box(pos=(-AREA_X/2+200,-AREA_Y/2+1000+444/2,22), size=base_size,color =(0.988, 0.741, 0.2))
+	area_objects.append(c)
+	c = box(pos=(AREA_X/2-200,-AREA_Y/2+1000+444/2,22), size=base_size,color =(0.31, 0.7, 0.2))
+	area_objects.append(c)
+	c = box(pos=(AREA_X/2-200,-AREA_Y/2+1000-444/2,22), size=base_size,color =(0.31, 0.7, 0.2))
+	area_objects.append(c)
+	c=cylinder(axis=(0,0,1),length=0.5,radius=200, color=(0.31, 0.659, 0.2),pos=(AREA_X/2-450,-AREA_Y/2+1000, 0))
+	area_objects.append(c)
+	c=cylinder(axis=(0,0,1),length=0.5,radius=200, color=(0.988, 0.741, 0.122),pos=(-AREA_X/2+450,-AREA_Y/2+1000, 0))
+	area_objects.append(c)
+	base = [(0.0, 0.0,0.0),(22,444 ,22)]
+	base_size = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]),base)
+	c = box(pos=(-AREA_X/2+70,-AREA_Y/2+1000,22), size=base_size,color =(0.988, 0.741, 0.2))
+	area_objects.append(c)
+	base_size = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]),base)
+	c = box(pos=(AREA_X/2-70,-AREA_Y/2+1000,22), size=base_size,color =(0.31, 0.7, 0.2))
+	area_objects.append(c)
+	c = sphere(pos=(AREA_X/2-70,-AREA_Y/2+1000,22+35), radius=35,color=(0,1,0))
+	area_objects.append(c)
+	c = sphere(pos=(-AREA_X/2+70,-AREA_Y/2+1000,22+35), radius=35,color=(0,1,0))
+	area_objects.append(c)
+	
+def platform():
+	global area_objects 
+	base = [(0.0, 0.0,0.0),(600,100 ,22)]
+	base_size = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]),base)
+	c = box(pos=(0,-AREA_Y/2+100/2, 0), size=base_size,color =(0.78, 0.09, 0.071))
+	area_objects.append(c)
+	c = sphere(pos=(250,-AREA_Y/2+100/2,22+35), radius=35,color=(0,1,0))
+	area_objects.append(c)
+	c = sphere(pos=(-250,-AREA_Y/2+100/2,22+35), radius=35,color=(0,1,0))
+	area_objects.append(c)
+def clap(x,y,clap_color,offset):
+	global area_objects 
+	clap = [ (0.0, 0.0, -0.5), (160.0, 50.0, CLAP_HEIGHT) ]
+	clapsize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , clap)
+	if clap_color == YELLOW:
+		c = box(pos=(x,y, CLAP_HEIGHT/2+70), size=clapsize, color =(0.988, 0.741, 0.122))
+	else:
+		c = box(pos=(x,y, CLAP_HEIGHT/2+70), size=clapsize, color =(0.31, 0.659, 0.2))
+	area_objects.append(c)
+
+	clap = [ (0.0, 0.0, CLAP_HEIGHT), (20.0, 50.0, CLAP_STICK_HEIGHT) ]
+	clapsize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , clap)
+	c = box(pos=(x+offset,y, CLAP_STICK_HEIGHT/2+70), size=clapsize, color =(0.5, 0.5, 0.5))
+	area_objects.append(c)
+def cinema(x,y,cinema_color):
+	cinemaarea = [ (0.0, 0.0, -0.5), (400.0,378.0,0.5) ]
+	cinemaareasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , cinemaarea)
+	if cinema_color == YELLOW:
+		cinemaarea_box = box(pos=(x,y), size=cinemaareasize, color=(0.988, 0.741, 0.122))
+	else:
+		cinemaarea_box = box(pos=(x,y), size=cinemaareasize, color=(0.31, 0.659, 0.2))
+
+def step_func(step_nr,height,step_color):
+	global area_objects 
+	step = [(0.0, 0.0, height-22.0),(533.0, 580.0-70*(step_nr-1),height)]
+	step_size = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]),step)
+	if step_color == YELLOW:
+		green_step=0
+		c = box(pos=(-266.5+green_step,+AREA_Y/2-(580.0-70*(step_nr-1))/2,height/2), size=step_size,color =(0.988, 0.741, 0.122))
+	else:
+		green_step=266.5*2
+		c = box(pos=(-266.5+green_step,+AREA_Y/2-(580.0-70*(step_nr-1))/2,height/2), size=step_size,color =(0.31, 0.659, 0.2))
+
+	area_objects.append(c)
+
+def stand_green(x,y):
+	global area_objects
+	c = cylinder(axis=(0,0,1),length=STAND_HEIGHT,radius=30, color=(0.31, 0.659, 0.2),pos=(x,y, 0))
+	area_objects.append(c)
+
+def stand_yellow(x,y):
+	global area_objects
+	c = cylinder(axis=(0,0,1),length=STAND_HEIGHT,radius=30, color=(0.988, 0.741, 0.122),pos=(x,y, 0))
+	area_objects.append(c)
+def popcorn_func(x,y):
+	global area_objects
+	c=cone(pos=(x,y, STAND_HEIGHT), axis=(0,0,-STAND_HEIGHT),radius=47.5)
+	area_objects.append(c)
+	c = cylinder(axis=(0,0,1),length=STAND_HEIGHT,radius=27,pos=(x,y, 0))
+	area_objects.append(c)
 
 def set_opp(x, y):
     opp.size = (300, 300, ROBOT_HEIGHT)
@@ -517,7 +564,7 @@ while True:
                     print "cobboard: %x,%x"%(int(m.groups()[0]),int(m.groups()[1]))
                     side = int(m.groups()[0])
                     flags = int(m.groups()[1])
-                    if (side == 0 and color == YELLOW) or (side == 1 and color == RED):
+                    if (side == 0 and color == YELLOW) or (side == 1 and color == GREEN):
                         robot_lstick_deployed = ((flags & 1) * 2)
                         robot_lstick_autoharvest = ((flags & 2) != 0)
                     else:
