@@ -63,6 +63,10 @@
 #define PRIO_HEART_3							ZONE_PRIO_0
 
 /* position of the elements */
+
+#define STAND_1_X			90
+#define STAND_1_Y			150
+
 #define TREE_1_X			0
 #define TREE_1_Y			1300
 #define TREE_2_X			700
