@@ -54,6 +54,7 @@ void bt_goto_and_avoid_forward (int16_t x, int16_t y, int16_t args_checksum);
 
 void bt_goto_and_avoid_backward (int16_t x, int16_t y, int16_t args_checksum);
 
+#if 0
 void bt_fresco(void);
 
 void bt_mamooth(int16_t balls_mamooth_1, int16_t balls_mamooth_2, int16_t args_checksum);
@@ -65,6 +66,8 @@ void bt_net(void);
 void bt_patrol(int16_t x1, int16_t y1,int16_t x2, int16_t y2, int16_t args_checksum);
 
 void bt_protect_h(uint8_t heart);
+
+#endif
 
 void bt_strat_exit (void);
 

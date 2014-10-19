@@ -1222,8 +1222,8 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
         strat_homologation();
     }
     else if (strcmp_P(res->arg1, PSTR("begin")) == 0) {
-        //err = strat_begin();
-        err = strat_begin_alcabot();
+        err = strat_begin();
+        //err = strat_begin_alcabot();
     }
     else if (strcmp_P(res->arg1, PSTR("strat_smart")) == 0) {
         strat_smart();
@@ -1273,6 +1273,7 @@ struct cmd_subtraj2_result
 /* function called when cmd_subtraj2 is parsed successfully */
 static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 {
+#if 0
     struct cmd_subtraj2_result *res = parsed_result;
     uint8_t err = 0;
     uint8_t zone_num = ZONES_MAX;
@@ -1313,6 +1314,7 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
     }
 
     trajectory_hardstop(&mainboard.traj);
+ #endif
 }
 
 prog_char str_subtraj2_arg0[] = "subtraj";
