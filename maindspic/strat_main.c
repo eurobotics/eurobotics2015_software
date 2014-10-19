@@ -85,7 +85,7 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 	//static microseconds opp_time_us = 0;
 
 	/* discard current zone */
-	if((strat_infos.current_zone == zone_num) && (zone_num!=ZONE_HEART_1))
+	if(strat_infos.current_zone == zone_num)
 	{
 		//printf_P("zone num: %d. current_zone.\n");
 		return 0;	
@@ -115,26 +115,6 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 		//printf_P("zone num: %d. avoid.\n");
 		return 0;	
 	}
-
-	if(strat_infos.zones[zone_num].type==ZONE_TYPE_BASKET)
-	{
-		if(strat_infos.harvested_trees==0)
-			return 0;
-	}
-	else
-	{
-		if(strat_infos.zones[zone_num].flags & ZONE_CHECKED)
-		{
-			//printf_P("zone num: %d. CHECKED.\n",zone_num);
-			return 0;	
-		}
-	}
-
-	/*if((strat_infos.zones[zone_num].type==ZONE_TYPE_TREE) && ((strat_infos.zones[zone_num].flags & ZONE_CHECKED_OPP)==1))
-	{
-		//printf_P("zone num: %d. CHECKED_OPP.\n");
-		return 0;
-	}*/
 		
 	return 1;
 }
@@ -145,15 +125,6 @@ int8_t strat_get_new_zone(void)
 	uint8_t prio_max = 0;
 	int8_t zone_num = -1;
 	int8_t i=0;
-
-#if 0
-		if((strat_infos.zones[ZONE_TREE_1].flags & ZONE_CHECKED) && !(strat_infos.zones[ZONE_TREE_2].flags & ZONE_CHECKED))
-			return ZONE_TREE_2;
-
-
-		if((strat_infos.zones[ZONE_TREE_2].flags & ZONE_CHECKED) && !(strat_infos.zones[ZONE_TREE_1].flags & ZONE_CHECKED))
-			return ZONE_TREE_1;
-#endif	
 
 	/* evaluate zones */
 	for(i=0; i < ZONES_MAX; i++) 
@@ -172,19 +143,6 @@ int8_t strat_get_new_zone(void)
 			//printf_P("---zone num chosen: %d\n",zone_num);
 		}
 
-
-		if((strat_infos.zones[ZONE_TREE_1].flags & ZONE_CHECKED) && !(strat_infos.zones[ZONE_TREE_2].flags & ZONE_CHECKED))
-			zone_num= ZONE_TREE_2;
-
-
-		if((strat_infos.zones[ZONE_TREE_2].flags & ZONE_CHECKED) && !(strat_infos.zones[ZONE_TREE_1].flags & ZONE_CHECKED))
-			zone_num= ZONE_TREE_1;
-
-
-        /* XXX force go to basket if timeout */
-		if((time_get_s() > 75) && (strat_infos.harvested_trees))
-			zone_num = ZONE_BASKET_2;
-
 	}
 
 	return zone_num;
@@ -193,13 +151,15 @@ int8_t strat_get_new_zone(void)
 /* return END_TRAJ if zone is reached, err otherwise */
 uint8_t strat_goto_zone(uint8_t zone_num)
 {
+	int8_t err=0;
+	
+	#if 0
 #define BASKET_OFFSET_SIDE 175
 #define BEGIN_LINE_Y 	450
 #define BEGIN_FRESCO_X	1295
 #define PROTECT_H1_X 400
 #define PROTECT_H1_Y 1500
 
-	int8_t err=0;
 	
 	/* update strat_infos */
 	strat_infos.current_zone=-1;
@@ -302,7 +262,7 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 	else{
 		strat_infos.current_zone=zone_num;
 	}
-
+	#endif
 end:
     /* TODO XXX if error put arm in safe position */
 	return err;
@@ -314,6 +274,7 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 {
 	uint8_t err = END_TRAJ;
 	
+	#if 0
 #ifdef HOST_VERSION
 	//printf_P(PSTR("strat_work_on_zone %d %s: press a key\r\n"),zone_num,numzone2name[zone_num]);
 	//while(!cmdline_keypressed());
@@ -436,7 +397,7 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 				break;
 		}
 	}
-	
+	#endif
 	return err;
 }
 
@@ -564,22 +525,8 @@ uint8_t strat_smart(void)
 {
 	int8_t zone_num;
 	uint8_t err;
-
-	/* recalculate priorities NOTYET */
 	
 	/* Tasks secondary robot */
-	/*if((robot_2nd.done_flags & BT_FRESCO_DONE) ==0)
-	{
-		strat_infos.zones[ZONE_FRESCO].flags |= ZONE_CHECKED;
-		strat_infos.zones[ZONE_FRESCO].prio = ZONE_PRIO_0;
-	}
-	if((robot_2nd.done_flags & BT_MAMOOTH_DONE) ==0)
-	{
-		strat_infos.zones[ZONE_MAMOOTH_1].flags |= ZONE_CHECKED;
-		strat_infos.zones[ZONE_MAMOOTH_1].prio = ZONE_PRIO_0;
-		strat_infos.zones[ZONE_MAMOOTH_2].flags |= ZONE_CHECKED;
-		strat_infos.zones[ZONE_MAMOOTH_2].prio = ZONE_PRIO_0;
-	}*/
 	
 	/* get new zone */
 	zone_num = strat_get_new_zone();
@@ -618,8 +565,7 @@ uint8_t strat_smart(void)
 		}
 
 		/* mark the zone as checked */
-		if(strat_infos.zones[zone_num].type!=ZONE_TYPE_BASKET)
-			strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
+		strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
 
 		return END_TRAJ;
 	}
@@ -628,6 +574,7 @@ uint8_t strat_smart(void)
 
 void strat_opp_tracking (void) 
 {
+#if 0
 #define MAX_TIME_BETWEEN_VISITS_MS	4000
 #define TIME_MS_TREE				1500
 #define TIME_MS_HEART				1500
@@ -709,7 +656,7 @@ void strat_opp_tracking (void)
 			}
 		}
 	}
-
+#endif
 }
 
 
@@ -718,12 +665,11 @@ void strat_homologation(void)
 	uint8_t err;
 	uint8_t i=0;
 	#define ZONES_SEQUENCE_LENGTH 6
-	uint8_t zones_sequence[ZONES_SEQUENCE_LENGTH] = 						
-	{ZONE_FIRE_1,ZONE_FIRE_3,ZONE_TORCH_2,ZONE_FIRE_5,ZONE_FIRE_6,ZONE_HEART_1};
+	uint8_t zones_sequence[ZONES_SEQUENCE_LENGTH];
 	
 	/* Secondary robot */
-	//bt_robot_2nd_bt_patrol_fr_mam(6,0);
-    bt_robot_2nd_bt_fresco();
+	//
+	
 	time_wait_ms(2000);
 	trajectory_d_rel(&mainboard.traj,250);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
@@ -760,313 +706,5 @@ void strat_homologation(void)
 		/* mark the zone as checked */
 		strat_infos.zones[i].flags |= ZONE_CHECKED;
 	}
-}
-
-
-uint8_t goto_basket_best_path(uint8_t protect_zone_num)
-{
-	int8_t err;	
-	int8_t opp1_there, opp2_there;
-	int16_t opp_x, opp_y;
-	int16_t opp2_x, opp2_y;
-
-	/* get robot coordenates */
-	opp1_there = get_opponent1_xy(&opp_x, &opp_y);
-	opp2_there = get_opponent2_xy(&opp2_x, &opp2_y);
-	
-	/* Divide field in 2 parts (Y) and see where are the opponents: */
-	/* Both opponents lower part */
-	if(!opp1_y_is_more_than(CENTER_Y+50) && !opp2_y_is_more_than(CENTER_Y+50))
-	{
-		/* up */
-		err=goto_basket_path_up();
-	}
-	/* Both opponents upper part */
-	else if(opp1_y_is_more_than(CENTER_Y+50) && opp2_y_is_more_than(CENTER_Y+50))
-	{
-		/* down */
-		err=goto_basket_path_down();
-	}
-	else if(opp1_there == -1 && opp2_there == -1){
-		err=goto_basket_path_up();
-	}
-
-	/* One opponents upper part and one lower part */
-	else
-	{
-		/* Check if there is a robot blocking the way up */
-		if(opponents_are_in_area(COLOR_X(2100),2000,COLOR_X(900),1700))
-		{
-			/* up */
-			err=goto_basket_path_up();
-		}
-		
-		/* Check if there is a robot blocking the way down */
-		else if(opponents_are_in_area(COLOR_X(1900),400,COLOR_X(1100),0))
-		{
-			/*down*/
-			err=goto_basket_path_down();
-		}
-		else
-		{/* Alternative strategy */
-			printf_P("Oh no, both robots are blocking me :(.\n");
-			err=goto_basket_path_up();
-			
-		}
-	}
-//end:
-	return err;
-}
-uint8_t goto_basket_path_up(void)
-{
-	int8_t opp1_there, opp2_there;
-	int16_t opp_x, opp_y;
-	int16_t opp2_x, opp2_y;
-
-	/* get robot coordenates */
-	opp1_there = get_opponent1_xy(&opp_x, &opp_y);
-	opp2_there = get_opponent2_xy(&opp2_x, &opp2_y);
-	
-	printf_P("UP\n");
-	int8_t err;
-	
-
-	err=goto_and_avoid (COLOR_X(FIRE_5_X),FIRE_5_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_STD);
-	//if (!TRAJ_SUCCESS(err))
-	//	ERROUT(err);
-	
-	err=goto_and_avoid (COLOR_X(FIRE_6_X),FIRE_6_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_STD);	
-	//if (!TRAJ_SUCCESS(err))
-	//	ERROUT(err);
-	//if(opponents_are_in_area(COLOR_X(3000),800,COLOR_X(2250),0)){
-		err=strat_leave_fruits_from_fresco();
-	//}else{
-	//	err=strat_leave_fruits_from_home_red();
-	//}
-	
-	
-//	end:
-		return err;
-}
-uint8_t strat_leave_fruits_from_home_red(){
-	//printf_P("Home red\n");
-	#define BASKET_INIT_X_HOME 	 2700
-	#define BASKET_INIT_Y_HOME 	 543
-	
-	int8_t err;
-	int16_t x;
-	
-	err=goto_and_avoid (COLOR_X(BASKET_INIT_X_HOME),BASKET_INIT_Y_HOME,TRAJ_FLAGS_STD,TRAJ_FLAGS_NO_NEAR);
-	//if (!TRAJ_SUCCESS(err))
-	//	ERROUT(err);
-	err=goto_and_avoid (COLOR_X(BASKET_INIT_X_HOME-300),BASKET_INIT_Y_HOME,TRAJ_FLAGS_STD,TRAJ_FLAGS_NO_NEAR);
-	//if (!TRAJ_SUCCESS(err))
-	//	ERROUT(err); 
-		
-	x = 2600 - ROBOT_WIDTH/2;
-	err=goto_and_avoid (COLOR_X(x),position_get_y_s16(&mainboard.pos),TRAJ_FLAGS_STD,TRAJ_FLAGS_NO_NEAR);
-	//if (!TRAJ_SUCCESS(err))
-	//	ERROUT(err);
-	
-	err=strat_leave_fruits();
-//end:
-	return err;
-}
-uint8_t strat_leave_fruits_from_fresco(){
-	//printf_P("Fresco\n");
-	#define BASKET_INIT_X_FRESCO 	 1650
-	#define BASKET_INIT_Y_FRESCO 	 543
-	int8_t err;
-	int16_t x;
-	
-	err=goto_and_avoid (COLOR_X(BASKET_INIT_X_FRESCO),BASKET_INIT_Y_FRESCO,TRAJ_FLAGS_STD,TRAJ_FLAGS_NO_NEAR);
-	//if (!TRAJ_SUCCESS(err))
-	//	ERROUT(err);
-	err=goto_and_avoid (COLOR_X(BASKET_INIT_X_FRESCO+300),BASKET_INIT_Y_FRESCO,TRAJ_FLAGS_STD,TRAJ_FLAGS_NO_NEAR);
-	//if (!TRAJ_SUCCESS(err))
-	//		ERROUT(err);
-	x = 1900 + ROBOT_WIDTH/2;
-	err=goto_and_avoid (COLOR_X(x),position_get_y_s16(&mainboard.pos),TRAJ_FLAGS_STD,TRAJ_FLAGS_NO_NEAR);
-	
-	//if (!TRAJ_SUCCESS(err))
-	//	ERROUT(err);
-	
-	err=strat_leave_fruits();
-//end:
-	return err;
-}
-uint8_t goto_basket_path_down(void)
-{
-//printf_P("Down\n");
-	int8_t err;
-//	int16_t x;
-
-	err=goto_and_avoid (COLOR_X(FIRE_2_X),FIRE_2_Y,TRAJ_FLAGS_STD,TRAJ_FLAGS_STD);
-	//if (!TRAJ_SUCCESS(err))
-	//	ERROUT(err);
-	//if(opponents_are_in_area(COLOR_X(3000),800,COLOR_X(2250),0)){
-		err=strat_leave_fruits_from_fresco();
-	//}else{
-	//	err=strat_leave_fruits_from_home_red();
-	//}
-	
-//end:
-	return err;
-}
-
-uint8_t strat_wipe_out(void){
-	int16_t x,y,x_final,y_final;
-	int8_t err,first_point=0, direction=0;
-	
-	#define H1_RADIUS 150
-	#define MARGIN 10
-
-	
-	//printf_P("WIPE_OUT\n");
-		if(x_is_more_than(COLOR_X(CENTER_X)))
-		{
-			if(y_is_more_than(CENTER_Y+50)){
-				//RIGHT-UP 4
-				if(opponents_are_in_area(COLOR_X(CENTER_X+H1_RADIUS+ROBOT_WIDTH+MARGIN), CENTER_Y+50+H1_RADIUS+ROBOT_WIDTH+MARGIN,COLOR_X(CENTER_X),CENTER_Y+50)){
-					if(!x_is_more_than(COLOR_X(2100))&&y_is_more_than(1600))
-					{
-						first_point=1;
-					}else{
-						first_point=3;
-						}
-				}else{
-					first_point=4;
-					
-				}
-				
-			}else{
-				//RIGHT-DOWN 3
-				if(opponents_are_in_area(COLOR_X(CENTER_X+H1_RADIUS+ROBOT_WIDTH-MARGIN),CENTER_Y+50 ,COLOR_X(CENTER_X),CENTER_Y+50-H1_RADIUS-ROBOT_WIDTH-MARGIN)){
-					first_point=4;
-				}else{
-					first_point=3;
-				}
-				
-	
-			}
-		}
-		else {
-			if(y_is_more_than(CENTER_Y+50)){
-				//LEFT-UP 1
-				if(opponents_are_in_area(COLOR_X(CENTER_X),CENTER_Y+50+H1_RADIUS+ROBOT_WIDTH+MARGIN ,COLOR_X(CENTER_X-H1_RADIUS-ROBOT_WIDTH-MARGIN),CENTER_Y+50)){
-					if(x_is_more_than(COLOR_X(900))&&y_is_more_than(1600))
-					{
-						first_point=4;
-					}else{
-						first_point=2;
-					}
-				}else{
-					first_point=1;
-				}
-				
-			
-			}else{
-				//LEFT-DOWN 2
-				if(opponents_are_in_area(COLOR_X(CENTER_X),CENTER_Y+50 ,COLOR_X(CENTER_X-H1_RADIUS-ROBOT_WIDTH-MARGIN),CENTER_Y+50-H1_RADIUS-ROBOT_WIDTH-MARGIN)){
-					first_point=1;
-				}else{
-					first_point=2;
-				}
-			}
-		}
-		switch(first_point){
-			
-			case 1:
-				x=CENTER_X-H1_RADIUS-ROBOT_WIDTH/2-MARGIN;
-				y=CENTER_Y+50+H1_RADIUS+ROBOT_WIDTH/2+MARGIN;
-				
-				if(opponents_are_in_area(COLOR_X(CENTER_X),CENTER_Y+50 ,COLOR_X(CENTER_X-H1_RADIUS-ROBOT_WIDTH-MARGIN),CENTER_Y+50-H1_RADIUS-ROBOT_WIDTH-MARGIN)){
-					x_final=CENTER_X+H1_RADIUS+ROBOT_WIDTH/2+MARGIN;
-					y_final=CENTER_Y+50+H1_RADIUS+ROBOT_WIDTH/2+MARGIN;
-					//printf_P("LEFT-UP OPP\n");
-					direction=0;
-				}else{
-					x_final=CENTER_X-H1_RADIUS-ROBOT_WIDTH/2-MARGIN;
-					y_final=CENTER_Y+50-H1_RADIUS-ROBOT_WIDTH/2-MARGIN;
-					//printf_P("LEFT-UP NO OPP\n");
-					direction=1;
-				}
-			break;
-			case 2:
-				x=CENTER_X-H1_RADIUS-ROBOT_WIDTH/2-MARGIN;
-				y=CENTER_Y+50-H1_RADIUS-ROBOT_WIDTH/2-MARGIN;
-				if(opponents_are_in_area(COLOR_X(CENTER_X+H1_RADIUS+ROBOT_WIDTH-MARGIN),CENTER_Y+50 ,COLOR_X(CENTER_X),CENTER_Y+50-H1_RADIUS-ROBOT_WIDTH-MARGIN)){
-					x_final=CENTER_X-H1_RADIUS-ROBOT_WIDTH/2-MARGIN;
-					y_final=CENTER_Y+50+H1_RADIUS+ROBOT_WIDTH/2+MARGIN;
-					//printf_P("LEFT-DOWN OPP\n");
-					direction=0;
-				}else{
-					x_final=CENTER_X+H1_RADIUS+ROBOT_WIDTH/2+MARGIN;
-					y_final=CENTER_Y+50-H1_RADIUS-ROBOT_WIDTH/2-MARGIN;
-					//printf_P("LEFT-DOWN NO OPP\n");
-					direction=1;
-				}
-			break;
-			case 3:
-				x=CENTER_X+H1_RADIUS+ROBOT_WIDTH/2+MARGIN;
-				y=CENTER_Y+50-H1_RADIUS-ROBOT_WIDTH/2-MARGIN;
-				if(opponents_are_in_area(COLOR_X(CENTER_X+H1_RADIUS+ROBOT_WIDTH+MARGIN), CENTER_Y+50+H1_RADIUS+ROBOT_WIDTH+MARGIN,COLOR_X(CENTER_X),CENTER_Y+50)){
-					x_final=CENTER_X-H1_RADIUS-ROBOT_WIDTH/2-MARGIN;
-					y_final=CENTER_Y+50-H1_RADIUS-ROBOT_WIDTH/2-MARGIN;
-					//printf_P("RIGHT-DOWN OPP\n");
-					direction=0;
-				}else{
-					x_final=CENTER_X+H1_RADIUS+ROBOT_WIDTH/2+MARGIN;
-					y_final=CENTER_Y+50+H1_RADIUS+ROBOT_WIDTH/2+MARGIN;
-					//printf_P("RIGHT-DOWN NO OPP\n");
-					direction=1;
-				}
-			break;
-			case 4:
-				x=CENTER_X+H1_RADIUS+ROBOT_WIDTH/2+MARGIN;
-				y=CENTER_Y+50+H1_RADIUS+ROBOT_WIDTH/2+MARGIN;
-				if(opponents_are_in_area(COLOR_X(CENTER_X),CENTER_Y+50+H1_RADIUS+ROBOT_WIDTH+MARGIN ,COLOR_X(CENTER_X-H1_RADIUS-ROBOT_WIDTH-MARGIN),CENTER_Y+50)){
-					x_final=CENTER_X+H1_RADIUS+ROBOT_WIDTH/2+MARGIN;
-					y_final=CENTER_Y+50-H1_RADIUS-ROBOT_WIDTH/2-MARGIN;
-					//printf_P("RIGHT-UP OPP\n");
-					direction=0;
-				}else{
-					x_final=CENTER_X-H1_RADIUS-ROBOT_WIDTH/2-MARGIN;
-					y_final=CENTER_Y+50+H1_RADIUS+ROBOT_WIDTH/2+MARGIN;
-					//printf_P("RIGHT-UP NO OPP\n");
-					direction=1;
-				}
-	
-				//printf_P("RIGHT-UP\n");
-			break;
-		}
-		goto_and_avoid (x,y,TRAJ_FLAGS_STD,TRAJ_FLAGS_SMALL_DIST);
-		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-		if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
-		i2c_slavedspic_mode_stick ( COLOR_INVERT(I2C_STICK_TYPE_LEFT),
-										 I2C_STICK_MODE_PUSH_FIRE, 0);
-		i2c_slavedspic_wait_ready();
-		//printf_P("Stick \n");
-		
-		
-		if (direction==1){
-			trajectory_goto_forward_xy_abs (&mainboard.traj, x_final,y_final);
-			//printf_P("forward \n");
-			}
-		else{
-			trajectory_goto_backward_xy_abs (&mainboard.traj, x_final,y_final);
-			//printf_P("backward \n");
-			}
-		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-		if (!TRAJ_SUCCESS(err))
-			ERROUT(err);
-	
-	end:
-	return err;	
-	
-	
-
-
 }
 

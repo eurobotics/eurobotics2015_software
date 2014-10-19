@@ -1013,6 +1013,8 @@ parse_pgm_inst_t cmd_subtraj = {
 };
 #endif
 
+
+#if 0
 /**********************************************************/
 /* BT Task 1 - 2 PARAMETERS + CHECKSUM */
 
@@ -1164,6 +1166,9 @@ parse_pgm_inst_t cmd_bt_task3 = {
 		NULL,
 	},
 };
+#endif
+
+
 
 /* TODO 2014*/
 #if 0

@@ -31,59 +31,97 @@
 #define AREA_X 3000
 #define AREA_Y 2000
 
-/* position of the tokens XXX */
-#define TREE_1_X			0
-#define TREE_1_Y			1300
-#define TREE_2_X			700
-#define TREE_2_Y			2000
-#define TREE_3_X			2300
-#define TREE_3_Y			2000
-#define TREE_4_X			3000
-#define TREE_4_Y			1300
-#define HEART_FIRE_1_X		140
-#define HEART_FIRE_1_Y		1860
-#define HEART_FIRE_2_X		1500
-#define HEART_FIRE_2_Y		1050
-#define HEART_FIRE_3_X		2860
-#define HEART_FIRE_3_Y		1860
-#define FIRE_1_X			400
-#define FIRE_1_Y			1100
-#define FIRE_2_X			900
-#define FIRE_2_Y			600
-#define FIRE_3_X			900
-#define FIRE_3_Y			1600
-#define FIRE_4_X			2100
-#define FIRE_4_Y			600
-#define FIRE_5_X			2100
-#define FIRE_5_Y			1600
-#define FIRE_6_X			2600
-#define FIRE_6_Y			1100
-#define TORCH_1_X			0
-#define TORCH_1_Y			800
-#define TORCH_2_X			1300
-#define TORCH_2_Y			2000
-#define TORCH_3_X			1700
-#define TORCH_3_Y			2000
-#define TORCH_4_X			3000
-#define TORCH_4_Y			800
-#define MOBILE_TORCH_1_X		900
-#define MOBILE_TORCH_1_Y		1100
-#define MOBILE_TORCH_2_X		2100
-#define MOBILE_TORCH_2_Y		1100
-#define BASKET_1_X		700
-#define BASKET_1_Y		150
-#define BASKET_2_X		2300
-#define BASKET_2_Y		150
-#define MAMOOTH_1_X		700
-#define MAMOOTH_1_Y		0
-#define MAMOOTH_2_X		2300
-#define MAMOOTH_2_Y		0
-#define FRESCO_X			1500
-#define FRESCO_Y			0
-#define HOME_RED_X		2800
-#define HOME_RED_Y		300
-#define HOME_YELLOW_X		200
-#define HOME_YELLOW_Y		300
+/* position of the elements */
+
+#define MY_STAND_1_X			90
+#define MY_STAND_1_Y			2000-200
+#define MY_STAND_2_X			850
+#define MY_STAND_2_Y			2000-100
+#define MY_STAND_3_X			850
+#define MY_STAND_3_Y			2000-200
+#define MY_STAND_4_X			870
+#define MY_STAND_4_Y			2000-1355
+#define MY_STAND_5_X			1300
+#define MY_STAND_5_Y			2000-1400
+#define MY_STAND_6_X			1100
+#define MY_STAND_6_Y			2000-1770
+#define MY_STAND_7_X			90
+#define MY_STAND_7_Y			2000-1850
+#define MY_STAND_8_X			90
+#define MY_STAND_8_Y			2000-1750
+
+#define OPP_STAND_1_X			3000-90
+#define OPP_STAND_1_Y			2000-200
+#define OPP_STAND_2_X			3000-850
+#define OPP_STAND_2_Y			2000-100
+#define OPP_STAND_3_X			3000-850
+#define OPP_STAND_3_Y			2000-200
+#define OPP_STAND_4_X			3000-870
+#define OPP_STAND_4_Y			2000-1355
+#define OPP_STAND_5_X			3000-1300
+#define OPP_STAND_5_Y			2000-1400
+#define OPP_STAND_6_X			3000-1100
+#define OPP_STAND_6_Y			2000-1770
+#define OPP_STAND_7_X			3000-90
+#define OPP_STAND_7_Y			2000-1850
+#define OPP_STAND_8_X			3000-90
+#define OPP_STAND_8_Y			2000-1750
+
+#define MY_LIGHTBULB_HOME_X				40
+#define MY_LIGHTBULB_HOME_Y					1000
+#define MY_LIGHTBULB_PLATFORM_X		1250
+#define MY_LIGHTBULB_PLATFORM_Y			50
+#define OPP_LIGHTBULB_HOME_X			2960
+#define OPP_LIGHTBULB_HOME_Y				1000
+#define OPP_LIGHTBULB_PLATFORM_X	1750
+#define OPP_LIGHTBULB_PLATFORM_Y		50
+
+#define MY_POPCORNMAC_1_X				300
+#define MY_POPCORNMAC_1_Y				2000-35
+#define MY_POPCORNMAC_2_X				600
+#define MY_POPCORNMAC_2_Y				2000-35
+#define OPP_POPCORNMAC_1_X				2400
+#define OPP_POPCORNMAC_1_Y				2000-35
+#define OPP_POPCORNMAC_2_X				2700
+#define OPP_POPCORNMAC_2_Y		        2000-35
+
+#define MY_POPCORNCUP_FRONT_X				910
+#define MY_POPCORNCUP_FRONT_Y				2000-830
+#define MY_POPCORNCUP_SIDE_X				250
+#define MY_POPCORNCUP_SIDE_Y				2000-1750
+#define OPP_POPCORNCUP_FRONT_X				2090
+#define OPP_POPCORNCUP_FRONT_Y				2000-830
+#define OPP_POPCORNCUP_SIDE_X				    2750
+#define OPP_POPCORNCUP_SIDE_Y				    2000-1750
+#define POPCORNCUP_CENTRE_X				1500
+#define POPCORNCUP_CENTRE_Y				2000-1650
+
+#define MY_CINEMA_UP_X						200
+#define MY_CINEMA_UP_Y						1400
+#define MY_CINEMA_DOWN_X					200
+#define MY_CINEMA_DOWN_Y					600
+#define OPP_CINEMA_UP_X						2800
+#define OPP_CINEMA_UP_Y						1400
+#define OPP_CINEMA_DOWN_X				2800
+#define OPP_CINEMA_DOWN_Y				600
+
+#define MY_STAIRS_X						1250
+#define MY_STAIRS_Y						1400
+#define OPP_STAIRS_X					1750
+#define OPP_STAIRS_Y					1400
+
+#define MY_HOME_X				250
+#define MY_HOME_Y				1000
+#define OPP_HOME_X				2750
+#define OPP_HOME_Y				1000
+
+#define MY_CLAP_1_X				320
+#define MY_CLAP_2_X				620
+#define MY_CLAP_3_X				920
+#define OPP_CLAP_1_X				2680
+#define OPP_CLAP_2_X				2320
+#define OPP_CLAP_3_X				2080
+#define CLAP_Y						0
 
 /* convert coords according to our color */
 #define COLOR_Y(y)     (y)
@@ -167,35 +205,54 @@
 #endif
 
 /* zones */
-#define ZONE_TREE_1			    0
-#define ZONE_TREE_2       	1
-#define ZONE_TREE_3			    2
-#define ZONE_TREE_4			    3
-#define ZONE_HEART_FIRE_1		4
-#define ZONE_HEART_FIRE_2  	5
-#define ZONE_HEART_FIRE_3 	6
-#define ZONE_FIRE_1   	    7
-#define ZONE_FIRE_2	        8
-#define ZONE_FIRE_3	        9
-#define ZONE_FIRE_4	        10
-#define ZONE_FIRE_5			    11
-#define ZONE_FIRE_6			    12
-#define ZONE_TORCH_1   			13
-#define ZONE_TORCH_2			  14
-#define ZONE_TORCH_3			  15
-#define ZONE_TORCH_4        16
-#define ZONE_MOBILE_TORCH_1 17
-#define ZONE_MOBILE_TORCH_2 18
-#define ZONE_MOBILE_TORCH_3 19
-#define ZONE_BASKET_1       20
-#define ZONE_BASKET_2       21
-#define ZONE_MAMOOTH_1      22
-#define ZONE_MAMOOTH_2      23
-#define ZONE_FRESCO      	  24
-#define ZONE_HOME_RED       25
-#define ZONE_HOME_YELLOW    26
-#define ZONES_MAX		        27
-
+#define ZONE_MY_STAND_1			0
+#define ZONE_MY_STAND_2			1
+#define ZONE_MY_STAND_3			2
+#define ZONE_MY_STAND_4			3
+#define ZONE_MY_STAND_5			4
+#define ZONE_MY_STAND_6			5
+#define ZONE_MY_STAND_7			6
+#define ZONE_MY_STAND_8			7
+#define ZONE_OPP_STAND_1			8
+#define ZONE_OPP_STAND_2			9
+#define ZONE_OPP_STAND_3			10
+#define ZONE_OPP_STAND_4			11
+#define ZONE_OPP_STAND_5			12
+#define ZONE_OPP_STAND_6			13
+#define ZONE_OPP_STAND_7			14
+#define ZONE_OPP_STAND_8			15
+#define ZONE_MY_LIGHTBULB_HOME					16
+#define ZONE_MY_LIGHTBULB_PLATFORM			17
+#define ZONE_OPP_LIGHTBULB_HOME				18
+#define ZONE_OPP_LIGHTBULB_PLATFORM		19
+#define ZONE_MY_POPCORNMAC_1				20
+#define ZONE_MY_POPCORNMAC_2				21
+#define ZONE_OPP_POPCORNMAC_1				22
+#define ZONE_OPP_POPCORNMAC_2				23
+#define ZONE_MY_POPCORNCUP_FRONT				24
+#define ZONE_MY_POPCORNCUP_SIDE				25
+#define ZONE_OPP_POPCORNCUP_FRONT				26
+#define ZONE_OPP_POPCORNCUP_SIDE				    27
+#define ZONE_POPCORNCUP_CENTRE				28
+#define ZONE_MY_CINEMA_UP						29
+#define ZONE_MY_CINEMA_DOWN					30
+#define ZONE_OPP_CINEMA_UP						31
+#define ZONE_OPP_CINEMA_DOWN				32
+#define ZONE_MY_STAIRS						33
+#define ZONE_OPP_STAIRS					34
+#define ZONE_MY_HOME				35
+#define ZONE_OPP_HOME				36
+#define ZONE_MY_CLAP_1				37
+#define ZONE_MY_CLAP_2				38
+#define ZONE_MY_CLAP_3				39
+#define ZONE_OPP_CLAP_1				40
+#define ZONE_OPP_CLAP_2				41
+#define ZONE_OPP_CLAP_3				42
+#define ZONE_MY_STAIRWAY_1			43
+#define ZONE_MY_STAIRWAY_2			44
+#define ZONE_OPP_STAIRWAY_1			45
+#define ZONE_OPP_STAIRWAY_2			46
+#define ZONES_MAX		    			47
 
 /************************************************************* 
  * Strat data structures 
@@ -213,7 +270,7 @@ struct bbox {
 struct conf {
 
 /* depends on flags the robot
- * do one things or anothers */
+ * will do different things */
 	uint8_t flags;
   #define ENABLE_R2ND_POS				  1 /* TODO: set by command */
 	#define ENABLE_DOWN_SIDE_ZONES	2
@@ -224,16 +281,17 @@ struct conf {
 typedef struct {
 	/* type */
 	uint16_t type;
-	#define ZONE_TYPE_TREE					0
-	#define ZONE_TYPE_FIRE					1
-	#define ZONE_TYPE_HEART_FIRE				2
-	#define ZONE_TYPE_TORCH					3
-	#define ZONE_TYPE_MOBILE_TORCH				4
-	#define ZONE_TYPE_FRESCO					5
-	#define ZONE_TYPE_MAMOOTH					6
-	#define ZONE_TYPE_BASKET					7
-	#define ZONE_TYPE_HOME					8
-	#define ZONE_TYPE_MAX					9
+	#define ZONE_TYPE_STAND							0
+	#define ZONE_TYPE_LIGHTBULB					1
+	#define ZONE_TYPE_POPCORNMAC			2
+	#define ZONE_TYPE_POPCORNCUP				3
+	#define ZONE_TYPE_HOME							4
+	#define ZONE_TYPE_CINEMA						5
+	#define ZONE_TYPE_STAIRS						6
+	#define ZONE_TYPE_STAIRWAY					7
+	#define ZONE_TYPE_CLAP							8
+	#define ZONE_TYPE_BAREA							9
+	#define ZONE_TYPE_MAX								10
 
 	/* target point */
 	int16_t x;
@@ -269,6 +327,12 @@ typedef struct {
    #define ZONE_CHECKED_OPP		2
    #define ZONE_SEC_ROBOT	   	4
    #define ZONE_AVOID		    	8
+	
+	/* which robots can perform this action */
+	uint8_t robot;
+	#define MAIN_ROBOT  0
+	#define SEC_ROBOT   1
+	#define BOTH_ROBOTS 2
 } strat_zones;
 
 
@@ -286,23 +350,16 @@ struct strat_infos {
 	uint8_t goto_zone;
 	uint8_t last_zone;
 
-	/* opponent zone position */
-	uint8_t opp_current_zone;
-	uint8_t opp2_current_zone;
-
-	/* opponent statistics */
-	uint32_t opp_time_zone_ms;
-
 	/* state of the robot */
-	uint8_t fruits_inside;
-	uint8_t spears_inside;
-	uint8_t net_inside;
-	uint8_t fires_inside;
+	uint8_t lightbulbs;
+	uint8_t stands;
+	uint8_t carpets;
+	uint8_t popcornbaskets;
 };
 
 extern struct strat_infos strat_infos;
 
-extern char numzone2name[ZONES_MAX + 1][30];
+extern char numzone2name[ZONES_MAX + 1][3];
 
 #ifndef HOST_VERSION_OA_TEST
 
@@ -341,10 +398,6 @@ void strat_start_match(uint8_t debug);
 void strat_auto_position (void);
 
 /* match tasks */
-uint8_t strat_patrol_fresco_mamooth(uint8_t balls_mamooth_1, uint8_t balls_mamooth_2);
-uint8_t strat_paint_fresco(void);
-uint8_t strat_patrol_between(int16_t x1, int16_t y1,int16_t x2, int16_t y2);
-uint8_t strat_shoot_mamooth(uint8_t balls_mamooth_1, uint8_t balls_mamooth_2);
 void strat_initial_move(void);
 
 /********************************************
@@ -374,23 +427,7 @@ void strat_goto_avoid_event (void *data);
 void strat_goto_avoid_forward_event (void *data);
 void strat_goto_avoid_backward_event (void *data);
 /* match tasks */
-void strat_patrol_and_paint_fresco_event (void *data);
-void strat_fresco_event (void *data);
-void strat_patrol_event (void *data);
-void strat_mamooth_event (void *data);
-void strat_protect_h_event(void *data);
-void strat_patrol_fresco_mamooth_event(void *data);
-void strat_net_event (void *data);
 
-/* fresco */
-uint8_t strat_goto_fresco (void);
-uint8_t strat_paint_fresco2 (void);
-uint8_t strat_goto_and_paint_fresco (void);
-
-uint8_t strat_goto_mamooth (void);
-
-/* goto mamooth */
-uint8_t __strat_shoot_mamooth (void);
 
 
 #else /* HOST_VERSION_OA_TEST */
