@@ -357,7 +357,7 @@ void bt_goto_and_avoid_backward (int16_t x, int16_t y, int16_t args_checksum)
 /////////////////////////////////////////////////////////////////////////////
 
 
-
+#if 0
 void bt_fresco(void)
 {
 	/* set ACK */
@@ -505,7 +505,7 @@ void bt_protect_h(uint8_t heart)
 
 
 /* TODO bt_trajectory_XXXX and bt_goto_avoid_XXXX functions */
-
+#endif
 
 void bt_strat_exit (void)
 {
