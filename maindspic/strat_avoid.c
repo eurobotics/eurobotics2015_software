@@ -919,14 +919,6 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 	int8_t len = -1;
 	int8_t i;
 
-
-#ifdef DEBUG_STRAT_SMART
-	/* force possition */
-	strat_reset_pos(x, y, DO_NOT_SET_POS);
-	return END_TRAJ;
-#endif
-
-
 	point_t *p;
 	poly_t *pol_opp1, *pol_opp2, *pol_robot_2nd;
   poly_t *pol_heartfire;
@@ -964,17 +956,10 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 #endif
 
 retry:
-
-#ifdef POLYS_IN_PATH
-	/* reset slots in path */
-  	num_slots_in_path = 0;
-  	for(i=0; i<SLOT_NUMBER; i++)
-		slot_in_path_flag[i] = 0;
-#endif
 	
 	/* opponent info */
 #ifndef HOST_VERSION_OA_TEST	
-	get_opponent1_xy(&opp1_x, &opp1_y);
+  get_opponent1_xy(&opp1_x, &opp1_y);
   get_opponent2_xy(&opp2_x, &opp2_y);
 	
 	/* get second robot */
@@ -1019,13 +1004,6 @@ retry:
 	/* if we are not in the limited area, try to go in it. */
 	ret = go_in_area(&robot_pt);
 
-#ifdef POLYS_IN_PATH
-	/* set slots in path beetween robot and destination point */ 
-	set_slots_poly_in_path(&pol_slots_in_path[0],
-	                       robot_pt.x, robot_pt.y, x, y, 
-	                       robot_pt.x, robot_pt.y, x, y);
-#endif
-
 	/* check that destination is in playground */
 	p_dst.x = x;
 	p_dst.y = y;
@@ -1056,9 +1034,10 @@ retry:
 	}
 
 	/* now start to avoid */
-	while (opp1_w && opp1_l && opp2_w && opp2_l) {
+	while (opp1_w && opp1_l && opp2_w && opp2_l) 
+	{
 
-    /* escape from polys */
+    	/* escape from polys */
 		/* XXX robot_pt is not updated if it fails */		
 		ret = escape_from_poly(&robot_pt, robot_2nd_x, robot_2nd_y,
 				                opp1_x, opp1_y, opp2_x, opp2_y, 
@@ -1066,7 +1045,7 @@ retry:
 				                pol_robot_2nd);
 		
 
-    /* XXX uncomment in order to skip escape from poly */
+    	/* XXX uncomment in order to skip escape from poly */
 		//ret = 0;	
 
 		if (ret == 0) {
@@ -1103,7 +1082,7 @@ retry:
 		}
 
 		if (distance_between(robot_pt.x, robot_pt.y, HEARTFIRE_X, HEARTFIRE_Y) < 600 ) {
-      heartfire_r = HEARTFIRE_RAD2;
+      		heartfire_r = HEARTFIRE_RAD2;
 
 			NOTICE(E_USER_STRAT, "reducing heart of fire r=%d", heartfire_r);
 			set_heartfire_poly(pol_heartfire, &robot_pt, heartfire_r);
@@ -1114,7 +1093,7 @@ retry:
 
 		if (distance_between(robot_pt.x, robot_pt.y, opp1_x, opp1_y) >= REDUCE_POLY_THRES 
 		    && distance_between(robot_pt.x, robot_pt.y, opp2_x, opp2_y) >= REDUCE_POLY_THRES)
-      {
+      	{
 		
 			NOTICE(E_USER_STRAT, "oa_process() returned %d", len);
 			return END_ERROR;
