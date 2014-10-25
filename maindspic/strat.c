@@ -29,9 +29,10 @@
 #include <aversive/queue.h>
 #include <aversive/wait.h>
 #include <aversive/error.h>
-#include <clock_time.h>
+
 
 #ifndef HOST_VERSION_OA_TEST
+#include <clock_time.h>
 #include <uart.h>
 #include <dac_mc.h>
 #include <pwm_servo.h>

@@ -23,7 +23,10 @@
 #ifndef _STRAT_H_
 #define _STRAT_H_
 
+#ifndef HOST_VERSION_OA_TEST
 #include <clock_time.h>
+#endif
+
 /* compilation flavours */
 //#define HOMOLOGATION
 
@@ -328,11 +331,12 @@ typedef struct {
 	#define ZONE_SEC_ROBOT	   	4
 	#define ZONE_AVOID		   	8
   
-  
+#ifndef HOST_VERSION_OA_TEST
 	/* opponent statistics */
 	microseconds opp_time_zone_us;
 	microseconds last_time_opp_here; 	/*in us, since beginning of the match*/
-	
+#endif
+
 	/* which robots can perform this action */
 	uint8_t robot;
 	#define MAIN_ROBOT  0
