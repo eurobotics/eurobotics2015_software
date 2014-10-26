@@ -118,16 +118,11 @@ STEP_1_HEIGHT = 22.0
 STEP_2_HEIGHT = 44.0
 STEP_3_HEIGHT = 66.0
 STEP_4_HEIGHT = 88.0
-MAMUT_HEIGHT =  50.0
-FRESCO_HEIGHT = 200.0
-HEARTFIRE_HEIGHT = 30.0
-TREETRUNK_HEIGHT = 320.0
-TREETOP_HEIGHT = 10.0
-FIRE_HEIGHT= 140.0
-CLAP_HEIGHT= 138.0
-BASKET_HEIGHT = 33.0
-CLAP_STICK_HEIGHT=290.0
-STAND_HEIGHT=150.0
+CLAP_HEIGHT= 30.0
+CLAP_STICK_HEIGHT=150.0
+STAND_HEIGHT=70.0
+CUP_HEIGHT = 150
+
 set_opp_nb = 1
 
 def toggle_obj_disp():
@@ -144,12 +139,12 @@ def toggle_obj_disp():
 		step_func(2,STEP_2_HEIGHT,GREEN)
 		step_func(3,STEP_3_HEIGHT,GREEN)
 		step_func(4,STEP_4_HEIGHT,GREEN)
-		clap(-AREA_X/2+325,-AREA_Y/2,YELLOW,-80)
-		clap(-AREA_X/2+620,-AREA_Y/2,GREEN,-80)
-		clap(-AREA_X/2+920,-AREA_Y/2,YELLOW,-80)
-		clap(+AREA_X/2-325,-AREA_Y/2,YELLOW,+80)
-		clap(+AREA_X/2-620,-AREA_Y/2,GREEN,+80)
-		clap(+AREA_X/2-920,-AREA_Y/2,YELLOW,+80)
+		clap(-AREA_X/2+325,-AREA_Y/2-16,YELLOW,-80)
+		clap(-AREA_X/2+620,-AREA_Y/2-16,GREEN,-80)
+		clap(-AREA_X/2+920,-AREA_Y/2-16,YELLOW,-80)
+		clap(+AREA_X/2-325,-AREA_Y/2-16,YELLOW,+80)
+		clap(+AREA_X/2-620,-AREA_Y/2-16,GREEN,+80)
+		clap(+AREA_X/2-920,-AREA_Y/2-16,YELLOW,+80)
 		stand_yellow(-AREA_X/2+850,+AREA_Y/2-100)
 		stand_yellow(-AREA_X/2+850,+AREA_Y/2-200)
 		stand_yellow(-AREA_X/2+90,+AREA_Y/2-200)
@@ -232,9 +227,9 @@ def set_home_areas():
 	base_size = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]),base)
 	c = box(pos=(AREA_X/2-70,-AREA_Y/2+1000,22), size=base_size,color =(0.31, 0.7, 0.2))
 	area_objects.append(c)
-	c = sphere(pos=(AREA_X/2-70,-AREA_Y/2+1000,22+35), radius=35,color=(0,1,0))
+	c = sphere(pos=(AREA_X/2-70/2,-AREA_Y/2+1000,22+35), radius=35,color=(0,1,0))
 	area_objects.append(c)
-	c = sphere(pos=(-AREA_X/2+70,-AREA_Y/2+1000,22+35), radius=35,color=(0,1,0))
+	c = sphere(pos=(-AREA_X/2+70/2,-AREA_Y/2+1000,22+35), radius=35,color=(0,1,0))
 	area_objects.append(c)
 	
 def platform():
@@ -243,13 +238,19 @@ def platform():
 	base_size = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]),base)
 	c = box(pos=(0,-AREA_Y/2+100/2, 0), size=base_size,color =(0.78, 0.09, 0.071))
 	area_objects.append(c)
+
+
+	red_area = [ (0.0, 0.0, -0.5), (800.0, 200.0, 0.5) ]
+	red_area_size = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , red_area)
+	red_area_box = box(pos=(0,-AREA_Y/2+200/2, 0), size=red_area_size, color=(0.9, 0.0, 0.0))
+
 	c = sphere(pos=(250,-AREA_Y/2+100/2,22+35), radius=35,color=(0,1,0))
 	area_objects.append(c)
 	c = sphere(pos=(-250,-AREA_Y/2+100/2,22+35), radius=35,color=(0,1,0))
 	area_objects.append(c)
 def clap(x,y,clap_color,offset):
 	global area_objects 
-	clap = [ (0.0, 0.0, -0.5), (160.0, 50.0, CLAP_HEIGHT) ]
+	clap = [ (0.0, 0.0, -0.5), (160.0, 30.0, CLAP_HEIGHT) ]
 	clapsize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , clap)
 	if clap_color == YELLOW:
 		c = box(pos=(x,y, CLAP_HEIGHT/2+70), size=clapsize, color =(0.988, 0.741, 0.122))
@@ -257,9 +258,9 @@ def clap(x,y,clap_color,offset):
 		c = box(pos=(x,y, CLAP_HEIGHT/2+70), size=clapsize, color =(0.31, 0.659, 0.2))
 	area_objects.append(c)
 
-	clap = [ (0.0, 0.0, CLAP_HEIGHT), (20.0, 50.0, CLAP_STICK_HEIGHT) ]
+	clap = [ (0.0, 0.0, CLAP_HEIGHT), (20.0, 30.0, CLAP_STICK_HEIGHT) ]
 	clapsize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , clap)
-	c = box(pos=(x+offset,y, CLAP_STICK_HEIGHT/2+70), size=clapsize, color =(0.5, 0.5, 0.5))
+	c = box(pos=(x+offset,y, CLAP_HEIGHT+CLAP_STICK_HEIGHT/2+70), size=clapsize, color =(0.5, 0.5, 0.5))
 	area_objects.append(c)
 def cinema(x,y,cinema_color):
 	cinemaarea = [ (0.0, 0.0, -0.5), (400.0,378.0,0.5) ]
@@ -293,10 +294,10 @@ def stand_yellow(x,y):
 	area_objects.append(c)
 def popcorn_func(x,y):
 	global area_objects
-	c=cone(pos=(x,y, STAND_HEIGHT), axis=(0,0,-STAND_HEIGHT),radius=47.5)
+	c=cone(pos=(x,y, CUP_HEIGHT), axis=(0,0,-2*CUP_HEIGHT),radius=47.5)
 	area_objects.append(c)
-	c = cylinder(axis=(0,0,1),length=STAND_HEIGHT,radius=27,pos=(x,y, 0))
-	area_objects.append(c)
+	#c = cylinder(axis=(0,0,1),length=CUP_HEIGHT,radius=27,pos=(x,y, 0))
+	#area_objects.append(c)
 
 def set_opp(x, y):
     opp.size = (300, 300, ROBOT_HEIGHT)
@@ -512,6 +513,7 @@ def silent_mkfifo(f):
 toggle_obj_disp()
 
 while True:
+
     silent_mkfifo("/tmp/.robot_sim2dis")
     silent_mkfifo("/tmp/.robot_dis2sim")
     silent_mkfifo("/tmp/.robot2_sim2dis")
@@ -524,7 +526,6 @@ while True:
         fw2 = open("/tmp/.robot2_dis2sim", "w", 0)
 
         while True:
-
             # MAIN ROBOT MSGS
             m = None
             l = fr. readline()
@@ -549,7 +550,6 @@ while True:
                     set_robot2()
                     # XXX HACK, send pos robot mate
                     #fw.write("r2nd %d %d %d"%(int(robot2_x), int(robot2_y), int(robot2_a)))
-
             """
             # TODO parse slavedspic
             if not m:
@@ -653,5 +653,4 @@ while True:
 
         fr.close()
         fw.close()
-
 
