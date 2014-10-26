@@ -921,13 +921,13 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 
 	point_t *p;
 	poly_t *pol_opp1, *pol_opp2, *pol_robot_2nd;
-  poly_t *pol_heartfire;
+  	poly_t *pol_heartfire;
 
 	int8_t ret;
 
 	int16_t opp1_w, opp1_l;
 	int16_t opp2_w, opp2_l;
-  int16_t heartfire_r;
+  	int16_t heartfire_r;
 #ifndef HOST_VERSION_OA_TEST
 	int16_t opp1_x, opp1_y;
 	int16_t opp2_x, opp2_y;
