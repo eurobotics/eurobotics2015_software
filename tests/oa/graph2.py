@@ -33,10 +33,10 @@ def build_path(ptlist):
     return x,y
 
 def draw_bottle(x, y):
-    bottle = [ Rectangle((x-100, y), 200, 22*3) ]    
+    bottle = [ Rectangle((x-100, y), 200, 22*3) ]
     bottle += [ Rectangle((x-11, y), 22, -22*2) ]
-    return bottle   
-    
+    return bottle
+
 def graph(filename, stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x, robot_2nd_y):
     cmd = "./main %d %d %d %d %d %d %d %d %d %d %d"%(stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x, robot_2nd_y)
     o,i = popen2.popen2(cmd)
@@ -55,7 +55,7 @@ def graph(filename, stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x
     # total area limits
     x,y = build_poly([(0,0), (3000,0), (3000,2000), (0,2000)])
     ax.plot(x, y, 'k-')
-    
+
     # play area limits
     """
     clerance = 230
@@ -67,23 +67,19 @@ def graph(filename, stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x
     #x,y = build_poly([(240,240), (3000-240,240), (3000-240,2000-240-44), (240,2000-240-44)])
     ax.plot(x, y, 'c--')
     """
-    
+
     # ground
-    ground = [ Rectangle((0,0), 3000, 2000) ]
+    ground =[ Rectangle((0,0), 3000, 2000) ]
 
     # start areas
-    start_area_yellow = [ Rectangle((0, 0), 400, 700) ]
-    start_area_red = [ Rectangle((3000-400, 0), 400, 700) ]     
+    start_area_yellow = [ Rectangle((0,800),400 , 400) ]
+    start_area_red = [ Rectangle((3000-400, 800),400 , 400) ]
+    	
+    # stairs
+    stairs = [ Rectangle((967,2000-580), 1066,580 )]
+    # platform
+    platform = [ Rectangle((1200, 0), 600, 100) ]
 
-    # baskets
-    basket_red = [ Rectangle((400, 0), 700, 300) ]
-    basket_yellow = [ Rectangle((3000-400-700, 0), 700, 300) ]     
-  
-    # heart of fire
-    heart_fire = [Circle((1500, 1050), 150)]   
-    heart_fire += [Wedge((0, 2000), 250, 270, 0)]
-    heart_fire += [Wedge((3000, 2000), 250, 180, 270)]
-    
     poly = None
     poly_wait_pts = 0
     start = None
@@ -129,7 +125,7 @@ def graph(filename, stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x
         if m:
             poly_wait_pts = 4
             poly = []
-            
+
         m = re.match("robot 2nd at: (-?\d+) (-?\d+)", l)
         if m:
             poly_wait_pts = 4
@@ -150,31 +146,29 @@ def graph(filename, stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x
         m = re.match("With avoidance (-?\d+): x=(-?\d+) y=(-?\d+)", l)
         if m:
             path.append((int(m.groups()[1]), int(m.groups()[2])))
-        
+
         m = re.match("nb_rays = (-?\d+)", l)
         if m:
             print((int(m.groups()[0])))
-    
 
-    p = PatchCollection(ground, cmap=matplotlib.cm.jet, alpha=1,  color='green')
-    ax.add_collection(p)
 
-    p = PatchCollection(start_area_red, cmap=matplotlib.cm.jet, alpha=1,  color='red')
-    ax.add_collection(p)
+        p = PatchCollection(ground, cmap=matplotlib.cm.jet, alpha=0.1,  color='white')
+        ax.add_collection(p)
 
-    p = PatchCollection(start_area_yellow, cmap=matplotlib.cm.jet, alpha=1,  color='yellow')
-    ax.add_collection(p)   
+        p = PatchCollection(start_area_red, cmap=matplotlib.cm.jet, alpha=1,  color='green')
+        ax.add_collection(p)
 
-    p = PatchCollection(basket_red, cmap=matplotlib.cm.jet, alpha=1,  color='red')
-    ax.add_collection(p)
+        p = PatchCollection(start_area_yellow, cmap=matplotlib.cm.jet, alpha=1,  color='yellow')
+        ax.add_collection(p)
 
-    p = PatchCollection(basket_yellow, cmap=matplotlib.cm.jet, alpha=1,  color='yellow')
-    ax.add_collection(p)  
+        p = PatchCollection(stairs, cmap=matplotlib.cm.jet, alpha=1,  color='grey')
+        ax.add_collection(p)
 
-    p = PatchCollection(heart_fire, cmap=matplotlib.cm.jet, alpha=1,  color='brown')
-    ax.add_collection(p)
+        p = PatchCollection(platform, cmap=matplotlib.cm.jet, alpha=1,  color='red')
+        ax.add_collection(p)
 
-    p = PatchCollection(patches, cmap=matplotlib.cm.jet, alpha=0.4)
+
+    p = PatchCollection(patches, cmap=matplotlib.cm.jet, alpha=1)
     ax.add_collection(p)
 
     x,y = build_path(path)
@@ -197,7 +191,7 @@ def random_target_xy():
    else:
       y = random.choice([1600, 1000])
    return x,y
-   
+
 def random_robot_2nd_xy():
    x = random.choice([1600, 2000, 2500, 2600])
    if x >= 1500 or x <= 2500:
@@ -214,7 +208,7 @@ def random_opp_xy():
 
 
 # go in playground area
-"""
+
 print("go_in_area_1.png", 250, 250, 45, 2300, 1600, -1500, 0, -1500, 0, -1500, 0)
 graph("go_in_area_1.png", 250, 250, 0, 2300, 1600, -1500, 0, -1500, 0, -1500, 0)
 print("go_in_area_2.png", 250, 1000, 0, 2300, 1000, -1500, 0, -1500, 0, -1500, 0)
@@ -227,23 +221,10 @@ print("go_in_area_5.png", 1500, 240, 0, 680, 1600, -1500, 0, -1500, 0, -1500, 0)
 graph("go_in_area_5.png", 1500, 240, 0, 680, 1600, -1500, 0, -1500, 0, -1500, 0)
 print("go_in_area_6.png", 2300, 240, 0, 2000, 1400, -1500, 0, -1500, 0, -1500, 0)
 graph("go_in_area_6.png", 2300, 240, 0, 2000, 1400, -1500, 0, -1500, 0, -1500, 0)
-"""
 
 graph("alcala_avoid_a.png", 2249,450,179, 1705,450, 2250, 600, -1000, 0, 400, 400)
 graph("alcala_avoid_b.png", 2625,450,179, 1705,450, 2250, 600, -1000, 0, 400, 400)
 graph("alcala_avoid_c.png", 2800,450,179, 1705,450, 2250, 600, -1000, 0, 400, 400)
 
-"""
-random
-random.seed(0)
-for i in range(200):
-    stx,sty = random_target_xy()
-    enx,eny = random_target_xy()
-    op1x,op1y = random_opp_xy()
-    op2x,op2y = random_opp_xy()
-    robot_2nd_x,robot_2nd_y = random_robot_2nd_xy()
-    name = "random%d.png"%(i)
-    print (name, stx, sty, 0, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x, robot_2nd_y)
-    graph(name, stx, sty, 0, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x, robot_2nd_y)
 
-"""   
+
