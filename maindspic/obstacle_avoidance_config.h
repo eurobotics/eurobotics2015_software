@@ -27,7 +27,7 @@
  *  obstacle_avoidance_config.h,v 1.4 2009/05/27 20:04:07 zer0 Exp.
  */
 
-#define MAX_POLY 			6					// 2 opp + 2nd robot + totem area + boundingbox
+#define MAX_POLY 			7					// 2 opp + 2nd robot + totem area + boundingbox
 #define MAX_PTS 			MAX_POLY*4 + 6	// MAX_POLY * 4 (all polys are squares) + 4 points more of totems poly
 #define MAX_RAYS 			200				
 #define MAX_CHKPOINTS 	20
