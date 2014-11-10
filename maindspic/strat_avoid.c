@@ -123,6 +123,12 @@
 #define STAIRS_X 1500
 #define STAIRS_Y 1710
 
+#define HOME_GREEN_X 2800
+#define HOME_GREEN_Y 1000
+
+#define HOME_YELLOW_X 200
+#define HOME_YELLOW_Y 1000
+
 #ifndef IM_SECONDARY_ROBOT
 
 /* 
@@ -605,7 +611,7 @@ static int8_t go_in_area(point_t *robot_pt)
 
 		poly_pts_area[3].x = strat_infos.area_bbox.x1;
 		poly_pts_area[3].y = strat_infos.area_bbox.y2;
-
+		//The robot will calculate the intersection in bbox with center_pt as a reference
 		is_crossing_poly(*robot_pt, center_pt, &dst_pt, &poly_area);
 		NOTICE(E_USER_STRAT, "pt dst %"PRId32", %"PRId32"", (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
@@ -817,7 +823,11 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 			       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
          /* XXX check that destination point is not in an other poly */
-			if (is_point_in_poly(pol_opp2, dst_pt.x, dst_pt.y) != 1  ){
+			if (is_point_in_poly(pol_opp2, dst_pt.x, dst_pt.y) != 1 &&
+			is_point_in_poly(pol_robot_2nd, dst_pt.x, dst_pt.y) != 1 &&
+			is_point_in_poly(pol_home_green, dst_pt.x, dst_pt.y) != 1 &&
+			is_point_in_poly(pol_home_yellow, dst_pt.x, dst_pt.y) != 1 &&
+			is_point_in_poly(pol_stairs, dst_pt.x, dst_pt.y) != 1){
 
             /* check if destination point is in playground */
 				if (!is_in_boundingbox(&dst_pt))
@@ -851,8 +861,11 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 
          /* XXX check that destination point is not in an other poly */
 			if (is_point_in_poly(pol_opp1, dst_pt.x, dst_pt.y) != 1 &&
-			is_point_in_poly(pol_robot_2nd, dst_pt.x, dst_pt.y) != 1 ) {
- //is_point_in_poly(pol_heartfire, dst_pt.x, dst_pt.y) != 1 &&
+			is_point_in_poly(pol_robot_2nd, dst_pt.x, dst_pt.y) != 1 &&
+			is_point_in_poly(pol_home_green, dst_pt.x, dst_pt.y) != 1 &&
+			is_point_in_poly(pol_home_yellow, dst_pt.x, dst_pt.y) != 1 &&
+			is_point_in_poly(pol_stairs, dst_pt.x, dst_pt.y) != 1){
+			
             /* check if destination point is in playground */
 				if (!is_in_boundingbox(&dst_pt))
 					return -1;
@@ -886,7 +899,10 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 
          /* XXX check that destination point is not in an other poly */
 			if (is_point_in_poly(pol_opp1, dst_pt.x, dst_pt.y) != 1 &&
-			    is_point_in_poly(pol_opp2, dst_pt.x, dst_pt.y) != 1 ){
+			    is_point_in_poly(pol_opp2, dst_pt.x, dst_pt.y) != 1 &&
+			is_point_in_poly(pol_home_green, dst_pt.x, dst_pt.y) != 1 &&
+			is_point_in_poly(pol_home_yellow, dst_pt.x, dst_pt.y) != 1 &&
+			is_point_in_poly(pol_stairs, dst_pt.x, dst_pt.y) != 1){
 
             /* check if destination point is in playground */
 				if (!is_in_boundingbox(&dst_pt))
@@ -921,7 +937,9 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
          /* XXX check that destination point is not in an other poly */
 			if (is_point_in_poly(pol_opp1, dst_pt.x, dst_pt.y) != 1 &&
 			    is_point_in_poly(pol_opp2, dst_pt.x, dst_pt.y) != 1 &&
-			    is_point_in_poly(pol_robot_2nd, dst_pt.x, dst_pt.y) != 1 ) {
+			    is_point_in_poly(pol_robot_2nd, dst_pt.x, dst_pt.y) != 1 &&
+				is_point_in_poly(pol_home_green, dst_pt.x, dst_pt.y) != 1 &&
+				is_point_in_poly(pol_home_yellow, dst_pt.x, dst_pt.y) != 1){
 
             /* check if destination point is in playground */
 				if (!is_in_boundingbox(&dst_pt))
@@ -955,7 +973,9 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
          /* XXX check that destination point is not in an other poly */
 			if (is_point_in_poly(pol_opp1, dst_pt.x, dst_pt.y) != 1 &&
 			    is_point_in_poly(pol_opp2, dst_pt.x, dst_pt.y) != 1 &&
-			    is_point_in_poly(pol_robot_2nd, dst_pt.x, dst_pt.y) != 1 ) {
+			    is_point_in_poly(pol_robot_2nd, dst_pt.x, dst_pt.y) != 1 &&
+				is_point_in_poly(pol_home_yellow, dst_pt.x, dst_pt.y) != 1 &&
+				is_point_in_poly(pol_stairs, dst_pt.x, dst_pt.y) != 1){
 
             /* check if destination point is in playground */
 				if (!is_in_boundingbox(&dst_pt))
@@ -989,7 +1009,9 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
          /* XXX check that destination point is not in an other poly */
 			if (is_point_in_poly(pol_opp1, dst_pt.x, dst_pt.y) != 1 &&
 			    is_point_in_poly(pol_opp2, dst_pt.x, dst_pt.y) != 1 &&
-			    is_point_in_poly(pol_robot_2nd, dst_pt.x, dst_pt.y) != 1 ) {
+			    is_point_in_poly(pol_robot_2nd, dst_pt.x, dst_pt.y) != 1 &&
+				is_point_in_poly(pol_home_green, dst_pt.x, dst_pt.y) != 1 &&
+				is_point_in_poly(pol_home_yellow, dst_pt.x, dst_pt.y) != 1){
 
             /* check if destination point is in playground */
 				if (!is_in_boundingbox(&dst_pt))
@@ -1112,17 +1134,13 @@ retry:
 	set_opponent_poly(ROBOT2ND, pol_robot_2nd, &robot_pt, ROBOT_2ND_WIDTH, ROBOT_2ND_LENGTH);
 
 	pol_stairs= oa_new_poly(4);
-	//width=533, large=265, x=1500 y=1710
-
 	set_poly_abs(pol_stairs,O_STAIRS_WIDTH +OBS_CLERANCE,O_STAIRS_HEIGHT + OBS_CLERANCE,STAIRS_X,STAIRS_Y);
 
 	pol_home_yellow= oa_new_poly(4);
-	//width=200, large=222, x=0 y=1000
-	set_poly_abs(pol_home_yellow,O_HOME_WIDTH +OBS_CLERANCE,O_HOME_HEIGHT + OBS_CLERANCE,200,1000); 
+	set_poly_abs(pol_home_yellow,O_HOME_WIDTH +OBS_CLERANCE,O_HOME_HEIGHT + OBS_CLERANCE,HOME_YELLOW_X,HOME_YELLOW_Y); 
 	
 	pol_home_green= oa_new_poly(4);
-	//width=200, large=222, x=2800 y=1000
-	set_poly_abs(pol_home_green,O_HOME_WIDTH + OBS_CLERANCE,O_HOME_HEIGHT + OBS_CLERANCE,2800,1000); 
+	set_poly_abs(pol_home_green,O_HOME_WIDTH + OBS_CLERANCE,O_HOME_HEIGHT + OBS_CLERANCE,HOME_GREEN_X,HOME_GREEN_Y); 
 
 	/* if we are not in the limited area, try to go in it. */
 	ret = go_in_area(&robot_pt);
@@ -1211,7 +1229,16 @@ retry:
 			set_opponent_poly(OPP2, pol_opp2, &robot_pt, opp2_w, opp2_l);
 		}
 
-		/*if (distance_between(robot_pt.x, robot_pt.y, HEARTFIRE_X, HEARTFIRE_Y) < 600 ) {
+		/*if (distance_between(robot_pt.x, robot_pt.y, STAIRS_X, STAIRS_Y) < XXX ) {
+			//TODO REDUCE STAIRS
+		}
+		if (distance_between(robot_pt.x, robot_pt.y, HOME_YELLOW_X, HOME_YELLOW_Y) < XXX ) {
+			//TODO REDUCE HOME_YELLOW
+		}
+		if (distance_between(robot_pt.x, robot_pt.y, HOME_GREEN_X, HOME_GREEN_Y) < XXX ) {
+			//TODO REDUCE HOME_GREEN
+		}
+		if (distance_between(robot_pt.x, robot_pt.y, HEARTFIRE_X, HEARTFIRE_Y) < 600 ) {
       		heartfire_r = HEARTFIRE_RAD2;
 
 			NOTICE(E_USER_STRAT, "reducing heart of fire r=%d", heartfire_r);
