@@ -129,6 +129,11 @@
 #define HOME_YELLOW_X 200
 #define HOME_YELLOW_Y 1000
 
+#define LIMIT_BBOX_Y_UP			(2000 - OBS_CLERANCE-70)
+#define LIMIT_BBOX_Y_DOWN		OBS_CLERANCE+100
+#define LIMIT_BBOX_X_UP			3000 - OBS_CLERANCE
+#define LIMIT_BBOX_X_DOWN		OBS_CLERANCE
+
 #ifndef IM_SECONDARY_ROBOT
 
 /* 
@@ -586,33 +591,33 @@ void set_poly_pts(poly_t *pol_dest, poly_t *pol_org)
  */
 static int8_t go_in_area(point_t *robot_pt)
 {
-	point_t poly_pts_area[4];
 	poly_t poly_area;
-	point_t center_pt, dst_pt;
-
-	center_pt.x = CENTER_X;
-	center_pt.y = CENTER_Y;
-
+	point_t  dst_pt;
+	
 	/* Go in playground */
 	if (!is_in_boundingbox(robot_pt)){
 		NOTICE(E_USER_STRAT, "not in playground %"PRId32", %"PRId32"",
 		       (int32_t)robot_pt->x, (int32_t)robot_pt->y);
-
-		poly_area.l = 4;
-		poly_area.pts = poly_pts_area;
-		poly_pts_area[0].x = strat_infos.area_bbox.x1;
-		poly_pts_area[0].y = strat_infos.area_bbox.y1;
-
-		poly_pts_area[1].x = strat_infos.area_bbox.x2;
-		poly_pts_area[1].y = strat_infos.area_bbox.y1;
-
-		poly_pts_area[2].x = strat_infos.area_bbox.x2;
-		poly_pts_area[2].y = strat_infos.area_bbox.y2;
-
-		poly_pts_area[3].x = strat_infos.area_bbox.x1;
-		poly_pts_area[3].y = strat_infos.area_bbox.y2;
-		//The robot will calculate the intersection in bbox with center_pt as a reference
-		is_crossing_poly(*robot_pt, center_pt, &dst_pt, &poly_area);
+		NOTICE(E_USER_STRAT, "not in playground %"PRId32", %"PRId32"",
+		       (int32_t)robot_pt->x, (int32_t)robot_pt->y);
+		
+		//The robot will calculate the intersection in bbox.
+		
+		if(robot_pt->y > LIMIT_BBOX_Y_UP){
+			dst_pt.y = LIMIT_BBOX_Y_UP;
+		}else if(robot_pt->y < LIMIT_BBOX_Y_DOWN){
+			dst_pt.y = LIMIT_BBOX_Y_DOWN;
+		}else{
+			dst_pt.y= robot_pt->y;
+		}
+		
+		if(robot_pt->x > LIMIT_BBOX_X_UP){
+			dst_pt.x = LIMIT_BBOX_X_UP;
+		}else if(robot_pt->x< LIMIT_BBOX_X_DOWN){
+			dst_pt.x = LIMIT_BBOX_X_DOWN;
+		}else{
+			dst_pt.x= robot_pt->x;
+		}
 		NOTICE(E_USER_STRAT, "pt dst %"PRId32", %"PRId32"", (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
 		NOTICE(E_USER_STRAT, "GOTO %"PRId32",%"PRId32"",
