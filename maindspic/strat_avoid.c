@@ -1180,13 +1180,13 @@ retry:
 	set_opponent_poly(ROBOT2ND, pol_robot_2nd, &robot_pt, ROBOT_2ND_WIDTH, ROBOT_2ND_LENGTH);
 
 	pol_stairs= oa_new_poly(4);
-	set_poly_abs(pol_stairs,O_STAIRS_WIDTH +OBS_CLERANCE,O_STAIRS_HEIGHT + OBS_CLERANCE,STAIRS_X,STAIRS_Y);
+	set_poly_abs(pol_stairs,O_STAIRS_WIDTH +OBS_CLERANCE,O_STAIRS_HEIGHT + OBS_CLERANCE/2,STAIRS_X,STAIRS_Y-OBS_CLERANCE/2);
 
 	pol_home_yellow= oa_new_poly(4);
-	set_poly_abs(pol_home_yellow,O_HOME_WIDTH +OBS_CLERANCE,O_HOME_HEIGHT + OBS_CLERANCE,HOME_YELLOW_X,HOME_YELLOW_Y); 
+	set_poly_abs(pol_home_yellow,O_HOME_WIDTH+ OBS_CLERANCE/2 ,O_HOME_HEIGHT + OBS_CLERANCE,HOME_YELLOW_X+OBS_CLERANCE/2,HOME_YELLOW_Y); 
 	
 	pol_home_green= oa_new_poly(4);
-	set_poly_abs(pol_home_green,O_HOME_WIDTH + OBS_CLERANCE,O_HOME_HEIGHT + OBS_CLERANCE,HOME_GREEN_X,HOME_GREEN_Y); 
+	set_poly_abs(pol_home_green,O_HOME_WIDTH + OBS_CLERANCE/2,O_HOME_HEIGHT + OBS_CLERANCE,HOME_GREEN_X-OBS_CLERANCE/2,HOME_GREEN_Y); 
 
 	/* if we are not in the limited area, try to go in it. */
 	ret = go_in_area(&robot_pt);
