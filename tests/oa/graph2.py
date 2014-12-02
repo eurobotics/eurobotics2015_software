@@ -208,6 +208,8 @@ def random_opp_xy():
 
 
 # go in playground area
+print("template.png", -2000, -1600, 0, -500, -500, -1500, 0, -1500, 0, -1500, 0)
+graph("template.png", -2000, -1600, 0, -500, -500, -1500, 0, -1500, 0, -1500, 0)
 
 print("escape_stairs.png", 2000, 1600, 0, 500, 500, -1500, 0, -1500, 0, -1500, 0)
 graph("escape_stairs.png", 2000, 1600, 0, 500, 500, -1500, 0, -1500, 0, -1500, 0)
