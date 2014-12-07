@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Baliñas Santos <javier@arc-robots.org> and Silvia Santano
+ *  Javier Baliï¿½as Santos <javier@arc-robots.org> and Silvia Santano
  */
 
 #ifndef _STRAT_H_
@@ -26,6 +26,7 @@
 #ifndef HOST_VERSION_OA_TEST
  #include <clock_time.h>
 #endif
+
 /* compilation flavours */
 //#define HOMOLOGATION
 
@@ -335,6 +336,7 @@ typedef struct {
 	microseconds opp_time_zone_us;
 	microseconds last_time_opp_here; 	/*in us, since beginning of the match*/
 #endif
+	
 	/* which robots can perform this action */
 	uint8_t robot;
 	#define MAIN_ROBOT  0
