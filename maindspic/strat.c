@@ -29,6 +29,7 @@
 #include <aversive/queue.h>
 #include <aversive/wait.h>
 #include <aversive/error.h>
+#include <clock_time.h>
 
 #ifndef HOST_VERSION_OA_TEST
 #include <uart.h>
