@@ -153,7 +153,6 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 {
 	int8_t err=0;
 	
-	#if 0
 #define BASKET_OFFSET_SIDE 175
 #define BEGIN_LINE_Y 	450
 #define BEGIN_FRESCO_X	1295
@@ -168,7 +167,20 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 	/* Secondary robot */
 	if(strat_infos.zones[zone_num].robot==SEC_ROBOT)
 	{
-		if(strat_infos.zones[zone_num].type==ZONE_TYPE_FRESCO)
+		switch(strat_infos.zones[zone_num].type) {
+			case ZONE_TYPE_STAND:
+				break;
+			case ZONE_TYPE_CLAP:
+				bt_robot_2nd_goto_and_avoid(COLOR_X(strat_infos.zones[zone_num].init_x), 
+												strat_infos.zones[zone_num].init_y);
+												
+				bt_robot_2nd_wait_end();
+				break;
+			default:
+			break;
+	
+		}
+		/*if(strat_infos.zones[zone_num].type==ZONE_TYPE_FRESCO)
 			trajectory_goto_xy_abs (&mainboard.traj,  COLOR_X(BEGIN_FRESCO_X), BEGIN_LINE_Y);
 			
 		else if(strat_infos.zones[zone_num].type==ZONE_TYPE_MAMOOTH);
@@ -193,14 +205,30 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 			
 			else if(zone_num==ZONE_HEART_2_DOWN || zone_num==ZONE_HEART_2_UP || zone_num==ZONE_HEART_2_RIGHT || zone_num==ZONE_HEART_2_LEFT)
 			{
-			 /* TODO : remove fires from opponent. At the moment only protect ours */
+			 /* TODO : remove fires from opponent. At the moment only protect ours 
 			}
-		}
-	}
+		}*/
+	}else{
+		switch(strat_infos.zones[zone_num].type) {
+			case ZONE_TYPE_STAND:
+				err = goto_and_avoid_forward (COLOR_X(strat_infos.zones[zone_num].init_x), 
+											strat_infos.zones[zone_num].init_y,  
+											TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+				break;
+			case ZONE_TYPE_CLAP:
+				err = goto_and_avoid_forward (COLOR_X(strat_infos.zones[zone_num].init_x), 
+												strat_infos.zones[zone_num].init_y,  
+												TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+				break;
+			default:
+			break;
 	
-	else
-	{
-		/* go */
+		}
+		
+		
+		/* go 
+			
+		}
 		if (zone_num == ZONE_TREE_1 || zone_num == ZONE_TREE_2 
 			|| zone_num == ZONE_TREE_3 || zone_num == ZONE_TREE_4) 	{
 
@@ -248,8 +276,9 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 			if(strat_infos.zones[zone_num].robot==MAIN_ROBOT)
 				err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),  strat_infos.zones[zone_num].init_y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 		}	
-	}
+	}*/
 	
+	}
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
 	
@@ -262,7 +291,6 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 	else{
 		strat_infos.current_zone=zone_num;
 	}
-	#endif
 end:
     /* TODO XXX if error put arm in safe position */
 	return err;

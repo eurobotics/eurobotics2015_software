@@ -202,7 +202,7 @@ extern parse_pgm_inst_t cmd_strat_conf3;
 extern parse_pgm_inst_t cmd_subtraj1;
 extern parse_pgm_inst_t cmd_subtraj2;
 
-//extern parse_pgm_inst_t cmd_gotozone;
+extern parse_pgm_inst_t cmd_gotozone;
 //extern parse_pgm_inst_t cmd_workonzone;
 //extern parse_pgm_inst_t cmd_homologation;
 
@@ -335,7 +335,7 @@ parse_pgm_ctx_t main_ctx[] = {
     (parse_pgm_inst_t *) & cmd_subtraj1,
     (parse_pgm_inst_t *) & cmd_subtraj2,
 
-    //(parse_pgm_inst_t *) & cmd_gotozone,
+    (parse_pgm_inst_t *) & cmd_gotozone,
     //(parse_pgm_inst_t *) & cmd_workonzone,
     //(parse_pgm_inst_t *) & cmd_homologation,
 

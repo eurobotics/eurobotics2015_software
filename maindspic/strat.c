@@ -169,12 +169,12 @@ struct strat_infos strat_infos = {
   .zones[ZONE_MY_HOME]=        {ZONE_TYPE_HOME,  MY_HOME_X,    MY_HOME_Y,     		90,         650,    800,    1200,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
   .zones[ZONE_OPP_HOME]=        {ZONE_TYPE_HOME,  OPP_HOME_X,    OPP_HOME_Y,     2350,         2910,    800,    1200,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
  
-   /*zones[W] =                 {type,             x,         y,         					x_down,    x_up,   y_down, y_up,  init_x,       init_y, prio,         flags,        opp_time_zone_us,	last_time_opp_here,	robot };  */
+   /*zones[W] =                 {type,             x,        			y,        x_down,    x_up,   y_down, y_up,  init_x,       init_y, prio,         flags,        opp_time_zone_us,	last_time_opp_here,	robot };  */
    .zones[ZONE_MY_CLAP_1]=        {ZONE_TYPE_CLAP,  MY_CLAP_1_X,    CLAP_Y,     	180,      480,    0,    300,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
     .zones[ZONE_MY_CLAP_2]=        {ZONE_TYPE_CLAP,  MY_CLAP_2_X,     CLAP_Y,    	780,        1080,    0,    300,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
     .zones[ZONE_MY_CLAP_3]=        {ZONE_TYPE_CLAP,  MY_CLAP_3_X,     CLAP_Y,    	 2230,    2530,    0,    300,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
     .zones[ZONE_OPP_CLAP_1]=        {ZONE_TYPE_CLAP,  OPP_CLAP_1_X,     CLAP_Y,     2520,         2820,    0,    300,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_OPP_CLAP_2]=        {ZONE_TYPE_CLAP,  OPP_CLAP_2_X,     CLAP_Y,     1920,         2220,    0,    300,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_OPP_CLAP_2]=        {ZONE_TYPE_CLAP,  OPP_CLAP_2_X,     CLAP_Y,     1920,         2220,    0,    300, OPP_CLAP_2_X,   332,                    40,     0,            0,					(9000*1000L),					SEC_ROBOT},
     .zones[ZONE_OPP_CLAP_3]=        {ZONE_TYPE_CLAP,  OPP_CLAP_3_X,     CLAP_Y,     470,         770,    0,    300,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
 
    .zones[ZONE_MY_STAIRWAY_1]=        {ZONE_TYPE_STAIRWAY,  MY_STAIRS_X,    MY_STAIRS_Y,     1000,         1100,    1400,    2000,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
@@ -246,8 +246,10 @@ void strat_dump_conf(void)
 }
 
 
-char numzone2name[ZONES_MAX + 1][3] = {
-[ZONE_MY_STAND_1]="ms1",
+char *numzone2name[ZONES_MAX + 1]= {"ms1","ms2","ms3","ms4","ms5","ms6","ms7","ms8","os1","os2","os3","os4","os5","os6","os7","os8",
+"mlh","mlp","olh","olp","mm1","mm2","om1","om2","mcf","mcs","ocf","ocs","cc","mcu","mcd","ocu","ocd","ms","os","mh","oh","mb1","mb2","mb3","ob1","ob2","ob3","mw1","mw2","ow1","ow2"};
+	
+/*[ZONE_MY_STAND_1]="ms1";
 [ZONE_MY_STAND_2]="ms2",
 [ZONE_MY_STAND_3]="ms3",
 [ZONE_MY_STAND_4]="ms4",
@@ -269,11 +271,11 @@ char numzone2name[ZONES_MAX + 1][3] = {
 [ZONE_OPP_LIGHTBULB_PLATFORM]="olp",
 [ZONE_MY_POPCORNMAC_1]="mm1",
 [ZONE_MY_POPCORNMAC_2]="mm2",
-[ZONE_OPP_POPCORNMAC_1]="mm1",
-[ZONE_OPP_POPCORNMAC_2]="mm2",
+[ZONE_OPP_POPCORNMAC_1]="om1",
+[ZONE_OPP_POPCORNMAC_2]="om2",
 [ZONE_MY_POPCORNCUP_FRONT]="mcf",
 [ZONE_MY_POPCORNCUP_SIDE]="mcs",
-[ZONE_OPP_POPCORNCUP_FRONT	]="ocf",
+[ZONE_OPP_POPCORNCUP_FRONT]="ocf",
 [ZONE_OPP_POPCORNCUP_SIDE]="ocs",
 [ZONE_POPCORNCUP_CENTRE]="cc",
 [ZONE_MY_CINEMA_UP]="mcu",
@@ -295,7 +297,7 @@ char numzone2name[ZONES_MAX + 1][3] = {
 [ZONE_OPP_STAIRWAY_1]="ow1",
 [ZONE_OPP_STAIRWAY_2]="ow2",
 [ZONES_MAX] = "nll",
-};
+};*
 
 /* display current information about the state of the game */
 void strat_dump_infos(const char *caller)
