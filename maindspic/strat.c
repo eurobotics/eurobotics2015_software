@@ -107,6 +107,10 @@
 
 #endif
 
+#define LIMIT_BBOX_Y_UP			(2000 - OBS_CLERANCE-70)
+#define LIMIT_BBOX_Y_DOWN		OBS_CLERANCE+100
+#define LIMIT_BBOX_X_UP			3000 - OBS_CLERANCE
+#define LIMIT_BBOX_X_DOWN		OBS_CLERANCE
 
 static volatile uint8_t strat_running = 0;
 
@@ -170,12 +174,12 @@ struct strat_infos strat_infos = {
   .zones[ZONE_OPP_HOME]=        {ZONE_TYPE_HOME,  OPP_HOME_X,    OPP_HOME_Y,     2350,         2910,    800,    1200,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
  
    /*zones[W] =                 {type,             x,        			y,        x_down,    x_up,   y_down, y_up,  init_x,       init_y, prio,         flags,        opp_time_zone_us,	last_time_opp_here,	robot };  */
-   .zones[ZONE_MY_CLAP_1]=        {ZONE_TYPE_CLAP,  MY_CLAP_1_X,    CLAP_Y,     	180,      480,    0,    300,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_MY_CLAP_2]=        {ZONE_TYPE_CLAP,  MY_CLAP_2_X,     CLAP_Y,    	780,        1080,    0,    300,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_MY_CLAP_3]=        {ZONE_TYPE_CLAP,  MY_CLAP_3_X,     CLAP_Y,    	 2230,    2530,    0,    300,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_OPP_CLAP_1]=        {ZONE_TYPE_CLAP,  OPP_CLAP_1_X,     CLAP_Y,     2520,         2820,    0,    300,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_OPP_CLAP_2]=        {ZONE_TYPE_CLAP,  OPP_CLAP_2_X,     CLAP_Y,     1920,         2220,    0,    300, OPP_CLAP_2_X,   332,                    40,     0,            0,					(9000*1000L),					SEC_ROBOT},
-    .zones[ZONE_OPP_CLAP_3]=        {ZONE_TYPE_CLAP,  OPP_CLAP_3_X,     CLAP_Y,     470,         770,    0,    300,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+   .zones[ZONE_MY_CLAP_1]=        {ZONE_TYPE_CLAP,  MY_CLAP_1_X,    CLAP_Y,     	180,	480,	0,	300,	MY_CLAP_1_X,	LIMIT_BBOX_Y_DOWN, 	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_MY_CLAP_2]=        {ZONE_TYPE_CLAP,  MY_CLAP_2_X,     CLAP_Y,    	780,	1080,	0,	300,	MY_CLAP_2_X,    LIMIT_BBOX_Y_DOWN,	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_MY_CLAP_3]=        {ZONE_TYPE_CLAP,  MY_CLAP_3_X,     CLAP_Y,    	 2230,	2530,	0,	300,	MY_CLAP_3_X,    LIMIT_BBOX_Y_DOWN,	40,     0,            0,					(9000*1000L),					SEC_ROBOT},
+    .zones[ZONE_OPP_CLAP_1]=        {ZONE_TYPE_CLAP,  OPP_CLAP_1_X,     CLAP_Y,     2520,	2820,	0,	300,	OPP_CLAP_1_X,	LIMIT_BBOX_Y_DOWN,	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_OPP_CLAP_2]=        {ZONE_TYPE_CLAP,  OPP_CLAP_2_X,     CLAP_Y,     1920, 	2220,	0,	300,	OPP_CLAP_2_X,	LIMIT_BBOX_Y_DOWN,	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_OPP_CLAP_3]=        {ZONE_TYPE_CLAP,  OPP_CLAP_3_X,     CLAP_Y,     470,	770,    0,	300,	OPP_CLAP_3_X,	LIMIT_BBOX_Y_DOWN,	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
 
    .zones[ZONE_MY_STAIRWAY_1]=        {ZONE_TYPE_STAIRWAY,  MY_STAIRS_X,    MY_STAIRS_Y,     1000,         1100,    1400,    2000,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
    .zones[ZONE_MY_STAIRWAY_2]=        {ZONE_TYPE_STAIRWAY,  MY_STAIRS_X,    MY_STAIRS_Y,     1400,         1500,    1400,    2000,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
