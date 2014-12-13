@@ -104,13 +104,13 @@
 #define POPCORNCUP_CENTRE_X				1500
 #define POPCORNCUP_CENTRE_Y				2000-1650
 
-#define MY_CINEMA_UP_X						200
-#define MY_CINEMA_UP_Y						1400
-#define MY_CINEMA_DOWN_X					200
-#define MY_CINEMA_DOWN_Y					600
-#define OPP_CINEMA_UP_X						2800
-#define OPP_CINEMA_UP_Y						1400
-#define OPP_CINEMA_DOWN_X				2800
+#define MY_CINEMA_UP_X					2800
+#define MY_CINEMA_UP_Y					1400
+#define MY_CINEMA_DOWN_X				2800
+#define MY_CINEMA_DOWN_Y				600
+#define OPP_CINEMA_UP_X					200
+#define OPP_CINEMA_UP_Y					1400
+#define OPP_CINEMA_DOWN_X				200
 #define OPP_CINEMA_DOWN_Y				600
 
 #define MY_STAIRS_X						1250
