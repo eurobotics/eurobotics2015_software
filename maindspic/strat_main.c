@@ -76,8 +76,14 @@
 /* Add here the main strategy, the intelligence of robot */
 
 
+/*
+ *Check if the zone is available. 
+ * @Param zone_num checked zone
+ * @Return zone | -1.
+ */
+ 
 
-uint8_t strat_is_valid_zone(uint8_t zone_num)
+int8_t strat_is_valid_zone(uint8_t zone_num)
 {
 //#define OPP_WAS_IN_ZONE_TIMES	
 
@@ -99,6 +105,13 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 			strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 100;
 			return ZONE_MY_CINEMA_UP;
 		}
+		if(zone_num == ZONE_MY_CINEMA_UP && (strat_infos.zones[ZONE_MY_CINEMA_DOWN].flags != ZONE_CHECKED)){
+		
+			//Special case if there is an opp on ZONE_MY_CLAP_3. Increasing ZONE_MY_CINEMA_UP priority
+			strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 100;
+			return ZONE_MY_CINEMA_DOWN;
+		}
+		
 		return -1;
 	}
 
@@ -115,13 +128,13 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 /* return new work zone, -1 if any zone is found */
 int8_t strat_get_new_zone(void)
 {
-	uint8_t prio_max = 0, valid_zone= -1 ;
-	int8_t zone_num = -1;
+	uint8_t prio_max = 0;
+	int8_t zone_num = -1, valid_zone= -1 ;
 	int8_t i=0;
-
 	/* evaluate zones */
 	for(i=0; i < ZONES_MAX; i++) 
 	{
+		printf_P("1-i :%d\n",i);
 		/* check if is a valid zone */
 		valid_zone = strat_is_valid_zone(i);
 		switch(valid_zone){
@@ -129,18 +142,20 @@ int8_t strat_get_new_zone(void)
 				continue;
 				break;
 			default:
+			
 				i = valid_zone;
+				
+				printf_P("2-i :%d\n",i);
 				if(strat_infos.zones[i].prio == 100){
 					return i;
 				}
 				break;
 			}
 		/* compare current priority */
-		if(strat_infos.zones[i].prio > prio_max) {
-
+		if(strat_infos.zones[i].prio >= prio_max) {
 			prio_max = strat_infos.zones[i].prio;
 			zone_num = i;
-			printf_P("---zone num chosen: %d\n",zone_num);
+			printf_P("3-i :%d\n",i);
 		}
 
 	}
