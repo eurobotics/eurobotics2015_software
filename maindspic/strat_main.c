@@ -76,7 +76,7 @@
 /* Add here the main strategy, the intelligence of robot */
 
 
-/* return 1 if is a valid zone and 0 otherwise */
+
 uint8_t strat_is_valid_zone(uint8_t zone_num)
 {
 //#define OPP_WAS_IN_ZONE_TIMES	
@@ -88,48 +88,59 @@ uint8_t strat_is_valid_zone(uint8_t zone_num)
 	if(strat_infos.current_zone == zone_num)
 	{
 		//printf_P("zone num: %d. current_zone.\n");
-		return 0;	
+		return -1;	
 	}
 
 	/* discard if opp is in zone */
 	if(opponents_are_in_area(COLOR_X(strat_infos.zones[zone_num].x_up), strat_infos.zones[zone_num].y_up,
 								  COLOR_X(strat_infos.zones[zone_num].x_down),	strat_infos.zones[zone_num].y_down)) {
-
-		return 0;
+		if(zone_num == ZONE_MY_CLAP_3 && (strat_infos.zones[ZONE_MY_CINEMA_UP].flags != ZONE_CHECKED)){
+			//Special case if there is an opp on ZONE_MY_CLAP_3. Increasing ZONE_MY_CINEMA_UP priority
+			strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 100;
+			return ZONE_MY_CINEMA_UP;
+		}
+		return -1;
 	}
 
 	/* discard avoid and checked zones */
 	if(strat_infos.zones[zone_num].flags & ZONE_AVOID)
 	{
 		//printf_P("zone num: %d. avoid.\n");
-		return 0;	
+		return -1;	
 	}
 		
-	return 1;
+	return zone_num;
 }
 
 /* return new work zone, -1 if any zone is found */
 int8_t strat_get_new_zone(void)
 {
-	uint8_t prio_max = 0;
+	uint8_t prio_max = 0, valid_zone= -1 ;
 	int8_t zone_num = -1;
 	int8_t i=0;
 
 	/* evaluate zones */
 	for(i=0; i < ZONES_MAX; i++) 
 	{
-		//printf_P("---i: %d\n",i);
-		
 		/* check if is a valid zone */
-		if(!strat_is_valid_zone(i))	
-			continue;
-
+		valid_zone = strat_is_valid_zone(i);
+		switch(valid_zone){
+			case -1:
+				continue;
+				break;
+			default:
+				i = valid_zone;
+				if(strat_infos.zones[i].prio == 100){
+					return i;
+				}
+				break;
+			}
 		/* compare current priority */
-		if(strat_infos.zones[i].prio >= prio_max) {
+		if(strat_infos.zones[i].prio > prio_max) {
 
 			prio_max = strat_infos.zones[i].prio;
 			zone_num = i;
-			//printf_P("---zone num chosen: %d\n",zone_num);
+			printf_P("---zone num chosen: %d\n",zone_num);
 		}
 
 	}
@@ -161,6 +172,8 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 												
 		bt_robot_2nd_wait_end();
 		
+		strat_infos.zones[zone_num].prio = 0;
+		strat_infos.zones[zone_num].flags= ZONE_CHECKED;
 	}else{
 		err = goto_and_avoid_forward (COLOR_X(strat_infos.zones[zone_num].init_x), 
 											strat_infos.zones[zone_num].init_y,  
@@ -190,6 +203,7 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 {
 	uint8_t err = END_TRAJ;
 	
+		strat_infos.zones[zone_num].prio = ZONE_PRIO_0;
 	#if 0
 #ifdef HOST_VERSION
 	//printf_P(PSTR("strat_work_on_zone %d %s: press a key\r\n"),zone_num,numzone2name[zone_num]);
@@ -445,6 +459,7 @@ uint8_t strat_smart(void)
 	/* Tasks secondary robot */
 	
 	/* get new zone */
+	
 	zone_num = strat_get_new_zone();
 	printf_P(PSTR("Zone: %d. Priority: %d\r\n"),zone_num,strat_infos.zones[zone_num].prio);
 		
@@ -467,7 +482,7 @@ uint8_t strat_smart(void)
 			return END_TRAJ;
 		}
 		
-		/* work on zone */
+		/* work on zone 
 		strat_infos.last_zone = strat_infos.current_zone;
 		strat_infos.current_zone = strat_infos.goto_zone;
 		strat_dump_infos(__FUNCTION__);
@@ -481,8 +496,8 @@ uint8_t strat_smart(void)
 			// Switch off devices, go back to normal state if anything was deployed
 		}
 
-		/* mark the zone as checked */
-		strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
+		// mark the zone as checked 
+		strat_infos.zones[zone_num].flags |= ZONE_CHECKED;*/
 
 		return END_TRAJ;
 	}
