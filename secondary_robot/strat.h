@@ -31,6 +31,10 @@
 #define AREA_X 3000
 #define AREA_Y 2000
 
+#define LIMIT_BBOX_Y_UP			(2000 - OBS_CLERANCE-70)
+#define LIMIT_BBOX_Y_DOWN		OBS_CLERANCE+100
+#define LIMIT_BBOX_X_UP			3000 - OBS_CLERANCE
+#define LIMIT_BBOX_X_DOWN		OBS_CLERANCE
 /* position of the elements */
 
 #define MY_STAND_1_X			90

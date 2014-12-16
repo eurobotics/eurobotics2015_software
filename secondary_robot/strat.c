@@ -161,12 +161,11 @@ void strat_set_bounding_box(uint8_t type)
 
 	if (type == 0)
 	{
-
 		strat_infos.area_bbox.x1 = OBS_CLERANCE;
 		strat_infos.area_bbox.x2 = 3000 - OBS_CLERANCE;
 	
-		strat_infos.area_bbox.y1 = OBS_CLERANCE + 300;
-		strat_infos.area_bbox.y2 = 2000 - OBS_CLERANCE;
+		strat_infos.area_bbox.y1 = OBS_CLERANCE + 100;
+		strat_infos.area_bbox.y2 = 2000 - OBS_CLERANCE-70;
 	}
 	else
 	{

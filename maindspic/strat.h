@@ -34,6 +34,11 @@
 #define AREA_X 3000
 #define AREA_Y 2000
 
+#define LIMIT_BBOX_Y_UP			(2000 - OBS_CLERANCE-70)
+#define LIMIT_BBOX_Y_DOWN		OBS_CLERANCE+100
+#define LIMIT_BBOX_X_UP			3000 - OBS_CLERANCE
+#define LIMIT_BBOX_X_DOWN		OBS_CLERANCE
+
 /* position of the elements */
 
 #define MY_STAND_1_X			90
@@ -99,13 +104,13 @@
 #define POPCORNCUP_CENTRE_X				1500
 #define POPCORNCUP_CENTRE_Y				2000-1650
 
-#define MY_CINEMA_UP_X						200
-#define MY_CINEMA_UP_Y						1400
-#define MY_CINEMA_DOWN_X					200
-#define MY_CINEMA_DOWN_Y					600
-#define OPP_CINEMA_UP_X						2800
-#define OPP_CINEMA_UP_Y						1400
-#define OPP_CINEMA_DOWN_X				2800
+#define MY_CINEMA_UP_X					2800
+#define MY_CINEMA_UP_Y					1400
+#define MY_CINEMA_DOWN_X				2800
+#define MY_CINEMA_DOWN_Y				600
+#define OPP_CINEMA_UP_X					200
+#define OPP_CINEMA_UP_Y					1400
+#define OPP_CINEMA_DOWN_X				200
 #define OPP_CINEMA_DOWN_Y				600
 
 #define MY_STAIRS_X						1250
@@ -119,10 +124,10 @@
 #define OPP_HOME_Y				1000
 
 #define MY_CLAP_1_X				320
-#define MY_CLAP_2_X				620
-#define MY_CLAP_3_X				920
+#define MY_CLAP_2_X				920
+#define MY_CLAP_3_X				2320
 #define OPP_CLAP_1_X				2680
-#define OPP_CLAP_2_X				2320
+#define OPP_CLAP_2_X				620
 #define OPP_CLAP_3_X				2080
 #define CLAP_Y						0
 
@@ -379,7 +384,7 @@ struct strat_infos {
 extern struct strat_infos strat_infos;
 
 /* get zone struct index */
-extern char numzone2name[ZONES_MAX + 1][3];
+extern char *numzone2name[ZONES_MAX + 1];
 
 /* points we get from each zone */
 extern uint8_t strat_zones_points[ZONES_MAX];
