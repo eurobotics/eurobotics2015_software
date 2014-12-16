@@ -67,7 +67,6 @@
 #include "bt_protocol.h"
 
 
-
 #define ERROUT(e) do {\
 		err = e;			 \
 		goto end;		 \
@@ -246,11 +245,10 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 			strat_goto_mobile_torch (zone_num);
 		}
 		else {
-		#endif
 			if(strat_infos.zones[zone_num].robot==MAIN_ROBOT)
 				err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),  strat_infos.zones[zone_num].init_y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-		//}	
-	//}
+		}	
+	}
 	
 	if (!TRAJ_SUCCESS(err))
 			ERROUT(err);
@@ -264,7 +262,7 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 	else{
 		strat_infos.current_zone=zone_num;
 	}
-	
+	#endif
 end:
     /* TODO XXX if error put arm in safe position */
 	return err;
@@ -275,50 +273,131 @@ end:
 uint8_t strat_work_on_zone(uint8_t zone_num)
 {
 	uint8_t err = END_TRAJ;
-	uint16_t temp_spdd, temp_spda;
 	
+	#if 0
 #ifdef HOST_VERSION
-	printf_P(PSTR("strat_work_on_zone %d %s: press a key\r\n"),zone_num,numzone2name[zone_num]);
-	while(!cmdline_keypressed());
+	//printf_P(PSTR("strat_work_on_zone %d %s: press a key\r\n"),zone_num,numzone2name[zone_num]);
+	//while(!cmdline_keypressed());
 #endif
 
+    /* XXX if before the tree harvesting was interrupted by opponent */    
+    if (strat_infos.tree_harvesting_interrumped) {
+        strat_infos.tree_harvesting_interrumped = 0;
+        i2c_slavedspic_wait_ready();
+        i2c_slavedspic_mode_harvest_fruits (I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_END);
+    }
     
 	/* Secondary robot */
 	if(strat_infos.zones[zone_num].robot==SEC_ROBOT)
 	{
-	}
-	
-	/* Main robot */
-	/*XXX TEST*/
-	else
-	{
-	    if(strat_infos.zones[zone_num].type!=ZONE_TYPE_STAND && strat_infos.zones[zone_num].type!=ZONE_TYPE_POPCORNCUP)
-		{
-			/* turn to wall */
-			trajectory_turnto_xy (&mainboard.traj, strat_infos.zones[zone_num].x, strat_infos.zones[zone_num].y);
-			err = wait_traj_end (TRAJ_FLAGS_SMALL_DIST);
-			if (!TRAJ_SUCCESS(err))
-				ERROUT(err);
-				
-			/* go forward until blocking */
-			strat_get_speed (&temp_spdd, &temp_spda);
-			strat_set_speed (500, temp_spda);
-			strat_calib(1000, TRAJ_FLAGS_SMALL_DIST);
-			strat_set_speed( temp_spdd, temp_spda);
-			/*XXX*/
+		if(strat_infos.zones[zone_num].type==ZONE_TYPE_FRESCO)
+			bt_robot_2nd_bt_fresco();
 			
-			/* If in home, get out of it before continuing */
-			if(strat_infos.zones[zone_num].type==ZONE_TYPE_HOME)
+		else if(strat_infos.zones[zone_num].type==ZONE_TYPE_MAMOOTH)
+			bt_robot_2nd_bt_task_mamooth(6,0);
+		
+		if(strat_infos.zones[zone_num].type==ZONE_TYPE_HEART)
+		{
+			if(zone_num==ZONE_HEART_1)
 			{
-				trajectory_d_rel(&mainboard.traj, -500);
-				err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-				if (!TRAJ_SUCCESS(err))
-				   ERROUT(err);
+				bt_robot_2nd_bt_protect_h(1);
+				strat_infos.zones[ZONE_HEART_1].prio=ZONE_PRIO_0;
+			}
+			else if(zone_num==ZONE_HEART_3)
+			{
+				bt_robot_2nd_bt_protect_h(3);
+				strat_infos.zones[ZONE_HEART_3].prio=ZONE_PRIO_0;
+			}
+				
+			else if(zone_num==ZONE_HEART_2_DOWN || zone_num==ZONE_HEART_2_UP || zone_num==ZONE_HEART_2_RIGHT || zone_num==ZONE_HEART_2_LEFT)
+			{
+			/* TODO : remove fires from opponent. At the moment only protect ours */
 			}
 		}
 	}
 	
-	end:
+	else
+	{
+		switch(zone_num)
+		{
+			case ZONE_TREE_1:
+			case ZONE_TREE_2:
+				err = strat_harvest_fruits (COLOR_X (strat_infos.zones[zone_num].x), strat_infos.zones[zone_num].y, 1);
+				if(TRAJ_SUCCESS(err))
+				{
+					strat_infos.harvested_trees++;
+					strat_infos.zones[ZONE_BASKET_2].prio+=PRIO_BASKET_AFTER_ONE_TREE;
+				}
+				break;
+
+			case ZONE_TREE_3:
+			case ZONE_TREE_4:
+				err = strat_harvest_fruits (COLOR_X (strat_infos.zones[zone_num].x), strat_infos.zones[zone_num].y, 1);
+				if(TRAJ_SUCCESS(err))
+				{
+					strat_infos.harvested_trees++;
+					strat_infos.zones[ZONE_BASKET_2].prio+=PRIO_BASKET_AFTER_ONE_TREE;
+				}
+				break;
+				
+			case ZONE_FIRE_1:
+			case ZONE_FIRE_2:
+			case ZONE_FIRE_3:
+			case ZONE_FIRE_4:
+			case ZONE_FIRE_5:
+			case ZONE_FIRE_6:
+			err = strat_harvest_orphan_fire (zone_num);
+				break;
+
+			case ZONE_TORCH_3:
+			err = strat_harvest_orphan_fire (zone_num);
+				break;
+				
+			case ZONE_TORCH_1:
+			case ZONE_TORCH_2:
+			case ZONE_TORCH_4:
+				err = strat_harvest_torch (zone_num);
+				break;
+				
+			case ZONE_HEART_1:
+			case ZONE_HEART_3:
+				err = strat_make_puzzle_on_heart (zone_num);
+				if(TRAJ_SUCCESS(err))
+				{
+					//strat_infos.zones[zone_num].prio=PRIO_HEART_AFTER_PUZZLE;
+					strat_infos.zones[zone_num].robot=SEC_ROBOT;
+				}
+				break;
+
+			case ZONE_HEART_2_UP:
+			case ZONE_HEART_2_LEFT:
+			case ZONE_HEART_2_DOWN:
+			case ZONE_HEART_2_RIGHT:
+				/* wipe by main or by sec  */
+				break;
+				
+			case ZONE_M_TORCH_1:
+			case ZONE_M_TORCH_2:
+				err = strat_pickup_mobile_torch_top(zone_num);
+				err = strat_pickup_mobile_torch_mid(zone_num);
+				err = strat_pickup_mobile_torch_bot(zone_num);
+				break;
+				
+			case ZONE_BASKET_1:
+			case ZONE_BASKET_2:
+				err = goto_basket_best_path(zone_num);
+				
+				/* update strat_infos */
+				if(TRAJ_SUCCESS(err))
+				{
+					strat_infos.harvested_trees=0;
+					strat_infos.zones[ZONE_BASKET_2].prio=ZONE_PRIO_0;
+					strat_infos.zones[ZONE_BASKET_2].flags |= ZONE_CHECKED;
+				}
+				break;
+		}
+	}
+	#endif
 	return err;
 }
 
@@ -478,15 +557,7 @@ uint8_t strat_smart(void)
 
 		err = strat_work_on_zone(zone_num);
 		if (!TRAJ_SUCCESS(err)) {
-			printf_P(PSTR("Work on zone %s fails.\r\n"), numzone2name[zone_num]);
-			
-			/* IMPORTANT: If in home, get out of it before continuing */
-			if(strat_infos.zones[zone_num].type==ZONE_TYPE_HOME)
-			{
-				do{
-					err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),  strat_infos.zones[zone_num].init_y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-				}while(!TRAJ_SUCCESS(err));
-			}
+			//printf_P(PSTR("Work on zone %s fails.\r\n"), numzone2name[zone_num]);
 		}
 		else
 		{
@@ -593,19 +664,8 @@ void strat_homologation(void)
 {
 	uint8_t err;
 	uint8_t i=0;
-	#define ZONES_SEQUENCE_LENGTH 5
-	uint8_t zones_sequence[ZONES_SEQUENCE_LENGTH]={ZONE_MY_STAND_1,ZONE_MY_STAND_3,ZONE_MY_POPCORNMAC_2,ZONE_MY_LIGHTBULB_PLATFORM,ZONE_MY_HOME};
-	
-	strat_infos.zones[ZONE_MY_STAND_1].init_x=300;
-	strat_infos.zones[ZONE_MY_STAND_1].init_y=1800;
-	strat_infos.zones[ZONE_MY_STAND_3].init_x=600;
-	strat_infos.zones[ZONE_MY_STAND_3].init_y=1800;
-	strat_infos.zones[ZONE_MY_POPCORNMAC_2].init_x=600;
-	strat_infos.zones[ZONE_MY_POPCORNMAC_2].init_y=1800;
-	strat_infos.zones[ZONE_MY_LIGHTBULB_PLATFORM].init_x=1250;
-	strat_infos.zones[ZONE_MY_LIGHTBULB_PLATFORM].init_y=200;
-	strat_infos.zones[ZONE_MY_HOME].init_x=700;
-	strat_infos.zones[ZONE_MY_HOME].init_y=1000;
+	#define ZONES_SEQUENCE_LENGTH 6
+	uint8_t zones_sequence[ZONES_SEQUENCE_LENGTH];
 	
 	/* Secondary robot */
 	//
@@ -617,7 +677,7 @@ void strat_homologation(void)
 	for(i=0; i<ZONES_SEQUENCE_LENGTH; i++)
 	{
 		/* goto zone */
-		printf_P(PSTR("Going to zone %s.\r\n"),numzone2name[zones_sequence[i]]);
+		//printf_P(PSTR("Going to zone %s.\r\n"),numzone2name[zones_sequence[i]]);
 		strat_dump_infos(__FUNCTION__);
 		strat_infos.current_zone=-1;
 		strat_infos.goto_zone=i;
@@ -641,15 +701,6 @@ void strat_homologation(void)
 		err = strat_work_on_zone(zones_sequence[i]);
 		if (!TRAJ_SUCCESS(err)) {
 			printf_P(PSTR("Work on zone %s fails.\r\n"), numzone2name[zones_sequence[i]]);
-			
-			
-			/* IMPORTANT: If in home, get out of it before continuing */
-			if(strat_infos.zones[zones_sequence[i]].type==ZONE_TYPE_HOME)
-			{
-				do{
-					err = goto_and_avoid (COLOR_X(strat_infos.zones[zones_sequence[i]].init_x),  strat_infos.zones[zones_sequence[i]].init_y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-				}while(!TRAJ_SUCCESS(err));
-			}
 		}
 
 		/* mark the zone as checked */
