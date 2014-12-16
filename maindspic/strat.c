@@ -166,7 +166,7 @@ struct strat_infos strat_infos = {
   .zones[ZONE_MY_STAIRS]=        {ZONE_TYPE_STAIRS,  MY_STAIRS_X,    MY_STAIRS_Y,     	  1000,         1500,    1400,    2000,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
   .zones[ZONE_OPP_STAIRS]=        {ZONE_TYPE_STAIRS,  OPP_STAIRS_X,    OPP_STAIRS_Y,     1500,    2000,    1400,    2000,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
  
-  .zones[ZONE_MY_HOME]=        {ZONE_TYPE_HOME,  MY_HOME_X,    MY_HOME_Y,     		90,         650,    800,    1200,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+  .zones[ZONE_MY_HOME]=        {ZONE_TYPE_HOME,  MY_HOME_X,    MY_HOME_Y,     		90,         650,    800,    1200,      700,           1000,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
   .zones[ZONE_OPP_HOME]=        {ZONE_TYPE_HOME,  OPP_HOME_X,    OPP_HOME_Y,     2350,         2910,    800,    1200,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
  
    /*zones[W] =                 {type,             x,         y,         					x_down,    x_up,   y_down, y_up,  init_x,       init_y, prio,         flags,        opp_time_zone_us,	last_time_opp_here,	robot };  */
@@ -245,8 +245,11 @@ void strat_dump_conf(void)
     /* add here configuration dump */
 }
 
-
-char numzone2name[ZONES_MAX + 1][3] = {
+char *numzone2name[ZONES_MAX + 1]= {"ms1","ms2","ms3","ms4","ms5","ms6","ms7","ms8","os1","os2","os3","os4","os5","os6","os7","os8",
+"mlh","mlp","olh","olp","mm1","mm2","om1","om2","mcf","mcs","ocf","ocs","cc","mcu","mcd","ocu","ocd","ms","os","mh","oh","mb1","mb2","mb3","ob1","ob2","ob3","mw1","mw2","ow1","ow2"};
+	
+	
+/*char numzone2name[ZONES_MAX + 1][3] = {
 [ZONE_MY_STAND_1]="ms1",
 [ZONE_MY_STAND_2]="ms2",
 [ZONE_MY_STAND_3]="ms3",
@@ -295,7 +298,8 @@ char numzone2name[ZONES_MAX + 1][3] = {
 [ZONE_OPP_STAIRWAY_1]="ow1",
 [ZONE_OPP_STAIRWAY_2]="ow2",
 [ZONES_MAX] = "nll",
-};
+};*/
+
 
 /* display current information about the state of the game */
 void strat_dump_infos(const char *caller)
