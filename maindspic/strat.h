@@ -379,7 +379,7 @@ struct strat_infos {
 extern struct strat_infos strat_infos;
 
 /* get zone struct index */
-extern char *numzone2name[ZONES_MAX + 1];
+extern char numzone2name[ZONES_MAX + 1][3];
 
 /* points we get from each zone */
 extern uint8_t strat_zones_points[ZONES_MAX];
