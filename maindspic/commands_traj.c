@@ -1345,7 +1345,7 @@ parse_pgm_inst_t cmd_subtraj2 = {
 
 
 
-
+#if 0
 /**********************************************************/
 /* Goto zone */
 
@@ -1385,7 +1385,7 @@ static void cmd_gotozone_parsed(void *parsed_result, void *data)
 
 prog_char str_gotozone_arg0[] = "goto_zone";
 parse_pgm_token_string_t cmd_gotozone_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_gotozone_result, arg0, str_gotozone_arg0);
-prog_char str_gotozone_arg1[] = "ms1#ms2#ms3#ms4#ms5#ms6#ms7#ms8#os1#os2#os3#os4#os5#os6#os7#os8#mlh#mlp#olh#olp#mm1#mm2#mm1#mm2#mcf#mcs#ocf#ocs#cc#mcu#mcd#ocu#ocd#ms#os#mh#oh#mb1#mb2#mb3#ob1#ob2#ob3#mw1#mw2#ow1#ow2#nll";
+prog_char str_gotozone_arg1[] = "t1#t2#t3#t4#h1#h2#h3#f1#f1#f3#f4#f5#f6#tr1#tr2#tr3#tr4#mt1#mt2#b1#b2#m1#m2#fco#rd#yll";
 parse_pgm_token_string_t cmd_gotozone_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_gotozone_result, arg1, str_gotozone_arg1);
 
 
@@ -1441,7 +1441,7 @@ static void cmd_workonzone_parsed(void *parsed_result, void *data)
 
 prog_char str_workonzone_arg0[] = "workon_zone";
 parse_pgm_token_string_t cmd_workonzone_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_workonzone_result, arg0, str_workonzone_arg0);
-prog_char str_workonzone_arg1[] = "ms1#ms2#ms3#ms4#ms5#ms6#ms7#ms8#os1#os2#os3#os4#os5#os6#os7#os8#mlh#mlp#olh#olp#mm1#mm2#mm1#mm2#mcf#mcs#ocf#ocs#cc#mcu#mcd#ocu#ocd#ms#os#mh#oh#mb1#mb2#mb3#ob1#ob2#ob3#mw1#mw2#ow1#ow2#nll";
+//prog_char str_workonzone_arg1[] = "t1#t2#t3#t4#h1#h2#h3#f1#f1#f3#f4#f5#f6#to1#to2#to3#to4#mt1#mt2#b1#b2#m1#m2#fco#red#yellow";
 parse_pgm_token_string_t cmd_workonzone_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_workonzone_result, arg1, str_gotozone_arg1);
 
 
@@ -1457,4 +1457,5 @@ parse_pgm_inst_t cmd_workonzone = {
         NULL,
     },
 };
+#endif
 
