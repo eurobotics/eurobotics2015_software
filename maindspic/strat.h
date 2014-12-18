@@ -354,6 +354,7 @@ typedef struct {
 struct strat_infos {
 	uint8_t dump_enabled;
 	uint8_t debug_step;
+	uint8_t current_sec_strategy;
 	struct bbox area_bbox;
 
     /* strat configuration */
@@ -451,7 +452,12 @@ void recalculate_priorities(void);
 
 /* tracking of zones where opp has been working */
 void strat_opp_tracking (void);
+/* Sets of  strategies for secondary robot*/
 
+void set_strat_sec_1(void);
+void set_strat_sec_2(void);
+void set_strat_sec_3(void);
+void set_next_sec_strategy(void);
 /* homologation */
 void strat_homologation(void);
 
