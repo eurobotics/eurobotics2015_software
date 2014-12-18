@@ -324,7 +324,6 @@ void strat_reset_infos(void)
 {
     /* bounding box */
     strat_set_bounding_box(mainboard.our_color);
-
     strat_infos.current_zone = ZONES_MAX;
     strat_infos.goto_zone = ZONES_MAX;
     strat_infos.last_zone = ZONES_MAX;
@@ -442,6 +441,8 @@ uint8_t strat_main(void)
     //strat_limit_speed_enable ();
 	
     /* auto-play  */
+	set_strat_sec_1();
+	strat_infos.current_sec_strategy = 1;
     printf_P(PSTR("\r\n\r\nStrat smart\r\n"));
     do{
         err = strat_smart();

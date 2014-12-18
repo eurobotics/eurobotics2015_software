@@ -99,19 +99,7 @@ int8_t strat_is_valid_zone(uint8_t zone_num)
 
 	/* discard if opp is in zone */
 	if(opponents_are_in_area(COLOR_X(strat_infos.zones[zone_num].x_up), strat_infos.zones[zone_num].y_up,
-								  COLOR_X(strat_infos.zones[zone_num].x_down),	strat_infos.zones[zone_num].y_down)) {
-		if(zone_num == ZONE_MY_CLAP_3 && (strat_infos.zones[ZONE_MY_CINEMA_UP].flags != ZONE_CHECKED)){
-			//Special case if there is an opp on ZONE_MY_CLAP_3. Increasing ZONE_MY_CINEMA_UP priority
-			strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 100;
-			return ZONE_MY_CINEMA_UP;
-		}
-		if(zone_num == ZONE_MY_CINEMA_UP && (strat_infos.zones[ZONE_MY_CINEMA_DOWN].flags != ZONE_CHECKED)){
-		
-			//Special case if there is an opp on ZONE_MY_CLAP_3. Increasing ZONE_MY_CINEMA_UP priority
-			strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 100;
-			return ZONE_MY_CINEMA_DOWN;
-		}
-		
+								  COLOR_X(strat_infos.zones[zone_num].x_down),	strat_infos.zones[zone_num].y_down)) {		
 		return -1;
 	}
 
@@ -124,6 +112,44 @@ int8_t strat_is_valid_zone(uint8_t zone_num)
 		
 	return zone_num;
 }
+void set_next_sec_strategy(){
+	strat_infos.current_sec_strategy++;
+	state_debug_wait_key_pressed();
+	switch(strat_infos.current_sec_strategy){
+		case 1:
+			set_strat_sec_1();
+			break;
+		case 2:
+			set_strat_sec_2();
+			break;
+		case 3:
+			set_strat_sec_3();
+			strat_infos.current_sec_strategy=0;
+			break;
+		default:
+			break;
+	}
+	
+}
+void set_strat_sec_1(void){
+	printf_P(PSTR("strat_sec_1"));
+	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 90;
+	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 80;
+	strat_infos.zones[ZONE_MY_CLAP_3].prio = 100;
+}
+void set_strat_sec_2(void){
+	printf_P(PSTR("strat_sec_2"));
+	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 80;
+	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 100;
+	strat_infos.zones[ZONE_MY_CLAP_3].prio = 90;
+}
+void set_strat_sec_3(void){
+
+	printf_P(PSTR("strat_sec_3"));
+	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 100;
+	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 80;
+	strat_infos.zones[ZONE_MY_CLAP_3].prio = 90;
+}
 
 /* return new work zone, -1 if any zone is found */
 int8_t strat_get_new_zone(void)
@@ -134,32 +160,29 @@ int8_t strat_get_new_zone(void)
 	/* evaluate zones */
 	for(i=0; i < ZONES_MAX; i++) 
 	{
-		printf_P("1-i :%d\n",i);
-		/* check if is a valid zone */
-		valid_zone = strat_is_valid_zone(i);
-		switch(valid_zone){
-			case -1:
-				continue;
-				break;
-			default:
-			
-				i = valid_zone;
-				
-				printf_P("2-i :%d\n",i);
-				if(strat_infos.zones[i].prio == 100){
-					return i;
-				}
-				break;
-			}
 		/* compare current priority */
-		if(strat_infos.zones[i].prio >= prio_max) {
-			prio_max = strat_infos.zones[i].prio;
-			zone_num = i;
-			printf_P("3-i :%d\n",i);
+		if(strat_infos.zones[i].prio >= prio_max && (strat_infos.zones[i].flags != ZONE_CHECKED)) {
+			/* check if is a valid zone */
+			valid_zone = strat_is_valid_zone(i);
+			switch(valid_zone){
+				case -1:
+					//strategy has to change
+					set_next_sec_strategy();
+					i=0;
+					continue;
+					break;
+				default:
+					prio_max = strat_infos.zones[i].prio;
+					zone_num = valid_zone;
+					break;
+			}
 		}
 
 	}
-
+	if(zone_num == -1){
+		printf_P(PSTR("No more zones available\r\n"));
+		state_debug_wait_key_pressed();
+	}
 	return zone_num;
 }
 
@@ -187,21 +210,27 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 												
 		bt_robot_2nd_wait_end();
 		
-		strat_infos.zones[zone_num].prio = 0;
-		strat_infos.zones[zone_num].flags= ZONE_CHECKED;
 	}else{
-		err = goto_and_avoid_forward (COLOR_X(strat_infos.zones[zone_num].init_x), 
+		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x), 
 											strat_infos.zones[zone_num].init_y,  
 											TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 		
 	}
-	if (!TRAJ_SUCCESS(err))
+	//this has to be temporally
+	printf_P(PSTR("Working on zone\r\n"));
+	strat_infos.zones[zone_num].prio = ZONE_PRIO_0;
+	strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
+	if (!TRAJ_SUCCESS(err)){
+		printf_P(PSTR("1.\r\n"));
 			ERROUT(err);
+			}
 	
 	/* update strat_infos */
 	strat_infos.last_zone=strat_infos.current_zone;
 	strat_infos.goto_zone=-1;
+	
 	if (!TRAJ_SUCCESS(err)) {
+		printf_P(PSTR("2.\r\n"));
 		strat_infos.current_zone=-1;
 	}
 	else{
@@ -218,7 +247,10 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 {
 	uint8_t err = END_TRAJ;
 	
+		printf_P(PSTR("Working on zone\r\n"));
 		strat_infos.zones[zone_num].prio = ZONE_PRIO_0;
+		strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
+		
 	#if 0
 #ifdef HOST_VERSION
 	//printf_P(PSTR("strat_work_on_zone %d %s: press a key\r\n"),zone_num,numzone2name[zone_num]);
@@ -481,10 +513,7 @@ uint8_t strat_smart(void)
 	if(zone_num == -1) {
 		//printf_P(PSTR("No zone is found\r\n"));
 		return END_TRAJ;
-	}
-
-	else
-	{
+	}else{
 		/* goto zone */
 		//printf_P(PSTR("Going to zone %s.\r\n"),numzone2name[zone_num]);
 		strat_infos.goto_zone = zone_num;
@@ -494,10 +523,13 @@ uint8_t strat_smart(void)
 		
 		if (!TRAJ_SUCCESS(err)) {
 			//printf_P(PSTR("Can't reach zone %d.\r\n"), zone_num);
+			
+			printf_P(PSTR("err\r\n"));
 			return END_TRAJ;
 		}
 		
-		/* work on zone 
+		printf_P(PSTR("strat_work_on_zone\r\n"));
+		/* work on zone */
 		strat_infos.last_zone = strat_infos.current_zone;
 		strat_infos.current_zone = strat_infos.goto_zone;
 		strat_dump_infos(__FUNCTION__);
@@ -512,7 +544,7 @@ uint8_t strat_smart(void)
 		}
 
 		// mark the zone as checked 
-		strat_infos.zones[zone_num].flags |= ZONE_CHECKED;*/
+		strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
 
 		return END_TRAJ;
 	}
