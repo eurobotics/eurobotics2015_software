@@ -167,8 +167,8 @@ struct strat_infos strat_infos = {
 	.zones[ZONE_MY_CINEMA_UP]=		{ZONE_TYPE_CINEMA,  MY_CINEMA_UP_X,    MY_CINEMA_UP_Y,	  2600,        3000,    1200,    1600,	2350,    MY_CINEMA_UP_Y,                    40,     0,            0,					(9000*1000L),					SEC_ROBOT},
 	.zones[ZONE_MY_CINEMA_DOWN]= 	{ZONE_TYPE_CINEMA,  MY_CINEMA_DOWN_X,  MY_CINEMA_DOWN_Y,     2600,         3000,    400,    800,2350,  MY_CINEMA_DOWN_Y,                    40,     0,            0,					(9000*1000L),					SEC_ROBOT},
 
-  .zones[ZONE_MY_STAIRS]=        {ZONE_TYPE_STAIRS,  MY_STAIRS_X,    MY_STAIRS_Y,     	  1000,         1500,    1400,    2000,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-  .zones[ZONE_OPP_STAIRS]=        {ZONE_TYPE_STAIRS,  OPP_STAIRS_X,    OPP_STAIRS_Y,     1500,    2000,    1400,    2000,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+  .zones[ZONE_MY_STAIRS]=        {ZONE_TYPE_STAIRS,  MY_STAIRS_X,    MY_STAIRS_Y,     	  1000,         1500,    1400,    2000,		MY_STAIRS_X,	1200,                    40,     0,            0,					(9000*1000L),					SEC_ROBOT},
+  .zones[ZONE_OPP_STAIRS]=        {ZONE_TYPE_STAIRS,  OPP_STAIRS_X,    OPP_STAIRS_Y,     1500,    2000,    1400,    2000,			OPP_STAIRS_X,	1200,                    40,     0,            0,					(9000*1000L),					SEC_ROBOT},
  
   .zones[ZONE_MY_HOME]=        {ZONE_TYPE_HOME,  MY_HOME_X,    MY_HOME_Y,     		90,         650,    800,    1200,	650,	MY_HOME_Y,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
   .zones[ZONE_OPP_HOME]=        {ZONE_TYPE_HOME,  OPP_HOME_X,    OPP_HOME_Y,     2350,         2910,    800,    1200,	2350,	OPP_HOME_Y,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
