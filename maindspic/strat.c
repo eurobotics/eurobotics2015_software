@@ -124,14 +124,14 @@ struct strat_infos strat_infos = {
 	/* TODO: init points (depends on strategy) */
 	
    /*zones[W] =                 {type,            x,            y,            x_down,   x_up,  y_down,    y_up,      init_x,                 init_y,                       prio,             flags,        opp_time_zone_us,	last_time_opp_here,	robot };                            */
-    .zones[ZONE_MY_STAND_1]=        {ZONE_TYPE_STAND,  MY_STAND_1_X,     MY_STAND_1_Y,     0,         300,    1750,    1950,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_MY_STAND_2]=        {ZONE_TYPE_STAND,  MY_STAND_2_X,     MY_STAND_2_Y,     700,     1000,    1700,    2000,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_MY_STAND_3]=        {ZONE_TYPE_STAND,  MY_STAND_3_X,     MY_STAND_3_Y,     700,     1000,    1750,    1950,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_MY_STAND_4]=        {ZONE_TYPE_STAND,  MY_STAND_4_X,     MY_STAND_4_Y,     720,      1020,    495,    795,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_MY_STAND_5]=        {ZONE_TYPE_STAND,  MY_STAND_5_X,     MY_STAND_5_Y,     1150,    1450,    455,    755,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_MY_STAND_6]=        {ZONE_TYPE_STAND,  MY_STAND_6_X,     MY_STAND_6_Y,     950,      1250,    80,    380,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_MY_STAND_7]=        {ZONE_TYPE_STAND,  MY_STAND_7_X,     MY_STAND_7_Y,     0,         300,       0,    300,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_MY_STAND_8]=        {ZONE_TYPE_STAND,  MY_STAND_8_X,     MY_STAND_8_Y,     0,         300,       100,    400,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_MY_STAND_1]=        {ZONE_TYPE_STAND,  MY_STAND_1_X,     MY_STAND_1_Y,     0,         300,    1750,    1950,	MY_STAND_1_X+300,	LIMIT_BBOX_Y_DOWN,	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_MY_STAND_2]=        {ZONE_TYPE_STAND,  MY_STAND_2_X,     MY_STAND_2_Y,     700,     1000,    1700,    2000,		MY_STAND_2_X+300,	LIMIT_BBOX_Y_DOWN,	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_MY_STAND_3]=        {ZONE_TYPE_STAND,  MY_STAND_3_X,     MY_STAND_3_Y,     700,     1000,    1750,    1950, 	MY_STAND_3_X,	MY_STAND_3_Y,	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_MY_STAND_4]=        {ZONE_TYPE_STAND,  MY_STAND_4_X,     MY_STAND_4_Y,     720,      1020,    495,    795,		MY_STAND_4_X-300,	MY_STAND_4_Y,	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_MY_STAND_5]=        {ZONE_TYPE_STAND,  MY_STAND_5_X,     MY_STAND_5_Y,     1150,    1450,    455,    755,		MY_STAND_5_X-300,	MY_STAND_5_Y,	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_MY_STAND_6]=        {ZONE_TYPE_STAND,  MY_STAND_6_X,     MY_STAND_6_Y,     950,      1250,    80,    380,		MY_STAND_4_X-300,	MY_STAND_4_Y,	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_MY_STAND_7]=        {ZONE_TYPE_STAND,  MY_STAND_7_X,     MY_STAND_7_Y,     0,         300,       0,    300,		MY_STAND_7_X,		MY_STAND_7_Y-200,	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_MY_STAND_8]=        {ZONE_TYPE_STAND,  MY_STAND_8_X,     MY_STAND_8_Y,     0,         300,       100,    400,	MY_STAND_8_X-300,	MY_STAND_8_Y,	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
 
     .zones[ZONE_OPP_STAND_1]=        {ZONE_TYPE_STAND,  OPP_STAND_1_X,     OPP_STAND_1_Y,     2700,        3000,    1750,    1950,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
     .zones[ZONE_OPP_STAND_2]=        {ZONE_TYPE_STAND,  OPP_STAND_2_X,     OPP_STAND_2_Y,     2000,        2300,    1700,    2000,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
@@ -161,7 +161,7 @@ struct strat_infos strat_infos = {
 	.zones[ZONE_OPP_POPCORNCUP_SIDE]=        {ZONE_TYPE_POPCORNCUP,  OPP_POPCORNCUP_SIDE_X,     OPP_POPCORNCUP_SIDE_Y,     		2600,       2900,    100,    400,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
 	.zones[ZONE_POPCORNCUP_CENTRE]=        {ZONE_TYPE_POPCORNCUP,  POPCORNCUP_CENTRE_X,     POPCORNCUP_CENTRE_Y,     		1350,       1650,    200,    500,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
 	
-   /*zones[W] =                 	{type, 				 x,         					y,	x_down,    x_up,   y_down,		 y_up,  init_x,       init_y, prio,         flags,        opp_time_zone_us,	last_time_opp_here,	robot };  */
+   /*zones[W] =                 	{type, 				 x,         					y,	x_down,    x_up,   y_down,		 y_up,  init_x,       init_y, prio,         flags,        opp_time_zone_us	,	last_time_opp_here,	robot };  */
 	.zones[ZONE_OPP_CINEMA_UP]=		{ZONE_TYPE_CINEMA,  OPP_CINEMA_UP_X,    OPP_CINEMA_UP_Y,	 0,         400,    1200,    1600,	650,	 OPP_CINEMA_UP_Y,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
 	.zones[ZONE_OPP_CINEMA_DOWN]=	{ZONE_TYPE_CINEMA,  OPP_CINEMA_DOWN_X,   OPP_CINEMA_DOWN_Y,	 0,         400,    400,    800,	650,            OPP_CINEMA_DOWN_Y,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
 	.zones[ZONE_MY_CINEMA_UP]=		{ZONE_TYPE_CINEMA,  MY_CINEMA_UP_X,    MY_CINEMA_UP_Y,	  2600,        3000,    1200,    1600,	2350,    MY_CINEMA_UP_Y,                    40,     0,            0,					(9000*1000L),					SEC_ROBOT},
