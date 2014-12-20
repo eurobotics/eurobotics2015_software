@@ -152,6 +152,7 @@ void set_strat_sec_3(void){
 	strat_infos.zones[ZONE_MY_STAIRS].prio = 70;
 }
 
+
 /* return new work zone, -1 if any zone is found */
 int8_t strat_get_new_zone(void)
 {
@@ -206,17 +207,23 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 	/* Secondary robot */
 	if(strat_infos.zones[zone_num].robot==SEC_ROBOT)
 	{
-		bt_robot_2nd_goto_and_avoid(COLOR_X(strat_infos.zones[zone_num].init_x), 
+		/*bt_robot_2nd_goto_and_avoid(COLOR_X(strat_infos.zones[zone_num].init_x), 
 												strat_infos.zones[zone_num].init_y);
 												
-		bt_robot_2nd_wait_end();
-		err = END_TRAJ;
+		err = bt_robot_2nd_wait_end();*/
+		//Temporally 2scondary robot is not ready to test.
+		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x), 
+										strat_infos.zones[zone_num].init_y,  
+										TRAJ_FLAGS_STD, TRAJ_FLAGS_STD);
 		
 	}else{
 		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x), 
-											strat_infos.zones[zone_num].init_y,  
-											TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+										strat_infos.zones[zone_num].init_y,  
+										TRAJ_FLAGS_STD, TRAJ_FLAGS_STD);
 		
+		if(ZONE_MY_STAND_1 ==zone_num){
+			trajectory_a_abs (&mainboard.traj, COLOR_A_ABS(0));
+		}
 	}
 	
 	/* update strat_infos */
