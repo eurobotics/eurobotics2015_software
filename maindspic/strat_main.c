@@ -221,9 +221,7 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 										strat_infos.zones[zone_num].init_y,  
 										TRAJ_FLAGS_STD, TRAJ_FLAGS_STD);
 		
-		if(ZONE_MY_STAND_1 ==zone_num){
-			trajectory_a_abs (&mainboard.traj, COLOR_A_ABS(0));
-		}
+
 	}
 	
 	/* update strat_infos */
