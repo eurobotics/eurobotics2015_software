@@ -56,7 +56,7 @@
 #define MY_STAND_7_X			90
 #define MY_STAND_7_Y			2000-1850
 #define MY_STAND_8_X			90
-#define MY_STAND_8_Y			2000-1750
+#define MY_STAND_8_Y			2000-1750	
 
 #define OPP_STAND_1_X			3000-90
 #define OPP_STAND_1_Y			2000-200
@@ -212,54 +212,26 @@
 #endif
 
 /* zones */
-#define ZONE_MY_STAND_1			0
-#define ZONE_MY_STAND_2			1
-#define ZONE_MY_STAND_3			2
-#define ZONE_MY_STAND_4			3
-#define ZONE_MY_STAND_5			4
-#define ZONE_MY_STAND_6			5
-#define ZONE_MY_STAND_7			6
-#define ZONE_MY_STAND_8			7
-#define ZONE_OPP_STAND_1			8
-#define ZONE_OPP_STAND_2			9
-#define ZONE_OPP_STAND_3			10
-#define ZONE_OPP_STAND_4			11
-#define ZONE_OPP_STAND_5			12
-#define ZONE_OPP_STAND_6			13
-#define ZONE_OPP_STAND_7			14
-#define ZONE_OPP_STAND_8			15
-#define ZONE_MY_LIGHTBULB_HOME					16
-#define ZONE_MY_LIGHTBULB_PLATFORM			17
-#define ZONE_OPP_LIGHTBULB_HOME				18
-#define ZONE_OPP_LIGHTBULB_PLATFORM		19
-#define ZONE_MY_POPCORNMAC_1				20
-#define ZONE_MY_POPCORNMAC_2				21
-#define ZONE_OPP_POPCORNMAC_1				22
-#define ZONE_OPP_POPCORNMAC_2				23
-#define ZONE_MY_POPCORNCUP_FRONT				24
-#define ZONE_MY_POPCORNCUP_SIDE				25
-#define ZONE_OPP_POPCORNCUP_FRONT				26
-#define ZONE_OPP_POPCORNCUP_SIDE				    27
-#define ZONE_POPCORNCUP_CENTRE				28
-#define ZONE_MY_CINEMA_UP						29
-#define ZONE_MY_CINEMA_DOWN					30
-#define ZONE_OPP_CINEMA_UP						31
-#define ZONE_OPP_CINEMA_DOWN				32
-#define ZONE_MY_STAIRS						33
-#define ZONE_OPP_STAIRS					34
-#define ZONE_MY_HOME				35
-#define ZONE_OPP_HOME				36
-#define ZONE_MY_CLAP_1				37
-#define ZONE_MY_CLAP_2				38
-#define ZONE_MY_CLAP_3				39
-#define ZONE_OPP_CLAP_1				40
-#define ZONE_OPP_CLAP_2				41
-#define ZONE_OPP_CLAP_3				42
-#define ZONE_MY_STAIRWAY_1			43
-#define ZONE_MY_STAIRWAY_2			44
-#define ZONE_OPP_STAIRWAY_1			45
-#define ZONE_OPP_STAIRWAY_2			46
-#define ZONES_MAX		    			47
+#define ZONE_MY_STAND_GROUP_1			0
+#define ZONE_MY_STAND_GROUP_2			1
+#define ZONE_MY_STAND_GROUP_3			2
+#define ZONE_MY_STAND_GROUP_4			3
+#define ZONE_MY_POPCORNMAC				4
+#define ZONE_OPP_POPCORNMAC				5
+#define ZONE_POPCORNCUP_1				6
+#define ZONE_POPCORNCUP_2				7
+#define ZONE_POPCORNCUP_3				8
+#define ZONE_POPCORNCUP_4				9
+#define ZONE_POPCORNCUP_5				10
+#define ZONE_MY_CINEMA_UP				11
+#define ZONE_MY_CINEMA_DOWN				12
+#define ZONE_MY_STAIRS					13
+#define ZONE_MY_HOME					14
+#define ZONE_MY_CLAP_1					15
+#define ZONE_MY_CLAP_2					16
+#define ZONE_MY_CLAP_3					17
+#define ZONE_MY_STAIRWAY				18
+#define ZONES_MAX		    			19
 
 
 
@@ -300,10 +272,6 @@ typedef struct {
 	#define ZONE_TYPE_CLAP							8
 	#define ZONE_TYPE_BAREA							9
 	#define ZONE_TYPE_MAX								10
-
-	/* target point */
-	int16_t x;
-	int16_t y;	
 
 	/* boundinbox */
 	int16_t x_down;
@@ -385,7 +353,7 @@ struct strat_infos {
 extern struct strat_infos strat_infos;
 
 /* get zone struct index */
-extern char *numzone2name[ZONES_MAX + 1];
+extern char numzone2name[ZONES_MAX+1][5];
 
 /* points we get from each zone */
 extern uint8_t strat_zones_points[ZONES_MAX];

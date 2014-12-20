@@ -1273,59 +1273,51 @@ struct cmd_subtraj2_result
 /* function called when cmd_subtraj2 is parsed successfully */
 static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 {
-#if 0
+
     struct cmd_subtraj2_result *res = parsed_result;
     uint8_t err = 0;
     uint8_t zone_num = ZONES_MAX;
 
-    if (!strcmp_P(res->arg1, PSTR("tree")))
-        zone_num = ZONE_TREE_1 + res->arg2 - 1;
-
-    else if (!strcmp_P(res->arg1, PSTR("fire")))
-        zone_num = ZONE_FIRE_1 + res->arg2 - 1;
-
-    else if (!strcmp_P(res->arg1, PSTR("heart"))) {
-        zone_num = ZONE_HEART_1 + res->arg2 - 1;
+    if (!strcmp_P(res->arg1, PSTR("stand"))){
+        zone_num = ZONE_MY_STAND_GROUP_1 + res->arg2 - 1;
+		printf_P(PSTR("STAND\r\n"));
 	}
+    else if (!strcmp_P(res->arg1, PSTR("clapper")))
+        zone_num = ZONE_MY_CLAP_1 + res->arg2 - 1;
+    else if (!strcmp_P(res->arg1, PSTR("cinema"))) {
+        zone_num = ZONE_MY_CINEMA_UP + res->arg2 - 1;
+	}
+    else if (!strcmp_P(res->arg1, PSTR("popcorn")))
+        zone_num = ZONE_POPCORNCUP_1 + res->arg2 - 1;
+    else if (!strcmp_P(res->arg1, PSTR("popcornmac")))
+        zone_num = ZONE_MY_POPCORNMAC + res->arg2 - 1;
+    else if (!strcmp_P(res->arg1, PSTR("home")))
+        zone_num = ZONE_MY_HOME;
+		
 
-    else if (!strcmp_P(res->arg1, PSTR("torch")))
-        zone_num = ZONE_TORCH_1 + res->arg2 - 1;
-
-    else if (!strcmp_P(res->arg1, PSTR("mtorch")))
-        zone_num = ZONE_M_TORCH_1 + res->arg2 - 1;
-
-    else if (!strcmp_P(res->arg1, PSTR("mamooth")))
-            zone_num = ZONE_MAMOOTH_1 + res->arg2 - 1;
-
-    else if (!strcmp_P(res->arg1, PSTR("basket")))
-        zone_num = ZONE_BASKET_1 + res->arg2 - 1;
-
-    else if (!strcmp_P(res->arg1, PSTR("fresco")))
-        zone_num = ZONE_FRESCO;
-
-
+	printf_P(PSTR("\r\n"));
 	printf_P(PSTR("%d %s\r\n"),zone_num,numzone2name[zone_num]);
     if (zone_num < ZONES_MAX) {
         err = strat_goto_zone(zone_num);
         printf_P(PSTR("goto returned %s\r\n"), get_err(err));    
 
-        err = strat_work_on_zone(zone_num);
-        printf_P(PSTR("work returned %s\r\n"), get_err(err));
+       // err = strat_work_on_zone(zone_num);
+        //printf_P(PSTR("work returned %s\r\n"), get_err(err));
     }
 
     trajectory_hardstop(&mainboard.traj);
- #endif
+ 
 }
 
 prog_char str_subtraj2_arg0[] = "subtraj";
 parse_pgm_token_string_t cmd_subtraj2_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj2_result, arg0, str_subtraj2_arg0);
-prog_char str_subtraj2_arg1[] = "tree#fire#heart#torch#mtorch#mamooth#basket#fresco";
+prog_char str_subtraj2_arg1[] = "stand#clapper#home#popcorn#popcornmac#cinema";
 parse_pgm_token_string_t cmd_subtraj2_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj2_result, arg1, str_subtraj2_arg1);
 parse_pgm_token_num_t cmd_subtraj2_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj2_result, arg2, UINT8);
 //parse_pgm_token_num_t cmd_subtraj2_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj2_result, arg3, INT32);
 //parse_pgm_token_num_t cmd_subtraj2_arg4 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj2_result, arg4, INT32);
 //parse_pgm_token_num_t cmd_subtraj2_arg5 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj2_result, arg5, INT32);
-
+	
 prog_char help_subtraj2[] = "Test sub-trajectories (a,b,c,d: specific params)";
 parse_pgm_inst_t cmd_subtraj2 = {
     .f = cmd_subtraj2_parsed, /* function to call */
@@ -1335,7 +1327,7 @@ parse_pgm_inst_t cmd_subtraj2 = {
     { /* token list, NULL terminated */
         (prog_void *) & cmd_subtraj2_arg0,
         (prog_void *) & cmd_subtraj2_arg1,
-		(prog_void *)&cmd_subtraj2_arg2,
+		(prog_void *) &cmd_subtraj2_arg2,
         //		(prog_void *)&cmd_subtraj2_arg3,
         //		(prog_void *)&cmd_subtraj2_arg4,
         //		(prog_void *)&cmd_subtraj2_arg5,
@@ -1345,61 +1337,6 @@ parse_pgm_inst_t cmd_subtraj2 = {
 
 
 
-
-/**********************************************************/
-/* Goto zone */
-
-// this structure is filled when cmd_gotozone is parsed successfully
-
-struct cmd_gotozone_result
-{
-    fixed_string_t arg0;
-    fixed_string_t arg1;
-};
-
-// function called when cmd_gotozone is parsed successfully
-
-static void cmd_gotozone_parsed(void *parsed_result, void *data)
-{
-    struct cmd_gotozone_result *res = parsed_result;
-    int8_t num = -1;
-    uint8_t i = 0;
-    uint8_t err = 0;
-	
-    for (i = 0; i < ZONES_MAX; i++){
-		printf_P(PSTR("zon %s\r\n"), numzone2name[i]);
-        if (strcmp(numzone2name[i], res->arg1) == 0)
-        {
-            num = i;
-            break;
-        }
-    }
-    if (num != -1)
-    {
-        err = strat_goto_zone(num);
-        printf_P(PSTR("goto_zone %s\r\n"), get_err(err));
-    }else{
-        printf("Error: can't find zone!\n\r");
-	}
-}
-
-prog_char str_gotozone_arg0[] = "goto_zone";
-parse_pgm_token_string_t cmd_gotozone_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_gotozone_result, arg0, str_gotozone_arg0);
-prog_char str_gotozone_arg1[] = "ms1#ms2#ms3#ms4#ms5#ms6#ms7#ms8#os1#os2#os3#os4#os5#os6#os7#os8#mlh#mlp#olh#olp#mm1#mm2#om1#om2#mcf#mcs#ocf#ocs#cc#mcu#mcd#ocu#ocd#ms#os#mh#oh#mb1#mb2#mb3#ob1#ob2#ob3#mw1#mw2#ow1#ow2";
-parse_pgm_token_string_t cmd_gotozone_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_gotozone_result, arg1, str_gotozone_arg1);
-
-prog_char help_gotozone[] = "Go to a zone of the field";
-parse_pgm_inst_t cmd_gotozone = {
-    .f = cmd_gotozone_parsed, // function to call
-    .data = NULL, // 2nd arg of func
-    .help_str = help_gotozone,
-    .tokens =
-    { // token list, NULL terminated
-        (prog_void *) & cmd_gotozone_arg0,
-        (prog_void *) & cmd_gotozone_arg1,
-        NULL,
-    },
-};
 #if 0
 /**********************************************************/
 /* Work on a zone */
