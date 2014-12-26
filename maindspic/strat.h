@@ -107,7 +107,7 @@
 #define MY_CINEMA_UP_X					2800
 #define MY_CINEMA_UP_Y					1400
 #define MY_CINEMA_DOWN_X				2800
-#define MY_CINEMA_DOWN_Y				600
+#define MY_CINEMA_DOWN_Y				500
 #define OPP_CINEMA_UP_X					200
 #define OPP_CINEMA_UP_Y					1400
 #define OPP_CINEMA_DOWN_X				200
@@ -273,6 +273,9 @@ typedef struct {
 	#define ZONE_TYPE_BAREA							9
 	#define ZONE_TYPE_MAX								10
 
+        /* target point */
+	int16_t x;
+	int16_t y;
 	/* boundinbox */
 	int16_t x_down;
 	int16_t x_up;

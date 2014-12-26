@@ -212,15 +212,14 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 												
 		err = bt_robot_2nd_wait_end();*/
 		//Temporally 2scondary robot is not ready to test.
-		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x), 
+		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
 										strat_infos.zones[zone_num].init_y,  
 										TRAJ_FLAGS_STD, TRAJ_FLAGS_STD);
 		
 	}else{
-		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x), 
+		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
 										strat_infos.zones[zone_num].init_y,  
 										TRAJ_FLAGS_STD, TRAJ_FLAGS_STD);
-		
 
 	}
 	
@@ -244,33 +243,81 @@ end:
 uint8_t strat_work_on_zone(uint8_t zone_num)
 {
 	uint8_t err = END_TRAJ;
-	
-	printf_P(PSTR("Working on zone\r\n"));
-	strat_infos.zones[zone_num].prio = ZONE_PRIO_0;
-	strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
-		
-	#if 0
+	uint16_t temp_spdd, temp_spda;
+
 #ifdef HOST_VERSION
-	//printf_P(PSTR("strat_work_on_zone %d %s: press a key\r\n"),zone_num,numzone2name[zone_num]);
-	//while(!cmdline_keypressed());
+	printf_P(PSTR("strat_work_on_zone %d %s: press a key\r\n"),zone_num,numzone2name[zone_num]);
+	while(!cmdline_keypressed());
 #endif
 
-    /* XXX if before the tree harvesting was interrupted by opponent */    
-    if (strat_infos.tree_harvesting_interrumped) {
-        strat_infos.tree_harvesting_interrumped = 0;
-        i2c_slavedspic_wait_ready();
-        i2c_slavedspic_mode_harvest_fruits (I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_END);
-    }
-    
+
 	/* Secondary robot */
-	if(strat_infos.zones[zone_num].robot==SEC_ROBOT){
-		
-	} else{
-	
+	if(strat_infos.zones[zone_num].robot==SEC_ROBOT)
+	{
 	}
-	#endif
+
+	/* Main robot */
+	/*XXX TEST*/
+	else
+	{
+	    if(strat_infos.zones[zone_num].type!=ZONE_TYPE_STAND && strat_infos.zones[zone_num].type!=ZONE_TYPE_POPCORNCUP)
+	    {
+                /* turn to wall */
+                trajectory_turnto_xy (&mainboard.traj, strat_infos.zones[zone_num].x, strat_infos.zones[zone_num].y);
+                err = wait_traj_end (TRAJ_FLAGS_SMALL_DIST);
+                if (!TRAJ_SUCCESS(err))
+                        ERROUT(err);
+
+                /* go forward */
+                strat_get_speed (&temp_spdd, &temp_spda);
+                strat_set_speed (500, temp_spda);
+                strat_calib(1000, TRAJ_FLAGS_SMALL_DIST);
+                strat_set_speed( temp_spdd, temp_spda);
+                /*XXX*/
+
+                /* If in home, get out of it before continuing */
+                if(strat_infos.zones[zone_num].type==ZONE_TYPE_HOME)
+                {
+                        trajectory_d_rel(&mainboard.traj, -500);
+                        err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+                        if (!TRAJ_SUCCESS(err))
+                           ERROUT(err);
+                }
+
+
+                /* clapper */
+                if(strat_infos.zones[zone_num].type==ZONE_TYPE_CLAP)
+                {        			
+                    trajectory_d_rel (&mainboard.traj, -50);
+                    err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+                    if (!TRAJ_SUCCESS(err))
+                        ERROUT(err);
+
+                    i2c_slavedspic_wait_ready();
+                    i2c_slavedspic_mode_stick (I2C_STICK_TYPE_LEFT,I2C_STICK_MODE_PUSH_TORCH_FIRE, -100);
+                    i2c_slavedspic_wait_ready();
+
+
+                    trajectory_a_rel (&mainboard.traj, -90);
+                    err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+                    if (!TRAJ_SUCCESS(err))
+                        ERROUT(err);
+
+                    trajectory_d_rel (&mainboard.traj, 200);
+                    err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+                    if (!TRAJ_SUCCESS(err))
+                        ERROUT(err);
+
+                    i2c_slavedspic_mode_stick (I2C_STICK_TYPE_LEFT,I2C_STICK_MODE_HIDE, 0);
+                    i2c_slavedspic_wait_ready();
+                }
+            }
+	}
+
+	end:
 	return err;
 }
+
 
 /* debug state machines step to step */
 void state_debug_wait_key_pressed(void)
@@ -430,7 +477,14 @@ uint8_t strat_smart(void)
 
 		err = strat_work_on_zone(zone_num);
 		if (!TRAJ_SUCCESS(err)) {
-			//printf_P(PSTR("Work on zone %s fails.\r\n"), numzone2name[zone_num]);
+		    printf_P(PSTR("Work on zone %s fails.\r\n"), numzone2name[zone_num]);
+                    /* IMPORTANT: If in home, get out of it before continuing */
+                    if(strat_infos.zones[zone_num].type==ZONE_TYPE_HOME)
+                    {
+                        do{
+                                err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),  strat_infos.zones[zone_num].init_y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+                        }while(!TRAJ_SUCCESS(err));
+                    }
 		}
 		else
 		{
@@ -537,8 +591,10 @@ void strat_homologation(void)
 {
 	uint8_t err;
 	uint8_t i=0;
-	#define ZONES_SEQUENCE_LENGTH 6
-	uint8_t zones_sequence[ZONES_SEQUENCE_LENGTH];
+        #define ZONES_SEQUENCE_LENGTH 3
+	uint8_t zones_sequence[ZONES_SEQUENCE_LENGTH]={ZONE_MY_STAND_GROUP_1,ZONE_MY_POPCORNMAC,ZONE_MY_HOME};
+
+
 	
 	/* Secondary robot */
 	//
@@ -573,7 +629,15 @@ void strat_homologation(void)
 		strat_dump_infos(__FUNCTION__);
 		err = strat_work_on_zone(zones_sequence[i]);
 		if (!TRAJ_SUCCESS(err)) {
-			printf_P(PSTR("Work on zone %s fails.\r\n"), numzone2name[zones_sequence[i]]);
+                    printf_P(PSTR("Work on zone %s fails.\r\n"), numzone2name[zones_sequence[i]]);
+
+                    /* IMPORTANT: If in home, get out of it before continuing */
+                    if(strat_infos.zones[zones_sequence[i]].type==ZONE_TYPE_HOME)
+                    {
+                        do{
+                                err = goto_and_avoid (COLOR_X(strat_infos.zones[zones_sequence[i]].init_x),  strat_infos.zones[zones_sequence[i]].init_y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+                        }while(!TRAJ_SUCCESS(err));
+                    }
 		}
 
 		/* mark the zone as checked */

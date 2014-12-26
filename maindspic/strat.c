@@ -123,35 +123,35 @@ struct strat_infos strat_infos = {
 
 	/* TODO: init points (depends on strategy) */
    /*zones[W] =                 {type,            x,            y,            x_down,   x_up,  y_down,    y_up,      init_x,                 init_y,                       prio,             flags,        opp_time_zone_us,	last_time_opp_here,	robot };                            */
-    .zones[ZONE_MY_STAND_GROUP_1]=        {ZONE_TYPE_STAND,  0,         300,    1750,    1950,	MY_STAND_1_X+300,	LIMIT_BBOX_Y_DOWN,	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_MY_STAND_GROUP_2]=        {ZONE_TYPE_STAND,	700,     1000,    1700,    2000,		MY_STAND_2_X+300,	LIMIT_BBOX_Y_DOWN,	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_MY_STAND_GROUP_3]=        {ZONE_TYPE_STAND,  700,     1000,    1750,    1950, 	MY_STAND_3_X,	MY_STAND_3_Y,	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_MY_STAND_GROUP_4]=        {ZONE_TYPE_STAND,   720,      1020,    495,    795,		MY_STAND_4_X-300,	MY_STAND_4_Y,	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_MY_STAND_GROUP_1]=        {ZONE_TYPE_STAND,MY_STAND_1_X,     MY_STAND_1_Y,  0,         300,    1750,    1950,	MY_STAND_1_X+300,	LIMIT_BBOX_Y_DOWN,	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_MY_STAND_GROUP_2]=        {ZONE_TYPE_STAND,MY_STAND_2_X,     MY_STAND_2_Y,	700,     1000,    1700,    2000,		MY_STAND_2_X+300,	LIMIT_BBOX_Y_DOWN,	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_MY_STAND_GROUP_3]=        {ZONE_TYPE_STAND,MY_STAND_3_X,     MY_STAND_3_Y,  700,     1000,    1750,    1950, 	MY_STAND_3_X,	MY_STAND_3_Y,	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_MY_STAND_GROUP_4]=        {ZONE_TYPE_STAND,MY_STAND_4_X,     MY_STAND_4_Y,   720,      1020,    495,    795,		MY_STAND_4_X-300,	MY_STAND_4_Y,	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+
+   /*zones[W] =                 {type,             x,         y, x_down,    x_up,   y_down, y_up,  init_x,       init_y, prio,         flags,        opp_time_zone_us,	last_time_opp_here,	robot };  */
+	.zones[ZONE_MY_POPCORNMAC]=        {ZONE_TYPE_POPCORNMAC, MY_POPCORNMAC_1_X,     MY_POPCORNMAC_1_Y, 	150,	750,    1700,    2000,      450, 	LIMIT_BBOX_Y_UP,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+	.zones[ZONE_OPP_POPCORNMAC]=        {ZONE_TYPE_POPCORNMAC,OPP_POPCORNMAC_1_X,    OPP_POPCORNMAC_1_Y, 2250,	2850,    1700,    2000,     2550, 	LIMIT_BBOX_Y_UP,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
 
    /*zones[W] =                 {type,             x,         y,         					x_down,    x_up,   y_down, y_up,  init_x,       init_y, prio,         flags,        opp_time_zone_us,	last_time_opp_here,	robot };  */
-	.zones[ZONE_MY_POPCORNMAC]=        {ZONE_TYPE_POPCORNMAC,  	150,         	  750,    1700,    2000,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-	.zones[ZONE_OPP_POPCORNMAC]=        {ZONE_TYPE_POPCORNMAC,   2250,         2850,    1700,    2000,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+	.zones[ZONE_POPCORNCUP_1]=        {ZONE_TYPE_POPCORNCUP,   MY_POPCORNCUP_FRONT_X,     MY_POPCORNCUP_FRONT_Y,  	 760,         1060,    1020,    1320,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+	.zones[ZONE_POPCORNCUP_2]=        {ZONE_TYPE_POPCORNCUP,  MY_POPCORNCUP_SIDE_X,     MY_POPCORNCUP_SIDE_Y, 	100,         400,    100,    400,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+	.zones[ZONE_POPCORNCUP_5]=        {ZONE_TYPE_POPCORNCUP,   OPP_POPCORNCUP_FRONT_X,     OPP_POPCORNCUP_FRONT_Y, 1940,     2240,    1020,    1320,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+	.zones[ZONE_POPCORNCUP_4]=        {ZONE_TYPE_POPCORNCUP, OPP_POPCORNCUP_SIDE_X,     OPP_POPCORNCUP_SIDE_Y,	2600,       2900,    100,    400,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+	.zones[ZONE_POPCORNCUP_3]=        {ZONE_TYPE_POPCORNCUP, POPCORNCUP_CENTRE_X,     POPCORNCUP_CENTRE_Y,  	1350,       1650,    200,    500,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
 
-   /*zones[W] =                 {type,             x,         y,         					x_down,    x_up,   y_down, y_up,  init_x,       init_y, prio,         flags,        opp_time_zone_us,	last_time_opp_here,	robot };  */
-	.zones[ZONE_POPCORNCUP_1]=        {ZONE_TYPE_POPCORNCUP,   	 760,         1060,    1020,    1320,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-	.zones[ZONE_POPCORNCUP_2]=        {ZONE_TYPE_POPCORNCUP,	100,         400,    100,    400,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-	.zones[ZONE_POPCORNCUP_5]=        {ZONE_TYPE_POPCORNCUP, 1940,     2240,    1020,    1320,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-	.zones[ZONE_POPCORNCUP_4]=        {ZONE_TYPE_POPCORNCUP,	2600,       2900,    100,    400,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-	.zones[ZONE_POPCORNCUP_3]=        {ZONE_TYPE_POPCORNCUP,	1350,       1650,    200,    500,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-	
    /*zones[W] =                 	{type, 				 x,         					y,	x_down,    x_up,   y_down,		 y_up,  init_x,       init_y, prio,         flags,        opp_time_zone_us	,	last_time_opp_here,	robot };  */
-	.zones[ZONE_MY_CINEMA_UP]=		{ZONE_TYPE_CINEMA,	 2600,        3000,    1200,    1600,	2350,    MY_CINEMA_UP_Y,                    40,     0,            0,					(9000*1000L),					SEC_ROBOT},
-	.zones[ZONE_MY_CINEMA_DOWN]= 	{ZONE_TYPE_CINEMA,	2600,         3000,    400,    800,2350,  MY_CINEMA_DOWN_Y,                    40,     0,            0,					(9000*1000L),					SEC_ROBOT},
-  .zones[ZONE_MY_STAIRS]=        {ZONE_TYPE_STAIRS, 	1000,         1500,    1400,    2000,		MY_STAIRS_X,	1200,                    40,     0,            0,					(9000*1000L),					SEC_ROBOT},
+	.zones[ZONE_MY_CINEMA_UP]=		{ZONE_TYPE_CINEMA,  MY_CINEMA_UP_X,    MY_CINEMA_UP_Y,     		 2600,        3000,    1200,    1600,	2350,    MY_CINEMA_UP_Y+50,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+	.zones[ZONE_MY_CINEMA_DOWN]= 	{ZONE_TYPE_CINEMA,  MY_CINEMA_DOWN_X,    MY_CINEMA_DOWN_Y,     		2600,         3000,    400,    800,2350,  MY_CINEMA_DOWN_Y-50,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+  .zones[ZONE_MY_STAIRS]=        {ZONE_TYPE_STAIRS,  MY_STAIRS_X,    MY_STAIRS_Y,   	1000,         1500,    1400,    2000,		MY_STAIRS_X,	1200,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
 
-  .zones[ZONE_MY_HOME]=        {ZONE_TYPE_HOME,	90,         650,    800,    1200,	650,	MY_HOME_Y,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+  .zones[ZONE_MY_HOME]=        {ZONE_TYPE_HOME,  MY_HOME_X,    MY_HOME_Y, 	90,         650,    800,    1200,	650,	MY_HOME_Y,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
 
    /*zones[W] =                 {type,             x,        			y,        x_down,    x_up,   y_down, y_up,  init_x,       init_y, prio,         flags,        opp_time_zone_us,	last_time_opp_here,	robot };  */
-	.zones[ZONE_MY_CLAP_1]=		{ZONE_TYPE_CLAP,	180,	480,	0,	300,	MY_CLAP_1_X,	LIMIT_BBOX_Y_DOWN, 	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-	.zones[ZONE_MY_CLAP_2]=		{ZONE_TYPE_CLAP,	780,	1080,	0,	300,	MY_CLAP_2_X,    LIMIT_BBOX_Y_DOWN,	40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_MY_CLAP_3]=		{ZONE_TYPE_CLAP,	2230,	2530,	0,	300,	MY_CLAP_3_X,    LIMIT_BBOX_Y_DOWN,	70,     0,            0,					(9000*1000L),					SEC_ROBOT},
-
-   .zones[ZONE_MY_STAIRWAY]=     {ZONE_TYPE_STAIRWAY,	1000,         1500,    1400,    2000,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+   .zones[ZONE_MY_CLAP_1]=        {ZONE_TYPE_CLAP,  MY_CLAP_1_X,    CLAP_Y,     	180,      480,    0,    300, 	MY_CLAP_1_X,	LIMIT_BBOX_Y_DOWN,                   40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_MY_CLAP_2]=        {ZONE_TYPE_CLAP,  MY_CLAP_2_X,     CLAP_Y,    	780,        1080,    0,    300, MY_CLAP_2_X,	LIMIT_BBOX_Y_DOWN,               40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+    .zones[ZONE_MY_CLAP_3]=        {ZONE_TYPE_CLAP,  MY_CLAP_3_X,     CLAP_Y,    	 2230,    2530,    0,    300,   MY_CLAP_3_X,	LIMIT_BBOX_Y_DOWN,       40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+  
+   .zones[ZONE_MY_STAIRWAY]=     {ZONE_TYPE_STAIRWAY, MY_STAIRS_X,    MY_STAIRS_Y,  	1000,         1500,    1400,    2000,      0,            0,                    40,     0,            0,					(9000*1000L),					MAIN_ROBOT},
    
 	};
 
