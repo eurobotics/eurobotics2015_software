@@ -1207,7 +1207,7 @@ struct cmd_subtraj1_result
 {
     fixed_string_t arg0;
     fixed_string_t arg1;
-    //int32_t arg2;
+    int32_t arg2;
     //int32_t arg3;
 };
 
@@ -1226,6 +1226,11 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
         //err = strat_begin_alcabot();
     }
     else if (strcmp_P(res->arg1, PSTR("strat_smart")) == 0) {
+		if(res->arg2==1){
+			set_strat_sec_1();
+		}
+		
+	
         strat_smart();
     }
 
@@ -1237,7 +1242,7 @@ prog_char str_subtraj1_arg0[] = "subtraj";
 parse_pgm_token_string_t cmd_subtraj1_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg0, str_subtraj1_arg0);
 prog_char str_subtraj1_arg1[] = "homolog#begin#strat_smart";
 parse_pgm_token_string_t cmd_subtraj1_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg1, str_subtraj1_arg1);
-//parse_pgm_token_num_t cmd_subtraj1_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg2, INT32);
+parse_pgm_token_num_t cmd_subtraj1_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg2, INT32);
 //parse_pgm_token_num_t cmd_subtraj1_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg3, INT32);
 prog_char help_subtraj1[] = "Test sub-trajectories"; //" (a,b,c: specific params)";
 parse_pgm_inst_t cmd_subtraj1 = {
@@ -1248,7 +1253,7 @@ parse_pgm_inst_t cmd_subtraj1 = {
     { /* token list, NULL terminated */
         (prog_void *) & cmd_subtraj1_arg0,
         (prog_void *) & cmd_subtraj1_arg1,
-        //(prog_void *)&cmd_subtraj1_arg2,
+        (prog_void *)&cmd_subtraj1_arg2,
         //(prog_void *)&cmd_subtraj1_arg3,
         NULL,
     },

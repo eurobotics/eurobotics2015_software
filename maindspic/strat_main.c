@@ -130,22 +130,38 @@ void set_next_sec_strategy(){
 	}
 	
 }
+void set_strat_main_1(void){
+	strat_infos.zones[ZONE_MY_STAND_GROUP_1].prio = 100;
+	strat_infos.zones[ZONE_POPCORNCUP_2].prio = 90;
+	strat_infos.zones[ZONE_MY_STAND_GROUP_2].prio = 80;
+	strat_infos.zones[ZONE_MY_CLAP_1].prio = 70;
+	strat_infos.zones[ZONE_MY_CLAP_2].prio = 60;
+	strat_infos.zones[ZONE_MY_STAND_GROUP_3].prio = 50;
+	strat_infos.zones[ZONE_MY_POPCORNMAC].prio = 40;
+	strat_infos.zones[ZONE_MY_STAND_GROUP_4].prio = 30;
+	strat_infos.zones[ZONE_MY_HOME].prio = 30;
+}
+
+
 void set_strat_sec_1(void){
-	printf_P(PSTR("strat_sec_1"));
+	strat_infos.current_sec_strategy = 1;
+	printf_P(PSTR("strat_sec_1\n"));
 	strat_infos.zones[ZONE_MY_CLAP_3].prio = 100;
 	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 90;
 	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 80;
 	strat_infos.zones[ZONE_MY_STAIRS].prio = 70;
 }
 void set_strat_sec_2(void){
-	printf_P(PSTR("strat_sec_2"));
+	strat_infos.current_sec_strategy = 2;
+	printf_P(PSTR("strat_sec_2\n"));
 	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 100;
 	strat_infos.zones[ZONE_MY_CLAP_3].prio = 90;
 	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 80;	
 	strat_infos.zones[ZONE_MY_STAIRS].prio = 70;
 }
 void set_strat_sec_3(void){
-	printf_P(PSTR("strat_sec_3"));
+	strat_infos.current_sec_strategy = 3;
+	printf_P(PSTR("strat_sec_3\n"));
 	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 100;
 	strat_infos.zones[ZONE_MY_CLAP_3].prio = 90;
 	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 80;
@@ -192,12 +208,6 @@ int8_t strat_get_new_zone(void)
 uint8_t strat_goto_zone(uint8_t zone_num)
 {
 	int8_t err=0;
-	
-#define BASKET_OFFSET_SIDE 175
-#define BEGIN_LINE_Y 	450
-#define BEGIN_FRESCO_X	1295
-#define PROTECT_H1_X 400
-#define PROTECT_H1_Y 1500
 
 	
 	/* update strat_infos */
@@ -214,12 +224,12 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 		//Temporally 2scondary robot is not ready to test.
 		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
 										strat_infos.zones[zone_num].init_y,  
-										TRAJ_FLAGS_STD, TRAJ_FLAGS_STD);
+										TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 		
 	}else{
 		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
 										strat_infos.zones[zone_num].init_y,  
-										TRAJ_FLAGS_STD, TRAJ_FLAGS_STD);
+										TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 
 	}
 	
@@ -260,58 +270,43 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 	/*XXX TEST*/
 	else
 	{
-	    if(strat_infos.zones[zone_num].type!=ZONE_TYPE_STAND && strat_infos.zones[zone_num].type!=ZONE_TYPE_POPCORNCUP)
-	    {
-                /* turn to wall */
-                trajectory_turnto_xy (&mainboard.traj, strat_infos.zones[zone_num].x, strat_infos.zones[zone_num].y);
-                err = wait_traj_end (TRAJ_FLAGS_SMALL_DIST);
-                if (!TRAJ_SUCCESS(err))
-                        ERROUT(err);
+	    if(strat_infos.zones[zone_num].type!=ZONE_TYPE_STAND && strat_infos.zones[zone_num].type!=ZONE_TYPE_POPCORNCUP){
+			/* turn to wall */
+			trajectory_turnto_xy (&mainboard.traj, COLOR_X(strat_infos.zones[zone_num].x), strat_infos.zones[zone_num].y);
+			err = wait_traj_end (TRAJ_FLAGS_SMALL_DIST);
+			if (!TRAJ_SUCCESS(err))
+					ERROUT(err);
 
-                /* go forward */
-                strat_get_speed (&temp_spdd, &temp_spda);
-                strat_set_speed (500, temp_spda);
-                strat_calib(1000, TRAJ_FLAGS_SMALL_DIST);
-                strat_set_speed( temp_spdd, temp_spda);
-                /*XXX*/
-
-                /* If in home, get out of it before continuing */
-                if(strat_infos.zones[zone_num].type==ZONE_TYPE_HOME)
-                {
-                        trajectory_d_rel(&mainboard.traj, -500);
-                        err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-                        if (!TRAJ_SUCCESS(err))
-                           ERROUT(err);
-                }
-
-
-                /* clapper */
-                if(strat_infos.zones[zone_num].type==ZONE_TYPE_CLAP)
-                {        			
-                    trajectory_d_rel (&mainboard.traj, -50);
-                    err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-                    if (!TRAJ_SUCCESS(err))
-                        ERROUT(err);
-
-                    i2c_slavedspic_wait_ready();
-                    i2c_slavedspic_mode_stick (I2C_STICK_TYPE_LEFT,I2C_STICK_MODE_PUSH_TORCH_FIRE, -100);
-                    i2c_slavedspic_wait_ready();
-
-
-                    trajectory_a_rel (&mainboard.traj, -90);
-                    err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-                    if (!TRAJ_SUCCESS(err))
-                        ERROUT(err);
-
-                    trajectory_d_rel (&mainboard.traj, 200);
-                    err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-                    if (!TRAJ_SUCCESS(err))
-                        ERROUT(err);
-
-                    i2c_slavedspic_mode_stick (I2C_STICK_TYPE_LEFT,I2C_STICK_MODE_HIDE, 0);
-                    i2c_slavedspic_wait_ready();
-                }
+			trajectory_d_rel (&mainboard.traj, 100);
+			err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+			if (!TRAJ_SUCCESS(err))
+				ERROUT(err);
+			time_wait_ms(1000);
+			trajectory_d_rel (&mainboard.traj, -100);
+			err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+			if (!TRAJ_SUCCESS(err))
+				ERROUT(err);
+			time_wait_ms(1000);
+				
             }
+						/*ZONE_MY_STAND_GROUP_1*/
+			if(strat_infos.zones[zone_num].type == ZONE_MY_STAND_GROUP_1){
+			
+				err= goto_and_avoid (COLOR_X(MY_STAND_4_X),
+									MY_STAND_4_Y,  
+									TRAJ_FLAGS_STD, TRAJ_FLAGS_STD);
+				err= goto_and_avoid (COLOR_X(MY_STAND_5_X),
+									MY_STAND_5_Y,  
+									TRAJ_FLAGS_STD, TRAJ_FLAGS_STD);
+				err= goto_and_avoid (COLOR_X(MY_STAND_6_X),
+									LIMIT_BBOX_Y_DOWN,  
+									TRAJ_FLAGS_STD, TRAJ_FLAGS_STD);
+				if (!TRAJ_SUCCESS(err)){
+					ERROUT(err);
+				}
+
+			}
+			
 	}
 
 	end:
@@ -463,9 +458,8 @@ uint8_t strat_smart(void)
 		err = strat_goto_zone(zone_num);
 		
 		if (!TRAJ_SUCCESS(err)) {
-			//printf_P(PSTR("Can't reach zone %d.\r\n"), zone_num);
-			
-			printf_P(PSTR("err\r\n"));
+			printf_P(PSTR("Can't reach zone %d.\r\n"), zone_num);
+			set_next_sec_strategy(); 
 			return END_TRAJ;
 		}
 		

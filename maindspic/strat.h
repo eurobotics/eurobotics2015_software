@@ -96,7 +96,7 @@
 #define MY_POPCORNCUP_FRONT_X				910
 #define MY_POPCORNCUP_FRONT_Y				2000-830
 #define MY_POPCORNCUP_SIDE_X				250
-#define MY_POPCORNCUP_SIDE_Y				2000-1750
+#define MY_POPCORNCUP_SIDE_Y				250
 #define OPP_POPCORNCUP_FRONT_X				2090
 #define OPP_POPCORNCUP_FRONT_Y				2000-830
 #define OPP_POPCORNCUP_SIDE_X				    2750
@@ -107,7 +107,7 @@
 #define MY_CINEMA_UP_X					2800
 #define MY_CINEMA_UP_Y					1400
 #define MY_CINEMA_DOWN_X				2800
-#define MY_CINEMA_DOWN_Y				500
+#define MY_CINEMA_DOWN_Y				600
 #define OPP_CINEMA_UP_X					200
 #define OPP_CINEMA_UP_Y					1400
 #define OPP_CINEMA_DOWN_X				200
@@ -428,6 +428,7 @@ void strat_opp_tracking (void);
 void set_strat_sec_1(void);
 void set_strat_sec_2(void);
 void set_strat_sec_3(void);
+void set_strat_main_1(void);
 void set_next_sec_strategy(void);
 /* homologation */
 void strat_homologation(void);

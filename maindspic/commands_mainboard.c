@@ -346,33 +346,33 @@ static void cmd_init_parsed(void *parsed_result, void *data)
 	wt11_reset_mux();
 	time_wait_ms (1000);
 	wt11_open_link_mux(beacon_addr, &beaconboard.link_id);
-	time_wait_ms (1000);
-	wt11_open_link_mux(robot_2nd_addr, &robot_2nd.link_id);
+	//time_wait_ms (1000);
+	//wt11_open_link_mux(robot_2nd_addr, &robot_2nd.link_id);
 #else
 	robot_2nd.link_id = 0;
 	beaconboard.link_id = 1;
 #endif
 	/* enable bt protocol events */
-	mainboard.flags |= DO_BEACON | DO_ROBOT_2ND;
+	mainboard.flags |= DO_BEACON ;//| DO_ROBOT_2ND
 	time_wait_ms (200);
 
 	/* set main robot color */
-    if (!strcmp_P(res->color, PSTR("red")))
+    if (!strcmp_P(res->color, PSTR("red"))){
         mainboard.our_color = I2C_COLOR_RED;
-    else if (!strcmp_P(res->color, PSTR("yellow")))
+		position_set(&mainboard.pos,COLOR_X(70+(ROBOT_WIDTH/2)), 778+22+20+(ROBOT_WIDTH/2), 180);
+		}
+    else if (!strcmp_P(res->color, PSTR("yellow"))){
         mainboard.our_color = I2C_COLOR_YELLOW;
-
+		position_set(&mainboard.pos,COLOR_X(70+(ROBOT_WIDTH/2)),778+22+20+(ROBOT_WIDTH/2), 0);
+	}
 	/* set secondary robot color */
-	bt_robot_2nd_set_color ();
-
-	/* autopos main robot */
-	auto_position();
+	//bt_robot_2nd_set_color ();
 
 	/* TODO: init main robot mechanics */
 	
 	/* autopos secondary robot */
-    bt_robot_2nd_autopos();
-	bt_robot_2nd_wait_end();
+    //bt_robot_2nd_autopos();
+	//bt_robot_2nd_wait_end();
 
 	printf ("Done\n\r");
 }
