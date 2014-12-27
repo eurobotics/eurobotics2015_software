@@ -125,7 +125,7 @@ void bt_beacon_set_color (void)
 	if(mainboard.our_color == I2C_COLOR_YELLOW)
    	bt_send_ascii_cmd (beaconboard.link_id, "color yellow");
   	else
-		bt_send_ascii_cmd (beaconboard.link_id, "color red");
+		bt_send_ascii_cmd (beaconboard.link_id, "color green");
 }
 
 
@@ -320,7 +320,7 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 		if(arg0 == I2C_COLOR_YELLOW)
 			bt_send_ascii_cmd (robot_2nd.link_id, "color yellow");
 	  	else
-			bt_send_ascii_cmd (robot_2nd.link_id, "color red");
+			bt_send_ascii_cmd (robot_2nd.link_id, "color green");
 	}
 
 	else if (cmd_id == BT_AUTOPOS) 

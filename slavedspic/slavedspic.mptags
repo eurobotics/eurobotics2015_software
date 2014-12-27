@@ -437,7 +437,7 @@ I2C_CMD_GENERIC::0x00	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurob
 I2C_CMD_LED_CONTROL::0x01	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\common\i2c_commands.h	121;"	d	line:121
 I2C_CMD_SLAVEDSPIC_SET_MODE::0x02	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\common\i2c_commands.h	128;"	d	line:128
 I2C_COLOR_MAX::2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\common\i2c_commands.h	40;"	d	line:40
-I2C_COLOR_RED::0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\common\i2c_commands.h	38;"	d	line:38
+I2C_COLOR_GREEN::0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\common\i2c_commands.h	38;"	d	line:38
 I2C_COLOR_YELLOW::1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\common\i2c_commands.h	39;"	d	line:39
 I2C_COMBS_MODE_HARVEST_CLOSE::2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\common\i2c_commands.h	189;"	d	line:189
 I2C_COMBS_MODE_HARVEST_OPEN::3	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\common\i2c_commands.h	190;"	d	line:190
