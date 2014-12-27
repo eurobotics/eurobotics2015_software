@@ -93,7 +93,7 @@ int8_t strat_is_valid_zone(uint8_t zone_num)
 	/* discard current zone */
 	if(strat_infos.current_zone == zone_num)
 	{
-		//printf_P("zone num: %d. current_zone.\n");
+		//DEBUG(E_USER_STRAT,"zone num: %d. current_zone.");
 		return -1;	
 	}
 
@@ -106,7 +106,7 @@ int8_t strat_is_valid_zone(uint8_t zone_num)
 	/* discard avoid and checked zones */
 	if(strat_infos.zones[zone_num].flags & ZONE_AVOID)
 	{
-		//printf_P("zone num: %d. avoid.\n");
+		//DEBUG(E_USER_STRAT,"zone num: %d. avoid.");
 		return -1;	
 	}
 		
@@ -145,7 +145,7 @@ void set_strat_main_1(void){
 
 void set_strat_sec_1(void){
 	strat_infos.current_sec_strategy = 1;
-	printf_P(PSTR("strat_sec_1\n"));
+	DEBUG(E_USER_STRAT,"strat_sec_1");
 	strat_infos.zones[ZONE_MY_CLAP_3].prio = 100;
 	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 90;
 	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 80;
@@ -153,7 +153,7 @@ void set_strat_sec_1(void){
 }
 void set_strat_sec_2(void){
 	strat_infos.current_sec_strategy = 2;
-	printf_P(PSTR("strat_sec_2\n"));
+	DEBUG(E_USER_STRAT,"strat_sec_2");
 	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 100;
 	strat_infos.zones[ZONE_MY_CLAP_3].prio = 90;
 	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 80;	
@@ -161,7 +161,7 @@ void set_strat_sec_2(void){
 }
 void set_strat_sec_3(void){
 	strat_infos.current_sec_strategy = 3;
-	printf_P(PSTR("strat_sec_3\n"));
+	DEBUG(E_USER_STRAT,"strat_sec_3");
 	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 100;
 	strat_infos.zones[ZONE_MY_CLAP_3].prio = 90;
 	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 80;
@@ -199,7 +199,7 @@ int8_t strat_get_new_zone(void)
 
 	}
 	if(zone_num == -1){
-		printf_P(PSTR("No more zones available\r\n"));
+		DEBUG(E_USER_STRAT,"No more zones available");
 	}
 	return zone_num;
 }
@@ -256,7 +256,7 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 	uint16_t temp_spdd, temp_spda;
 
 #ifdef HOST_VERSION
-	printf_P(PSTR("strat_work_on_zone %d %s: press a key\r\n"),zone_num,numzone2name[zone_num]);
+	DEBUG(E_USER_STRAT,"strat_work_on_zone %d %s: press a key",zone_num,numzone2name[zone_num]);
 	while(!cmdline_keypressed());
 #endif
 
@@ -320,7 +320,7 @@ void state_debug_wait_key_pressed(void)
 	if (!strat_infos.debug_step)
 		return;
 
-	printf_P(PSTR("press a key\r\n"));
+	DEBUG(E_USER_STRAT,"press a key");
 	while(!cmdline_keypressed());
 }
 
@@ -444,26 +444,26 @@ uint8_t strat_smart(void)
 	/* get new zone */
 	
 	zone_num = strat_get_new_zone();
-	printf_P(PSTR("Zone: %d. Priority: %d\r\n"),zone_num,strat_infos.zones[zone_num].prio);
+	DEBUG(E_USER_STRAT,"Zone: %d. Priority: %d",zone_num,strat_infos.zones[zone_num].prio);
 		
 	if(zone_num == -1) {
-		//printf_P(PSTR("No zone is found\r\n"));
+		//DEBUG(E_USER_STRAT,"No zone is found");
 		return END_TRAJ;
 	}else{
 		/* goto zone */
-		//printf_P(PSTR("Going to zone %s.\r\n"),numzone2name[zone_num]);
+		//DEBUG(E_USER_STRAT,"Going to zone %s.",numzone2name[zone_num]);
 		strat_infos.goto_zone = zone_num;
 		strat_dump_infos(__FUNCTION__);
 		
 		err = strat_goto_zone(zone_num);
 		
 		if (!TRAJ_SUCCESS(err)) {
-			printf_P(PSTR("Can't reach zone %d.\r\n"), zone_num);
+			DEBUG(E_USER_STRAT,"Can't reach zone %d.", zone_num);
 			set_next_sec_strategy(); 
 			return END_TRAJ;
 		}
 		
-		printf_P(PSTR("strat_work_on_zone\r\n"));
+		DEBUG(E_USER_STRAT,"strat_work_on_zone");
 		/* work on zone */
 		strat_infos.last_zone = strat_infos.current_zone;
 		strat_infos.current_zone = strat_infos.goto_zone;
@@ -471,7 +471,7 @@ uint8_t strat_smart(void)
 
 		err = strat_work_on_zone(zone_num);
 		if (!TRAJ_SUCCESS(err)) {
-		    printf_P(PSTR("Work on zone %s fails.\r\n"), numzone2name[zone_num]);
+		    DEBUG(E_USER_STRAT,"Work on zone %s fails.", numzone2name[zone_num]);
                     /* IMPORTANT: If in home, get out of it before continuing */
                     if(strat_infos.zones[zone_num].type==ZONE_TYPE_HOME)
                     {
@@ -533,8 +533,8 @@ void strat_opp_tracking (void)
 							{
 								strat_infos.zones[zone_opp].flags |= ZONE_CHECKED_OPP;
 								strat_infos.opp_harvested_trees++;
-								printf_P("opp_harvested_trees=%d\n",strat_infos.opp_harvested_trees);
-								printf_P("OPP approximated score: %d\n", strat_infos.opp_score);
+								DEBUG(E_USER_STRAT,"opp_harvested_trees=%d",strat_infos.opp_harvested_trees);
+								DEBUG(E_USER_STRAT,"OPP approximated score: %d", strat_infos.opp_score);
 							}
 							break;
 						case ZONE_TYPE_BASKET:
@@ -547,8 +547,8 @@ void strat_opp_tracking (void)
 									{
 										strat_infos.opp_score += strat_infos.opp_harvested_trees * 3;
 										strat_infos.opp_harvested_trees=0;
-										printf_P("opp_harvested_trees=%d\n",strat_infos.opp_harvested_trees);
-										printf_P("OPP approximated score: %d\n", strat_infos.opp_score);
+										DEBUG(E_USER_STRAT,"opp_harvested_trees=%d",strat_infos.opp_harvested_trees);
+										DEBUG(E_USER_STRAT,"OPP approximated score: %d", strat_infos.opp_score);
 									}
 								}
 							}
@@ -558,7 +558,7 @@ void strat_opp_tracking (void)
 							{
 								strat_infos.zones[zone_opp].flags |= ZONE_CHECKED_OPP;
 								strat_infos.opp_score += 4;
-								printf_P("OPP approximated score: %d\n", strat_infos.opp_score);
+								DEBUG(E_USER_STRAT,"OPP approximated score: %d", strat_infos.opp_score);
 							}
 							break;
 						default:
@@ -600,7 +600,7 @@ void strat_homologation(void)
 	for(i=0; i<ZONES_SEQUENCE_LENGTH; i++)
 	{
 		/* goto zone */
-		//printf_P(PSTR("Going to zone %s.\r\n"),numzone2name[zones_sequence[i]]);
+		//DEBUG(E_USER_STRAT,"Going to zone %s.",numzone2name[zones_sequence[i]]);
 		strat_dump_infos(__FUNCTION__);
 		strat_infos.current_zone=-1;
 		strat_infos.goto_zone=i;
@@ -609,7 +609,7 @@ void strat_homologation(void)
 		err = wait_traj_end(TRAJ_FLAGS_STD);
 		if (!TRAJ_SUCCESS(err)) {
 			strat_infos.current_zone=-1;
-			printf_P(PSTR("Can't reach zone %s.\r\n"), numzone2name[zones_sequence[i]]);
+			DEBUG(E_USER_STRAT,"Can't reach zone %s.", numzone2name[zones_sequence[i]]);
 		}
 		else{
 			strat_infos.current_zone=i;
@@ -623,7 +623,7 @@ void strat_homologation(void)
 		strat_dump_infos(__FUNCTION__);
 		err = strat_work_on_zone(zones_sequence[i]);
 		if (!TRAJ_SUCCESS(err)) {
-                    printf_P(PSTR("Work on zone %s fails.\r\n"), numzone2name[zones_sequence[i]]);
+                    DEBUG(E_USER_STRAT,"Work on zone %s fails.", numzone2name[zones_sequence[i]]);
 
                     /* IMPORTANT: If in home, get out of it before continuing */
                     if(strat_infos.zones[zones_sequence[i]].type==ZONE_TYPE_HOME)
