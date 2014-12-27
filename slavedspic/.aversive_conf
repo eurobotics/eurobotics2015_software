@@ -1,0 +1,12 @@
+# Aversive configuration
+MCU = 
+OPT = 
+MATH_LIB = 
+AVRDUDE_PROGRAMMER = 
+AVRDUDE_PORT = 
+AVRDUDE_BAUDRATE = 
+AVRDUDE_FLAGS_SIGNATURE_CHECK = -F
+AVARICE_PORT = 
+AVARICE_DEBUG_PORT = 
+MODULES = ihm/parse ihm/rdline ihm/vt100 devices/servo/ax12 devices/robot/blocking_detection_manager devices/control_system/filters/pid devices/control_system/filters/quadramp devices/control_system/control_system_manager base/time base/scheduler comm/uart hardware/dspic/oscillator hardware/dspic/configuration_bits devices/encoders/dspic/encoders_dspic base/cirbuf debug/error
+
