@@ -483,8 +483,8 @@ HEART_FIRE_3_X::2860	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobo
 HEART_FIRE_3_Y::1860	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat.h	50;"	d	line:50
 HEX	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse_num.c	39;"	e	line:39	enum:num_parse_state_t	file:
 HEX_OK	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\modules\ihm\parse\parse_num.c	46;"	e	line:46	enum:num_parse_state_t	file:
-HOME_RED_X::2800	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat.h	86;"	d	line:86
-HOME_RED_Y::300	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat.h	87;"	d	line:87
+HOME_GREEN_X::2800	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat.h	86;"	d	line:86
+HOME_GREEN_Y::300	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat.h	87;"	d	line:87
 HOME_YELLOW_X::200	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat.h	88;"	d	line:88
 HOME_YELLOW_Y::300	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat.h	89;"	d	line:89
 Hz::1l	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\libs\aversive4dspic\include\aversive.h	81;"	d	line:81
@@ -505,7 +505,7 @@ I2C_CMD_GENERIC::0x00	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurob
 I2C_CMD_LED_CONTROL::0x01	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\common\i2c_commands.h	121;"	d	line:121
 I2C_CMD_SLAVEDSPIC_SET_MODE::0x02	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\common\i2c_commands.h	128;"	d	line:128
 I2C_COLOR_MAX::2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\common\i2c_commands.h	40;"	d	line:40
-I2C_COLOR_RED::0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\common\i2c_commands.h	38;"	d	line:38
+I2C_COLOR_GREEN::0	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\common\i2c_commands.h	38;"	d	line:38
 I2C_COLOR_YELLOW::1	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\common\i2c_commands.h	39;"	d	line:39
 I2C_COMBS_MODE_HARVEST_CLOSE::2	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\common\i2c_commands.h	189;"	d	line:189
 I2C_COMBS_MODE_HARVEST_OPEN::3	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\common\i2c_commands.h	190;"	d	line:190
@@ -1547,7 +1547,7 @@ ZONE_FRESCO::23	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014
 ZONE_HEART_FIRE_1::4	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat.h	177;"	d	line:177
 ZONE_HEART_FIRE_2::5	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat.h	178;"	d	line:178
 ZONE_HEART_FIRE_3::6	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat.h	179;"	d	line:179
-ZONE_HOME_RED::24	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat.h	197;"	d	line:197
+ZONE_HOME_GREEN::24	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat.h	197;"	d	line:197
 ZONE_HOME_YELLOW::25	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat.h	198;"	d	line:198
 ZONE_MAMOOTH_1::21	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat.h	194;"	d	line:194
 ZONE_MAMOOTH_2::22	D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\maindspic\strat.h	195;"	d	line:195

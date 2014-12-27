@@ -240,9 +240,9 @@ def platform():
 	area_objects.append(c)
 
 
-	red_area = [ (0.0, 0.0, -0.5), (800.0, 200.0, 0.5) ]
-	red_area_size = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , red_area)
-	red_area_box = box(pos=(0,-AREA_Y/2+200/2, 0), size=red_area_size, color=(0.9, 0.0, 0.0))
+	green_area = [ (0.0, 0.0, -0.5), (800.0, 200.0, 0.5) ]
+	green_area_size = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , green_area)
+	green_area_box = box(pos=(0,-AREA_Y/2+200/2, 0), size=green_area_size, color=(0.9, 0.0, 0.0))
 
 	c = sphere(pos=(250,-AREA_Y/2+100/2,22+35), radius=35,color=(0,1,0))
 	area_objects.append(c)

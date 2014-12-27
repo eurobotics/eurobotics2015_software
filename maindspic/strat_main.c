@@ -386,7 +386,7 @@ void recalculate_priorities(void)
 				/* Opponent has given us toxic fruits */
 				// XXX Remove toxic fruits available???
 				if(((mainboard.our_color==I2C_COLOR_YELLOW) && (zone_num==ZONE_BASKET_2)) ||
-				((mainboard.our_color==I2C_COLOR_RED) && (zone_num==ZONE_BASKET_1)))
+				((mainboard.our_color==I2C_COLOR_GREEN) && (zone_num==ZONE_BASKET_1)))
 				{
 					if(strat_infos.zones[zone_num].flags & ZONE_CHECKED_OPP)
 					{
@@ -539,7 +539,7 @@ void strat_opp_tracking (void)
 							break;
 						case ZONE_TYPE_BASKET:
 							if(((mainboard.our_color==I2C_COLOR_YELLOW) && (zone_opp==ZONE_BASKET_1)) ||
-							((mainboard.our_color==I2C_COLOR_RED) && (zone_opp==ZONE_BASKET_2)))
+							((mainboard.our_color==I2C_COLOR_GREEN) && (zone_opp==ZONE_BASKET_2)))
 							{
 								if(strat_infos.zones[zone_opp].opp_time_zone_us>=TIME_MS_BASKET*1000L)
 								{

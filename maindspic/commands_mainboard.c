@@ -357,8 +357,8 @@ static void cmd_init_parsed(void *parsed_result, void *data)
 	time_wait_ms (200);
 
 	/* set main robot color */
-    if (!strcmp_P(res->color, PSTR("red"))){
-        mainboard.our_color = I2C_COLOR_RED;
+    if (!strcmp_P(res->color, PSTR("green"))){
+        mainboard.our_color = I2C_COLOR_GREEN;
 		position_set(&mainboard.pos,COLOR_X(70+(ROBOT_WIDTH/2)), 778+22+20+(ROBOT_WIDTH/2), 180);
 		}
     else if (!strcmp_P(res->color, PSTR("yellow"))){
@@ -379,7 +379,7 @@ static void cmd_init_parsed(void *parsed_result, void *data)
 
 prog_char str_init_arg0[] = "init";
 parse_pgm_token_string_t cmd_init_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_init_result, arg0, str_init_arg0);
-prog_char str_init_color[] = "red#yellow";
+prog_char str_init_color[] = "green#yellow";
 parse_pgm_token_string_t cmd_init_color = TOKEN_STRING_INITIALIZER(struct cmd_init_result, color, str_init_color);
 
 prog_char help_init[] = "Init the robots";
@@ -464,9 +464,9 @@ retry_on:
     }
 #endif	
 
-    if (!strcmp_P(res->color, PSTR("red")))
+    if (!strcmp_P(res->color, PSTR("green")))
     {
-        mainboard.our_color = I2C_COLOR_RED;
+        mainboard.our_color = I2C_COLOR_GREEN;
         //beacon_cmd_color();
     }
     else if (!strcmp_P(res->color, PSTR("yellow")))
@@ -483,7 +483,7 @@ retry_on:
 
 prog_char str_start_arg0[] = "start";
 parse_pgm_token_string_t cmd_start_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_start_result, arg0, str_start_arg0);
-prog_char str_start_color[] = "red#yellow";
+prog_char str_start_color[] = "green#yellow";
 parse_pgm_token_string_t cmd_start_color = TOKEN_STRING_INITIALIZER(struct cmd_start_result, color, str_start_color);
 prog_char str_start_debug[] = "debug#debug_step#match";
 parse_pgm_token_string_t cmd_start_debug = TOKEN_STRING_INITIALIZER(struct cmd_start_result, debug, str_start_debug);
@@ -521,16 +521,16 @@ static void cmd_color_parsed(void *parsed_result, void *data)
     {
         mainboard.our_color = I2C_COLOR_YELLOW;
     }
-    else if (!strcmp_P(res->color, PSTR("red")))
+    else if (!strcmp_P(res->color, PSTR("green")))
     {
-        mainboard.our_color = I2C_COLOR_RED;
+        mainboard.our_color = I2C_COLOR_GREEN;
     }
     printf_P(PSTR("Done\r\n"));
 }
 
 prog_char str_color_arg0[] = "color";
 parse_pgm_token_string_t cmd_color_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_color_result, arg0, str_color_arg0);
-prog_char str_color_color[] = "yellow#red";
+prog_char str_color_color[] = "yellow#green";
 parse_pgm_token_string_t cmd_color_color = TOKEN_STRING_INITIALIZER(struct cmd_color_result, color, str_color_color);
 
 prog_char help_color[] = "Set our color";
@@ -863,7 +863,7 @@ static void cmd_robot_2nd_parsed(void * parsed_result, void * data)
 													robot_2nd.cmd_args_checksum_send, 
 													robot_2nd.cmd_args_checksum_recv,
 													robot_2nd.valid_status);
-				printf ("color %s\n\r", robot_2nd.color == I2C_COLOR_YELLOW? "yellow":"red");
+				printf ("color %s\n\r", robot_2nd.color == I2C_COLOR_YELLOW? "yellow":"green");
 				printf ("done_flags 0x%.4X\n\r", robot_2nd.done_flags);
 				printf ("pos abs(%d %d %d) rel(%d %d)\n\r",
 												robot_2nd.x, robot_2nd.y, robot_2nd.a_abs,
