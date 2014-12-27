@@ -1370,15 +1370,16 @@ retry:
 uint8_t goto_and_avoid(int16_t x, int16_t y, uint8_t flags_intermediate,
 			       uint8_t flags_final)
 {
-	double d,a;
-	abs_xy_to_rel_da(x, y, &d, &a); 
+	//double d,a;
+	//abs_xy_to_rel_da(x, y, &d, &a); 
 
 
-  if(robots_are_near()) {
-      DEBUG(E_USER_STRAT, "Robots near");
+  //if(robots_are_near()) {
+  //    DEBUG(E_USER_STRAT, "Robots near");
 		  return __goto_and_avoid(x, y, flags_intermediate,
 					  flags_final, GO_AVOID_AUTO);
-  }
+  //}
+  #if 0
   else { /* XXX specific 2014 */
 	  if (d < 300 && a < RAD(90) && a > RAD(-90))
 		  return __goto_and_avoid(x, y, flags_intermediate,
@@ -1387,6 +1388,7 @@ uint8_t goto_and_avoid(int16_t x, int16_t y, uint8_t flags_intermediate,
 		  return __goto_and_avoid(x, y, flags_intermediate,
 					  flags_final, GO_AVOID_BACKWARD);
   }
+  #endif
 }
 
 
