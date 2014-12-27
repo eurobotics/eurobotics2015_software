@@ -66,8 +66,8 @@
 #define AREA_Y 2100
 
 /* convert coords according to our color */
-#define COLOR_X(x)     ((beaconboard.our_color==I2C_COLOR_RED)? (x) : (AREA_X-(x)))
-#define COLOR_Y(y)     ((beaconboard.our_color==I2C_COLOR_RED)? (y) : (AREA_Y-(y)))
+#define COLOR_X(x)     ((beaconboard.our_color==I2C_COLOR_GREEN)? (x) : (AREA_X-(x)))
+#define COLOR_Y(y)     ((beaconboard.our_color==I2C_COLOR_GREEN)? (y) : (AREA_Y-(y)))
 
 /* fixed beacon coordenates */
 #ifdef BEACON_MODE_EXTERNAL

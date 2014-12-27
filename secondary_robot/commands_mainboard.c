@@ -372,8 +372,8 @@ retry_on:
 #endif
 #endif
 
-	if (!strcmp_P(res->color, PSTR("red"))) {
-		mainboard.our_color = I2C_COLOR_RED;
+	if (!strcmp_P(res->color, PSTR("green"))) {
+		mainboard.our_color = I2C_COLOR_GREEN;
 		//beacon_cmd_color();
 	}
 	else if (!strcmp_P(res->color, PSTR("yellow"))) {
@@ -389,7 +389,7 @@ retry_on:
 
 prog_char str_start_arg0[] = "start";
 parse_pgm_token_string_t cmd_start_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_start_result, arg0, str_start_arg0);
-prog_char str_start_color[] = "red#yellow";
+prog_char str_start_color[] = "green#yellow";
 parse_pgm_token_string_t cmd_start_color = TOKEN_STRING_INITIALIZER(struct cmd_start_result, color, str_start_color);
 prog_char str_start_debug[] = "debug#debug_step#match";
 parse_pgm_token_string_t cmd_start_debug = TOKEN_STRING_INITIALIZER(struct cmd_start_result, debug, str_start_debug);
@@ -426,14 +426,14 @@ static void cmd_color_parsed(void *parsed_result, void *data)
 
 	if (!strcmp_P(res->color, PSTR("yellow"))) {
 		mainboard.our_color = I2C_COLOR_YELLOW;	}
-	else if (!strcmp_P(res->color, PSTR("red"))) {
-		mainboard.our_color = I2C_COLOR_RED;
+	else if (!strcmp_P(res->color, PSTR("green"))) {
+		mainboard.our_color = I2C_COLOR_GREEN;
 	}
 	else if (!strcmp_P(res->color, PSTR("show"))) {
 		if(mainboard.our_color == I2C_COLOR_YELLOW)
 			printf("color is YELLOW\n\r");
 		else
-			printf("color is RED\n\r");
+			printf("color is GREEN\n\r");
 	}
 
 	bt_set_color (mainboard.our_color);
@@ -443,7 +443,7 @@ static void cmd_color_parsed(void *parsed_result, void *data)
 
 prog_char str_color_arg0[] = "color";
 parse_pgm_token_string_t cmd_color_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_color_result, arg0, str_color_arg0);
-prog_char str_color_color[] = "yellow#red#show";
+prog_char str_color_color[] = "yellow#green#show";
 parse_pgm_token_string_t cmd_color_color = TOKEN_STRING_INITIALIZER(struct cmd_color_result, color, str_color_color);
 
 prog_char help_color[] = "Set our color";

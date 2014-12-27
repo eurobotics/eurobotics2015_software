@@ -438,7 +438,7 @@ void strat_start_match(uint8_t debug)
 
 	/* get color */
 	mainboard.our_color = sensor_get(S_COLOR);
-	printf_P(PSTR("COLOR is %s\r\n"), mainboard.our_color == I2C_COLOR_RED? "RED" : "YELLOW");
+	printf_P(PSTR("COLOR is %s\r\n"), mainboard.our_color == I2C_COLOR_GREEN? "GREEN" : "YELLOW");
 
 	/* set x,y and angle */
 #define TRESPA_BAR 17
