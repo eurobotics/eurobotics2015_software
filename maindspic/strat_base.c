@@ -45,8 +45,6 @@
 #include <quadramp.h>
 #include <control_system_manager.h>
 #include <trajectory_manager.h>
-#include <trajectory_manager_utils.h>
-//#include <trajectory_manager_core.h>
 #include <vect_base.h>
 #include <lines.h>
 #include <polygon.h>
@@ -310,10 +308,12 @@ void strat_set_speed(uint16_t d, uint16_t a)
 	IRQ_UNLOCK(flags);
 }
 
+#ifdef TODO
 void strat_set_acc(double d, double a)
 {
 	trajectory_set_acc(&mainboard.traj, d, a);
 }
+#endif
 
 void strat_get_speed(uint16_t *d, uint16_t *a)
 {

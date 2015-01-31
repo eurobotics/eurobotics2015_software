@@ -30,6 +30,11 @@
 #ifndef _STRAT_UTILS_H_
 #define _STRAT_UTILS_H_
 
+#define M_2PI (2*M_PI)
+
+#define DEG(x) ((x) * (180.0 / M_PI))
+#define RAD(x) ((x) * (M_PI / 180.0))
+
 struct xy_point {
 	int16_t x;
 	int16_t y;

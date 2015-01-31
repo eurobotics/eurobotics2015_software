@@ -45,7 +45,6 @@
 #include <quadramp.h>
 #include <control_system_manager.h>
 #include <trajectory_manager.h>
-#include <trajectory_manager_utils.h>
 #include <f64.h>
 #include <vect_base.h>
 #include <lines.h>
@@ -101,7 +100,7 @@ static void cmd_traj_speed_parsed(void *parsed_result, void *data)
     }
     /* else it is a "show" */
 
-    printf_P(PSTR("angle %2.2f, distance %2.2f\r\n"),
+    printf_P(PSTR("angle %d, distance %d\r\n"),
              mainboard.traj.a_speed,
              mainboard.traj.d_speed);
 }
@@ -110,7 +109,7 @@ prog_char str_traj_speed_arg0[] = "traj_speed";
 parse_pgm_token_string_t cmd_traj_speed_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_traj_speed_result, arg0, str_traj_speed_arg0);
 prog_char str_traj_speed_arg1[] = "angle#distance";
 parse_pgm_token_string_t cmd_traj_speed_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_traj_speed_result, arg1, str_traj_speed_arg1);
-parse_pgm_token_num_t cmd_traj_speed_s = TOKEN_NUM_INITIALIZER(struct cmd_traj_speed_result, s, FLOAT);
+parse_pgm_token_num_t cmd_traj_speed_s = TOKEN_NUM_INITIALIZER(struct cmd_traj_speed_result, s, INT16);
 
 prog_char help_traj_speed[] = "Set traj_speed values for trajectory manager";
 parse_pgm_inst_t cmd_traj_speed = {
@@ -144,6 +143,8 @@ parse_pgm_inst_t cmd_traj_speed_show = {
     },
 };
 
+#ifdef TODO
+
 /**********************************************************/
 /* Traj_Accs for trajectory_manager */
 
@@ -170,7 +171,7 @@ static void cmd_traj_acc_parsed(void *parsed_result, void *data)
     }
     /* else it is a "show" */
 
-    printf_P(PSTR("angle %2.2f, distance %2.2f\r\n"),
+    printf_P(PSTR("angle %d, distance %d\r\n"),
              mainboard.traj.a_acc,
              mainboard.traj.d_acc);
 }
@@ -179,7 +180,7 @@ prog_char str_traj_acc_arg0[] = "traj_acc";
 parse_pgm_token_string_t cmd_traj_acc_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_traj_acc_result, arg0, str_traj_acc_arg0);
 prog_char str_traj_acc_arg1[] = "angle#distance";
 parse_pgm_token_string_t cmd_traj_acc_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_traj_acc_result, arg1, str_traj_acc_arg1);
-parse_pgm_token_num_t cmd_traj_acc_s = TOKEN_NUM_INITIALIZER(struct cmd_traj_acc_result, s, FLOAT);
+parse_pgm_token_num_t cmd_traj_acc_s = TOKEN_NUM_INITIALIZER(struct cmd_traj_acc_result, s, INT16);
 
 prog_char help_traj_acc[] = "Set traj_acc values for trajectory manager";
 parse_pgm_inst_t cmd_traj_acc = {
@@ -212,10 +213,12 @@ parse_pgm_inst_t cmd_traj_acc_show = {
         NULL,
     },
 };
+#endif
 
 
 #ifdef COMPILE_COMMANDS_TRAJ_OPTIONALS /*-------------------------------------*/
 
+#ifdef TRAJECTORY_MANAGER_V3
 /**********************************************************/
 /* circle coef configuration */
 
@@ -277,6 +280,7 @@ parse_pgm_inst_t cmd_circle_coef_show = {
         NULL,
     },
 };
+#endif /* TRAJECTORY_MANAGER_V3 */
 
 /**********************************************************/
 /* trajectory window configuration */

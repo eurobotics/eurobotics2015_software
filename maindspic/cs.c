@@ -45,7 +45,6 @@
 #include <quadramp.h>
 #include <control_system_manager.h>
 #include <trajectory_manager.h>
-#include <trajectory_manager_utils.h>
 #include <vect_base.h>
 #include <lines.h>
 #include <polygon.h>
@@ -233,12 +232,11 @@ void maindspic_cs_init(void)
 	position_use_ext(&mainboard.pos);
 
 	/* TRAJECTORY MANAGER */
-	trajectory_init(&mainboard.traj, CS_HZ);
+	trajectory_init(&mainboard.traj);
 	trajectory_set_cs(&mainboard.traj, &mainboard.distance.cs,
 			  &mainboard.angle.cs);
 	trajectory_set_robot_params(&mainboard.traj, &mainboard.rs, &mainboard.pos); /* d, a */
-	trajectory_set_speed(&mainboard.traj, SPEED_DIST_FAST, SPEED_ANGLE_FAST);
-	trajectory_set_acc(&mainboard.traj, ACC_DIST, ACC_ANGLE); /* d, a */ 		
+	trajectory_set_speed(&mainboard.traj, SPEED_DIST_FAST, SPEED_ANGLE_FAST);		
 	/* distance window, angle window, angle start */
   trajectory_set_windows(&mainboard.traj, 200., 5.0, 30.0); //50., 5.0, 5.0
 
