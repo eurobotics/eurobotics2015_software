@@ -470,10 +470,10 @@ inline uint8_t bt_robot_2nd_bt_patrol_fr_mam(int16_t arg1, int16_t arg2) {
 inline uint8_t bt_robot_2nd_bt_protect_h(uint8_t heart) {
 	return bt_robot_2nd_cmd (BT_PROTECT_HEART, heart,0);
 }
-inline uint8_t bt_robot_2nd_bt_net() {
+inline uint8_t bt_robot_2nd_bt_net(void) {
 	return bt_robot_2nd_cmd (BT_NET, 0,0);
 }
-inline uint8_t bt_robot_2nd_bt_fresco() {
+inline uint8_t bt_robot_2nd_bt_fresco(void) {
 	return bt_robot_2nd_cmd (BT_FRESCO, 0,0);
 }
 
