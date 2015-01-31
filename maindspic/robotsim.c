@@ -44,8 +44,9 @@
 #include <blocking_detection_manager.h>
 #include <robot_system.h>
 #include <position_manager.h>
+#ifdef TRAJECTORY_MANAGER_V3
 #include <trajectory_manager_utils.h>
-
+#endif
 #include <parse.h>
 #include <rdline.h>
 
