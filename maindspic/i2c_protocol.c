@@ -47,8 +47,6 @@
 #include <quadramp.h>
 #include <control_system_manager.h>
 #include <trajectory_manager.h>
-#include <trajectory_manager_utils.h>
-//#include <trajectory_manager_core.h>
 #include <vect_base.h>
 #include <lines.h>
 #include <polygon.h>
@@ -65,6 +63,7 @@
 #include "robotsim.h"
 #endif
 
+#include "strat_utils.h"
 
 #define I2C_STATE_MAX 			3
 #define I2C_TIMEOUT 				100 /* ms */

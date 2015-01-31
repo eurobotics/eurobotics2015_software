@@ -45,8 +45,6 @@
 #include <quadramp.h>
 #include <control_system_manager.h>
 #include <trajectory_manager.h>
-#include <trajectory_manager_core.h>
-#include <trajectory_manager_utils.h>
 #include <vect_base.h>
 #include <lines.h>
 #include <polygon.h>
@@ -1630,6 +1628,7 @@ parse_pgm_inst_t cmd_rs = {
     },
 };
 
+#ifdef TRAJECTORY_MANAGER_V3
 /**********************************************************/
 /* Clitoid */
 
@@ -1701,7 +1700,7 @@ parse_pgm_inst_t cmd_clitoid = {
         NULL,
     },
 };
-
+#endif /* TRAJECTORY_MANAGER_V3 */
 /**********************************************************/
 /* Time_Monitor */
 

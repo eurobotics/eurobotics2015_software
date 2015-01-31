@@ -44,8 +44,6 @@
 #include <quadramp.h>
 #include <control_system_manager.h>
 #include <trajectory_manager.h>
-#include <trajectory_manager_utils.h>
-//#include <trajectory_manager_core.h>
 #include <vect_base.h>
 #include <lines.h>
 #include <polygon.h>
@@ -66,6 +64,7 @@
 #ifdef HOST_VERSION
 #define COMPILE_COMMANDS_CS
 #endif
+
 
 struct csb_list {
 	const prog_char *name;
@@ -378,7 +377,7 @@ struct cmd_maximum_result {
 static void cmd_maximum_parsed(void *parsed_result, void *show)
 {
 	struct cmd_maximum_result * res = parsed_result;
-
+	
 	struct cs_block *csb;
 
 	csb = cs_from_name(res->cs.csname);
@@ -390,7 +389,7 @@ static void cmd_maximum_parsed(void *parsed_result, void *show)
 	if (!show)
 		pid_set_maximums(&csb->pid, res->in, res->i, res->out);
 
-	printf_P(PSTR("maximum %s %"PRIu32" %"PRIu32" %"PRIu32"\r\n"),
+	printf_P(PSTR("maximum %s %lu %lu %lu\r\n"), 
 		 res->cs.csname,
 		 pid_get_max_in(&csb->pid),
 		 pid_get_max_I(&csb->pid),
@@ -409,11 +408,11 @@ parse_pgm_inst_t cmd_maximum = {
 	.data = NULL,      /* 2nd arg of func */
 	.help_str = help_maximum,
 	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_maximum_arg0,
-		(prog_void *)&cmd_csb_name_tok,
-		(prog_void *)&cmd_maximum_in,
-		(prog_void *)&cmd_maximum_i,
-		(prog_void *)&cmd_maximum_out,
+		(prog_void *)&cmd_maximum_arg0, 
+		(prog_void *)&cmd_csb_name_tok, 
+		(prog_void *)&cmd_maximum_in, 
+		(prog_void *)&cmd_maximum_i, 
+		(prog_void *)&cmd_maximum_out, 
 		NULL,
 	},
 };
@@ -434,8 +433,8 @@ parse_pgm_inst_t cmd_maximum_show = {
 	.data = (void *)1,      /* 2nd arg of func */
 	.help_str = help_maximum_show,
 	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_maximum_arg0,
-		(prog_void *)&cmd_csb_name_tok,
+		(prog_void *)&cmd_maximum_arg0, 
+		(prog_void *)&cmd_csb_name_tok, 
 		(prog_void *)&cmd_maximum_show_arg,
 		NULL,
 	},
@@ -447,17 +446,17 @@ parse_pgm_inst_t cmd_maximum_show = {
 /* this structure is filled when cmd_quadramp is parsed successfully */
 struct cmd_quadramp_result {
 	struct cmd_cs_result cs;
-	double ap;
-	double an;
-	double sp;
-	double sn;
+	uint32_t ap;
+	uint32_t an;
+	uint32_t sp;
+	uint32_t sn;
 };
 
 /* function called when cmd_quadramp is parsed successfully */
 static void cmd_quadramp_parsed(void *parsed_result, void *show)
 {
 	struct cmd_quadramp_result * res = parsed_result;
-
+	
 	struct cs_block *csb;
 
 	csb = cs_from_name(res->cs.csname);
@@ -471,7 +470,7 @@ static void cmd_quadramp_parsed(void *parsed_result, void *show)
 		quadramp_set_2nd_order_vars(&csb->qr, res->ap, res->an);
 	}
 
-	printf_P(PSTR("quadramp %s %2.2f %2.2f %2.2f %2.2f\r\n"),
+	printf_P(PSTR("quadramp %s %ld %ld %ld %ld\r\n"), 
 		 res->cs.csname,
 		 csb->qr.var_2nd_ord_pos,
 		 csb->qr.var_2nd_ord_neg,
@@ -481,10 +480,10 @@ static void cmd_quadramp_parsed(void *parsed_result, void *show)
 
 prog_char str_quadramp_arg0[] = "quadramp";
 parse_pgm_token_string_t cmd_quadramp_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_quadramp_result, cs.cmdname, str_quadramp_arg0);
-parse_pgm_token_num_t cmd_quadramp_ap = TOKEN_NUM_INITIALIZER(struct cmd_quadramp_result, ap, FLOAT);
-parse_pgm_token_num_t cmd_quadramp_an = TOKEN_NUM_INITIALIZER(struct cmd_quadramp_result, an, FLOAT);
-parse_pgm_token_num_t cmd_quadramp_sp = TOKEN_NUM_INITIALIZER(struct cmd_quadramp_result, sp, FLOAT);
-parse_pgm_token_num_t cmd_quadramp_sn = TOKEN_NUM_INITIALIZER(struct cmd_quadramp_result, sn, FLOAT);
+parse_pgm_token_num_t cmd_quadramp_ap = TOKEN_NUM_INITIALIZER(struct cmd_quadramp_result, ap, UINT32);
+parse_pgm_token_num_t cmd_quadramp_an = TOKEN_NUM_INITIALIZER(struct cmd_quadramp_result, an, UINT32);
+parse_pgm_token_num_t cmd_quadramp_sp = TOKEN_NUM_INITIALIZER(struct cmd_quadramp_result, sp, UINT32);
+parse_pgm_token_num_t cmd_quadramp_sn = TOKEN_NUM_INITIALIZER(struct cmd_quadramp_result, sn, UINT32);
 
 prog_char help_quadramp[] = "Set quadramp values (acc+, acc-, speed+, speed-)";
 parse_pgm_inst_t cmd_quadramp = {
@@ -492,13 +491,13 @@ parse_pgm_inst_t cmd_quadramp = {
 	.data = NULL,      /* 2nd arg of func */
 	.help_str = help_quadramp,
 	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_quadramp_arg0,
-		(prog_void *)&cmd_csb_name_tok,
-		(prog_void *)&cmd_quadramp_ap,
-		(prog_void *)&cmd_quadramp_an,
-		(prog_void *)&cmd_quadramp_sp,
-		(prog_void *)&cmd_quadramp_sn,
-
+		(prog_void *)&cmd_quadramp_arg0, 
+		(prog_void *)&cmd_csb_name_tok, 
+		(prog_void *)&cmd_quadramp_ap, 
+		(prog_void *)&cmd_quadramp_an, 
+		(prog_void *)&cmd_quadramp_sp, 
+		(prog_void *)&cmd_quadramp_sn, 
+		
 		NULL,
 	},
 };
@@ -519,9 +518,9 @@ parse_pgm_inst_t cmd_quadramp_show = {
 	.data = (void *)1,      /* 2nd arg of func */
 	.help_str = help_quadramp_show,
 	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_quadramp_arg0,
-		(prog_void *)&cmd_csb_name_tok,
-		(prog_void *)&cmd_quadramp_show_arg,
+		(prog_void *)&cmd_quadramp_arg0, 
+		(prog_void *)&cmd_csb_name_tok, 
+		(prog_void *)&cmd_quadramp_show_arg, 
 		NULL,
 	},
 };
@@ -620,7 +619,7 @@ struct cmd_blocking_i_result {
 static void cmd_blocking_i_parsed(void *parsed_result, void *show)
 {
 	struct cmd_blocking_i_result * res = parsed_result;
-
+	
 	struct cs_block *csb;
 
 	csb = cs_from_name(res->cs.csname);
@@ -633,7 +632,7 @@ static void cmd_blocking_i_parsed(void *parsed_result, void *show)
 		bd_set_current_thresholds(&csb->bd, res->k1, res->k2,
 					  res->i, res->cpt);
 
-	printf_P(PSTR("%s %s %"PRIi32" %"PRIi32" %"PRIi32" %d\r\n"),
+	printf_P(PSTR("%s %s %ld %ld %ld %d\r\n"), 
 		 res->cs.cmdname,
 		 res->cs.csname,
 		 csb->bd.k1,
