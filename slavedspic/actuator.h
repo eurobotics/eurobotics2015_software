@@ -227,6 +227,7 @@ int8_t tree_tray_check_mode_done(tree_tray_t *tree_tray);
 uint8_t tree_tray_wait_end(tree_tray_t *tree_tray);
 
 
+#if 0
 /**** vacuum funcions *********************************************************/
 
 void vacuum_motor_set (uint8_t num, uint8_t on);
@@ -235,8 +236,9 @@ void vacuum_ev_set (uint8_t num, uint8_t on);
 void vacuum_system_enable (uint8_t num);
 void vacuum_system_disable (uint8_t num);
 
+#endif
 
-
+#if 0
 /*** arm functions ************************************************************/
 
 /* shoulder angle */
@@ -280,4 +282,4 @@ void arm_goto_hxaa (int16_t h, int16_t x, int16_t elbow_a, int16_t wrist_a);
 
 #endif /* _ACTUATOR_H_ */
 
-
+#endif
