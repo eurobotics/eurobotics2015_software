@@ -70,25 +70,28 @@
 								_LATA7 = 1;		\
 							} while(0)
 
-/* EUROBOT 2012 defines */
-#define LIFT_ENCODER						((void *)1)
-#define LIFT_DAC_MC						((void *)&gen.dac_mc_left)
+/* EUROBOT 2012 defines */-----------------------------------------------------------------------------
+#define SELECTOR_ENCODER				((void *)1)
+#define SELECTOR_DAC_MC					((void *)&gen.dac_mc_left)
 
+#if 0
 #define PWM_MC_BOOT_TRAY				((void *)&gen.pwm_mc_mod2_ch1)
+#endif
 
-#define PWM_SERVO_BOOT_DOOR			&gen.pwm_servo_oc2	
+#define PWM_SERVO_BOOT_DOOR				&gen.pwm_servo_oc2	
 
 
 #define AX12_ID_STICK_L		1
 #define AX12_ID_STICK_R		3
 #define AX12_ID_COMB_L		5
 #define AX12_ID_COMB_R		4
-#define AX12_ID_TREE_TRAY	2
+#define AX12_ID_TREE_TRAY	2-----------------------------------------------------------------------------
 
+#if 0
 #define AX12_ID_SHOULDER	7
 #define AX12_ID_ELBOW		8	
 #define AX12_ID_WRIST		6
-
+#endif
 
 #if 0
 #define S_TURBINE_LINE_A1	SENSOR5
@@ -167,33 +170,30 @@ struct slavedspic {
 #define DO_POWER     8
 
 	/* control systems */
-  	struct cs_block lift;
+  	struct cs_block stands_exchanger;
 
 	/* actuators */
-	combs_t combs;
-	stick_t stick_r, stick_l;
-	tree_tray_t tree_tray;
-	boot_t boot;
+	stands_blade_t stands_blade_l, stands_blade_r;
+	stands_clamp_t stands_clamp_l, stands_clamp_r;
+	stands_elevator_t stands_elevator_l, stands_elevator_r;
+	stands_tower_clamps_t stand_tower_clamps;
+
+	clapperboard_stick_t clapperboard_stick_l, clapperboard_stick_r;
+
+	cup_clamp_front_t cup_clamp_front;
+	cup_clamp_popcorn_door_t cup_clamp_popcorn_door_l, cup_clamp_popcorn_door_r;
+	popcorn_tray_t popcorn_tray;
+	popcorn_ramp_t popcorn_ramp_l, popcorn_ramp_r;
 
 	/* infos */
 	uint8_t status;
 	uint8_t stick_mode;
 	int8_t stick_offset;
-	uint8_t harvest_fruits_mode;
-	uint8_t dump_fruits_mode;
-	uint8_t arm_mode;
+	uint8_t harvest_popcorn_mode;
+	uint8_t dump_popcorn_mode;
+	uint8_t stands_mode;
 
-	int16_t arm_x;
-	int16_t arm_y;
-	int16_t arm_h;
-	int16_t arm_elbow_a;
-	int16_t arm_wrist_a;
-
-	uint8_t arm_level;
-	uint8_t arm_sucker_type;
-	int8_t arm_sucker_angle;
-
-	uint8_t nb_stored_fires;
+	uint8_t nb_stored_stands_l, stored_stands_r;
 
 	/* infos */
 	uint8_t our_color;
