@@ -568,6 +568,7 @@ uint8_t tree_tray_wait_end(tree_tray_t *tree_tray)
     return ax12_wait_traj_end (&ax12_tree_tray, END_TRAJ|END_TIME);
 }
 
+#if 0
 /**** vacuum funcions *********************************************************/
 
 void vacuum_motor_set (uint8_t num, uint8_t on) {
@@ -596,9 +597,9 @@ void vacuum_system_disable (uint8_t num) {
 	vacuum_ev_set (num, 0);
 	vacuum_motor_set (num, 0);
 }
+#endif
 
-
-
+#if 0
 /****************************  ARM  *******************************************/
 
 #define SHOULDER_JOIN_X   (165-21) // 144
@@ -943,7 +944,7 @@ void arm_goto_hxaa (int16_t h, int16_t x, int16_t elbow_a, int16_t wrist_a)
 	}
 }
 
-
+#endif
 
 
 /* init all actuators */

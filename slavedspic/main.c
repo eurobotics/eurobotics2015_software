@@ -146,7 +146,7 @@ void io_pins_init(void)
 	/* dc motors */
 	_TRISB12 = 0;	// SLAVE_MOT_2_INA
 	_TRISB13 = 0;	// SLAVE_MOT_2_INB
-	_LATB12  = 0;	// initialy breaked
+	_LATB12  = 0;	// initialy braked
 	_LATB13  = 0;
 
 	_TRISC6 = 0;	// SLAVE_MOT_1_INA
