@@ -209,18 +209,18 @@ uint8_t ax12_wait_traj_end (struct ax12_traj *ax12, uint8_t flags)
 
 
 
-/**** lift functions ********************************************************/
+/**** stands_exchanger functions ********************************************************/
 
 /* stop without rampe */
-void lift_hard_stop(void)
+void stands_exchanger_hard_stop(void)
 {
-	cs_set_consign(&slavedspic.lift.cs, encoders_dspic_get_value(LIFT_ENCODER));
-	slavedspic.lift.qr.previous_var = 0;
-	slavedspic.lift.qr.previous_out = encoders_dspic_get_value(LIFT_ENCODER);
+	cs_set_consign(&slavedspic.stands_exchanger.cs, encoders_dspic_get_value(STANDS_EXCHANGER_ENCODER));
+	slavedspic.stands_exchanger.qr.previous_var = 0;
+	slavedspic.stands_exchanger.qr.previous_out = encoders_dspic_get_value(STANDS_EXCHANGER_ENCODER);
 }
 
 /* calibrate initial position */
-void lift_calibrate(void)
+void stands_exchanger_calibrate(void)
 {
 #define AUTOPOS_SPEED			50
 #define AUTOPOS_ACCEL			1
@@ -231,93 +231,93 @@ void lift_calibrate(void)
 	int16_t kp, ki, kd;
 
 	/* save and set PID constants */
-	kp = pid_get_gain_P(&slavedspic.lift.pid);
-	ki = pid_get_gain_I(&slavedspic.lift.pid);
-	kd = pid_get_gain_D(&slavedspic.lift.pid);
-	pid_set_gains(&slavedspic.lift.pid,  5000, 0, 0);
+	kp = pid_get_gain_P(&slavedspic.stands_exchanger.pid);
+	ki = pid_get_gain_I(&slavedspic.stands_exchanger.pid);
+	kd = pid_get_gain_D(&slavedspic.stands_exchanger.pid);
+	pid_set_gains(&slavedspic.stands_exchanger.pid,  5000, 0, 0);
 
 	/* set low speed, and hi acceleration for fast response */
-	quadramp_set_1st_order_vars(&slavedspic.lift.qr, AUTOPOS_SPEED, AUTOPOS_SPEED);
-	quadramp_set_2nd_order_vars(&slavedspic.lift.qr, AUTOPOS_ACCEL, AUTOPOS_ACCEL);
+	quadramp_set_1st_order_vars(&slavedspic.stands_exchanger.qr, AUTOPOS_SPEED, AUTOPOS_SPEED);
+	quadramp_set_2nd_order_vars(&slavedspic.stands_exchanger.qr, AUTOPOS_ACCEL, AUTOPOS_ACCEL);
 	ACTUATORS_DEBUG("Down speed and acceleration");
 
 	/* goto zero with cs */
 	slavedspic.flags |= DO_CS;
-	//cs_set_consign(&slavedspic.lift.cs, (int32_t)(AUTOPOS_BIG_DIST_mm * LIFT_K_IMP_mm));
-	cs_set_consign(&slavedspic.lift.cs, (int32_t)(AUTOPOS_BIG_DIST_mm));
+	//cs_set_consign(&slavedspic.stands_exchanger.cs, (int32_t)(AUTOPOS_BIG_DIST_mm * STANDS_EXCHANGER_K_IMP_mm));
+	cs_set_consign(&slavedspic.stands_exchanger.cs, (int32_t)(AUTOPOS_BIG_DIST_mm));
 	ACTUATORS_DEBUG("Goto zero");	
 
-	/* wait end blocking */
-	ret = WAIT_COND_OR_TIMEOUT(bd_get(&slavedspic.lift.bd), AUTOPOS_BD_TIMEOUT_ms);
+	/* wait end initial positioning */
+	ret = WAIT_COND_OR_TIMEOUT(sensor_filtered&(1<<S_STAND_EXCHANGER_ENDSTOP), AUTOPOS_BD_TIMEOUT_ms);
 	if(!ret) {
-		ACTUATORS_DEBUG("Blocking not reached");
+		ACTUATORS_DEBUG("Initial positioning not reached");
 		return;
 	}
 
 	/* reset encoder */
-	encoders_dspic_set_value(LIFT_ENCODER, LIFT_CALIB_IMP_MAX);
-	lift_hard_stop();
-	pid_reset(&slavedspic.lift.pid);
-	bd_reset(&slavedspic.lift.bd);
-	ACTUATORS_DEBUG("End blocking, encoder is reset to zero");	
+	encoders_dspic_set_value(STANDS_EXCHANGER_ENCODER, STANDS_EXCHANGER_CALIB_IMP_MAX);
+	stands_exchanger_hard_stop();
+	pid_reset(&slavedspic.stands_exchanger.pid);
+	bd_reset(&slavedspic.stands_exchanger.bd);
+	ACTUATORS_DEBUG("End initial positioning, encoder is reset to zero");	
 
 	/* restore speed, acceleration and PID */
-	quadramp_set_1st_order_vars(&slavedspic.lift.qr, LIFT_SPEED, LIFT_SPEED);
-	quadramp_set_2nd_order_vars(&slavedspic.lift.qr, LIFT_ACCEL, LIFT_ACCEL);
-	pid_set_gains(&slavedspic.lift.pid, kp, ki, kd);
+	quadramp_set_1st_order_vars(&slavedspic.stands_exchanger.qr, STANDS_EXCHANGER_SPEED, STANDS_EXCHANGER_SPEED);
+	quadramp_set_2nd_order_vars(&slavedspic.stands_exchanger.qr, STANDS_EXCHANGER_ACCEL, STANDS_EXCHANGER_ACCEL);
+	pid_set_gains(&slavedspic.stands_exchanger.pid, kp, ki, kd);
 
 	ACTUATORS_DEBUG("Restored speed, acceleration and PID");
 	ACTUATORS_DEBUG("%s ends", __FUNCTION__);
 
 	/* set calibration flag */
-	slavedspic.lift.calibrated = 1;
-	lift_set_height(200);
-	lift_wait_end();
+	slavedspic.stands_exchanger.calibrated = 1;
+	//stands_exchanger_set_position(200);
+	stands_exchanger_wait_end();
 
 	return;
 }
 
-/* set height in mm */
-void lift_set_height(int32_t height_mm)
+/* set position in mm */
+void stands_exchanger_set_position(int32_t position_mm)
 {
 	/* check calibration flag */
-	if(!slavedspic.lift.calibrated) {
-		ACTUATORS_ERROR("Can't set height, lift is NOT CALIBRATED");
+	if(!slavedspic.stands_exchanger.calibrated) {
+		ACTUATORS_ERROR("Can't set position, stands_exchanger is NOT CALIBRATED");
 		return;
 	}
 
-	/* saturate heigh */
-	if(height_mm > LIFT_HEIGHT_MAX_mm)
-		height_mm = LIFT_HEIGHT_MAX_mm;
-	if(height_mm < LIFT_HEIGHT_MIN_mm)
-		height_mm = LIFT_HEIGHT_MIN_mm;
+	/* saturate position */
+	if(position_mm > STANDS_EXCHANGER_POSITION_MAX_mm)
+		position_mm = STANDS_EXCHANGER_POSITION_MAX_mm;
+	if(position_mm < STANDS_EXCHANGER_POSITION_MIN_mm)
+		position_mm = STANDS_EXCHANGER_POSITION_MIN_mm;
 
 	/* apply consign */
-	cs_set_consign(&slavedspic.lift.cs, (int32_t)(((int32_t)LIFT_HEIGHT_MAX_mm-height_mm) * LIFT_K_IMP_mm));
-	slavedspic.lift.blocking = 0;
+	cs_set_consign(&slavedspic.stands_exchanger.cs, (int32_t)(((int32_t)STANDS_EXCHANGER_POSITION_MAX_mm-position_mm) * STANDS_EXCHANGER_K_IMP_mm));
+	slavedspic.stands_exchanger.blocking = 0;
 }
 
-/* return heigh in mm */
-int32_t lift_get_height(void)
+/* return position in mm */
+int32_t stands_exchanger_get_position(void)
 {
-	return (int32_t)((int32_t)LIFT_HEIGHT_MAX_mm - (encoders_dspic_get_value(LIFT_ENCODER)/LIFT_K_IMP_mm));
+	return (int32_t)((int32_t)STANDS_EXCHANGER_POSITION_MAX_mm - (encoders_dspic_get_value(STANDS_EXCHANGER_ENCODER)/STANDS_EXCHANGER_K_IMP_mm));
 }
 
-/* return 1 if height reached, -1 if blocking and zero if no ends yet */
-int8_t lift_check_height_reached(void)
+/* return 1 if position reached, -1 if blocking and zero if no ends yet */
+int8_t stands_exchanger_check_position_reached(void)
 {
 	/* test consign end */
-	if(cs_get_consign(&slavedspic.lift.cs) == cs_get_filtered_consign(&slavedspic.lift.cs)){
+	if(cs_get_consign(&slavedspic.stands_exchanger.cs) == cs_get_filtered_consign(&slavedspic.stands_exchanger.cs)){
 		return END_TRAJ;
 	}
 
 	/* test blocking */
-	if(bd_get(&slavedspic.lift.bd)) {
-		lift_hard_stop();
-		pid_reset(&slavedspic.lift.pid);
-		bd_reset(&slavedspic.lift.bd);
-		slavedspic.lift.blocking = 1;
-		ACTUATORS_ERROR("Lift ENDS BLOCKING");
+	if(bd_get(&slavedspic.stands_exchanger.bd)) {
+		stands_exchanger_hard_stop();
+		pid_reset(&slavedspic.stands_exchanger.pid);
+		bd_reset(&slavedspic.stands_exchanger.bd);
+		slavedspic.stands_exchanger.blocking = 1;
+		ACTUATORS_ERROR("Stands_exchanger ENDS BLOCKING");
 		return END_BLOCKING;
 	}
 
@@ -325,13 +325,13 @@ int8_t lift_check_height_reached(void)
 }
 
 /* return END_TRAJ or END_BLOCKING */
-uint8_t lift_wait_end()
+uint8_t stands_exchanger_wait_end()
 {
 	uint8_t ret = 0;
 
 	/* wait end */
 	while(!ret)
-		ret = lift_check_height_reached();
+		ret = stands_exchanger_check_position_reached();
 
 	return ret;
 }

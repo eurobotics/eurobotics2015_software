@@ -70,37 +70,30 @@
 								_LATA7 = 1;		\
 							} while(0)
 
-/* EUROBOT 2012 defines */-----------------------------------------------------------------------------
-#define SELECTOR_ENCODER				((void *)1)
-#define SELECTOR_DAC_MC					((void *)&gen.dac_mc_left)
+/* EUROBOT 2012 defines */
+#define STANDS_EXCHANGER_ENCODER		((void *)1)
+#define PWM_MC_STANDS_EXCHANGER_MOTOR	((void *)&gen.pwm_mc_mod2_ch1)
 
-#if 0
-#define PWM_MC_BOOT_TRAY				((void *)&gen.pwm_mc_mod2_ch1)
-#endif
+#define PWM_SERVO_POPCORN_TRAY			&gen.pwm_servo_oc2
+#define PWM_SERVO_STANDS_CLAMP_L		&gen.pwm_servo_oc3
+#define PWM_SERVO_STANDS_CLAMP_R		&gen.pwm_servo_oc4
 
-#define PWM_SERVO_BOOT_DOOR				&gen.pwm_servo_oc2	
+#define AX12_ID_STANDS_TOWER_CLAMPS			1
+#define AX12_ID_STANDS_ELEVATOR_L			2
+#define AX12_ID_STANDS_ELEVATOR_R			3
+#define AX12_ID_STANDS_BLADE_L				4
+#define AX12_ID_STANDS_BLADE_R				5
+#define AX12_ID_CUP_CLAMP_POPCORN_DOOR_L	6
+#define AX12_ID_CUP_CLAMP_POPCORN_DOOR_R	7
+#define AX12_ID_POPCORN_RAMP_L				8
+#define AX12_ID_POPCORN_RAMP_R				9
+#define AX12_ID_CUP_CLAMP_FRONT				10
 
-
-#define AX12_ID_STICK_L		1
-#define AX12_ID_STICK_R		3
-#define AX12_ID_COMB_L		5
-#define AX12_ID_COMB_R		4
-#define AX12_ID_TREE_TRAY	2-----------------------------------------------------------------------------
-
-#if 0
-#define AX12_ID_SHOULDER	7
-#define AX12_ID_ELBOW		8	
-#define AX12_ID_WRIST		6
-#endif
-
-#if 0
-#define S_TURBINE_LINE_A1	SENSOR5
-#define S_TURBINE_LINE_A2	SENSOR5
-#define S_TURBINE_LINE_B1	SENSOR2
-#define S_TURBINE_LINE_B2	SENSOR1
-#define S_TURBINE_LINE_A 	((1 << S_TURBINE_LINE_A1) & (1 << S_TURBINE_LINE_A2)) /* more close */
-#define S_TURBINE_LINE_B 	((1 << S_TURBINE_LINE_B1) & (1 << S_TURBINE_LINE_B2)) /* more far */
-#endif
+#define S_STAND_INSIDE_L			SENSOR1
+#define S_STAND_INSIDE_R			SENSOR2
+#define S_CUP_FRONT					SENSOR3
+#define S_CUP_REAR					SENSOR4
+#define S_STAND_EXCHANGER_ENDSTOP	SENSOR5
 
 /** ERROR NUMS */
 #define E_USER_I2C_PROTO   195
@@ -178,8 +171,6 @@ struct slavedspic {
 	stands_elevator_t stands_elevator_l, stands_elevator_r;
 	stands_tower_clamps_t stand_tower_clamps;
 
-	clapperboard_stick_t clapperboard_stick_l, clapperboard_stick_r;
-
 	cup_clamp_front_t cup_clamp_front;
 	cup_clamp_popcorn_door_t cup_clamp_popcorn_door_l, cup_clamp_popcorn_door_r;
 	popcorn_tray_t popcorn_tray;
@@ -187,8 +178,6 @@ struct slavedspic {
 
 	/* infos */
 	uint8_t status;
-	uint8_t stick_mode;
-	int8_t stick_offset;
 	uint8_t harvest_popcorn_mode;
 	uint8_t dump_popcorn_mode;
 	uint8_t stands_mode;

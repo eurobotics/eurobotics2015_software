@@ -31,48 +31,64 @@
 
 #define old_version
 
-#define LIFT_SPEED						100
-#define LIFT_ACCEL						1
-#define LIFT_K_IMP_mm					(-51474.0/250.0)
-#define LIFT_CALIB_IMP_MAX				0
-#define LIFT_HEIGHT_MAX_mm				250L
-#define LIFT_HEIGHT_MIN_mm				1L
+#define STANDS_EXCHANGER_SPEED				100
+#define STANDS_EXCHANGER_ACCEL				1
+#define STANDS_EXCHANGER_K_IMP_mm			(-51474.0/250.0)
+#define STANDS_EXCHANGER_CALIB_IMP_MAX		0
+#define STANDS_EXCHANGER_POSITION_MAX_mm	250L
+#define STANDS_EXCHANGER_POSITION_MIN_mm	1L
 
+#define POS_POPCORN_TRAY_OPEN		0
+#define POS_POPCORN_TRAY_CLOSE		0
 
+#define POS_STANDS_CLAMP_L_OPEN		0
+#define POS_STANDS_CLAMP_L_CLOSE	0
 
-#define POS_COMB_R_OPEN				600
-#define POS_COMB_R_HARVEST_OPEN		556
-#define POS_COMB_R_HARVEST_CLOSE 	503
-#define POS_COMB_R_HIDE				224
+#define POS_STANDS_CLAMP_R_OPEN		0
+#define POS_STANDS_CLAMP_R_CLOSE	0
 
-#define POS_COMB_L_OPEN				420
-#define POS_COMB_L_HARVEST_OPEN		469
-#define POS_COMB_L_HARVEST_CLOSE 	524
-#define POS_COMB_L_HIDE				792
+#define POS_STANDS_TOWER_CLAMPS_LOCK_LEFT	0
+#define POS_STANDS_TOWER_CLAMPS_OPEN		0
+#define POS_STANDS_TOWER_CLAMPS_LOCK_RIGHT	0
 
-#define POS_STICK_R_OFFSET				(770-542) /* after stick repair */
-#define POS_STICK_R_HIDE				(542 + POS_STICK_R_OFFSET)
-#define POS_STICK_R_PUSH_TORCH_FIRE		(350 + POS_STICK_R_OFFSET)				
-#define POS_STICK_R_PUSH_FIRE			(335 + POS_STICK_R_OFFSET)
-#define POS_STICK_R_CLEAN_HEART			(311 + POS_STICK_R_OFFSET)
-#define POS_STICK_R_CLEAN_FLOOR			(260 + POS_STICK_R_OFFSET)
+#define POS_STANDS_ELEVATOR_L_UP	0
+#define POS_STANDS_ELEVATOR_L_DOWN	0
 
-#define POS_STICK_L_OFFSET				(246-241) /* after stick repair */
-#define POS_STICK_L_HIDE				(241 + POS_STICK_L_OFFSET)
-#define POS_STICK_L_PUSH_TORCH_FIRE		(439 + POS_STICK_L_OFFSET)
-#define POS_STICK_L_PUSH_FIRE			(455 + POS_STICK_L_OFFSET)
-#define POS_STICK_L_CLEAN_HEART			(480 + POS_STICK_L_OFFSET)
-#define POS_STICK_L_CLEAN_FLOOR			(525 + POS_STICK_L_OFFSET)
+#define POS_STANDS_ELEVATOR_R_UP	0
+#define POS_STANDS_ELEVATOR_R_DOWN	0
 
+#define POS_STANDS_BLADE_L_HIDE_LEFT				0
+#define POS_STANDS_BLADE_L_HIDE_PUSH_STAND_LEFT		0
+#define POS_STANDS_BLADE_L_HIDE_CENTER				0
+#define POS_STANDS_BLADE_L_HIDE_PUSH_STAND_RIGHT	0
+#define POS_STANDS_BLADE_L_HIDE_RIGTH				0
 
-#define POS_BOOT_DOOR_OPEN		700			
-#define POS_BOOT_DOOR_CLOSE		960
+#define POS_STANDS_BLADE_R_HIDE_LEFT				0
+#define POS_STANDS_BLADE_R_HIDE_PUSH_STAND_LEFT		0
+#define POS_STANDS_BLADE_R_HIDE_CENTER				0
+#define POS_STANDS_BLADE_R_HIDE_PUSH_STAND_RIGHT	0
+#define POS_STANDS_BLADE_R_HIDE_RIGTH				0
 
-#define BOOT_TRAY_VIBRATE_PWM	(2000)
+#define POS_CUP_CLAMP_POPCORN_DOOR_L_HIDE			0
+#define POS_CUP_CLAMP_POPCORN_DOOR_L_CUP_LOCKED		0
+#define POS_CUP_CLAMP_POPCORN_DOOR_L_OPEN			0
+#define POS_CUP_CLAMP_POPCORN_DOOR_L_DOOR_OPEN		0
 
-#define POS_TREE_TRAY_OPEN		800
-#define POS_TREE_TRAY_HARVEST	530 //506
-#define POS_TREE_TRAY_CLOSE	358
+#define POS_CUP_CLAMP_POPCORN_DOOR_R_HIDE			0
+#define POS_CUP_CLAMP_POPCORN_DOOR_R_CUP_LOCKED		0
+#define POS_CUP_CLAMP_POPCORN_DOOR_R_OPEN			0
+#define POS_CUP_CLAMP_POPCORN_DOOR_R_DOOR_OPEN		0
+
+#define POS_POPCORN_RAMP_L_HIDE			0
+#define POS_POPCORN_RAMP_L_HARVEST		0
+#define POS_POPCORN_RAMP_L_OPEN			0
+
+#define POS_POPCORN_RAMP_R_HIDE			0
+#define POS_POPCORN_RAMP_R_HARVEST		0
+#define POS_POPCORN_RAMP_R_OPEN			0
+
+#define POS_CUP_CLAMP_FRONT_HIDE		0
+#define POS_CUP_CLAMP_FRONT_CUP_LOCKED	0
 
 
 /* test end traj */
@@ -86,25 +102,25 @@
 /* init actuators */
 void actuator_init(void);
 
-/**** lift functions ********************************************************/
+/**** stands_exchanger functions ********************************************************/
 
 /* stop without rampe */
-void lift_hard_stop(void);
+void stands_exchanger_hard_stop(void);
 
 /* calibrate initial position */
-void lift_calibrate(void);
+void stands_exchanger_calibrate(void);
 
-/* set height in mm */
-void lift_set_height(int32_t height_mm);
+/* set position in mm */
+void stands_exchanger_set_position(int32_t position_mm);
 
-/* return heigh in mm */
-int32_t lift_get_height(void);
-
-/* return END_TRAJ or END_BLOCKING */
-int8_t lift_check_height_reached(void);
+/* return position in mm */
+int32_t stands_exchanger_get_position(void);
 
 /* return END_TRAJ or END_BLOCKING */
-uint8_t lift_wait_end();
+int8_t stands_exchanger_check_position_reached(void);
+
+/* return END_TRAJ or END_BLOCKING */
+uint8_t stands_exchanger_wait_end();
 
 
 
