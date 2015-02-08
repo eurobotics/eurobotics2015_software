@@ -171,10 +171,10 @@ struct slavedspic {
 	stands_elevator_t stands_elevator_l, stands_elevator_r;
 	stands_tower_clamps_t stand_tower_clamps;
 
-	cup_clamp_front_t cup_clamp_front;
-	cup_clamp_popcorn_door_t cup_clamp_popcorn_door_l, cup_clamp_popcorn_door_r;
+	cup_clamp_popcorn_door_t cup_clamp_popcorn_door;
 	popcorn_tray_t popcorn_tray;
-	popcorn_ramp_t popcorn_ramp_l, popcorn_ramp_r;
+	popcorn_ramps_t popcorn_ramps;
+	cup_clamp_front_t cup_clamp_front;
 
 	/* infos */
 	uint8_t status;

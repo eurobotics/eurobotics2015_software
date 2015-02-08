@@ -286,14 +286,14 @@ int main(void)
 
 	/* servos */
 	//pwm_servo_init(&gen.pwm_servo_oc1, 1, 600, 2400);
-	pwm_servo_init(&gen.pwm_servo_oc2, 2, 600, 2400); /* net 1800 - 100 / off/on*/
-	//pwm_servo_init(&gen.pwm_servo_oc3, 3, 600, 2400);
-	//pwm_servo_init(&gen.pwm_servo_oc4, 4, 600, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc2, 2, 600, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc3, 3, 600, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc4, 4, 600, 2400);
 	pwm_servo_enable();
 	//pwm_servo_set(&gen.pwm_servo_oc1, 1000);
 	pwm_servo_set(&gen.pwm_servo_oc2, 1000);
-	//pwm_servo_set(&gen.pwm_servo_oc3, 1000);
-	//pwm_servo_set(&gen.pwm_servo_oc4, 1000);
+	pwm_servo_set(&gen.pwm_servo_oc3, 1000);
+	pwm_servo_set(&gen.pwm_servo_oc4, 1000);
 
 	/* SCHEDULER */
 	scheduler_init();

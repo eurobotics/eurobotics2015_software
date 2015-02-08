@@ -2,7 +2,7 @@
 MagicCookie={0b13fe8c-dfe0-40eb-8900-6712719559a7}
 Version=1.0
 [File000]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\cirbuf_get_tail.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\cirbuf_get_tail.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -15,7 +15,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File001]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\cirbuf.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\cirbuf.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -28,7 +28,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File002]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\cirbuf_add_buf_head.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\cirbuf_add_buf_head.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -41,7 +41,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File003]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\cirbuf_add_buf_tail.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\cirbuf_add_buf_tail.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -54,7 +54,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File004]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\cirbuf_add_head.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\cirbuf_add_head.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -67,7 +67,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File005]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\cirbuf_add_tail.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\cirbuf_add_tail.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -80,7 +80,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File006]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\cirbuf_align.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\cirbuf_align.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -93,7 +93,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File007]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\cirbuf_del_buf_head.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\cirbuf_del_buf_head.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -106,7 +106,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File008]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\cirbuf_del_buf_tail.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\cirbuf_del_buf_tail.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -119,7 +119,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File009]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\cirbuf_del_head.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\cirbuf_del_head.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -132,7 +132,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File010]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\cirbuf_del_tail.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\cirbuf_del_tail.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -145,7 +145,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File011]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\cirbuf_get_buf_head.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\cirbuf_get_buf_head.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -158,7 +158,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File012]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\cirbuf_get_buf_tail.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\cirbuf_get_buf_tail.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -171,7 +171,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File013]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\cirbuf_get_head.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\cirbuf_get_head.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -184,7 +184,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File014]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\uart_setconf.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\uart_setconf.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -197,7 +197,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File015]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\uart.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\uart.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -210,7 +210,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File016]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\uart_dev_io.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\uart_dev_io.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -223,7 +223,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File017]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\uart_recv.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\uart_recv.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -236,7 +236,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File018]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\uart_recv_nowait.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\uart_recv_nowait.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -249,7 +249,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File019]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\uart_send.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\uart_send.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -262,7 +262,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File020]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\uart_send_nowait.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\uart_send_nowait.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -275,7 +275,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File021]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\oscillator.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\oscillator.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -288,7 +288,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File022]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\parse.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\parse.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -301,7 +301,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File023]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\parse_num.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\parse_num.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -314,7 +314,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File024]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\parse_string.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\parse_string.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -327,7 +327,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File025]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\rdline.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\rdline.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -340,7 +340,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File026]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\vt100.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\vt100.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -353,7 +353,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File027]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\scheduler.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\scheduler.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -366,7 +366,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File028]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\scheduler_add.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\scheduler_add.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -379,7 +379,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File029]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\scheduler_del.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\scheduler_del.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -392,7 +392,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File030]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\scheduler_dump.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\scheduler_dump.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -405,7 +405,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File031]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\scheduler_interrupt.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\scheduler_interrupt.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -418,7 +418,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File032]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\time.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\time.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -431,7 +431,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File033]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\error.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\error.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -444,7 +444,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File034]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\uart_events.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\uart_events.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -457,7 +457,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File035]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\ax12.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\ax12.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -470,7 +470,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File036]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\commands_gen.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\commands_gen.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -483,7 +483,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File037]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\main.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\main.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -496,7 +496,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File038]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\cmdline.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\cmdline.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -509,7 +509,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File039]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\commands.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\commands.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -522,7 +522,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File040]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\ax12_user.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\ax12_user.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -535,7 +535,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File041]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\sensor.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\sensor.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -548,7 +548,7 @@ ToolArgsString=-g -Wall -Os
 TraceCmdString=
 DebugOptions=
 [File042]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\i2c_slave_lite.o
+Location=C:\Users\Rubén\Desktop\Eurobot\software\slavedspic\compiled_files\i2c_slave_lite.o
 Folder=Intermediary
 DeviceName=dsPIC33FJ64MC804
 LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
@@ -558,214 +558,6 @@ PPAD=$(BINDIR)|.\output_files||$(TMPDIR)|.\compiled_files||$(AINDIR)||$(INCDIR)|
 SOLK=<src>|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_align.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_head.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_setconf.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_dev_io.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv_nowait.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send_nowait.c|..\libs\aversive4dspic\modules\hardware\dspic\oscillator\oscillator.c|..\libs\aversive4dspic\modules\ihm\parse\parse.c|..\libs\aversive4dspic\modules\ihm\parse\parse_num.c|..\libs\aversive4dspic\modules\ihm\parse\parse_string.c|..\libs\aversive4dspic\modules\ihm\rdline\rdline.c|..\libs\aversive4dspic\modules\ihm\vt100\vt100.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_add.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_del.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_dump.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_interrupt.c|..\libs\aversive4dspic\modules\base\time\time.c|..\libs\aversive4dspic\modules\debug\error\error.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_events.c|..\libs\aversive4dspic\modules\devices\servo\ax12\ax12.c|commands_gen.c|main.c|cmdline.c|commands.c|ax12_user.c|sensor.c|i2c_slave_lite.c|i2c_protocol.c|..\common\traps.c|actuator.c|state.c|commands_slavedspic.c|..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic\encoders_dspic.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc\pwm_mc.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo\pwm_servo.c|..\libs\aversive4dspic\modules\devices\control_system\filters\pid\pid.c|..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp\quadramp.c|..\libs\aversive4dspic\modules\devices\control_system\control_system_manager\control_system_manager.c|cs.c|..\libs\aversive4dspic\modules\hardware\dspic\dac_mc\dac_mc.c|..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.c||<obj>||<lib>||<lkr>||
 SuiteArgsString=
 ToolArgsString=-g -Wall -Os
-TraceCmdString=
-DebugOptions=
-[File043]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\i2c_protocol.o
-Folder=Intermediary
-DeviceName=dsPIC33FJ64MC804
-LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
-LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
-PPAD=$(BINDIR)|.\output_files||$(TMPDIR)|.\compiled_files||$(AINDIR)||$(INCDIR)|.;..\libs\aversive4dspic\include;..\libs\aversive4dspic\include\aversive;..\libs\aversive4dspic\include\aversive\dspic;..\libs\aversive4dspic\modules\base\cirbuf;..\libs\aversive4dspic\modules\base\scheduler;..\libs\aversive4dspic\modules\base\math\fixed_point;..\libs\aversive4dspic\modules\base\math\geometry;..\libs\aversive4dspic\modules\base\math\vect2;..\libs\aversive4dspic\modules\base\time;..\libs\aversive4dspic\modules\debug;..\libs\aversive4dspic\modules\debug\error;..\libs\aversive4dspic\modules\debug\diagnostic;..\libs\aversive4dspic\modules\comm\dspic\uart;..\libs\aversive4dspic\modules\ihm\parse;..\libs\aversive4dspic\modules\ihm\rdline;..\libs\aversive4dspic\modules\ihm\vt100;..\libs\aversive4dspic\modules\hardware\dspic\oscillator;..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc;..\libs\aversive4dspic\modules\hardware\dspic\dac_mc;..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo;..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic;..\libs\aversive4dspic\modules\devices\control_system\filters\pid;..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp;..\libs\aversive4dspic\modules\devices\control_system\control_system_manager;..\libs\aversive4dspic\modules\devices\robot\robot_system;..\libs\aversive4dspic\modules\devices\robot\trajectory_manager;..\libs\aversive4dspic\modules\devices\robot\position_manager;..\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance;..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager;..\libs\aversive4dspic\modules\devices\servo\ax12||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_align.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_head.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_setconf.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_dev_io.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv_nowait.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send_nowait.c|..\libs\aversive4dspic\modules\hardware\dspic\oscillator\oscillator.c|..\libs\aversive4dspic\modules\ihm\parse\parse.c|..\libs\aversive4dspic\modules\ihm\parse\parse_num.c|..\libs\aversive4dspic\modules\ihm\parse\parse_string.c|..\libs\aversive4dspic\modules\ihm\rdline\rdline.c|..\libs\aversive4dspic\modules\ihm\vt100\vt100.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_add.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_del.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_dump.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_interrupt.c|..\libs\aversive4dspic\modules\base\time\time.c|..\libs\aversive4dspic\modules\debug\error\error.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_events.c|..\libs\aversive4dspic\modules\devices\servo\ax12\ax12.c|commands_gen.c|main.c|cmdline.c|commands.c|ax12_user.c|sensor.c|i2c_slave_lite.c|i2c_protocol.c|..\common\traps.c|actuator.c|state.c|commands_slavedspic.c|..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic\encoders_dspic.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc\pwm_mc.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo\pwm_servo.c|..\libs\aversive4dspic\modules\devices\control_system\filters\pid\pid.c|..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp\quadramp.c|..\libs\aversive4dspic\modules\devices\control_system\control_system_manager\control_system_manager.c|cs.c|..\libs\aversive4dspic\modules\hardware\dspic\dac_mc\dac_mc.c|..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-g -Wall -Os
-TraceCmdString=
-DebugOptions=
-[File044]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\traps.o
-Folder=Intermediary
-DeviceName=dsPIC33FJ64MC804
-LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
-LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
-PPAD=$(BINDIR)|.\output_files||$(TMPDIR)|.\compiled_files||$(AINDIR)||$(INCDIR)|.;..\libs\aversive4dspic\include;..\libs\aversive4dspic\include\aversive;..\libs\aversive4dspic\include\aversive\dspic;..\libs\aversive4dspic\modules\base\cirbuf;..\libs\aversive4dspic\modules\base\scheduler;..\libs\aversive4dspic\modules\base\math\fixed_point;..\libs\aversive4dspic\modules\base\math\geometry;..\libs\aversive4dspic\modules\base\math\vect2;..\libs\aversive4dspic\modules\base\time;..\libs\aversive4dspic\modules\debug;..\libs\aversive4dspic\modules\debug\error;..\libs\aversive4dspic\modules\debug\diagnostic;..\libs\aversive4dspic\modules\comm\dspic\uart;..\libs\aversive4dspic\modules\ihm\parse;..\libs\aversive4dspic\modules\ihm\rdline;..\libs\aversive4dspic\modules\ihm\vt100;..\libs\aversive4dspic\modules\hardware\dspic\oscillator;..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc;..\libs\aversive4dspic\modules\hardware\dspic\dac_mc;..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo;..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic;..\libs\aversive4dspic\modules\devices\control_system\filters\pid;..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp;..\libs\aversive4dspic\modules\devices\control_system\control_system_manager;..\libs\aversive4dspic\modules\devices\robot\robot_system;..\libs\aversive4dspic\modules\devices\robot\trajectory_manager;..\libs\aversive4dspic\modules\devices\robot\position_manager;..\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance;..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager;..\libs\aversive4dspic\modules\devices\servo\ax12||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_align.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_head.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_setconf.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_dev_io.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv_nowait.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send_nowait.c|..\libs\aversive4dspic\modules\hardware\dspic\oscillator\oscillator.c|..\libs\aversive4dspic\modules\ihm\parse\parse.c|..\libs\aversive4dspic\modules\ihm\parse\parse_num.c|..\libs\aversive4dspic\modules\ihm\parse\parse_string.c|..\libs\aversive4dspic\modules\ihm\rdline\rdline.c|..\libs\aversive4dspic\modules\ihm\vt100\vt100.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_add.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_del.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_dump.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_interrupt.c|..\libs\aversive4dspic\modules\base\time\time.c|..\libs\aversive4dspic\modules\debug\error\error.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_events.c|..\libs\aversive4dspic\modules\devices\servo\ax12\ax12.c|commands_gen.c|main.c|cmdline.c|commands.c|ax12_user.c|sensor.c|i2c_slave_lite.c|i2c_protocol.c|..\common\traps.c|actuator.c|state.c|commands_slavedspic.c|..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic\encoders_dspic.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc\pwm_mc.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo\pwm_servo.c|..\libs\aversive4dspic\modules\devices\control_system\filters\pid\pid.c|..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp\quadramp.c|..\libs\aversive4dspic\modules\devices\control_system\control_system_manager\control_system_manager.c|cs.c|..\libs\aversive4dspic\modules\hardware\dspic\dac_mc\dac_mc.c|..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-g -Wall -Os
-TraceCmdString=
-DebugOptions=
-[File045]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\actuator.o
-Folder=Intermediary
-DeviceName=dsPIC33FJ64MC804
-LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
-LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
-PPAD=$(BINDIR)|.\output_files||$(TMPDIR)|.\compiled_files||$(AINDIR)||$(INCDIR)|.;..\libs\aversive4dspic\include;..\libs\aversive4dspic\include\aversive;..\libs\aversive4dspic\include\aversive\dspic;..\libs\aversive4dspic\modules\base\cirbuf;..\libs\aversive4dspic\modules\base\scheduler;..\libs\aversive4dspic\modules\base\math\fixed_point;..\libs\aversive4dspic\modules\base\math\geometry;..\libs\aversive4dspic\modules\base\math\vect2;..\libs\aversive4dspic\modules\base\time;..\libs\aversive4dspic\modules\debug;..\libs\aversive4dspic\modules\debug\error;..\libs\aversive4dspic\modules\debug\diagnostic;..\libs\aversive4dspic\modules\comm\dspic\uart;..\libs\aversive4dspic\modules\ihm\parse;..\libs\aversive4dspic\modules\ihm\rdline;..\libs\aversive4dspic\modules\ihm\vt100;..\libs\aversive4dspic\modules\hardware\dspic\oscillator;..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc;..\libs\aversive4dspic\modules\hardware\dspic\dac_mc;..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo;..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic;..\libs\aversive4dspic\modules\devices\control_system\filters\pid;..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp;..\libs\aversive4dspic\modules\devices\control_system\control_system_manager;..\libs\aversive4dspic\modules\devices\robot\robot_system;..\libs\aversive4dspic\modules\devices\robot\trajectory_manager;..\libs\aversive4dspic\modules\devices\robot\position_manager;..\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance;..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager;..\libs\aversive4dspic\modules\devices\servo\ax12||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_align.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_head.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_setconf.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_dev_io.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv_nowait.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send_nowait.c|..\libs\aversive4dspic\modules\hardware\dspic\oscillator\oscillator.c|..\libs\aversive4dspic\modules\ihm\parse\parse.c|..\libs\aversive4dspic\modules\ihm\parse\parse_num.c|..\libs\aversive4dspic\modules\ihm\parse\parse_string.c|..\libs\aversive4dspic\modules\ihm\rdline\rdline.c|..\libs\aversive4dspic\modules\ihm\vt100\vt100.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_add.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_del.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_dump.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_interrupt.c|..\libs\aversive4dspic\modules\base\time\time.c|..\libs\aversive4dspic\modules\debug\error\error.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_events.c|..\libs\aversive4dspic\modules\devices\servo\ax12\ax12.c|commands_gen.c|main.c|cmdline.c|commands.c|ax12_user.c|sensor.c|i2c_slave_lite.c|i2c_protocol.c|..\common\traps.c|actuator.c|state.c|commands_slavedspic.c|..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic\encoders_dspic.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc\pwm_mc.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo\pwm_servo.c|..\libs\aversive4dspic\modules\devices\control_system\filters\pid\pid.c|..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp\quadramp.c|..\libs\aversive4dspic\modules\devices\control_system\control_system_manager\control_system_manager.c|cs.c|..\libs\aversive4dspic\modules\hardware\dspic\dac_mc\dac_mc.c|..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-g -Wall -Os
-TraceCmdString=
-DebugOptions=
-[File046]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\state.o
-Folder=Intermediary
-DeviceName=dsPIC33FJ64MC804
-LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
-LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
-PPAD=$(BINDIR)|.\output_files||$(TMPDIR)|.\compiled_files||$(AINDIR)||$(INCDIR)|.;..\libs\aversive4dspic\include;..\libs\aversive4dspic\include\aversive;..\libs\aversive4dspic\include\aversive\dspic;..\libs\aversive4dspic\modules\base\cirbuf;..\libs\aversive4dspic\modules\base\scheduler;..\libs\aversive4dspic\modules\base\math\fixed_point;..\libs\aversive4dspic\modules\base\math\geometry;..\libs\aversive4dspic\modules\base\math\vect2;..\libs\aversive4dspic\modules\base\time;..\libs\aversive4dspic\modules\debug;..\libs\aversive4dspic\modules\debug\error;..\libs\aversive4dspic\modules\debug\diagnostic;..\libs\aversive4dspic\modules\comm\dspic\uart;..\libs\aversive4dspic\modules\ihm\parse;..\libs\aversive4dspic\modules\ihm\rdline;..\libs\aversive4dspic\modules\ihm\vt100;..\libs\aversive4dspic\modules\hardware\dspic\oscillator;..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc;..\libs\aversive4dspic\modules\hardware\dspic\dac_mc;..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo;..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic;..\libs\aversive4dspic\modules\devices\control_system\filters\pid;..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp;..\libs\aversive4dspic\modules\devices\control_system\control_system_manager;..\libs\aversive4dspic\modules\devices\robot\robot_system;..\libs\aversive4dspic\modules\devices\robot\trajectory_manager;..\libs\aversive4dspic\modules\devices\robot\position_manager;..\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance;..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager;..\libs\aversive4dspic\modules\devices\servo\ax12||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_align.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_head.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_setconf.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_dev_io.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv_nowait.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send_nowait.c|..\libs\aversive4dspic\modules\hardware\dspic\oscillator\oscillator.c|..\libs\aversive4dspic\modules\ihm\parse\parse.c|..\libs\aversive4dspic\modules\ihm\parse\parse_num.c|..\libs\aversive4dspic\modules\ihm\parse\parse_string.c|..\libs\aversive4dspic\modules\ihm\rdline\rdline.c|..\libs\aversive4dspic\modules\ihm\vt100\vt100.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_add.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_del.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_dump.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_interrupt.c|..\libs\aversive4dspic\modules\base\time\time.c|..\libs\aversive4dspic\modules\debug\error\error.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_events.c|..\libs\aversive4dspic\modules\devices\servo\ax12\ax12.c|commands_gen.c|main.c|cmdline.c|commands.c|ax12_user.c|sensor.c|i2c_slave_lite.c|i2c_protocol.c|..\common\traps.c|actuator.c|state.c|commands_slavedspic.c|..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic\encoders_dspic.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc\pwm_mc.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo\pwm_servo.c|..\libs\aversive4dspic\modules\devices\control_system\filters\pid\pid.c|..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp\quadramp.c|..\libs\aversive4dspic\modules\devices\control_system\control_system_manager\control_system_manager.c|cs.c|..\libs\aversive4dspic\modules\hardware\dspic\dac_mc\dac_mc.c|..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-g -Wall -Os
-TraceCmdString=
-DebugOptions=
-[File047]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\commands_slavedspic.o
-Folder=Intermediary
-DeviceName=dsPIC33FJ64MC804
-LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
-LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
-PPAD=$(BINDIR)|.\output_files||$(TMPDIR)|.\compiled_files||$(AINDIR)||$(INCDIR)|.;..\libs\aversive4dspic\include;..\libs\aversive4dspic\include\aversive;..\libs\aversive4dspic\include\aversive\dspic;..\libs\aversive4dspic\modules\base\cirbuf;..\libs\aversive4dspic\modules\base\scheduler;..\libs\aversive4dspic\modules\base\math\fixed_point;..\libs\aversive4dspic\modules\base\math\geometry;..\libs\aversive4dspic\modules\base\math\vect2;..\libs\aversive4dspic\modules\base\time;..\libs\aversive4dspic\modules\debug;..\libs\aversive4dspic\modules\debug\error;..\libs\aversive4dspic\modules\debug\diagnostic;..\libs\aversive4dspic\modules\comm\dspic\uart;..\libs\aversive4dspic\modules\ihm\parse;..\libs\aversive4dspic\modules\ihm\rdline;..\libs\aversive4dspic\modules\ihm\vt100;..\libs\aversive4dspic\modules\hardware\dspic\oscillator;..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc;..\libs\aversive4dspic\modules\hardware\dspic\dac_mc;..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo;..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic;..\libs\aversive4dspic\modules\devices\control_system\filters\pid;..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp;..\libs\aversive4dspic\modules\devices\control_system\control_system_manager;..\libs\aversive4dspic\modules\devices\robot\robot_system;..\libs\aversive4dspic\modules\devices\robot\trajectory_manager;..\libs\aversive4dspic\modules\devices\robot\position_manager;..\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance;..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager;..\libs\aversive4dspic\modules\devices\servo\ax12||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_align.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_head.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_setconf.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_dev_io.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv_nowait.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send_nowait.c|..\libs\aversive4dspic\modules\hardware\dspic\oscillator\oscillator.c|..\libs\aversive4dspic\modules\ihm\parse\parse.c|..\libs\aversive4dspic\modules\ihm\parse\parse_num.c|..\libs\aversive4dspic\modules\ihm\parse\parse_string.c|..\libs\aversive4dspic\modules\ihm\rdline\rdline.c|..\libs\aversive4dspic\modules\ihm\vt100\vt100.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_add.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_del.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_dump.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_interrupt.c|..\libs\aversive4dspic\modules\base\time\time.c|..\libs\aversive4dspic\modules\debug\error\error.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_events.c|..\libs\aversive4dspic\modules\devices\servo\ax12\ax12.c|commands_gen.c|main.c|cmdline.c|commands.c|ax12_user.c|sensor.c|i2c_slave_lite.c|i2c_protocol.c|..\common\traps.c|actuator.c|state.c|commands_slavedspic.c|..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic\encoders_dspic.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc\pwm_mc.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo\pwm_servo.c|..\libs\aversive4dspic\modules\devices\control_system\filters\pid\pid.c|..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp\quadramp.c|..\libs\aversive4dspic\modules\devices\control_system\control_system_manager\control_system_manager.c|cs.c|..\libs\aversive4dspic\modules\hardware\dspic\dac_mc\dac_mc.c|..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-g -Wall -Os
-TraceCmdString=
-DebugOptions=
-[File048]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\encoders_dspic.o
-Folder=Intermediary
-DeviceName=dsPIC33FJ64MC804
-LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
-LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
-PPAD=$(BINDIR)|.\output_files||$(TMPDIR)|.\compiled_files||$(AINDIR)||$(INCDIR)|.;..\libs\aversive4dspic\include;..\libs\aversive4dspic\include\aversive;..\libs\aversive4dspic\include\aversive\dspic;..\libs\aversive4dspic\modules\base\cirbuf;..\libs\aversive4dspic\modules\base\scheduler;..\libs\aversive4dspic\modules\base\math\fixed_point;..\libs\aversive4dspic\modules\base\math\geometry;..\libs\aversive4dspic\modules\base\math\vect2;..\libs\aversive4dspic\modules\base\time;..\libs\aversive4dspic\modules\debug;..\libs\aversive4dspic\modules\debug\error;..\libs\aversive4dspic\modules\debug\diagnostic;..\libs\aversive4dspic\modules\comm\dspic\uart;..\libs\aversive4dspic\modules\ihm\parse;..\libs\aversive4dspic\modules\ihm\rdline;..\libs\aversive4dspic\modules\ihm\vt100;..\libs\aversive4dspic\modules\hardware\dspic\oscillator;..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc;..\libs\aversive4dspic\modules\hardware\dspic\dac_mc;..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo;..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic;..\libs\aversive4dspic\modules\devices\control_system\filters\pid;..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp;..\libs\aversive4dspic\modules\devices\control_system\control_system_manager;..\libs\aversive4dspic\modules\devices\robot\robot_system;..\libs\aversive4dspic\modules\devices\robot\trajectory_manager;..\libs\aversive4dspic\modules\devices\robot\position_manager;..\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance;..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager;..\libs\aversive4dspic\modules\devices\servo\ax12||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_align.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_head.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_setconf.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_dev_io.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv_nowait.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send_nowait.c|..\libs\aversive4dspic\modules\hardware\dspic\oscillator\oscillator.c|..\libs\aversive4dspic\modules\ihm\parse\parse.c|..\libs\aversive4dspic\modules\ihm\parse\parse_num.c|..\libs\aversive4dspic\modules\ihm\parse\parse_string.c|..\libs\aversive4dspic\modules\ihm\rdline\rdline.c|..\libs\aversive4dspic\modules\ihm\vt100\vt100.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_add.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_del.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_dump.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_interrupt.c|..\libs\aversive4dspic\modules\base\time\time.c|..\libs\aversive4dspic\modules\debug\error\error.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_events.c|..\libs\aversive4dspic\modules\devices\servo\ax12\ax12.c|commands_gen.c|main.c|cmdline.c|commands.c|ax12_user.c|sensor.c|i2c_slave_lite.c|i2c_protocol.c|..\common\traps.c|actuator.c|state.c|commands_slavedspic.c|..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic\encoders_dspic.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc\pwm_mc.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo\pwm_servo.c|..\libs\aversive4dspic\modules\devices\control_system\filters\pid\pid.c|..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp\quadramp.c|..\libs\aversive4dspic\modules\devices\control_system\control_system_manager\control_system_manager.c|cs.c|..\libs\aversive4dspic\modules\hardware\dspic\dac_mc\dac_mc.c|..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-g -Wall -Os
-TraceCmdString=
-DebugOptions=
-[File049]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\pwm_mc.o
-Folder=Intermediary
-DeviceName=dsPIC33FJ64MC804
-LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
-LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
-PPAD=$(BINDIR)|.\output_files||$(TMPDIR)|.\compiled_files||$(AINDIR)||$(INCDIR)|.;..\libs\aversive4dspic\include;..\libs\aversive4dspic\include\aversive;..\libs\aversive4dspic\include\aversive\dspic;..\libs\aversive4dspic\modules\base\cirbuf;..\libs\aversive4dspic\modules\base\scheduler;..\libs\aversive4dspic\modules\base\math\fixed_point;..\libs\aversive4dspic\modules\base\math\geometry;..\libs\aversive4dspic\modules\base\math\vect2;..\libs\aversive4dspic\modules\base\time;..\libs\aversive4dspic\modules\debug;..\libs\aversive4dspic\modules\debug\error;..\libs\aversive4dspic\modules\debug\diagnostic;..\libs\aversive4dspic\modules\comm\dspic\uart;..\libs\aversive4dspic\modules\ihm\parse;..\libs\aversive4dspic\modules\ihm\rdline;..\libs\aversive4dspic\modules\ihm\vt100;..\libs\aversive4dspic\modules\hardware\dspic\oscillator;..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc;..\libs\aversive4dspic\modules\hardware\dspic\dac_mc;..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo;..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic;..\libs\aversive4dspic\modules\devices\control_system\filters\pid;..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp;..\libs\aversive4dspic\modules\devices\control_system\control_system_manager;..\libs\aversive4dspic\modules\devices\robot\robot_system;..\libs\aversive4dspic\modules\devices\robot\trajectory_manager;..\libs\aversive4dspic\modules\devices\robot\position_manager;..\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance;..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager;..\libs\aversive4dspic\modules\devices\servo\ax12||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_align.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_head.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_setconf.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_dev_io.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv_nowait.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send_nowait.c|..\libs\aversive4dspic\modules\hardware\dspic\oscillator\oscillator.c|..\libs\aversive4dspic\modules\ihm\parse\parse.c|..\libs\aversive4dspic\modules\ihm\parse\parse_num.c|..\libs\aversive4dspic\modules\ihm\parse\parse_string.c|..\libs\aversive4dspic\modules\ihm\rdline\rdline.c|..\libs\aversive4dspic\modules\ihm\vt100\vt100.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_add.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_del.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_dump.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_interrupt.c|..\libs\aversive4dspic\modules\base\time\time.c|..\libs\aversive4dspic\modules\debug\error\error.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_events.c|..\libs\aversive4dspic\modules\devices\servo\ax12\ax12.c|commands_gen.c|main.c|cmdline.c|commands.c|ax12_user.c|sensor.c|i2c_slave_lite.c|i2c_protocol.c|..\common\traps.c|actuator.c|state.c|commands_slavedspic.c|..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic\encoders_dspic.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc\pwm_mc.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo\pwm_servo.c|..\libs\aversive4dspic\modules\devices\control_system\filters\pid\pid.c|..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp\quadramp.c|..\libs\aversive4dspic\modules\devices\control_system\control_system_manager\control_system_manager.c|cs.c|..\libs\aversive4dspic\modules\hardware\dspic\dac_mc\dac_mc.c|..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-g -Wall -Os
-TraceCmdString=
-DebugOptions=
-[File050]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\pwm_servo.o
-Folder=Intermediary
-DeviceName=dsPIC33FJ64MC804
-LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
-LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
-PPAD=$(BINDIR)|.\output_files||$(TMPDIR)|.\compiled_files||$(AINDIR)||$(INCDIR)|.;..\libs\aversive4dspic\include;..\libs\aversive4dspic\include\aversive;..\libs\aversive4dspic\include\aversive\dspic;..\libs\aversive4dspic\modules\base\cirbuf;..\libs\aversive4dspic\modules\base\scheduler;..\libs\aversive4dspic\modules\base\math\fixed_point;..\libs\aversive4dspic\modules\base\math\geometry;..\libs\aversive4dspic\modules\base\math\vect2;..\libs\aversive4dspic\modules\base\time;..\libs\aversive4dspic\modules\debug;..\libs\aversive4dspic\modules\debug\error;..\libs\aversive4dspic\modules\debug\diagnostic;..\libs\aversive4dspic\modules\comm\dspic\uart;..\libs\aversive4dspic\modules\ihm\parse;..\libs\aversive4dspic\modules\ihm\rdline;..\libs\aversive4dspic\modules\ihm\vt100;..\libs\aversive4dspic\modules\hardware\dspic\oscillator;..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc;..\libs\aversive4dspic\modules\hardware\dspic\dac_mc;..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo;..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic;..\libs\aversive4dspic\modules\devices\control_system\filters\pid;..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp;..\libs\aversive4dspic\modules\devices\control_system\control_system_manager;..\libs\aversive4dspic\modules\devices\robot\robot_system;..\libs\aversive4dspic\modules\devices\robot\trajectory_manager;..\libs\aversive4dspic\modules\devices\robot\position_manager;..\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance;..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager;..\libs\aversive4dspic\modules\devices\servo\ax12||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_align.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_head.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_setconf.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_dev_io.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv_nowait.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send_nowait.c|..\libs\aversive4dspic\modules\hardware\dspic\oscillator\oscillator.c|..\libs\aversive4dspic\modules\ihm\parse\parse.c|..\libs\aversive4dspic\modules\ihm\parse\parse_num.c|..\libs\aversive4dspic\modules\ihm\parse\parse_string.c|..\libs\aversive4dspic\modules\ihm\rdline\rdline.c|..\libs\aversive4dspic\modules\ihm\vt100\vt100.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_add.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_del.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_dump.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_interrupt.c|..\libs\aversive4dspic\modules\base\time\time.c|..\libs\aversive4dspic\modules\debug\error\error.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_events.c|..\libs\aversive4dspic\modules\devices\servo\ax12\ax12.c|commands_gen.c|main.c|cmdline.c|commands.c|ax12_user.c|sensor.c|i2c_slave_lite.c|i2c_protocol.c|..\common\traps.c|actuator.c|state.c|commands_slavedspic.c|..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic\encoders_dspic.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc\pwm_mc.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo\pwm_servo.c|..\libs\aversive4dspic\modules\devices\control_system\filters\pid\pid.c|..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp\quadramp.c|..\libs\aversive4dspic\modules\devices\control_system\control_system_manager\control_system_manager.c|cs.c|..\libs\aversive4dspic\modules\hardware\dspic\dac_mc\dac_mc.c|..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-g -Wall -Os
-TraceCmdString=
-DebugOptions=
-[File051]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\pid.o
-Folder=Intermediary
-DeviceName=dsPIC33FJ64MC804
-LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
-LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
-PPAD=$(BINDIR)|.\output_files||$(TMPDIR)|.\compiled_files||$(AINDIR)||$(INCDIR)|.;..\libs\aversive4dspic\include;..\libs\aversive4dspic\include\aversive;..\libs\aversive4dspic\include\aversive\dspic;..\libs\aversive4dspic\modules\base\cirbuf;..\libs\aversive4dspic\modules\base\scheduler;..\libs\aversive4dspic\modules\base\math\fixed_point;..\libs\aversive4dspic\modules\base\math\geometry;..\libs\aversive4dspic\modules\base\math\vect2;..\libs\aversive4dspic\modules\base\time;..\libs\aversive4dspic\modules\debug;..\libs\aversive4dspic\modules\debug\error;..\libs\aversive4dspic\modules\debug\diagnostic;..\libs\aversive4dspic\modules\comm\dspic\uart;..\libs\aversive4dspic\modules\ihm\parse;..\libs\aversive4dspic\modules\ihm\rdline;..\libs\aversive4dspic\modules\ihm\vt100;..\libs\aversive4dspic\modules\hardware\dspic\oscillator;..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc;..\libs\aversive4dspic\modules\hardware\dspic\dac_mc;..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo;..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic;..\libs\aversive4dspic\modules\devices\control_system\filters\pid;..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp;..\libs\aversive4dspic\modules\devices\control_system\control_system_manager;..\libs\aversive4dspic\modules\devices\robot\robot_system;..\libs\aversive4dspic\modules\devices\robot\trajectory_manager;..\libs\aversive4dspic\modules\devices\robot\position_manager;..\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance;..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager;..\libs\aversive4dspic\modules\devices\servo\ax12||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_align.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_head.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_setconf.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_dev_io.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv_nowait.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send_nowait.c|..\libs\aversive4dspic\modules\hardware\dspic\oscillator\oscillator.c|..\libs\aversive4dspic\modules\ihm\parse\parse.c|..\libs\aversive4dspic\modules\ihm\parse\parse_num.c|..\libs\aversive4dspic\modules\ihm\parse\parse_string.c|..\libs\aversive4dspic\modules\ihm\rdline\rdline.c|..\libs\aversive4dspic\modules\ihm\vt100\vt100.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_add.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_del.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_dump.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_interrupt.c|..\libs\aversive4dspic\modules\base\time\time.c|..\libs\aversive4dspic\modules\debug\error\error.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_events.c|..\libs\aversive4dspic\modules\devices\servo\ax12\ax12.c|commands_gen.c|main.c|cmdline.c|commands.c|ax12_user.c|sensor.c|i2c_slave_lite.c|i2c_protocol.c|..\common\traps.c|actuator.c|state.c|commands_slavedspic.c|..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic\encoders_dspic.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc\pwm_mc.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo\pwm_servo.c|..\libs\aversive4dspic\modules\devices\control_system\filters\pid\pid.c|..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp\quadramp.c|..\libs\aversive4dspic\modules\devices\control_system\control_system_manager\control_system_manager.c|cs.c|..\libs\aversive4dspic\modules\hardware\dspic\dac_mc\dac_mc.c|..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-g -Wall -Os
-TraceCmdString=
-DebugOptions=
-[File052]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\quadramp.o
-Folder=Intermediary
-DeviceName=dsPIC33FJ64MC804
-LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
-LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
-PPAD=$(BINDIR)|.\output_files||$(TMPDIR)|.\compiled_files||$(AINDIR)||$(INCDIR)|.;..\libs\aversive4dspic\include;..\libs\aversive4dspic\include\aversive;..\libs\aversive4dspic\include\aversive\dspic;..\libs\aversive4dspic\modules\base\cirbuf;..\libs\aversive4dspic\modules\base\scheduler;..\libs\aversive4dspic\modules\base\math\fixed_point;..\libs\aversive4dspic\modules\base\math\geometry;..\libs\aversive4dspic\modules\base\math\vect2;..\libs\aversive4dspic\modules\base\time;..\libs\aversive4dspic\modules\debug;..\libs\aversive4dspic\modules\debug\error;..\libs\aversive4dspic\modules\debug\diagnostic;..\libs\aversive4dspic\modules\comm\dspic\uart;..\libs\aversive4dspic\modules\ihm\parse;..\libs\aversive4dspic\modules\ihm\rdline;..\libs\aversive4dspic\modules\ihm\vt100;..\libs\aversive4dspic\modules\hardware\dspic\oscillator;..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc;..\libs\aversive4dspic\modules\hardware\dspic\dac_mc;..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo;..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic;..\libs\aversive4dspic\modules\devices\control_system\filters\pid;..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp;..\libs\aversive4dspic\modules\devices\control_system\control_system_manager;..\libs\aversive4dspic\modules\devices\robot\robot_system;..\libs\aversive4dspic\modules\devices\robot\trajectory_manager;..\libs\aversive4dspic\modules\devices\robot\position_manager;..\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance;..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager;..\libs\aversive4dspic\modules\devices\servo\ax12||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_align.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_head.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_setconf.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_dev_io.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv_nowait.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send_nowait.c|..\libs\aversive4dspic\modules\hardware\dspic\oscillator\oscillator.c|..\libs\aversive4dspic\modules\ihm\parse\parse.c|..\libs\aversive4dspic\modules\ihm\parse\parse_num.c|..\libs\aversive4dspic\modules\ihm\parse\parse_string.c|..\libs\aversive4dspic\modules\ihm\rdline\rdline.c|..\libs\aversive4dspic\modules\ihm\vt100\vt100.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_add.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_del.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_dump.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_interrupt.c|..\libs\aversive4dspic\modules\base\time\time.c|..\libs\aversive4dspic\modules\debug\error\error.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_events.c|..\libs\aversive4dspic\modules\devices\servo\ax12\ax12.c|commands_gen.c|main.c|cmdline.c|commands.c|ax12_user.c|sensor.c|i2c_slave_lite.c|i2c_protocol.c|..\common\traps.c|actuator.c|state.c|commands_slavedspic.c|..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic\encoders_dspic.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc\pwm_mc.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo\pwm_servo.c|..\libs\aversive4dspic\modules\devices\control_system\filters\pid\pid.c|..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp\quadramp.c|..\libs\aversive4dspic\modules\devices\control_system\control_system_manager\control_system_manager.c|cs.c|..\libs\aversive4dspic\modules\hardware\dspic\dac_mc\dac_mc.c|..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-g -Wall -Os
-TraceCmdString=
-DebugOptions=
-[File053]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\control_system_manager.o
-Folder=Intermediary
-DeviceName=dsPIC33FJ64MC804
-LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
-LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
-PPAD=$(BINDIR)|.\output_files||$(TMPDIR)|.\compiled_files||$(AINDIR)||$(INCDIR)|.;..\libs\aversive4dspic\include;..\libs\aversive4dspic\include\aversive;..\libs\aversive4dspic\include\aversive\dspic;..\libs\aversive4dspic\modules\base\cirbuf;..\libs\aversive4dspic\modules\base\scheduler;..\libs\aversive4dspic\modules\base\math\fixed_point;..\libs\aversive4dspic\modules\base\math\geometry;..\libs\aversive4dspic\modules\base\math\vect2;..\libs\aversive4dspic\modules\base\time;..\libs\aversive4dspic\modules\debug;..\libs\aversive4dspic\modules\debug\error;..\libs\aversive4dspic\modules\debug\diagnostic;..\libs\aversive4dspic\modules\comm\dspic\uart;..\libs\aversive4dspic\modules\ihm\parse;..\libs\aversive4dspic\modules\ihm\rdline;..\libs\aversive4dspic\modules\ihm\vt100;..\libs\aversive4dspic\modules\hardware\dspic\oscillator;..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc;..\libs\aversive4dspic\modules\hardware\dspic\dac_mc;..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo;..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic;..\libs\aversive4dspic\modules\devices\control_system\filters\pid;..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp;..\libs\aversive4dspic\modules\devices\control_system\control_system_manager;..\libs\aversive4dspic\modules\devices\robot\robot_system;..\libs\aversive4dspic\modules\devices\robot\trajectory_manager;..\libs\aversive4dspic\modules\devices\robot\position_manager;..\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance;..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager;..\libs\aversive4dspic\modules\devices\servo\ax12||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_align.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_head.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_setconf.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_dev_io.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv_nowait.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send_nowait.c|..\libs\aversive4dspic\modules\hardware\dspic\oscillator\oscillator.c|..\libs\aversive4dspic\modules\ihm\parse\parse.c|..\libs\aversive4dspic\modules\ihm\parse\parse_num.c|..\libs\aversive4dspic\modules\ihm\parse\parse_string.c|..\libs\aversive4dspic\modules\ihm\rdline\rdline.c|..\libs\aversive4dspic\modules\ihm\vt100\vt100.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_add.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_del.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_dump.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_interrupt.c|..\libs\aversive4dspic\modules\base\time\time.c|..\libs\aversive4dspic\modules\debug\error\error.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_events.c|..\libs\aversive4dspic\modules\devices\servo\ax12\ax12.c|commands_gen.c|main.c|cmdline.c|commands.c|ax12_user.c|sensor.c|i2c_slave_lite.c|i2c_protocol.c|..\common\traps.c|actuator.c|state.c|commands_slavedspic.c|..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic\encoders_dspic.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc\pwm_mc.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo\pwm_servo.c|..\libs\aversive4dspic\modules\devices\control_system\filters\pid\pid.c|..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp\quadramp.c|..\libs\aversive4dspic\modules\devices\control_system\control_system_manager\control_system_manager.c|cs.c|..\libs\aversive4dspic\modules\hardware\dspic\dac_mc\dac_mc.c|..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-g -Wall -Os
-TraceCmdString=
-DebugOptions=
-[File054]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\cs.o
-Folder=Intermediary
-DeviceName=dsPIC33FJ64MC804
-LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
-LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
-PPAD=$(BINDIR)|.\output_files||$(TMPDIR)|.\compiled_files||$(AINDIR)||$(INCDIR)|.;..\libs\aversive4dspic\include;..\libs\aversive4dspic\include\aversive;..\libs\aversive4dspic\include\aversive\dspic;..\libs\aversive4dspic\modules\base\cirbuf;..\libs\aversive4dspic\modules\base\scheduler;..\libs\aversive4dspic\modules\base\math\fixed_point;..\libs\aversive4dspic\modules\base\math\geometry;..\libs\aversive4dspic\modules\base\math\vect2;..\libs\aversive4dspic\modules\base\time;..\libs\aversive4dspic\modules\debug;..\libs\aversive4dspic\modules\debug\error;..\libs\aversive4dspic\modules\debug\diagnostic;..\libs\aversive4dspic\modules\comm\dspic\uart;..\libs\aversive4dspic\modules\ihm\parse;..\libs\aversive4dspic\modules\ihm\rdline;..\libs\aversive4dspic\modules\ihm\vt100;..\libs\aversive4dspic\modules\hardware\dspic\oscillator;..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc;..\libs\aversive4dspic\modules\hardware\dspic\dac_mc;..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo;..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic;..\libs\aversive4dspic\modules\devices\control_system\filters\pid;..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp;..\libs\aversive4dspic\modules\devices\control_system\control_system_manager;..\libs\aversive4dspic\modules\devices\robot\robot_system;..\libs\aversive4dspic\modules\devices\robot\trajectory_manager;..\libs\aversive4dspic\modules\devices\robot\position_manager;..\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance;..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager;..\libs\aversive4dspic\modules\devices\servo\ax12||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_align.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_head.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_setconf.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_dev_io.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv_nowait.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send_nowait.c|..\libs\aversive4dspic\modules\hardware\dspic\oscillator\oscillator.c|..\libs\aversive4dspic\modules\ihm\parse\parse.c|..\libs\aversive4dspic\modules\ihm\parse\parse_num.c|..\libs\aversive4dspic\modules\ihm\parse\parse_string.c|..\libs\aversive4dspic\modules\ihm\rdline\rdline.c|..\libs\aversive4dspic\modules\ihm\vt100\vt100.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_add.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_del.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_dump.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_interrupt.c|..\libs\aversive4dspic\modules\base\time\time.c|..\libs\aversive4dspic\modules\debug\error\error.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_events.c|..\libs\aversive4dspic\modules\devices\servo\ax12\ax12.c|commands_gen.c|main.c|cmdline.c|commands.c|ax12_user.c|sensor.c|i2c_slave_lite.c|i2c_protocol.c|..\common\traps.c|actuator.c|state.c|commands_slavedspic.c|..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic\encoders_dspic.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc\pwm_mc.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo\pwm_servo.c|..\libs\aversive4dspic\modules\devices\control_system\filters\pid\pid.c|..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp\quadramp.c|..\libs\aversive4dspic\modules\devices\control_system\control_system_manager\control_system_manager.c|cs.c|..\libs\aversive4dspic\modules\hardware\dspic\dac_mc\dac_mc.c|..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-g -Wall -Os
-TraceCmdString=
-DebugOptions=
-[File055]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\dac_mc.o
-Folder=Intermediary
-DeviceName=dsPIC33FJ64MC804
-LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
-LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
-PPAD=$(BINDIR)|.\output_files||$(TMPDIR)|.\compiled_files||$(AINDIR)||$(INCDIR)|.;..\libs\aversive4dspic\include;..\libs\aversive4dspic\include\aversive;..\libs\aversive4dspic\include\aversive\dspic;..\libs\aversive4dspic\modules\base\cirbuf;..\libs\aversive4dspic\modules\base\scheduler;..\libs\aversive4dspic\modules\base\math\fixed_point;..\libs\aversive4dspic\modules\base\math\geometry;..\libs\aversive4dspic\modules\base\math\vect2;..\libs\aversive4dspic\modules\base\time;..\libs\aversive4dspic\modules\debug;..\libs\aversive4dspic\modules\debug\error;..\libs\aversive4dspic\modules\debug\diagnostic;..\libs\aversive4dspic\modules\comm\dspic\uart;..\libs\aversive4dspic\modules\ihm\parse;..\libs\aversive4dspic\modules\ihm\rdline;..\libs\aversive4dspic\modules\ihm\vt100;..\libs\aversive4dspic\modules\hardware\dspic\oscillator;..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc;..\libs\aversive4dspic\modules\hardware\dspic\dac_mc;..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo;..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic;..\libs\aversive4dspic\modules\devices\control_system\filters\pid;..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp;..\libs\aversive4dspic\modules\devices\control_system\control_system_manager;..\libs\aversive4dspic\modules\devices\robot\robot_system;..\libs\aversive4dspic\modules\devices\robot\trajectory_manager;..\libs\aversive4dspic\modules\devices\robot\position_manager;..\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance;..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager;..\libs\aversive4dspic\modules\devices\servo\ax12||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_align.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_head.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_setconf.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_dev_io.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv_nowait.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send_nowait.c|..\libs\aversive4dspic\modules\hardware\dspic\oscillator\oscillator.c|..\libs\aversive4dspic\modules\ihm\parse\parse.c|..\libs\aversive4dspic\modules\ihm\parse\parse_num.c|..\libs\aversive4dspic\modules\ihm\parse\parse_string.c|..\libs\aversive4dspic\modules\ihm\rdline\rdline.c|..\libs\aversive4dspic\modules\ihm\vt100\vt100.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_add.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_del.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_dump.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_interrupt.c|..\libs\aversive4dspic\modules\base\time\time.c|..\libs\aversive4dspic\modules\debug\error\error.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_events.c|..\libs\aversive4dspic\modules\devices\servo\ax12\ax12.c|commands_gen.c|main.c|cmdline.c|commands.c|ax12_user.c|sensor.c|i2c_slave_lite.c|i2c_protocol.c|..\common\traps.c|actuator.c|state.c|commands_slavedspic.c|..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic\encoders_dspic.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc\pwm_mc.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo\pwm_servo.c|..\libs\aversive4dspic\modules\devices\control_system\filters\pid\pid.c|..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp\quadramp.c|..\libs\aversive4dspic\modules\devices\control_system\control_system_manager\control_system_manager.c|cs.c|..\libs\aversive4dspic\modules\hardware\dspic\dac_mc\dac_mc.c|..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-g -Wall -Os
-TraceCmdString=
-DebugOptions=
-[File056]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\compiled_files\blocking_detection_manager.o
-Folder=Intermediary
-DeviceName=dsPIC33FJ64MC804
-LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
-LanguageToolID={069BD372-6CA0-40D4-BF2F-5DC806D05083}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-gcc.exe
-PPAD=$(BINDIR)|.\output_files||$(TMPDIR)|.\compiled_files||$(AINDIR)||$(INCDIR)|.;..\libs\aversive4dspic\include;..\libs\aversive4dspic\include\aversive;..\libs\aversive4dspic\include\aversive\dspic;..\libs\aversive4dspic\modules\base\cirbuf;..\libs\aversive4dspic\modules\base\scheduler;..\libs\aversive4dspic\modules\base\math\fixed_point;..\libs\aversive4dspic\modules\base\math\geometry;..\libs\aversive4dspic\modules\base\math\vect2;..\libs\aversive4dspic\modules\base\time;..\libs\aversive4dspic\modules\debug;..\libs\aversive4dspic\modules\debug\error;..\libs\aversive4dspic\modules\debug\diagnostic;..\libs\aversive4dspic\modules\comm\dspic\uart;..\libs\aversive4dspic\modules\ihm\parse;..\libs\aversive4dspic\modules\ihm\rdline;..\libs\aversive4dspic\modules\ihm\vt100;..\libs\aversive4dspic\modules\hardware\dspic\oscillator;..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc;..\libs\aversive4dspic\modules\hardware\dspic\dac_mc;..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo;..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic;..\libs\aversive4dspic\modules\devices\control_system\filters\pid;..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp;..\libs\aversive4dspic\modules\devices\control_system\control_system_manager;..\libs\aversive4dspic\modules\devices\robot\robot_system;..\libs\aversive4dspic\modules\devices\robot\trajectory_manager;..\libs\aversive4dspic\modules\devices\robot\position_manager;..\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance;..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager;..\libs\aversive4dspic\modules\devices\servo\ax12||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_align.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_head.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_setconf.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_dev_io.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv_nowait.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send_nowait.c|..\libs\aversive4dspic\modules\hardware\dspic\oscillator\oscillator.c|..\libs\aversive4dspic\modules\ihm\parse\parse.c|..\libs\aversive4dspic\modules\ihm\parse\parse_num.c|..\libs\aversive4dspic\modules\ihm\parse\parse_string.c|..\libs\aversive4dspic\modules\ihm\rdline\rdline.c|..\libs\aversive4dspic\modules\ihm\vt100\vt100.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_add.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_del.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_dump.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_interrupt.c|..\libs\aversive4dspic\modules\base\time\time.c|..\libs\aversive4dspic\modules\debug\error\error.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_events.c|..\libs\aversive4dspic\modules\devices\servo\ax12\ax12.c|commands_gen.c|main.c|cmdline.c|commands.c|ax12_user.c|sensor.c|i2c_slave_lite.c|i2c_protocol.c|..\common\traps.c|actuator.c|state.c|commands_slavedspic.c|..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic\encoders_dspic.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc\pwm_mc.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo\pwm_servo.c|..\libs\aversive4dspic\modules\devices\control_system\filters\pid\pid.c|..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp\quadramp.c|..\libs\aversive4dspic\modules\devices\control_system\control_system_manager\control_system_manager.c|cs.c|..\libs\aversive4dspic\modules\hardware\dspic\dac_mc\dac_mc.c|..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-g -Wall -Os
-TraceCmdString=
-DebugOptions=
-[File057]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\.\output_files\slavedspic.cof
-Folder=Output
-DeviceName=dsPIC33FJ64MC804
-LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
-LanguageToolID={433C3D55-811D-409D-A6BF-159CF9355B42}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-ld.exe
-PPAD=$(BINDIR)|.\output_files||$(TMPDIR)|.\compiled_files||$(AINDIR)||$(INCDIR)|.;..\libs\aversive4dspic\include;..\libs\aversive4dspic\include\aversive;..\libs\aversive4dspic\include\aversive\dspic;..\libs\aversive4dspic\modules\base\cirbuf;..\libs\aversive4dspic\modules\base\scheduler;..\libs\aversive4dspic\modules\base\math\fixed_point;..\libs\aversive4dspic\modules\base\math\geometry;..\libs\aversive4dspic\modules\base\math\vect2;..\libs\aversive4dspic\modules\base\time;..\libs\aversive4dspic\modules\debug;..\libs\aversive4dspic\modules\debug\error;..\libs\aversive4dspic\modules\debug\diagnostic;..\libs\aversive4dspic\modules\comm\dspic\uart;..\libs\aversive4dspic\modules\ihm\parse;..\libs\aversive4dspic\modules\ihm\rdline;..\libs\aversive4dspic\modules\ihm\vt100;..\libs\aversive4dspic\modules\hardware\dspic\oscillator;..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc;..\libs\aversive4dspic\modules\hardware\dspic\dac_mc;..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo;..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic;..\libs\aversive4dspic\modules\devices\control_system\filters\pid;..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp;..\libs\aversive4dspic\modules\devices\control_system\control_system_manager;..\libs\aversive4dspic\modules\devices\robot\robot_system;..\libs\aversive4dspic\modules\devices\robot\trajectory_manager;..\libs\aversive4dspic\modules\devices\robot\position_manager;..\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance;..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager;..\libs\aversive4dspic\modules\devices\servo\ax12||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_align.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_head.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_setconf.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_dev_io.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv_nowait.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send_nowait.c|..\libs\aversive4dspic\modules\hardware\dspic\oscillator\oscillator.c|..\libs\aversive4dspic\modules\ihm\parse\parse.c|..\libs\aversive4dspic\modules\ihm\parse\parse_num.c|..\libs\aversive4dspic\modules\ihm\parse\parse_string.c|..\libs\aversive4dspic\modules\ihm\rdline\rdline.c|..\libs\aversive4dspic\modules\ihm\vt100\vt100.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_add.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_del.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_dump.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_interrupt.c|..\libs\aversive4dspic\modules\base\time\time.c|..\libs\aversive4dspic\modules\debug\error\error.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_events.c|..\libs\aversive4dspic\modules\devices\servo\ax12\ax12.c|commands_gen.c|main.c|cmdline.c|commands.c|ax12_user.c|sensor.c|i2c_slave_lite.c|i2c_protocol.c|..\common\traps.c|actuator.c|state.c|commands_slavedspic.c|..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic\encoders_dspic.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc\pwm_mc.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo\pwm_servo.c|..\libs\aversive4dspic\modules\devices\control_system\filters\pid\pid.c|..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp\quadramp.c|..\libs\aversive4dspic\modules\devices\control_system\control_system_manager\control_system_manager.c|cs.c|..\libs\aversive4dspic\modules\hardware\dspic\dac_mc\dac_mc.c|..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=--heap=0 -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
-TraceCmdString=
-DebugOptions=
-[File058]
-Location=D:\Datos\Proyectos\ARC_Eurobotics\eurobotics\eurobot\eurobot2014\software\slavedspic\.\output_files\slavedspic.hex
-Folder=Output
-DeviceName=dsPIC33FJ64MC804
-LanguageToolSuiteID={479DDE59-4D56-455E-855E-FFF59A3DB57E}
-LanguageToolID={433C3D55-811D-409D-A6BF-159CF9355B42}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\MPLAB C30\bin\pic30-ld.exe
-PPAD=$(BINDIR)|.\output_files||$(TMPDIR)|.\compiled_files||$(AINDIR)||$(INCDIR)|.;..\libs\aversive4dspic\include;..\libs\aversive4dspic\include\aversive;..\libs\aversive4dspic\include\aversive\dspic;..\libs\aversive4dspic\modules\base\cirbuf;..\libs\aversive4dspic\modules\base\scheduler;..\libs\aversive4dspic\modules\base\math\fixed_point;..\libs\aversive4dspic\modules\base\math\geometry;..\libs\aversive4dspic\modules\base\math\vect2;..\libs\aversive4dspic\modules\base\time;..\libs\aversive4dspic\modules\debug;..\libs\aversive4dspic\modules\debug\error;..\libs\aversive4dspic\modules\debug\diagnostic;..\libs\aversive4dspic\modules\comm\dspic\uart;..\libs\aversive4dspic\modules\ihm\parse;..\libs\aversive4dspic\modules\ihm\rdline;..\libs\aversive4dspic\modules\ihm\vt100;..\libs\aversive4dspic\modules\hardware\dspic\oscillator;..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc;..\libs\aversive4dspic\modules\hardware\dspic\dac_mc;..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo;..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic;..\libs\aversive4dspic\modules\devices\control_system\filters\pid;..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp;..\libs\aversive4dspic\modules\devices\control_system\control_system_manager;..\libs\aversive4dspic\modules\devices\robot\robot_system;..\libs\aversive4dspic\modules\devices\robot\trajectory_manager;..\libs\aversive4dspic\modules\devices\robot\position_manager;..\libs\aversive4dspic\modules\devices\robot\obstacle_avoidance;..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager;..\libs\aversive4dspic\modules\devices\servo\ax12||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_add_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_align.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_del_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_head.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_buf_tail.c|..\libs\aversive4dspic\modules\base\cirbuf\cirbuf_get_head.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_setconf.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_dev_io.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_recv_nowait.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_send_nowait.c|..\libs\aversive4dspic\modules\hardware\dspic\oscillator\oscillator.c|..\libs\aversive4dspic\modules\ihm\parse\parse.c|..\libs\aversive4dspic\modules\ihm\parse\parse_num.c|..\libs\aversive4dspic\modules\ihm\parse\parse_string.c|..\libs\aversive4dspic\modules\ihm\rdline\rdline.c|..\libs\aversive4dspic\modules\ihm\vt100\vt100.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_add.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_del.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_dump.c|..\libs\aversive4dspic\modules\base\scheduler\scheduler_interrupt.c|..\libs\aversive4dspic\modules\base\time\time.c|..\libs\aversive4dspic\modules\debug\error\error.c|..\libs\aversive4dspic\modules\comm\dspic\uart\uart_events.c|..\libs\aversive4dspic\modules\devices\servo\ax12\ax12.c|commands_gen.c|main.c|cmdline.c|commands.c|ax12_user.c|sensor.c|i2c_slave_lite.c|i2c_protocol.c|..\common\traps.c|actuator.c|state.c|commands_slavedspic.c|..\libs\aversive4dspic\modules\devices\encoders\dspic\encoders_dspic\encoders_dspic.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_mc\pwm_mc.c|..\libs\aversive4dspic\modules\hardware\dspic\pwm_servo\pwm_servo.c|..\libs\aversive4dspic\modules\devices\control_system\filters\pid\pid.c|..\libs\aversive4dspic\modules\devices\control_system\filters\quadramp\quadramp.c|..\libs\aversive4dspic\modules\devices\control_system\control_system_manager\control_system_manager.c|cs.c|..\libs\aversive4dspic\modules\hardware\dspic\dac_mc\dac_mc.c|..\libs\aversive4dspic\modules\devices\robot\blocking_detection_manager\blocking_detection_manager.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=--heap=0 -Map="$(BINDIR_)$(TARGETBASE).map" --report-mem -o"$(BINDIR_)$(TARGETBASE).$(TARGETSUFFIX)"
 TraceCmdString=
 DebugOptions=
 [TOOL_LOC_STAMPS]

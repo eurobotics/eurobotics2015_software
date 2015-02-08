@@ -47,9 +47,9 @@
 #define POS_STANDS_CLAMP_R_OPEN		0
 #define POS_STANDS_CLAMP_R_CLOSE	0
 
-#define POS_STANDS_TOWER_CLAMPS_LOCK_LEFT	0
-#define POS_STANDS_TOWER_CLAMPS_OPEN		0
-#define POS_STANDS_TOWER_CLAMPS_LOCK_RIGHT	0
+#define POS_STANDS_TOWER_CLAMPS_UNLOCK_LEFT		0
+#define POS_STANDS_TOWER_CLAMPS_LOCK			0
+#define POS_STANDS_TOWER_CLAMPS_UNLOCK_RIGHT	0
 
 #define POS_STANDS_ELEVATOR_L_UP	0
 #define POS_STANDS_ELEVATOR_L_DOWN	0
@@ -124,176 +124,203 @@ uint8_t stands_exchanger_wait_end();
 
 
 
-/**** combs funcions *********************************************************/
+/**** popcorn_tray functions *********************************************************/
 
 typedef struct {
+	uint8_t mode;
+
+#define POPCORN_TRAY_MODE_OPEN 		0	
+#define POPCORN_TRAY_MODE_CLOSE 	1		
+#define POPCORN_TRAY_MODE_MAX		2
+
+#define POPCORN_TRAY_MODE_POS_MIN	0
+#define POPCORN_TRAY_MODE_POS_MAX	1
+
+	uint16_t servo_pos;
+} popcorn_tray_t;
+
+/* set popcorn_tray position depends on mode */
+uint8_t popcorn_tray_set_mode(popcorn_tray_t *popcorn_tray, uint8_t mode, int16_t pos_offset);
+
+
+
+/****stands_clamps functions *********************************************************/
+typedef struct {
+	uint8_t type;
+#define STANDS_CLAMP_TYPE_LEFT		0
+#define STANDS_CLAMP_TYPE_RIGHT		1
+#define STANDS_CLAMP_TYPE_MAX		2	
 
 	uint8_t mode;
-	uint8_t mode_old;
-#define COMBS_MODE_HIDE				0
-#define COMBS_MODE_OPEN				1
-#define COMBS_MODE_HARVEST_CLOSE	2
-#define COMBS_MODE_HARVEST_OPEN	    3
-#define COMBS_MODE_MAX				4
+#define STANDS_CLAMP_MODE_OPEN		0
+#define STANDS_CLAMP_MODE_CLOSE		1
+#define STANDS_CLAMP_MODE_MAX		2
 
-#define COMBS_MODE_R_POS_MAX		1	
-#define COMBS_MODE_R_POS_MIN		0
-#define COMBS_MODE_L_POS_MAX		0
-#define COMBS_MODE_L_POS_MIN		1
+#define STANDS_CLAMP_MODE_L_POS_MAX		0	
+#define STANDS_CLAMP_MODE_L_POS_MIN		1
+#define STANDS_CLAMP_MODE_R_POS_MAX		1
+#define STANDS_CLAMP_MODE_R_POS_MIN		0
+
+	uint16_t servo_pos;
+} stands_clamp_t;
+
+/* set stands_clamp position depends on mode */
+uint8_t stands_clamp_set_mode(stands_clamp_t *stands_clamp, uint8_t mode, int16_t pos_offset);
+
+
+
+/**** stands_tower_clamps functions *********************************************************/
+typedef struct {
+	uint8_t mode;
+#define STANDS_TOWER_CLAMPS_MODE_UNLOCK_LEFT		0
+#define STANDS_TOWER_CLAMPS_MODE_LOCK				1
+#define STANDS_TOWER_CLAMPS_MODE_UNLOCK_RIGHT		2
+#define STANDS_TOWER_CLAMPS_MODE_MAX				3
+
+#define STANDS_TOWER_CLAMPS_MODE_POS_MIN		2
+#define STANDS_TOWER_CLAMPS_MODE_POS_MAX		0
+
+	uint16_t ax12_pos;
+} stands_tower_clamps_t;
+
+/* set stands_tower_clamps position depends on mode */
+int8_t stands_tower_clamps_set_mode(stands_tower_clamps_t *stands_tower_clamps, uint8_t mode, int16_t pos_offset);
+
+/* return END_TRAJ or END_TIMER */
+uint8_t stands_tower_clamps_wait_end(stands_tower_clamps_t *stands_tower_clamps);
+
+
+
+/****stands_elevators functions *********************************************************/
+typedef struct {
+	uint8_t type;
+#define STANDS_ELEVATOR_TYPE_LEFT		0
+#define STANDS_ELEVATOR_TYPE_RIGHT		1
+#define STANDS_ELEVATOR_TYPE_MAX		2	
+
+	uint8_t mode;
+#define STANDS_ELEVATOR_MODE_UP			0
+#define STANDS_ELEVATOR_MODE_DOWN		1
+#define STANDS_ELEVATOR_MODE_MAX		2
+
+#define STANDS_ELEVATOR_MODE_L_POS_MIN		0
+#define STANDS_ELEVATOR_MODE_L_POS_MAX		1	
+#define STANDS_ELEVATOR_MODE_R_POS_MIN		1
+#define STANDS_ELEVATOR_MODE_R_POS_MAX		0
+
+	uint16_t ax12_pos;
+} stands_elevator_t;
+
+/* set stands_elevator position depends on mode */
+int8_t stands_elevator_set_mode(stands_elevator_t *stands_elevator, uint8_t mode, int16_t pos_offset);
+
+/* return END_TRAJ or END_TIMER */
+uint8_t stands_elevator_wait_end(stands_elevator_t *stands_elevator);
+
+
+
+/****stands_blade functions *********************************************************/
+typedef struct {
+	uint8_t type;
+#define STANDS_BLADE_TYPE_LEFT		0
+#define STANDS_BLADE_TYPE_RIGHT		1
+#define STANDS_BLADE_TYPE_MAX		2	
+
+	uint8_t mode;
+#define STANDS_BLADE_MODE_HIDE_LEFT				0
+#define STANDS_BLADE_MODE_PUSH_STAND_LEFT		1
+#define STANDS_BLADE_MODE_HIDE_CENTER			2
+#define STANDS_BLADE_MODE_PUSH_STAND_RIGHT		3
+#define STANDS_BLADE_MODE_HIDE_RIGHT			4
+#define STANDS_BLADE_MODE_MAX					5
+
+#define STANDS_BLADE_MODE_L_POS_MIN		0
+#define STANDS_BLADE_MODE_L_POS_MAX		4	
+#define STANDS_BLADE_MODE_R_POS_MIN		0
+#define STANDS_BLADE_MODE_R_POS_MAX		4
+
+	uint16_t ax12_pos;
+} stands_blade_t;
+
+/* set stands_blade position depends on mode */
+int8_t stands_blade_set_mode(stands_blade_t *stands_blade, uint8_t mode, int16_t pos_offset);
+
+/* return END_TRAJ or END_TIMER */
+uint8_t stands_blade_wait_end(stands_blade_t *stands_blade);
+
+
+
+/****cup_clamp_popcorn_door functions *********************************************************/
+typedef struct {
+	uint8_t mode;
+#define CUP_CLAMP_POPCORN_DOOR_MODE_HIDE		0
+#define CUP_CLAMP_POPCORN_DOOR_MODE_CUP_LOCKED	1
+#define CUP_CLAMP_POPCORN_DOOR_MODE_OPEN		2
+#define CUP_CLAMP_POPCORN_DOOR_MODE_DOOR_OPEN	3
+#define CUP_CLAMP_POPCORN_DOOR_MODE_MAX			4
+
+#define CUP_CLAMP_POPCORN_DOOR_MODE_L_POS_MIN		0
+#define CUP_CLAMP_POPCORN_DOOR_MODE_L_POS_MAX		3	
+#define CUP_CLAMP_POPCORN_DOOR_MODE_R_POS_MIN		3
+#define CUP_CLAMP_POPCORN_DOOR_MODE_R_POS_MAX		0
 
 	uint16_t ax12_pos_l;
 	uint16_t ax12_pos_r;
+} cup_clamp_popcorn_door_t;
 
-} combs_t;
-
-/* set combs position depends on mode */
-int8_t combs_set_mode(combs_t *combs, uint8_t mode, int16_t pos_offset);
+/* set cup_clamp_popcorn_door position depends on mode */
+int8_t cup_clamp_popcorn_door_set_mode(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door, uint8_t mode, int16_t pos_offset);
 
 /* return END_TRAJ or END_TIMER */
-uint8_t combs_wait_end(combs_t *combs);
+uint8_t cup_clamp_popcorn_door_wait_end(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door);
 
 
 
-/****sticks funcions *********************************************************/
+/**** popcorn_ramps functions *********************************************************/
 typedef struct {
-	uint8_t type;
-#define STICK_TYPE_RIGHT	0
-#define STICK_TYPE_LEFT		1
-#define STICK_TYPE_MAX		2	
-
 	uint8_t mode;
-#define STICK_MODE_HIDE					0
-#define STICK_MODE_PUSH_FIRE			1
-#define STICK_MODE_PUSH_TORCH_FIRE		2
-#define STICK_MODE_CLEAN_FLOOR			3
-#define STICK_MODE_CLEAN_HEART			4
-#define STICK_MODE_MAX					5
+#define POPCORN_RAMPS_MODE_HIDE			0
+#define POPCORN_RAMPS_MODE_HARVEST		1
+#define POPCORN_RAMPS_MODE_OPEN			2
+#define POPCORN_RAMPS_MODE_MAX			3
 
-#define STICK_MODE_L_POS_MAX			3	
-#define STICK_MODE_L_POS_MIN			0
-#define STICK_MODE_R_POS_MAX			0
-#define STICK_MODE_R_POS_MIN			3
+#define POPCORN_RAMPS_MODE_L_POS_MIN		2
+#define POPCORN_RAMPS_MODE_L_POS_MAX		0
+#define POPCORN_RAMPS_MODE_R_POS_MIN		0
+#define POPCORN_RAMPS_MODE_R_POS_MAX		2	
+
+	uint16_t ax12_pos_l;
+	uint16_t ax12_pos_r;
+} popcorn_ramps_t;
+
+/* set popcorn_ramps position depends on mode */
+int8_t popcorn_ramps_set_mode(popcorn_ramps_t *popcorn_ramps, uint8_t mode, int16_t pos_offset);
+
+/* return END_TRAJ or END_TIMER */
+uint8_t popcorn_ramps_wait_end(popcorn_ramps_t *popcorn_ramps);
+
+
+
+/**** cup_clamp_front functions *********************************************************/
+typedef struct {
+	uint8_t mode;
+#define CUP_CLAMP_FRONT_MODE_HIDE			0
+#define CUP_CLAMP_FRONT_MODE_CUP_LOCKED		1
+#define CUP_CLAMP_FRONT_MODE_MAX			2
+
+#define CUP_CLAMP_FRONT_MODE_POS_MIN		0
+#define CUP_CLAMP_FRONT_MODE_POS_MAX		1
 
 	uint16_t ax12_pos;
 
-} stick_t;
+} cup_clamp_front_t;
 
-/* set stick position depends on mode */
-uint8_t stick_set_mode(stick_t *stick, uint8_t mode, int16_t pos_offset);
+/* set cup_clamp_front position depends on mode */
+int8_t cup_clamp_front_set_mode(cup_clamp_front_t *cup_clamp_front, uint8_t mode, int16_t pos_offset);
 
-
-/* return END_TRAJ or END_TIME */
-uint8_t stick_wait_end(stick_t *stick);
-
+/* return END_TRAJ or END_TIMER */
+uint8_t cup_clamp_front_wait_end(cup_clamp_front_t *cup_clamp_front);
 
 
-/**** boot funcions *********************************************************/
-typedef struct {
-	uint8_t door_mode;
-#define BOOT_DOOR_MODE_OPEN			0
-#define BOOT_DOOR_MODE_CLOSE		1
-#define BOOT_DOOR_MODE_MAX			2
-
-	uint8_t tray_mode;
-#define BOOT_TRAY_MODE_DOWN			0
-#define BOOT_TRAY_MODE_VIBRATE		1
-#define BOOT_TRAY_MODE_MAX			2
-
-	uint16_t door_servo_pos;
-	int16_t tray_motor_pwm;
-
-} boot_t;
-
-/* open/close boot door */
-void boot_door_set_mode(boot_t *boot, uint8_t door_mode);
-
-/* enable/disable boot vibration */
-void boot_tray_set_mode(boot_t *boot, uint8_t tray_mode);
-
-/**** trays funcions *********************************************************/
-
-typedef struct {
-	uint8_t mode;
-
-#define TREE_TRAY_MODE_OPEN 		0	
-#define TREE_TRAY_MODE_CLOSE 		1		
-#define TREE_TRAY_MODE_HARVEST	2	
-#define TREE_TRAY_MODE_MAX			3
-
-#define TREE_TRAY_MODE_POS_MAX	0
-#define TREE_TRAY_MODE_POS_MIN	1
-
-#if 0
-	microseconds time_us;
-	uint8_t blocking;
-#endif
-
-	uint16_t ax12_pos;
-} tree_tray_t;
-
-/* set stick position depends on mode */
-uint8_t tree_tray_set_mode(tree_tray_t *tree_tray, uint8_t mode, int16_t pos_offset);
-
-#if 0
-/* return END_TRAJ or END_BLOCKING */
-int8_t tree_tray_check_mode_done(tree_tray_t *tree_tray);
-#endif
-
-/* return END_TRAJ or END_BLOCKING */
-uint8_t tree_tray_wait_end(tree_tray_t *tree_tray);
-
-
-/**** vacuum funcions *********************************************************/
-
-void vacuum_motor_set (uint8_t num, uint8_t on);
-void vacuum_ev_set (uint8_t num, uint8_t on);
-
-void vacuum_system_enable (uint8_t num);
-void vacuum_system_disable (uint8_t num);
-
-
-
-/*** arm functions ************************************************************/
-
-/* shoulder angle */
-void arm_shoulder_goto_a_abs (int16_t a);
-uint8_t arm_shoulder_wait_traj_end (uint8_t flags);
-
-/* elbow angle */
-void arm_elbow_goto_a_abs (int16_t a);
-void arm_elbow_goto_a_rel (int16_t a);
-uint8_t arm_elbow_wait_traj_end (uint8_t flags);
-int16_t arm_elbow_get_a (void);
-
-/* wrist angle */
-void arm_wrist_goto_a_abs (int16_t a);
-void arm_wrist_goto_a_rel (int16_t a);
-uint8_t arm_wrist_wait_traj_end (uint8_t flags);
-int16_t arm_wrist_get_a (void);
-
-/* set height, sucker reference 
- * XXX elbow angle is taken in account */
-
-/* arm (x,y,h) */
-
-/* set height, relative to sucker  
- * XXX elbow angle is taken in account */
-void arm_goto_h (int16_t h);
-uint8_t arm_h_wait_traj_end (void);
-
-/* goto x coordinate, relative to robot zero coordinates.
- * XXX suposes elbow angle of 0 deg (sucker in parallel with ground) */
-void arm_goto_x (int16_t x);
-
-/* goto y coordinate, relative to robot zero coordinates.
- * XXX suposes elbow angle of 0 deg (sucker in parallel with ground) */
-void arm_goto_y (int16_t y);
-
-uint8_t arm_xy_wait_traj_end (uint8_t flags);
-
-/* ARM goto high level */
-void arm_goto_hxaa (int16_t h, int16_t x, int16_t elbow_a, int16_t wrist_a);
 
 #endif /* _ACTUATOR_H_ */
-
-
