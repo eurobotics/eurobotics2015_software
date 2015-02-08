@@ -289,7 +289,7 @@ void stands_exchanger_set_position(int32_t position_mm)
 	/* saturate position */
 	if(position_mm > STANDS_EXCHANGER_POSITION_MAX_mm)
 		position_mm = STANDS_EXCHANGER_POSITION_MAX_mm;
-	if(position_mm < STANDS_EXCHANGER_POSITION_MIN_mm)
+	else if(position_mm < STANDS_EXCHANGER_POSITION_MIN_mm)
 		position_mm = STANDS_EXCHANGER_POSITION_MIN_mm;
 
 	/* apply consign */
@@ -338,632 +338,419 @@ uint8_t stands_exchanger_wait_end()
 
 
 
-/**** combs funcions *********************************************************/
-
-uint16_t combs_ax12_pos_l [COMBS_MODE_MAX] = {
-	[COMBS_MODE_HIDE] 			= POS_COMB_L_HIDE, 
-	[COMBS_MODE_OPEN] 			= POS_COMB_L_OPEN, 
-	[COMBS_MODE_HARVEST_CLOSE]  = POS_COMB_L_HARVEST_CLOSE, 
-	[COMBS_MODE_HARVEST_OPEN] 	= POS_COMB_L_HARVEST_OPEN, 
+/**** popcorn tray functions *********************************************************/
+uint16_t popcorn_tray_servo_pos [POPCORN_TRAY_MODE_MAX] = {
+	[POPCORN_TRAY_MODE_OPEN] 	= POS_POPCORN_TRAY_OPEN,
+	[POPCORN_TRAY_MODE_CLOSE] 	= POS_POPCORN_TRAY_CLOSE
 };
 
-uint16_t combs_ax12_pos_r [COMBS_MODE_MAX] = {
-	[COMBS_MODE_HIDE] 			= POS_COMB_R_HIDE, 
-	[COMBS_MODE_OPEN] 			= POS_COMB_R_OPEN, 
-	[COMBS_MODE_HARVEST_CLOSE]  = POS_COMB_R_HARVEST_CLOSE, 
-	[COMBS_MODE_HARVEST_OPEN] 	= POS_COMB_R_HARVEST_OPEN, 
-};
-
-struct ax12_traj ax12_comb_l = { .id = AX12_ID_COMB_L, .zero_offset_pos = 0 };
-struct ax12_traj ax12_comb_r = { .id = AX12_ID_COMB_R, .zero_offset_pos = 0 };
-
-/* set finger position depends on mode */
-int8_t combs_set_mode(combs_t *combs, uint8_t mode, int16_t pos_offset)
+/* set popcorn_tray position depends on mode */
+uint8_t popcorn_tray_set_mode(popcorn_tray_t *popcorn_tray, uint8_t mode, int16_t pos_offset)
 {
-	/* set ax12 possitions depends on mode and type */
-	if(mode >= COMBS_MODE_MAX) {
-		ACTUATORS_ERROR("Unknow COMBS MODE");
+	/* set futaba servo position depends on mode */
+	if(mode >= POPCORN_TRAY_MODE_MAX) {
+		ACTUATORS_ERROR("Unknown POPCORN TRAY MODE");
 		return -1;
 	}
 
-   /* ax12 possitions */
-	combs->mode_old = combs->mode;
-	combs->mode = mode;
-	combs->ax12_pos_l = combs_ax12_pos_l[combs->mode] + pos_offset;
-	combs->ax12_pos_r = combs_ax12_pos_r[combs->mode] - pos_offset;
-
-	/* set speed */
-#if 0
-   if(combs->mode == COMBS_MODE_CLOSE || combs->mode == COMBS_MODE_HOLD)) {
-		ax12_user_write_int(&gen.ax12, ax12_left_id, AA_MOVING_SPEED_L, 300);
-		ax12_user_write_int(&gen.ax12, ax12_right_id, AA_MOVING_SPEED_L, 300);
-	}
-	else if(combs->type == COMBS_TYPE_TOTEM) {
-		ax12_user_write_int(&gen.ax12, ax12_left_id, AA_MOVING_SPEED_L, 0x3ff);
-		ax12_user_write_int(&gen.ax12, ax12_right_id, AA_MOVING_SPEED_L, 0x3ff);
-	}
-#endif
-
+	popcorn_tray->mode = mode;
+	popcorn_tray->servo_pos = popcorn_tray_servo_pos[popcorn_tray->mode] + pos_offset;
+	
 	/* saturate to position range */
-	if(combs->ax12_pos_l > combs_ax12_pos_l[COMBS_MODE_L_POS_MAX])
-		combs->ax12_pos_l = combs_ax12_pos_l[COMBS_MODE_L_POS_MAX];
-	if(combs->ax12_pos_l < combs_ax12_pos_l[COMBS_MODE_L_POS_MIN])
-		combs->ax12_pos_l = combs_ax12_pos_l[COMBS_MODE_L_POS_MIN];
+	if(popcorn_tray->servo_pos > popcorn_tray_servo_pos[POPCORN_TRAY_MODE_POS_MAX])
+		popcorn_tray->servo_pos = popcorn_tray_servo_pos[POPCORN_TRAY_MODE_POS_MAX];
+	else if(popcorn_tray->servo_pos < popcorn_tray_servo_pos[POPCORN_TRAY_MODE_POS_MIN])
+		popcorn_tray->servo_pos = popcorn_tray_servo_pos[POPCORN_TRAY_MODE_POS_MIN];
 
-	if(combs->ax12_pos_r > combs_ax12_pos_r[COMBS_MODE_R_POS_MAX])
-		combs->ax12_pos_r = combs_ax12_pos_r[COMBS_MODE_R_POS_MAX];
-	if(combs->ax12_pos_r < combs_ax12_pos_r[COMBS_MODE_R_POS_MIN])
-		combs->ax12_pos_r = combs_ax12_pos_r[COMBS_MODE_R_POS_MIN];
- 
-	/* apply to ax12 */
-    ax12_set_pos (&ax12_comb_l, combs->ax12_pos_l);
-    ax12_set_pos (&ax12_comb_r, combs->ax12_pos_r);
+	/* apply to futaba servo */
+#ifndef HOST_VERSION
+	pwm_servo_set(PWM_SERVO_POPCORN_TRAY, popcorn_tray->servo_pos);
+#endif
 
 	return 0;
 }
 
-/* return END_TRAJ or END_BLOCKING */
-uint8_t combs_wait_end(combs_t *combs)
+
+
+/**** stands_clamp functions *********************************************************/
+uint16_t stands_clamp_servo_pos[STANDS_CLAMP_TYPE_MAX][STANDS_CLAMP_MODE_MAX] = {
+	[STANDS_CLAMP_TYPE_LEFT][STANDS_CLAMP_MODE_OPEN] 		= POS_STANDS_CLAMP_L_OPEN,
+	[STANDS_CLAMP_TYPE_LEFT][STANDS_CLAMP_MODE_CLOSE] 	= POS_STANDS_CLAMP_L_CLOSE,
+
+	[STANDS_CLAMP_TYPE_RIGHT][STANDS_CLAMP_MODE_OPEN] 		= POS_STANDS_CLAMP_R_OPEN,
+	[STANDS_CLAMP_TYPE_RIGHT][STANDS_CLAMP_MODE_CLOSE] 	= POS_STANDS_CLAMP_R_CLOSE,
+
+};
+
+/* set stands_clamp position depends on mode */
+uint8_t stands_clamp_set_mode(stands_clamp_t *stands_clamp, uint8_t mode, int16_t pos_offset)
+{	
+	/* set futaba servo position depends on mode and type */
+	if(mode >= STANDS_CLAMP_MODE_MAX) {
+		ACTUATORS_ERROR("Unknown %s STANDS_CLAMP MODE", stands_clamp->type == STANDS_CLAMP_TYPE_RIGHT? "RIGHT":"LEFT");
+		return -1;
+	}
+
+	stands_clamp->mode = mode;
+	stands_clamp->servo_pos = stands_clamp_servo_pos[stands_clamp->type][stands_clamp->mode] + pos_offset;
+	
+	/* saturate to position range */
+	if(stands_clamp->type == STANDS_CLAMP_TYPE_LEFT) {
+		if(stands_clamp->servo_pos > stands_clamp_servo_pos[STANDS_CLAMP_TYPE_LEFT][STANDS_CLAMP_MODE_L_POS_MAX])
+			stands_clamp->servo_pos = stands_clamp_servo_pos[STANDS_CLAMP_TYPE_LEFT][STANDS_CLAMP_MODE_L_POS_MAX];
+		else if(stands_clamp->servo_pos < stands_clamp_servo_pos[STANDS_CLAMP_TYPE_LEFT][STANDS_CLAMP_MODE_L_POS_MIN])
+			stands_clamp->servo_pos = stands_clamp_servo_pos[STANDS_CLAMP_TYPE_LEFT][STANDS_CLAMP_MODE_L_POS_MIN];
+	} 
+	else {
+		if(stands_clamp->servo_pos > stands_clamp_servo_pos[STANDS_CLAMP_TYPE_RIGHT][STANDS_CLAMP_MODE_R_POS_MAX])
+			stands_clamp->servo_pos = stands_clamp_servo_pos[STANDS_CLAMP_TYPE_RIGHT][STANDS_CLAMP_MODE_R_POS_MAX];
+		else if(stands_clamp->servo_pos < stands_clamp_servo_pos[STANDS_CLAMP_TYPE_RIGHT][STANDS_CLAMP_MODE_R_POS_MIN])
+			stands_clamp->servo_pos = stands_clamp_servo_pos[STANDS_CLAMP_TYPE_RIGHT][STANDS_CLAMP_MODE_R_POS_MIN];
+	}
+
+#ifndef HOST_VERSION
+	/* apply to futaba servo */
+	if(stands_clamp->type == STANDS_CLAMP_TYPE_LEFT)
+		pwm_servo_set(PWM_SERVO_STANDS_CLAMP_L, stands_clamp->servo_pos);
+	else
+		pwm_servo_set(PWM_SERVO_STANDS_CLAMP_R, stands_clamp->servo_pos);
+#endif
+
+	return 0;
+}
+
+
+
+/**** stands_tower_clamps functions *********************************************************/
+uint16_t stands_tower_clamps_ax12_pos [STANDS_TOWER_CLAMPS_MODE_MAX] = {
+	[STANDS_TOWER_CLAMPS_MODE_UNLOCK_LEFT] 		= POS_STANDS_TOWER_CLAMPS_UNLOCK_LEFT, 
+	[STANDS_TOWER_CLAMPS_MODE_LOCK] 			= POS_STANDS_TOWER_CLAMPS_LOCK, 
+	[STANDS_TOWER_CLAMPS_MODE_UNLOCK_RIGHT] 	= POS_STANDS_TOWER_CLAMPS_UNLOCK_RIGHT 
+};
+
+struct ax12_traj ax12_stands_tower_clamps = { .id = AX12_ID_STANDS_TOWER_CLAMPS, .zero_offset_pos = 0 };
+
+/* set stands_tower_clamps position depends on mode */
+int8_t stands_tower_clamps_set_mode(stands_tower_clamps_t *stands_tower_clamps, uint8_t mode, int16_t pos_offset)
+{
+	/* set ax12 positions depends on mode */
+	if(mode >= STANDS_TOWER_CLAMPS_MODE_MAX) {
+		ACTUATORS_ERROR("Unknown STANDS_TOWER_CLAMPS MODE");
+		return -1;
+	}
+
+	/* ax12 positions */
+	stands_tower_clamps->mode = mode;
+	stands_tower_clamps->ax12_pos = stands_tower_clamps_ax12_pos[stands_tower_clamps->mode] + pos_offset;
+
+	/* saturate to position range */
+	if(stands_tower_clamps->ax12_pos > stands_tower_clamps_ax12_pos[STANDS_TOWER_CLAMPS_MODE_POS_MAX])
+		stands_tower_clamps->ax12_pos = stands_tower_clamps_ax12_pos[STANDS_TOWER_CLAMPS_MODE_POS_MAX];
+	else if(stands_tower_clamps->ax12_pos < stands_tower_clamps_ax12_pos[STANDS_TOWER_CLAMPS_MODE_POS_MIN])
+		stands_tower_clamps->ax12_pos = stands_tower_clamps_ax12_pos[STANDS_TOWER_CLAMPS_MODE_POS_MIN];
+
+	/* apply to ax12 */
+    ax12_set_pos(&ax12_stands_tower_clamps, stands_tower_clamps->ax12_pos);
+
+	return 0;
+}
+
+/* return END_TRAJ or END_TIMER */
+uint8_t stands_tower_clamps_wait_end(stands_tower_clamps_t *stands_tower_clamps)
+{
+    uint8_t ret;
+   
+    ret = ax12_wait_traj_end (&ax12_stands_tower_clamps, END_TRAJ|END_TIME);
+
+    return ret;
+}
+
+
+
+/**** stands_elevators functions *********************************************************/
+uint16_t stands_elevator_ax12_pos[STANDS_ELEVATOR_TYPE_MAX][STANDS_ELEVATOR_MODE_MAX] = {
+	[STANDS_ELEVATOR_TYPE_LEFT][STANDS_ELEVATOR_MODE_UP] 	= POS_STANDS_ELEVATOR_L_UP,
+	[STANDS_ELEVATOR_TYPE_LEFT][STANDS_ELEVATOR_MODE_DOWN] 	= POS_STANDS_ELEVATOR_L_DOWN,
+
+	[STANDS_ELEVATOR_TYPE_RIGHT][STANDS_ELEVATOR_MODE_UP] 	= POS_STANDS_ELEVATOR_R_UP,
+	[STANDS_ELEVATOR_TYPE_RIGHT][STANDS_ELEVATOR_MODE_DOWN]	= POS_STANDS_ELEVATOR_R_DOWN
+};
+
+struct ax12_traj ax12_stands_elevator_l = { .id = AX12_ID_STANDS_ELEVATOR_L, .zero_offset_pos = 0 };
+struct ax12_traj ax12_stands_elevator_r = { .id = AX12_ID_STANDS_ELEVATOR_R, .zero_offset_pos = 0 };
+
+/* set stands_elevators position depends on mode*/
+uint8_t stands_elevator_set_mode(stands_elevator_t *stands_elevator, uint8_t mode, int16_t pos_offset)
+{	
+	/* set ax12 position depends on mode and type */
+	if(mode >= STANDS_ELEVATOR_MODE_MAX) {
+		ACTUATORS_ERROR("Unknown %s STANDS_ELEVATOR MODE", stands_elevator->type == STANDS_ELEVATOR_TYPE_RIGHT? "RIGHT":"LEFT");
+		return -1;
+	}
+
+	stands_elevator->mode = mode;
+	stands_elevator->ax12_pos = stands_elevator_ax12_pos[stands_elevator->type][stands_elevator->mode] + pos_offset;
+
+	/* saturate to position range */
+	if(stands_elevator->type == STANDS_ELEVATOR_TYPE_LEFT) {
+		if(stands_elevator->ax12_pos > stands_elevator_ax12_pos[STANDS_ELEVATOR_TYPE_LEFT][STANDS_ELEVATOR_MODE_L_POS_MAX])
+			stands_elevator->ax12_pos = stands_elevator_ax12_pos[STANDS_ELEVATOR_TYPE_LEFT][STANDS_ELEVATOR_MODE_L_POS_MAX];
+		else if(stands_elevator->ax12_pos < stands_elevator_ax12_pos[STANDS_ELEVATOR_TYPE_LEFT][STANDS_ELEVATOR_MODE_L_POS_MIN])
+			stands_elevator->ax12_pos = stands_elevator_ax12_pos[STANDS_ELEVATOR_TYPE_LEFT][STANDS_ELEVATOR_MODE_L_POS_MIN];
+	} 
+	else if(stands_elevator->type == STANDS_ELEVATOR_TYPE_RIGHT) {
+		if(stands_elevator->ax12_pos > stands_elevator_ax12_pos[STANDS_ELEVATOR_TYPE_RIGHT][STANDS_ELEVATOR_MODE_R_POS_MAX])
+			stands_elevator->ax12_pos = stands_elevator_ax12_pos[STANDS_ELEVATOR_TYPE_RIGHT][STANDS_ELEVATOR_MODE_R_POS_MAX];
+		else if(stands_elevator->ax12_pos < stands_elevator_ax12_pos[STANDS_ELEVATOR_TYPE_RIGHT][STANDS_ELEVATOR_MODE_R_POS_MIN])
+			stands_elevator->ax12_pos = stands_elevator_ax12_pos[STANDS_ELEVATOR_TYPE_RIGHT][STANDS_ELEVATOR_MODE_R_POS_MIN];
+	} 
+
+	/* apply to ax12 */
+	if(stands_elevator->type == STANDS_ELEVATOR_TYPE_LEFT)
+    	ax12_set_pos(&ax12_stands_elevator_l, stands_elevator->ax12_pos);
+	else if(stands_elevator->type == STANDS_ELEVATOR_TYPE_RIGHT)
+    	ax12_set_pos(&ax12_stands_elevator_r, stands_elevator->ax12_pos);
+
+	return 0;
+}
+
+/* return END_TRAJ or END_TIMER */
+uint8_t stands_elevator_wait_end(stands_elevator_t *stands_elevator)
+{
+    uint8_t ret;
+   
+    ret = ax12_wait_traj_end (&ax12_stands_elevator, END_TRAJ|END_TIME);
+
+    return ret;
+}
+
+
+
+/**** stands_blade functions *********************************************************/
+uint16_t stands_blade_ax12_pos[STANDS_BLADE_TYPE_MAX][STANDS_BLADE_MODE_MAX] = {
+	[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_HIDE_LEFT] 			= POS_STANDS_BLADE_L_HIDE_LEFT,
+	[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_PUSH_STAND_LEFT] 	= POS_STANDS_BLADE_L_PUSH_STAND_LEFT,
+	[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_CENTER] 				= POS_STANDS_BLADE_L_CENTER,
+	[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_PUSH_STAND_RIGHT] 	= POS_STANDS_BLADE_L_PUSH_STAND_RIGHT,
+	[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_HIDE_RIGHT] 			= POS_STANDS_BLADE_L_HIDE_RIGHT,
+
+	[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_HIDE_LEFT] 			= POS_STANDS_BLADE_R_HIDE_LEFT,
+	[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_PUSH_STAND_LEFT] 	= POS_STANDS_BLADE_R_PUSH_STAND_LEFT,
+	[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_CENTER] 			= POS_STANDS_BLADE_R_CENTER,
+	[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_PUSH_STAND_RIGHT] 	= POS_STANDS_BLADE_R_PUSH_STAND_RIGHT,
+	[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_HIDE_RIGHT] 		= POS_STANDS_BLADE_R_HIDE_RIGHT
+};
+
+struct ax12_traj ax12_stands_blade_l = { .id = AX12_ID_STANDS_BLADE_L, .zero_offset_pos = 0 };
+struct ax12_traj ax12_stands_blade_r = { .id = AX12_ID_STANDS_BLADE_R, .zero_offset_pos = 0 };
+
+/* set stands_blade position depends on mode*/
+uint8_t stands_blade_set_mode(stands_blade_t *stands_blade, uint8_t mode, int16_t pos_offset)
+{	
+	/* set ax12 position depends on mode and type */
+	if(mode >= STANDS_BLADE_MODE_MAX) {
+		ACTUATORS_ERROR("Unknown %s STANDS_BLADE MODE", stands_blade->type == STANDS_BLADE_TYPE_RIGHT? "RIGHT":"LEFT");
+		return -1;
+	}
+
+	stands_blade->mode = mode;
+	stands_blade->ax12_pos = stands_blade_ax12_pos[stands_blade->type][stands_blade->mode] + pos_offset;
+
+	/* saturate to position range */
+	if(stands_blade->type == STANDS_BLADE_TYPE_LEFT) {
+		if(stands_blade->ax12_pos > stands_blade_ax12_pos[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_L_POS_MAX])
+			stands_blade->ax12_pos = stands_blade_ax12_pos[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_L_POS_MAX];
+		else if(stands_blade->ax12_pos < stands_blade_ax12_pos[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_L_POS_MIN])
+			stands_blade->ax12_pos = stands_blade_ax12_pos[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_L_POS_MIN];
+	} 
+	else if(stands_blade->type == STANDS_BLADE_TYPE_RIGHT) {
+		if(stands_blade->ax12_pos > stands_blade_ax12_pos[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_R_POS_MAX])
+			stands_blade->ax12_pos = stands_blade_ax12_pos[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_R_POS_MAX];
+		else if(stands_blade->ax12_pos < stands_blade_ax12_pos[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_R_POS_MIN])
+			stands_blade->ax12_pos = stands_blade_ax12_pos[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_R_POS_MIN];
+	} 
+
+	/* apply to ax12 */
+	if(stands_blade->type == STANDS_BLADE_TYPE_LEFT)
+    	ax12_set_pos(&ax12_stands_blade_l, stands_blade->ax12_pos);
+	else if(stands_blade->type == STANDS_BLADE_TYPE_RIGHT)
+    	ax12_set_pos(&ax12_stands_blade_r, stands_blade->ax12_pos);
+
+	return 0;
+}
+
+/* return END_TRAJ or END_TIMER */
+uint8_t stands_blade_wait_end(stands_blade_t *stands_blade)
+{
+    uint8_t ret;
+   
+    ret = ax12_wait_traj_end (&ax12_stands_blade, END_TRAJ|END_TIME);
+
+    return ret;
+}
+
+
+
+/**** cup_clamp_popcorn_door functions *********************************************************/
+uint16_t cup_clamp_popcorn_door_l_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_MAX] = {
+	[CUP_CLAMP_POPCORN_DOOR_MODE_HIDE] 			= POS_CUP_CLAMP_POPCORN_DOOR_L_HIDE,
+	[CUP_CLAMP_POPCORN_DOOR_MODE_CUP_LOCKED] 	= POS_CUP_CLAMP_POPCORN_DOOR_L_CUP_LOCKED,
+	[CUP_CLAMP_POPCORN_DOOR_MODE_OPEN] 			= POS_CUP_CLAMP_POPCORN_DOOR_L_OPEN,
+	[CUP_CLAMP_POPCORN_DOOR_MODE_DOOR_OPEN] 	= POS_CUP_CLAMP_POPCORN_DOOR_L_DOOR_OPEN,
+};
+
+uint16_t cup_clamp_popcorn_door_r_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_MAX] = {
+	[CUP_CLAMP_POPCORN_DOOR_MODE_HIDE] 			= POS_CUP_CLAMP_POPCORN_DOOR_R_HIDE,
+	[CUP_CLAMP_POPCORN_DOOR_MODE_CUP_LOCKED]	= POS_CUP_CLAMP_POPCORN_DOOR_R_CUP_LOCKED,
+	[CUP_CLAMP_POPCORN_DOOR_MODE_OPEN] 			= POS_CUP_CLAMP_POPCORN_DOOR_R_OPEN,
+	[CUP_CLAMP_POPCORN_DOOR_MODE_DOOR_OPEN]		= POS_CUP_CLAMP_POPCORN_DOOR_R_DOOR_OPEN
+};
+
+struct ax12_traj ax12_cup_clamp_popcorn_door_l = { .id = AX12_ID_CUP_CLAMP_POPCORN_DOOR_L, .zero_offset_pos = 0 };
+struct ax12_traj ax12_cup_clamp_popcorn_door_r = { .id = AX12_ID_CUP_CLAMP_POPCORN_DOOR_R, .zero_offset_pos = 0 };
+
+/* set cup_clamp_popcorn_door position depends on mode*/
+uint8_t cup_clamp_popcorn_door_set_mode(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door, uint8_t mode, int16_t pos_offset)
+{	
+	/* set ax12 position depends on mode and type */
+	if(mode >= CUP_CLAMP_POPCORN_DOOR_MODE_MAX) {
+		ACTUATORS_ERROR("Unknown CUP_CLAMP_POPCORN_DOOR MODE");
+		return -1;
+	}
+
+	/* ax12 positions */
+	cup_clamp_popcorn_door->mode = mode;
+	cup_clamp_popcorn_door->ax12_pos_l = cup_clamp_popcorn_door_l_ax12_pos[cup_clamp_popcorn_door->mode] + pos_offset;
+	cup_clamp_popcorn_door->ax12_pos_r = cup_clamp_popcorn_door_r_ax12_pos[cup_clamp_popcorn_door->mode] + pos_offset;
+
+	/* saturate to position range */
+	if(cup_clamp_popcorn_door->ax12_pos_l > cup_clamp_popcorn_door_l_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_L_POS_MAX])
+		cup_clamp_popcorn_door->ax12_pos_l = cup_clamp_popcorn_door_l_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_L_POS_MAX];
+	else if(cup_clamp_popcorn_door->ax12_pos_l < cup_clamp_popcorn_door_l_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_L_POS_MIN])
+		cup_clamp_popcorn_door->ax12_pos_l = cup_clamp_popcorn_door_l_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_L_POS_MIN];
+
+	if(cup_clamp_popcorn_door->ax12_pos_r > cup_clamp_popcorn_door_r_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_R_POS_MAX])
+		cup_clamp_popcorn_door->ax12_pos_r = cup_clamp_popcorn_door_r_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_R_POS_MAX];
+	else if(cup_clamp_popcorn_door->ax12_pos_r < cup_clamp_popcorn_door_r_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_R_POS_MIN])
+		cup_clamp_popcorn_door->ax12_pos_r = cup_clamp_popcorn_door_r_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_R_POS_MIN];
+
+	/* apply to ax12 */
+   	ax12_set_pos(&ax12_cup_clamp_popcorn_door_l, cup_clamp_popcorn_door->ax12_pos_l);
+   	ax12_set_pos(&ax12_cup_clamp_popcorn_door_r, cup_clamp_popcorn_door->ax12_pos_r);
+
+	return 0;
+}
+
+/* return END_TRAJ or END_TIMER */
+uint8_t cup_clamp_popcorn_door_wait_end(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door)
+{
+    uint8_t ret;
+   
+    ret = ax12_wait_traj_end (&ax12_cup_clamp_popcorn_door, END_TRAJ|END_TIME);
+
+    return ret;
+}
+
+
+
+/**** popcorn_ramps functions *********************************************************/
+uint16_t popcorn_ramp_l_ax12_pos [POPCORN_RAMPS_MODE_MAX] = {
+	[POPCORN_RAMPS_MODE_HIDE] 		= POS_POPCORN_RAMP_L_HIDE, 
+	[POPCORN_RAMPS_MODE_HARVEST] 	= POS_POPCORN_RAMP_L_HARVEST, 
+	[POPCORN_RAMPS_MODE_OPEN]		= POS_POPCORN_RAMP_L_OPEN 
+};
+
+uint16_t popcorn_ramp_r_ax12_pos [POPCORN_RAMPS_MODE_MAX] = {
+	[POPCORN_RAMPS_MODE_HIDE] 		= POS_POPCORN_RAMP_R_HIDE, 
+	[POPCORN_RAMPS_MODE_HARVEST] 	= POS_POPCORN_RAMP_R_HARVEST, 
+	[POPCORN_RAMPS_MODE_OPEN]		= POS_POPCORN_RAMP_R_OPEN 
+};
+
+struct ax12_traj ax12_popcorn_ramp_l = { .id = AX12_ID_POPCORN_RAMP_L, .zero_offset_pos = 0 };
+struct ax12_traj ax12_popcorn_ramp_r = { .id = AX12_ID_POPCORN_RAMP_R, .zero_offset_pos = 0 };
+
+/* set popcorn_ramps position depends on mode */
+int8_t popcorn_ramps_set_mode(popcorn_ramps_t *popcorn_ramps, uint8_t mode, int16_t pos_offset)
+{
+	/* set ax12 positions depends on mode and type */
+	if(mode >= POPCORN_RAMPS_MODE_MAX) {
+		ACTUATORS_ERROR("Unknown POPCORN_RAMPS MODE");
+		return -1;
+	}
+
+   /* ax12 positions */
+	popcorn_ramps->mode = mode;
+	popcorn_ramps->ax12_pos_l = popcorn_ramp_l_ax12_pos[popcorn_ramps->mode] + pos_offset;
+	popcorn_ramps->ax12_pos_r = popcorn_ramp_r_ax12_pos[popcorn_ramps->mode] - pos_offset;
+
+	/* saturate to position range */
+	if(popcorn_ramps->ax12_pos_l > popcorn_ramp_l_ax12_pos[POPCORN_RAMPS_MODE_L_POS_MAX])
+		popcorn_ramps->ax12_pos_l = popcorn_ramp_l_ax12_pos[POPCORN_RAMPS_MODE_L_POS_MAX];
+	else if(popcorn_ramps->ax12_pos_l < popcorn_ramp_l_ax12_pos[POPCORN_RAMPS_MODE_L_POS_MIN])
+		popcorn_ramps->ax12_pos_l = popcorn_ramp_l_ax12_pos[POPCORN_RAMPS_MODE_L_POS_MIN];
+
+	if(popcorn_ramps->ax12_pos_r > popcorn_ramp_r_ax12_pos[POPCORN_RAMPS_MODE_R_POS_MAX])
+		popcorn_ramps->ax12_pos_r = popcorn_ramp_r_ax12_pos[POPCORN_RAMPS_MODE_R_POS_MAX];
+	else if(popcorn_ramps->ax12_pos_r < popcorn_ramp_r_ax12_pos[POPCORN_RAMPS_MODE_R_POS_MIN])
+		popcorn_ramps->ax12_pos_r = popcorn_ramp_r_ax12_pos[POPCORN_RAMPS_MODE_R_POS_MIN];
+ 
+	/* apply to ax12 */
+    ax12_set_pos (&ax12_popcorn_ramp_l, popcorn_ramps->ax12_pos_l);
+    ax12_set_pos (&ax12_popcorn_ramp_r, popcorn_ramps->ax12_pos_r);
+
+	return 0;
+}
+
+/* return END_TRAJ or END_TIMER */
+uint8_t popcorn_ramps_wait_end(popcorn_ramps_t *popcorn_ramps)
 {
     uint8_t ret_l, ret_r;
    
-    ret_l = ax12_wait_traj_end (&ax12_comb_l, END_TRAJ|END_TIME);
-    ret_r = ax12_wait_traj_end (&ax12_comb_r, END_TRAJ|END_TIME);
+    ret_l = ax12_wait_traj_end (&ax12_popcorn_ramp_l, END_TRAJ|END_TIME);
+    ret_r = ax12_wait_traj_end (&ax12_popcorn_ramp_r, END_TRAJ|END_TIME);
 
     return (ret_l | ret_r);
 }
 
-/**** sticks funcions *********************************************************/
-uint16_t stick_ax12_pos[STICK_TYPE_MAX][STICK_MODE_MAX] = {
-	[STICK_TYPE_RIGHT][STICK_MODE_HIDE] 				= POS_STICK_R_HIDE,
-	[STICK_TYPE_RIGHT][STICK_MODE_PUSH_FIRE] 			= POS_STICK_R_PUSH_FIRE,
-	[STICK_TYPE_RIGHT][STICK_MODE_PUSH_TORCH_FIRE]		= POS_STICK_R_PUSH_TORCH_FIRE,
-	[STICK_TYPE_RIGHT][STICK_MODE_CLEAN_FLOOR] 			= POS_STICK_R_CLEAN_FLOOR,
-	[STICK_TYPE_RIGHT][STICK_MODE_CLEAN_HEART] 			= POS_STICK_R_CLEAN_HEART,
 
-	[STICK_TYPE_LEFT][STICK_MODE_HIDE] 					= POS_STICK_L_HIDE,
-	[STICK_TYPE_LEFT][STICK_MODE_PUSH_FIRE] 			= POS_STICK_L_PUSH_FIRE,
-	[STICK_TYPE_LEFT][STICK_MODE_PUSH_TORCH_FIRE]		= POS_STICK_L_PUSH_TORCH_FIRE,
-	[STICK_TYPE_LEFT][STICK_MODE_CLEAN_FLOOR] 			= POS_STICK_L_CLEAN_FLOOR,
-	[STICK_TYPE_LEFT][STICK_MODE_CLEAN_HEART] 			= POS_STICK_L_CLEAN_HEART,
+
+/**** cup_clamp_front functions *********************************************************/
+uint16_t cup_clamp_front_ax12_pos [CUP_CLAMP_FRONT_MODE_MAX] = {
+	[CUP_CLAMP_FRONT_MODE_HIDE] 		= POS_CUP_CLAMP_FRONT_HIDE, 
+	[CUP_CLAMP_FRONT_MODE_CUP_LOCKED] 	= POS_CUP_CLAMP_FRONT_CUP_LOCKED 
 };
 
-struct ax12_traj ax12_stick_l = { .id = AX12_ID_STICK_L, .zero_offset_pos = 0 };
-struct ax12_traj ax12_stick_r = { .id = AX12_ID_STICK_R, .zero_offset_pos = 0 };
+struct ax12_traj ax12_cup_clamp_front = { .id = AX12_ID_CUP_CLAMP_FRONT, .zero_offset_pos = 0 };
 
-/* set finger position depends on mode */
-uint8_t stick_set_mode(stick_t *stick, uint8_t mode, int16_t pos_offset)
-{	
-	/* set ax12 possitions depends on mode and type */
-	if(mode >= STICK_MODE_MAX) {
-		ACTUATORS_ERROR("Unknow %s STICK MODE", stick->type == STICK_TYPE_RIGHT? "RIGHT":"LEFT");
+/* set cup_clamp_front position depends on mode */
+int8_t cup_clamp_front_set_mode(cup_clamp_front_t *cup_clamp_front, uint8_t mode, int16_t pos_offset);
+{
+	/* set ax12 positions depends on mode */
+	if(mode >= CUP_CLAMP_FRONT_MODE_MAX) {
+		ACTUATORS_ERROR("Unknown CUP_CLAMP_FRONT MODE");
 		return -1;
 	}
 
-	stick->mode = mode;
-	if(stick->type == STICK_TYPE_RIGHT)
-		stick->ax12_pos = stick_ax12_pos[stick->type][stick->mode] + pos_offset;
-	else
-		stick->ax12_pos = stick_ax12_pos[stick->type][stick->mode] + pos_offset;
-	
+	/* ax12 positions */
+	cup_clamp_front->mode = mode;
+	cup_clamp_front->ax12_pos = cup_clamp_front_ax12_pos[cup_clamp_front->mode] + pos_offset;
+
 	/* saturate to position range */
-	if(stick->type == STICK_TYPE_LEFT) {
-		if(stick->ax12_pos > stick_ax12_pos[STICK_TYPE_LEFT][STICK_MODE_L_POS_MAX])
-			stick->ax12_pos = stick_ax12_pos[STICK_TYPE_LEFT][STICK_MODE_L_POS_MAX];
-		if(stick->ax12_pos < stick_ax12_pos[STICK_TYPE_LEFT][STICK_MODE_L_POS_MIN])
-			stick->ax12_pos = stick_ax12_pos[STICK_TYPE_LEFT][STICK_MODE_L_POS_MIN];
-	} 
-	else {
-		if(stick->ax12_pos > stick_ax12_pos[STICK_TYPE_RIGHT][STICK_MODE_R_POS_MAX])
-			stick->ax12_pos = stick_ax12_pos[STICK_TYPE_RIGHT][STICK_MODE_R_POS_MAX];
-		if(stick->ax12_pos < stick_ax12_pos[STICK_TYPE_RIGHT][STICK_MODE_R_POS_MIN])
-			stick->ax12_pos = stick_ax12_pos[STICK_TYPE_RIGHT][STICK_MODE_R_POS_MIN];
-	}
-
-    if(stick->type == STICK_TYPE_LEFT)
-        ax12_set_pos (&ax12_stick_l, stick->ax12_pos);
-    else
-        ax12_set_pos (&ax12_stick_r, stick->ax12_pos);
-
-	return 0;
-}
-
-
-/* return END_TRAJ or END_BLOCKING */
-uint8_t stick_wait_end(stick_t *stick)
-{
-    if(stick->type == STICK_TYPE_LEFT)
-        return ax12_wait_traj_end (&ax12_stick_l, END_TRAJ|END_TIME);
-    else
-        return ax12_wait_traj_end (&ax12_stick_r, END_TRAJ|END_TIME);
-}
-
-
-/**** boot funcions *********************************************************/
-
-/* set boot position depends on mode */
-void boot_door_set_mode(boot_t *boot, uint8_t door_mode)
-{
-	uint8_t pos_saturated = 0;
-
-	switch(door_mode) {
-		case BOOT_DOOR_MODE_OPEN:
-			boot->door_servo_pos = pwm_servo_set(PWM_SERVO_BOOT_DOOR, POS_BOOT_DOOR_OPEN);
-			boot->door_mode = door_mode;
-			pos_saturated = boot->door_servo_pos != POS_BOOT_DOOR_OPEN? 1:0;
-			break;
-		case BOOT_DOOR_MODE_CLOSE:
-			boot->door_servo_pos = pwm_servo_set(PWM_SERVO_BOOT_DOOR, POS_BOOT_DOOR_CLOSE);
-			boot->door_mode = door_mode;
-			pos_saturated = boot->door_servo_pos != POS_BOOT_DOOR_CLOSE? 1:0;
-			break;
-		default:
-			ACTUATORS_ERROR("Unknown BOOT MODE");
-			break;
-	}
-	if(pos_saturated)
-		ACTUATORS_ERROR("Boot position saturated");
-}
-
-void boot_tray_set_mode(boot_t *boot, uint8_t tray_mode)
-{
-	uint8_t pos_saturated = 0;
-
-	switch(tray_mode) {
-		case BOOT_TRAY_MODE_DOWN:
-			pwm_mc_set(PWM_MC_BOOT_TRAY, 0);
-			break;
-		case BOOT_TRAY_MODE_VIBRATE:
-			pwm_mc_set(PWM_MC_BOOT_TRAY, BOOT_TRAY_VIBRATE_PWM);
-			break;
-		default:
-			ACTUATORS_ERROR("Unknown BOOT TRAY MODE");
-			break;
-	}
-	if(pos_saturated)
-		ACTUATORS_ERROR("Boot tray position saturated");
-
-}
-
-
-/**** tree tray funcions *********************************************************/
-uint16_t tree_tray_ax12_pos [TREE_TRAY_MODE_MAX] = {
-	[TREE_TRAY_MODE_OPEN] 		= POS_TREE_TRAY_OPEN,
-	[TREE_TRAY_MODE_CLOSE] 		= POS_TREE_TRAY_CLOSE,
-	[TREE_TRAY_MODE_HARVEST]	= POS_TREE_TRAY_HARVEST,
-};
-
-
-struct ax12_traj ax12_tree_tray = { .id = AX12_ID_TREE_TRAY, .zero_offset_pos = 0 };
-
-
-/* set tree_tray position depends on mode */
-uint8_t tree_tray_set_mode(tree_tray_t *tree_tray, uint8_t mode, int16_t pos_offset)
-{
-	/* set ax12 possitions depends on mode and type */
-	if(mode >= TREE_TRAY_MODE_MAX) {
-		ACTUATORS_ERROR("Unknow TREE TRAY MODE");
-		return -1;
-	}
-
-	tree_tray->mode = mode;
-	tree_tray->ax12_pos = tree_tray_ax12_pos[tree_tray->mode] + pos_offset;
-
-	
-	/* saturate to position range */
-	if(tree_tray->ax12_pos > tree_tray_ax12_pos[TREE_TRAY_MODE_POS_MAX])
-		tree_tray->ax12_pos = tree_tray_ax12_pos[TREE_TRAY_MODE_POS_MAX];
-	if(tree_tray->ax12_pos < tree_tray_ax12_pos[TREE_TRAY_MODE_POS_MIN])
-		tree_tray->ax12_pos = tree_tray_ax12_pos[TREE_TRAY_MODE_POS_MIN];
+	if(cup_clamp_front->ax12_pos > cup_clamp_front_ax12_pos[CUP_CLAMP_FRONT_MODE_POS_MAX])
+		cup_clamp_front->ax12_pos = cup_clamp_front_ax12_pos[CUP_CLAMP_FRONT_MODE_POS_MAX];
+	else if(cup_clamp_front->ax12_pos < cup_clamp_front_ax12_pos[CUP_CLAMP_FRONT_MODE_POS_MIN])
+		cup_clamp_front->ax12_pos = cup_clamp_front_ax12_pos[CUP_CLAMP_FRONT_MODE_POS_MIN];
 
 	/* apply to ax12 */
-    ax12_set_pos (&ax12_tree_tray, tree_tray->ax12_pos);
-
-	return 0;
+    ax12_set_pos(&ax12_cup_clamp_front, cup_clamp_front->ax12_pos);
 }
 
-/* return END_TRAJ or END_TIME */
-uint8_t tree_tray_wait_end(tree_tray_t *tree_tray)
+/* return END_TRAJ or END_TIMER */
+uint8_t cup_clamp_front_wait_end(cup_clamp_front_t *cup_clamp_front);
 {
-    return ax12_wait_traj_end (&ax12_tree_tray, END_TRAJ|END_TIME);
-}
-
-#if 0
-/**** vacuum funcions *********************************************************/
-
-void vacuum_motor_set (uint8_t num, uint8_t on) {
-
-	if (num == 1)
-		_LATC1 = !on;
-	else if (num == 2)
-		_LATB3 = !on;
-}
-
-void vacuum_ev_set (uint8_t num, uint8_t on) 
-{
-	if (num == 1)
-		_LATB10 = on;
-	else if (num == 2)
-		_LATB11 = on;
-}
-
-void vacuum_system_enable (uint8_t num) {
-	vacuum_ev_set (num, 1);
-	time_wait_ms (500);
-	vacuum_motor_set (num, 1);
-}
-
-void vacuum_system_disable (uint8_t num) {
-	vacuum_ev_set (num, 0);
-	vacuum_motor_set (num, 0);
-}
-#endif
-
-#if 0
-/****************************  ARM  *******************************************/
-
-#define SHOULDER_JOIN_X   (165-21) // 144
-#define SHOULDER_JOIN_Y   (130)
-#define ARM_LENGTH        (219.0)
-#define SUCKER_LENGTH_0	  (46.5)
-#define SUCKER_LENGTH_180 (55.5)
-
-#define ARM_X_MAX   (SHOULDER_JOIN_X + ARM_LENGTH) //363
-#define ARM_X_MIN   (SHOULDER_JOIN_X - ARM_LENGTH) //75
-
-#define ARM_Y_MAX   (SHOULDER_JOIN_Y + ARM_LENGTH) //363
-#define ARM_Y_MIN   (SHOULDER_JOIN_Y)			   //144
-
-#define ARM_H_MAX   (LIFT_HEIGHT_MAX_mm)
-#define ARM_H_MIN   (LIFT_HEIGHT_MAX_mm)
-
-#define ARM_SHOULDER_A_MAX   (185)
-#define ARM_SHOULDER_A_MIN   (0)
-
-#define ARM_ELBOW_A_MAX (180)
-#define ARM_ELBOW_A_MIN (0)
-
-#define ARM_WRIST_A_MAX (+90)
-#define ARM_WRIST_A_MIN (-90)
-
-/* some conversions and constants */
-#define DEG(x) (((double)(x)) * (180.0 / M_PI))
-#define RAD(x) (((double)(x)) * (M_PI / 180.0))
-#define M_2PI (2*M_PI)
-
-struct ax12_traj ax12_shoulder = { .id = AX12_ID_SHOULDER, .zero_offset_pos = 805 };
-struct ax12_traj ax12_elbow    = { .id = AX12_ID_ELBOW,    .zero_offset_pos = 822 };
-struct ax12_traj ax12_wrist    = { .id = AX12_ID_WRIST,    .zero_offset_pos = 450 }; //650
-
-struct arm 
-{
-    int16_t h;
-    int16_t x;
-    int16_t y;
-    int16_t a;
-
-    int16_t elbow_a;
-    int16_t wrist_a;
-};
-
-/*** Helper functions ********************************************************/
-void arm_a_to_xy (int16_t a, int16_t *x, int16_t *y)
-{
-    double x1, y1;
-
-    x1 = ARM_LENGTH * cos(RAD(a));
-    y1 = ARM_LENGTH * sin(RAD(a));
-
-    *x = (int16_t)x1 + SHOULDER_JOIN_X;
-    *y = (int16_t)y1 + SHOULDER_JOIN_Y;
-}
-
-void arm_x_to_ay (int16_t x, int16_t *a, int16_t *y)
-{
-    double a1, x1, y1;
-
-	x1 = (double) (x - SHOULDER_JOIN_X);
-    a1 = acos (x1 / ARM_LENGTH);
-    y1 = ARM_LENGTH * sin(a1);
-
-	//printf ("a1 = %f, x1 = %f, y1 = %f\n\r", DEG(a1), x1, y1);
-
-    *a = (int16_t)DEG(a1);
-    *y = (int16_t)y1 + SHOULDER_JOIN_Y; 
-
-	//printf ("a = %d, y = %d\n\r", *a, *y);  
-}
-
-void arm_y_to_ax (int16_t y, int16_t *a, int16_t *x)
-{
-    double a1, x1, y1;
-
-	y1 = (double) (y - SHOULDER_JOIN_Y);
-    a1 = M_PI - asin (y1 / ARM_LENGTH);
-    x1 = ARM_LENGTH * cos(a1);
-
-	//printf ("a1 = %f, x1 = %f, y1 = %f\n\r", DEG(a1), x1, y1);
-
-    *a = (int16_t)DEG(a1);
-    *x = (int16_t)x1 + SHOULDER_JOIN_X;   
-
-	//printf ("a = %d, x = %d\n\r", *a, *x);  
-}
-
-/*** Joins functions *********************************************************/
-
-/* shoulder angle */
-void arm_shoulder_goto_a_abs (int16_t a)
-{
-    /* check limints */
-    if (a > ARM_SHOULDER_A_MAX)   a = ARM_SHOULDER_A_MAX;
-    if (a < ARM_SHOULDER_A_MIN)   a = ARM_SHOULDER_A_MIN;
-
-    /* set pos, XXX set angle inverted */
-    ax12_set_a (&ax12_shoulder, -a);
-}
-
-uint8_t arm_shoulder_wait_traj_end (uint8_t flags) {
-    return ax12_wait_traj_end(&ax12_shoulder, flags);
-}
-
-int16_t arm_shoulder_get_a (void) {
-	/* XXX get invert angle */
-	return (-ax12_get_a(&ax12_shoulder));
-}
-
-/* elbow angle */
-void arm_elbow_goto_a_abs (int16_t a)
-{
-    /* check limints */
-    if (a > ARM_ELBOW_A_MAX)   a = ARM_ELBOW_A_MAX;
-    if (a < ARM_ELBOW_A_MIN)   a = ARM_ELBOW_A_MIN;
-
-    /* set pos, XXX set angle inverted */
-    ax12_set_a (&ax12_elbow, -a);
-}
-
-void arm_elbow_goto_a_rel (int16_t a)
-{
-    /* calculate a abs */
-	/* XXX get invert angle */
-    a = -ax12_get_a(&ax12_elbow) + a;
-
-    /* check limints */
-    if (a > ARM_ELBOW_A_MAX)   a = ARM_ELBOW_A_MAX;
-    if (a < ARM_ELBOW_A_MIN)   a = ARM_ELBOW_A_MIN;
-  
-    /* set pos, XXX set angle inverted */
-    ax12_set_a (&ax12_elbow, -a);
-}
-
-int16_t arm_elbow_get_a (void)
-{
-    /* calculate a abs */
-	/* XXX get invert angle */
-    return (-ax12_get_a(&ax12_elbow));
-}
-
-
-uint8_t arm_elbow_wait_traj_end (uint8_t flags) {
-    return ax12_wait_traj_end(&ax12_elbow, flags);
-}
-
-/* wrist angle */
-void arm_wrist_goto_a_abs (int16_t a)
-{
-    /* check limints */
-    if (a > ARM_WRIST_A_MAX)   a = ARM_WRIST_A_MAX;
-    if (a < ARM_WRIST_A_MIN)   a = ARM_WRIST_A_MIN;
-
-    /* set pos */
-    ax12_set_a (&ax12_wrist, a);
-}
-
-void arm_wrist_goto_a_rel (int16_t a)
-{
-    /* calculate a abs */
-    a = ax12_get_a (&ax12_wrist) + a;
-
-    /* check limints */
-    if (a > ARM_WRIST_A_MAX)   a = ARM_WRIST_A_MAX;
-    if (a < ARM_WRIST_A_MIN)   a = ARM_WRIST_A_MIN;
-
-    /* set pos */
-    ax12_set_a (&ax12_wrist, a);
-}
-
-uint8_t arm_wrist_wait_traj_end (uint8_t flags) {
-    return ax12_wait_traj_end(&ax12_wrist, flags);
-}
-
-int16_t arm_wrist_get_a (void) {
-    return ax12_get_a (&ax12_wrist);
-}
-
-/* set height, relative to current sucker angle 
- * XXX elbow angle is taken in account */
-void arm_goto_h (int16_t h)
-{
-    int16_t elbow_a;
-    float sucker_offset = 0.0;
-    int16_t h_sucker=0;
+    uint8_t ret;
    
-    /* calculate sucker height */
-    elbow_a = arm_elbow_get_a();
+    ret = ax12_wait_traj_end (&ax12_cup_clamp_front, END_TRAJ|END_TIME);
 
-	//printf ("h_sucker (%d) = %d - %d = %d\n\r", elbow_a, h, (int16_t)sucker_offset, (int16_t)h_sucker);
- 
-	if (elbow_a <= 90)
-    	sucker_offset = SUCKER_LENGTH_180 - (SUCKER_LENGTH_0 * cos(RAD(elbow_a)));
-	else 
-    	sucker_offset = SUCKER_LENGTH_180 + (SUCKER_LENGTH_180 * cos(RAD(elbow_a)));
-
-    h_sucker = h;
-	h_sucker -= (int16_t)sucker_offset;
-
-	//printf ("h_sucker (%d) = %d - %d = %d\n\r", elbow_a, h, (int16_t)sucker_offset, (int16_t)h_sucker);
- 
-    lift_set_height (h_sucker);
+    return ret;
 }
-
-/* set height, relative to elbow goal angle given as parameter 
- * XXX elbow angle is taken in account */
-void arm_goto_h_elbow_a (int16_t h, int16_t elbow_a)
-{
-    float sucker_offset = 0.0;
-    int16_t h_sucker;
-   
-    /* calculate sucker height */
-	if (elbow_a <= 90)
-    	sucker_offset = SUCKER_LENGTH_180 - (SUCKER_LENGTH_0 * cos(RAD(elbow_a)));
-	else 
-    	sucker_offset = SUCKER_LENGTH_180 + (SUCKER_LENGTH_180 * cos(RAD(elbow_a)));
-
-    h_sucker = h;
-	h_sucker -= (int16_t)sucker_offset;
-
-	//printf ("h_sucker (%d) = %d - %d = %d\n\r", elbow_a, h, (int16_t)sucker_offset, (int16_t)h_sucker);
- 
-    lift_set_height (h_sucker);
-}
-
-int16_t arm_get_h (void) 
-{
-	int16_t elbow_a = arm_elbow_get_a();
-
-	if (elbow_a <= 90)
-		return lift_get_height();
-	else
-		return (lift_get_height() + (SUCKER_LENGTH_180-SUCKER_LENGTH_0));
-}
-
-
-uint8_t arm_h_wait_traj_end (void)
-{
-    return lift_wait_end();
-}
-
-
-/* goto x coordinate, relative to robot zero coordinates.
- * XXX suposes elbow angle of 0 deg (sucker in parallel with ground) */
-void arm_goto_x (int16_t x)
-{
-    int16_t a,y;
-
-	/* check range */
-	if (x > ARM_X_MAX) x = ARM_X_MAX;
-	if (x < ARM_X_MIN) x = ARM_X_MIN;
-
-    /* calculate angle pos */
-    arm_x_to_ay (x, &a, &y); 
-
-    /* set pos */
-	arm_shoulder_goto_a_abs (a);
-}
-
-/* goto y coordinate, relative to robot zero coordinates.
- * XXX suposes elbow angle of 0 deg (sucker in parallel with ground) */
-void arm_goto_y (int16_t y)
-{
-    int16_t a,x;
-
-	/* check range */
-	if (x > ARM_Y_MAX) x = ARM_Y_MAX;
-	if (x < ARM_Y_MIN) x = ARM_Y_MIN;
-
-    /* calculate angle pos */
-    arm_y_to_ax (y, &a, &x); 
-
-    /* set pos */
-	arm_shoulder_goto_a_abs (a);
-}
-
-uint8_t arm_xy_wait_traj_end (uint8_t flags) {
-    return arm_shoulder_wait_traj_end (flags);
-}
-
-
-void arm_goto_hxaa (int16_t h, int16_t x, int16_t elbow_a, int16_t wrist_a)
-{
-#define SHOULDER_A_SAFE (145)
-
-	int16_t shoulder_h, shoulder_a, shoulder_a_final, y_final;
-
-	/* saturate range */
-	if (x > ARM_X_MAX) x = ARM_X_MAX;
-	if (x < ARM_X_MIN) x = ARM_X_MIN;
-
-	shoulder_a = arm_shoulder_get_a();
-	shoulder_h = arm_get_h();
-	arm_x_to_ay (x, &shoulder_a_final, &y_final);
-
-	/* goto safe position */
-	/*if ((shoulder_a > SHOULDER_A_SAFE) && 
-		(shoulder_a_final > SHOULDER_A_SAFE)) {
-		arm_shoulder_goto_a_abs (SHOULDER_A_SAFE);
-		arm_shoulder_wait_traj_end (END_TRAJ);
-	}*/
-
-	ACTUATORS_DEBUG ("shoulder a = %d --> a=%d", shoulder_a, shoulder_a_final);
-
-	/* depending on direction of movement */
-	if (shoulder_a_final <= shoulder_a)
-	{
-		/* goto final position */
-		arm_goto_x (x);
-		/* TODO detect safe shoulder angle for next movement */
-		arm_xy_wait_traj_end (END_TRAJ|END_NEAR|END_TIME);
-
-		arm_goto_h_elbow_a (h, elbow_a);	
-		arm_elbow_goto_a_abs (elbow_a);
-		arm_wrist_goto_a_abs (wrist_a);
-
-		/* wait end positions reached */
-		arm_xy_wait_traj_end (END_TRAJ);
-		arm_h_wait_traj_end ();
-		arm_elbow_wait_traj_end (END_TRAJ|END_TIME); /* FIXME */
-		arm_wrist_wait_traj_end (END_TRAJ);
-	}
-	else {
-		/* set all except shoulder angle */
-		arm_goto_h_elbow_a (h, elbow_a);
-		arm_elbow_goto_a_abs (elbow_a);
-		arm_wrist_goto_a_abs (wrist_a);
-
-		/* wait for h reached */
-		arm_h_wait_traj_end();
-		arm_elbow_wait_traj_end (END_TRAJ|END_TIME); /* FIXME */
-		arm_wrist_wait_traj_end (END_TRAJ);
-	
-		/* goto final position */
-		arm_goto_x (x);
-		
-		/* wait final positino reached */
-		arm_xy_wait_traj_end(END_TRAJ);
-	}
-}
-
-#endif
-
-
-/* init all actuators */
-void actuator_init(void)
-{
-#define PROGRAM_AX12
-#ifdef PROGRAM_AX12
-	ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_ALARM_SHUTDOWN, 0x24);
-	ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_ALARM_LED, 0x24);
-
-	/* specific config for mirror ax12, angle is limited */ 
-	ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_TORQUE_ENABLE, 0xFF);
-	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_CW_ANGLE_LIMIT_L, 0x00);
-	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_CCW_ANGLE_LIMIT_L, 0x3FF);
-	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_MOVING_SPEED_L, 0x3FF);
-#endif
-
-	/* init structures */
-	slavedspic.stick_l.type = STICK_TYPE_LEFT;
-	slavedspic.stick_r.type = STICK_TYPE_RIGHT;
-}
-

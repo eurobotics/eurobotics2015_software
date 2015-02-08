@@ -60,9 +60,9 @@ struct csb_list {
 	struct cs_block *csb;
 };
 
-prog_char csb_distance_str[] = "lift";
+prog_char csb_distance_str[] = "stands_exchanger";
 struct csb_list csb_list[] = {
-	{ .name = csb_distance_str, .csb = &slavedspic.lift },
+	{ .name = csb_distance_str, .csb = &slavedspic.stands_exchanger },
 };
 
 struct cmd_cs_result {
@@ -71,7 +71,7 @@ struct cmd_cs_result {
 };
 
 /* token to be used for all cs-related commands */
-prog_char str_csb_name[] = "lift";
+prog_char str_csb_name[] = "stands_exchanger";
 parse_pgm_token_string_t cmd_csb_name_tok = TOKEN_STRING_INITIALIZER(struct cmd_cs_result, csname, str_csb_name);
 
 struct cs_block *cs_from_name(const char *name)
@@ -673,5 +673,3 @@ parse_pgm_inst_t cmd_blocking_i_show = {
 		NULL,
 	},
 };
-
-
