@@ -37,6 +37,7 @@
 #include "ax12_user.h"
 #include "state.h"
 #include "main.h"
+#include "sensor.h"
 
 #define ACTUATORS_DEBUG(args...) 	DEBUG(E_USER_ACTUATORS, args)
 #define ACTUATORS_NOTICE(args...) 	NOTICE(E_USER_ACTUATORS, args)
@@ -248,7 +249,7 @@ void stands_exchanger_calibrate(void)
 	ACTUATORS_DEBUG("Goto zero");	
 
 	/* wait end initial positioning */
-	ret = WAIT_COND_OR_TIMEOUT(sensor_filtered&(1<<S_STAND_EXCHANGER_ENDSTOP), AUTOPOS_BD_TIMEOUT_ms);
+	ret = WAIT_COND_OR_TIMEOUT(sensor_get(S_STAND_EXCHANGER_ENDSTOP), AUTOPOS_BD_TIMEOUT_ms);
 	if(!ret) {
 		ACTUATORS_DEBUG("Initial positioning not reached");
 		return;
@@ -345,7 +346,7 @@ uint16_t popcorn_tray_servo_pos [POPCORN_TRAY_MODE_MAX] = {
 };
 
 /* set popcorn_tray position depends on mode */
-uint8_t popcorn_tray_set_mode(popcorn_tray_t *popcorn_tray, uint8_t mode, int16_t pos_offset)
+int8_t popcorn_tray_set_mode(popcorn_tray_t *popcorn_tray, uint8_t mode, int16_t pos_offset)
 {
 	/* set futaba servo position depends on mode */
 	if(mode >= POPCORN_TRAY_MODE_MAX) {
@@ -383,7 +384,7 @@ uint16_t stands_clamp_servo_pos[STANDS_CLAMP_TYPE_MAX][STANDS_CLAMP_MODE_MAX] = 
 };
 
 /* set stands_clamp position depends on mode */
-uint8_t stands_clamp_set_mode(stands_clamp_t *stands_clamp, uint8_t mode, int16_t pos_offset)
+int8_t stands_clamp_set_mode(stands_clamp_t *stands_clamp, uint8_t mode, int16_t pos_offset)
 {	
 	/* set futaba servo position depends on mode and type */
 	if(mode >= STANDS_CLAMP_MODE_MAX) {
@@ -480,7 +481,7 @@ struct ax12_traj ax12_stands_elevator_l = { .id = AX12_ID_STANDS_ELEVATOR_L, .ze
 struct ax12_traj ax12_stands_elevator_r = { .id = AX12_ID_STANDS_ELEVATOR_R, .zero_offset_pos = 0 };
 
 /* set stands_elevators position depends on mode*/
-uint8_t stands_elevator_set_mode(stands_elevator_t *stands_elevator, uint8_t mode, int16_t pos_offset)
+int8_t stands_elevator_set_mode(stands_elevator_t *stands_elevator, uint8_t mode, int16_t pos_offset)
 {	
 	/* set ax12 position depends on mode and type */
 	if(mode >= STANDS_ELEVATOR_MODE_MAX) {
@@ -517,10 +518,15 @@ uint8_t stands_elevator_set_mode(stands_elevator_t *stands_elevator, uint8_t mod
 /* return END_TRAJ or END_TIMER */
 uint8_t stands_elevator_wait_end(stands_elevator_t *stands_elevator)
 {
-    uint8_t ret;
-   
-    ret = ax12_wait_traj_end (&ax12_stands_elevator, END_TRAJ|END_TIME);
+    uint8_t ret = 0;
 
+	if(stands_elevator->type == STANDS_ELEVATOR_TYPE_LEFT) {
+    	ret = ax12_wait_traj_end (&ax12_stands_elevator_l, END_TRAJ|END_TIME);
+	} 
+	else if(stands_elevator->type == STANDS_ELEVATOR_TYPE_RIGHT) {
+    	ret = ax12_wait_traj_end (&ax12_stands_elevator_r, END_TRAJ|END_TIME);
+	} 
+   
     return ret;
 }
 
@@ -545,7 +551,7 @@ struct ax12_traj ax12_stands_blade_l = { .id = AX12_ID_STANDS_BLADE_L, .zero_off
 struct ax12_traj ax12_stands_blade_r = { .id = AX12_ID_STANDS_BLADE_R, .zero_offset_pos = 0 };
 
 /* set stands_blade position depends on mode*/
-uint8_t stands_blade_set_mode(stands_blade_t *stands_blade, uint8_t mode, int16_t pos_offset)
+int8_t stands_blade_set_mode(stands_blade_t *stands_blade, uint8_t mode, int16_t pos_offset)
 {	
 	/* set ax12 position depends on mode and type */
 	if(mode >= STANDS_BLADE_MODE_MAX) {
@@ -582,9 +588,14 @@ uint8_t stands_blade_set_mode(stands_blade_t *stands_blade, uint8_t mode, int16_
 /* return END_TRAJ or END_TIMER */
 uint8_t stands_blade_wait_end(stands_blade_t *stands_blade)
 {
-    uint8_t ret;
+    uint8_t ret = 0;
    
-    ret = ax12_wait_traj_end (&ax12_stands_blade, END_TRAJ|END_TIME);
+	if(stands_blade->type == STANDS_BLADE_TYPE_LEFT) {
+    	ret = ax12_wait_traj_end (&ax12_stands_blade_l, END_TRAJ|END_TIME);
+	} 
+	else if(stands_blade->type == STANDS_BLADE_TYPE_RIGHT) {
+    	ret = ax12_wait_traj_end (&ax12_stands_blade_r, END_TRAJ|END_TIME);
+	} 
 
     return ret;
 }
@@ -593,24 +604,24 @@ uint8_t stands_blade_wait_end(stands_blade_t *stands_blade)
 
 /**** cup_clamp_popcorn_door functions *********************************************************/
 uint16_t cup_clamp_popcorn_door_l_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_MAX] = {
-	[CUP_CLAMP_POPCORN_DOOR_MODE_HIDE] 			= POS_CUP_CLAMP_POPCORN_DOOR_L_HIDE,
-	[CUP_CLAMP_POPCORN_DOOR_MODE_CUP_LOCKED] 	= POS_CUP_CLAMP_POPCORN_DOOR_L_CUP_LOCKED,
-	[CUP_CLAMP_POPCORN_DOOR_MODE_OPEN] 			= POS_CUP_CLAMP_POPCORN_DOOR_L_OPEN,
-	[CUP_CLAMP_POPCORN_DOOR_MODE_DOOR_OPEN] 	= POS_CUP_CLAMP_POPCORN_DOOR_L_DOOR_OPEN,
+	[CUP_CLAMP_MODE_HIDE] 			= POS_CUP_CLAMP_L_HIDE,
+	[CUP_CLAMP_MODE_LOCKED] 		= POS_CUP_CLAMP_L_LOCKED,
+	[CUP_CLAMP_MODE_OPEN] 			= POS_CUP_CLAMP_L_OPEN,
+	[POPCORN_DOOR_MODE_OPEN] 		= POS_POPCORN_DOOR_L_OPEN,
 };
 
 uint16_t cup_clamp_popcorn_door_r_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_MAX] = {
-	[CUP_CLAMP_POPCORN_DOOR_MODE_HIDE] 			= POS_CUP_CLAMP_POPCORN_DOOR_R_HIDE,
-	[CUP_CLAMP_POPCORN_DOOR_MODE_CUP_LOCKED]	= POS_CUP_CLAMP_POPCORN_DOOR_R_CUP_LOCKED,
-	[CUP_CLAMP_POPCORN_DOOR_MODE_OPEN] 			= POS_CUP_CLAMP_POPCORN_DOOR_R_OPEN,
-	[CUP_CLAMP_POPCORN_DOOR_MODE_DOOR_OPEN]		= POS_CUP_CLAMP_POPCORN_DOOR_R_DOOR_OPEN
+	[CUP_CLAMP_MODE_HIDE] 			= POS_CUP_CLAMP_R_HIDE,
+	[CUP_CLAMP_MODE_LOCKED]			= POS_CUP_CLAMP_R_LOCKED,
+	[CUP_CLAMP_MODE_OPEN] 			= POS_CUP_CLAMP_R_OPEN,
+	[POPCORN_DOOR_MODE_OPEN]		= POS_POPCORN_DOOR_R_OPEN
 };
 
 struct ax12_traj ax12_cup_clamp_popcorn_door_l = { .id = AX12_ID_CUP_CLAMP_POPCORN_DOOR_L, .zero_offset_pos = 0 };
 struct ax12_traj ax12_cup_clamp_popcorn_door_r = { .id = AX12_ID_CUP_CLAMP_POPCORN_DOOR_R, .zero_offset_pos = 0 };
 
 /* set cup_clamp_popcorn_door position depends on mode*/
-uint8_t cup_clamp_popcorn_door_set_mode(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door, uint8_t mode, int16_t pos_offset)
+int8_t cup_clamp_popcorn_door_set_mode(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door, uint8_t mode, int16_t pos_offset)
 {	
 	/* set ax12 position depends on mode and type */
 	if(mode >= CUP_CLAMP_POPCORN_DOOR_MODE_MAX) {
@@ -641,12 +652,25 @@ uint8_t cup_clamp_popcorn_door_set_mode(cup_clamp_popcorn_door_t *cup_clamp_popc
 	return 0;
 }
 
+/* set cup_clamp_position depends on mode */
+int8_t cup_clamp_set_mode(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door, uint8_t mode, int16_t pos_offset)
+{
+	return cup_clamp_popcorn_door_set_mode(cup_clamp_popcorn_door, mode, pos_offset);
+}
+
+/* set popcorn_door position depends on mode */
+int8_t popcorn_door_set_mode(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door, uint8_t mode, int16_t pos_offset)
+{
+	return cup_clamp_popcorn_door_set_mode(cup_clamp_popcorn_door, mode, pos_offset);
+}
+
 /* return END_TRAJ or END_TIMER */
 uint8_t cup_clamp_popcorn_door_wait_end(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door)
 {
     uint8_t ret;
    
-    ret = ax12_wait_traj_end (&ax12_cup_clamp_popcorn_door, END_TRAJ|END_TIME);
+    ret = ax12_wait_traj_end (&ax12_cup_clamp_popcorn_door_l, END_TRAJ|END_TIME);
+    ret = ax12_wait_traj_end (&ax12_cup_clamp_popcorn_door_r, END_TRAJ|END_TIME);
 
     return ret;
 }
@@ -723,7 +747,7 @@ uint16_t cup_clamp_front_ax12_pos [CUP_CLAMP_FRONT_MODE_MAX] = {
 struct ax12_traj ax12_cup_clamp_front = { .id = AX12_ID_CUP_CLAMP_FRONT, .zero_offset_pos = 0 };
 
 /* set cup_clamp_front position depends on mode */
-int8_t cup_clamp_front_set_mode(cup_clamp_front_t *cup_clamp_front, uint8_t mode, int16_t pos_offset);
+int8_t cup_clamp_front_set_mode(cup_clamp_front_t *cup_clamp_front, uint8_t mode, int16_t pos_offset)
 {
 	/* set ax12 positions depends on mode */
 	if(mode >= CUP_CLAMP_FRONT_MODE_MAX) {
@@ -743,10 +767,12 @@ int8_t cup_clamp_front_set_mode(cup_clamp_front_t *cup_clamp_front, uint8_t mode
 
 	/* apply to ax12 */
     ax12_set_pos(&ax12_cup_clamp_front, cup_clamp_front->ax12_pos);
+
+	return 0;
 }
 
 /* return END_TRAJ or END_TIMER */
-uint8_t cup_clamp_front_wait_end(cup_clamp_front_t *cup_clamp_front);
+uint8_t cup_clamp_front_wait_end(cup_clamp_front_t *cup_clamp_front)
 {
     uint8_t ret;
    
@@ -754,3 +780,22 @@ uint8_t cup_clamp_front_wait_end(cup_clamp_front_t *cup_clamp_front);
 
     return ret;
 }
+
+
+
+/* init all actuators */
+void actuator_init(void)
+{
+#define PROGRAM_AX12
+#ifdef PROGRAM_AX12
+	ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_ALARM_SHUTDOWN, 0x24);
+	ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_ALARM_LED, 0x24);
+
+	/* specific config for mirror ax12, angle is limited */ 
+	ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_TORQUE_ENABLE, 0xFF);
+	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_CW_ANGLE_LIMIT_L, 0x00);
+	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_CCW_ANGLE_LIMIT_L, 0x3FF);
+	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_MOVING_SPEED_L, 0x3FF);
+#endif
+}
+
