@@ -326,6 +326,16 @@ int8_t stands_exchanger_check_position_reached(void)
 }
 
 /* return END_TRAJ or END_BLOCKING */
+uint8_t stands_exchanger_test_traj_end()
+{
+	uint8_t ret = 0;
+
+	ret = stands_exchanger_check_position_reached();
+
+	return ret;
+}
+
+/* return END_TRAJ or END_BLOCKING */
 uint8_t stands_exchanger_wait_end()
 {
 	uint8_t ret = 0;
@@ -456,6 +466,16 @@ int8_t stands_tower_clamps_set_mode(stands_tower_clamps_t *stands_tower_clamps, 
 	return 0;
 }
 
+/* return stands_tower_clamps */
+uint8_t stands_tower_clamps_test_traj_end(stands_tower_clamps_t *stands_tower_clamps)
+{
+    uint8_t ret;
+   
+    ret = ax12_test_traj_end (&ax12_stands_tower_clamps, END_TRAJ|END_TIME);
+
+    return ret;
+}
+
 /* return END_TRAJ or END_TIMER */
 uint8_t stands_tower_clamps_wait_end(stands_tower_clamps_t *stands_tower_clamps)
 {
@@ -513,6 +533,21 @@ int8_t stands_elevator_set_mode(stands_elevator_t *stands_elevator, uint8_t mode
     	ax12_set_pos(&ax12_stands_elevator_r, stands_elevator->ax12_pos);
 
 	return 0;
+}
+
+/* return stands_elevator traj flag */
+uint8_t stands_elevator_test_traj_end(stands_elevator_t *stands_elevator)
+{
+    uint8_t ret = 0;
+
+	if(stands_elevator->type == STANDS_ELEVATOR_TYPE_LEFT) {
+    	ret = ax12_test_traj_end (&ax12_stands_elevator_l, END_TRAJ|END_TIME);
+	} 
+	else if(stands_elevator->type == STANDS_ELEVATOR_TYPE_RIGHT) {
+    	ret = ax12_test_traj_end (&ax12_stands_elevator_r, END_TRAJ|END_TIME);
+	} 
+   
+    return ret;
 }
 
 /* return END_TRAJ or END_TIMER */
@@ -583,6 +618,21 @@ int8_t stands_blade_set_mode(stands_blade_t *stands_blade, uint8_t mode, int16_t
     	ax12_set_pos(&ax12_stands_blade_r, stands_blade->ax12_pos);
 
 	return 0;
+}
+
+/* return stands_blade traj flag */
+uint8_t stands_blade_test_traj_end(stands_blade_t *stands_blade)
+{
+    uint8_t ret = 0;
+   
+	if(stands_blade->type == STANDS_BLADE_TYPE_LEFT) {
+    	ret = ax12_test_traj_end (&ax12_stands_blade_l, END_TRAJ|END_TIME);
+	} 
+	else if(stands_blade->type == STANDS_BLADE_TYPE_RIGHT) {
+    	ret = ax12_test_traj_end (&ax12_stands_blade_r, END_TRAJ|END_TIME);
+	} 
+
+    return ret;
 }
 
 /* return END_TRAJ or END_TIMER */
@@ -664,15 +714,26 @@ int8_t popcorn_door_set_mode(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door, u
 	return cup_clamp_popcorn_door_set_mode(cup_clamp_popcorn_door, mode, pos_offset);
 }
 
+/* return cup_clamp_popcorn_door traj flag */
+uint8_t cup_clamp_popcorn_door_test_traj_end(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door)
+{
+    uint8_t ret_l, ret_r;
+   
+    ret_l = ax12_test_traj_end (&ax12_cup_clamp_popcorn_door_l, END_TRAJ|END_TIME);
+    ret_r = ax12_test_traj_end (&ax12_cup_clamp_popcorn_door_r, END_TRAJ|END_TIME);
+
+    return (ret_l|ret_r);
+}
+
 /* return END_TRAJ or END_TIMER */
 uint8_t cup_clamp_popcorn_door_wait_end(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door)
 {
-    uint8_t ret;
+    uint8_t ret_l, ret_r;
    
-    ret = ax12_wait_traj_end (&ax12_cup_clamp_popcorn_door_l, END_TRAJ|END_TIME);
-    ret = ax12_wait_traj_end (&ax12_cup_clamp_popcorn_door_r, END_TRAJ|END_TIME);
+    ret_l = ax12_wait_traj_end (&ax12_cup_clamp_popcorn_door_l, END_TRAJ|END_TIME);
+    ret_r = ax12_wait_traj_end (&ax12_cup_clamp_popcorn_door_r, END_TRAJ|END_TIME);
 
-    return ret;
+    return (ret_l|ret_r);
 }
 
 
@@ -725,6 +786,17 @@ int8_t popcorn_ramps_set_mode(popcorn_ramps_t *popcorn_ramps, uint8_t mode, int1
 	return 0;
 }
 
+/* return popcorn_ramps traj flag */
+uint8_t popcorn_ramps_test_traj_end(popcorn_ramps_t *popcorn_ramps)
+{
+    uint8_t ret_l, ret_r;
+   
+    ret_l = ax12_test_traj_end (&ax12_popcorn_ramp_l, END_TRAJ|END_TIME);
+    ret_r = ax12_test_traj_end (&ax12_popcorn_ramp_r, END_TRAJ|END_TIME);
+
+    return (ret_l | ret_r);
+}
+
 /* return END_TRAJ or END_TIMER */
 uint8_t popcorn_ramps_wait_end(popcorn_ramps_t *popcorn_ramps)
 {
@@ -769,6 +841,16 @@ int8_t cup_clamp_front_set_mode(cup_clamp_front_t *cup_clamp_front, uint8_t mode
     ax12_set_pos(&ax12_cup_clamp_front, cup_clamp_front->ax12_pos);
 
 	return 0;
+}
+
+/* return cup_clamp_front traj flag */
+uint8_t cup_clamp_front_test_traj_end(cup_clamp_front_t *cup_clamp_front)
+{
+    uint8_t ret;
+   
+    ret = ax12_test_traj_end (&ax12_cup_clamp_front, END_TRAJ|END_TIME);
+
+    return ret;
 }
 
 /* return END_TRAJ or END_TIMER */

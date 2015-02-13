@@ -122,6 +122,9 @@ int32_t stands_exchanger_get_position(void);
 int8_t stands_exchanger_check_position_reached(void);
 
 /* return END_TRAJ or END_BLOCKING */
+uint8_t stands_exchanger_test_traj_end();
+
+/* return END_TRAJ or END_BLOCKING */
 uint8_t stands_exchanger_wait_end();
 
 
@@ -188,6 +191,9 @@ typedef struct {
 /* set stands_tower_clamps position depends on mode */
 int8_t stands_tower_clamps_set_mode(stands_tower_clamps_t *stands_tower_clamps, uint8_t mode, int16_t pos_offset);
 
+/* return stands_tower_clamps traj flag */
+uint8_t stands_tower_clamps_test_traj_end(stands_tower_clamps_t *stands_tower_clamps);
+
 /* return END_TRAJ or END_TIMER */
 uint8_t stands_tower_clamps_wait_end(stands_tower_clamps_t *stands_tower_clamps);
 
@@ -215,6 +221,9 @@ typedef struct {
 
 /* set stands_elevator position depends on mode */
 int8_t stands_elevator_set_mode(stands_elevator_t *stands_elevator, uint8_t mode, int16_t pos_offset);
+
+/* return stands_elevator traj flag */
+uint8_t stands_elevator_test_traj_end(stands_elevator_t *stands_elevator);
 
 /* return END_TRAJ or END_TIMER */
 uint8_t stands_elevator_wait_end(stands_elevator_t *stands_elevator);
@@ -246,6 +255,9 @@ typedef struct {
 
 /* set stands_blade position depends on mode */
 int8_t stands_blade_set_mode(stands_blade_t *stands_blade, uint8_t mode, int16_t pos_offset);
+
+/* return stands_blade traj flag */
+uint8_t stands_blade_test_traj_end(stands_blade_t *stands_blade);
 
 /* return END_TRAJ or END_TIMER */
 uint8_t stands_blade_wait_end(stands_blade_t *stands_blade);
@@ -279,6 +291,9 @@ int8_t cup_clamp_set_mode(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door, uint
 /* set popcorn_door position depends on mode */
 int8_t popcorn_door_set_mode(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door, uint8_t mode, int16_t pos_offset);
 
+/* return cup_clamp_popcorn_door traj flag */
+uint8_t cup_clamp_popcorn_door_test_traj_end(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door);
+
 /* return END_TRAJ or END_TIMER */
 uint8_t cup_clamp_popcorn_door_wait_end(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door);
 
@@ -304,6 +319,9 @@ typedef struct {
 /* set popcorn_ramps position depends on mode */
 int8_t popcorn_ramps_set_mode(popcorn_ramps_t *popcorn_ramps, uint8_t mode, int16_t pos_offset);
 
+/* return popcorn_ramps traj flag */
+uint8_t popcorn_ramps_test_traj_end(popcorn_ramps_t *popcorn_ramps);
+
 /* return END_TRAJ or END_TIMER */
 uint8_t popcorn_ramps_wait_end(popcorn_ramps_t *popcorn_ramps);
 
@@ -326,9 +344,11 @@ typedef struct {
 /* set cup_clamp_front position depends on mode */
 int8_t cup_clamp_front_set_mode(cup_clamp_front_t *cup_clamp_front, uint8_t mode, int16_t pos_offset);
 
+/* return cup_clamp_front traj flag */
+uint8_t cup_clamp_front_test_traj_end(cup_clamp_front_t *cup_clamp_front);
+
 /* return END_TRAJ or END_TIMER */
 uint8_t cup_clamp_front_wait_end(cup_clamp_front_t *cup_clamp_front);
-
 
 
 #endif /* _ACTUATOR_H_ */
