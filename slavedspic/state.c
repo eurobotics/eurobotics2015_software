@@ -102,7 +102,7 @@ int8_t state_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd)
 	if (mainboard_command.mode == POWER_OFF) {
 
 		/* lift */
-		slavedspic.lift.on = 0;
+//		slavedspic.lift.on = 0;
 		dac_mc_set(&gen.dac_mc_left, 0);
 		BRAKE_ON();
 
@@ -111,8 +111,8 @@ int8_t state_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd)
 
 		wait_ms(100);
 		pwm_servo_disable();
-        vacuum_system_disable (1);
-        vacuum_system_disable (2);
+//        vacuum_system_disable (1);
+//        vacuum_system_disable (2);
 
       state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 	}
@@ -163,7 +163,7 @@ static void state_do_init(void)
 }
 
 
-
+#if 0
 /**
  * *************** simple actuators modes ***********
  */
@@ -956,7 +956,7 @@ pickup:
 	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
-
+#endif
 
 #if 0
 
@@ -992,21 +992,21 @@ void state_do_set_infos(void)
 /* state machines */
 void state_machines(void)
 {
-	state_do_init();
-
-	/* simple actuator modes */
-	state_do_boot_tray_mode();
-	state_do_boot_door_mode();
-	state_do_stick_mode();
-	state_do_combs_mode();
-	state_do_tree_tray_mode();
-
-	/* multiple actuators modes */
-	state_do_harvest_fruits_mode();
-	state_do_dump_fruits_mode();
-	state_do_arm_mode();
-
-
+//	state_do_init();
+//
+//	/* simple actuator modes */
+//	state_do_boot_tray_mode();
+//	state_do_boot_door_mode();
+//	state_do_stick_mode();
+//	state_do_combs_mode();
+//	state_do_tree_tray_mode();
+//
+//	/* multiple actuators modes */
+//	state_do_harvest_fruits_mode();
+//	state_do_dump_fruits_mode();
+//	state_do_arm_mode();
+//
+//
 #if 0
 	state_do_set_infos();
 #endif
@@ -1025,26 +1025,26 @@ void state_init(void)
 	/* start positions */
 
 	/* close gadgets */
-	boot_door_set_mode (&slavedspic.boot, BOOT_DOOR_MODE_CLOSE);
+//	boot_door_set_mode (&slavedspic.boot, BOOT_DOOR_MODE_CLOSE);
+//
+//	combs_set_mode(&slavedspic.combs, COMBS_MODE_HIDE, 0);
+//	combs_wait_end(&slavedspic.combs);
+//
+//	tree_tray_set_mode(&slavedspic.tree_tray, TREE_TRAY_MODE_CLOSE, 0);
+//	tree_tray_wait_end(&slavedspic.tree_tray);
+//
+//	stick_set_mode(&slavedspic.stick_l, STICK_MODE_HIDE, 0);
+//	stick_wait_end(&slavedspic.stick_l);
+//
+//	stick_set_mode(&slavedspic.stick_r, STICK_MODE_HIDE, 0);
+//	stick_wait_end(&slavedspic.stick_r);
 
-	combs_set_mode(&slavedspic.combs, COMBS_MODE_HIDE, 0);
-	combs_wait_end(&slavedspic.combs);
-
-	tree_tray_set_mode(&slavedspic.tree_tray, TREE_TRAY_MODE_CLOSE, 0);
-	tree_tray_wait_end(&slavedspic.tree_tray);
-
-	stick_set_mode(&slavedspic.stick_l, STICK_MODE_HIDE, 0);
-	stick_wait_end(&slavedspic.stick_l);
-
-	stick_set_mode(&slavedspic.stick_r, STICK_MODE_HIDE, 0);
-	stick_wait_end(&slavedspic.stick_r);
-
-	BRAKE_OFF();
-	slavedspic.lift.on = 1;
-
-	/* arm init */
-	lift_calibrate();
-	arm_goto_hxaa (200, 0, 0, 0);
-	arm_goto_hxaa (200, -75, 180, 0);
+//	BRAKE_OFF();
+//	slavedspic.lift.on = 1;
+//
+//	/* arm init */
+//	lift_calibrate();
+//	arm_goto_hxaa (200, 0, 0, 0);
+//	arm_goto_hxaa (200, -75, 180, 0);
 }
 

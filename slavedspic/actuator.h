@@ -57,27 +57,29 @@
 #define POS_STANDS_ELEVATOR_R_UP	0
 #define POS_STANDS_ELEVATOR_R_DOWN	0
 
-#define POS_STANDS_BLADE_L_HIDE_LEFT				0
-#define POS_STANDS_BLADE_L_HIDE_PUSH_STAND_LEFT		0
-#define POS_STANDS_BLADE_L_HIDE_CENTER				0
-#define POS_STANDS_BLADE_L_HIDE_PUSH_STAND_RIGHT	0
-#define POS_STANDS_BLADE_L_HIDE_RIGTH				0
+#define POS_STANDS_BLADE_L_HIDE_LEFT			0
+#define POS_STANDS_BLADE_L_PUSH_STAND_LEFT		0
+#define POS_STANDS_BLADE_L_CENTER				0
+#define POS_STANDS_BLADE_L_PUSH_STAND_RIGHT		0
+#define POS_STANDS_BLADE_L_HIDE_RIGHT			0
 
-#define POS_STANDS_BLADE_R_HIDE_LEFT				0
-#define POS_STANDS_BLADE_R_HIDE_PUSH_STAND_LEFT		0
-#define POS_STANDS_BLADE_R_HIDE_CENTER				0
-#define POS_STANDS_BLADE_R_HIDE_PUSH_STAND_RIGHT	0
-#define POS_STANDS_BLADE_R_HIDE_RIGTH				0
+#define POS_STANDS_BLADE_R_HIDE_LEFT			0
+#define POS_STANDS_BLADE_R_PUSH_STAND_LEFT		0
+#define POS_STANDS_BLADE_R_CENTER				0
+#define POS_STANDS_BLADE_R_PUSH_STAND_RIGHT		0
+#define POS_STANDS_BLADE_R_HIDE_RIGHT			0
 
-#define POS_CUP_CLAMP_POPCORN_DOOR_L_HIDE			0
-#define POS_CUP_CLAMP_POPCORN_DOOR_L_CUP_LOCKED		0
-#define POS_CUP_CLAMP_POPCORN_DOOR_L_OPEN			0
-#define POS_CUP_CLAMP_POPCORN_DOOR_L_DOOR_OPEN		0
+#define POS_CUP_CLAMP_L_HIDE			0
+#define POS_CUP_CLAMP_L_LOCKED			0
+#define POS_CUP_CLAMP_L_OPEN			0
+#define POS_POPCORN_DOOR_L_CLOSE		POS_CUP_CLAMP_L_HIDE
+#define POS_POPCORN_DOOR_L_OPEN			0
 
-#define POS_CUP_CLAMP_POPCORN_DOOR_R_HIDE			0
-#define POS_CUP_CLAMP_POPCORN_DOOR_R_CUP_LOCKED		0
-#define POS_CUP_CLAMP_POPCORN_DOOR_R_OPEN			0
-#define POS_CUP_CLAMP_POPCORN_DOOR_R_DOOR_OPEN		0
+#define POS_CUP_CLAMP_R_HIDE			0
+#define POS_CUP_CLAMP_R_LOCKED			0
+#define POS_CUP_CLAMP_R_OPEN			0
+#define POS_POPCORN_DOOR_R_CLOSE		POS_CUP_CLAMP_R_HIDE
+#define POS_POPCORN_DOOR_R_OPEN			0
 
 #define POS_POPCORN_RAMP_L_HIDE			0
 #define POS_POPCORN_RAMP_L_HARVEST		0
@@ -140,7 +142,7 @@ typedef struct {
 } popcorn_tray_t;
 
 /* set popcorn_tray position depends on mode */
-uint8_t popcorn_tray_set_mode(popcorn_tray_t *popcorn_tray, uint8_t mode, int16_t pos_offset);
+int8_t popcorn_tray_set_mode(popcorn_tray_t *popcorn_tray, uint8_t mode, int16_t pos_offset);
 
 
 
@@ -165,7 +167,7 @@ typedef struct {
 } stands_clamp_t;
 
 /* set stands_clamp position depends on mode */
-uint8_t stands_clamp_set_mode(stands_clamp_t *stands_clamp, uint8_t mode, int16_t pos_offset);
+int8_t stands_clamp_set_mode(stands_clamp_t *stands_clamp, uint8_t mode, int16_t pos_offset);
 
 
 
@@ -229,7 +231,7 @@ typedef struct {
 	uint8_t mode;
 #define STANDS_BLADE_MODE_HIDE_LEFT				0
 #define STANDS_BLADE_MODE_PUSH_STAND_LEFT		1
-#define STANDS_BLADE_MODE_HIDE_CENTER			2
+#define STANDS_BLADE_MODE_CENTER				2
 #define STANDS_BLADE_MODE_PUSH_STAND_RIGHT		3
 #define STANDS_BLADE_MODE_HIDE_RIGHT			4
 #define STANDS_BLADE_MODE_MAX					5
@@ -253,11 +255,11 @@ uint8_t stands_blade_wait_end(stands_blade_t *stands_blade);
 /****cup_clamp_popcorn_door functions *********************************************************/
 typedef struct {
 	uint8_t mode;
-#define CUP_CLAMP_POPCORN_DOOR_MODE_HIDE		0
-#define CUP_CLAMP_POPCORN_DOOR_MODE_CUP_LOCKED	1
-#define CUP_CLAMP_POPCORN_DOOR_MODE_OPEN		2
-#define CUP_CLAMP_POPCORN_DOOR_MODE_DOOR_OPEN	3
-#define CUP_CLAMP_POPCORN_DOOR_MODE_MAX			4
+#define CUP_CLAMP_MODE_HIDE					0
+#define CUP_CLAMP_MODE_LOCKED				1
+#define CUP_CLAMP_MODE_OPEN					2
+#define POPCORN_DOOR_MODE_OPEN				3
+#define CUP_CLAMP_POPCORN_DOOR_MODE_MAX		4
 
 #define CUP_CLAMP_POPCORN_DOOR_MODE_L_POS_MIN		0
 #define CUP_CLAMP_POPCORN_DOOR_MODE_L_POS_MAX		3	
@@ -270,6 +272,12 @@ typedef struct {
 
 /* set cup_clamp_popcorn_door position depends on mode */
 int8_t cup_clamp_popcorn_door_set_mode(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door, uint8_t mode, int16_t pos_offset);
+
+/* set cup_clamp_position depends on mode */
+int8_t cup_clamp_set_mode(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door, uint8_t mode, int16_t pos_offset);
+
+/* set popcorn_door position depends on mode */
+int8_t popcorn_door_set_mode(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door, uint8_t mode, int16_t pos_offset);
 
 /* return END_TRAJ or END_TIMER */
 uint8_t cup_clamp_popcorn_door_wait_end(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door);

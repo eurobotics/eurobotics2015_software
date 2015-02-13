@@ -91,22 +91,22 @@ extern parse_pgm_inst_t cmd_ax12_dump_stats;
 
 extern parse_pgm_inst_t cmd_event;
 extern parse_pgm_inst_t cmd_color;
-extern parse_pgm_inst_t cmd_lift;
-extern parse_pgm_inst_t cmd_vacuum;
-extern parse_pgm_inst_t cmd_boot;
-extern parse_pgm_inst_t cmd_combs;
-extern parse_pgm_inst_t cmd_tree_tray;
-extern parse_pgm_inst_t cmd_stick;
-extern parse_pgm_inst_t cmd_arm;
-extern parse_pgm_inst_t cmd_arm_goto;
-
-extern parse_pgm_inst_t cmd_harvest_fruits;
-extern parse_pgm_inst_t cmd_dump_fruits;
-extern parse_pgm_inst_t cmd_arm_mode;
-extern parse_pgm_inst_t cmd_arm_mode2;
-extern parse_pgm_inst_t cmd_arm_mode3;
-extern parse_pgm_inst_t cmd_state2;
-extern parse_pgm_inst_t cmd_state3;
+//extern parse_pgm_inst_t cmd_lift;
+//extern parse_pgm_inst_t cmd_vacuum;
+//extern parse_pgm_inst_t cmd_boot;
+//extern parse_pgm_inst_t cmd_combs;
+//extern parse_pgm_inst_t cmd_tree_tray;
+//extern parse_pgm_inst_t cmd_stick;
+//extern parse_pgm_inst_t cmd_arm;
+//extern parse_pgm_inst_t cmd_arm_goto;
+//
+//extern parse_pgm_inst_t cmd_harvest_fruits;
+//extern parse_pgm_inst_t cmd_dump_fruits;
+//extern parse_pgm_inst_t cmd_arm_mode;
+//extern parse_pgm_inst_t cmd_arm_mode2;
+//extern parse_pgm_inst_t cmd_arm_mode3;
+//extern parse_pgm_inst_t cmd_state2;
+//extern parse_pgm_inst_t cmd_state3;
 
 #if 0
 //extern parse_pgm_inst_t cmd_state_debug;
@@ -169,22 +169,22 @@ parse_pgm_ctx_t main_ctx[]  = {
 	/* commands_slavedspic.c */
 	(parse_pgm_inst_t *)&cmd_event,
 	(parse_pgm_inst_t *)&cmd_color,
-	(parse_pgm_inst_t *)&cmd_lift,
-	(parse_pgm_inst_t *)&cmd_vacuum,
-	(parse_pgm_inst_t *)&cmd_boot,
-	(parse_pgm_inst_t *)&cmd_combs,
-	(parse_pgm_inst_t *)&cmd_tree_tray,
-	(parse_pgm_inst_t *)&cmd_stick,
-	(parse_pgm_inst_t *)&cmd_arm,
-	(parse_pgm_inst_t *)&cmd_arm_goto,
-
-	(parse_pgm_inst_t *)&cmd_harvest_fruits,
-	(parse_pgm_inst_t *)&cmd_dump_fruits,
-	(parse_pgm_inst_t *)&cmd_arm_mode,
-	(parse_pgm_inst_t *)&cmd_arm_mode2,
-	(parse_pgm_inst_t *)&cmd_arm_mode3,
-	(parse_pgm_inst_t *)&cmd_state2,
-	(parse_pgm_inst_t *)&cmd_state3,
+//	(parse_pgm_inst_t *)&cmd_lift,
+//	(parse_pgm_inst_t *)&cmd_vacuum,
+//	(parse_pgm_inst_t *)&cmd_boot,
+//	(parse_pgm_inst_t *)&cmd_combs,
+//	(parse_pgm_inst_t *)&cmd_tree_tray,
+//	(parse_pgm_inst_t *)&cmd_stick,
+//	(parse_pgm_inst_t *)&cmd_arm,
+//	(parse_pgm_inst_t *)&cmd_arm_goto,
+//
+//	(parse_pgm_inst_t *)&cmd_harvest_fruits,
+//	(parse_pgm_inst_t *)&cmd_dump_fruits,
+//	(parse_pgm_inst_t *)&cmd_arm_mode,
+//	(parse_pgm_inst_t *)&cmd_arm_mode2,
+//	(parse_pgm_inst_t *)&cmd_arm_mode3,
+//	(parse_pgm_inst_t *)&cmd_state2,
+//	(parse_pgm_inst_t *)&cmd_state3,
 
 #if 0
 
