@@ -992,7 +992,7 @@ void state_do_set_infos(void)
 /* state machines */
 void state_machines(void)
 {
-//	state_do_init();
+	state_do_init();
 //
 //	/* simple actuator modes */
 //	state_do_boot_tray_mode();

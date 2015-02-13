@@ -42,7 +42,7 @@
 
 #include "actuator.h"
 
-#define EUROBOT_2012_BOARD
+//#define EUROBOT_2012_BOARD
 
 #define LED_TOGGLE(port, bit) do {		\
 		if (port & _BV(bit))		\

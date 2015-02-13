@@ -114,7 +114,7 @@ void slavedspic_cs_init(void)
 	cs_init(&slavedspic.stands_exchanger.cs);
 	cs_set_consign_filter(&slavedspic.stands_exchanger.cs, quadramp_do_filter, &slavedspic.stands_exchanger.qr);
 	cs_set_correct_filter(&slavedspic.stands_exchanger.cs, pid_do_filter, &slavedspic.stands_exchanger.pid);
-//	cs_set_process_in(&slavedspic.stands_exchanger.cs, dac_mc_set, STANDS_EXCHANGER_DAC_MC);
+	cs_set_process_in(&slavedspic.stands_exchanger.cs, pwm_mc_set, PWM_MC_STANDS_EXCHANGER_MOTOR);
 	cs_set_process_out(&slavedspic.stands_exchanger.cs, encoders_dspic_get_value, STANDS_EXCHANGER_ENCODER);
 	cs_set_consign(&slavedspic.stands_exchanger.cs, 0);
 
