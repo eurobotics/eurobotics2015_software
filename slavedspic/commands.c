@@ -91,29 +91,25 @@ extern parse_pgm_inst_t cmd_ax12_dump_stats;
 
 extern parse_pgm_inst_t cmd_event;
 extern parse_pgm_inst_t cmd_color;
-//extern parse_pgm_inst_t cmd_lift;
-//extern parse_pgm_inst_t cmd_vacuum;
-//extern parse_pgm_inst_t cmd_boot;
-//extern parse_pgm_inst_t cmd_combs;
-//extern parse_pgm_inst_t cmd_tree_tray;
-//extern parse_pgm_inst_t cmd_stick;
-//extern parse_pgm_inst_t cmd_arm;
-//extern parse_pgm_inst_t cmd_arm_goto;
-//
-//extern parse_pgm_inst_t cmd_harvest_fruits;
-//extern parse_pgm_inst_t cmd_dump_fruits;
-//extern parse_pgm_inst_t cmd_arm_mode;
-//extern parse_pgm_inst_t cmd_arm_mode2;
-//extern parse_pgm_inst_t cmd_arm_mode3;
+extern parse_pgm_inst_t cmd_stands_exchanger;
+extern parse_pgm_inst_t cmd_stands_blade;
+extern parse_pgm_inst_t cmd_stands_clamp;
+extern parse_pgm_inst_t cmd_stands_elevator;
+extern parse_pgm_inst_t cmd_stands_tower_clamps;
+extern parse_pgm_inst_t cmd_cup_clamp_popcorn_door;
+extern parse_pgm_inst_t cmd_popcorn_tray;
+extern parse_pgm_inst_t cmd_popcorn_ramps;
+extern parse_pgm_inst_t cmd_cup_clamp_front;
+
+extern parse_pgm_inst_t cmd_harvest_popcorns;
+extern parse_pgm_inst_t cmd_dump_popcorns;
 //extern parse_pgm_inst_t cmd_state2;
 //extern parse_pgm_inst_t cmd_state3;
 
 #if 0
 //extern parse_pgm_inst_t cmd_state_debug;
-//extern parse_pgm_inst_t cmd_state1;
 
 //extern parse_pgm_inst_t cmd_state_machine;
-//extern parse_pgm_inst_t cmd_test;
 #endif
 
 /* in progmem */
@@ -169,31 +165,26 @@ parse_pgm_ctx_t main_ctx[]  = {
 	/* commands_slavedspic.c */
 	(parse_pgm_inst_t *)&cmd_event,
 	(parse_pgm_inst_t *)&cmd_color,
-//	(parse_pgm_inst_t *)&cmd_lift,
-//	(parse_pgm_inst_t *)&cmd_vacuum,
-//	(parse_pgm_inst_t *)&cmd_boot,
-//	(parse_pgm_inst_t *)&cmd_combs,
-//	(parse_pgm_inst_t *)&cmd_tree_tray,
-//	(parse_pgm_inst_t *)&cmd_stick,
-//	(parse_pgm_inst_t *)&cmd_arm,
-//	(parse_pgm_inst_t *)&cmd_arm_goto,
-//
-//	(parse_pgm_inst_t *)&cmd_harvest_fruits,
-//	(parse_pgm_inst_t *)&cmd_dump_fruits,
-//	(parse_pgm_inst_t *)&cmd_arm_mode,
-//	(parse_pgm_inst_t *)&cmd_arm_mode2,
-//	(parse_pgm_inst_t *)&cmd_arm_mode3,
+	(parse_pgm_inst_t *)&cmd_stands_exchanger,
+	(parse_pgm_inst_t *)&cmd_stands_blade,
+	(parse_pgm_inst_t *)&cmd_stands_clamp,
+	(parse_pgm_inst_t *)&cmd_stands_elevator,
+	(parse_pgm_inst_t *)&cmd_stands_tower_clamps,
+	(parse_pgm_inst_t *)&cmd_cup_clamp_popcorn_door,
+	(parse_pgm_inst_t *)&cmd_popcorn_tray,
+	(parse_pgm_inst_t *)&cmd_popcorn_ramps,
+	(parse_pgm_inst_t *)&cmd_cup_clamp_front,
+
+	(parse_pgm_inst_t *)&cmd_harvest_popcorns,
+	(parse_pgm_inst_t *)&cmd_dump_popcorns,
 //	(parse_pgm_inst_t *)&cmd_state2,
 //	(parse_pgm_inst_t *)&cmd_state3,
 
 #if 0
-
 	//(parse_pgm_inst_t *)&cmd_state_debug,
-	//(parse_pgm_inst_t *)&cmd_state1,
 	(parse_pgm_inst_t *)&cmd_state2,	
 
 	//(parse_pgm_inst_t *)&cmd_state_machine,
-	//(parse_pgm_inst_t *)&cmd_test,
 #endif
 	NULL,
 };
