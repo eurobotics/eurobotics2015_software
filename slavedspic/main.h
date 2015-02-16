@@ -169,7 +169,7 @@ struct slavedspic {
 	stands_blade_t stands_blade_l, stands_blade_r;
 	stands_clamp_t stands_clamp_l, stands_clamp_r;
 	stands_elevator_t stands_elevator_l, stands_elevator_r;
-	stands_tower_clamps_t stand_tower_clamps;
+	stands_tower_clamps_t stands_tower_clamps;
 
 	cup_clamp_popcorn_door_t cup_clamp_popcorn_door;
 	popcorn_tray_t popcorn_tray;

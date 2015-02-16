@@ -76,7 +76,7 @@ struct i2c_slavedspic_status{
 #define I2C_SLAVEDSPIC_STATUS_BUSY		1
 #define I2C_SLAVEDSPIC_STATUS_READY		0
     
-    uint8_t nb_stored_fires;
+	uint8_t nb_stored_stands_l, stored_stands_r;
 };
 
 
@@ -97,141 +97,128 @@ struct i2c_cmd_led_control{
 struct i2c_cmd_slavedspic_set_mode {
 	struct i2c_cmd_hdr hdr;
 	
-#define I2C_SLAVEDSPIC_MODE_INIT		            0x01
-#define I2C_SLAVEDSPIC_MODE_POWER_OFF		      0x02
+#define I2C_SLAVEDSPIC_MODE_INIT						0x01
+#define I2C_SLAVEDSPIC_MODE_POWER_OFF					0x02
 
 /* simple actuator modes */
-#define I2C_SLAVEDSPIC_MODE_BOOT_TRAY				0x03
-#define I2C_SLAVEDSPIC_MODE_BOOT_DOOR				0x04
-#define I2C_SLAVEDSPIC_MODE_COMBS					0x05
-#define I2C_SLAVEDSPIC_MODE_TREE_TRAY				0x06
-#define I2C_SLAVEDSPIC_MODE_STICK					0x07
-
+#define I2C_SLAVEDSPIC_MODE_STANDS_BLADE				0x03
+#define I2C_SLAVEDSPIC_MODE_STANDS_CLAMP				0x04
+#define I2C_SLAVEDSPIC_MODE_STANDS_ELEVATOR				0x05
+#define I2C_SLAVEDSPIC_MODE_STANDS_TOWER_CLAMPS			0x06
+#define I2C_SLAVEDSPIC_MODE_CUP_CLAMP_POPCORN_DOOR		0x07
+#define I2C_SLAVEDSPIC_MODE_POPCORN_TRAY				0x08
+#define I2C_SLAVEDSPIC_MODE_POPCORN_RAMPS				0x09
+#define I2C_SLAVEDSPIC_MODE_CUP_CLAMP_FRONT				0x0A
 
 /* multiple actuator modes */
-#define I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS   	0x08
-#define I2C_SLAVEDSPIC_MODE_DUMP_FRUITS			0x09
-#define I2C_SLAVEDSPIC_MODE_ARM_GOTO			0x0A
-#define I2C_SLAVEDSPIC_MODE_ARM					0x0B
+#define I2C_SLAVEDSPIC_MODE_HARVEST_POPCORNS   			0x0B
+#define I2C_SLAVEDSPIC_MODE_DUMP_POPCORNS				0x0C
 
 
 	uint8_t mode;
 	union{
 
 		struct {
-			uint8_t mode;
-#define I2C_BOOT_DOOR_MODE_OPEN		0
-#define I2C_BOOT_DOOR_MODE_CLOSE		1
-		} boot_door;
+			uint8_t type;
+#define I2C_STANDS_BLADE_TYPE_LEFT		0
+#define I2C_STANDS_BLADE_TYPE_RIGHT		1	
 
-		struct {
 			uint8_t mode;
-#define I2C_BOOT_TRAY_MODE_DOWN		0
-#define I2C_BOOT_TRAY_MODE_VIBRATE	1
-		} boot_tray;
-
-		struct {
-			uint8_t mode;
-#define I2C_COMBS_MODE_HIDE				0
-#define I2C_COMBS_MODE_OPEN				1
-#define I2C_COMBS_MODE_HARVEST_CLOSE	2
-#define I2C_COMBS_MODE_HARVEST_OPEN		3
+#define I2C_STANDS_BLADE_MODE_HIDE_LEFT				0
+#define I2C_STANDS_BLADE_MODE_PUSH_STAND_LEFT		1
+#define I2C_STANDS_BLADE_MODE_CENTER				2
+#define I2C_STANDS_BLADE_MODE_PUSH_STAND_RIGHT		3
+#define I2C_STANDS_BLADE_MODE_HIDE_RIGHT			4
 
 			int8_t offset;
-		} combs;
-
-		struct {
-			uint8_t mode;
-#define I2C_TREE_TRAY_MODE_OPEN 			0	
-#define I2C_TREE_TRAY_MODE_CLOSE 		1		
-#define I2C_TREE_TRAY_MODE_HARVEST		2	
-
-			int8_t offset;
-		} tree_tray;
+		} stands_blade;
 
 		struct {
 			uint8_t type;
-#define I2C_STICK_TYPE_RIGHT	0
-#define I2C_STICK_TYPE_LEFT		1	
+#define I2C_STANDS_CLAMP_TYPE_LEFT		0
+#define I2C_STANDS_CLAMP_TYPE_RIGHT		1	
 
 			uint8_t mode;
-#define I2C_STICK_MODE_HIDE					0
-#define I2C_STICK_MODE_PUSH_FIRE			1
-#define I2C_STICK_MODE_PUSH_TORCH_FIRE		2
-#define I2C_STICK_MODE_CLEAN_FLOOR			3
-#define I2C_STICK_MODE_CLEAN_HEART			4
+#define I2C_STANDS_CLAMP_MODE_OPEN		0
+#define I2C_STANDS_CLAMP_MODE_CLOSE		1
 
 			int8_t offset;
-		} stick;
+		} stands_clamp;
+
+		struct {
+			uint8_t type;
+#define I2C_STANDS_ELEVATOR_TYPE_LEFT		0
+#define I2C_STANDS_ELEVATOR_TYPE_RIGHT		1	
+
+			uint8_t mode;
+#define I2C_STANDS_ELEVATOR_MODE_UP		0
+#define I2C_STANDS_ELEVATOR_MODE_DOWN	1
+
+			int8_t offset;
+		} stands_elevator;
 
 		struct {
 			uint8_t mode;
-#define I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_READY	1
-#define I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_DO		2	
-#define I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS_END		3
-		} harvest_fruits;
+#define I2C_STANDS_TOWER_CLAMPS_MODE_UNLOCK_LEFT 	0	
+#define I2C_STANDS_TOWER_CLAMPS_MODE_LOCK 			1		
+#define I2C_STANDS_TOWER_CLAMPS_MODE_UNLOCK_RIGHT	2	
+
+			int8_t offset;
+		} stands_tower_clamps;
+
+		struct {
+			uint8_t type;
+#define I2C_CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT	0
+#define I2C_CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT	1	
+
+			uint8_t mode;
+#define I2C_CUP_CLAMP_MODE_HIDE			0
+#define I2C_CUP_CLAMP_MODE_LOCKED		1
+#define I2C_CUP_CLAMP_MODE_OPEN			2
+#define I2C_POPCORN_DOOR_MODE_CLOSE		3
+#define I2C_POPCORN_DOOR_MODE_OPEN		4
+
+			int8_t offset;
+		} cup_clamp_popcorn_door;
+
+		struct {
+			uint8_t mode;
+#define I2C_POPCORN_TRAY_MODE_OPEN		0
+#define I2C_POPCORN_TRAY_MODE_CLOSE		1
+
+			int8_t offset;
+		} popcorn_tray;
+
+		struct {
+			uint8_t mode;
+#define I2C_POPCORN_RAMPS_MODE_HIDE		0
+#define I2C_POPCORN_RAMPS_MODE_HARVEST	1
+#define I2C_POPCORN_RAMPS_MODE_OPEN		2
+
+			int8_t offset;
+		} popcorn_ramps;
+
+		struct {
+			uint8_t mode;
+#define I2C_CUP_CLAMP_FRONT_MODE_HIDE			0
+#define I2C_CUP_CLAMP_FRONT_MODE_CUP_LOCKED		1
+
+			int8_t offset;
+		} cup_clamp_front;
+
+		struct {
+			uint8_t mode;
+#define I2C_SLAVEDSPIC_MODE_HARVEST_POPCORNS_READY	1
+#define I2C_SLAVEDSPIC_MODE_HARVEST_POPCORNS_DO		2	
+#define I2C_SLAVEDSPIC_MODE_HARVEST_POPCORNS_END	3
+		} harvest_popcorns;
 
 
 		struct {
 			uint8_t mode;
-#define I2C_SLAVEDSPIC_MODE_DUMP_FRUITS_DO		1	
-#define I2C_SLAVEDSPIC_MODE_DUMP_FRUITS_END		3
-		} dump_fruits;
-
-		struct {
-			uint8_t h_msb;
-			uint8_t h_lsb;
-
-			uint8_t x_msb;
-			uint8_t x_lsb;
-
-			uint8_t elbow_a_msb;
-			uint8_t elbow_a_lsb;
-
-			uint8_t wrist_a_msb;
-			uint8_t wrist_a_lsb;
-		} arm_goto;
-
-		struct {
-			uint8_t mode;
-#define I2C_SLAVEDSPIC_MODE_ARM_PICKUP_TORCH_READY	1
-#define I2C_SLAVEDSPIC_MODE_ARM_PICKUP_TORCH_DO		2
-#define I2C_SLAVEDSPIC_MODE_ARM_STORE				3
-
-#define I2C_SLAVEDSPIC_MODE_ARM_PICKUP_FIRE_READY	4
-#define I2C_SLAVEDSPIC_MODE_ARM_PICKUP_FIRE_DO		5
-
-#define I2C_SLAVEDSPIC_MODE_ARM_LOAD_FIRE			6
-#define I2C_SLAVEDSPIC_MODE_ARM_FLIP_FIRE			7
-#define I2C_SLAVEDSPIC_MODE_ARM_PUTDOWN_FIRE		8
-#define I2C_SLAVEDSPIC_MODE_ARM_PUTDOWN_FIRE_INV	9
-#define I2C_SLAVEDSPIC_MODE_ARM_RELEASE_FIRE		10
-#define I2C_SLAVEDSPIC_MODE_ARM_HIDE				11
-
-			uint8_t sucker_type;
-#define I2C_SLAVEDSPIC_SUCKER_TYPE_SHORT	0
-#define I2C_SLAVEDSPIC_SUCKER_TYPE_LONG		1
-#define I2C_SLAVEDSPIC_SUCKER_TYPE_MAX		2
-#define I2C_SLAVEDSPIC_SUCKER_TYPE_AUTO		3
-
-			uint8_t level;
-#define I2C_SLAVEDSPIC_LEVEL_FIRE_GROUND_PUSH	0
-#define I2C_SLAVEDSPIC_LEVEL_FIRE_GROUND_PULL	1
-#define I2C_SLAVEDSPIC_LEVEL_FIRE_HEART			2
-#define I2C_SLAVEDSPIC_LEVEL_FIRE_TORCH_DOWN	3
-#define I2C_SLAVEDSPIC_LEVEL_FIRE_TORCH_MIDDLE	4
-#define I2C_SLAVEDSPIC_LEVEL_FIRE_TORCH_TOP		5
-#define I2C_SLAVEDSPIC_LEVEL_MOBILE_TORCH		6
-#define I2C_SLAVEDSPIC_LEVEL_FIRE_STANDUP		7
-#define I2C_SLAVEDSPIC_LEVEL_FIRE_PUSH_PULL		8
-#define I2C_SLAVEDSPIC_LEVEL_MAX				9
-
-			uint8_t x_lsb;
-			uint8_t x_msb;
-	
-			int8_t sucker_angle; /* XXX +/- 90 deg */
-
-		} arm;
+#define I2C_SLAVEDSPIC_MODE_DUMP_POPCORNS_DO		1	
+#define I2C_SLAVEDSPIC_MODE_DUMP_POPCORNS_END		2
+		} dump_popcorns;
 
 		/* add more here */
 	};
