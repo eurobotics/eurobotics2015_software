@@ -76,7 +76,7 @@ struct i2c_slavedspic_status{
 #define I2C_SLAVEDSPIC_STATUS_BUSY		1
 #define I2C_SLAVEDSPIC_STATUS_READY		0
     
-	uint8_t nb_stored_stands_l, stored_stands_r;
+	uint8_t nb_stored_stands_l, nb_stored_stands_r;
 };
 
 

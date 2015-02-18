@@ -178,11 +178,11 @@ struct slavedspic {
 
 	/* infos */
 	uint8_t status;
-	uint8_t harvest_popcorn_mode;
-	uint8_t dump_popcorn_mode;
-	uint8_t stands_mode;
+	uint8_t harvest_popcorns_mode;
+	uint8_t dump_popcorns_mode;
+//	uint8_t stands_mode;
 
-	uint8_t nb_stored_stands_l, stored_stands_r;
+	uint8_t nb_stored_stands_l, nb_stored_stands_r;
 
 	/* infos */
 	uint8_t our_color;
