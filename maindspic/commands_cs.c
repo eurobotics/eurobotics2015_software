@@ -286,7 +286,7 @@ parse_pgm_token_num_t cmd_derivate_filter_size = TOKEN_NUM_INITIALIZER(struct cm
 prog_char help_derivate_filter[] = "Set derivate_filter values for PID (in, I, out)";
 parse_pgm_inst_t cmd_derivate_filter = {
 	.f = cmd_derivate_filter_parsed,  /* function to call */
-	.data = (void *)1,      /* 2nd arg of func */
+	.data = NULL,      /* 2nd arg of func */
 	.help_str = help_derivate_filter,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_derivate_filter_arg0, 
@@ -309,7 +309,7 @@ parse_pgm_token_string_t cmd_derivate_filter_show_arg = TOKEN_STRING_INITIALIZER
 prog_char help_derivate_filter_show[] = "Show derivate_filter values for PID";
 parse_pgm_inst_t cmd_derivate_filter_show = {
 	.f = cmd_derivate_filter_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
+	.data = (void *)1,      /* 2nd arg of func */
 	.help_str = help_derivate_filter_show,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_derivate_filter_arg0, 
@@ -389,7 +389,7 @@ static void cmd_maximum_parsed(void *parsed_result, void *show)
 	if (!show)
 		pid_set_maximums(&csb->pid, res->in, res->i, res->out);
 
-	printf_P(PSTR("maximum %s %lu %lu %lu\r\n"), 
+	printf_P(PSTR("maximum %s %"PRIu32 " %"PRIu32 " %"PRIu32"\r\n"), 
 		 res->cs.csname,
 		 pid_get_max_in(&csb->pid),
 		 pid_get_max_I(&csb->pid),
@@ -470,7 +470,7 @@ static void cmd_quadramp_parsed(void *parsed_result, void *show)
 		quadramp_set_2nd_order_vars(&csb->qr, res->ap, res->an);
 	}
 
-	printf_P(PSTR("quadramp %s %ld %ld %ld %ld\r\n"), 
+	printf_P(PSTR("quadramp %s %" PRIu32 " %"PRIi32 " %"PRIi32 " %"PRIi32"\r\n"), 
 		 res->cs.csname,
 		 csb->qr.var_2nd_ord_pos,
 		 csb->qr.var_2nd_ord_neg,
@@ -632,7 +632,7 @@ static void cmd_blocking_i_parsed(void *parsed_result, void *show)
 		bd_set_current_thresholds(&csb->bd, res->k1, res->k2,
 					  res->i, res->cpt);
 
-	printf_P(PSTR("%s %s %ld %ld %ld %d\r\n"), 
+	printf_P(PSTR("%s %s %"PRIi32 " %"PRIi32" %"PRIi32"  %"PRIi32"\r\n"), 
 		 res->cs.cmdname,
 		 res->cs.csname,
 		 csb->bd.k1,

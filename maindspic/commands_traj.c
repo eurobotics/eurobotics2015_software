@@ -143,7 +143,9 @@ parse_pgm_inst_t cmd_traj_speed_show = {
     },
 };
 
-#ifdef TODO
+#ifdef COMPILE_COMMANDS_TRAJ_OPTIONALS /*-------------------------------------*/
+
+#ifdef TRAJECTORY_MANAGER_V3
 
 /**********************************************************/
 /* Traj_Accs for trajectory_manager */
@@ -213,12 +215,8 @@ parse_pgm_inst_t cmd_traj_acc_show = {
         NULL,
     },
 };
-#endif
 
 
-#ifdef COMPILE_COMMANDS_TRAJ_OPTIONALS /*-------------------------------------*/
-
-#ifdef TRAJECTORY_MANAGER_V3
 /**********************************************************/
 /* circle coef configuration */
 

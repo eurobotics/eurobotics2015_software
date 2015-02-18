@@ -156,9 +156,9 @@
 #define EVENT_PRIORITY_CS           100
 #define EVENT_PRIO_BEACON	    	80
 #define EVENT_PRIORITY_STRAT        30
-#define EVENT_PRIORITY_BEACON_POLL  20
-#define EVENT_PRIORITY_CMDLINE      15
-#define EVENT_PRIORITY_STRAT_EVENT	10
+#define EVENT_PRIORITY_BEACON_POLL  20 /* XXX unused */
+#define EVENT_PRIORITY_CMDLINE      15 /* XXX > trajectory_manager event priority */
+#define EVENT_PRIORITY_STRAT_EVENT	10 /* XXX > trajectory_manager event priority */
 
 
 

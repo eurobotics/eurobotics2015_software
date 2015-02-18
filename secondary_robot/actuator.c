@@ -59,7 +59,7 @@ static volatile int32_t beacon_speed = 0;
  * used by cs as feedback. Must be compatible format with cs */
 int32_t encoders_update_beacon_speed(void * dummy)
 {
-	int32_t ret;
+	int32_t ret = 0;
 	uint8_t flags;
 
 
