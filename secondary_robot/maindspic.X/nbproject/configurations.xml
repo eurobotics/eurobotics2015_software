@@ -134,8 +134,6 @@
                      displayName="trajectory_manager"
                      projectFiles="true">
         <itemPath>../../libs/aversive4dspic/modules/devices/robot/trajectory_manager/trajectory_manager.h</itemPath>
-        <itemPath>../../libs/aversive4dspic/modules/devices/robot/trajectory_manager/trajectory_manager_core.h</itemPath>
-        <itemPath>../../libs/aversive4dspic/modules/devices/robot/trajectory_manager/trajectory_manager_utils.h</itemPath>
       </logicalFolder>
       <logicalFolder name="uart" displayName="uart" projectFiles="true">
         <itemPath>../../libs/aversive4dspic/modules/comm/dspic/uart/uart.h</itemPath>
@@ -170,7 +168,6 @@
         <itemPath>../strat.c</itemPath>
         <itemPath>../strat_begin.c</itemPath>
         <itemPath>../strat_main.c</itemPath>
-        <itemPath>../strat_treasure.c</itemPath>
         <itemPath>../../maindspic/strat_avoid.c</itemPath>
         <itemPath>../ax12_user.c</itemPath>
         <itemPath>../bt_protocol.c</itemPath>
@@ -281,8 +278,6 @@
                      displayName="trajectory_manager"
                      projectFiles="true">
         <itemPath>../../libs/aversive4dspic/modules/devices/robot/trajectory_manager/trajectory_manager.c</itemPath>
-        <itemPath>../../libs/aversive4dspic/modules/devices/robot/trajectory_manager/trajectory_manager_core.c</itemPath>
-        <itemPath>../../libs/aversive4dspic/modules/devices/robot/trajectory_manager/trajectory_manager_utils.c</itemPath>
       </logicalFolder>
       <logicalFolder name="uart" displayName="uart" projectFiles="true">
         <itemPath>../../libs/aversive4dspic/modules/comm/dspic/uart/uart_setconf.c</itemPath>

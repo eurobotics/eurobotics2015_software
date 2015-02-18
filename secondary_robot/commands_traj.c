@@ -45,8 +45,6 @@
 #include <quadramp.h>
 #include <control_system_manager.h>
 #include <trajectory_manager.h>
-#include <trajectory_manager_utils.h>
-//#include <trajectory_manager_core.h>
 #include <f64.h>
 #include <vect_base.h>
 #include <lines.h>
@@ -101,7 +99,7 @@ static void cmd_traj_speed_parsed(void *parsed_result, void *data)
 	}
 	/* else it is a "show" */
 
-	printf_P(PSTR("angle %2.2f, distance %2.2f\r\n"),
+    printf_P(PSTR("angle %d, distance %d\r\n"),
 		 mainboard.traj.a_speed,
 		 mainboard.traj.d_speed);
 }
@@ -141,6 +139,11 @@ parse_pgm_inst_t cmd_traj_speed_show = {
 		NULL,
 	},
 };
+
+
+#ifdef COMPILE_COMMANDS_TRAJ_OPTIONALS /*-------------------------------------*/
+
+#ifdef TRAJECTORY_MANAGER_V3
 
 /**********************************************************/
 /* Traj_Accs for trajectory_manager */
@@ -206,7 +209,6 @@ parse_pgm_inst_t cmd_traj_acc_show = {
 	},
 };
 
-#ifdef COMPILE_COMMANDS_TRAJ_OPTIONALS /*-------------------------------------*/
 
 /**********************************************************/
 /* circle coef configuration */
@@ -266,9 +268,7 @@ parse_pgm_inst_t cmd_circle_coef_show = {
 		NULL,
 	},
 };
-
-#ifdef COMPILE_CODE /*---------------------------------------------------------------------------------------------*/
-#endif /* COMPILE_CODE ---------------------------------------------------------------------------------------------*/
+#endif /* TRAJECTORY_MANAGER_V3 */
 
 /**********************************************************/
 /* trajectory window configuration */
