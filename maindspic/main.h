@@ -48,7 +48,7 @@
 
 /* NUMBER OF ROBOTS TO TRACK */
 #define TWO_OPPONENTS
-//#define ROBOT_2ND
+#define ROBOT_2ND
 
 /* uart 0 is for cmds and uart 1 is 
  * multiplexed between beacon and slavedspic */

@@ -55,12 +55,6 @@
 /* functional modes of beacon */
 #undef BEACON_MODE_EXTERNAL
 
-
-/* some conversions and constants */
-#define DEG(x) (((double)(x)) * (180.0 / M_PI))
-#define RAD(x) (((double)(x)) * (M_PI / 180.0))
-#define M_2PI (2*M_PI)
-
 /* field area */
 #define AREA_X 3000
 #define AREA_Y 2100
@@ -504,7 +498,6 @@ void sensor_calc(uint8_t sensor)
 #ifdef TWO_OPPONENTS
     int16_t d_opp1, d_opp2;
     uint8_t tracking_update = 0;
-    int16_t angle_dif = 0;
 #define OPPONENT_1    1
 #define OPPONENT_2    2
 #endif

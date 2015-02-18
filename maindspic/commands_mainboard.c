@@ -664,11 +664,15 @@ struct cmd_beacon_result
 
 static void cmd_beacon_parsed(void * parsed_result, void * data)
 {
+
+   struct vt100 vt100;
+
+#ifndef HOST_VERSION
    int16_t c;
    int8_t cmd = 0;
-   struct vt100 vt100;
 	uint16_t mainboard_flags;
 	uint8_t flags;
+#endif
 
    struct cmd_beacon_result *res = parsed_result;
 
@@ -797,7 +801,9 @@ static void cmd_robot_2nd_parsed(void * parsed_result, void * data)
 		/* init vt100 character set */
 		vt100_init(&vt100);
 		
+#ifndef HOST_VERSION
 		wt11_flush ();
+#endif
 
 		/* interact */
 		while(cmd != KEY_CTRL_C) 

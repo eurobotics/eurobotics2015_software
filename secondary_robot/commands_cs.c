@@ -44,8 +44,6 @@
 #include <quadramp.h>
 #include <control_system_manager.h>
 #include <trajectory_manager.h>
-#include <trajectory_manager_utils.h>
-//#include <trajectory_manager_core.h>
 #include <vect_base.h>
 #include <lines.h>
 #include <polygon.h>
@@ -290,7 +288,7 @@ parse_pgm_token_num_t cmd_derivate_filter_size = TOKEN_NUM_INITIALIZER(struct cm
 prog_char help_derivate_filter[] = "Set derivate_filter values for PID (in, I, out)";
 parse_pgm_inst_t cmd_derivate_filter = {
 	.f = cmd_derivate_filter_parsed,  /* function to call */
-	.data = (void *)1,      /* 2nd arg of func */
+	.data = NULL,      /* 2nd arg of func */
 	.help_str = help_derivate_filter,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_derivate_filter_arg0, 
@@ -313,7 +311,7 @@ parse_pgm_token_string_t cmd_derivate_filter_show_arg = TOKEN_STRING_INITIALIZER
 prog_char help_derivate_filter_show[] = "Show derivate_filter values for PID";
 parse_pgm_inst_t cmd_derivate_filter_show = {
 	.f = cmd_derivate_filter_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
+	.data = (void *)1,      /* 2nd arg of func */
 	.help_str = help_derivate_filter_show,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_derivate_filter_arg0, 
@@ -450,17 +448,17 @@ parse_pgm_inst_t cmd_maximum_show = {
 /* this structure is filled when cmd_quadramp is parsed successfully */
 struct cmd_quadramp_result {
 	struct cmd_cs_result cs;
-	double ap;
-	double an;
-	double sp;
-	double sn;
+	uint32_t ap;
+	uint32_t an;
+	uint32_t sp;
+	uint32_t sn;
 };
 
 /* function called when cmd_quadramp is parsed successfully */
 static void cmd_quadramp_parsed(void *parsed_result, void *show)
 {
 	struct cmd_quadramp_result * res = parsed_result;
-
+	
 	struct cs_block *csb;
 
 	csb = cs_from_name(res->cs.csname);
@@ -474,7 +472,7 @@ static void cmd_quadramp_parsed(void *parsed_result, void *show)
 		quadramp_set_2nd_order_vars(&csb->qr, res->ap, res->an);
 	}
 
-	printf_P(PSTR("quadramp %s %2.2f %2.2f %2.2f %2.2f\r\n"),
+	printf_P(PSTR("quadramp %s %d %d %d %d\r\n"), 
 		 res->cs.csname,
 		 csb->qr.var_2nd_ord_pos,
 		 csb->qr.var_2nd_ord_neg,
@@ -484,10 +482,10 @@ static void cmd_quadramp_parsed(void *parsed_result, void *show)
 
 prog_char str_quadramp_arg0[] = "quadramp";
 parse_pgm_token_string_t cmd_quadramp_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_quadramp_result, cs.cmdname, str_quadramp_arg0);
-parse_pgm_token_num_t cmd_quadramp_ap = TOKEN_NUM_INITIALIZER(struct cmd_quadramp_result, ap, FLOAT);
-parse_pgm_token_num_t cmd_quadramp_an = TOKEN_NUM_INITIALIZER(struct cmd_quadramp_result, an, FLOAT);
-parse_pgm_token_num_t cmd_quadramp_sp = TOKEN_NUM_INITIALIZER(struct cmd_quadramp_result, sp, FLOAT);
-parse_pgm_token_num_t cmd_quadramp_sn = TOKEN_NUM_INITIALIZER(struct cmd_quadramp_result, sn, FLOAT);
+parse_pgm_token_num_t cmd_quadramp_ap = TOKEN_NUM_INITIALIZER(struct cmd_quadramp_result, ap, UINT32);
+parse_pgm_token_num_t cmd_quadramp_an = TOKEN_NUM_INITIALIZER(struct cmd_quadramp_result, an, UINT32);
+parse_pgm_token_num_t cmd_quadramp_sp = TOKEN_NUM_INITIALIZER(struct cmd_quadramp_result, sp, UINT32);
+parse_pgm_token_num_t cmd_quadramp_sn = TOKEN_NUM_INITIALIZER(struct cmd_quadramp_result, sn, UINT32);
 
 prog_char help_quadramp[] = "Set quadramp values (acc+, acc-, speed+, speed-)";
 parse_pgm_inst_t cmd_quadramp = {

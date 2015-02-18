@@ -46,8 +46,6 @@
 #include <quadramp.h>
 #include <control_system_manager.h>
 #include <trajectory_manager.h>
-#include <trajectory_manager_utils.h>
-//#include <trajectory_manager_core.h>
 #include <vect_base.h>
 #include <lines.h>
 #include <polygon.h>
@@ -159,8 +157,7 @@ static void cmd_encoders_parsed(void *parsed_result, void *data)
 
 	/* show */
 	while(!cmdline_keypressed()) {
-		//printf_P(PSTR("% .8ld % .8ld\r\n"), 
-		printf("% .8ld % .8ld % .8ld\r\n",
+		printf_P(PSTR("% .8ld % .8ld % .8ld\r\n"),
 			 encoders_dspic_get_value((void *)1),
 			 encoders_dspic_get_value((void *)2),
 			 beacon_encoder_get_value());
@@ -558,7 +555,6 @@ static void cmd_log_do_show(void)
 		}
 	}
 	if (empty)
-		//printf_P(PSTR("no log configured\r\n"), gen.logs[i]);
 		printf_P(PSTR("no log configured\r\n"));
 }
 

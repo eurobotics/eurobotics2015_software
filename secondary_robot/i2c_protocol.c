@@ -47,8 +47,6 @@
 #include <quadramp.h>
 #include <control_system_manager.h>
 #include <trajectory_manager.h>
-#include <trajectory_manager_utils.h>
-//#include <trajectory_manager_core.h>
 #include <vect_base.h>
 #include <lines.h>
 #include <polygon.h>
@@ -70,9 +68,11 @@
 #define I2C_WATCH_DOG_TIMEOUT	10
 
 /* local headers */
+#ifndef HOST_VERSION
 static int8_t i2c_read_gpios_01_values(void);
 static int8_t i2c_read_gpios_23_values(void);
 static int8_t i2c_req_slavedspic_status(void);
+#endif
 
 /* limited error logs */
 #define I2C_MAX_ERRORS	5
@@ -110,9 +110,11 @@ static volatile uint16_t i2c_errors = 0;
 /* actual running operation */
 static volatile uint8_t running_op = OP_READY;
 
+#ifndef HOST_VERSION
 /* error log counter */
 static uint8_t error_log = 0;
 #define I2C_MAX_LOG	1
+#endif
 
 /* gpios */
 volatile uint8_t gpio_addr = 0;
