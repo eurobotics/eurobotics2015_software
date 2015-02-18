@@ -129,9 +129,8 @@ void i2c_read_event(uint8_t cmd_byte, uint8_t *buf)
 
 			/* infos */
 			(*cmd).status = slavedspic.status;
-#if 0
-			(*cmd).nb_stored_fires = slavedspic.nb_stored_fires;
-#endif
+			(*cmd).nb_stored_stands_l = slavedspic.nb_stored_stands_l;
+			(*cmd).nb_stored_stands_r = slavedspic.nb_stored_stands_r;
 
 			/* XXX watchdog time */
 			i2c_watchdog_cnt = 5;
