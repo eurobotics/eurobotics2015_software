@@ -39,7 +39,6 @@
 #include <quadramp.h>
 #include <control_system_manager.h>
 #include <trajectory_manager.h>
-#include <trajectory_manager_utils.h>
 #include <vect_base.h>
 #include <lines.h>
 #include <polygon.h>
@@ -74,8 +73,8 @@ void strat_event_schedule_single (void (*f)(void *), void * data)
 
 	/* stop robot */
 	IRQ_LOCK(flags);
-	interrupt_traj();
-	strat_hardstop();
+	interrupt_traj(); /* XXX unusefull */
+	strat_hardstop(); /* TODO: change to strat_stop and wait trajectory finished */
 	IRQ_UNLOCK(flags);
 	
 
@@ -122,7 +121,7 @@ void strat_event_schedule_periodical(void (*f)(void *), void * data)
 /* auto position event */
 void strat_auto_position_event (void *data)
 {
-	interrupt_traj_reset();
+	interrupt_traj_reset(); /* XXX unusefull */
 
 	strat_auto_position ();
 

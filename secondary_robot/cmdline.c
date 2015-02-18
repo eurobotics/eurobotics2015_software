@@ -189,7 +189,7 @@ void cmdline_interact(void *dummy)
 		  c = robotsim_uart_recv_BT();
 		  if (c == -1) 
 			  //continue;
-			  return 0;    
+			  return;    
     }
 #endif
 

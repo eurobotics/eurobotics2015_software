@@ -35,12 +35,12 @@
 #ifndef HOST_VERSION
 
 #define COMPILE_COMMANDS_GEN
-//#define COMPILE_COMMANDS_GEN_OPTIONALS
+#define COMPILE_COMMANDS_GEN_OPTIONALS
 #define COMPILE_COMMANDS_CS
 #define COMPILE_COMMANDS_MAINBOARD
-//#define COMPILE_COMMANDS_MAINBOARD_OPTIONALS
+#define COMPILE_COMMANDS_MAINBOARD_OPTIONALS
 #define COMPILE_COMMANDS_TRAJ
-//#define COMPILE_COMMANDS_TRAJ_OPTIONALS
+#define COMPILE_COMMANDS_TRAJ_OPTIONALS
 
 #else /* HOST_VERSION */
 #define COMPILE_COMMANDS_GEN
@@ -140,17 +140,17 @@ extern parse_pgm_inst_t cmd_blocking_i_show;
 #endif
 
 extern parse_pgm_inst_t cmd_event;
-// TODO extern parse_pgm_inst_t cmd_spi_test;
 extern parse_pgm_inst_t cmd_opponent;
 extern parse_pgm_inst_t cmd_opponent_set;
 extern parse_pgm_inst_t cmd_start;
 extern parse_pgm_inst_t cmd_color;
-//extern parse_pgm_inst_t cmd_beacon;
 
 #ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
 extern parse_pgm_inst_t cmd_interact;
 extern parse_pgm_inst_t cmd_rs;
+#ifdef TRAJECTORY_MANAGER_V3
 extern parse_pgm_inst_t cmd_clitoid;
+#endif /* TRAJECTORY_MANAGER_V3 */
 extern parse_pgm_inst_t cmd_time_monitor;
 extern parse_pgm_inst_t cmd_sleep;
 #endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
@@ -158,12 +158,9 @@ extern parse_pgm_inst_t cmd_sleep;
 extern parse_pgm_inst_t cmd_strat_event;
 extern parse_pgm_inst_t cmd_status;
 
-/* TODO 2014*/
+/* TODO */
 #if 0
-extern parse_pgm_inst_t cmd_balls;
-extern parse_pgm_inst_t cmd_net;
-extern parse_pgm_inst_t cmd_tray;
-extern parse_pgm_inst_t cmd_sensor_robot;
+
 #endif
 
 #endif /* COMPILE_COMMANDS_MAINBOARD */
@@ -183,8 +180,10 @@ extern parse_pgm_inst_t cmd_traj_acc;
 extern parse_pgm_inst_t cmd_traj_acc_show;
 
 #ifdef COMPILE_COMMANDS_TRAJ_OPTIONALS /*-------------------------------------*/
+#ifdef TRAJECTORY_MANAGER_V3
 extern parse_pgm_inst_t cmd_circle_coef;
 extern parse_pgm_inst_t cmd_circle_coef_show;
+#endif /* TRAJECTORY_MANAGER_V3 */
 extern parse_pgm_inst_t cmd_trajectory;
 extern parse_pgm_inst_t cmd_trajectory_show;
 extern parse_pgm_inst_t cmd_rs_gains;
@@ -285,13 +284,14 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_opponent_set,
 	(parse_pgm_inst_t *)&cmd_start,
 	(parse_pgm_inst_t *)&cmd_color,
-//	(parse_pgm_inst_t *)&cmd_beacon,
 
 #ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
 
 	(parse_pgm_inst_t *)&cmd_interact,
 	(parse_pgm_inst_t *)&cmd_rs,
+#ifdef TRAJECTORY_MANAGER_V3
 	(parse_pgm_inst_t *)&cmd_clitoid,
+#endif /* TRAJECTORY_MANAGER_V3 */
 	(parse_pgm_inst_t *)&cmd_time_monitor,
 	(parse_pgm_inst_t *)&cmd_sleep,
 #endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
@@ -299,14 +299,11 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_strat_event,
 	(parse_pgm_inst_t *)&cmd_status,
 
-/* TODO 2014*/
-#if 0 
-	(parse_pgm_inst_t *)&cmd_balls,
-	(parse_pgm_inst_t *)&cmd_net
-	(parse_pgm_inst_t *)&cmd_tray,
+/* TODO */
+#if 0
+	(parse_pgm_inst_t *)&cmd_beacon,
 	(parse_pgm_inst_t *)&cmd_sensor_robot,
 #endif
-
 #endif /* COMPILE_COMMANDS_MAINBOARD */
 
 #ifdef COMPILE_COMMANDS_TRAJ
@@ -314,12 +311,14 @@ parse_pgm_ctx_t main_ctx[] = {
 	/* commands_traj.c */
 	(parse_pgm_inst_t *)&cmd_traj_speed,
 	(parse_pgm_inst_t *)&cmd_traj_speed_show,
-	(parse_pgm_inst_t *)&cmd_traj_acc,
-	(parse_pgm_inst_t *)&cmd_traj_acc_show,
 
 #ifdef COMPILE_COMMANDS_TRAJ_OPTIONALS /*-------------------------------------*/
+#ifdef TRAJECTORY_MANAGER_V3
+	(parse_pgm_inst_t *)&cmd_traj_acc,
+	(parse_pgm_inst_t *)&cmd_traj_acc_show,
 	(parse_pgm_inst_t *)&cmd_circle_coef,
 	(parse_pgm_inst_t *)&cmd_circle_coef_show,
+#endif /* TRAJECTORY_MANAGER_V3 */
 	(parse_pgm_inst_t *)&cmd_trajectory,
 	(parse_pgm_inst_t *)&cmd_trajectory_show,
 	(parse_pgm_inst_t *)&cmd_rs_gains,

@@ -169,11 +169,11 @@ extern parse_pgm_inst_t cmd_sensor_robot;
 
 extern parse_pgm_inst_t cmd_traj_speed;
 extern parse_pgm_inst_t cmd_traj_speed_show;
-extern parse_pgm_inst_t cmd_traj_acc;
-extern parse_pgm_inst_t cmd_traj_acc_show;
 
 #ifdef COMPILE_COMMANDS_TRAJ_OPTIONALS /*-------------------------------------*/
 #ifdef TRAJECTORY_MANAGER_V3 
+extern parse_pgm_inst_t cmd_traj_acc;
+extern parse_pgm_inst_t cmd_traj_acc_show;
 extern parse_pgm_inst_t cmd_circle_coef;
 extern parse_pgm_inst_t cmd_circle_coef_show;
 #endif /* TRAJECTORY_MANAGER_V3  */
@@ -307,11 +307,11 @@ parse_pgm_ctx_t main_ctx[] = {
     /* commands_traj.c */
     (parse_pgm_inst_t *) & cmd_traj_speed,
     (parse_pgm_inst_t *) & cmd_traj_speed_show,
-//    (parse_pgm_inst_t *) & cmd_traj_acc,
-//    (parse_pgm_inst_t *) & cmd_traj_acc_show,
 
 #ifdef COMPILE_COMMANDS_TRAJ_OPTIONALS /*-------------------------------------*/
 #ifdef TRAJECTORY_MANAGER_V3
+    (parse_pgm_inst_t *) & cmd_traj_acc,
+    (parse_pgm_inst_t *) & cmd_traj_acc_show,
     (parse_pgm_inst_t *) & cmd_circle_coef,
     (parse_pgm_inst_t *) & cmd_circle_coef_show,
 #endif /* TRAJECTORY_MANAGER_V3 */

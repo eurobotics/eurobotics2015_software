@@ -38,7 +38,6 @@
 
 #ifndef HOST_VERSION_OA_TEST
 #include <uart.h>
-#include <dac_mc.h>
 #include <pwm_mc.h>
 #include <pwm_servo.h>
 #include <clock_time.h>
@@ -587,7 +586,6 @@ void set_poly_pts(poly_t *pol_dest, poly_t *pol_org)
  */
 static int8_t go_in_area(point_t *robot_pt)
 {
-	poly_t poly_area;
 	point_t  dst_pt;
 	
 	/* Go in playground */
@@ -659,9 +657,8 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 	
 	double len;
 
-  uint8_t in_home_yellow = 0,in_home_green=0,in_stairs = 0;
-  int16_t home_green_x, home_green_y, home_yellow_x, home_yellow_y, stairs_x,stairs_y;
-
+    uint8_t in_home_yellow = 0,in_home_green=0,in_stairs = 0;
+ 
 	point_t dst_pt;
 	point_t intersect_opp1_pt, intersect_opp2_pt,  intersect_robot_2nd_pt, intersect_home_yellow_pt,intersect_home_green_pt,intersect_stairs_pt;
 	
@@ -1107,7 +1104,7 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 
 	int16_t opp1_w, opp1_l;
 	int16_t opp2_w, opp2_l;
-  	int16_t heartfire_r;
+
 #ifndef HOST_VERSION_OA_TEST
 	int16_t opp1_x, opp1_y;
 	int16_t opp2_x, opp2_y;
