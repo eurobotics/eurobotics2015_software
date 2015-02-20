@@ -259,7 +259,7 @@ static void cmd_stands_blade_parsed(__attribute__((unused)) void *parsed_result,
 
 prog_char str_stands_blade_arg0[] = "blade_left#blade_right";
 parse_pgm_token_string_t cmd_stands_blade_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_stands_blade_result, arg0, str_stands_blade_arg0);
-prog_char str_stands_blade_arg1[] = "hide#cup_locked#cup_unlocked#door_close#door_open";
+prog_char str_stands_blade_arg1[] = "hide_left#push_left#center#push_right#hide_right";
 parse_pgm_token_string_t cmd_stands_blade_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_stands_blade_result, arg1, str_stands_blade_arg1);
 parse_pgm_token_num_t cmd_stands_blade_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_stands_blade_result, arg2, INT8);
 
@@ -450,11 +450,6 @@ static void cmd_cup_clamp_popcorn_door_parsed(__attribute__((unused)) void *pars
 	struct cmd_cup_clamp_popcorn_door_result *res = (struct cmd_cup_clamp_popcorn_door_result *) parsed_result;
 	struct i2c_cmd_slavedspic_set_mode command;
 
-	if (!strcmp_P(res->arg0, PSTR("clamp_door_left")))
-		command.cup_clamp_popcorn_door.type = I2C_CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT;
-	else if (!strcmp_P(res->arg0, PSTR("clamp_door_right")))
-		command.cup_clamp_popcorn_door.type = I2C_CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT;	
-
 	if (!strcmp_P(res->arg1, PSTR("hide")))
 		command.cup_clamp_popcorn_door.mode = I2C_CUP_CLAMP_MODE_HIDE;
 	else if (!strcmp_P(res->arg1, PSTR("cup_locked")))
@@ -472,7 +467,7 @@ static void cmd_cup_clamp_popcorn_door_parsed(__attribute__((unused)) void *pars
 	state_set_mode(&command);
 }
 
-prog_char str_cup_clamp_popcorn_door_arg0[] = "clamp_door_left#clamp_door_right";
+prog_char str_cup_clamp_popcorn_door_arg0[] = "clamp_door";
 parse_pgm_token_string_t cmd_cup_clamp_popcorn_door_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_cup_clamp_popcorn_door_result, arg0, str_cup_clamp_popcorn_door_arg0);
 prog_char str_cup_clamp_popcorn_door_arg1[] = "hide#cup_locked#cup_unlocked#door_close#door_open";
 parse_pgm_token_string_t cmd_cup_clamp_popcorn_door_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_cup_clamp_popcorn_door_result, arg1, str_cup_clamp_popcorn_door_arg1);
@@ -725,80 +720,80 @@ parse_pgm_inst_t cmd_dump_popcorns = {
 };
 
 
-///**********************************************************/
-///* State2 */
-//
-///* this structure is filled when cmd_state2 is parsed successfully */
-//struct cmd_state2_result {
-//	fixed_string_t arg0;
-//	fixed_string_t arg1;
-//	fixed_string_t arg2;
-//	uint8_t arg3;
-//	
-//};
-//
-///* function called when cmd_state2 is parsed successfully */
-//static void cmd_state2_parsed(void *parsed_result,
-//			      __attribute__((unused)) void *data)
-//{
-//	struct cmd_state2_result *res = parsed_result;
-//	struct i2c_cmd_slavedspic_set_mode command;
-//
-//	if (!strcmp(res->arg1, "init")) {
-//		command.mode = I2C_SLAVEDSPIC_MODE_INIT;
-//		state_set_mode(&command);
-//	}	
-//	else if (!strcmp(res->arg1, "power_off")) {
-//		command.mode = I2C_SLAVEDSPIC_MODE_POWER_OFF;
-//		state_set_mode(&command);
-//	}
-//	else if (!strcmp(res->arg1, "status")) {
-//
-//		printf("not implemented");
-//#if 0
-//		/* actuators blocking flags */
-//		printf("fingers_floor_blocked = %d\r\n", slavedspic.fingers_floor.blocking);
-//		printf("fingers_totem_blocked = %d\r\n", slavedspic.fingers_totem.blocking);
-//		printf("arm_right_blocked = %d\r\n", slavedspic.arm_right.blocking);
-//		printf("arm_left_blocked = %d\r\n", slavedspic.arm_left.blocking);
-//		printf("lift_blocked = %d\r\n", slavedspic.lift.blocking);
-//	
-//		/* sensors */
-//		printf("turbine_sensors = %d\r\n", sensor_get_all());
-//	
-//		/* infos */
-//		printf("status = %s\r\n", slavedspic.status == I2C_SLAVEDSPIC_STATUS_BUSY? "BUSY":"READY");
-//	
-//		printf("harvest_mode = %d\r\n", slavedspic.harvest_mode);
-//		printf("store_mode = %d\r\n", slavedspic.store_mode);
-//		printf("dump_mode = %d\r\n", slavedspic.dump_mode);
-//	
-//		printf("nb_goldbars_in_boot = %d\r\n", slavedspic.nb_goldbars_in_boot);
-//		printf("nb_goldbars_in_mouth = %d\r\n", slavedspic.nb_goldbars_in_mouth);
-//		printf("nb_coins_in_boot = %d\r\n", slavedspic.nb_coins_in_boot);
-//		printf("nb_coins_in_mouth = %d\r\n", slavedspic.nb_coins_in_mouth);
-//#endif
-//	}
-//}
-//
-//prog_char str_state2_arg0[] = "state";
-//parse_pgm_token_string_t cmd_state2_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_state2_result, arg0, str_state2_arg0);
-//prog_char str_state2_arg1[] = "init#power_off#status";
-//parse_pgm_token_string_t cmd_state2_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_state2_result, arg1, str_state2_arg1);
-//
-//prog_char help_state2[] = "set slavedspic mode";
-//parse_pgm_inst_t cmd_state2 = {
-//	.f = cmd_state2_parsed,  /* function to call */
-//	.data = NULL,      /* 2nd arg of func */
-//	.help_str = help_state2,
-//	.tokens = {        /* token list, NULL terminated */
-//		(prog_void *)&cmd_state2_arg0, 
-//		(prog_void *)&cmd_state2_arg1,
-//		NULL,
-//	},
-//};
-//
-//
+/**********************************************************/
+/* State2 */
+
+/* this structure is filled when cmd_state2 is parsed successfully */
+struct cmd_state2_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+	fixed_string_t arg2;
+	uint8_t arg3;
+	
+};
+
+/* function called when cmd_state2 is parsed successfully */
+static void cmd_state2_parsed(void *parsed_result,
+			      __attribute__((unused)) void *data)
+{
+	struct cmd_state2_result *res = parsed_result;
+	struct i2c_cmd_slavedspic_set_mode command;
+
+	if (!strcmp(res->arg1, "init")) {
+		command.mode = I2C_SLAVEDSPIC_MODE_INIT;
+		state_set_mode(&command);
+	}	
+	else if (!strcmp(res->arg1, "power_off")) {
+		command.mode = I2C_SLAVEDSPIC_MODE_POWER_OFF;
+		state_set_mode(&command);
+	}
+	else if (!strcmp(res->arg1, "status")) {
+
+		printf("not implemented");
+#if 0
+		/* actuators blocking flags */
+		printf("fingers_floor_blocked = %d\r\n", slavedspic.fingers_floor.blocking);
+		printf("fingers_totem_blocked = %d\r\n", slavedspic.fingers_totem.blocking);
+		printf("arm_right_blocked = %d\r\n", slavedspic.arm_right.blocking);
+		printf("arm_left_blocked = %d\r\n", slavedspic.arm_left.blocking);
+		printf("lift_blocked = %d\r\n", slavedspic.lift.blocking);
+	
+		/* sensors */
+		printf("turbine_sensors = %d\r\n", sensor_get_all());
+	
+		/* infos */
+		printf("status = %s\r\n", slavedspic.status == I2C_SLAVEDSPIC_STATUS_BUSY? "BUSY":"READY");
+	
+		printf("harvest_mode = %d\r\n", slavedspic.harvest_mode);
+		printf("store_mode = %d\r\n", slavedspic.store_mode);
+		printf("dump_mode = %d\r\n", slavedspic.dump_mode);
+	
+		printf("nb_goldbars_in_boot = %d\r\n", slavedspic.nb_goldbars_in_boot);
+		printf("nb_goldbars_in_mouth = %d\r\n", slavedspic.nb_goldbars_in_mouth);
+		printf("nb_coins_in_boot = %d\r\n", slavedspic.nb_coins_in_boot);
+		printf("nb_coins_in_mouth = %d\r\n", slavedspic.nb_coins_in_mouth);
+#endif
+	}
+}
+
+prog_char str_state2_arg0[] = "state";
+parse_pgm_token_string_t cmd_state2_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_state2_result, arg0, str_state2_arg0);
+prog_char str_state2_arg1[] = "init#power_off#status";
+parse_pgm_token_string_t cmd_state2_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_state2_result, arg1, str_state2_arg1);
+
+prog_char help_state2[] = "set slavedspic mode";
+parse_pgm_inst_t cmd_state2 = {
+	.f = cmd_state2_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_state2,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_state2_arg0, 
+		(prog_void *)&cmd_state2_arg1,
+		NULL,
+	},
+};
+
+
 ///**********************************************************/
 ///* State3 */
 //
