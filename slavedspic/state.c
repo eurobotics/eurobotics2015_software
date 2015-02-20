@@ -169,7 +169,7 @@ static void state_do_init(void)
 /* set stands_blade mode */
 void state_do_stands_blade_mode(void)
 {
-//	uint8_t err = 0;
+	uint8_t err = 0;
 
 	/* return if no update */
 	if (!state_check_update(STANDS_BLADE))
@@ -183,7 +183,7 @@ void state_do_stands_blade_mode(void)
 		if(stands_blade_set_mode(&slavedspic.stands_blade_l, mainboard_command.stands_blade.mode, mainboard_command.stands_blade.offset))
 			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
 
-//		err = stands_blade_wait_end(&slavedspic.stands_blade_l);
+		err = stands_blade_wait_end(&slavedspic.stands_blade_l);
 	}	
 
 	/*** RIGHT STANDS_BLADE */
@@ -191,11 +191,11 @@ void state_do_stands_blade_mode(void)
 		if(stands_blade_set_mode(&slavedspic.stands_blade_r, mainboard_command.stands_blade.mode, mainboard_command.stands_blade.offset))
 			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
 
-//		err = stands_blade_wait_end(&slavedspic.stands_blade_r);
+		err = stands_blade_wait_end(&slavedspic.stands_blade_r);
 	}	
 
-//	if(err & END_BLOCKING)
-//		STMCH_DEBUG("STANDS_BLADE mode ends with BLOCKING");
+	if(err & END_BLOCKING)
+		STMCH_DEBUG("STANDS_BLADE mode ends with BLOCKING");
 
 	/* notice status and update mode*/
 	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
@@ -204,8 +204,6 @@ void state_do_stands_blade_mode(void)
 /* set stands_clamp mode */
 void state_do_stands_clamp_mode(void)
 {
-//	uint8_t err = 0;
-
 	/* return if no update */
 	if (!state_check_update(STANDS_CLAMP))
 		return;
@@ -217,20 +215,13 @@ void state_do_stands_clamp_mode(void)
 	if(mainboard_command.stands_clamp.type == I2C_STANDS_CLAMP_TYPE_LEFT) {
 		if(stands_clamp_set_mode(&slavedspic.stands_clamp_l, mainboard_command.stands_clamp.mode, mainboard_command.stands_clamp.offset))
 			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
-
-//		err = stands_clamp_wait_end(&slavedspic.stands_clamp_l);
 	}	
 
 	/*** RIGHT STANDS_CLAMP */
 	else if(mainboard_command.stands_clamp.type == I2C_STANDS_CLAMP_TYPE_RIGHT) {
 		if(stands_clamp_set_mode(&slavedspic.stands_clamp_r, mainboard_command.stands_clamp.mode, mainboard_command.stands_clamp.offset))
 			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
-
-//		err = stands_clamp_wait_end(&slavedspic.stands_clamp_r);
 	}	
-
-//	if(err & END_BLOCKING)
-//		STMCH_DEBUG("STANDS_CLAMP mode ends with BLOCKING");
 
 	/* notice status and update mode*/
 	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
@@ -239,7 +230,7 @@ void state_do_stands_clamp_mode(void)
 /* set stands_elevator mode */
 void state_do_stands_elevator_mode(void)
 {
-//	uint8_t err = 0;
+	uint8_t err = 0;
 
 	/* return if no update */
 	if (!state_check_update(STANDS_ELEVATOR))
@@ -253,7 +244,7 @@ void state_do_stands_elevator_mode(void)
 		if(stands_elevator_set_mode(&slavedspic.stands_elevator_l, mainboard_command.stands_elevator.mode, mainboard_command.stands_elevator.offset))
 			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
 
-//		err = stands_elevator_wait_end(&slavedspic.stands_elevator_l);
+		err = stands_elevator_wait_end(&slavedspic.stands_elevator_l);
 	}	
 
 	/*** RIGHT STANDS_ELEVATOR */
@@ -261,11 +252,11 @@ void state_do_stands_elevator_mode(void)
 		if(stands_elevator_set_mode(&slavedspic.stands_elevator_r, mainboard_command.stands_elevator.mode, mainboard_command.stands_elevator.offset))
 			STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
 
-//		err = stands_elevator_wait_end(&slavedspic.stands_elevator_r);
+		err = stands_elevator_wait_end(&slavedspic.stands_elevator_r);
 	}	
 
-//	if(err & END_BLOCKING)
-//		STMCH_DEBUG("STANDS_ELEVATOR mode ends with BLOCKING");
+	if(err & END_BLOCKING)
+		STMCH_DEBUG("STANDS_ELEVATOR mode ends with BLOCKING");
 
 	/* notice status and update mode*/
 	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
@@ -502,8 +493,8 @@ void state_machines(void)
 	state_do_cup_clamp_front_mode();
 
 	/* multiple actuators modes */
-	state_do_harvest_popcorns_mode();
-	state_do_dump_popcorns_mode();
+	//state_do_harvest_popcorns_mode();
+	//state_do_dump_popcorns_mode();
 
 #if 0
 	state_do_set_infos();
@@ -518,44 +509,43 @@ void state_init(void)
 	pwm_servo_enable();
 
 	/* enable ax12 torque */
-	ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_TORQUE_ENABLE, 0xFF);
+	//ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_TORQUE_ENABLE, 0xFF);
 
 	/* start positions */
 
 	/* close gadgets */
 	stands_blade_set_mode(&slavedspic.stands_blade_l, STANDS_BLADE_MODE_HIDE_LEFT, 0);
-	stands_blade_wait_end(&slavedspic.stands_blade_l);
+	//stands_blade_wait_end(&slavedspic.stands_blade_l);
 
 	stands_blade_set_mode(&slavedspic.stands_blade_r, STANDS_BLADE_MODE_HIDE_RIGHT, 0);
-	stands_blade_wait_end(&slavedspic.stands_blade_r);
+	//stands_blade_wait_end(&slavedspic.stands_blade_r);
 
 	stands_clamp_set_mode(&slavedspic.stands_clamp_l, STANDS_CLAMP_MODE_OPEN, 0);
-
 	stands_clamp_set_mode(&slavedspic.stands_clamp_r, STANDS_CLAMP_MODE_OPEN, 0);
 
 	stands_elevator_set_mode(&slavedspic.stands_elevator_l, STANDS_ELEVATOR_MODE_UP, 0);
-	stands_elevator_wait_end(&slavedspic.stands_elevator_l);
+	//stands_elevator_wait_end(&slavedspic.stands_elevator_l);
 
 	stands_elevator_set_mode(&slavedspic.stands_elevator_r, STANDS_ELEVATOR_MODE_UP, 0);
-	stands_elevator_wait_end(&slavedspic.stands_elevator_r);
+	//stands_elevator_wait_end(&slavedspic.stands_elevator_r);
 
 	stands_tower_clamps_set_mode(&slavedspic.stands_tower_clamps, STANDS_TOWER_CLAMPS_MODE_LOCK, 0);
-	stands_tower_clamps_wait_end(&slavedspic.stands_tower_clamps);
+	//stands_tower_clamps_wait_end(&slavedspic.stands_tower_clamps);
 
 	cup_clamp_popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door, CUP_CLAMP_MODE_HIDE, 0);
-	cup_clamp_popcorn_door_wait_end(&slavedspic.cup_clamp_popcorn_door);
+	//cup_clamp_popcorn_door_wait_end(&slavedspic.cup_clamp_popcorn_door);
 
 	popcorn_tray_set_mode(&slavedspic.popcorn_tray, POPCORN_TRAY_MODE_CLOSE, 0);
 
 	popcorn_ramps_set_mode(&slavedspic.popcorn_ramps, POPCORN_RAMPS_MODE_HIDE, 0);
-	popcorn_ramps_wait_end(&slavedspic.popcorn_ramps);
+	//popcorn_ramps_wait_end(&slavedspic.popcorn_ramps);
 
 	cup_clamp_front_set_mode(&slavedspic.cup_clamp_front, CUP_CLAMP_FRONT_MODE_HIDE, 0);
-	cup_clamp_front_wait_end(&slavedspic.cup_clamp_front);
+	//cup_clamp_front_wait_end(&slavedspic.cup_clamp_front);
 
 	BRAKE_OFF();
-	slavedspic.stands_exchanger.on = 1;
+	//slavedspic.stands_exchanger.on = 1;
 
-	stands_exchanger_calibrate();
+	//stands_exchanger_calibrate();
 }
 

@@ -103,7 +103,7 @@ extern parse_pgm_inst_t cmd_cup_clamp_front;
 
 extern parse_pgm_inst_t cmd_harvest_popcorns;
 extern parse_pgm_inst_t cmd_dump_popcorns;
-//extern parse_pgm_inst_t cmd_state2;
+extern parse_pgm_inst_t cmd_state2;
 //extern parse_pgm_inst_t cmd_state3;
 
 #if 0
@@ -177,7 +177,7 @@ parse_pgm_ctx_t main_ctx[]  = {
 
 	(parse_pgm_inst_t *)&cmd_harvest_popcorns,
 	(parse_pgm_inst_t *)&cmd_dump_popcorns,
-//	(parse_pgm_inst_t *)&cmd_state2,
+	(parse_pgm_inst_t *)&cmd_state2,
 //	(parse_pgm_inst_t *)&cmd_state3,
 
 #if 0

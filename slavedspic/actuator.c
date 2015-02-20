@@ -385,10 +385,10 @@ int8_t popcorn_tray_set_mode(popcorn_tray_t *popcorn_tray, uint8_t mode, int16_t
 
 /**** stands_clamp functions *********************************************************/
 uint16_t stands_clamp_servo_pos[STANDS_CLAMP_TYPE_MAX][STANDS_CLAMP_MODE_MAX] = {
-	[STANDS_CLAMP_TYPE_LEFT][STANDS_CLAMP_MODE_OPEN] 		= POS_STANDS_CLAMP_L_OPEN,
+	[STANDS_CLAMP_TYPE_LEFT][STANDS_CLAMP_MODE_OPEN] 	= POS_STANDS_CLAMP_L_OPEN,
 	[STANDS_CLAMP_TYPE_LEFT][STANDS_CLAMP_MODE_CLOSE] 	= POS_STANDS_CLAMP_L_CLOSE,
 
-	[STANDS_CLAMP_TYPE_RIGHT][STANDS_CLAMP_MODE_OPEN] 		= POS_STANDS_CLAMP_R_OPEN,
+	[STANDS_CLAMP_TYPE_RIGHT][STANDS_CLAMP_MODE_OPEN] 	= POS_STANDS_CLAMP_R_OPEN,
 	[STANDS_CLAMP_TYPE_RIGHT][STANDS_CLAMP_MODE_CLOSE] 	= POS_STANDS_CLAMP_R_CLOSE,
 
 };
@@ -879,5 +879,14 @@ void actuator_init(void)
 	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_CCW_ANGLE_LIMIT_L, 0x3FF);
 	ax12_user_write_int(&gen.ax12, AX12_BROADCAST_ID, AA_MOVING_SPEED_L, 0x3FF);
 #endif
+
+	slavedspic.stands_clamp_l.type = STANDS_CLAMP_TYPE_LEFT;
+	slavedspic.stands_clamp_r.type = STANDS_CLAMP_TYPE_RIGHT;
+
+	slavedspic.stands_elevator_l.type = STANDS_ELEVATOR_TYPE_LEFT;
+	slavedspic.stands_elevator_r.type = STANDS_ELEVATOR_TYPE_RIGHT;
+
+	slavedspic.stands_blade_l.type = STANDS_BLADE_TYPE_LEFT;
+	slavedspic.stands_blade_r.type = STANDS_BLADE_TYPE_RIGHT;
 }
 
