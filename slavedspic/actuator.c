@@ -865,6 +865,61 @@ uint8_t cup_clamp_front_wait_end(cup_clamp_front_t *cup_clamp_front)
 
 
 
+/**** cup_holder_front functions *********************************************************/
+uint16_t cup_holder_front_ax12_pos [CUP_HOLDER_FRONT_MODE_MAX] = {
+	[CUP_HOLDER_FRONT_MODE_CUP_HOLD] 	= POS_CUP_HOLDER_FRONT_CUP_HOLD,
+	[CUP_HOLDER_FRONT_MODE_HIDE] 		= POS_CUP_HOLDER_FRONT_HIDE
+};
+
+struct ax12_traj ax12_cup_holder_front = { .id = AX12_ID_CUP_HOLDER_FRONT, .zero_offset_pos = 0 };
+
+/* set cup_holder_front position depends on mode */
+int8_t cup_holder_front_set_mode(cup_holder_front_t *cup_holder_front, uint8_t mode, int16_t pos_offset)
+{
+	/* set ax12 positions depends on mode */
+	if(mode >= CUP_HOLDER_FRONT_MODE_MAX) {
+		ACTUATORS_ERROR("Unknown CUP_HOLDER_FRONT MODE");
+		return -1;
+	}
+
+	/* ax12 positions */
+	cup_holder_front->mode = mode;
+	cup_holder_front->ax12_pos = cup_holder_front_ax12_pos[cup_holder_front->mode] + pos_offset;
+
+	/* saturate to position range */
+	if(cup_holder_front->ax12_pos > cup_holder_front_ax12_pos[CUP_HOLDER_FRONT_MODE_POS_MAX])
+		cup_holder_front->ax12_pos = cup_holder_front_ax12_pos[CUP_HOLDER_FRONT_MODE_POS_MAX];
+	else if(cup_holder_front->ax12_pos < cup_holder_front_ax12_pos[CUP_HOLDER_FRONT_MODE_POS_MIN])
+		cup_holder_front->ax12_pos = cup_holder_front_ax12_pos[CUP_HOLDER_FRONT_MODE_POS_MIN];
+
+	/* apply to ax12 */
+    ax12_set_pos(&ax12_cup_holder_front, cup_holder_front->ax12_pos);
+
+	return 0;
+}
+
+/* return cup_holder_front traj flag */
+uint8_t cup_holder_front_test_traj_end(cup_holder_front_t *cup_holder_front)
+{
+    uint8_t ret;
+   
+    ret = ax12_test_traj_end (&ax12_cup_holder_front, END_TRAJ|END_TIME);
+
+    return ret;
+}
+
+/* return END_TRAJ or END_TIMER */
+uint8_t cup_holder_front_wait_end(cup_holder_front_t *cup_holder_front)
+{
+    uint8_t ret;
+   
+    ret = ax12_wait_traj_end (&ax12_cup_holder_front, END_TRAJ|END_TIME);
+
+    return ret;
+}
+
+
+
 /* init all actuators */
 void actuator_init(void)
 {

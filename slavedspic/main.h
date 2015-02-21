@@ -88,6 +88,7 @@
 #define AX12_ID_POPCORN_RAMP_L				4
 #define AX12_ID_POPCORN_RAMP_R				5
 #define AX12_ID_CUP_CLAMP_FRONT				0
+#define AX12_ID_CUP_HOLDER_FRONT			10
 
 #define S_STAND_INSIDE_L			SENSOR1
 #define S_STAND_INSIDE_R			SENSOR2
@@ -175,11 +176,13 @@ struct slavedspic {
 	popcorn_tray_t popcorn_tray;
 	popcorn_ramps_t popcorn_ramps;
 	cup_clamp_front_t cup_clamp_front;
+	cup_holder_front_t cup_holder_front;
 
 	/* infos */
 	uint8_t status;
 	uint8_t harvest_popcorns_mode;
 	uint8_t dump_popcorns_mode;
+	uint8_t dump_front_cup_mode;
 //	uint8_t stands_mode;
 
 	uint8_t nb_stored_stands_l, nb_stored_stands_r;

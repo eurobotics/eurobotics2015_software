@@ -100,9 +100,11 @@ extern parse_pgm_inst_t cmd_cup_clamp_popcorn_door;
 extern parse_pgm_inst_t cmd_popcorn_tray;
 extern parse_pgm_inst_t cmd_popcorn_ramps;
 extern parse_pgm_inst_t cmd_cup_clamp_front;
+extern parse_pgm_inst_t cmd_cup_holder_front;
 
 extern parse_pgm_inst_t cmd_harvest_popcorns;
 extern parse_pgm_inst_t cmd_dump_popcorns;
+extern parse_pgm_inst_t cmd_dump_front_cup;
 extern parse_pgm_inst_t cmd_state2;
 //extern parse_pgm_inst_t cmd_state3;
 
@@ -174,16 +176,16 @@ parse_pgm_ctx_t main_ctx[]  = {
 	(parse_pgm_inst_t *)&cmd_popcorn_tray,
 	(parse_pgm_inst_t *)&cmd_popcorn_ramps,
 	(parse_pgm_inst_t *)&cmd_cup_clamp_front,
+	(parse_pgm_inst_t *)&cmd_cup_holder_front,
 
 	(parse_pgm_inst_t *)&cmd_harvest_popcorns,
 	(parse_pgm_inst_t *)&cmd_dump_popcorns,
+	(parse_pgm_inst_t *)&cmd_dump_front_cup,
 	(parse_pgm_inst_t *)&cmd_state2,
 //	(parse_pgm_inst_t *)&cmd_state3,
 
 #if 0
 	//(parse_pgm_inst_t *)&cmd_state_debug,
-	(parse_pgm_inst_t *)&cmd_state2,	
-
 	//(parse_pgm_inst_t *)&cmd_state_machine,
 #endif
 	NULL,
