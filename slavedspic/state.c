@@ -69,9 +69,11 @@
 #define POPCORN_TRAY			I2C_SLAVEDSPIC_MODE_POPCORN_TRAY
 #define POPCORN_RAMPS			I2C_SLAVEDSPIC_MODE_POPCORN_RAMPS
 #define CUP_CLAMP_FRONT			I2C_SLAVEDSPIC_MODE_CUP_CLAMP_FRONT
+#define CUP_HOLDER_FRONT		I2C_SLAVEDSPIC_MODE_CUP_HOLDER_FRONT
 
 #define HARVEST_POPCORNS 		I2C_SLAVEDSPIC_MODE_HARVEST_POPCORNS
 #define DUMP_POPCORNS			I2C_SLAVEDSPIC_MODE_DUMP_POPCORNS
+#define DUMP_FRONT_CUP			I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP
 
 
 
@@ -349,6 +351,25 @@ void state_do_cup_clamp_front_mode(void)
 }
 
 
+/* set cup_holder_front mode */
+void state_do_cup_holder_front_mode(void)
+{
+	/* return if no update */
+	if (!state_check_update(CUP_HOLDER_FRONT))
+		return;
+
+	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
+
+	/* set cup_holder_front mode */
+	if(cup_holder_front_set_mode(&slavedspic.cup_holder_front, mainboard_command.cup_holder_front.mode, mainboard_command.cup_holder_front.offset))
+		STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
+
+	cup_holder_front_wait_end(&slavedspic.cup_holder_front);
+
+	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
+}
+
+
 /**
  * *************** multiple actuators modes ***********
  */
@@ -446,6 +467,45 @@ void state_do_dump_popcorns_mode(void)
 }
 
 
+/* do dump_front_cup mode */
+void state_do_dump_front_cup_mode(void)
+{
+	if (!state_check_update(DUMP_FRONT_CUP))
+		return;
+
+	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
+
+	/* notice status and update mode*/
+	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
+	slavedspic.dump_front_cup_mode = mainboard_command.dump_front_cup.mode;
+
+	switch(slavedspic.dump_front_cup_mode)
+	{
+		case I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP_CATCH:
+		case I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP_PULL_DOWN:
+			cup_clamp_front_set_mode (&slavedspic.cup_clamp_front, CUP_CLAMP_FRONT_MODE_CUP_LOCKED, 0);
+			cup_holder_front_set_mode (&slavedspic.cup_holder_front, CUP_HOLDER_FRONT_MODE_HIDE, 0);
+			break;
+
+		case I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP_PULL_UP:
+			cup_clamp_front_set_mode (&slavedspic.cup_clamp_front, CUP_CLAMP_FRONT_MODE_HIDE, 0);
+			cup_holder_front_set_mode (&slavedspic.cup_holder_front, CUP_HOLDER_FRONT_MODE_CUP_HOLD, 0);
+			break;
+
+		case I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP_DROP:
+			cup_clamp_front_set_mode (&slavedspic.cup_clamp_front, CUP_CLAMP_FRONT_MODE_HIDE, 0);
+			cup_holder_front_set_mode (&slavedspic.cup_holder_front, CUP_HOLDER_FRONT_MODE_HIDE, 0);
+			break;
+
+		default:
+			break;
+	}
+
+	/* notice status and update mode*/
+	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
+}
+
+
 #if 0
 
 /* set infos */
@@ -491,10 +551,12 @@ void state_machines(void)
 	state_do_popcorn_tray_mode();
 	state_do_popcorn_ramps_mode();
 	state_do_cup_clamp_front_mode();
+	state_do_cup_holder_front_mode();
 
 	/* multiple actuators modes */
 	//state_do_harvest_popcorns_mode();
 	//state_do_dump_popcorns_mode();
+	//state_do_dump_front_cup();
 
 #if 0
 	state_do_set_infos();
@@ -515,37 +577,26 @@ void state_init(void)
 
 	/* close gadgets */
 	stands_blade_set_mode(&slavedspic.stands_blade_l, STANDS_BLADE_MODE_HIDE_LEFT, 0);
-	//stands_blade_wait_end(&slavedspic.stands_blade_l);
-
 	stands_blade_set_mode(&slavedspic.stands_blade_r, STANDS_BLADE_MODE_HIDE_RIGHT, 0);
-	//stands_blade_wait_end(&slavedspic.stands_blade_r);
 
 	stands_clamp_set_mode(&slavedspic.stands_clamp_l, STANDS_CLAMP_MODE_OPEN, 0);
 	stands_clamp_set_mode(&slavedspic.stands_clamp_r, STANDS_CLAMP_MODE_OPEN, 0);
 
 	stands_elevator_set_mode(&slavedspic.stands_elevator_l, STANDS_ELEVATOR_MODE_UP, 0);
-	//stands_elevator_wait_end(&slavedspic.stands_elevator_l);
-
 	stands_elevator_set_mode(&slavedspic.stands_elevator_r, STANDS_ELEVATOR_MODE_UP, 0);
-	//stands_elevator_wait_end(&slavedspic.stands_elevator_r);
 
 	stands_tower_clamps_set_mode(&slavedspic.stands_tower_clamps, STANDS_TOWER_CLAMPS_MODE_LOCK, 0);
-	//stands_tower_clamps_wait_end(&slavedspic.stands_tower_clamps);
 
 	cup_clamp_popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door, CUP_CLAMP_MODE_HIDE, 0);
-	//cup_clamp_popcorn_door_wait_end(&slavedspic.cup_clamp_popcorn_door);
 
 	popcorn_tray_set_mode(&slavedspic.popcorn_tray, POPCORN_TRAY_MODE_CLOSE, 0);
-
 	popcorn_ramps_set_mode(&slavedspic.popcorn_ramps, POPCORN_RAMPS_MODE_HIDE, 0);
-	//popcorn_ramps_wait_end(&slavedspic.popcorn_ramps);
 
 	cup_clamp_front_set_mode(&slavedspic.cup_clamp_front, CUP_CLAMP_FRONT_MODE_HIDE, 0);
-	//cup_clamp_front_wait_end(&slavedspic.cup_clamp_front);
+	cup_holder_front_set_mode(&slavedspic.cup_holder_front, CUP_HOLDER_FRONT_MODE_HIDE, 0);
 
 	BRAKE_OFF();
 	//slavedspic.stands_exchanger.on = 1;
-
 	//stands_exchanger_calibrate();
 }
 

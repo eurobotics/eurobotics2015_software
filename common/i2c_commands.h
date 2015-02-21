@@ -109,10 +109,12 @@ struct i2c_cmd_slavedspic_set_mode {
 #define I2C_SLAVEDSPIC_MODE_POPCORN_TRAY				0x08
 #define I2C_SLAVEDSPIC_MODE_POPCORN_RAMPS				0x09
 #define I2C_SLAVEDSPIC_MODE_CUP_CLAMP_FRONT				0x0A
+#define I2C_SLAVEDSPIC_MODE_CUP_HOLDER_FRONT			0x0B
 
 /* multiple actuator modes */
-#define I2C_SLAVEDSPIC_MODE_HARVEST_POPCORNS   			0x0B
-#define I2C_SLAVEDSPIC_MODE_DUMP_POPCORNS				0x0C
+#define I2C_SLAVEDSPIC_MODE_HARVEST_POPCORNS   			0x0C
+#define I2C_SLAVEDSPIC_MODE_DUMP_POPCORNS				0x0D
+#define I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP				0x0E
 
 
 	uint8_t mode;
@@ -204,17 +206,32 @@ struct i2c_cmd_slavedspic_set_mode {
 
 		struct {
 			uint8_t mode;
+#define I2C_CUP_HOLDER_FRONT_MODE_CUP_HOLD		0
+#define I2C_CUP_HOLDER_FRONT_MODE_HIDE			1
+
+			int8_t offset;
+		} cup_holder_front;
+
+		struct {
+			uint8_t mode;
 #define I2C_SLAVEDSPIC_MODE_HARVEST_POPCORNS_READY	1
 #define I2C_SLAVEDSPIC_MODE_HARVEST_POPCORNS_DO		2	
 #define I2C_SLAVEDSPIC_MODE_HARVEST_POPCORNS_END	3
 		} harvest_popcorns;
-
 
 		struct {
 			uint8_t mode;
 #define I2C_SLAVEDSPIC_MODE_DUMP_POPCORNS_DO		1	
 #define I2C_SLAVEDSPIC_MODE_DUMP_POPCORNS_END		2
 		} dump_popcorns;
+
+		struct {
+			uint8_t mode;
+#define I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP_CATCH		1
+#define I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP_PULL_UP		2
+#define I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP_PULL_DOWN	3
+#define I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP_DROP			4
+		} dump_front_cup;
 
 		/* add more here */
 	};

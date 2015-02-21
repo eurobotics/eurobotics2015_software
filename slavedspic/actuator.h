@@ -92,6 +92,9 @@
 #define POS_CUP_CLAMP_FRONT_HIDE		300
 #define POS_CUP_CLAMP_FRONT_CUP_LOCKED	600
 
+#define POS_CUP_HOLDER_FRONT_CUP_HOLD	300
+#define POS_CUP_HOLDER_FRONT_HIDE		600
+
 
 /* test end traj */
 #define END_TRAJ   		1
@@ -349,6 +352,32 @@ uint8_t cup_clamp_front_test_traj_end(cup_clamp_front_t *cup_clamp_front);
 
 /* return END_TRAJ or END_TIMER */
 uint8_t cup_clamp_front_wait_end(cup_clamp_front_t *cup_clamp_front);
+
+
+
+/**** cup_holder_front functions *********************************************************/
+typedef struct {
+	uint8_t mode;
+#define CUP_HOLDER_FRONT_MODE_CUP_HOLD		0
+#define CUP_HOLDER_FRONT_MODE_HIDE			1
+#define CUP_HOLDER_FRONT_MODE_MAX			2
+
+#define CUP_HOLDER_FRONT_MODE_POS_MIN		0
+#define CUP_HOLDER_FRONT_MODE_POS_MAX		1
+
+	uint16_t ax12_pos;
+
+} cup_holder_front_t;
+
+/* set cup_holder_front position depends on mode */
+int8_t cup_holder_front_set_mode(cup_holder_front_t *cup_holder_front, uint8_t mode, int16_t pos_offset);
+
+/* return cup_holder_front traj flag */
+uint8_t cup_holder_front_test_traj_end(cup_holder_front_t *cup_holder_front);
+
+/* return END_TRAJ or END_TIMER */
+uint8_t cup_holder_front_wait_end(cup_holder_front_t *cup_holder_front);
+
 
 
 #endif /* _ACTUATOR_H_ */

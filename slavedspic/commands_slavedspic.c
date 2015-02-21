@@ -613,7 +613,7 @@ static void cmd_cup_clamp_front_parsed(__attribute__((unused)) void *parsed_resu
 	state_set_mode(&command);
 }
 
-prog_char str_cup_clamp_front_arg0[] = "clamp_front";
+prog_char str_cup_clamp_front_arg0[] = "cup_clamp_front";
 parse_pgm_token_string_t cmd_cup_clamp_front_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_cup_clamp_front_result, arg0, str_cup_clamp_front_arg0);
 prog_char str_cup_clamp_front_arg1[] = "hide#cup_locked";
 parse_pgm_token_string_t cmd_cup_clamp_front_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_cup_clamp_front_result, arg1, str_cup_clamp_front_arg1);
@@ -634,7 +634,55 @@ parse_pgm_inst_t cmd_cup_clamp_front = {
 
 
 /**********************************************************/
-/* harvest popcorns */
+/* cup_holder_front */
+
+/* this structure is filled when cmd_cup_holder_front is parsed successfully */
+struct cmd_cup_holder_front_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+	int8_t arg2;
+};
+
+/* function called when cmd_cup_holder_front is parsed successfully */
+static void cmd_cup_holder_front_parsed(__attribute__((unused)) void *parsed_result,
+			    __attribute__((unused)) void *data)
+{
+	struct cmd_cup_holder_front_result *res = (struct cmd_cup_holder_front_result *) parsed_result;
+	struct i2c_cmd_slavedspic_set_mode command;
+
+	if (!strcmp_P(res->arg1, PSTR("cup_hold")))
+		command.cup_holder_front.mode = I2C_CUP_HOLDER_FRONT_MODE_CUP_HOLD;
+	else if (!strcmp_P(res->arg1, PSTR("hide")))
+		command.cup_holder_front.mode = I2C_CUP_HOLDER_FRONT_MODE_HIDE;
+
+	command.cup_holder_front.offset = res->arg2;
+
+	command.mode = I2C_SLAVEDSPIC_MODE_CUP_HOLDER_FRONT;
+	state_set_mode(&command);
+}
+
+prog_char str_cup_holder_front_arg0[] = "cup_holder_front";
+parse_pgm_token_string_t cmd_cup_holder_front_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_cup_holder_front_result, arg0, str_cup_holder_front_arg0);
+prog_char str_cup_holder_front_arg1[] = "cup_hold#hide";
+parse_pgm_token_string_t cmd_cup_holder_front_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_cup_holder_front_result, arg1, str_cup_holder_front_arg1);
+parse_pgm_token_num_t cmd_cup_holder_front_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_cup_holder_front_result, arg2, INT8);
+
+prog_char help_cup_holder_front[] = "set cup_holder_front mode, offset";
+parse_pgm_inst_t cmd_cup_holder_front = {
+	.f = cmd_cup_holder_front_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_cup_holder_front,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_cup_holder_front_arg0, 
+		(prog_void *)&cmd_cup_holder_front_arg1,
+		(prog_void *)&cmd_cup_holder_front_arg2,
+		NULL,
+	},
+};
+
+
+/**********************************************************/
+/* harvest_popcorns */
 
 /* this structure is filled when cmd_harvest_popcorns is parsed successfully */
 struct cmd_harvest_popcorns_result {
@@ -678,7 +726,7 @@ parse_pgm_inst_t cmd_harvest_popcorns = {
 };
 
 /**********************************************************/
-/* dump popcorns */
+/* dump_popcorns */
 
 /* this structure is filled when cmd_dump_popcorns is parsed successfully */
 struct cmd_dump_popcorns_result {
@@ -707,7 +755,7 @@ parse_pgm_token_string_t cmd_dump_popcorns_arg0 = TOKEN_STRING_INITIALIZER(struc
 prog_char str_dump_popcorns_arg1[] = "do#end";
 parse_pgm_token_string_t cmd_dump_popcorns_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_dump_popcorns_result, arg1, str_dump_popcorns_arg1);
 
-prog_char help_dump_popcorns[] = "set dump popcorns mode";
+prog_char help_dump_popcorns[] = "set dump_popcorns mode";
 parse_pgm_inst_t cmd_dump_popcorns = {
 	.f = cmd_dump_popcorns_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
@@ -715,6 +763,52 @@ parse_pgm_inst_t cmd_dump_popcorns = {
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_dump_popcorns_arg0, 
 		(prog_void *)&cmd_dump_popcorns_arg1,
+		NULL,
+	},
+};
+
+/**********************************************************/
+/* dump_front_cup */
+
+/* this structure is filled when cmd_dump_front_cup is parsed successfully */
+struct cmd_dump_front_cup_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+};
+
+/* function called when cmd_dump_front_cup is parsed successfully */
+static void cmd_dump_front_cup_parsed(__attribute__((unused)) void *parsed_result,
+			    __attribute__((unused)) void *data)
+{
+	struct cmd_dump_front_cup_result *res = (struct cmd_dump_front_cup_result *) parsed_result;
+	struct i2c_cmd_slavedspic_set_mode command;
+
+	if (!strcmp_P(res->arg1, PSTR("catch")))
+		command.dump_front_cup.mode = I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP_CATCH;
+	else if (!strcmp_P(res->arg1, PSTR("pull_up")))
+		command.dump_front_cup.mode = I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP_PULL_UP;
+	else if (!strcmp_P(res->arg1, PSTR("pull_down")))
+		command.dump_front_cup.mode = I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP_PULL_DOWN;
+	else if (!strcmp_P(res->arg1, PSTR("drop")))
+		command.dump_front_cup.mode = I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP_DROP;
+
+	command.mode = I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP;
+	state_set_mode(&command);
+}
+
+prog_char str_dump_front_cup_arg0[] = "dump_front_cup";
+parse_pgm_token_string_t cmd_dump_front_cup_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_dump_front_cup_result, arg0, str_dump_front_cup_arg0);
+prog_char str_dump_front_cup_arg1[] = "catch#pull_up#pull_down#drop";
+parse_pgm_token_string_t cmd_dump_front_cup_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_dump_front_cup_result, arg1, str_dump_front_cup_arg1);
+
+prog_char help_dump_front_cup[] = "set dump_front_cup mode";
+parse_pgm_inst_t cmd_dump_front_cup = {
+	.f = cmd_dump_front_cup_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_dump_front_cup,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_dump_front_cup_arg0, 
+		(prog_void *)&cmd_dump_front_cup_arg1,
 		NULL,
 	},
 };
