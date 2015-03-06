@@ -374,7 +374,6 @@ void state_do_cup_holder_front_mode(void)
  * *************** multiple actuators modes ***********
  */
 
-/*--------------------------------*/
 /* do harvest_popcorns mode */
 void state_do_harvest_popcorns_mode(void)
 {
@@ -505,19 +504,6 @@ void state_do_dump_front_cup_mode(void)
 	/* notice status and update mode*/
 	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
-/*--------------------------------*/
-
-/* do stands system */
-state_do_popcorn_system(void)
-{
-}
-
-/* do stands system */
-state_do_stands_system(void)
-{
-	popcorn_system_manage(&slavedspic.ss[I2C_SIDE_LEFT]);
-	popcorn_system_manage(&slavedspic.ss[I2C_SIDE_RIGHT]);
-}
 
 
 #if 0
@@ -571,9 +557,6 @@ void state_machines(void)
 	//state_do_harvest_popcorns_mode();
 	//state_do_dump_popcorns_mode();
 	//state_do_dump_front_cup();
-
-	state_do_popcorn_system();
-	state_do_stands_system();
 
 #if 0
 	state_do_set_infos();

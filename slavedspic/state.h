@@ -24,12 +24,7 @@
 #ifndef _STATE_H_
 #define _STATE_H_
 
-/* Stands systems */
-/* Stands  */
-/* Stands systems */
-/* Stands systems */
 
-popcorn
 
 /* set a new state, return 0 on success */
 int8_t state_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd);
