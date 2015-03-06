@@ -42,7 +42,7 @@
 
 #include "actuator.h"
 
-#define EUROBOT_2012_BOARD
+//#define EUROBOT_2012_BOARD
 
 #define LED_TOGGLE(port, bit) do {		\
 		if (port & _BV(bit))		\
@@ -71,33 +71,30 @@
 							} while(0)
 
 /* EUROBOT 2012 defines */
-#define LIFT_ENCODER						((void *)1)
-#define LIFT_DAC_MC						((void *)&gen.dac_mc_left)
+#define STANDS_EXCHANGER_ENCODER		((void *)1)
+#define PWM_MC_STANDS_EXCHANGER_MOTOR	((void *)&gen.pwm_mc_mod2_ch1)
 
-#define PWM_MC_BOOT_TRAY				((void *)&gen.pwm_mc_mod2_ch1)
+#define PWM_SERVO_POPCORN_TRAY			&gen.pwm_servo_oc1
+#define PWM_SERVO_STANDS_CLAMP_L		&gen.pwm_servo_oc2
+#define PWM_SERVO_STANDS_CLAMP_R		&gen.pwm_servo_oc3
 
-#define PWM_SERVO_BOOT_DOOR			&gen.pwm_servo_oc2	
+#define AX12_ID_STANDS_TOWER_CLAMPS			2
+#define AX12_ID_STANDS_ELEVATOR_L			8
+#define AX12_ID_STANDS_ELEVATOR_R			9
+#define AX12_ID_STANDS_BLADE_L				6
+#define AX12_ID_STANDS_BLADE_R				7
+#define AX12_ID_CUP_CLAMP_POPCORN_DOOR_L	1
+#define AX12_ID_CUP_CLAMP_POPCORN_DOOR_R	3
+#define AX12_ID_POPCORN_RAMP_L				4
+#define AX12_ID_POPCORN_RAMP_R				5
+#define AX12_ID_CUP_CLAMP_FRONT				0
+#define AX12_ID_CUP_HOLDER_FRONT			10
 
-
-#define AX12_ID_STICK_L		1
-#define AX12_ID_STICK_R		3
-#define AX12_ID_COMB_L		5
-#define AX12_ID_COMB_R		4
-#define AX12_ID_TREE_TRAY	2
-
-#define AX12_ID_SHOULDER	7
-#define AX12_ID_ELBOW		8	
-#define AX12_ID_WRIST		6
-
-
-#if 0
-#define S_TURBINE_LINE_A1	SENSOR5
-#define S_TURBINE_LINE_A2	SENSOR5
-#define S_TURBINE_LINE_B1	SENSOR2
-#define S_TURBINE_LINE_B2	SENSOR1
-#define S_TURBINE_LINE_A 	((1 << S_TURBINE_LINE_A1) & (1 << S_TURBINE_LINE_A2)) /* more close */
-#define S_TURBINE_LINE_B 	((1 << S_TURBINE_LINE_B1) & (1 << S_TURBINE_LINE_B2)) /* more far */
-#endif
+#define S_STAND_INSIDE_L			SENSOR1
+#define S_STAND_INSIDE_R			SENSOR2
+#define S_CUP_FRONT					SENSOR3
+#define S_CUP_REAR					SENSOR4
+#define S_STAND_EXCHANGER_ENDSTOP	SENSOR5
 
 /** ERROR NUMS */
 #define E_USER_I2C_PROTO   195
@@ -167,33 +164,28 @@ struct slavedspic {
 #define DO_POWER     8
 
 	/* control systems */
-  	struct cs_block lift;
+  	struct cs_block stands_exchanger;
 
 	/* actuators */
-	combs_t combs;
-	stick_t stick_r, stick_l;
-	tree_tray_t tree_tray;
-	boot_t boot;
+	stands_blade_t stands_blade_l, stands_blade_r;
+	stands_clamp_t stands_clamp_l, stands_clamp_r;
+	stands_elevator_t stands_elevator_l, stands_elevator_r;
+	stands_tower_clamps_t stands_tower_clamps;
+
+	cup_clamp_popcorn_door_t cup_clamp_popcorn_door;
+	popcorn_tray_t popcorn_tray;
+	popcorn_ramps_t popcorn_ramps;
+	cup_clamp_front_t cup_clamp_front;
+	cup_holder_front_t cup_holder_front;
 
 	/* infos */
 	uint8_t status;
-	uint8_t stick_mode;
-	int8_t stick_offset;
-	uint8_t harvest_fruits_mode;
-	uint8_t dump_fruits_mode;
-	uint8_t arm_mode;
+	uint8_t harvest_popcorns_mode;
+	uint8_t dump_popcorns_mode;
+	uint8_t dump_front_cup_mode;
+//	uint8_t stands_mode;
 
-	int16_t arm_x;
-	int16_t arm_y;
-	int16_t arm_h;
-	int16_t arm_elbow_a;
-	int16_t arm_wrist_a;
-
-	uint8_t arm_level;
-	uint8_t arm_sucker_type;
-	int8_t arm_sucker_angle;
-
-	uint8_t nb_stored_fires;
+	uint8_t nb_stored_stands_l, nb_stored_stands_r;
 
 	/* infos */
 	uint8_t our_color;

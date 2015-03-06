@@ -60,9 +60,9 @@ struct csb_list {
 	struct cs_block *csb;
 };
 
-prog_char csb_distance_str[] = "lift";
+prog_char csb_distance_str[] = "stands_exchanger";
 struct csb_list csb_list[] = {
-	{ .name = csb_distance_str, .csb = &slavedspic.lift },
+	{ .name = csb_distance_str, .csb = &slavedspic.stands_exchanger },
 };
 
 struct cmd_cs_result {
@@ -71,7 +71,7 @@ struct cmd_cs_result {
 };
 
 /* token to be used for all cs-related commands */
-prog_char str_csb_name[] = "lift";
+prog_char str_csb_name[] = "stands_exchanger";
 parse_pgm_token_string_t cmd_csb_name_tok = TOKEN_STRING_INITIALIZER(struct cmd_cs_result, csname, str_csb_name);
 
 struct cs_block *cs_from_name(const char *name)
@@ -273,7 +273,7 @@ parse_pgm_token_num_t cmd_derivate_filter_size = TOKEN_NUM_INITIALIZER(struct cm
 prog_char help_derivate_filter[] = "Set derivate_filter values for PID (in, I, out)";
 parse_pgm_inst_t cmd_derivate_filter = {
 	.f = cmd_derivate_filter_parsed,  /* function to call */
-	.data = (void *)1,      /* 2nd arg of func */
+	.data = NULL,      /* 2nd arg of func */
 	.help_str = help_derivate_filter,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_derivate_filter_arg0, 
@@ -296,7 +296,7 @@ parse_pgm_token_string_t cmd_derivate_filter_show_arg = TOKEN_STRING_INITIALIZER
 prog_char help_derivate_filter_show[] = "Show derivate_filter values for PID";
 parse_pgm_inst_t cmd_derivate_filter_show = {
 	.f = cmd_derivate_filter_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
+	.data = (void *)1,      /* 2nd arg of func */
 	.help_str = help_derivate_filter_show,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_derivate_filter_arg0, 
@@ -673,5 +673,3 @@ parse_pgm_inst_t cmd_blocking_i_show = {
 		NULL,
 	},
 };
-
-

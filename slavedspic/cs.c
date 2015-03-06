@@ -55,11 +55,11 @@ void do_cs(__attribute__((unused)) void *dummy)
 	}
 	/* control system */
 	if (slavedspic.flags & DO_CS) {
-		if (slavedspic.lift.on)
-			cs_manage(&slavedspic.lift.cs);
+		if (slavedspic.stands_exchanger.on)
+			cs_manage(&slavedspic.stands_exchanger.cs);
 	}
 	if (slavedspic.flags & DO_BD) {
-		bd_manage_from_cs(&slavedspic.lift.bd, &slavedspic.lift.cs);
+		bd_manage_from_cs(&slavedspic.stands_exchanger.bd, &slavedspic.stands_exchanger.cs);
 	}
 	if (slavedspic.flags & DO_POWER)
 		BRAKE_OFF();
@@ -99,33 +99,33 @@ void slavedspic_cs_init(void)
 {
 	/* ---- CS */
 	/* PID */
-	pid_init(&slavedspic.lift.pid);
-	pid_set_gains(&slavedspic.lift.pid, 5000, 50, 20000);
-	pid_set_maximums(&slavedspic.lift.pid, 0, 500000, 60000);
-	pid_set_out_shift(&slavedspic.lift.pid, 8);
-	pid_set_derivate_filter(&slavedspic.lift.pid, 1);
+	pid_init(&slavedspic.stands_exchanger.pid);
+	pid_set_gains(&slavedspic.stands_exchanger.pid, 5000, 50, 20000);
+	pid_set_maximums(&slavedspic.stands_exchanger.pid, 0, 500000, 60000);
+	pid_set_out_shift(&slavedspic.stands_exchanger.pid, 8);
+	pid_set_derivate_filter(&slavedspic.stands_exchanger.pid, 1);
 
 	/* QUADRAMP */
-	quadramp_init(&slavedspic.lift.qr);
-	quadramp_set_1st_order_vars(&slavedspic.lift.qr, LIFT_SPEED, LIFT_SPEED); 	/* 4000 set speed */
-	quadramp_set_2nd_order_vars(&slavedspic.lift.qr, LIFT_ACCEL, LIFT_ACCEL); 		/* 10 set accel */
+	quadramp_init(&slavedspic.stands_exchanger.qr);
+	quadramp_set_1st_order_vars(&slavedspic.stands_exchanger.qr, STANDS_EXCHANGER_SPEED, STANDS_EXCHANGER_SPEED); 	/* 4000 set speed */
+	quadramp_set_2nd_order_vars(&slavedspic.stands_exchanger.qr, STANDS_EXCHANGER_ACCEL, STANDS_EXCHANGER_ACCEL); 		/* 10 set accel */
 
 	/* CS */
-	cs_init(&slavedspic.lift.cs);
-	cs_set_consign_filter(&slavedspic.lift.cs, quadramp_do_filter, &slavedspic.lift.qr);
-	cs_set_correct_filter(&slavedspic.lift.cs, pid_do_filter, &slavedspic.lift.pid);
-	cs_set_process_in(&slavedspic.lift.cs, dac_mc_set, LIFT_DAC_MC);
-	cs_set_process_out(&slavedspic.lift.cs, encoders_dspic_get_value, LIFT_ENCODER);
-	cs_set_consign(&slavedspic.lift.cs, 0);
+	cs_init(&slavedspic.stands_exchanger.cs);
+	cs_set_consign_filter(&slavedspic.stands_exchanger.cs, quadramp_do_filter, &slavedspic.stands_exchanger.qr);
+	cs_set_correct_filter(&slavedspic.stands_exchanger.cs, pid_do_filter, &slavedspic.stands_exchanger.pid);
+	cs_set_process_in(&slavedspic.stands_exchanger.cs, pwm_mc_set, PWM_MC_STANDS_EXCHANGER_MOTOR);
+	cs_set_process_out(&slavedspic.stands_exchanger.cs, encoders_dspic_get_value, STANDS_EXCHANGER_ENCODER);
+	cs_set_consign(&slavedspic.stands_exchanger.cs, 0);
 
 	/* Blocking detection */
-	bd_init(&slavedspic.lift.bd);
-	//bd_set_speed_threshold(&slavedspic.lift.bd, 150);
-	//bd_set_current_thresholds(&slavedspic.lift.bd, 500, 8000, 1000000, 40);
-	bd_set_speed_threshold(&slavedspic.lift.bd, 100);
-	bd_set_current_thresholds(&slavedspic.lift.bd, 20, 8000, 1000000, 50);
+	bd_init(&slavedspic.stands_exchanger.bd);
+	//bd_set_speed_threshold(&slavedspic.stands_exchanger.bd, 150);
+	//bd_set_current_thresholds(&slavedspic.stands_exchanger.bd, 500, 8000, 1000000, 40);
+	bd_set_speed_threshold(&slavedspic.stands_exchanger.bd, 100);
+	bd_set_current_thresholds(&slavedspic.stands_exchanger.bd, 20, 8000, 1000000, 50);
 
 
 	/* set on!! */
-	slavedspic.lift.on = 1;
+	slavedspic.stands_exchanger.on = 1;
 }
