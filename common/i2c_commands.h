@@ -212,9 +212,6 @@ struct i2c_cmd_slavedspic_set_mode {
 			int8_t offset;
 		} cup_holder_front;
 
-
-
-/*--------------------------------------*/
 		struct {
 			uint8_t mode;
 #define I2C_SLAVEDSPIC_MODE_HARVEST_POPCORNS_READY	1
@@ -235,42 +232,6 @@ struct i2c_cmd_slavedspic_set_mode {
 #define I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP_PULL_DOWN	3
 #define I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP_DROP			4
 		} dump_front_cup;
-/*--------------------------------------*/
-
-
-
-		struct {
-			uint8_t mode;
-#define I2C_SLAVEDSPIC_MODE_PS_IDLE							0
-
-#define I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_CATCH_AND_DROP		10
-#define I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_RELEASE			11
-
-#define I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_CATCH				20
-#define I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_RELEASE				21
-
-#define I2C_SLAVEDSPIC_MODE_PS_MACHINES_READY				30
-#define I2C_SLAVEDSPIC_MODE_PS_MACHINES_HARVEST				31
-#define I2C_SLAVEDSPIC_MODE_PS_MACHINES_END					32
-
-#define I2C_SLAVEDSPIC_MODE_PS_STOCK_DROP					40
-#define I2C_SLAVEDSPIC_MODE_PS_STOCK_END					41
-
-		} popcorn_system;
-
-		struct {
-			uint8_t mode;
-#define I2C_SLAVEDSPIC_MODE_SS_IDLE					0
-
-#define I2C_SLAVEDSPIC_MODE_SS_HIDE					10
-#define I2C_SLAVEDSPIC_MODE_SS_HARVESTING			11
-#define I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT		12
-#define I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT	13
-
-			uint8_t side;
-			uint8_t blade_angle;
-
-		} stands_system;
 
 		/* add more here */
 	};
