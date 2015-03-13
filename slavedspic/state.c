@@ -71,9 +71,8 @@
 #define CUP_CLAMP_FRONT			I2C_SLAVEDSPIC_MODE_CUP_CLAMP_FRONT
 #define CUP_HOLDER_FRONT		I2C_SLAVEDSPIC_MODE_CUP_HOLDER_FRONT
 
-#define HARVEST_POPCORNS 		I2C_SLAVEDSPIC_MODE_HARVEST_POPCORNS
-#define DUMP_POPCORNS			I2C_SLAVEDSPIC_MODE_DUMP_POPCORNS
-#define DUMP_FRONT_CUP			I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP
+#define POPCORN_SYSTEM 			I2C_SLAVEDSPIC_MODE_POPCORN_SYSTEM
+#define STANDS_SYSTEM			I2C_SLAVEDSPIC_MODE_STANDS_SYSTEM
 
 
 
@@ -373,7 +372,7 @@ void state_do_cup_holder_front_mode(void)
 /**
  * *************** multiple actuators modes ***********
  */
-
+#if 0
 /*--------------------------------*/
 /* do harvest_popcorns mode */
 void state_do_harvest_popcorns_mode(void)
@@ -506,17 +505,27 @@ void state_do_dump_front_cup_mode(void)
 	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 /*--------------------------------*/
+#endif
 
-/* do stands system */
-state_do_popcorn_system(void)
+/* do popcorn_system */
+void popcorn_system_manage(popcorn_system_t *popcorn_system)
 {
 }
 
-/* do stands system */
-state_do_stands_system(void)
+void state_do_popcorn_system(void)
 {
-	popcorn_system_manage(&slavedspic.ss[I2C_SIDE_LEFT]);
-	popcorn_system_manage(&slavedspic.ss[I2C_SIDE_RIGHT]);
+	popcorn_system_manage(&slavedspic.ps);
+}
+
+/* do stands_system */
+void stands_system_manage(stands_system_t *stands_system)
+{
+}
+
+void state_do_stands_system(void)
+{
+	stands_system_manage(&slavedspic.ss[I2C_SIDE_LEFT]);
+	stands_system_manage(&slavedspic.ss[I2C_SIDE_RIGHT]);
 }
 
 
@@ -568,9 +577,6 @@ void state_machines(void)
 	state_do_cup_holder_front_mode();
 
 	/* multiple actuators modes */
-	//state_do_harvest_popcorns_mode();
-	//state_do_dump_popcorns_mode();
-	//state_do_dump_front_cup();
 
 	state_do_popcorn_system();
 	state_do_stands_system();
@@ -588,7 +594,7 @@ void state_init(void)
 	pwm_servo_enable();
 
 	/* enable ax12 torque */
-	//ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_TORQUE_ENABLE, 0xFF);
+	ax12_user_write_byte(&gen.ax12, AX12_BROADCAST_ID, AA_TORQUE_ENABLE, 0xFF);
 
 	/* start positions */
 
@@ -613,7 +619,11 @@ void state_init(void)
 	cup_holder_front_set_mode(&slavedspic.cup_holder_front, CUP_HOLDER_FRONT_MODE_HIDE, 0);
 
 	BRAKE_OFF();
-	//slavedspic.stands_exchanger.on = 1;
-	//stands_exchanger_calibrate();
+	slavedspic.stands_exchanger.on = 1;
+	stands_exchanger_calibrate();
+
+	/* systems init */
+//	popcorn_system_init(&slavedspic.ps, S_CUP_FRONT, S_CUP_REAR);
+//	stands_system_init(&slavedspic.ss, S_STAND_INSIDE_L, S_STAND_INSIDE_R);
 }
 

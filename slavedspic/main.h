@@ -41,6 +41,7 @@
 #include <blocking_detection_manager.h>
 
 #include "actuator.h"
+#include "state.h"
 
 //#define EUROBOT_2012_BOARD
 
@@ -178,14 +179,12 @@ struct slavedspic {
 	cup_clamp_front_t cup_clamp_front;
 	cup_holder_front_t cup_holder_front;
 
+	/* systems */
+	popcorn_system_t ps;
+	stands_system_t ss[2];
+
 	/* infos */
 	uint8_t status;
-	uint8_t harvest_popcorns_mode;
-	uint8_t dump_popcorns_mode;
-	uint8_t dump_front_cup_mode;
-//	uint8_t stands_mode;
-
-	uint8_t nb_stored_stands_l, nb_stored_stands_r;
 
 	/* infos */
 	uint8_t our_color;
