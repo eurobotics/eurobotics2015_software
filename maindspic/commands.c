@@ -284,15 +284,6 @@ parse_pgm_ctx_t main_ctx[] = {
     (parse_pgm_inst_t *) & cmd_sleep,
 #endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
 
-
-    (parse_pgm_inst_t *) & cmd_boot,
-    (parse_pgm_inst_t *) & cmd_combs,
-    (parse_pgm_inst_t *) & cmd_tree_tray,
-    (parse_pgm_inst_t *) & cmd_stick,
-
-    (parse_pgm_inst_t *) & cmd_harvest_fruits,
-    (parse_pgm_inst_t *) & cmd_dump_fruits,
-
     (parse_pgm_inst_t *) & cmd_update_zones,
 
     /* TODO 2014*/
