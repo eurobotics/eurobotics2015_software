@@ -423,16 +423,17 @@ void recalculate_priorities(void);
 
 /* tracking of zones where opp has been working */
 void strat_opp_tracking (void);
-/* Sets of  strategies for secondary robot*/
 
+
+/* Sets of  strategies for secondary robot*/
 void set_strat_sec_1(void);
 void set_strat_sec_2(void);
 void set_strat_sec_3(void);
 void set_strat_main_1(void);
 void set_next_sec_strategy(void);
+
 /* homologation */
 void strat_homologation(void);
-
 void strat_initial_move(void);
 
 #else /* HOST_VERSION_OA_TEST */

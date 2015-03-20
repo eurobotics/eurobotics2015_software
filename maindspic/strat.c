@@ -176,7 +176,7 @@ void strat_set_bounding_box(uint8_t type)
                 strat_infos.area_bbox.y1,
                 strat_infos.area_bbox.x2,
                 strat_infos.area_bbox.y2);
-
+software% 
 #ifdef HOST_VERSION_OA_TEST
 
   printf("boundingbox at: %d %d %d %d\n", 
@@ -194,7 +194,6 @@ void strat_preinit(void)
 {
     time_reset();
     interrupt_traj_reset();
-    //mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BEACON | DO_ROBOT_2ND;
     mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BEACON;
 
     /* XXX default conf */
@@ -289,12 +288,10 @@ void strat_init(void)
     interrupt_traj_reset();
 
     /* init other devices (lasers...) */
-    i2c_slavedspic_mode_init();
+    //i2c_slavedspic_mode_init();
 
     /* used in strat_base for END_TIMER */
-    //mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BEACON | DO_ROBOT_2ND;
     mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BEACON;
-
 }
 
 
@@ -317,14 +314,14 @@ void strat_exit(void)
     dac_mc_set(RIGHT_MOTOR, 0);
 #endif
 
-    /* stop beacon */
-    /* TODO beacon_cmd_beacon_off(); */
+    /* TODO stop beacon */
+    /* beacon_cmd_beacon_off(); */
 
-    /* slavespic exit TODO 2014 */
+    /* TODO slavespic exit */
     //i2c_slavedspic_mode_turbine_blow(0);
     //i2c_slavedspic_wait_ready();
 
-    /* turn off other devices (lasers...) */
+    /* TODO turn off other devices (lasers...) */
 
     /* TODO stop beacon
     beacon_cmd_beacon_off();
@@ -374,6 +371,8 @@ void strat_event(void *dummy)
 uint8_t strat_main(void)
 {
     uint8_t err, i;
+
+
     strat_begin();
     strat_limit_speed_enable ();
 	
