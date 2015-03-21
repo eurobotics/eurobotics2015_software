@@ -433,13 +433,20 @@ int8_t stands_clamp_set_mode(stands_clamp_t *stands_clamp, uint8_t mode, int16_t
 
 
 /**** stands_tower_clamps functions *********************************************************/
-uint16_t stands_tower_clamps_ax12_pos [STANDS_TOWER_CLAMPS_MODE_MAX] = {
-	[STANDS_TOWER_CLAMPS_MODE_UNLOCK_LEFT] 		= POS_STANDS_TOWER_CLAMPS_UNLOCK_LEFT, 
-	[STANDS_TOWER_CLAMPS_MODE_LOCK] 			= POS_STANDS_TOWER_CLAMPS_LOCK, 
-	[STANDS_TOWER_CLAMPS_MODE_UNLOCK_RIGHT] 	= POS_STANDS_TOWER_CLAMPS_UNLOCK_RIGHT 
+uint16_t stands_tower_clamps_up_ax12_pos [STANDS_TOWER_CLAMPS_MODE_MAX] = {
+	[STANDS_TOWER_CLAMPS_MODE_UNLOCK_LEFT] 	= POS_STANDS_TOWER_CLAMPS_UP_UNLOCK_LEFT, 
+	[STANDS_TOWER_CLAMPS_MODE_LOCK] 		= POS_STANDS_TOWER_CLAMPS_UP_LOCK, 
+	[STANDS_TOWER_CLAMPS_MODE_UNLOCK_RIGHT] = POS_STANDS_TOWER_CLAMPS_UP_UNLOCK_RIGHT
+}; 
+
+uint16_t stands_tower_clamps_down_ax12_pos [STANDS_TOWER_CLAMPS_MODE_MAX] = {
+	[STANDS_TOWER_CLAMPS_MODE_UNLOCK_LEFT] 	= POS_STANDS_TOWER_CLAMPS_DOWN_UNLOCK_LEFT, 
+	[STANDS_TOWER_CLAMPS_MODE_LOCK] 		= POS_STANDS_TOWER_CLAMPS_DOWN_LOCK, 
+	[STANDS_TOWER_CLAMPS_MODE_UNLOCK_RIGHT] = POS_STANDS_TOWER_CLAMPS_DOWN_UNLOCK_RIGHT 
 };
 
-struct ax12_traj ax12_stands_tower_clamps = { .id = AX12_ID_STANDS_TOWER_CLAMPS, .zero_offset_pos = 0 };
+struct ax12_traj ax12_stands_tower_clamps_up = { .id = AX12_ID_STANDS_TOWER_CLAMPS_UP, .zero_offset_pos = 0 };
+struct ax12_traj ax12_stands_tower_clamps_down = { .id = AX12_ID_STANDS_TOWER_CLAMPS_DOWN, .zero_offset_pos = 0 };
 
 /* set stands_tower_clamps position depends on mode */
 int8_t stands_tower_clamps_set_mode(stands_tower_clamps_t *stands_tower_clamps, uint8_t mode, int16_t pos_offset)
@@ -452,38 +459,47 @@ int8_t stands_tower_clamps_set_mode(stands_tower_clamps_t *stands_tower_clamps, 
 
 	/* ax12 positions */
 	stands_tower_clamps->mode = mode;
-	stands_tower_clamps->ax12_pos = stands_tower_clamps_ax12_pos[stands_tower_clamps->mode] + pos_offset;
+	stands_tower_clamps->ax12_pos_up = stands_tower_clamps_up_ax12_pos[stands_tower_clamps->mode] + pos_offset;
+	stands_tower_clamps->ax12_pos_down = stands_tower_clamps_down_ax12_pos[stands_tower_clamps->mode] + pos_offset;
 
 	/* saturate to position range */
-	if(stands_tower_clamps->ax12_pos > stands_tower_clamps_ax12_pos[STANDS_TOWER_CLAMPS_MODE_POS_MAX])
-		stands_tower_clamps->ax12_pos = stands_tower_clamps_ax12_pos[STANDS_TOWER_CLAMPS_MODE_POS_MAX];
-	else if(stands_tower_clamps->ax12_pos < stands_tower_clamps_ax12_pos[STANDS_TOWER_CLAMPS_MODE_POS_MIN])
-		stands_tower_clamps->ax12_pos = stands_tower_clamps_ax12_pos[STANDS_TOWER_CLAMPS_MODE_POS_MIN];
+	if(stands_tower_clamps->ax12_pos_up > stands_tower_clamps_up_ax12_pos[STANDS_TOWER_CLAMPS_MODE_UP_POS_MAX])
+		stands_tower_clamps->ax12_pos_up = stands_tower_clamps_up_ax12_pos[STANDS_TOWER_CLAMPS_MODE_UP_POS_MAX];
+	else if(stands_tower_clamps->ax12_pos_up < stands_tower_clamps_up_ax12_pos[STANDS_TOWER_CLAMPS_MODE_UP_POS_MIN])
+		stands_tower_clamps->ax12_pos_up = stands_tower_clamps_up_ax12_pos[STANDS_TOWER_CLAMPS_MODE_UP_POS_MIN];
+
+	if(stands_tower_clamps->ax12_pos_down > stands_tower_clamps_down_ax12_pos[STANDS_TOWER_CLAMPS_MODE_DOWN_POS_MAX])
+		stands_tower_clamps->ax12_pos_down = stands_tower_clamps_down_ax12_pos[STANDS_TOWER_CLAMPS_MODE_DOWN_POS_MAX];
+	else if(stands_tower_clamps->ax12_pos_down < stands_tower_clamps_down_ax12_pos[STANDS_TOWER_CLAMPS_MODE_DOWN_POS_MIN])
+		stands_tower_clamps->ax12_pos_down = stands_tower_clamps_down_ax12_pos[STANDS_TOWER_CLAMPS_MODE_DOWN_POS_MIN];
 
 	/* apply to ax12 */
-    ax12_set_pos(&ax12_stands_tower_clamps, stands_tower_clamps->ax12_pos);
+    ax12_set_pos(&ax12_stands_tower_clamps_up, stands_tower_clamps->ax12_pos_up);
+    ax12_set_pos(&ax12_stands_tower_clamps_down, stands_tower_clamps->ax12_pos_down);
 
 	return 0;
 }
 
-/* return stands_tower_clamps */
+/* return stands_tower_clamps traj flag */
 uint8_t stands_tower_clamps_test_traj_end(stands_tower_clamps_t *stands_tower_clamps)
 {
-    uint8_t ret;
+    uint8_t ret_up, ret_down;
    
-    ret = ax12_test_traj_end (&ax12_stands_tower_clamps, END_TRAJ|END_TIME);
+   	ret_up = ax12_test_traj_end (&ax12_stands_tower_clamps_up, END_TRAJ|END_TIME);
+   	ret_down = ax12_test_traj_end (&ax12_stands_tower_clamps_down, END_TRAJ|END_TIME);
 
-    return ret;
+    return (ret_up | ret_down);
 }
 
 /* return END_TRAJ or END_TIMER */
 uint8_t stands_tower_clamps_wait_end(stands_tower_clamps_t *stands_tower_clamps)
 {
-    uint8_t ret;
+    uint8_t ret_up, ret_down;
    
-    ret = ax12_wait_traj_end (&ax12_stands_tower_clamps, END_TRAJ|END_TIME);
+   	ret_up = ax12_wait_traj_end (&ax12_stands_tower_clamps_up, END_TRAJ|END_TIME);
+   	ret_down = ax12_wait_traj_end (&ax12_stands_tower_clamps_down, END_TRAJ|END_TIME);
 
-    return ret;
+    return (ret_up | ret_down);
 }
 
 
@@ -568,22 +584,22 @@ uint8_t stands_elevator_wait_end(stands_elevator_t *stands_elevator)
 
 
 /**** stands_blade functions *********************************************************/
-uint16_t stands_blade_ax12_pos[STANDS_BLADE_TYPE_MAX][STANDS_BLADE_MODE_MAX] = {
-	[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_HIDE_LEFT] 			= POS_STANDS_BLADE_L_HIDE_LEFT,
-	[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_PUSH_STAND_LEFT] 	= POS_STANDS_BLADE_L_PUSH_STAND_LEFT,
-	[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_CENTER] 				= POS_STANDS_BLADE_L_CENTER,
-	[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_PUSH_STAND_RIGHT] 	= POS_STANDS_BLADE_L_PUSH_STAND_RIGHT,
-	[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_HIDE_RIGHT] 			= POS_STANDS_BLADE_L_HIDE_RIGHT,
+uint16_t stands_blade_ax12_ang[STANDS_BLADE_TYPE_MAX][STANDS_BLADE_MODE_MAX] = {
+	[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_HIDE_LEFT] 			= ANG_STANDS_BLADE_L_HIDE_LEFT,
+	[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_PUSH_STAND_LEFT] 	= ANG_STANDS_BLADE_L_PUSH_STAND_LEFT,
+	[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_CENTER] 				= ANG_STANDS_BLADE_L_CENTER,
+	[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_PUSH_STAND_RIGHT] 	= ANG_STANDS_BLADE_L_PUSH_STAND_RIGHT,
+	[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_HIDE_RIGHT] 			= ANG_STANDS_BLADE_L_HIDE_RIGHT,
 
-	[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_HIDE_LEFT] 			= POS_STANDS_BLADE_R_HIDE_LEFT,
-	[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_PUSH_STAND_LEFT] 	= POS_STANDS_BLADE_R_PUSH_STAND_LEFT,
-	[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_CENTER] 			= POS_STANDS_BLADE_R_CENTER,
-	[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_PUSH_STAND_RIGHT] 	= POS_STANDS_BLADE_R_PUSH_STAND_RIGHT,
-	[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_HIDE_RIGHT] 		= POS_STANDS_BLADE_R_HIDE_RIGHT
+	[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_HIDE_LEFT] 			= ANG_STANDS_BLADE_R_HIDE_LEFT,
+	[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_PUSH_STAND_LEFT] 	= ANG_STANDS_BLADE_R_PUSH_STAND_LEFT,
+	[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_CENTER] 			= ANG_STANDS_BLADE_R_CENTER,
+	[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_PUSH_STAND_RIGHT] 	= ANG_STANDS_BLADE_R_PUSH_STAND_RIGHT,
+	[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_HIDE_RIGHT] 		= ANG_STANDS_BLADE_R_HIDE_RIGHT
 };
 
-struct ax12_traj ax12_stands_blade_l = { .id = AX12_ID_STANDS_BLADE_L, .zero_offset_pos = 0 };
-struct ax12_traj ax12_stands_blade_r = { .id = AX12_ID_STANDS_BLADE_R, .zero_offset_pos = 0 };
+struct ax12_traj ax12_stands_blade_l = { .id = AX12_ID_STANDS_BLADE_L, .zero_offset_pos = POS_OFFSET_STANDS_BLADE_L };
+struct ax12_traj ax12_stands_blade_r = { .id = AX12_ID_STANDS_BLADE_R, .zero_offset_pos = POS_OFFSET_STANDS_BLADE_R };
 
 /* set stands_blade position depends on mode*/
 int8_t stands_blade_set_mode(stands_blade_t *stands_blade, uint8_t mode, int16_t pos_offset)
@@ -595,27 +611,27 @@ int8_t stands_blade_set_mode(stands_blade_t *stands_blade, uint8_t mode, int16_t
 	}
 
 	stands_blade->mode = mode;
-	stands_blade->ax12_pos = stands_blade_ax12_pos[stands_blade->type][stands_blade->mode] + pos_offset;
+	stands_blade->ax12_ang = stands_blade_ax12_ang[stands_blade->type][stands_blade->mode] + pos_offset;
 
-	/* saturate to position range */
+	/* saturate to angle range */
 	if(stands_blade->type == STANDS_BLADE_TYPE_LEFT) {
-		if(stands_blade->ax12_pos > stands_blade_ax12_pos[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_L_POS_MAX])
-			stands_blade->ax12_pos = stands_blade_ax12_pos[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_L_POS_MAX];
-		else if(stands_blade->ax12_pos < stands_blade_ax12_pos[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_L_POS_MIN])
-			stands_blade->ax12_pos = stands_blade_ax12_pos[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_L_POS_MIN];
+		if(stands_blade->ax12_ang > stands_blade_ax12_ang[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_L_ANG_MAX])
+			stands_blade->ax12_ang = stands_blade_ax12_ang[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_L_ANG_MAX];
+		else if(stands_blade->ax12_ang < stands_blade_ax12_ang[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_L_ANG_MIN])
+			stands_blade->ax12_ang = stands_blade_ax12_ang[STANDS_BLADE_TYPE_LEFT][STANDS_BLADE_MODE_L_ANG_MIN];
 	} 
 	else if(stands_blade->type == STANDS_BLADE_TYPE_RIGHT) {
-		if(stands_blade->ax12_pos > stands_blade_ax12_pos[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_R_POS_MAX])
-			stands_blade->ax12_pos = stands_blade_ax12_pos[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_R_POS_MAX];
-		else if(stands_blade->ax12_pos < stands_blade_ax12_pos[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_R_POS_MIN])
-			stands_blade->ax12_pos = stands_blade_ax12_pos[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_R_POS_MIN];
+		if(stands_blade->ax12_ang > stands_blade_ax12_ang[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_R_ANG_MAX])
+			stands_blade->ax12_ang = stands_blade_ax12_ang[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_R_ANG_MAX];
+		else if(stands_blade->ax12_ang < stands_blade_ax12_ang[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_R_ANG_MIN])
+			stands_blade->ax12_ang = stands_blade_ax12_ang[STANDS_BLADE_TYPE_RIGHT][STANDS_BLADE_MODE_R_ANG_MIN];
 	} 
 
 	/* apply to ax12 */
 	if(stands_blade->type == STANDS_BLADE_TYPE_LEFT)
-    	ax12_set_pos(&ax12_stands_blade_l, stands_blade->ax12_pos);
+    	ax12_set_a(&ax12_stands_blade_l, stands_blade->ax12_ang);
 	else if(stands_blade->type == STANDS_BLADE_TYPE_RIGHT)
-    	ax12_set_pos(&ax12_stands_blade_r, stands_blade->ax12_pos);
+    	ax12_set_a(&ax12_stands_blade_r, stands_blade->ax12_ang);
 
 	return 0;
 }

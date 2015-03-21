@@ -128,15 +128,15 @@ void i2c_read_event(uint8_t cmd_byte, uint8_t *buf)
          /* XXX syncronized with maindspic */
 
 			/* infos */
-			(*cmd).popcorn_system.state = slavedspic.ps.state;
+			(*cmd).popcorn_system.mode = slavedspic.ps.mode;
 			(*cmd).popcorn_system.cup_front_catched = slavedspic.ps.cup_front_catched;
 			(*cmd).popcorn_system.cup_rear_catched = slavedspic.ps.cup_rear_catched;
 			(*cmd).popcorn_system.machine_popcorns_catched = slavedspic.ps.machine_popcorns_catched;
 
-			(*cmd).stands_system[I2C_SIDE_LEFT].state = slavedspic.ss[I2C_SIDE_LEFT].state;
+			(*cmd).stands_system[I2C_SIDE_LEFT].mode = slavedspic.ss[I2C_SIDE_LEFT].mode;
 			(*cmd).stands_system[I2C_SIDE_LEFT].stored_stands = slavedspic.ss[I2C_SIDE_LEFT].stored_stands;
 
-			(*cmd).stands_system[I2C_SIDE_RIGHT].state = slavedspic.ss[I2C_SIDE_RIGHT].state;
+			(*cmd).stands_system[I2C_SIDE_RIGHT].mode = slavedspic.ss[I2C_SIDE_RIGHT].mode;
 			(*cmd).stands_system[I2C_SIDE_RIGHT].stored_stands = slavedspic.ss[I2C_SIDE_RIGHT].stored_stands;
 
 			/* XXX watchdog time */

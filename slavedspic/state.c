@@ -372,144 +372,62 @@ void state_do_cup_holder_front_mode(void)
 /**
  * *************** multiple actuators modes ***********
  */
-#if 0
-/*--------------------------------*/
-/* do harvest_popcorns mode */
-void state_do_harvest_popcorns_mode(void)
-{
-	uint8_t err = 0;
-
-	if (!state_check_update(HARVEST_POPCORNS))
-		return;
-
-	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
-
-	/* notice status and update mode*/
-	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
-	slavedspic.harvest_popcorns_mode = mainboard_command.harvest_popcorns.mode;
-
-	switch(slavedspic.harvest_popcorns_mode)
-	{
-		case I2C_SLAVEDSPIC_MODE_HARVEST_POPCORNS_READY:
-
-			popcorn_tray_set_mode(&slavedspic.popcorn_tray, POPCORN_TRAY_MODE_OPEN, 0);
-			popcorn_ramps_set_mode(&slavedspic.popcorn_ramps, POPCORN_RAMPS_MODE_OPEN, 0);
-			
-			err = popcorn_ramps_wait_end(&slavedspic.popcorn_ramps);
-			if(err & END_BLOCKING)
-				break;
-
-			break;
-
-		case I2C_SLAVEDSPIC_MODE_HARVEST_POPCORNS_DO:
-
-			/* new speed */
-			popcorn_ramps_set_mode(&slavedspic.popcorn_ramps, POPCORN_RAMPS_MODE_HARVEST, 0);
-
-			err = popcorn_ramps_wait_end(&slavedspic.popcorn_ramps);
-			if(err & END_BLOCKING)
-				break;
-
-			break;
-
-		case I2C_SLAVEDSPIC_MODE_HARVEST_POPCORNS_END:
-
-			popcorn_ramps_set_mode(&slavedspic.popcorn_ramps, POPCORN_RAMPS_MODE_HIDE, 0);
-
-			popcorn_tray_set_mode(&slavedspic.popcorn_tray, POPCORN_TRAY_MODE_CLOSE, 0);
-
-			err = popcorn_ramps_wait_end(&slavedspic.popcorn_ramps);
-			if(err & END_BLOCKING)
-				break;
-
-			break;
-
-		default:
-			break;
-	}
-
-	if(err & END_BLOCKING)
-		STMCH_DEBUG("HARVEST_POPCORNS mode ends with BLOCKING");
-
-	/* notice status and update mode*/
-	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
-}
-
-
-/* do dump_popcorns mode */
-void state_do_dump_popcorns_mode(void)
-{
-	if (!state_check_update(DUMP_POPCORNS))
-		return;
-
-	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
-
-	/* notice status and update mode*/
-	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
-	slavedspic.dump_popcorns_mode = mainboard_command.dump_popcorns.mode;
-
-	switch(slavedspic.dump_popcorns_mode)
-	{
-		case I2C_SLAVEDSPIC_MODE_DUMP_POPCORNS_DO:
-			cup_clamp_popcorn_door_set_mode (&slavedspic.cup_clamp_popcorn_door, POPCORN_DOOR_MODE_OPEN, 0);
-			break;
-
-		case I2C_SLAVEDSPIC_MODE_DUMP_POPCORNS_END:
-			cup_clamp_popcorn_door_set_mode (&slavedspic.cup_clamp_popcorn_door, CUP_CLAMP_MODE_OPEN, 0);
-			break;
-
-		default:
-			break;
-	}
-
-	/* notice status and update mode*/
-	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
-}
-
-
-/* do dump_front_cup mode */
-void state_do_dump_front_cup_mode(void)
-{
-	if (!state_check_update(DUMP_FRONT_CUP))
-		return;
-
-	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
-
-	/* notice status and update mode*/
-	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
-	slavedspic.dump_front_cup_mode = mainboard_command.dump_front_cup.mode;
-
-	switch(slavedspic.dump_front_cup_mode)
-	{
-		case I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP_CATCH:
-		case I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP_PULL_DOWN:
-			cup_clamp_front_set_mode (&slavedspic.cup_clamp_front, CUP_CLAMP_FRONT_MODE_CUP_LOCKED, 0);
-			cup_holder_front_set_mode (&slavedspic.cup_holder_front, CUP_HOLDER_FRONT_MODE_HIDE, 0);
-			break;
-
-		case I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP_PULL_UP:
-			cup_clamp_front_set_mode (&slavedspic.cup_clamp_front, CUP_CLAMP_FRONT_MODE_HIDE, 0);
-			cup_holder_front_set_mode (&slavedspic.cup_holder_front, CUP_HOLDER_FRONT_MODE_CUP_HOLD, 0);
-			break;
-
-		case I2C_SLAVEDSPIC_MODE_DUMP_FRONT_CUP_DROP:
-			cup_clamp_front_set_mode (&slavedspic.cup_clamp_front, CUP_CLAMP_FRONT_MODE_HIDE, 0);
-			cup_holder_front_set_mode (&slavedspic.cup_holder_front, CUP_HOLDER_FRONT_MODE_HIDE, 0);
-			break;
-
-		default:
-			break;
-	}
-
-	/* notice status and update mode*/
-	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
-}
-/*--------------------------------*/
-#endif
 
 /* do popcorn_system */
-void popcorn_system_manage(popcorn_system_t *popcorn_system)
+void popcorn_system_init(popcorn_system_t *ps, uint8_t cup_front_sensor, uint8_t cup_rear_sensor)
 {
+	ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
+	ps->mode_changed = 0;
+	ps->mode_rqst = 0;
+	ps->cup_front_catched = 0;
+	ps->cup_rear_catched = 0;
+	ps->machine_popcorns_catched = 0;
+}
+
+void popcorn_system_manage(popcorn_system_t *ps)
+{
+	/* update mode */
+	if(ps->mode_changed){
+		ps->mode_changed = 0;
+		ps->mode = ps->mode_rqst;
+//		ps->state = 0;
+		STMCH_DEBUG("%s mode=%d", __FUNCTION__, ps->mode);
+	}
+
+	switch(ps->mode)
+	{
+		case I2C_SLAVEDSPIC_MODE_PS_IDLE:
+
+			break;
+		case I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_CATCH_AND_DROP:
+
+			break;
+		case I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_RELEASE:
+
+			break;
+		case I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_CATCH:
+
+			break;
+		case I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_RELEASE:
+
+			break;
+		case I2C_SLAVEDSPIC_MODE_PS_MACHINES_READY:
+
+			break;
+		case I2C_SLAVEDSPIC_MODE_PS_MACHINES_HARVEST:
+
+			break;
+		case I2C_SLAVEDSPIC_MODE_PS_MACHINES_END:
+
+			break;
+		case I2C_SLAVEDSPIC_MODE_PS_STOCK_DROP:
+
+			break;
+		case I2C_SLAVEDSPIC_MODE_PS_STOCK_END:
+
+			break;
+	}
+
 }
 
 void state_do_popcorn_system(void)
@@ -518,14 +436,53 @@ void state_do_popcorn_system(void)
 }
 
 /* do stands_system */
-void stands_system_manage(stands_system_t *stands_system)
+void stands_system_init(stands_system_t *ss, uint8_t stand_sensor, stands_blade_t *blade, stands_clamp_t *clamp, stands_elevator_t *elevator)
 {
+	ss->mode = I2C_SLAVEDSPIC_MODE_SS_IDLE;
+	ss->mode_changed = 0;
+	ss->mode_rqst = 0;
+	ss->stored_stands = 0;
+	ss->stand_sensor = stand_sensor;
+	ss->blade = blade;
+	ss->clamp = clamp;
+	ss->elevator = elevator;
 }
 
-void state_do_stands_system(void)
+void stands_system_manage(stands_system_t *ss, stands_system_t *ss_slave)
 {
-	stands_system_manage(&slavedspic.ss[I2C_SIDE_LEFT]);
-	stands_system_manage(&slavedspic.ss[I2C_SIDE_RIGHT]);
+	/* update mode */
+	if(ss->mode_changed){
+		ss->mode_changed = 0;
+		ss->mode = ss->mode_rqst;
+		ss->mode = 0;
+		STMCH_DEBUG("%s mode=%d", __FUNCTION__, ss->mode);
+	}
+
+	switch(ss->mode)
+	{
+		case I2C_SLAVEDSPIC_MODE_SS_IDLE:
+
+			break;
+		case I2C_SLAVEDSPIC_MODE_SS_HIDE:
+
+			break;
+		case I2C_SLAVEDSPIC_MODE_SS_HARVESTING:
+
+			break;
+		case I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT:
+
+			break;
+		case I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT:
+
+			break;
+	}
+
+}
+
+void state_do_stands_systems(void)
+{
+	stands_system_manage(&slavedspic.ss[I2C_SIDE_LEFT], &slavedspic.ss[I2C_SIDE_RIGHT]);
+	stands_system_manage(&slavedspic.ss[I2C_SIDE_RIGHT], &slavedspic.ss[I2C_SIDE_LEFT]);
 }
 
 
@@ -577,9 +534,8 @@ void state_machines(void)
 	state_do_cup_holder_front_mode();
 
 	/* multiple actuators modes */
-
 	state_do_popcorn_system();
-	state_do_stands_system();
+	state_do_stands_systems();
 
 #if 0
 	state_do_set_infos();
@@ -619,11 +575,12 @@ void state_init(void)
 	cup_holder_front_set_mode(&slavedspic.cup_holder_front, CUP_HOLDER_FRONT_MODE_HIDE, 0);
 
 	BRAKE_OFF();
-	slavedspic.stands_exchanger.on = 1;
-	stands_exchanger_calibrate();
+	//slavedspic.stands_exchanger.on = 1;
+	//stands_exchanger_calibrate();
 
 	/* systems init */
-//	popcorn_system_init(&slavedspic.ps, S_CUP_FRONT, S_CUP_REAR);
-//	stands_system_init(&slavedspic.ss, S_STAND_INSIDE_L, S_STAND_INSIDE_R);
+	popcorn_system_init(&slavedspic.ps, S_CUP_FRONT, S_CUP_REAR);
+	stands_system_init(&slavedspic.ss[I2C_SIDE_LEFT], S_STAND_INSIDE_L, &slavedspic.stands_blade_l, &slavedspic.stands_clamp_l, &slavedspic.stands_elevator_l);
+	stands_system_init(&slavedspic.ss[I2C_SIDE_RIGHT], S_STAND_INSIDE_R, &slavedspic.stands_blade_r, &slavedspic.stands_clamp_r, &slavedspic.stands_elevator_r);
 }
 
