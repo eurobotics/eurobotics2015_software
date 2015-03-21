@@ -77,14 +77,14 @@ struct i2c_slavedspic_status{
     
 	/* systems */
 	struct {
-		uint8_t state;
+		uint8_t mode;
 		uint8_t cup_front_catched;
 		uint8_t cup_rear_catched;
 		uint8_t machine_popcorns_catched;
 	}popcorn_system;
 
 	struct {
-		uint8_t state;
+		uint8_t mode;
 		uint8_t stored_stands;
 	}stands_system[I2C_SIDE_ALL];
 };

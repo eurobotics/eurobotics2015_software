@@ -24,57 +24,38 @@
 #ifndef _STATE_H_
 #define _STATE_H_
 
+#include "../common/i2c_commands.h"
+#include "actuator.h"
 
 /* popcorn_system */
 typedef struct {
-#define PS_STATE_IDLE							0
-
-#define PS_STATE_CUP_FRONT_CATCH_AND_DROP		10
-#define PS_STATE_CUP_FRONT_RELEASE				11
-
-#define PS_STATE_CUP_REAR_CATCH					20
-#define PS_STATE_CUP_REAR_RELEASE				21
-
-#define PS_STATE_MACHINES_READY					30
-#define PS_STATE_MACHINES_HARVEST				31
-#define PS_STATE_MACHINES_END					32
-
-#define PS_STATE_STOCK_DROP						40
-#define PS_STATE_STOCK_END						41
-
-	uint8_t state;
-	uint8_t state_rqst;
-	uint8_t state_changed;
+	uint8_t mode;
+	uint8_t mode_rqst;
+	uint8_t mode_changed;
 
 	/* info */
 	uint8_t cup_front_catched;
 	uint8_t cup_rear_catched;
 	uint8_t machine_popcorns_catched;
 
-	/* conf */
-	uint8_t sensor_front;
-	uint8_t sensor_rear;
-
 }popcorn_system_t;
 
 /* stands_system */
 typedef struct {
-#define SS_STATE_IDLE					0
-
-#define SS_STATE_HIDE					10
-#define SS_STATE_HARVESTING				11
-#define SS_STATE_BUILD_SPOTLIGHT		12
-#define SS_STATE_RELEASE_SPOTLIGHT		13
-
-	uint8_t state;
-	uint8_t state_rqst;
-	uint8_t state_changed;
+	uint8_t mode;
+	uint8_t mode_rqst;
+	uint8_t mode_changed;
 
 	/* info */
 	uint8_t stored_stands;
 
-	/* conf */
+	/* sensors */
 	uint8_t stand_sensor;
+
+	/* actuators */
+	stands_blade_t *blade;
+	stands_clamp_t *clamp;
+	stands_elevator_t *elevator;
 
 }stands_system_t;
 
