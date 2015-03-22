@@ -1062,35 +1062,31 @@ static void cmd_robot_2nd_bt_task_parsed(void * parsed_result, void * data)
 #define BT_CLAPPERBOARD					12
 
     /* TODO commented functions */
-
+	
     if (!strcmp_P(res->arg1, PSTR("pick_cup")))
     {
-        bt_robot_2nd_cmd_no_wait_ack(BT_PICK_CUP,0,0);
+       bt_robot_2nd_bt_task_pick_cup();
     }
     
     else if (!strcmp_P(res->arg1, PSTR("carpet")))
     {
-        bt_robot_2nd_cmd_no_wait_ack(BT_CARPET,0,0);
+        bt_robot_2nd_bt_task_carpet();
     }
     
     else if (!strcmp_P(res->arg1, PSTR("stairs")))
     {
-        bt_robot_2nd_cmd_no_wait_ack(BT_STAIRS,0,0);
+        bt_robot_2nd_bt_task_stairs();
     }
     
     else if (!strcmp_P(res->arg1, PSTR("bring_cup")))
     {
-        bt_robot_2nd_cmd_no_wait_ack(BT_BRING_CUP_CINEMA,0,0);
+        bt_robot_2nd_bt_task_bring_cup_cinema();
 	}
 	
     else if (!strcmp_P(res->arg1, PSTR("clap")))
     {
-        bt_robot_2nd_cmd_no_wait_ack(BT_CLAPPERBOARD,0,0);
+        bt_robot_2nd_bt_task_clapperboard();
 	}
-
-	/* check if command has been received */
-	if (err)
-		printf_P(PSTR("bt cmd ERROR"));
 }
 
 prog_char str_robot_2nd_bt_task_arga[] = "robot_2nd";
