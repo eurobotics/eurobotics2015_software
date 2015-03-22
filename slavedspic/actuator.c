@@ -602,7 +602,7 @@ struct ax12_traj ax12_stands_blade_l = { .id = AX12_ID_STANDS_BLADE_L, .zero_off
 struct ax12_traj ax12_stands_blade_r = { .id = AX12_ID_STANDS_BLADE_R, .zero_offset_pos = POS_OFFSET_STANDS_BLADE_R };
 
 /* set stands_blade position depends on mode*/
-int8_t stands_blade_set_mode(stands_blade_t *stands_blade, uint8_t mode, int16_t pos_offset)
+int8_t stands_blade_set_mode(stands_blade_t *stands_blade, uint8_t mode, int16_t ang_offset)
 {	
 	/* set ax12 position depends on mode and type */
 	if(mode >= STANDS_BLADE_MODE_MAX) {
@@ -611,7 +611,7 @@ int8_t stands_blade_set_mode(stands_blade_t *stands_blade, uint8_t mode, int16_t
 	}
 
 	stands_blade->mode = mode;
-	stands_blade->ax12_ang = stands_blade_ax12_ang[stands_blade->type][stands_blade->mode] + pos_offset;
+	stands_blade->ax12_ang = stands_blade_ax12_ang[stands_blade->type][stands_blade->mode] + ang_offset;
 
 	/* saturate to angle range */
 	if(stands_blade->type == STANDS_BLADE_TYPE_LEFT) {
@@ -669,18 +669,16 @@ uint8_t stands_blade_wait_end(stands_blade_t *stands_blade)
 
 
 /**** cup_clamp_popcorn_door functions *********************************************************/
-uint16_t cup_clamp_popcorn_door_l_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_MAX] = {
-	[CUP_CLAMP_MODE_HIDE] 			= POS_CUP_CLAMP_L_HIDE,
-	[CUP_CLAMP_MODE_LOCKED] 		= POS_CUP_CLAMP_L_LOCKED,
-	[CUP_CLAMP_MODE_OPEN] 			= POS_CUP_CLAMP_L_OPEN,
-	[POPCORN_DOOR_MODE_OPEN] 		= POS_POPCORN_DOOR_L_OPEN,
-};
+uint16_t cup_clamp_popcorn_door_ax12_pos[CUP_CLAMP_POPCORN_DOOR_TYPE_MAX][CUP_CLAMP_POPCORN_DOOR_MODE_MAX] = {
+	[CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT][CUP_CLAMP_MODE_HIDE] 		= POS_CUP_CLAMP_L_HIDE,
+	[CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT][CUP_CLAMP_MODE_LOCKED] 		= POS_CUP_CLAMP_L_LOCKED,
+	[CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT][CUP_CLAMP_MODE_OPEN] 		= POS_CUP_CLAMP_L_OPEN,
+	[CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT][POPCORN_DOOR_MODE_OPEN] 		= POS_POPCORN_DOOR_L_OPEN,
 
-uint16_t cup_clamp_popcorn_door_r_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_MAX] = {
-	[CUP_CLAMP_MODE_HIDE] 			= POS_CUP_CLAMP_R_HIDE,
-	[CUP_CLAMP_MODE_LOCKED]			= POS_CUP_CLAMP_R_LOCKED,
-	[CUP_CLAMP_MODE_OPEN] 			= POS_CUP_CLAMP_R_OPEN,
-	[POPCORN_DOOR_MODE_OPEN]		= POS_POPCORN_DOOR_R_OPEN
+	[CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT][CUP_CLAMP_MODE_HIDE] 		= POS_CUP_CLAMP_R_HIDE,
+	[CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT][CUP_CLAMP_MODE_LOCKED]		= POS_CUP_CLAMP_R_LOCKED,
+	[CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT][CUP_CLAMP_MODE_OPEN] 		= POS_CUP_CLAMP_R_OPEN,
+	[CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT][POPCORN_DOOR_MODE_OPEN]		= POS_POPCORN_DOOR_R_OPEN
 };
 
 struct ax12_traj ax12_cup_clamp_popcorn_door_l = { .id = AX12_ID_CUP_CLAMP_POPCORN_DOOR_L, .zero_offset_pos = 0 };
@@ -691,29 +689,33 @@ int8_t cup_clamp_popcorn_door_set_mode(cup_clamp_popcorn_door_t *cup_clamp_popco
 {	
 	/* set ax12 position depends on mode and type */
 	if(mode >= CUP_CLAMP_POPCORN_DOOR_MODE_MAX) {
-		ACTUATORS_ERROR("Unknown CUP_CLAMP_POPCORN_DOOR MODE");
+		ACTUATORS_ERROR("Unknown CUP_CLAMP_POPCORN_DOOR MODE", cup_clamp_popcorn_door->type == CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT? "RIGHT":"LEFT");
 		return -1;
 	}
 
 	/* ax12 positions */
 	cup_clamp_popcorn_door->mode = mode;
-	cup_clamp_popcorn_door->ax12_pos_l = cup_clamp_popcorn_door_l_ax12_pos[cup_clamp_popcorn_door->mode] + pos_offset;
-	cup_clamp_popcorn_door->ax12_pos_r = cup_clamp_popcorn_door_r_ax12_pos[cup_clamp_popcorn_door->mode] + pos_offset;
+	cup_clamp_popcorn_door->ax12_pos = cup_clamp_popcorn_door_ax12_pos[cup_clamp_popcorn_door->type][cup_clamp_popcorn_door->mode] + pos_offset;
 
 	/* saturate to position range */
-	if(cup_clamp_popcorn_door->ax12_pos_l > cup_clamp_popcorn_door_l_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_L_POS_MAX])
-		cup_clamp_popcorn_door->ax12_pos_l = cup_clamp_popcorn_door_l_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_L_POS_MAX];
-	else if(cup_clamp_popcorn_door->ax12_pos_l < cup_clamp_popcorn_door_l_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_L_POS_MIN])
-		cup_clamp_popcorn_door->ax12_pos_l = cup_clamp_popcorn_door_l_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_L_POS_MIN];
-
-	if(cup_clamp_popcorn_door->ax12_pos_r > cup_clamp_popcorn_door_r_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_R_POS_MAX])
-		cup_clamp_popcorn_door->ax12_pos_r = cup_clamp_popcorn_door_r_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_R_POS_MAX];
-	else if(cup_clamp_popcorn_door->ax12_pos_r < cup_clamp_popcorn_door_r_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_R_POS_MIN])
-		cup_clamp_popcorn_door->ax12_pos_r = cup_clamp_popcorn_door_r_ax12_pos[CUP_CLAMP_POPCORN_DOOR_MODE_R_POS_MIN];
+	if(cup_clamp_popcorn_door->type == CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT) {
+		if(cup_clamp_popcorn_door->ax12_pos > cup_clamp_popcorn_door_ax12_pos[CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT][CUP_CLAMP_POPCORN_DOOR_MODE_L_POS_MAX])
+			cup_clamp_popcorn_door->ax12_pos = cup_clamp_popcorn_door_ax12_pos[CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT][CUP_CLAMP_POPCORN_DOOR_MODE_L_POS_MAX];
+		else if(cup_clamp_popcorn_door->ax12_pos < cup_clamp_popcorn_door_ax12_pos[CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT][CUP_CLAMP_POPCORN_DOOR_MODE_L_POS_MIN])
+			cup_clamp_popcorn_door->ax12_pos = cup_clamp_popcorn_door_ax12_pos[CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT][CUP_CLAMP_POPCORN_DOOR_MODE_L_POS_MIN];
+	}
+	else if(cup_clamp_popcorn_door->type == CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT) {
+		if(cup_clamp_popcorn_door->ax12_pos > cup_clamp_popcorn_door_ax12_pos[CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT][CUP_CLAMP_POPCORN_DOOR_MODE_R_POS_MAX])
+			cup_clamp_popcorn_door->ax12_pos = cup_clamp_popcorn_door_ax12_pos[CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT][CUP_CLAMP_POPCORN_DOOR_MODE_R_POS_MAX];
+		else if(cup_clamp_popcorn_door->ax12_pos < cup_clamp_popcorn_door_ax12_pos[CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT][CUP_CLAMP_POPCORN_DOOR_MODE_R_POS_MIN])
+			cup_clamp_popcorn_door->ax12_pos = cup_clamp_popcorn_door_ax12_pos[CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT][CUP_CLAMP_POPCORN_DOOR_MODE_R_POS_MIN];
+	}
 
 	/* apply to ax12 */
-   	ax12_set_pos(&ax12_cup_clamp_popcorn_door_l, cup_clamp_popcorn_door->ax12_pos_l);
-   	ax12_set_pos(&ax12_cup_clamp_popcorn_door_r, cup_clamp_popcorn_door->ax12_pos_r);
+	if(cup_clamp_popcorn_door->type == CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT)
+	   	ax12_set_pos(&ax12_cup_clamp_popcorn_door_l, cup_clamp_popcorn_door->ax12_pos);
+	else if(cup_clamp_popcorn_door->type == CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT)
+	   	ax12_set_pos(&ax12_cup_clamp_popcorn_door_r, cup_clamp_popcorn_door->ax12_pos);
 
 	return 0;
 }
@@ -733,23 +735,27 @@ int8_t popcorn_door_set_mode(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door, u
 /* return cup_clamp_popcorn_door traj flag */
 uint8_t cup_clamp_popcorn_door_test_traj_end(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door)
 {
-    uint8_t ret_l, ret_r;
-   
-    ret_l = ax12_test_traj_end (&ax12_cup_clamp_popcorn_door_l, END_TRAJ|END_TIME);
-    ret_r = ax12_test_traj_end (&ax12_cup_clamp_popcorn_door_r, END_TRAJ|END_TIME);
+    uint8_t ret = 0;
+ 
+	if(cup_clamp_popcorn_door->type == CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT)
+		ret = ax12_test_traj_end (&ax12_cup_clamp_popcorn_door_l, END_TRAJ|END_TIME);
+	else if(cup_clamp_popcorn_door->type == CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT)
+		ret = ax12_test_traj_end (&ax12_cup_clamp_popcorn_door_r, END_TRAJ|END_TIME);
 
-    return (ret_l|ret_r);
+    return ret;
 }
 
 /* return END_TRAJ or END_TIMER */
 uint8_t cup_clamp_popcorn_door_wait_end(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door)
 {
-    uint8_t ret_l, ret_r;
+    uint8_t ret = 0;
    
-    ret_l = ax12_wait_traj_end (&ax12_cup_clamp_popcorn_door_l, END_TRAJ|END_TIME);
-    ret_r = ax12_wait_traj_end (&ax12_cup_clamp_popcorn_door_r, END_TRAJ|END_TIME);
+	if(cup_clamp_popcorn_door->type == CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT)
+		ret = ax12_wait_traj_end (&ax12_cup_clamp_popcorn_door_l, END_TRAJ|END_TIME);
+	else if(cup_clamp_popcorn_door->type == CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT)
+		ret = ax12_wait_traj_end (&ax12_cup_clamp_popcorn_door_r, END_TRAJ|END_TIME);
 
-    return (ret_l|ret_r);
+    return ret;
 }
 
 

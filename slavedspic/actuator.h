@@ -266,7 +266,7 @@ typedef struct {
 } stands_blade_t;
 
 /* set stands_blade angle depends on mode */
-int8_t stands_blade_set_mode(stands_blade_t *stands_blade, uint8_t mode, int16_t pos_offset);
+int8_t stands_blade_set_mode(stands_blade_t *stands_blade, uint8_t mode, int16_t ang_offset);
 
 /* return stands_blade traj flag */
 uint8_t stands_blade_test_traj_end(stands_blade_t *stands_blade);
@@ -278,6 +278,11 @@ uint8_t stands_blade_wait_end(stands_blade_t *stands_blade);
 
 /****cup_clamp_popcorn_door functions *********************************************************/
 typedef struct {
+	uint8_t type;
+#define CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT	0
+#define CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT	1
+#define CUP_CLAMP_POPCORN_DOOR_TYPE_MAX		2	
+
 	uint8_t mode;
 #define CUP_CLAMP_MODE_HIDE					0
 #define CUP_CLAMP_MODE_LOCKED				1
@@ -290,8 +295,7 @@ typedef struct {
 #define CUP_CLAMP_POPCORN_DOOR_MODE_R_POS_MIN		3
 #define CUP_CLAMP_POPCORN_DOOR_MODE_R_POS_MAX		0
 
-	uint16_t ax12_pos_l;
-	uint16_t ax12_pos_r;
+	uint16_t ax12_pos;
 } cup_clamp_popcorn_door_t;
 
 /* set cup_clamp_popcorn_door position depends on mode */

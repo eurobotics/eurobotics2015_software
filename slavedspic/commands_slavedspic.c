@@ -450,6 +450,11 @@ static void cmd_cup_clamp_popcorn_door_parsed(__attribute__((unused)) void *pars
 	struct cmd_cup_clamp_popcorn_door_result *res = (struct cmd_cup_clamp_popcorn_door_result *) parsed_result;
 	struct i2c_cmd_slavedspic_set_mode command;
 
+	if (!strcmp_P(res->arg0, PSTR("clamp_door_left")))
+		command.cup_clamp_popcorn_door.type = I2C_CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT;
+	else if (!strcmp_P(res->arg0, PSTR("clamp_door_right")))
+		command.cup_clamp_popcorn_door.type = I2C_CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT;	
+
 	if (!strcmp_P(res->arg1, PSTR("hide")))
 		command.cup_clamp_popcorn_door.mode = I2C_CUP_CLAMP_MODE_HIDE;
 	else if (!strcmp_P(res->arg1, PSTR("cup_locked")))
@@ -467,7 +472,7 @@ static void cmd_cup_clamp_popcorn_door_parsed(__attribute__((unused)) void *pars
 	state_set_mode(&command);
 }
 
-prog_char str_cup_clamp_popcorn_door_arg0[] = "clamp_door";
+prog_char str_cup_clamp_popcorn_door_arg0[] = "clamp_door_left#clamp_door_right";
 parse_pgm_token_string_t cmd_cup_clamp_popcorn_door_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_cup_clamp_popcorn_door_result, arg0, str_cup_clamp_popcorn_door_arg0);
 prog_char str_cup_clamp_popcorn_door_arg1[] = "hide#cup_locked#cup_unlocked#door_close#door_open";
 parse_pgm_token_string_t cmd_cup_clamp_popcorn_door_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_cup_clamp_popcorn_door_result, arg1, str_cup_clamp_popcorn_door_arg1);

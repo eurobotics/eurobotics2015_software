@@ -178,6 +178,10 @@ struct i2c_cmd_slavedspic_set_mode {
 		} stands_tower_clamps;
 
 		struct {
+			uint8_t type;
+#define I2C_CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT		0
+#define I2C_CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT		1	
+
 			uint8_t mode;
 #define I2C_CUP_CLAMP_MODE_HIDE			0
 #define I2C_CUP_CLAMP_MODE_LOCKED		1
