@@ -204,7 +204,7 @@ void maindspic_cs_init(void)
 	rs_set_left_pwm(&mainboard.rs, dac_set_and_save, LEFT_MOTOR);
 	rs_set_right_pwm(&mainboard.rs,  dac_set_and_save, RIGHT_MOTOR);
 
-#define Ed	1.00375
+#define Ed	0.9981761809228520 //1.0 //1.00375
 #define Cl	(2.0/(Ed + 1.0))
 #define Cr  (2.0 /((1.0 / Ed) + 1.0))
 
@@ -218,7 +218,7 @@ void maindspic_cs_init(void)
 	rs_set_left_ext_encoder(&mainboard.rs, encoders_dspic_get_value, 
 				LEFT_ENCODER, IMP_COEF * Cl); 
 	rs_set_right_ext_encoder(&mainboard.rs, encoders_dspic_get_value, 
-				 RIGHT_ENCODER, IMP_COEF * -Cr);
+				 RIGHT_ENCODER, IMP_COEF * Cr);
 #endif
 
 	/* rs will use external encoders */
@@ -226,7 +226,7 @@ void maindspic_cs_init(void)
 
 	/* POSITION MANAGER */
 	position_init(&mainboard.pos);
-	position_set_physical_params(&mainboard.pos, VIRTUAL_TRACK_MM, DIST_IMP_MM * 0.9875567845); //0.983765112); // 0.986923267);
+	position_set_physical_params(&mainboard.pos, VIRTUAL_TRACK_MM, DIST_IMP_MM * 1.0022958057395100); //0.9875567845
 	position_set_related_robot_system(&mainboard.pos, &mainboard.rs);
 	position_set_centrifugal_coef(&mainboard.pos, 0.0); // 0.000016
 	position_use_ext(&mainboard.pos);
@@ -236,22 +236,23 @@ void maindspic_cs_init(void)
 	trajectory_set_cs(&mainboard.traj, &mainboard.distance.cs,
 			  &mainboard.angle.cs);
 	trajectory_set_robot_params(&mainboard.traj, &mainboard.rs, &mainboard.pos); /* d, a */
-	trajectory_set_speed(&mainboard.traj, SPEED_DIST_FAST, SPEED_ANGLE_FAST);		
+	trajectory_set_speed(&mainboard.traj, SPEED_DIST_FAST, SPEED_ANGLE_FAST);	
+	
 	/* distance window, angle window, angle start */
-  trajectory_set_windows(&mainboard.traj, 200., 5.0, 30.0); //50., 5.0, 5.0
+  	trajectory_set_windows(&mainboard.traj, 200., 5.0, 30.0); //50., 5.0, 5.0
 
 	/* ---- CS angle */
 	/* PID */
 	pid_init(&mainboard.angle.pid);
-	pid_set_gains(&mainboard.angle.pid, 360, 3, 3000);
+	pid_set_gains(&mainboard.angle.pid, 200, 3, 4000);
 	pid_set_maximums(&mainboard.angle.pid, 0, 30000, 65000);
 	pid_set_out_shift(&mainboard.angle.pid, 6);	
 	pid_set_derivate_filter(&mainboard.angle.pid, 1);
 
 	/* QUADRAMP */
 	quadramp_init(&mainboard.angle.qr);
-	quadramp_set_1st_order_vars(&mainboard.angle.qr, 3000, 3000); 	/* set speed */
-	quadramp_set_2nd_order_vars(&mainboard.angle.qr, 20, 20); 		/* set accel */
+	quadramp_set_1st_order_vars(&mainboard.angle.qr, SPEED_ANGLE_VERY_FAST, SPEED_ANGLE_VERY_FAST); 	/* set speed */
+	quadramp_set_2nd_order_vars(&mainboard.angle.qr, ACC_ANGLE, ACC_ANGLE); 		/* set accel */
 
 	/* CS */
 	cs_init(&mainboard.angle.cs);
@@ -269,15 +270,15 @@ void maindspic_cs_init(void)
 	/* ---- CS distance */
 	/* PID */
 	pid_init(&mainboard.distance.pid);
-	pid_set_gains(&mainboard.distance.pid, 360, 3, 3000);
+	pid_set_gains(&mainboard.distance.pid, 100, 3, 3000);
 	pid_set_maximums(&mainboard.distance.pid, 0, 30000, 65000);
 	pid_set_out_shift(&mainboard.distance.pid, 6);
 	pid_set_derivate_filter(&mainboard.distance.pid, 1);
 
 	/* QUADRAMP */
 	quadramp_init(&mainboard.distance.qr);
-	quadramp_set_1st_order_vars(&mainboard.distance.qr, 3000, 3000); 	/* set speed */
-	quadramp_set_2nd_order_vars(&mainboard.distance.qr, 35, 35); 	/* set accel */
+	quadramp_set_1st_order_vars(&mainboard.distance.qr, SPEED_DIST_VERY_FAST, SPEED_DIST_VERY_FAST); 	/* set speed */
+	quadramp_set_2nd_order_vars(&mainboard.distance.qr, ACC_DIST, ACC_DIST); 	/* set accel */
 
 	/* CS */
 	cs_init(&mainboard.distance.cs);
