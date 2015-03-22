@@ -382,7 +382,7 @@ static void cmd_rs_gains_parsed(void * parsed_result, void * data)
         rs_set_left_ext_encoder(&mainboard.rs, encoders_dspic_get_value,
                                 LEFT_ENCODER, IMP_COEF * cl);
         rs_set_right_ext_encoder(&mainboard.rs, encoders_dspic_get_value,
-                                 RIGHT_ENCODER, IMP_COEF * -cr);
+                                 RIGHT_ENCODER, IMP_COEF * cr);
     }
 
     printf_P(PSTR("rs_gains set ed = %f, cr = %f, cl = %f\r\n"), ed, cr, cl);
