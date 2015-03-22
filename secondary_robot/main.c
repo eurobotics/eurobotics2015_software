@@ -426,7 +426,41 @@ int main(void)
    	scheduler_add_periodical_event_priority(cmdline_interact_nowait, NULL,
     		EVENT_PERIOD_CMDLINE / SCHEDULER_UNIT, EVENT_PRIORITY_CMDLINE);
 	
-	while (1);
+	/* init bt_task */
+	end_bt_task_flag=0;
+	current_bt_task=0;
+	
+	while(1)
+	{
+		switch(current_bt_task)
+		{
+			case  BT_TASK_NONE:
+			default:
+				break;
+			
+			case  BT_TASK_PICK_CUP:
+				pick_popcorn_cup();
+				break;
+			
+			case  BT_TASK_CARPET:
+				extend_carpet();
+				break;
+			
+			case  BT_TASK_STAIRS:
+				climb_stairs();
+				break;
+			
+			case  BT_TASK_BRING_CUP:
+				bring_cup_to_cinema();
+				break;
+			
+			case  BT_TASK_CLAP:
+				close_clapperboard();
+				break;
+		}
+		
+		//TODO: return value from the functions indicating finish, to inform main robot.
+	}
 
    return 0;
 }

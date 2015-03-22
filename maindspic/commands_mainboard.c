@@ -1045,8 +1045,8 @@ struct cmd_robot_2nd_bt_task_result
     fixed_string_t arga;
     fixed_string_t arg0;
     fixed_string_t arg1;
-    int32_t arg2;
-    int32_t arg3;
+    //int32_t arg2;
+    //int32_t arg3;
 };
 
 /* function called when cmd_bt_task is parsed successfully */
@@ -1055,29 +1055,37 @@ static void cmd_robot_2nd_bt_task_parsed(void * parsed_result, void * data)
     struct cmd_robot_2nd_bt_task_result * res = parsed_result;
     uint8_t err = END_ERROR;
 
+#define BT_PICK_CUP						8	
+#define BT_CARPET						9 	
+#define BT_STAIRS						10 		
+#define BT_BRING_CUP_CINEMA				11	
+#define BT_CLAPPERBOARD					12
+
     /* TODO commented functions */
 
-    if (!strcmp_P(res->arg1, PSTR("mamooth")))
+    if (!strcmp_P(res->arg1, PSTR("pick_cup")))
     {
-        err=bt_robot_2nd_bt_task_mamooth(res->arg2, res->arg3);
+        bt_robot_2nd_cmd_no_wait_ack(BT_PICK_CUP,0,0);
     }
-    else if (!strcmp_P(res->arg1, PSTR("patrol_fr_mam")))
-    {
-        err=bt_robot_2nd_bt_patrol_fr_mam(res->arg2, res->arg3);
-    }
-    else if (!strcmp_P(res->arg1, PSTR("protect_h")))
-    {
-        err=bt_robot_2nd_bt_protect_h(res->arg2);
-    }
-    else if (!strcmp_P(res->arg1, PSTR("net")))
-    {
-        err=bt_robot_2nd_bt_net();
     
+    else if (!strcmp_P(res->arg1, PSTR("carpet")))
+    {
+        bt_robot_2nd_cmd_no_wait_ack(BT_CARPET,0,0);
+    }
+    
+    else if (!strcmp_P(res->arg1, PSTR("stairs")))
+    {
+        bt_robot_2nd_cmd_no_wait_ack(BT_STAIRS,0,0);
+    }
+    
+    else if (!strcmp_P(res->arg1, PSTR("bring_cup")))
+    {
+        bt_robot_2nd_cmd_no_wait_ack(BT_BRING_CUP_CINEMA,0,0);
 	}
-    else if (!strcmp_P(res->arg1, PSTR("fresco")))
+	
+    else if (!strcmp_P(res->arg1, PSTR("clap")))
     {
-        err=bt_robot_2nd_bt_fresco();
-    
+        bt_robot_2nd_cmd_no_wait_ack(BT_CLAPPERBOARD,0,0);
 	}
 
 	/* check if command has been received */
@@ -1090,10 +1098,10 @@ parse_pgm_token_string_t cmd_robot_2nd_bt_task_arga = TOKEN_STRING_INITIALIZER(s
 
 prog_char str_robot_2nd_bt_task_arg0[] = "bt_task";
 parse_pgm_token_string_t cmd_robot_2nd_bt_task_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_robot_2nd_bt_task_result, arg0, str_robot_2nd_bt_task_arg0);
-prog_char str_robot_2nd_bt_task_arg1[] = "mamooth#fresco#net#protect_h#patrol_fr_mam";
+prog_char str_robot_2nd_bt_task_arg1[] = "pick_cup#carpet#stairs#bring_cup#clap";
 parse_pgm_token_string_t cmd_robot_2nd_bt_task_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_robot_2nd_bt_task_result, arg1, str_robot_2nd_bt_task_arg1);
-parse_pgm_token_num_t cmd_robot_2nd_bt_task_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_robot_2nd_bt_task_result, arg2, INT32);
-parse_pgm_token_num_t cmd_robot_2nd_bt_task_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_robot_2nd_bt_task_result, arg3, INT32);
+//parse_pgm_token_num_t cmd_robot_2nd_bt_task_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_robot_2nd_bt_task_result, arg2, INT32);
+//parse_pgm_token_num_t cmd_robot_2nd_bt_task_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_robot_2nd_bt_task_result, arg3, INT32);
 
 /* 1 params */
 prog_char help_robot_2nd_bt_task[] = "robot_2nd tasks";
@@ -1106,8 +1114,8 @@ parse_pgm_inst_t cmd_robot_2nd_bt_task = {
 		(prog_void *) & cmd_robot_2nd_bt_task_arga,
         (prog_void *) & cmd_robot_2nd_bt_task_arg0,
         (prog_void *) & cmd_robot_2nd_bt_task_arg1,
-        (prog_void *) & cmd_robot_2nd_bt_task_arg2,
-        (prog_void *) & cmd_robot_2nd_bt_task_arg3,
+        //(prog_void *) & cmd_robot_2nd_bt_task_arg2,
+        //(prog_void *) & cmd_robot_2nd_bt_task_arg3,
         NULL,
     },
 };

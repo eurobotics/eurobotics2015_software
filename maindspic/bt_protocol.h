@@ -26,6 +26,25 @@
 /* number of bt devices, maximun 4 */
 #define BT_PROTO_NUM_DEVICES 2
 
+
+/* BT_TASKS */
+
+#define BT_SET_COLOR		1
+#define BT_AUTOPOS			2
+#define BT_GOTO_XY_ABS		3
+#define BT_GOTO_XY_REL		4
+#define BT_GOTO_AVOID		5
+#define BT_GOTO_AVOID_FW	6
+#define BT_GOTO_AVOID_BW	7
+#define BT_PICK_CUP						8	
+#define BT_CARPET						9 	
+#define BT_STAIRS						10 		
+#define BT_BRING_CUP_CINEMA				11	
+#define BT_CLAPPERBOARD					12
+#define BT_GOTO_FW_XY_ABS				13
+#define BT_GOTO_BW_XY_ABS				14
+
+
 /* send and receive commands to/from bt devices, periodic dev status pulling */
 void bt_protocol (void * dummy);
 
@@ -80,11 +99,12 @@ uint8_t bt_robot_2nd_wait_end (void);
 void bt_robot_2nd_req_status(void);
 
 
-uint8_t bt_robot_2nd_bt_task_mamooth (int16_t arg1, int16_t arg2);
-uint8_t bt_robot_2nd_bt_patrol_fr_mam(int16_t arg1, int16_t arg2);
-uint8_t bt_robot_2nd_bt_protect_h(uint8_t heart);
-uint8_t bt_robot_2nd_bt_net(void);
-uint8_t bt_robot_2nd_bt_fresco(void);
+void bt_robot_2nd_bt_task_pick_cup (void);
+void bt_robot_2nd_bt_task_carpet(void);
+void bt_robot_2nd_bt_task_stairs(void);
+void bt_robot_2nd_bt_task_bring_cup_cinema(void);
+void bt_robot_2nd_bt_task_clapperboard(void);
+
 uint8_t bt_robot_2nd_autopos (void);
 
 uint8_t bt_robot_2nd_goto_and_avoid (int16_t x, int16_t y);

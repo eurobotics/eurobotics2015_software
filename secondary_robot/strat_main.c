@@ -138,60 +138,38 @@ intr:
 }
 
 
-#if 0
-void strat_initial_move(void)
-{
-#define BEGIN_LINE_Y 	450
-#define BEGIN_FRESCO_X	1295
-	static uint8_t state = 0;
-	uint8_t err = 0;
-	
-	
-	while(1)
-	{
-		switch(state)
-		{
-			/* go in front of fresco */
-			case 0:
-				//printf_P("init case 0\n");
-				trajectory_goto_xy_abs (&mainboard.traj,  COLOR_X(BEGIN_FRESCO_X), BEGIN_LINE_Y);
-				state++;
-				break;
-			
-			case 1:
-				//printf_P("init case 1 - x: %d y: %d - opp %d\n", abs(position_get_x_double(&mainboard.pos)-COLOR_X(BEGIN_FRESCO_X)),abs(position_get_y_double(&mainboard.pos)-BEGIN_LINE_Y) , (opponent1_is_infront() || opponent2_is_infront()));
-				if(opponent1_is_infront()==0 && opponent2_is_infront()==0)
-				{
-					//err = test_traj_end(TRAJ_FLAGS_NO_NEAR);
 
-					if ((abs(position_get_x_double(&mainboard.pos)-COLOR_X(BEGIN_FRESCO_X))<30) && (abs(position_get_y_double(&mainboard.pos)-BEGIN_LINE_Y)<30))
-					{
-						state ++;
-					}
-				}
-				else
-				{
-					if ((abs(position_get_x_double(&mainboard.pos)-COLOR_X(BEGIN_FRESCO_X))<30) && (abs(position_get_y_double(&mainboard.pos)-BEGIN_LINE_Y)<30))
-					{
-						state ++;
-						break;
-					}
-					strat_hardstop();
-					state=0;
-				}	
-				break;
-				
-			case 2:
-				trajectory_a_abs (&mainboard.traj, 90);
-				err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-				if (!TRAJ_SUCCESS(err))
-						break;
-				return;
-				break;
-			default:
-				break;
-		}
-	}
+void pick_popcorn_cup(void)
+{
+    printf_P(PSTR("pick_popcorn_cup\r\n"));
+	bt_status_set_cmd_ret (END_TRAJ);
 }
-#endif
+
+
+void extend_carpet(void)
+{
+    printf_P(PSTR("extend_carpet\r\n"));
+	bt_status_set_cmd_ret (END_TRAJ);
+}
+
+
+void climb_stairs(void)
+{
+    printf_P(PSTR("climb_stairs\r\n"));
+	bt_status_set_cmd_ret (END_TRAJ);
+}
+
+
+void bring_cup_to_cinema(void)
+{
+    printf_P(PSTR("bring_cup_to_cinema\r\n"));
+	bt_status_set_cmd_ret (END_TRAJ);
+}
+
+
+void close_clapperboard(void)
+{
+    printf_P(PSTR("clapperboard\r\n"));
+	bt_status_set_cmd_ret (END_TRAJ);
+}
 
