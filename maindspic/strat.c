@@ -380,13 +380,6 @@ uint8_t strat_main(void)
     /* auto-play  */
 	set_strat_sec_1();
     printf_P(PSTR("\r\n\r\nStrat smart\r\n"));
-    
-    /* TEST BT_TASK */
-    bt_robot_2nd_bt_task_pick_cup();
-	bt_robot_2nd_wait_end();
-	bt_robot_2nd_bt_task_bring_cup_cinema();
-	bt_robot_2nd_wait_end();
-	
 	
     do{
         err = strat_smart();
