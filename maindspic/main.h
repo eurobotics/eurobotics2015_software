@@ -118,19 +118,19 @@
 
 /* distance between encoders weels,
  * decrease track to decrease angle */
-#define EXT_TRACK_MM      293.51078578114
+#define EXT_TRACK_MM      303.626213203341000 //303.8
 #define VIRTUAL_TRACK_MM  EXT_TRACK_MM
 
 /* robot dimensions */
-#define ROBOT_LENGTH            281.5
+#define ROBOT_LENGTH            288.5
 #define ROBOT_WIDTH             330.0
-#define ROBOT_CENTER_TO_FRONT   162.5
-#define ROBOT_CENTER_TO_BACK    119.0
+#define ROBOT_CENTER_TO_FRONT   167.0
+#define ROBOT_CENTER_TO_BACK    121.5
 #define ROBOT_HALF_LENGTH_FRONT ROBOT_CENTER_TO_FRONT
 #define ROBOT_HALF_LENGTH_REAR  ROBOT_CENTER_TO_BACK
 
 /* XXX obstacle clerance */
-#define OBS_CLERANCE            (232.+10.)
+#define OBS_CLERANCE            (235.+10.)
 
 
 /* Some calculus:
