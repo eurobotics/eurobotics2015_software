@@ -176,10 +176,12 @@
 #ifdef CALIBRATION
 
 /* default acc */
-#define ACC_DIST  1.
-#define ACC_ANGLE 1.
+#define ACC_DIST  10
+#define ACC_ANGLE 10
 
 /* default speeds */
+#define SPEED_DIST_VERY_FAST 	1000.
+#define SPEED_ANGLE_VERY_FAST 	1000.
 #define SPEED_DIST_FAST 		1000.
 #define SPEED_ANGLE_FAST 		1000.
 #define SPEED_DIST_SLOW 		1000.
@@ -190,8 +192,8 @@
 #else
 
 /* default acc */
-#define ACC_DIST  20. //35.
-#define ACC_ANGLE 20.
+#define ACC_DIST  85
+#define ACC_ANGLE 85
 
 /* default speeds */
 #ifdef HOMOLOGATION
@@ -199,6 +201,8 @@
 #define SPEED_ANGLE_FAST 		2000.
 #else
 
+#define SPEED_DIST_VERY_FAST 	4200.
+#define SPEED_ANGLE_VERY_FAST 	4200.
 #define SPEED_DIST_FAST 		3000.
 #define SPEED_ANGLE_FAST 		3000.
 #endif

@@ -236,22 +236,23 @@ void maindspic_cs_init(void)
 	trajectory_set_cs(&mainboard.traj, &mainboard.distance.cs,
 			  &mainboard.angle.cs);
 	trajectory_set_robot_params(&mainboard.traj, &mainboard.rs, &mainboard.pos); /* d, a */
-	trajectory_set_speed(&mainboard.traj, SPEED_DIST_FAST, SPEED_ANGLE_FAST);		
+	trajectory_set_speed(&mainboard.traj, SPEED_DIST_FAST, SPEED_ANGLE_FAST);	
+	
 	/* distance window, angle window, angle start */
-  trajectory_set_windows(&mainboard.traj, 200., 5.0, 30.0); //50., 5.0, 5.0
+  	trajectory_set_windows(&mainboard.traj, 200., 5.0, 30.0); //50., 5.0, 5.0
 
 	/* ---- CS angle */
 	/* PID */
 	pid_init(&mainboard.angle.pid);
-	pid_set_gains(&mainboard.angle.pid, 360, 3, 3000);
+	pid_set_gains(&mainboard.angle.pid, 200, 3, 4000);
 	pid_set_maximums(&mainboard.angle.pid, 0, 30000, 65000);
 	pid_set_out_shift(&mainboard.angle.pid, 6);	
 	pid_set_derivate_filter(&mainboard.angle.pid, 1);
 
 	/* QUADRAMP */
 	quadramp_init(&mainboard.angle.qr);
-	quadramp_set_1st_order_vars(&mainboard.angle.qr, 3000, 3000); 	/* set speed */
-	quadramp_set_2nd_order_vars(&mainboard.angle.qr, 20, 20); 		/* set accel */
+	quadramp_set_1st_order_vars(&mainboard.angle.qr, 4200, 4200); 	/* set speed */
+	quadramp_set_2nd_order_vars(&mainboard.angle.qr, 85, 85); 		/* set accel */
 
 	/* CS */
 	cs_init(&mainboard.angle.cs);
@@ -269,15 +270,15 @@ void maindspic_cs_init(void)
 	/* ---- CS distance */
 	/* PID */
 	pid_init(&mainboard.distance.pid);
-	pid_set_gains(&mainboard.distance.pid, 360, 3, 3000);
+	pid_set_gains(&mainboard.distance.pid, 100, 3, 3000);
 	pid_set_maximums(&mainboard.distance.pid, 0, 30000, 65000);
 	pid_set_out_shift(&mainboard.distance.pid, 6);
 	pid_set_derivate_filter(&mainboard.distance.pid, 1);
 
 	/* QUADRAMP */
 	quadramp_init(&mainboard.distance.qr);
-	quadramp_set_1st_order_vars(&mainboard.distance.qr, 3000, 3000); 	/* set speed */
-	quadramp_set_2nd_order_vars(&mainboard.distance.qr, 35, 35); 	/* set accel */
+	quadramp_set_1st_order_vars(&mainboard.distance.qr, 4200, 4200); 	/* set speed */
+	quadramp_set_2nd_order_vars(&mainboard.distance.qr, 85, 85); 	/* set accel */
 
 	/* CS */
 	cs_init(&mainboard.distance.cs);
