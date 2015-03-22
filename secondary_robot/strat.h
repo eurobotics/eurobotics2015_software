@@ -404,6 +404,13 @@ void strat_auto_position (void);
 /* match tasks */
 void strat_initial_move(void);
 
+/* bt_tasks */
+void pick_popcorn_cup(void);
+void extend_carpet(void);
+void climb_stairs(void);
+void bring_cup_to_cinema(void);
+void close_clapperboard(void);
+
 /********************************************
  * in strat_event.c 
  *******************************************/

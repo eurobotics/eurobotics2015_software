@@ -62,6 +62,7 @@
 #include "sensor.h"
 #include "actuator.h"
 #include "beacon.h"
+#include "bt_protocol.h"
 
 #else
 
@@ -176,7 +177,7 @@ void strat_set_bounding_box(uint8_t type)
                 strat_infos.area_bbox.y1,
                 strat_infos.area_bbox.x2,
                 strat_infos.area_bbox.y2);
-software% 
+//software% 
 #ifdef HOST_VERSION_OA_TEST
 
   printf("boundingbox at: %d %d %d %d\n", 
@@ -379,6 +380,14 @@ uint8_t strat_main(void)
     /* auto-play  */
 	set_strat_sec_1();
     printf_P(PSTR("\r\n\r\nStrat smart\r\n"));
+    
+    /* TEST BT_TASK */
+    bt_robot_2nd_bt_task_pick_cup();
+	bt_robot_2nd_wait_end();
+	bt_robot_2nd_bt_task_bring_cup_cinema();
+	bt_robot_2nd_wait_end();
+	
+	
     do{
         err = strat_smart();
     }while((err & END_TIMER) == 0);

@@ -73,7 +73,7 @@ void strat_event_schedule_single (void (*f)(void *), void * data)
 
 	/* stop robot */
 	IRQ_LOCK(flags);
-	interrupt_traj(); /* XXX unusefull */
+	interrupt_traj(); /* XXX unuseful */
 	strat_hardstop(); /* TODO: change to strat_stop and wait trajectory finished */
 	IRQ_UNLOCK(flags);
 	
@@ -121,7 +121,7 @@ void strat_event_schedule_periodical(void (*f)(void *), void * data)
 /* auto position event */
 void strat_auto_position_event (void *data)
 {
-	interrupt_traj_reset(); /* XXX unusefull */
+	interrupt_traj_reset(); /* XXX unuseful */
 
 	strat_auto_position ();
 

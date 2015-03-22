@@ -1013,160 +1013,68 @@ parse_pgm_inst_t cmd_subtraj = {
 };
 #endif
 
-
-#if 0
 /**********************************************************/
-/* BT Task 1 - 2 PARAMETERS + CHECKSUM */
+/* BT Task */
 
-/* this structure is filled when cmd_bt_task1 is parsed successfully */
-struct cmd_bt_task1_result {
+/* this structure is filled when cmd_bt_task is parsed successfully */
+struct cmd_bt_task_result {
 	fixed_string_t arg0;
 	fixed_string_t arg1;
- 	int32_t arg2;
- 	int32_t arg3;
- 	int32_t arg4;
+ 	//int32_t arg2;
+ 	//int32_t arg3;
+ 	//int32_t arg4;
 };
 
-/* function called when cmd_bt_task1 is parsed successfully */
-static void cmd_bt_task1_parsed(void *parsed_result, void *data)
+/* function called when cmd_bt_task is parsed successfully */
+static void cmd_bt_task_parsed(void *parsed_result, void *data)
 {
-	struct cmd_bt_task1_result *res = parsed_result;
+	struct cmd_bt_task_result *res = parsed_result;
 
 
-	if (strcmp_P(res->arg1, PSTR("mamooth")) == 0) {
-		bt_mamooth(res->arg2,res->arg3, res->arg4);
+	if (strcmp_P(res->arg1, PSTR("pick_cup")) == 0) {
+		current_bt_task=BT_TASK_PICK_CUP;
 	}
-	else if (strcmp_P(res->arg1, PSTR("patrol_fr_mam")) == 0) {
-		bt_patrol_fresco_mamooth(res->arg2,res->arg3, res->arg4);
+	else if (strcmp_P(res->arg1, PSTR("carpet")) == 0) {
+		current_bt_task=BT_TASK_CARPET;
 	}
-	else if (strcmp_P(res->arg1, PSTR("protect_h")) == 0) {
-		bt_protect_h(res->arg2);
-		
+	else if (strcmp_P(res->arg1, PSTR("stairs")) == 0) {
+		current_bt_task=BT_TASK_STAIRS;
 	}
+	else if (strcmp_P(res->arg1, PSTR("bring_cup")) == 0) {
+		current_bt_task=BT_TASK_BRING_CUP;
+	}
+	else if (strcmp_P(res->arg1, PSTR("clap")) == 0) {
+		current_bt_task=BT_TASK_CLAP;
+	}
+	
 	else if (strcmp_P(res->arg1, PSTR("strat_exit")) == 0)
 		bt_strat_exit();
 	else if (strcmp_P(res->arg1, PSTR("strat_init")) == 0)
 		bt_strat_init();
 
-
-	//printf("next point\r\n");
-
 }
 
-prog_char str_bt_task1_arg0[] = "bt_task";
-parse_pgm_token_string_t cmd_bt_task1_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task1_result, arg0, str_bt_task1_arg0);
-prog_char str_bt_task1_arg1[] = "mamooth#patrol_fr_mam#protect_h#strat_exit#strat_init";
-parse_pgm_token_string_t cmd_bt_task1_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task1_result, arg1, str_bt_task1_arg1);
-parse_pgm_token_num_t cmd_bt_task1_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task1_result, arg2, INT32);
-parse_pgm_token_num_t cmd_bt_task1_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task1_result, arg3, INT32);
-parse_pgm_token_num_t cmd_bt_task1_arg4 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task1_result, arg4, INT32);
-prog_char help_bt_task1[] = "bt_task (a,b,c,d,e: specific params)";
-parse_pgm_inst_t cmd_bt_task1 = {
-	.f = cmd_bt_task1_parsed,  /* function to call */
+prog_char str_bt_task_arg0[] = "bt_task";
+parse_pgm_token_string_t cmd_bt_task_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task_result, arg0, str_bt_task_arg0);
+prog_char str_bt_task_arg1[] = "pick_cup#carpet#stairs#bring_cup#clap#strat_exit#strat_init";
+parse_pgm_token_string_t cmd_bt_task_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task_result, arg1, str_bt_task_arg1);
+//parse_pgm_token_num_t cmd_bt_task_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task_result, arg2, INT32);
+//parse_pgm_token_num_t cmd_bt_task_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task_result, arg3, INT32);
+//parse_pgm_token_num_t cmd_bt_task_arg4 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task_result, arg4, INT32);
+prog_char help_bt_task[] = "bt_task";
+parse_pgm_inst_t cmd_bt_task = {
+	.f = cmd_bt_task_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_bt_task1,
+	.help_str = help_bt_task,
 	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_bt_task1_arg0, 
-		(prog_void *)&cmd_bt_task1_arg1,
- 		(prog_void *)&cmd_bt_task1_arg2, 
- 		(prog_void *)&cmd_bt_task1_arg3, 
- 		(prog_void *)&cmd_bt_task1_arg4, 
+		(prog_void *)&cmd_bt_task_arg0, 
+		(prog_void *)&cmd_bt_task_arg1,
+ 		//(prog_void *)&cmd_bt_task_arg2, 
+ 		//(prog_void *)&cmd_bt_task_arg3, 
+ 		//(prog_void *)&cmd_bt_task_arg4, 
 		NULL,
 	},
 };
-
-
-/**********************************************************/
-/* BT Task 2 - 4 PARAMETERS */
-
-/* this structure is filled when cmd_bt_task2 is parsed successfully */
-struct cmd_bt_task2_result {
-	fixed_string_t arg0;
-	fixed_string_t arg1;
-	int16_t arg2;
-	int16_t arg3;
-	int16_t arg4;
-	int16_t arg5;
-	int16_t arg6;
-};
-
-/* function called when cmd_bt_task2 is parsed successfully */
-static void cmd_bt_task2_parsed(void *parsed_result, void *data)
-{
-	struct cmd_bt_task2_result *res = parsed_result;
-
-	if (strcmp_P(res->arg1, PSTR("patrol")) == 0) {
-		//
-	}
-}
-
-prog_char str_bt_task2_arg0[] = "bt_task";
-parse_pgm_token_string_t cmd_bt_task2_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task2_result, arg0, str_bt_task2_arg0);
-prog_char str_bt_task2_arg1[] = "patrol";
-parse_pgm_token_string_t cmd_bt_task2_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task2_result, arg1, str_bt_task2_arg1);
-parse_pgm_token_num_t cmd_bt_task2_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task2_result, arg2, INT16);
-parse_pgm_token_num_t cmd_bt_task2_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task2_result, arg3, INT16);
-parse_pgm_token_num_t cmd_bt_task2_arg4 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task2_result, arg4, INT16);
-parse_pgm_token_num_t cmd_bt_task2_arg5 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task2_result, arg5, INT16);
-parse_pgm_token_num_t cmd_bt_task2_arg6 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task2_result, arg6, INT32);
-
-prog_char help_bt_task2[] = "bt_task (a,b,c,d,e: specific params)";
-parse_pgm_inst_t cmd_bt_task2 = {
-	.f = cmd_bt_task2_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_bt_task2,
-	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_bt_task2_arg0, 
-		(prog_void *)&cmd_bt_task2_arg1, 
-		(prog_void *)&cmd_bt_task2_arg2, 
-		(prog_void *)&cmd_bt_task2_arg3, 
-		(prog_void *)&cmd_bt_task2_arg4, 
-		(prog_void *)&cmd_bt_task2_arg5, 
-		(prog_void *)&cmd_bt_task2_arg6, 
-		NULL,
-	},
-};
-
-
-/**********************************************************/
-/* BT Task 3 - 0 PARAMETERS */ 
-
-/* this structure is filled when cmd_bt_task3 is parsed successfully */
-struct cmd_bt_task3_result {
-	fixed_string_t arg0;
-	fixed_string_t arg1;
-};
-
-/* function called when cmd_bt_task3 is parsed successfully */
-static void cmd_bt_task3_parsed(void *parsed_result, void *data)
-{
-	struct cmd_bt_task3_result *res = parsed_result;
-
-
-	if (strcmp_P(res->arg1, PSTR("fresco")) == 0) {
-		bt_fresco();
-	}
-	else if (strcmp_P(res->arg1, PSTR("net")) == 0) {
-		printf("Not implemented.\n");
-	}
-}
-
-prog_char str_bt_task3_arg0[] = "bt_task";
-parse_pgm_token_string_t cmd_bt_task3_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task3_result, arg0, str_bt_task3_arg0);
-prog_char str_bt_task3_arg1[] = "fresco#net";
-parse_pgm_token_string_t cmd_bt_task3_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task3_result, arg1, str_bt_task3_arg1);
-prog_char help_bt_task3[] = "bt_task";
-parse_pgm_inst_t cmd_bt_task3 = {
-	.f = cmd_bt_task3_parsed,  /* function to call */
-	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_bt_task3,
-	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_bt_task3_arg0, 
-		(prog_void *)&cmd_bt_task3_arg1, 
-		NULL,
-	},
-};
-#endif
 
 
 

@@ -293,22 +293,6 @@ error_checksum:
 /* send command, and return after received ack */
 void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 {
-#define BT_SET_COLOR		1
-#define BT_AUTOPOS			2
-#define BT_GOTO_XY_ABS		3
-#define BT_GOTO_XY_REL		4
-#define BT_GOTO_AVOID		5
-#define BT_GOTO_AVOID_FW	6
-#define BT_GOTO_AVOID_BW	7
-#define BT_FRESCO						8	
-#define BT_PATROL						9 	//4 args (int)
-#define BT_PATROL_FRESCO_MAMOOTH		10 	
-#define BT_MAMOOTH						11 	
-#define BT_NET							12	
-#define BT_DO_OPP_FIRES					13
-#define BT_PROTECT_HEART				14 	
-#define BT_GOTO_FW_XY_ABS				15
-#define BT_GOTO_BW_XY_ABS				16
 
     uint8_t flags;
 	//DEBUG (E_USER_BT_PROTO, "TX cmd: id %d arg0 %d arg1 %d", cmd_id, arg0, arg1);
@@ -335,20 +319,20 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 	else if (cmd_id == BT_GOTO_XY_REL)
 		bt_send_ascii_cmd (robot_2nd.link_id, "bt_goto xy_rel %d %d %d", arg0, arg1, (arg0 + arg1));
 
-	else if (cmd_id == BT_FRESCO)
-		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task fresco");
+	else if (cmd_id == BT_PICK_CUP)
+		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task pick_cup");
 
-	else if (cmd_id == BT_PROTECT_HEART)
-		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task protect_h");
+	else if (cmd_id == BT_CARPET)
+		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task carpet");
 
-	else if (cmd_id == BT_NET)
-		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task net");
+	else if (cmd_id == BT_STAIRS)
+		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task stairs");
 
-	else if (cmd_id == BT_MAMOOTH)
-		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task mamooth %d %d %d", arg0, arg1, (arg0 + arg1));
+	else if (cmd_id == BT_BRING_CUP_CINEMA)
+		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task bring_cup");
 
-	else if (cmd_id == BT_PATROL_FRESCO_MAMOOTH){
-		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task patrol_fr_mam %d %d %d", arg0, arg1, (arg0 + arg1));
+	else if (cmd_id == BT_CLAPPERBOARD){
+		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task clap");
 	}
 	else if (cmd_id == BT_GOTO_AVOID)
 		bt_send_ascii_cmd (robot_2nd.link_id, "bt_goto avoid %d %d %d", arg0, arg1, (arg0 + arg1));
@@ -356,11 +340,6 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 		bt_send_ascii_cmd (robot_2nd.link_id, "bt_goto avoid_fw %d %d %d", arg0, arg1, (arg0 + arg1)); 
 	else if (cmd_id == BT_GOTO_AVOID_BW)
 		bt_send_ascii_cmd (robot_2nd.link_id, "bt_goto avoid_bw %d %d %d", arg0, arg1, (arg0 + arg1));
-	else if (cmd_id == BT_PATROL)
-	{
-		//bt_send_ascii_cmd (robot_2nd.link_id, "subtraj patrol %d %d %d %d", arg0, arg1, arg2, arg3);
-		//it needs four commands
-	}
 
 
 	/* ACK mechanism */
@@ -461,20 +440,22 @@ inline uint8_t bt_robot_2nd_goto_and_avoid_backward(int16_t x, int16_t y) {
 	return bt_robot_2nd_cmd (BT_GOTO_AVOID_BW, x, y);
 }
 
-inline uint8_t bt_robot_2nd_bt_task_mamooth (int16_t arg1, int16_t arg2) {
-	return bt_robot_2nd_cmd (BT_MAMOOTH, arg1, arg2);
+
+/* bt_tasks */
+inline void bt_robot_2nd_bt_task_pick_cup (void) {
+ bt_robot_2nd_cmd_no_wait_ack(BT_PICK_CUP,0,0);
 }
-inline uint8_t bt_robot_2nd_bt_patrol_fr_mam(int16_t arg1, int16_t arg2) {
-	return bt_robot_2nd_cmd (BT_PATROL_FRESCO_MAMOOTH, arg1, arg2);
+inline void bt_robot_2nd_bt_task_carpet(void) {
+ bt_robot_2nd_cmd_no_wait_ack (BT_CARPET,0,0);
 }
-inline uint8_t bt_robot_2nd_bt_protect_h(uint8_t heart) {
-	return bt_robot_2nd_cmd (BT_PROTECT_HEART, heart,0);
+inline void bt_robot_2nd_bt_task_stairs(void) {
+ bt_robot_2nd_cmd_no_wait_ack (BT_STAIRS,0,0);
 }
-inline uint8_t bt_robot_2nd_bt_net(void) {
-	return bt_robot_2nd_cmd (BT_NET, 0,0);
+inline void bt_robot_2nd_bt_task_bring_cup_cinema(void) {
+ bt_robot_2nd_cmd_no_wait_ack(BT_BRING_CUP_CINEMA,0,0);
 }
-inline uint8_t bt_robot_2nd_bt_fresco(void) {
-	return bt_robot_2nd_cmd (BT_FRESCO, 0,0);
+inline void bt_robot_2nd_bt_task_clapperboard(void) {
+ bt_robot_2nd_cmd_no_wait_ack (BT_CLAPPERBOARD,0,0);
 }
 
 /* request opponent position */
