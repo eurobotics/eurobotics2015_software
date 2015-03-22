@@ -82,7 +82,7 @@ struct cmd_traj_speed_result
 {
     fixed_string_t arg0;
     fixed_string_t arg1;
-    float s;
+    int16_t s;
 };
 
 /* function called when cmd_traj_speed is parsed successfully */
