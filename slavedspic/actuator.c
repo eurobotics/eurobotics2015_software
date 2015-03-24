@@ -834,7 +834,7 @@ uint8_t popcorn_ramps_wait_end(popcorn_ramps_t *popcorn_ramps)
 
 /**** cup_clamp_front functions *********************************************************/
 uint16_t cup_clamp_front_ax12_pos [CUP_CLAMP_FRONT_MODE_MAX] = {
-	[CUP_CLAMP_FRONT_MODE_HIDE] 		= POS_CUP_CLAMP_FRONT_HIDE, 
+	[CUP_CLAMP_FRONT_MODE_OPEN] 		= POS_CUP_CLAMP_FRONT_OPEN, 
 	[CUP_CLAMP_FRONT_MODE_CUP_LOCKED] 	= POS_CUP_CLAMP_FRONT_CUP_LOCKED 
 };
 
