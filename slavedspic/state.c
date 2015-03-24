@@ -388,7 +388,7 @@ void state_do_cup_holder_front_mode(void)
  */
 
 /* do popcorn_system */
-void popcorn_system_init(popcorn_system_t *ps, uint8_t cup_front_sensor, uint8_t cup_rear_sensor)
+void popcorn_system_init(popcorn_system_t *ps)
 {
 	ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
 	ps->mode_changed = 0;
@@ -398,14 +398,292 @@ void popcorn_system_init(popcorn_system_t *ps, uint8_t cup_front_sensor, uint8_t
 	ps->machine_popcorns_catched = 0;
 }
 
-void popcorn_system_manage(popcorn_system_t *ps)
+void do_cup_front_catch_and_drop(popcorn_system_t *ps)
 {
 	static microseconds us = 0;
-	static uint8_t flag_tray_open = 0;
-	static uint8_t flag_ramps_open = 0;
-	static uint8_t flag_clamp_door_l_open = 0;
-	static uint8_t flag_clamp_door_r_open = 0;
+	static int substate = 1;
+	static int tries = 0;
 
+	switch(substate)
+	{
+		case 1:
+			cup_clamp_front_set_mode(&slavedspic.cup_clamp_front, CUP_CLAMP_FRONT_MODE_CUP_LOCKED, 0);
+			substate = 2;
+			tries++;
+
+			break;
+
+		case 2:
+			if(cup_clamp_front_test_traj_end(&slavedspic.cup_clamp_front) & (END_NEAR|END_TRAJ)) {
+				substate = 3;
+				tries = 0;
+			}
+			else if(cup_clamp_front_test_traj_end(&slavedspic.cup_clamp_front) & (END_TIME|END_BLOCKING)) {
+				if(tries < 3)
+					substate = 1;
+				else if(tries >= 3) {
+					STMCH_ERROR("%s cup_clamp_front BLOCKED!!");
+					cup_clamp_front_set_mode(&slavedspic.cup_clamp_front, CUP_CLAMP_FRONT_MODE_OPEN, 0);
+					goto exit_do_cup_front_catch_and_drop;
+				}
+			}
+
+			break;
+
+		case 3:
+			cup_holder_front_set_mode(&slavedspic.cup_holder_front, CUP_HOLDER_FRONT_MODE_CUP_HOLD, 0);
+			substate = 4;
+			tries++;
+
+			break;
+
+		case 4:
+			if(cup_holder_front_test_traj_end(&slavedspic.cup_holder_front) & (END_NEAR|END_TRAJ)) {
+				us = time_get_us2();
+				substate = 5;
+				tries = 0;
+			}
+			else if(cup_holder_front_test_traj_end(&slavedspic.cup_holder_front) & (END_TIME|END_BLOCKING)) {
+				if(tries < 3)
+					substate = 3;
+				else if(tries >= 3) {
+					STMCH_ERROR("%s cup_holder_front BLOCKED!!");
+					cup_holder_front_set_mode(&slavedspic.cup_holder_front, CUP_HOLDER_FRONT_MODE_HIDE, 0);
+					goto exit_do_cup_front_catch_and_drop;
+				}
+			}
+
+			break;
+		case 5:
+			if(time_get_us2() - us > 500000L)
+				ps->cup_front_catched = 1;
+				goto exit_do_cup_front_catch_and_drop;
+			
+			break;
+
+		default:
+			goto exit_do_cup_front_catch_and_drop;
+	}
+
+	return;
+
+exit_do_cup_front_catch_and_drop:
+		ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
+		substate = 1;
+		tries = 0;
+}
+
+void do_cup_front_release(popcorn_system_t *ps)
+{
+	static int substate = 1;
+	static int tries = 0;
+
+	switch(substate)
+	{
+		case 1:
+			cup_holder_front_set_mode(&slavedspic.cup_holder_front, CUP_HOLDER_FRONT_MODE_HIDE, 0);
+			substate = 2;
+			tries++;
+
+			break;
+
+		case 2:
+			if(cup_holder_front_test_traj_end(&slavedspic.cup_holder_front) & (END_NEAR|END_TRAJ)) {
+				substate = 3;
+				tries = 0;
+			}
+			else if(cup_holder_front_test_traj_end(&slavedspic.cup_holder_front) & (END_TIME|END_BLOCKING)) {
+				if(tries < 3)
+					substate = 1;
+				else if(tries >= 3) {
+					STMCH_ERROR("%s cup_holder_front BLOCKED!!");
+					cup_holder_front_set_mode(&slavedspic.cup_holder_front, CUP_HOLDER_FRONT_MODE_CUP_HOLD, 0);
+					goto exit_do_cup_front_release;
+				}
+			}
+
+			break;
+
+		case 3:
+			cup_clamp_front_set_mode(&slavedspic.cup_clamp_front, CUP_CLAMP_FRONT_MODE_OPEN, 0);
+			substate = 4;
+			tries++;
+
+			break;
+
+		case 4:
+			if(cup_clamp_front_test_traj_end(&slavedspic.cup_clamp_front) & (END_NEAR|END_TRAJ)) {
+				ps->cup_front_catched = 0;
+				goto exit_do_cup_front_release;
+			}
+			else if(cup_clamp_front_test_traj_end(&slavedspic.cup_clamp_front) & (END_TIME|END_BLOCKING)) {
+				if(tries < 3)
+					substate = 3;
+				else if(tries >= 3) {
+					STMCH_ERROR("%s cup_clamp_front BLOCKED!!");
+					cup_clamp_front_set_mode(&slavedspic.cup_clamp_front, CUP_CLAMP_FRONT_MODE_CUP_LOCKED, 0);
+					goto exit_do_cup_front_release;
+				}
+			}
+
+			break;
+
+		default:
+			goto exit_do_cup_front_release;
+	}
+
+	return;
+
+exit_do_cup_front_release:
+		ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
+		substate = 1;
+		tries = 0;
+}
+
+void do_cup_rear_open(popcorn_system_t *ps)
+{
+	static int substate = 0;
+	static int tries = 0;
+	static int cup_clamp_l_last_mode = 0;
+	static int cup_clamp_r_last_mode = 0;
+				
+	switch(substate)
+	{
+		case 0:
+			cup_clamp_l_last_mode = slavedspic.cup_clamp_popcorn_door_l.mode;
+			cup_clamp_r_last_mode = slavedspic.cup_clamp_popcorn_door_r.mode;
+			substate = 1;
+
+			break;
+
+		case 1:
+			cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_r, CUP_CLAMP_MODE_OPEN, 0);
+			substate = 2;
+			tries++;
+
+			break;
+
+		case 2:
+			if(cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_r) & (END_NEAR|END_TRAJ)) {
+				substate = 3;
+				tries = 0;
+			}
+			else if(cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_r) & (END_TIME|END_BLOCKING)) {
+				if(tries < 3)
+					substate = 1;
+				else if(tries >= 3) {
+					STMCH_ERROR("%s cup_clamp_popcorn_door_r BLOCKED!!");
+					cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_r, cup_clamp_r_last_mode, 0);
+					goto exit_do_cup_rear_open;
+				}
+			}
+
+			break;
+
+		case 3:
+			cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_l, CUP_CLAMP_MODE_OPEN, 0);
+			substate = 4;
+			tries++;
+
+			break;
+
+		case 4:
+			if(cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_l) & (END_NEAR|END_TRAJ)) {
+				goto exit_do_cup_rear_open;
+				ps->cup_rear_catched = 0;
+			}
+			else if(cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_l) & (END_TIME|END_BLOCKING)) {
+				if(tries < 3)
+					substate = 3;
+				else if(tries >= 3) {
+					STMCH_ERROR("%s cup_clamp_popcorn_door_l BLOCKED!!");
+					cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_l, cup_clamp_l_last_mode, 0);
+					goto exit_do_cup_rear_open;
+				}
+			}
+
+			break;
+
+		default:
+			goto exit_do_cup_rear_open;
+	}
+
+	return;
+
+exit_do_cup_rear_open:
+		ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
+		substate = 0;
+		tries = 0;
+}
+
+void do_cup_rear_catch(popcorn_system_t *ps)
+{
+	static int substate = 1;
+	static int tries = 0;
+	static int cup_clamp_l_last_mode = 0;
+	static int cup_clamp_r_last_mode = 0;
+
+	switch(substate)
+	{
+		case 0:
+			if(&slavedspic.cup_clamp_popcorn_door_l.mode == CUP_CLAMP_MODE_HIDE ||
+						&slavedspic.cup_clamp_popcorn_door_r.mode == CUP_CLAMP_MODE_HIDE) {
+				STMCH_ERROR("OPEN BEFORE YOU TRY TO CATCH!!");
+				goto exit_do_cup_rear_catch;
+			}
+
+			cup_clamp_l_last_mode = slavedspic.cup_clamp_popcorn_door_l.mode;
+			cup_clamp_r_last_mode = slavedspic.cup_clamp_popcorn_door_r.mode;
+			substate = 1;
+
+			break;
+
+		case 1:
+			cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_l, CUP_CLAMP_MODE_LOCKED, 0);
+			cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_r, CUP_CLAMP_MODE_LOCKED, 0);
+			substate = 2;
+			tries++;
+
+			break;
+
+		case 2:
+			if((cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_l) & (END_NEAR|END_TRAJ)) &&
+					(cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_r) & (END_NEAR|END_TRAJ))) {
+				ps->cup_rear_catched = 1;
+				goto exit_do_cup_rear_catch;
+			}
+			else if((cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_l) & (END_TIME|END_BLOCKING)) ||
+					(cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_r) & (END_TIME|END_BLOCKING))) {
+				if(tries < 3)
+					substate = 1;
+				else if(tries >= 3) {
+					if(cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_l) & (END_TIME|END_BLOCKING))
+						STMCH_ERROR("%s cup_clamp_popcorn_door_l BLOCKED!!");
+					else
+						STMCH_ERROR("%s cup_clamp_popcorn_door_r BLOCKED!!");
+
+					cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_l, cup_clamp_l_last_mode, 0);
+					cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_r, cup_clamp_r_last_mode, 0);
+					goto exit_do_cup_rear_catch;
+				}
+			}
+
+			break;
+
+		default:
+			goto exit_do_cup_rear_catch;
+	}
+
+	return;
+
+exit_do_cup_rear_catch:
+		ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
+		substate = 0;
+		tries = 0;
+}
+
+void popcorn_system_manage(popcorn_system_t *ps)
+{
 	/* update mode */
 	if(ps->mode_changed){
 		ps->mode_changed = 0;
@@ -419,177 +697,146 @@ void popcorn_system_manage(popcorn_system_t *ps)
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_CATCH_AND_DROP:
-			cup_clamp_front_set_mode(&slavedspic.cup_clamp_front, CUP_CLAMP_FRONT_MODE_CUP_LOCKED, 0);
-
-			if(cup_clamp_front_test_traj_end(&slavedspic.cup_clamp_front) & (END_NEAR|END_TRAJ)) {
-				ps->cup_front_catched = 1;
-				cup_holder_front_set_mode(&slavedspic.cup_holder_front, CUP_HOLDER_FRONT_MODE_CUP_HOLD, 0);
-			}
-
-			if(ps->cup_front_catched && (cup_holder_front_test_traj_end(&slavedspic.cup_holder_front) & (END_NEAR|END_TRAJ)))
-				us = time_get_us2();
-
-			if((time_get_us2() - us > 500000L) && ps->cup_front_catched)
-				ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
-
+			do_cup_front_catch_and_drop(ps);
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_RELEASE:
-			cup_holder_front_set_mode(&slavedspic.cup_holder_front, CUP_HOLDER_FRONT_MODE_HIDE, 0);
+			do_cup_front_release(ps);
+			break;
 
-			if(cup_holder_front_test_traj_end(&slavedspic.cup_holder_front) & (END_NEAR|END_TRAJ)) {
-				ps->cup_front_catched = 0;
-				cup_clamp_front_set_mode(&slavedspic.cup_clamp_front, CUP_CLAMP_FRONT_MODE_HIDE, 0);
-			}
-
-			if(!ps->cup_front_catched && (cup_clamp_front_test_traj_end(&slavedspic.cup_clamp_front) & (END_NEAR|END_TRAJ)))
-					ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
-
+		case I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_OPEN:
+			do_cup_rear_open(ps);
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_CATCH:
-			if(flag_clamp_door_l_open != 2 || flag_clamp_door_r_open != 2) {
-				ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
-				return;
-			}
-
-			cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_l, CUP_CLAMP_MODE_LOCKED, 0);
-			cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_r, CUP_CLAMP_MODE_LOCKED, 0);
-
-			if((cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_l) & (END_NEAR|END_TRAJ)) &&
-					(cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_r) & (END_NEAR|END_TRAJ))) {
-				ps->cup_rear_catched = 1;
-				flag_clamp_door_l_open = 1;
-				flag_clamp_door_r_open = 1;
-				ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
-			}
-
+			do_cup_rear_catch(ps);
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_RELEASE:
-			if(!flag_clamp_door_l_open && !flag_clamp_door_r_open) {
-				popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_r, CUP_CLAMP_MODE_OPEN, 0);
-				flag_clamp_door_r_open = 2;
-				us = time_get_us2();
-			}
-			else if(!flag_clamp_door_l_open && flag_clamp_door_r_open) {
-				if(time_get_us2() - us > 300000L) {
-					popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_l, CUP_CLAMP_MODE_OPEN, 0);
-					flag_clamp_door_l_open = 2;
-				}
-			}
-			else {
-				popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_l, CUP_CLAMP_MODE_OPEN, 0);
-				popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_r, CUP_CLAMP_MODE_OPEN, 0);
-				flag_clamp_door_l_open = 2;
-				flag_clamp_door_r_open = 2;
-			}
-
-			if((cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_l) & (END_NEAR|END_TRAJ)) &&
-					(cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_r) & (END_NEAR|END_TRAJ))) {
-				ps->cup_rear_catched = 0;
-				ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
-			}
+//			if(!flag_clamp_door_l_open && !flag_clamp_door_r_open) {
+//				popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_r, CUP_CLAMP_MODE_OPEN, 0);
+//				flag_clamp_door_r_open = 2;
+//				us = time_get_us2();
+//			}
+//			else if(!flag_clamp_door_l_open && flag_clamp_door_r_open) {
+//				if(time_get_us2() - us > 300000L) {
+//					popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_l, CUP_CLAMP_MODE_OPEN, 0);
+//					flag_clamp_door_l_open = 2;
+//				}
+//			}
+//			else {
+//				popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_l, CUP_CLAMP_MODE_OPEN, 0);
+//				popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_r, CUP_CLAMP_MODE_OPEN, 0);
+//				flag_clamp_door_l_open = 2;
+//				flag_clamp_door_r_open = 2;
+//			}
+//
+//			if((cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_l) & (END_NEAR|END_TRAJ)) &&
+//					(cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_r) & (END_NEAR|END_TRAJ))) {
+//				ps->cup_rear_catched = 0;
+//				ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
+//			}
 
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_PS_MACHINES_READY:
-			if(!flag_tray_open) {
-				popcorn_tray_set_mode(&slavedspic.popcorn_tray, POPCORN_TRAY_MODE_OPEN, 0);
-				us = time_get_us2();
-				flag_ramps_open = 0;
-				flag_tray_open = 1;
-			}
-
-			if((time_get_us2() - us > 300000L) && flag_tray_open && !flag_ramps_open) {
-				popcorn_ramps_set_mode(&slavedspic.popcorn_ramps, POPCORN_RAMPS_MODE_OPEN, 0);
-				flag_ramps_open = 1;
-			}
-
-			if((popcorn_ramps_test_traj_end(&slavedspic.popcorn_ramps) & (END_NEAR|END_TRAJ)) && flag_ramps_open)
-				ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
+//			if(!flag_tray_open) {
+//				popcorn_tray_set_mode(&slavedspic.popcorn_tray, POPCORN_TRAY_MODE_OPEN, 0);
+//				us = time_get_us2();
+//				flag_ramps_open = 0;
+//				flag_tray_open = 1;
+//			}
+//
+//			if((time_get_us2() - us > 300000L) && flag_tray_open && !flag_ramps_open) {
+//				popcorn_ramps_set_mode(&slavedspic.popcorn_ramps, POPCORN_RAMPS_MODE_OPEN, 0);
+//				flag_ramps_open = 1;
+//			}
+//
+//			if((popcorn_ramps_test_traj_end(&slavedspic.popcorn_ramps) & (END_NEAR|END_TRAJ)) && flag_ramps_open)
+//				ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
 
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_PS_MACHINES_HARVEST:
-			if(!flag_tray_open || !flag_ramps_open) {
-				ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
-				return;
-			}
-			else
-			{
-				popcorn_ramps_set_mode(&slavedspic.popcorn_ramps, POPCORN_RAMPS_MODE_HARVEST, 0);
-
-				if((popcorn_ramps_test_traj_end(&slavedspic.popcorn_ramps) & (END_NEAR|END_TRAJ))) {
-					us = time_get_us2();
-					ps->machine_popcorns_catched = 1;
-				}
-
-				if((time_get_us2() - us > 500000L) && ps->machine_popcorns_catched)
-					ps->mode = I2C_SLAVEDSPIC_MODE_PS_MACHINES_END;
-			}
+//			if(!flag_tray_open || !flag_ramps_open) {
+//				ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
+//				return;
+//			}
+//			else
+//			{
+//				popcorn_ramps_set_mode(&slavedspic.popcorn_ramps, POPCORN_RAMPS_MODE_HARVEST, 0);
+//
+//				if((popcorn_ramps_test_traj_end(&slavedspic.popcorn_ramps) & (END_NEAR|END_TRAJ))) {
+//					us = time_get_us2();
+//					ps->machine_popcorns_catched = 1;
+//				}
+//
+//				if((time_get_us2() - us > 500000L) && ps->machine_popcorns_catched)
+//					ps->mode = I2C_SLAVEDSPIC_MODE_PS_MACHINES_END;
+//			}
 
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_PS_MACHINES_END:
-			popcorn_ramps_set_mode(&slavedspic.popcorn_ramps, POPCORN_RAMPS_MODE_HIDE, 0);
+//			popcorn_ramps_set_mode(&slavedspic.popcorn_ramps, POPCORN_RAMPS_MODE_HIDE, 0);
+//
+//			if(popcorn_ramps_test_traj_end(&slavedspic.popcorn_ramps) & (END_NEAR|END_TRAJ)) {
+//				flag_ramps_open = 0;
+//				popcorn_tray_set_mode(&slavedspic.popcorn_tray, POPCORN_TRAY_MODE_CLOSE, 0);
+//				flag_tray_open = 0;
+//				ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
+//			}
 
-			if(popcorn_ramps_test_traj_end(&slavedspic.popcorn_ramps) & (END_NEAR|END_TRAJ)) {
-				flag_ramps_open = 0;
-				popcorn_tray_set_mode(&slavedspic.popcorn_tray, POPCORN_TRAY_MODE_CLOSE, 0);
-				flag_tray_open = 0;
-				ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
-			}
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_PS_STOCK_DROP:
-			if(!flag_clamp_door_l_open && !flag_clamp_door_r_open) {
-				popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_r, POPCORN_DOOR_MODE_OPEN, 0);
-				flag_clamp_door_r_open = 2;
-				us = time_get_us2();
-			}
-			else if(!flag_clamp_door_l_open && flag_clamp_door_r_open) {
-				if(time_get_us2() - us > 300000L) {
-					popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_l, POPCORN_DOOR_MODE_OPEN, 0);
-					flag_clamp_door_l_open = 2;
-				}
-			}
-			else {
-				popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_l, POPCORN_DOOR_MODE_OPEN, 0);
-				popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_r, POPCORN_DOOR_MODE_OPEN, 0);
-				flag_clamp_door_l_open = 2;
-				flag_clamp_door_r_open = 2;
-			}
-
-			if((cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_l) & (END_NEAR|END_TRAJ)) &&
-					(cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_r) & (END_NEAR|END_TRAJ))) {
-				ps->cup_rear_catched = 0;
-				ps->machine_popcorns_catched = 0;
-				us = time_get_us2();
-			}
-
-			if((time_get_us2() - us > 1000000L) && !ps->machine_popcorns_catched)
-				ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
+//			if(!flag_clamp_door_l_open && !flag_clamp_door_r_open) {
+//				popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_r, POPCORN_DOOR_MODE_OPEN, 0);
+//				flag_clamp_door_r_open = 2;
+//				us = time_get_us2();
+//			}
+//			else if(!flag_clamp_door_l_open && flag_clamp_door_r_open) {
+//				if(time_get_us2() - us > 300000L) {
+//					popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_l, POPCORN_DOOR_MODE_OPEN, 0);
+//					flag_clamp_door_l_open = 2;
+//				}
+//			}
+//			else {
+//				popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_l, POPCORN_DOOR_MODE_OPEN, 0);
+//				popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_r, POPCORN_DOOR_MODE_OPEN, 0);
+//				flag_clamp_door_l_open = 2;
+//				flag_clamp_door_r_open = 2;
+//			}
+//
+//			if((cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_l) & (END_NEAR|END_TRAJ)) &&
+//					(cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_r) & (END_NEAR|END_TRAJ))) {
+//				ps->cup_rear_catched = 0;
+//				ps->machine_popcorns_catched = 0;
+//				us = time_get_us2();
+//			}
+//
+//			if((time_get_us2() - us > 1000000L) && !ps->machine_popcorns_catched)
+//				ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
 
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_PS_STOCK_END:
-			if(ps->cup_rear_catched) {
-				ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
-				return;
-			}
-				
-			popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_l, POPCORN_DOOR_MODE_OPEN, 0);
-
-			if((cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_l) & (END_NEAR|END_TRAJ))) {
-				flag_clamp_door_l_open = 0;				
-				popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_r, POPCORN_DOOR_MODE_OPEN, 0);
-			}
-
-			if((cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_l) & (END_NEAR|END_TRAJ)) && !flag_clamp_door_l_open) {
-				flag_clamp_door_r_open = 0;
-				ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
-			}
+//			if(ps->cup_rear_catched) {
+//				ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
+//				return;
+//			}
+//				
+//			popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_l, POPCORN_DOOR_MODE_OPEN, 0);
+//
+//			if((cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_l) & (END_NEAR|END_TRAJ))) {
+//				flag_clamp_door_l_open = 0;				
+//				popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_r, POPCORN_DOOR_MODE_OPEN, 0);
+//			}
+//
+//			if((cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_l) & (END_NEAR|END_TRAJ)) && !flag_clamp_door_l_open) {
+//				flag_clamp_door_r_open = 0;
+//				ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
+//			}
 
 			break;
 
@@ -632,18 +879,112 @@ void stands_system_manage(stands_system_t *ss, stands_system_t *ss_slave)
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_SS_HIDE:
+			//si el retenedor está abierto:
+				//cerrar retenedor
+
+			//cerrar pinza
+			//Cuando la pinza y el retenedor estén cerrados:
+				//Si el número de stands es menor que 4:
+					//subir elevador
+					//Cuando el elevador esté subido:
+						//Esconder brazo
+						//cuando el brazo esté escondido
+						
+				//si no:
+					//dejar elevador abajo con un offset para que los stands no arrastren
+					//cuando el elevador esté posicionado:
+						//Mover el brazo a la posición de empujar stand
+
+			//cuando la pinza, el retenedor, el elevador y el brazo estén "escondidos"
+				//cambiar modo a idle
 
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_SS_HARVESTING:
+			//si hay 4 stands en la columna:
+				//cambiar estado a idle
+				//return
+
+			//colocar brazo
+			//colocar brazo esclavo
+			//cuando los brazos estén colocados después de la inicialización:
+				//si el sensor lateral detecta objeto:
+					//mover el brazo para empujar stand
+
+			//cuando el brazo esté colocado después de la inicialización
+				//abrir pinza
+				//cuando la pinza esté abierta:
+					//bajar elevador
+					//cuando el elevador esté bajado:
+						//sumar 1 stand almacenado
+						//cambiar a modo hide
 
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT:
+			//si hay stands en el esclavo, ponerlo en modo build_spotlight
+
+			//si el sistema coincide con el lado donde se va a construir:
+				//si no hay más stands en la otra torre ni disponibles para coger:
+					//cambiar a release spotlight
+				//si no:
+					//si el retenedor está cerrado
+						//subir torre
+					//cuando la torre esté subida:
+						//si no hay brazos tras la columna secundaria:
+							//mover los dos brazos tras la columna secundaria
+					//cuando la torre esté subida y esté activado el flag de stand preparado para almacenar:
+						//presionar stand con un brazo
+					//cuando la torre esté subida y el brazo presionando:
+						//abrir pinza
+						//cuando la pinza esté abierta:
+							//bajar elevador
+							//cuando el elevador esté bajado:
+								//sumar 1 stand almacenado
+								//si quedan stands en la otra torre:
+									//cerrar pinza
+
+			//si es la otra columna:
+				//si hay más de 0 stands y no hay ningún brazo detrás de la columna:
+					//subir elevador
+
+				//si no:
+					//si el número de stands en la columna es mayor que 0:
+						//posicionar carro
+						//cuando el elevador, el carro y los brazos estén posicionados:
+							//bajar torre
+						//cuando la torre esté bajada:
+							//soltar pinza
+						//cuando la pinza esté abierta:
+							//subir elevador a media altura
+						//cuando el elevador esté a media altura:
+							//cerrar pinza
+						//cuando la pinza esté cerrada y el elevador a media altura:
+							//dar offset al elevador
+						//cuando el elevador esté posicionado a media altura con offset y los brazos estén escondidos:
+							//desplazar stand con el carro
+						//cuando el carro esté en medio:
+							//activar flag de stand listo para almacenar
+							//restar 1 stand almacenado en torre secundaria
+					//si no:
+						//cambiar a modo hide
 
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT:
+			//si el spotlight no está almacenado en el sistema:
+				//cambiar a modo idle
+				//return
+
+			//si el brazo izquierdo está presionando el stand:
+				//mover el brazo izquierdo a la posición central
+			//si el brazo derecho está presionando el stand:
+				//mover el brazo derecho a la posición central
+
+			//abrir pinza
+			//abrir retenedor
+			//cuando la pinza, el retenedor y los brazos se hayan posicionado:
+				//cambiar a estado idle
 
 			break;
 
@@ -746,15 +1087,16 @@ void state_init(void)
 	popcorn_tray_set_mode(&slavedspic.popcorn_tray, POPCORN_TRAY_MODE_CLOSE, 0);
 	popcorn_ramps_set_mode(&slavedspic.popcorn_ramps, POPCORN_RAMPS_MODE_HIDE, 0);
 
-	cup_clamp_front_set_mode(&slavedspic.cup_clamp_front, CUP_CLAMP_FRONT_MODE_HIDE, 0);
+	cup_clamp_front_set_mode(&slavedspic.cup_clamp_front, CUP_CLAMP_FRONT_MODE_OPEN, 0);
 	cup_holder_front_set_mode(&slavedspic.cup_holder_front, CUP_HOLDER_FRONT_MODE_HIDE, 0);
 
 	BRAKE_OFF();
 	//slavedspic.stands_exchanger.on = 1;
 	//stands_exchanger_calibrate();
+	//Desplazar carro junto a la torre secundaria
 
 	/* systems init */
-	popcorn_system_init(&slavedspic.ps, S_CUP_FRONT, S_CUP_REAR);
+	popcorn_system_init(&slavedspic.ps);
 	stands_system_init(&slavedspic.ss[I2C_SIDE_LEFT], S_STAND_INSIDE_L, &slavedspic.stands_blade_l, &slavedspic.stands_clamp_l, &slavedspic.stands_elevator_l);
 	stands_system_init(&slavedspic.ss[I2C_SIDE_RIGHT], S_STAND_INSIDE_R, &slavedspic.stands_blade_r, &slavedspic.stands_clamp_r, &slavedspic.stands_elevator_r);
 }

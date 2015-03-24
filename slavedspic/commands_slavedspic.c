@@ -607,8 +607,8 @@ static void cmd_cup_clamp_front_parsed(__attribute__((unused)) void *parsed_resu
 	struct cmd_cup_clamp_front_result *res = (struct cmd_cup_clamp_front_result *) parsed_result;
 	struct i2c_cmd_slavedspic_set_mode command;
 
-	if (!strcmp_P(res->arg1, PSTR("hide")))
-		command.cup_clamp_front.mode = I2C_CUP_CLAMP_FRONT_MODE_HIDE;
+	if (!strcmp_P(res->arg1, PSTR("open")))
+		command.cup_clamp_front.mode = I2C_CUP_CLAMP_FRONT_MODE_OPEN;
 	else if (!strcmp_P(res->arg1, PSTR("cup_locked")))
 		command.cup_clamp_front.mode = I2C_CUP_CLAMP_FRONT_MODE_CUP_LOCKED;
 
@@ -620,7 +620,7 @@ static void cmd_cup_clamp_front_parsed(__attribute__((unused)) void *parsed_resu
 
 prog_char str_cup_clamp_front_arg0[] = "cup_clamp_front";
 parse_pgm_token_string_t cmd_cup_clamp_front_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_cup_clamp_front_result, arg0, str_cup_clamp_front_arg0);
-prog_char str_cup_clamp_front_arg1[] = "hide#cup_locked";
+prog_char str_cup_clamp_front_arg1[] = "open#cup_locked";
 parse_pgm_token_string_t cmd_cup_clamp_front_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_cup_clamp_front_result, arg1, str_cup_clamp_front_arg1);
 parse_pgm_token_num_t cmd_cup_clamp_front_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_cup_clamp_front_result, arg2, INT8);
 
@@ -708,6 +708,8 @@ static void cmd_popcorn_system_parsed(__attribute__((unused)) void *parsed_resul
 		command.popcorn_system.mode = I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_CATCH_AND_DROP;
 	else if (!strcmp_P(res->arg1, PSTR("cup_f_release")))
 		command.popcorn_system.mode = I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_RELEASE;
+	else if (!strcmp_P(res->arg1, PSTR("cup_r_open")))
+		command.popcorn_system.mode = I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_OPEN;
 	else if (!strcmp_P(res->arg1, PSTR("cup_r_catch")))
 		command.popcorn_system.mode = I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_CATCH;
 	else if (!strcmp_P(res->arg1, PSTR("cup_r_release")))
@@ -729,7 +731,7 @@ static void cmd_popcorn_system_parsed(__attribute__((unused)) void *parsed_resul
 
 prog_char str_popcorn_system_arg0[] = "popcorn_system";
 parse_pgm_token_string_t cmd_popcorn_system_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_popcorn_system_result, arg0, str_popcorn_system_arg0);
-prog_char str_popcorn_system_arg1[] = "idle#cup_f_drop#cup_f_release#cup_r_catch#cup_r_release#machines_ready#machines_harvest#machines_end#stock_drop#stock_end";
+prog_char str_popcorn_system_arg1[] = "idle#cup_f_drop#cup_f_release#cup_r_open#cup_r_catch#cup_r_release#machines_ready#machines_harvest#machines_end#stock_drop#stock_end";
 parse_pgm_token_string_t cmd_popcorn_system_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_popcorn_system_result, arg1, str_popcorn_system_arg1);
 
 prog_char help_popcorn_system[] = "set popcorn_system mode";

@@ -95,7 +95,7 @@
 #define POS_POPCORN_RAMP_R_HARVEST		505
 #define POS_POPCORN_RAMP_R_OPEN			385
 
-#define POS_CUP_CLAMP_FRONT_HIDE		350
+#define POS_CUP_CLAMP_FRONT_OPEN		350
 #define POS_CUP_CLAMP_FRONT_CUP_LOCKED	200
 
 #define POS_CUP_HOLDER_FRONT_CUP_HOLD	184
@@ -346,7 +346,7 @@ uint8_t popcorn_ramps_wait_end(popcorn_ramps_t *popcorn_ramps);
 /**** cup_clamp_front functions *********************************************************/
 typedef struct {
 	uint8_t mode;
-#define CUP_CLAMP_FRONT_MODE_HIDE			0
+#define CUP_CLAMP_FRONT_MODE_OPEN			0
 #define CUP_CLAMP_FRONT_MODE_CUP_LOCKED		1
 #define CUP_CLAMP_FRONT_MODE_MAX			2
 
