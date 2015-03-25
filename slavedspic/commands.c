@@ -33,7 +33,7 @@
 #include <parse.h>
 
 //#define COMPILE_COMMANDS_CS
-#define COMPILE_COMMANDS_AX12
+//#define COMPILE_COMMANDS_AX12
 
 /* commands_gen.c */
 extern parse_pgm_inst_t cmd_reset;

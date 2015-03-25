@@ -34,10 +34,15 @@ typedef struct {
 	uint8_t mode_changed;
 
 	/* info */
-	uint8_t cup_front_catched;
-	uint8_t cup_rear_catched;
-	uint8_t machine_popcorns_catched;
+	unsigned status : 5;
+#define STATUS_READY				1
+#define STATUS_BUSY					2
+#define STATUS_DONE					4
+#define STATUS_BLOCKED				8
 
+	unsigned cup_front_catched : 1;
+	unsigned cup_rear_catched : 1;
+	unsigned machine_popcorns_catched : 1;
 }popcorn_system_t;
 
 /* stands_system */
