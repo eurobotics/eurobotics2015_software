@@ -129,6 +129,7 @@ void i2c_read_event(uint8_t cmd_byte, uint8_t *buf)
 
 			/* infos */
 			(*cmd).popcorn_system.mode = slavedspic.ps.mode;
+			(*cmd).popcorn_system.status = slavedspic.ps.status;
 			(*cmd).popcorn_system.cup_front_catched = slavedspic.ps.cup_front_catched;
 			(*cmd).popcorn_system.cup_rear_catched = slavedspic.ps.cup_rear_catched;
 			(*cmd).popcorn_system.machine_popcorns_catched = slavedspic.ps.machine_popcorns_catched;
