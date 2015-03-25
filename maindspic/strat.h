@@ -192,8 +192,8 @@
 #else
 
 /* default acc */
-#define ACC_DIST  85
-#define ACC_ANGLE 85
+#define ACC_DIST  75
+#define ACC_ANGLE 75
 
 /* default speeds */
 #ifdef HOMOLOGATION
@@ -201,8 +201,10 @@
 #define SPEED_ANGLE_FAST 		2000.
 #else
 
-#define SPEED_DIST_VERY_FAST 	4200.
-#define SPEED_ANGLE_VERY_FAST 	4200.
+//#define SPEED_DIST_VERY_FAST 	4500. /* XXX very clean wheels */
+//#define SPEED_ANGLE_VERY_FAST 4500.
+#define SPEED_DIST_VERY_FAST 	4000.
+#define SPEED_ANGLE_VERY_FAST 	4000.
 #define SPEED_DIST_FAST 		3000.
 #define SPEED_ANGLE_FAST 		3000.
 #endif
