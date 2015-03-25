@@ -1030,13 +1030,11 @@ static void cmd_bt_task_parsed(void *parsed_result, void *data)
 {
 	struct cmd_bt_task_result *res = parsed_result;
 
-	//TODO UNCOMMENT when parameters are included
--	/* check args checksum */
--	//if (() == args_checksum) 
-	{
--
--		/* set ACK */
--		bt_status_set_cmd_ack (0);
+	
+	/*TODO check args checksum 
+	
+		/* set ACK */
+		bt_status_set_cmd_ack(0);
 
 		/* set task flag */
 		if (strcmp_P(res->arg1, PSTR("pick_cup")) == 0) {
@@ -1055,19 +1053,22 @@ static void cmd_bt_task_parsed(void *parsed_result, void *data)
 			current_bt_task=BT_TASK_CLAP;
 		}
 	
-		else if (strcmp_P(res->arg1, PSTR("strat_exit")) == 0)
+		else if (strcmp_P(res->arg1, PSTR("strat_exit")) == 0){
 			bt_strat_exit();
-		else if (strcmp_P(res->arg1, PSTR("strat_init")) == 0)
+		}
+		else if (strcmp_P(res->arg1, PSTR("strat_init")) == 0){
 			bt_strat_init();
-			
-	-	// Parameters do not coincide, send NACK 
+		}
 		else
-	-		bt_status_set_cmd_ack (END_ERROR);
-	}
+		{
+			bt_status_set_cmd_ack(END_ERROR);
+		}
+		
 	
+	//if checksum does not match
 	/*else {
--		// set NACK 
--		bt_status_set_cmd_ack (END_ERROR);
+		// set NACK 
+		bt_status_set_cmd_ack (END_ERROR);
 	}*/
 }
 
