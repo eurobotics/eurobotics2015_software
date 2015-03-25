@@ -142,34 +142,29 @@ intr:
 void pick_popcorn_cup(void)
 {
     printf_P(PSTR("pick_popcorn_cup\r\n"));
-	bt_status_set_cmd_ret (END_TRAJ);
 }
 
 
 void extend_carpet(void)
 {
     printf_P(PSTR("extend_carpet\r\n"));
-	bt_status_set_cmd_ret (END_TRAJ);
 }
 
 
 void climb_stairs(void)
 {
     printf_P(PSTR("climb_stairs\r\n"));
-	bt_status_set_cmd_ret (END_TRAJ);
 }
 
 
 void bring_cup_to_cinema(void)
 {
     printf_P(PSTR("bring_cup_to_cinema\r\n"));
-	bt_status_set_cmd_ret (END_TRAJ);
 }
 
 
 void close_clapperboard(void)
 {
     printf_P(PSTR("clapperboard\r\n"));
-	bt_status_set_cmd_ret (END_TRAJ);
 }
 

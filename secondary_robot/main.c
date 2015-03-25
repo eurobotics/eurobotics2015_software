@@ -459,7 +459,8 @@ int main(void)
 				break;
 		}
 		
-		//TODO: return value from the functions indicating finish, to inform main robot.
+		// Return value from the functions indicating finish, to inform main robot.
+		bt_status_set_cmd_ret (END_TRAJ);
 	}
 
    return 0;

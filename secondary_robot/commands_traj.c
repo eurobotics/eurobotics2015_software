@@ -1030,28 +1030,45 @@ static void cmd_bt_task_parsed(void *parsed_result, void *data)
 {
 	struct cmd_bt_task_result *res = parsed_result;
 
+	//TODO UNCOMMENT when parameters are included
+-	/* check args checksum */
+-	//if (() == args_checksum) 
+	{
+-
+-		/* set ACK */
+-		bt_status_set_cmd_ack (0);
 
-	if (strcmp_P(res->arg1, PSTR("pick_cup")) == 0) {
-		current_bt_task=BT_TASK_PICK_CUP;
-	}
-	else if (strcmp_P(res->arg1, PSTR("carpet")) == 0) {
-		current_bt_task=BT_TASK_CARPET;
-	}
-	else if (strcmp_P(res->arg1, PSTR("stairs")) == 0) {
-		current_bt_task=BT_TASK_STAIRS;
-	}
-	else if (strcmp_P(res->arg1, PSTR("bring_cup")) == 0) {
-		current_bt_task=BT_TASK_BRING_CUP;
-	}
-	else if (strcmp_P(res->arg1, PSTR("clap")) == 0) {
-		current_bt_task=BT_TASK_CLAP;
+		/* set task flag */
+		if (strcmp_P(res->arg1, PSTR("pick_cup")) == 0) {
+			current_bt_task=BT_TASK_PICK_CUP;
+		}
+		else if (strcmp_P(res->arg1, PSTR("carpet")) == 0) {
+			current_bt_task=BT_TASK_CARPET;
+		}
+		else if (strcmp_P(res->arg1, PSTR("stairs")) == 0) {
+			current_bt_task=BT_TASK_STAIRS;
+		}
+		else if (strcmp_P(res->arg1, PSTR("bring_cup")) == 0) {
+			current_bt_task=BT_TASK_BRING_CUP;
+		}
+		else if (strcmp_P(res->arg1, PSTR("clap")) == 0) {
+			current_bt_task=BT_TASK_CLAP;
+		}
+	
+		else if (strcmp_P(res->arg1, PSTR("strat_exit")) == 0)
+			bt_strat_exit();
+		else if (strcmp_P(res->arg1, PSTR("strat_init")) == 0)
+			bt_strat_init();
+			
+	-	// Parameters do not coincide, send NACK 
+		else
+	-		bt_status_set_cmd_ack (END_ERROR);
 	}
 	
-	else if (strcmp_P(res->arg1, PSTR("strat_exit")) == 0)
-		bt_strat_exit();
-	else if (strcmp_P(res->arg1, PSTR("strat_init")) == 0)
-		bt_strat_init();
-
+	/*else {
+-		// set NACK 
+-		bt_status_set_cmd_ack (END_ERROR);
+	}*/
 }
 
 prog_char str_bt_task_arg0[] = "bt_task";

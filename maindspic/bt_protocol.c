@@ -443,19 +443,19 @@ inline uint8_t bt_robot_2nd_goto_and_avoid_backward(int16_t x, int16_t y) {
 
 /* bt_tasks */
 inline void bt_robot_2nd_bt_task_pick_cup (void) {
- bt_robot_2nd_cmd_no_wait_ack(BT_PICK_CUP,0,0);
+ bt_robot_2nd_cmd(BT_PICK_CUP,0,0);
 }
 inline void bt_robot_2nd_bt_task_carpet(void) {
- bt_robot_2nd_cmd_no_wait_ack (BT_CARPET,0,0);
+ bt_robot_2nd_cmd(BT_CARPET,0,0);
 }
 inline void bt_robot_2nd_bt_task_stairs(void) {
- bt_robot_2nd_cmd_no_wait_ack (BT_STAIRS,0,0);
+ bt_robot_2nd_cmd(BT_STAIRS,0,0);
 }
 inline void bt_robot_2nd_bt_task_bring_cup_cinema(void) {
- bt_robot_2nd_cmd_no_wait_ack(BT_BRING_CUP_CINEMA,0,0);
+ bt_robot_2nd_cmd(BT_BRING_CUP_CINEMA,0,0);
 }
 inline void bt_robot_2nd_bt_task_clapperboard(void) {
- bt_robot_2nd_cmd_no_wait_ack (BT_CLAPPERBOARD,0,0);
+ bt_robot_2nd_cmd(BT_CLAPPERBOARD,0,0);
 }
 
 /* request opponent position */
