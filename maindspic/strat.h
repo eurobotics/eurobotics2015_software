@@ -351,6 +351,8 @@ struct strat_infos {
 
 	/* opponent statistics */
 	uint8_t opp_score;
+	
+	uint8_t strat_smart_sec;
 };
 
 extern struct strat_infos strat_infos;
@@ -405,10 +407,10 @@ void strat_event_disable(void);
 uint8_t strat_main_loop(void);
 
 /* return new work zone, -1 if any zone is found */
-int8_t strat_get_new_zone(void);
+int8_t strat_get_new_zone(uint8_t robot);
 
 /* return END_TRAJ if zone is reached */
-uint8_t strat_goto_zone(uint8_t zone_num);
+uint8_t strat_goto_zone(uint8_t zone_num, uint8_t robot);
 
 /* return END_TRAJ if the work is done */
 uint8_t strat_work_on_zone(uint8_t zone_num);
@@ -418,7 +420,7 @@ void state_debug_wait_key_pressed(void);
 
 /* smart play */
 //#define DEBUG_STRAT_SMART
-uint8_t strat_smart(void);
+uint8_t strat_smart(uint8_t robot);
 void recalculate_priorities(void);
 
 /* tracking of zones where opp has been working */
