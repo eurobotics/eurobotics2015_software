@@ -1233,7 +1233,7 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 		}
 		
 	
-        strat_smart();
+        strat_smart(MAIN_ROBOT);
     }
 
     printf_P(PSTR("subtraj returned %s\r\n"), get_err(err));
@@ -1307,7 +1307,7 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 	printf_P(PSTR("\r\n"));
 	printf_P(PSTR("%d %s\r\n"),zone_num,numzone2name[zone_num]);
     if (zone_num < ZONES_MAX) {
-        err = strat_goto_zone(zone_num);
+        err = strat_goto_zone(zone_num, MAIN_ROBOT);
         printf_P(PSTR("goto returned %s\r\n"), get_err(err));    
 
        // err = strat_work_on_zone(zone_num);

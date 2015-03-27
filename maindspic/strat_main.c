@@ -81,7 +81,7 @@
  */
  
 
-int8_t strat_is_valid_zone(uint8_t zone_num)
+int8_t strat_is_valid_zone(uint8_t zone_num, uint8_t robot)
 {
 //#define OPP_WAS_IN_ZONE_TIMES	
 
@@ -107,7 +107,9 @@ int8_t strat_is_valid_zone(uint8_t zone_num)
 		//DEBUG(E_USER_STRAT,"zone num: %d. avoid.");
 		return -1;	
 	}
-		
+	if(strat_infos.zones[zone_num].robot != robot){
+		return -1;	
+	}		
 	return zone_num;
 }
 void set_next_sec_strategy(){
@@ -168,7 +170,7 @@ void set_strat_sec_3(void){
 
 
 /* return new work zone, -1 if any zone is found */
-int8_t strat_get_new_zone(void)
+int8_t strat_get_new_zone(uint8_t robot)
 {
 	uint8_t prio_max = 0;
 	int8_t zone_num = -1, valid_zone= -1 ;
@@ -183,7 +185,7 @@ int8_t strat_get_new_zone(void)
 			zone_num = i;
 		}
 		if( i == ZONES_MAX-1 ){
-			valid_zone = strat_is_valid_zone(zone_num);
+			valid_zone = strat_is_valid_zone(zone_num, robot);
 			switch(valid_zone){
 				case -1:
 					//strategy has to change
@@ -203,7 +205,7 @@ int8_t strat_get_new_zone(void)
 }
 
 /* return END_TRAJ if zone is reached, err otherwise */
-uint8_t strat_goto_zone(uint8_t zone_num)
+uint8_t strat_goto_zone(uint8_t zone_num, uint8_t robot)
 {
 	int8_t err=0;
 
@@ -213,16 +215,16 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 	strat_infos.goto_zone=zone_num;
 	
 	/* Secondary robot */
-	if(strat_infos.zones[zone_num].robot==SEC_ROBOT)
+	if(robot==SEC_ROBOT)
 	{
-		/*bt_robot_2nd_goto_and_avoid(COLOR_X(strat_infos.zones[zone_num].init_x), 
+		bt_robot_2nd_goto_and_avoid(COLOR_X(strat_infos.zones[zone_num].init_x), 
 												strat_infos.zones[zone_num].init_y);
 												
-		err = bt_robot_2nd_wait_end();*/
+		//err = bt_robot_2nd_wait_end();
 		//Temporally 2scondary robot is not ready to test.
-		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
+		/*err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
 										strat_infos.zones[zone_num].init_y,  
-										TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+										TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);*/
 		
 	}else{
 		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
@@ -254,8 +256,7 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 	uint16_t temp_spdd, temp_spda;
 
 #ifdef HOST_VERSION
-	DEBUG(E_USER_STRAT,"strat_work_on_zone %d %s: press a key",zone_num,numzone2name[zone_num]);
-	while(!cmdline_keypressed());
+	//DEBUG(E_USER_STRAT,"strat_work_on_zone %d %s: press a key",zone_num,numzone2name[zone_num]);
 #endif
 
 
@@ -432,7 +433,7 @@ void recalculate_priorities(void)
 
 
 /* smart play */
-uint8_t strat_smart(void)
+uint8_t strat_smart(uint8_t robot)
 {
 	int8_t zone_num;
 	uint8_t err;
@@ -441,7 +442,7 @@ uint8_t strat_smart(void)
 	
 	/* get new zone */
 	
-	zone_num = strat_get_new_zone();
+	zone_num = strat_get_new_zone(robot);
 	DEBUG(E_USER_STRAT,"Zone: %d. Priority: %d",zone_num,strat_infos.zones[zone_num].prio);
 		
 	if(zone_num == -1) {
@@ -452,15 +453,17 @@ uint8_t strat_smart(void)
 		//DEBUG(E_USER_STRAT,"Going to zone %s.",numzone2name[zone_num]);
 		strat_infos.goto_zone = zone_num;
 		strat_dump_infos(__FUNCTION__);
+		printf_P(PSTR("\r\n\r\nGo TO ZONE\r\n"));
+		err = strat_goto_zone(zone_num,robot);
 		
-		err = strat_goto_zone(zone_num);
-		
+		printf_P(PSTR("\r\n\r\nGO TO ZONE END\r\n"));
 		if (!TRAJ_SUCCESS(err)) {
 			DEBUG(E_USER_STRAT,"Can't reach zone %d.", zone_num);
 			set_next_sec_strategy(); 
 			return END_TRAJ;
 		}
 		
+    printf_P(PSTR("\r\n\r\nWORK ON ZONE\r\n"));
 		DEBUG(E_USER_STRAT,"strat_work_on_zone");
 		/* work on zone */
 		strat_infos.last_zone = strat_infos.current_zone;
@@ -585,8 +588,6 @@ void strat_homologation(void)
 	uint8_t i=0;
         #define ZONES_SEQUENCE_LENGTH 3
 	uint8_t zones_sequence[ZONES_SEQUENCE_LENGTH]={ZONE_MY_STAND_GROUP_1,ZONE_MY_POPCORNMAC,ZONE_MY_HOME};
-
-
 	
 	/* Secondary robot */
 	//
@@ -603,11 +604,11 @@ void strat_homologation(void)
 		strat_infos.current_zone=-1;
 		strat_infos.goto_zone=i;
 
-		strat_goto_zone (zones_sequence[i]);
+		//strat_goto_zone (zones_sequence[i], robot);
 		err = wait_traj_end(TRAJ_FLAGS_STD);
 		if (!TRAJ_SUCCESS(err)) {
 			strat_infos.current_zone=-1;
-			DEBUG(E_USER_STRAT,"Can't reach zone %s.", numzone2name[zones_sequence[i]]);
+			//DEBUG(E_USER_STRAT,"Can't reach zone %s.", numzone2name[zones_sequence[i]]);
 		}
 		else{
 			strat_infos.current_zone=i;
@@ -621,7 +622,7 @@ void strat_homologation(void)
 		strat_dump_infos(__FUNCTION__);
 		err = strat_work_on_zone(zones_sequence[i]);
 		if (!TRAJ_SUCCESS(err)) {
-                    DEBUG(E_USER_STRAT,"Work on zone %s fails.", numzone2name[zones_sequence[i]]);
+                    //DEBUG(E_USER_STRAT,"Work on zone %s fails.", numzone2name[zones_sequence[i]]);
 
                     /* IMPORTANT: If in home, get out of it before continuing */
                     if(strat_infos.zones[zones_sequence[i]].type==ZONE_TYPE_HOME)
