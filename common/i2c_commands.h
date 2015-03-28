@@ -86,6 +86,7 @@ struct i2c_slavedspic_status{
 
 	struct {
 		uint8_t mode;
+		uint8_t status;
 		uint8_t stored_stands;
 	}stands_system[I2C_SIDE_ALL];
 };
@@ -141,6 +142,7 @@ struct i2c_cmd_slavedspic_set_mode {
 #define I2C_STANDS_BLADE_MODE_CENTER				2
 #define I2C_STANDS_BLADE_MODE_PUSH_STAND_RIGHT		3
 #define I2C_STANDS_BLADE_MODE_HIDE_RIGHT			4
+#define I2C_STANDS_BLADE_MODE_SET_ANGLE				5
 
 			int8_t offset;
 		} stands_blade;
@@ -252,8 +254,8 @@ struct i2c_cmd_slavedspic_set_mode {
 			uint8_t mode;
 #define I2C_SLAVEDSPIC_MODE_SS_IDLE					0
 
-#define I2C_SLAVEDSPIC_MODE_SS_HIDE					10
-#define I2C_SLAVEDSPIC_MODE_SS_HARVESTING			11
+#define I2C_SLAVEDSPIC_MODE_SS_HIDE_TOWER			10
+#define I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND		11
 #define I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT		12
 #define I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT	13
 

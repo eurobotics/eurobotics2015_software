@@ -31,47 +31,47 @@
 
 #define old_version
 
-#define STANDS_EXCHANGER_SPEED				100
-#define STANDS_EXCHANGER_ACCEL				1
-#define STANDS_EXCHANGER_K_IMP_mm			(-51474.0/250.0)
+#define STANDS_EXCHANGER_SPEED				10000
+#define STANDS_EXCHANGER_ACCEL				0
+#define STANDS_EXCHANGER_K_IMP_mm			1
 #define STANDS_EXCHANGER_CALIB_IMP_MAX		0
-#define STANDS_EXCHANGER_POSITION_MAX_mm	250L
-#define STANDS_EXCHANGER_POSITION_MIN_mm	1L
+#define STANDS_EXCHANGER_POSITION_MAX_mm	16000L
+#define STANDS_EXCHANGER_POSITION_MIN_mm	-16000L
 
-#define POS_POPCORN_TRAY_OPEN		100//100
-#define POS_POPCORN_TRAY_CLOSE		1000//1000
+#define POS_POPCORN_TRAY_OPEN		0
+#define POS_POPCORN_TRAY_CLOSE		980
 
-#define POS_STANDS_CLAMP_L_OPEN		100//100
-#define POS_STANDS_CLAMP_L_CLOSE	1000//1000
+#define POS_STANDS_CLAMP_L_OPEN		700
+#define POS_STANDS_CLAMP_L_CLOSE	500
 
-#define POS_STANDS_CLAMP_R_OPEN		100//100
-#define POS_STANDS_CLAMP_R_CLOSE	1000//1000
+#define POS_STANDS_CLAMP_R_OPEN		700
+#define POS_STANDS_CLAMP_R_CLOSE	500
 
-#define POS_STANDS_TOWER_CLAMPS_UP_UNLOCK_LEFT		400//400
-#define POS_STANDS_TOWER_CLAMPS_UP_LOCK				750//750
-#define POS_STANDS_TOWER_CLAMPS_UP_UNLOCK_RIGHT		1000//1000
+#define POS_STANDS_TOWER_CLAMPS_UP_UNLOCK_LEFT		640
+#define POS_STANDS_TOWER_CLAMPS_UP_LOCK				515
+#define POS_STANDS_TOWER_CLAMPS_UP_UNLOCK_RIGHT		390
 
-#define POS_STANDS_TOWER_CLAMPS_DOWN_UNLOCK_LEFT	400//400
-#define POS_STANDS_TOWER_CLAMPS_DOWN_LOCK			750//750
-#define POS_STANDS_TOWER_CLAMPS_DOWN_UNLOCK_RIGHT	1000//1000
+#define POS_STANDS_TOWER_CLAMPS_DOWN_UNLOCK_LEFT	565
+#define POS_STANDS_TOWER_CLAMPS_DOWN_LOCK			443
+#define POS_STANDS_TOWER_CLAMPS_DOWN_UNLOCK_RIGHT	318
 
 #define POS_STANDS_ELEVATOR_L_UP	300
 #define POS_STANDS_ELEVATOR_L_DOWN	860
 
-#define POS_STANDS_ELEVATOR_R_UP	170//170 //hay que cambiar de posición el servo
-#define POS_STANDS_ELEVATOR_R_DOWN	857//857
+#define POS_STANDS_ELEVATOR_R_UP	800
+#define POS_STANDS_ELEVATOR_R_DOWN	190
 
 #define ANG_STANDS_BLADE_L_HIDE_LEFT			-90
-#define ANG_STANDS_BLADE_L_PUSH_STAND_LEFT		-45//500
+#define ANG_STANDS_BLADE_L_PUSH_STAND_LEFT		-40
 #define ANG_STANDS_BLADE_L_CENTER				0
-#define ANG_STANDS_BLADE_L_PUSH_STAND_RIGHT		45//800
+#define ANG_STANDS_BLADE_L_PUSH_STAND_RIGHT		40
 #define ANG_STANDS_BLADE_L_HIDE_RIGHT			90
 #define POS_OFFSET_STANDS_BLADE_L				356
 
 #define ANG_STANDS_BLADE_R_HIDE_LEFT			-90
-#define ANG_STANDS_BLADE_R_PUSH_STAND_LEFT		-45//500
+#define ANG_STANDS_BLADE_R_PUSH_STAND_LEFT		-45
 #define ANG_STANDS_BLADE_R_CENTER				0
-#define ANG_STANDS_BLADE_R_PUSH_STAND_RIGHT		45//800
+#define ANG_STANDS_BLADE_R_PUSH_STAND_RIGHT		45
 #define ANG_STANDS_BLADE_R_HIDE_RIGHT			90
 #define POS_OFFSET_STANDS_BLADE_R				477
 
@@ -172,8 +172,8 @@ typedef struct {
 
 #define STANDS_CLAMP_MODE_L_POS_MAX		0	
 #define STANDS_CLAMP_MODE_L_POS_MIN		1
-#define STANDS_CLAMP_MODE_R_POS_MAX		1
-#define STANDS_CLAMP_MODE_R_POS_MIN		0
+#define STANDS_CLAMP_MODE_R_POS_MAX		0
+#define STANDS_CLAMP_MODE_R_POS_MIN		1
 
 	uint16_t servo_pos;
 } stands_clamp_t;
@@ -191,10 +191,10 @@ typedef struct {
 #define STANDS_TOWER_CLAMPS_MODE_UNLOCK_RIGHT		2
 #define STANDS_TOWER_CLAMPS_MODE_MAX				3
 
-#define STANDS_TOWER_CLAMPS_MODE_UP_POS_MIN			0
-#define STANDS_TOWER_CLAMPS_MODE_UP_POS_MAX			2
-#define STANDS_TOWER_CLAMPS_MODE_DOWN_POS_MIN		0
-#define STANDS_TOWER_CLAMPS_MODE_DOWN_POS_MAX		2
+#define STANDS_TOWER_CLAMPS_MODE_UP_POS_MIN			2
+#define STANDS_TOWER_CLAMPS_MODE_UP_POS_MAX			0
+#define STANDS_TOWER_CLAMPS_MODE_DOWN_POS_MIN		2
+#define STANDS_TOWER_CLAMPS_MODE_DOWN_POS_MAX		0
 
 	uint16_t ax12_pos_up;
 	uint16_t ax12_pos_down;
@@ -207,7 +207,7 @@ int8_t stands_tower_clamps_set_mode(stands_tower_clamps_t *stands_tower_clamps, 
 uint8_t stands_tower_clamps_test_traj_end(stands_tower_clamps_t *stands_tower_clamps);
 
 /* return END_TRAJ or END_TIMER */
-uint8_t stands_tower_clamps_wait_end(stands_tower_clamps_t *stands_tower_clamps);
+//uint8_t stands_tower_clamps_wait_end(stands_tower_clamps_t *stands_tower_clamps);
 
 
 
@@ -238,7 +238,7 @@ int8_t stands_elevator_set_mode(stands_elevator_t *stands_elevator, uint8_t mode
 uint8_t stands_elevator_test_traj_end(stands_elevator_t *stands_elevator);
 
 /* return END_TRAJ or END_TIMER */
-uint8_t stands_elevator_wait_end(stands_elevator_t *stands_elevator);
+//uint8_t stands_elevator_wait_end(stands_elevator_t *stands_elevator);
 
 
 
@@ -255,24 +255,25 @@ typedef struct {
 #define STANDS_BLADE_MODE_CENTER				2
 #define STANDS_BLADE_MODE_PUSH_STAND_RIGHT		3
 #define STANDS_BLADE_MODE_HIDE_RIGHT			4
-#define STANDS_BLADE_MODE_MAX					5
+#define STANDS_BLADE_MODE_SET_ANGLE				5
+#define STANDS_BLADE_MODE_MAX					6
 
 #define STANDS_BLADE_MODE_L_ANG_MIN		0
 #define STANDS_BLADE_MODE_L_ANG_MAX		4	
 #define STANDS_BLADE_MODE_R_ANG_MIN		0
 #define STANDS_BLADE_MODE_R_ANG_MAX		4
 
-	uint16_t ax12_ang;
+	int8_t ax12_ang;
 } stands_blade_t;
 
 /* set stands_blade angle depends on mode */
-int8_t stands_blade_set_mode(stands_blade_t *stands_blade, uint8_t mode, int16_t ang_offset);
+int8_t stands_blade_set_mode(stands_blade_t *stands_blade, uint8_t mode, int8_t ang_offset);
 
 /* return stands_blade traj flag */
 uint8_t stands_blade_test_traj_end(stands_blade_t *stands_blade);
 
 /* return END_TRAJ or END_TIMER */
-uint8_t stands_blade_wait_end(stands_blade_t *stands_blade);
+//uint8_t stands_blade_wait_end(stands_blade_t *stands_blade);
 
 
 
@@ -290,10 +291,10 @@ typedef struct {
 #define POPCORN_DOOR_MODE_OPEN				3
 #define CUP_CLAMP_POPCORN_DOOR_MODE_MAX		4
 
-#define CUP_CLAMP_POPCORN_DOOR_MODE_L_POS_MIN		0
-#define CUP_CLAMP_POPCORN_DOOR_MODE_L_POS_MAX		3	
-#define CUP_CLAMP_POPCORN_DOOR_MODE_R_POS_MIN		3
-#define CUP_CLAMP_POPCORN_DOOR_MODE_R_POS_MAX		0
+#define CUP_CLAMP_POPCORN_DOOR_MODE_L_POS_MIN		3
+#define CUP_CLAMP_POPCORN_DOOR_MODE_L_POS_MAX		0	
+#define CUP_CLAMP_POPCORN_DOOR_MODE_R_POS_MIN		0
+#define CUP_CLAMP_POPCORN_DOOR_MODE_R_POS_MAX		3
 
 	uint16_t ax12_pos;
 } cup_clamp_popcorn_door_t;
@@ -311,7 +312,7 @@ int8_t popcorn_door_set_mode(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door, u
 uint8_t cup_clamp_popcorn_door_test_traj_end(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door);
 
 /* return END_TRAJ or END_TIMER */
-uint8_t cup_clamp_popcorn_door_wait_end(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door);
+//uint8_t cup_clamp_popcorn_door_wait_end(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door);
 
 
 
@@ -339,7 +340,7 @@ int8_t popcorn_ramps_set_mode(popcorn_ramps_t *popcorn_ramps, uint8_t mode, int1
 uint8_t popcorn_ramps_test_traj_end(popcorn_ramps_t *popcorn_ramps);
 
 /* return END_TRAJ or END_TIMER */
-uint8_t popcorn_ramps_wait_end(popcorn_ramps_t *popcorn_ramps);
+//uint8_t popcorn_ramps_wait_end(popcorn_ramps_t *popcorn_ramps);
 
 
 
@@ -350,8 +351,8 @@ typedef struct {
 #define CUP_CLAMP_FRONT_MODE_CUP_LOCKED		1
 #define CUP_CLAMP_FRONT_MODE_MAX			2
 
-#define CUP_CLAMP_FRONT_MODE_POS_MIN		0
-#define CUP_CLAMP_FRONT_MODE_POS_MAX		1
+#define CUP_CLAMP_FRONT_MODE_POS_MIN		1
+#define CUP_CLAMP_FRONT_MODE_POS_MAX		0
 
 	uint16_t ax12_pos;
 
@@ -364,7 +365,7 @@ int8_t cup_clamp_front_set_mode(cup_clamp_front_t *cup_clamp_front, uint8_t mode
 uint8_t cup_clamp_front_test_traj_end(cup_clamp_front_t *cup_clamp_front);
 
 /* return END_TRAJ or END_TIMER */
-uint8_t cup_clamp_front_wait_end(cup_clamp_front_t *cup_clamp_front);
+//uint8_t cup_clamp_front_wait_end(cup_clamp_front_t *cup_clamp_front);
 
 
 
@@ -389,7 +390,7 @@ int8_t cup_holder_front_set_mode(cup_holder_front_t *cup_holder_front, uint8_t m
 uint8_t cup_holder_front_test_traj_end(cup_holder_front_t *cup_holder_front);
 
 /* return END_TRAJ or END_TIMER */
-uint8_t cup_holder_front_wait_end(cup_holder_front_t *cup_holder_front);
+//uint8_t cup_holder_front_wait_end(cup_holder_front_t *cup_holder_front);
 
 
 

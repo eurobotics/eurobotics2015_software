@@ -49,4 +49,4 @@ uint8_t sensor_get(uint8_t i);
 /* called every X ms as a scheduler task */
 void do_sensors(__attribute__((unused)) void *dummy);
 
-uint8_t sensor_object_is_catched(void);
+//uint8_t sensor_object_is_catched(void);

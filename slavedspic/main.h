@@ -75,9 +75,9 @@
 #define STANDS_EXCHANGER_ENCODER		((void *)1)
 #define PWM_MC_STANDS_EXCHANGER_MOTOR	((void *)&gen.pwm_mc_mod2_ch1)
 
-#define PWM_SERVO_POPCORN_TRAY			&gen.pwm_servo_oc1
-#define PWM_SERVO_STANDS_CLAMP_L		&gen.pwm_servo_oc2
-#define PWM_SERVO_STANDS_CLAMP_R		&gen.pwm_servo_oc3
+#define PWM_SERVO_POPCORN_TRAY			&gen.pwm_servo_oc3
+#define PWM_SERVO_STANDS_CLAMP_L		&gen.pwm_servo_oc1
+#define PWM_SERVO_STANDS_CLAMP_R		&gen.pwm_servo_oc2
 
 #define AX12_ID_STANDS_TOWER_CLAMPS_UP		3
 #define AX12_ID_STANDS_TOWER_CLAMPS_DOWN	8
