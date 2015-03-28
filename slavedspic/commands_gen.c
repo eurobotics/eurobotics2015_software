@@ -317,6 +317,7 @@ parse_pgm_inst_t cmd_pwm_servo_show_range = {
 	},
 };
 
+#if 0
 /**********************************************************/
 /* DAC MC tests */
 
@@ -359,7 +360,7 @@ parse_pgm_inst_t cmd_dac_mc = {
 		NULL,
 	},
 };
-
+#endif
 
 
 /**********************************************************/
@@ -466,6 +467,7 @@ static const prog_char i2cproto_log[] = "i2cproto";
 static const prog_char sensor_log[] = "sensor";
 static const prog_char state_log[] = "state";
 static const prog_char ax12_log[] = "ax12";
+static const prog_char cs_log[] = "cs";
 
 struct log_name_and_num {
 	const prog_char * name;
@@ -479,6 +481,7 @@ static const struct log_name_and_num log_name_and_num[] = {
 	{ sensor_log, E_USER_SENSOR },
 	{ state_log, E_USER_ST_MACH },
 	{ ax12_log, E_USER_AX12 },
+	{ cs_log, E_USER_CS },
 };
 
 static uint8_t

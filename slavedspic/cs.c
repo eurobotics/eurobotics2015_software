@@ -95,14 +95,21 @@ void dump_pid(const char *name, struct pid_filter *pid)
 		 pid_get_value_out(pid));
 }
 
+void __pwm_mc_set(void *pwm, int32_t value)
+{
+
+	
+
+}
+
 void slavedspic_cs_init(void)
 {
 	/* ---- CS */
 	/* PID */
 	pid_init(&slavedspic.stands_exchanger.pid);
-	pid_set_gains(&slavedspic.stands_exchanger.pid, 5000, 50, 20000);
-	pid_set_maximums(&slavedspic.stands_exchanger.pid, 0, 500000, 60000);
-	pid_set_out_shift(&slavedspic.stands_exchanger.pid, 8);
+	pid_set_gains(&slavedspic.stands_exchanger.pid, 0, 0, 0);
+	pid_set_maximums(&slavedspic.stands_exchanger.pid, 0, 3000, 3300);
+	pid_set_out_shift(&slavedspic.stands_exchanger.pid, 6);
 	pid_set_derivate_filter(&slavedspic.stands_exchanger.pid, 1);
 
 	/* QUADRAMP */

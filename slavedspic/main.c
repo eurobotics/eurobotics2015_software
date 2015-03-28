@@ -250,7 +250,7 @@ int main(void)
 
 	/* DO FLAGS */
 	/* note: cs is enabled after calibration */
-	slavedspic.flags = DO_ENCODERS | DO_POWER | DO_BD;
+	slavedspic.flags = DO_ENCODERS | DO_POWER | DO_BD | DO_CS;
 
 
 	/* DAC_MC */
@@ -263,9 +263,9 @@ int main(void)
 	pwm_servo_init(&gen.pwm_servo_oc2, 2, 600, 2400);
 	pwm_servo_init(&gen.pwm_servo_oc3, 3, 600, 2400);
 	pwm_servo_enable();
-	pwm_servo_set(&gen.pwm_servo_oc1, 1000);
-	pwm_servo_set(&gen.pwm_servo_oc2, 1000);
-	pwm_servo_set(&gen.pwm_servo_oc3, 1000);
+	pwm_servo_set(&gen.pwm_servo_oc1, 700);
+	pwm_servo_set(&gen.pwm_servo_oc2, 700);
+	pwm_servo_set(&gen.pwm_servo_oc3, 980);
 
 	/* SCHEDULER */
 	scheduler_init();
@@ -295,7 +295,7 @@ int main(void)
 	/* LOGS */
  	gen.logs[0] = E_USER_ST_MACH;
 	gen.logs[1] = E_USER_ACTUATORS;
-	//gen.logs[2] = E_USER_CS;
+	gen.logs[2] = E_USER_CS;
 	gen.log_level = 5;
 
 	/* enable interrupt */
