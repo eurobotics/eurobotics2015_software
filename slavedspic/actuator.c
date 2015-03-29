@@ -249,7 +249,7 @@ void stands_exchanger_calibrate(void)
 	ACTUATORS_DEBUG("Goto zero");	
 
 	/* wait end initial positioning */
-	ret = WAIT_COND_OR_TIMEOUT(sensor_get(S_STAND_EXCHANGER_ENDSTOP), AUTOPOS_BD_TIMEOUT_ms);
+//	ret = WAIT_COND_OR_TIMEOUT(sensor_get(S_STAND_EXCHANGER_ENDSTOP), AUTOPOS_BD_TIMEOUT_ms);
 	if(!ret) {
 		ACTUATORS_DEBUG("Initial positioning not reached");
 		return;

@@ -282,9 +282,9 @@ int main(void)
 	//					8000L / SCHEDULER_UNIT,
 	//					I2C_POLL_PRIO);
 
-	//scheduler_add_periodical_event_priority(do_sensors, NULL, 
-	//					10000L / SCHEDULER_UNIT, 
-	//					SENSOR_PRIO);
+	scheduler_add_periodical_event_priority(do_sensors, NULL, 
+						10000L / SCHEDULER_UNIT, 
+						SENSOR_PRIO);
 
 	/* TIME */
 	time_init(TIME_PRIO);

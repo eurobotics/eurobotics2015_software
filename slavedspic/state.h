@@ -27,6 +27,13 @@
 #include "../common/i2c_commands.h"
 #include "actuator.h"
 
+//#define SIMPLE_ACTUATORS
+#define ACTUATOR_SYSTEMS
+//#define INFOS
+
+
+#ifdef ACTUATOR_SYSTEMS
+
 /* popcorn_system */
 typedef struct {
 	uint8_t mode;
@@ -148,6 +155,7 @@ typedef struct {
 
 }stands_system_t;
 
+#endif
 
 /* set a new state, return 0 on success */
 int8_t state_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd);
