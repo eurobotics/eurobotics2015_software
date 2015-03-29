@@ -659,6 +659,8 @@ static void cmd_cup_holder_front_parsed(__attribute__((unused)) void *parsed_res
 
 	if (!strcmp_P(res->arg1, PSTR("cup_hold")))
 		command.cup_holder_front.mode = I2C_CUP_HOLDER_FRONT_MODE_CUP_HOLD;
+	else if (!strcmp_P(res->arg1, PSTR("ready")))
+		command.cup_holder_front.mode = I2C_CUP_HOLDER_FRONT_MODE_READY;
 	else if (!strcmp_P(res->arg1, PSTR("hide")))
 		command.cup_holder_front.mode = I2C_CUP_HOLDER_FRONT_MODE_HIDE;
 
@@ -670,7 +672,7 @@ static void cmd_cup_holder_front_parsed(__attribute__((unused)) void *parsed_res
 
 prog_char str_cup_holder_front_arg0[] = "cup_holder_front";
 parse_pgm_token_string_t cmd_cup_holder_front_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_cup_holder_front_result, arg0, str_cup_holder_front_arg0);
-prog_char str_cup_holder_front_arg1[] = "cup_hold#hide";
+prog_char str_cup_holder_front_arg1[] = "cup_hold#ready#hide";
 parse_pgm_token_string_t cmd_cup_holder_front_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_cup_holder_front_result, arg1, str_cup_holder_front_arg1);
 parse_pgm_token_num_t cmd_cup_holder_front_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_cup_holder_front_result, arg2, INT8);
 
@@ -706,10 +708,14 @@ static void cmd_popcorn_system_parsed(__attribute__((unused)) void *parsed_resul
 
 	if (!strcmp_P(res->arg1, PSTR("idle")))
 		command.popcorn_system.mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
+	else if (!strcmp_P(res->arg1, PSTR("cup_f_ready")))
+		command.popcorn_system.mode = I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_READY;
 	else if (!strcmp_P(res->arg1, PSTR("cup_f_drop")))
 		command.popcorn_system.mode = I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_CATCH_AND_DROP;
 	else if (!strcmp_P(res->arg1, PSTR("cup_f_release")))
 		command.popcorn_system.mode = I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_RELEASE;
+	else if (!strcmp_P(res->arg1, PSTR("cup_f_hide")))
+		command.popcorn_system.mode = I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_HIDE;
 	else if (!strcmp_P(res->arg1, PSTR("cup_r_open")))
 		command.popcorn_system.mode = I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_OPEN;
 	else if (!strcmp_P(res->arg1, PSTR("cup_r_catch")))
@@ -731,9 +737,9 @@ static void cmd_popcorn_system_parsed(__attribute__((unused)) void *parsed_resul
 	state_set_mode(&command);
 }
 
-prog_char str_popcorn_system_arg0[] = "popcorn_system";
+prog_char str_popcorn_system_arg0[] = "ps";
 parse_pgm_token_string_t cmd_popcorn_system_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_popcorn_system_result, arg0, str_popcorn_system_arg0);
-prog_char str_popcorn_system_arg1[] = "idle#cup_f_drop#cup_f_release#cup_r_open#cup_r_catch#cup_r_release#machines_ready#machines_harvest#machines_end#stock_drop#stock_end";
+prog_char str_popcorn_system_arg1[] = "idle#cup_f_ready#cup_f_drop#cup_f_release#cup_f_hide#cup_r_open#cup_r_catch#cup_r_release#machines_ready#machines_harvest#machines_end#stock_drop#stock_end";
 parse_pgm_token_string_t cmd_popcorn_system_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_popcorn_system_result, arg1, str_popcorn_system_arg1);
 
 prog_char help_popcorn_system[] = "set popcorn_system mode";
@@ -789,7 +795,7 @@ static void cmd_stands_system_parsed(__attribute__((unused)) void *parsed_result
 	state_set_mode(&command);
 }
 
-prog_char str_stands_system_arg0[] = "stands_system";
+prog_char str_stands_system_arg0[] = "ss";
 parse_pgm_token_string_t cmd_stands_system_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_stands_system_result, arg0, str_stands_system_arg0);
 prog_char str_stands_system_arg1[] = "left#right";
 parse_pgm_token_string_t cmd_stands_system_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_stands_system_result, arg1, str_stands_system_arg1);

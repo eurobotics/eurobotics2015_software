@@ -61,18 +61,18 @@
 #define POS_STANDS_ELEVATOR_R_UP	800
 #define POS_STANDS_ELEVATOR_R_DOWN	190
 
-#define ANG_STANDS_BLADE_L_HIDE_LEFT			-90
+#define ANG_STANDS_BLADE_L_HIDE_LEFT			-80
 #define ANG_STANDS_BLADE_L_PUSH_STAND_LEFT		-40
 #define ANG_STANDS_BLADE_L_CENTER				0
 #define ANG_STANDS_BLADE_L_PUSH_STAND_RIGHT		40
-#define ANG_STANDS_BLADE_L_HIDE_RIGHT			90
+#define ANG_STANDS_BLADE_L_HIDE_RIGHT			80
 #define POS_OFFSET_STANDS_BLADE_L				356
 
-#define ANG_STANDS_BLADE_R_HIDE_LEFT			-90
+#define ANG_STANDS_BLADE_R_HIDE_LEFT			-80
 #define ANG_STANDS_BLADE_R_PUSH_STAND_LEFT		-45
 #define ANG_STANDS_BLADE_R_CENTER				0
 #define ANG_STANDS_BLADE_R_PUSH_STAND_RIGHT		45
-#define ANG_STANDS_BLADE_R_HIDE_RIGHT			90
+#define ANG_STANDS_BLADE_R_HIDE_RIGHT			80
 #define POS_OFFSET_STANDS_BLADE_R				477
 
 #define POS_CUP_CLAMP_L_HIDE			729
@@ -99,7 +99,8 @@
 #define POS_CUP_CLAMP_FRONT_CUP_LOCKED	200
 
 #define POS_CUP_HOLDER_FRONT_CUP_HOLD	184
-#define POS_CUP_HOLDER_FRONT_HIDE		512
+#define POS_CUP_HOLDER_FRONT_READY		512
+#define POS_CUP_HOLDER_FRONT_HIDE		564
 
 
 /* test end traj */
@@ -207,7 +208,7 @@ int8_t stands_tower_clamps_set_mode(stands_tower_clamps_t *stands_tower_clamps, 
 uint8_t stands_tower_clamps_test_traj_end(stands_tower_clamps_t *stands_tower_clamps);
 
 /* return END_TRAJ or END_TIMER */
-//uint8_t stands_tower_clamps_wait_end(stands_tower_clamps_t *stands_tower_clamps);
+uint8_t stands_tower_clamps_wait_end(stands_tower_clamps_t *stands_tower_clamps);
 
 
 
@@ -238,7 +239,7 @@ int8_t stands_elevator_set_mode(stands_elevator_t *stands_elevator, uint8_t mode
 uint8_t stands_elevator_test_traj_end(stands_elevator_t *stands_elevator);
 
 /* return END_TRAJ or END_TIMER */
-//uint8_t stands_elevator_wait_end(stands_elevator_t *stands_elevator);
+uint8_t stands_elevator_wait_end(stands_elevator_t *stands_elevator);
 
 
 
@@ -273,7 +274,7 @@ int8_t stands_blade_set_mode(stands_blade_t *stands_blade, uint8_t mode, int8_t 
 uint8_t stands_blade_test_traj_end(stands_blade_t *stands_blade);
 
 /* return END_TRAJ or END_TIMER */
-//uint8_t stands_blade_wait_end(stands_blade_t *stands_blade);
+uint8_t stands_blade_wait_end(stands_blade_t *stands_blade);
 
 
 
@@ -312,7 +313,7 @@ int8_t popcorn_door_set_mode(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door, u
 uint8_t cup_clamp_popcorn_door_test_traj_end(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door);
 
 /* return END_TRAJ or END_TIMER */
-//uint8_t cup_clamp_popcorn_door_wait_end(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door);
+uint8_t cup_clamp_popcorn_door_wait_end(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door);
 
 
 
@@ -340,7 +341,7 @@ int8_t popcorn_ramps_set_mode(popcorn_ramps_t *popcorn_ramps, uint8_t mode, int1
 uint8_t popcorn_ramps_test_traj_end(popcorn_ramps_t *popcorn_ramps);
 
 /* return END_TRAJ or END_TIMER */
-//uint8_t popcorn_ramps_wait_end(popcorn_ramps_t *popcorn_ramps);
+uint8_t popcorn_ramps_wait_end(popcorn_ramps_t *popcorn_ramps);
 
 
 
@@ -365,7 +366,7 @@ int8_t cup_clamp_front_set_mode(cup_clamp_front_t *cup_clamp_front, uint8_t mode
 uint8_t cup_clamp_front_test_traj_end(cup_clamp_front_t *cup_clamp_front);
 
 /* return END_TRAJ or END_TIMER */
-//uint8_t cup_clamp_front_wait_end(cup_clamp_front_t *cup_clamp_front);
+uint8_t cup_clamp_front_wait_end(cup_clamp_front_t *cup_clamp_front);
 
 
 
@@ -373,11 +374,12 @@ uint8_t cup_clamp_front_test_traj_end(cup_clamp_front_t *cup_clamp_front);
 typedef struct {
 	uint8_t mode;
 #define CUP_HOLDER_FRONT_MODE_CUP_HOLD		0
-#define CUP_HOLDER_FRONT_MODE_HIDE			1
-#define CUP_HOLDER_FRONT_MODE_MAX			2
+#define CUP_HOLDER_FRONT_MODE_READY			1
+#define CUP_HOLDER_FRONT_MODE_HIDE			2
+#define CUP_HOLDER_FRONT_MODE_MAX			3
 
 #define CUP_HOLDER_FRONT_MODE_POS_MIN		0
-#define CUP_HOLDER_FRONT_MODE_POS_MAX		1
+#define CUP_HOLDER_FRONT_MODE_POS_MAX		2
 
 	uint16_t ax12_pos;
 
@@ -390,7 +392,7 @@ int8_t cup_holder_front_set_mode(cup_holder_front_t *cup_holder_front, uint8_t m
 uint8_t cup_holder_front_test_traj_end(cup_holder_front_t *cup_holder_front);
 
 /* return END_TRAJ or END_TIMER */
-//uint8_t cup_holder_front_wait_end(cup_holder_front_t *cup_holder_front);
+uint8_t cup_holder_front_wait_end(cup_holder_front_t *cup_holder_front);
 
 
 

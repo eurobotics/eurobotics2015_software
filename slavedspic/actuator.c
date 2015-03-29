@@ -168,27 +168,27 @@ const char *get_err (uint8_t err)
 uint8_t ax12_test_traj_end (struct ax12_traj *ax12, uint8_t flags)
 {
 	ax12_user_read_int(&gen.ax12, ax12->id, AA_PRESENT_POSITION_L, &ax12->pos);
-    uint8_t ret = 0;
+    //uint8_t ret = 0;
 
 	if (flags & END_TRAJ)
 		if (ABS(ax12->goal_pos - ax12->pos) < AX12_WINDOW_NO_NEAR)
-			ret |= END_TRAJ;
+			return END_TRAJ;
 
 	if (flags & END_NEAR)
 		if (ABS(ax12->goal_pos - ax12->pos) < AX12_WINDOW_NEAR)
-			ret |=  END_NEAR;
+			return END_NEAR;
 
 	if (flags & END_TIME)
 		if ((time_get_us2() - ax12->time_us)/1000 > ax12->goal_time_ms)
-			ret |=  END_TIME;
+			return END_TIME;
 
 	//if (flags & END_BLOCKING)
         if ((time_get_us2() - ax12->time_us)/1000 > (2*ax12->goal_time_ms)) {
             ax12_user_write_int(&gen.ax12, ax12->id , AA_GOAL_POSITION_L, ax12->pos);                       
-		    ret |=  END_BLOCKING;
+		    return END_BLOCKING;
         }
 
-    return ret;
+    return 0;
 }
 
 /* wait traj end */
@@ -493,15 +493,15 @@ uint8_t stands_tower_clamps_test_traj_end(stands_tower_clamps_t *stands_tower_cl
 }
 
 /* return END_TRAJ or END_TIMER */
-//uint8_t stands_tower_clamps_wait_end(stands_tower_clamps_t *stands_tower_clamps)
-//{
-//    uint8_t ret_up, ret_down;
-//   
-//   	ret_up = ax12_wait_traj_end (&ax12_stands_tower_clamps_up, END_TRAJ|END_TIME);
-//   	ret_down = ax12_wait_traj_end (&ax12_stands_tower_clamps_down, END_TRAJ|END_TIME);
-//
-//    return (ret_up | ret_down);
-//}
+uint8_t stands_tower_clamps_wait_end(stands_tower_clamps_t *stands_tower_clamps)
+{
+    uint8_t ret_up, ret_down;
+   
+   	ret_up = ax12_wait_traj_end (&ax12_stands_tower_clamps_up, END_TRAJ|END_TIME);
+   	ret_down = ax12_wait_traj_end (&ax12_stands_tower_clamps_down, END_TRAJ|END_TIME);
+
+    return (ret_up | ret_down);
+}
 
 
 
@@ -568,19 +568,19 @@ uint8_t stands_elevator_test_traj_end(stands_elevator_t *stands_elevator)
 }
 
 /* return END_TRAJ or END_TIMER */
-//uint8_t stands_elevator_wait_end(stands_elevator_t *stands_elevator)
-//{
-//    uint8_t ret = 0;
-//
-//	if(stands_elevator->type == STANDS_ELEVATOR_TYPE_LEFT) {
-//    	ret = ax12_wait_traj_end (&ax12_stands_elevator_l, END_TRAJ|END_TIME);
-//	} 
-//	else if(stands_elevator->type == STANDS_ELEVATOR_TYPE_RIGHT) {
-//    	ret = ax12_wait_traj_end (&ax12_stands_elevator_r, END_TRAJ|END_TIME);
-//	} 
-//   
-//    return ret;
-//}
+uint8_t stands_elevator_wait_end(stands_elevator_t *stands_elevator)
+{
+    uint8_t ret = 0;
+
+	if(stands_elevator->type == STANDS_ELEVATOR_TYPE_LEFT) {
+    	ret = ax12_wait_traj_end (&ax12_stands_elevator_l, END_TRAJ|END_TIME);
+	} 
+	else if(stands_elevator->type == STANDS_ELEVATOR_TYPE_RIGHT) {
+    	ret = ax12_wait_traj_end (&ax12_stands_elevator_r, END_TRAJ|END_TIME);
+	} 
+   
+    return ret;
+}
 
 
 
@@ -656,19 +656,19 @@ uint8_t stands_blade_test_traj_end(stands_blade_t *stands_blade)
 }
 
 /* return END_TRAJ or END_TIMER */
-//uint8_t stands_blade_wait_end(stands_blade_t *stands_blade)
-//{
-//    uint8_t ret = 0;
-//   
-//	if(stands_blade->type == STANDS_BLADE_TYPE_LEFT) {
-//    	ret = ax12_wait_traj_end (&ax12_stands_blade_l, END_TRAJ|END_TIME);
-//	} 
-//	else if(stands_blade->type == STANDS_BLADE_TYPE_RIGHT) {
-//    	ret = ax12_wait_traj_end (&ax12_stands_blade_r, END_TRAJ|END_TIME);
-//	} 
-//
-//    return ret;
-//}
+uint8_t stands_blade_wait_end(stands_blade_t *stands_blade)
+{
+    uint8_t ret = 0;
+   
+	if(stands_blade->type == STANDS_BLADE_TYPE_LEFT) {
+    	ret = ax12_wait_traj_end (&ax12_stands_blade_l, END_TRAJ|END_TIME);
+	} 
+	else if(stands_blade->type == STANDS_BLADE_TYPE_RIGHT) {
+    	ret = ax12_wait_traj_end (&ax12_stands_blade_r, END_TRAJ|END_TIME);
+	} 
+
+    return ret;
+}
 
 
 
@@ -750,17 +750,17 @@ uint8_t cup_clamp_popcorn_door_test_traj_end(cup_clamp_popcorn_door_t *cup_clamp
 }
 
 /* return END_TRAJ or END_TIMER */
-//uint8_t cup_clamp_popcorn_door_wait_end(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door)
-//{
-//    uint8_t ret = 0;
-//   
-//	if(cup_clamp_popcorn_door->type == CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT)
-//		ret = ax12_wait_traj_end (&ax12_cup_clamp_popcorn_door_l, END_TRAJ|END_TIME);
-//	else if(cup_clamp_popcorn_door->type == CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT)
-//		ret = ax12_wait_traj_end (&ax12_cup_clamp_popcorn_door_r, END_TRAJ|END_TIME);
-//
-//    return ret;
-//}
+uint8_t cup_clamp_popcorn_door_wait_end(cup_clamp_popcorn_door_t *cup_clamp_popcorn_door)
+{
+    uint8_t ret = 0;
+   
+	if(cup_clamp_popcorn_door->type == CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT)
+		ret = ax12_wait_traj_end (&ax12_cup_clamp_popcorn_door_l, END_TRAJ|END_TIME);
+	else if(cup_clamp_popcorn_door->type == CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT)
+		ret = ax12_wait_traj_end (&ax12_cup_clamp_popcorn_door_r, END_TRAJ|END_TIME);
+
+    return ret;
+}
 
 
 
@@ -880,20 +880,21 @@ uint8_t cup_clamp_front_test_traj_end(cup_clamp_front_t *cup_clamp_front)
 }
 
 /* return END_TRAJ or END_TIMER */
-//uint8_t cup_clamp_front_wait_end(cup_clamp_front_t *cup_clamp_front)
-//{
-//    uint8_t ret;
-//   
-//    ret = ax12_wait_traj_end (&ax12_cup_clamp_front, END_TRAJ|END_TIME);
-//
-//    return ret;
-//}
+uint8_t cup_clamp_front_wait_end(cup_clamp_front_t *cup_clamp_front)
+{
+    uint8_t ret;
+   
+    ret = ax12_wait_traj_end (&ax12_cup_clamp_front, END_TRAJ|END_TIME);
+
+    return ret;
+}
 
 
 
 /**** cup_holder_front functions *********************************************************/
 uint16_t cup_holder_front_ax12_pos [CUP_HOLDER_FRONT_MODE_MAX] = {
 	[CUP_HOLDER_FRONT_MODE_CUP_HOLD] 	= POS_CUP_HOLDER_FRONT_CUP_HOLD,
+	[CUP_HOLDER_FRONT_MODE_READY] 		= POS_CUP_HOLDER_FRONT_READY,
 	[CUP_HOLDER_FRONT_MODE_HIDE] 		= POS_CUP_HOLDER_FRONT_HIDE
 };
 
@@ -935,14 +936,14 @@ uint8_t cup_holder_front_test_traj_end(cup_holder_front_t *cup_holder_front)
 }
 
 /* return END_TRAJ or END_TIMER */
-//uint8_t cup_holder_front_wait_end(cup_holder_front_t *cup_holder_front)
-//{
-//    uint8_t ret;
-//   
-//    ret = ax12_wait_traj_end (&ax12_cup_holder_front, END_TRAJ|END_TIME);
-//
-//    return ret;
-//}
+uint8_t cup_holder_front_wait_end(cup_holder_front_t *cup_holder_front)
+{
+    uint8_t ret;
+   
+    ret = ax12_wait_traj_end (&ax12_cup_holder_front, END_TRAJ|END_TIME);
+
+    return ret;
+}
 
 
 
