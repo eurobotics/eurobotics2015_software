@@ -176,7 +176,7 @@ static void state_do_init(void)
  * *************** simple actuators modes ***********
  */
 
-#if 1
+#ifdef SIMPLE_ACTUATORS
 /* set stands_blade mode */
 void state_do_stands_blade_mode(void)
 {
@@ -399,6 +399,7 @@ void state_do_cup_holder_front_mode(void)
 /**
  * *************** multiple actuators modes ***********
  */
+#ifdef ACTUATOR_SYSTEMS
 
 /* do popcorn_system */
 void popcorn_system_init(popcorn_system_t *ps)
@@ -1142,7 +1143,7 @@ uint8_t do_hide_tower(stands_system_t *ss)
 		case WAITING_CLAMPS_CLOSED:
 			ret = stands_tower_clamps_test_traj_end(&slavedspic.stands_tower_clamps);
 
-			if((ret & END_TRAJ) && (time_get_us2() - us > 500000L))
+			if((ret & END_TRAJ) && (time_get_us2() - us > 200000L))
 				ss->substate = LIFT_ELEVATOR;
 
 			break;
@@ -1194,7 +1195,7 @@ uint8_t do_hide_tower(stands_system_t *ss)
 		case WAITING_BLADE_HIDDEN:
 			ret = stands_blade_test_traj_end(ss->blade);
 
-			if(ret & END_TRAJ)
+			if(ret & (END_NEAR|END_TRAJ))
 				return STATUS_DONE;
 			else if(ret & END_BLOCKING) {
 				STMCH_ERROR("stands_blade_%s BLOCKED!!", ss->blade->type? "r":"l");
@@ -1244,6 +1245,7 @@ uint8_t do_harvest_stand(stands_system_t *ss)
 
 		case READY_BLADE:
 			stands_blade_set_mode(ss->blade, STANDS_BLADE_MODE_SET_ANGLE, ss->blade_angle);
+			ss->substate = WAITING_BLADE_READY;
 
 			break;
 
@@ -1281,9 +1283,9 @@ uint8_t do_harvest_stand(stands_system_t *ss)
 					else
 						stands_blade_set_mode(&slavedspic.stands_blade_r, STANDS_BLADE_MODE_PUSH_STAND_RIGHT, 0);
 				}
-			}
 
-			ss->substate = WAITING_STAND_PUSHED;
+				ss->substate = WAITING_STAND_PUSHED;
+			}
 
 			break;
 
@@ -1318,7 +1320,7 @@ uint8_t do_harvest_stand(stands_system_t *ss)
 			break;
 
 		case WAITING_CLAMP_OPENED:
-			if(time_get_us2() - us > 500000L)
+			if(time_get_us2() - us > 200000L)
 				ss->substate = DESCEND_ELEVATOR;
 
 			break;
@@ -1499,15 +1501,33 @@ uint8_t do_release_spotlight(stands_system_t *ss)
 	static microseconds us = 0;
 	static uint8_t stands_blade_l_last_mode = 0;
 	static uint8_t stands_blade_r_last_mode = 0;
-	uint8_t ret_tc = 0;
+	uint8_t ret = 0;
 	uint8_t ret_sbl = 0;
 	uint8_t ret_sbr = 0;
 
-	switch(ss->substate)
-	{
+	switch(ss->substate) {
 		case SAVE:
 			stands_blade_l_last_mode = slavedspic.stands_blade_l.mode;
 			stands_blade_r_last_mode = slavedspic.stands_blade_r.mode;
+
+		case DESCEND_ELEVATOR:
+			stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_DOWN, 0);
+			ss->substate = WAITING_ELEVATOR_DESCENDED;
+
+			break;
+
+		case WAITING_ELEVATOR_DESCENDED:
+			ret = stands_elevator_test_traj_end(ss->elevator);
+
+			if(ret & END_TRAJ)
+				ss->substate = OPEN_ALL;
+			else if(ret & END_BLOCKING) {
+				STMCH_ERROR("stands_elevator_%c BLOCKED!!", ss->elevator->type? "r":"l");
+				stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, 0);
+				return STATUS_BLOCKED;
+			}
+
+			break;
 
 		case OPEN_ALL:
 			if(slavedspic.stands_blade_l.mode == STANDS_BLADE_MODE_PUSH_STAND_LEFT ||
@@ -1517,14 +1537,12 @@ uint8_t do_release_spotlight(stands_system_t *ss)
 						slavedspic.stands_blade_r.mode == STANDS_BLADE_MODE_PUSH_STAND_RIGHT)
 				stands_blade_set_mode(&slavedspic.stands_blade_r, STANDS_BLADE_MODE_CENTER, 0);
 
-			if(ss->clamp->type == STANDS_CLAMP_TYPE_LEFT) {
+			if(ss->clamp->type == STANDS_CLAMP_TYPE_LEFT)
 				stands_tower_clamps_set_mode(&slavedspic.stands_tower_clamps, STANDS_TOWER_CLAMPS_MODE_UNLOCK_LEFT, 0);
-				stands_clamp_set_mode(ss->clamp, STANDS_CLAMP_MODE_OPEN, 0);
-			}
-			else {
+			else
 				stands_tower_clamps_set_mode(&slavedspic.stands_tower_clamps, STANDS_TOWER_CLAMPS_MODE_UNLOCK_RIGHT, 0);
-				stands_clamp_set_mode(ss->clamp, STANDS_CLAMP_MODE_OPEN, 0);
-			}
+
+			stands_clamp_set_mode(ss->clamp, STANDS_CLAMP_MODE_OPEN, 0);
 
 			us = time_get_us2();
 			ss->substate = WAITING_ALL_OPENED;
@@ -1532,17 +1550,21 @@ uint8_t do_release_spotlight(stands_system_t *ss)
 			break;
 
 		case WAITING_ALL_OPENED:
-			ret_tc = stands_tower_clamps_test_traj_end(&slavedspic.stands_tower_clamps);
+			ret = stands_tower_clamps_test_traj_end(&slavedspic.stands_tower_clamps);
 			ret_sbl = stands_blade_test_traj_end(&slavedspic.stands_blade_l);
 			ret_sbr = stands_blade_test_traj_end(&slavedspic.stands_blade_r);
 
-			if((ret_tc & END_TRAJ) && (ret_sbl & END_TRAJ) && (ret_sbr & END_TRAJ) && 
-						(time_get_us2() - us > 500000L)) {
+			if((ret & END_TRAJ) && (ret_sbl & END_TRAJ) && (ret_sbr & END_TRAJ) && 
+						(time_get_us2() - us > 300000L)) {
 				ss->stored_stands = 0;
 				return STATUS_DONE;
 			}
-			else if((ret_sbl & END_BLOCKING) || (ret_sbr & END_BLOCKING)) {
-				if(ret_sbl & END_BLOCKING) {
+			else if((ret & END_BLOCKING) || (ret_sbl & END_BLOCKING) || (ret_sbr & END_BLOCKING)) {
+				if(ret & END_BLOCKING) {
+					STMCH_ERROR("stand_tower_clamps BLOCKED!!");
+					stands_tower_clamps_set_mode(&slavedspic.stands_tower_clamps, STANDS_TOWER_CLAMPS_MODE_LOCK, 0);
+				}
+				else if(ret_sbl & END_BLOCKING) {
 					STMCH_ERROR("stands_blade_l BLOCKED!!");
 					stands_blade_set_mode(&slavedspic.stands_blade_l, stands_blade_l_last_mode, 0);
 				}
@@ -1562,12 +1584,17 @@ uint8_t do_release_spotlight(stands_system_t *ss)
 
 void stands_system_manage(stands_system_t *ss, stands_system_t *ss_slave)
 {
+	static microseconds us = 0;
+
 	/* update mode */
 	if(ss->mode_changed){
 		ss->mode_changed = 0;
 		ss->mode = ss->mode_rqst;
 		STMCH_DEBUG("%s mode=%d", __FUNCTION__, ss->mode);
 	}
+	else if(time_get_us2() - us < 20000L)
+		return;
+	us = time_get_us2();
 
 	switch(ss->mode)
 	{
@@ -1581,8 +1608,10 @@ void stands_system_manage(stands_system_t *ss, stands_system_t *ss_slave)
 		case I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND:
 			if(ss->stored_stands < 4)
 				ss->status = do_harvest_stand(ss);
-			else
+			else {
 				ss->status = STATUS_BLOCKED;
+				STMCH_ERROR("THERE IS NO ROOM!!");
+			}
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT:
@@ -1621,9 +1650,9 @@ void state_do_stands_systems(void)
 	stands_system_manage(&slavedspic.ss[I2C_SIDE_LEFT], &slavedspic.ss[I2C_SIDE_RIGHT]);
 	stands_system_manage(&slavedspic.ss[I2C_SIDE_RIGHT], &slavedspic.ss[I2C_SIDE_LEFT]);
 }
+#endif
 
-
-#if 0
+#ifdef INFOS
 
 /* set infos */
 void state_do_set_infos(void)
@@ -1659,7 +1688,7 @@ void state_machines(void)
 {
 	state_do_init();
 
-#if 1
+#ifdef SIMPLE_ACTUATORS
 	/* simple actuator modes */
 	state_do_stands_blade_mode();
 	state_do_stands_clamp_mode();
@@ -1672,11 +1701,13 @@ void state_machines(void)
 	state_do_cup_holder_front_mode();
 #endif
 
+#ifdef ACTUATOR_SYSTEMS
 	/* multiple actuators modes */
 	state_do_popcorn_system();
 	state_do_stands_systems();
+#endif
 
-#if 0
+#ifdef INFOS
 	state_do_set_infos();
 #endif
 }
@@ -1684,6 +1715,11 @@ void state_machines(void)
 void state_init(void)
 {
 	microseconds us = 0;
+
+	if(sensor_get(S_STAND_INSIDE_L) || sensor_get(S_STAND_INSIDE_R)) {
+		STMCH_ERROR("%s THERE ARE STANDS BLOCKING!!", __FUNCTION__);
+		return;
+	}
 
 	mainboard_command.mode = INIT;
 
@@ -1729,8 +1765,10 @@ void state_init(void)
 	//stands_exchanger_calibrate();
 	//Desplazar carro junto a la torre secundaria
 
+#ifdef ACTUATOR_SYSTEMS
 	/* systems init */
 	popcorn_system_init(&slavedspic.ps);
 	stands_system_init(&slavedspic.ss[I2C_SIDE_LEFT], S_STAND_INSIDE_L, &slavedspic.stands_blade_l, &slavedspic.stands_clamp_l, &slavedspic.stands_elevator_l);
 	stands_system_init(&slavedspic.ss[I2C_SIDE_RIGHT], S_STAND_INSIDE_R, &slavedspic.stands_blade_r, &slavedspic.stands_clamp_r, &slavedspic.stands_elevator_r);
+#endif
 }

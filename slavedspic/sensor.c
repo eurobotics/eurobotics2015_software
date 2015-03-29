@@ -55,13 +55,13 @@ struct sensor_filter {
 };
 
 static struct sensor_filter sensor_filter[SENSOR_MAX] = {
-	[SENSOR1] 	= { 11, 0, 8, 10, 0, 1 },
-	[SENSOR2] 	= { 11, 0, 8, 10, 0, 1 },
+	[SENSOR1] 	= { 20, 0, 0, 10, 0, 1 }, /* HACKED */
+	[SENSOR2] 	= { 20, 0, 0, 10, 0, 1 }, /* HACKED */
 	[SENSOR3] 	= { 11, 0, 8, 10, 0, 1 },
 	[SENSOR4] 	= { 11, 0, 8, 10, 0, 1 },
 	[SENSOR5]	= { 11, 0, 8, 10, 0, 1 },
 	[SENSOR6]	= { 11, 0, 8, 10, 0, 1 },
-	//[SENSOR7] 	= { 1, 0, 0, 1, 0, 1 },
+	[SENSOR7] 	= { 11, 0, 8, 10, 0, 1 },
 };
 
 /* value of filtered sensors */
@@ -93,22 +93,18 @@ static uint16_t sensor_read(void)
  * SENSOR3: RC8
  * SENSOR4: RA8
  * SENSOR5: RC3
- * SENSOR6: RB4	 XXX servos AX12 in 2011 board
- * SENSOR7: RC2 	 XXX broken pin in 2011 board, pwm servo on 2012 board
+ * SENSOR6: RB4
+ * SENSOR7: RC2
  */
 
 	uint16_t tmp = 0;
-	//XXX tmp |= (uint16_t)((PORTB & (_BV(11)))>> 11)<< 0;
-	//XXX tmp |= (uint16_t)((PORTB & (_BV(10)))>> 10)<< 1;
+	tmp |= (uint16_t)((PORTB & (_BV(11)))>> 11)<< 0;
+	tmp |= (uint16_t)((PORTB & (_BV(10)))>> 10)<< 1;
 	tmp |= (uint16_t)((PORTC & (_BV(8)))>> 8)<< 2;
 	tmp |= (uint16_t)((PORTA & (_BV(8)))>> 8)<< 3;
 	tmp |= (uint16_t)((PORTC & (_BV(3)))>> 3)<< 4;
-#ifndef EUROBOT_2011_BOARD
 	tmp |= (uint16_t)((PORTB & (_BV(4)))>> 4)<< 5;
-#ifndef EUROBOT_2011_BOARD
 	tmp |= (uint16_t)((PORTC & (_BV(2)))>> 2)<< 6;
-#endif
-#endif
 
 	/* add more sensors here */
 	
@@ -131,8 +127,15 @@ static void do_boolean_sensors(__attribute__((unused)) void *dummy)
 				sensor_filter[i].prev = 1;
 		}
 		else {
-			if (sensor_filter[i].cpt > 0)
+			if (sensor_filter[i].cpt > 0) //{
+
+			/* XXX HACK */
+			if (i == SENSOR1 || i == SENSOR2)
+			//	sensor_filter[i].cpt = 0;
+			//else
 				sensor_filter[i].cpt--;
+			//}
+
 			if (sensor_filter[i].cpt <= sensor_filter[i].thres_off)
 				sensor_filter[i].prev = 0;
 		}
@@ -155,11 +158,3 @@ void do_sensors(__attribute__((unused)) void *dummy)
 {
 	do_boolean_sensors(NULL);
 }
-
-
-/* return true if object is cached by turbine */
-//uint8_t sensor_object_is_catched(void) {
-//
-////	return ((sensor_get_all() & S_TURBINE_LINE_A) && (sensor_get_all() & S_TURBINE_LINE_B));
-//	return 0;
-//}

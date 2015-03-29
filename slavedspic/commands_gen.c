@@ -377,17 +377,25 @@ static void cmd_sensor_parsed(void *parsed_result, __attribute__((unused)) void 
 {
 	struct cmd_sensor_result *res = parsed_result;
 	uint8_t i, loop = 0;
+	uint16_t sensors, sensors_old = 0;
 
 	if (!strcmp_P(res->arg1, PSTR("loop_show")))
 		loop = 1;
 	
 	do {
+		sensors = sensor_get_all();
+		
+		if (sensors == sensors_old)
+		continue;
+
+		sensors_old = sensors;
+
 		printf_P(PSTR("SENSOR values: "));
 		for (i=0; i<SENSOR_MAX; i++) {
-			printf_P(PSTR("%d "), !!sensor_get(i));
+			printf_P(PSTR("%d "), sensor_get(i));
 		}
 		printf_P(PSTR("\r\n"));
-		wait_ms(100);
+		//wait_ms(100);
 	} while (loop && !cmdline_keypressed());
 }
 
