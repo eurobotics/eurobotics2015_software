@@ -223,7 +223,8 @@ struct i2c_cmd_slavedspic_set_mode {
 		struct {
 			uint8_t mode;
 #define I2C_CUP_HOLDER_FRONT_MODE_CUP_HOLD		0
-#define I2C_CUP_HOLDER_FRONT_MODE_HIDE			1
+#define I2C_CUP_HOLDER_FRONT_MODE_READY			1
+#define I2C_CUP_HOLDER_FRONT_MODE_HIDE			2
 
 			int8_t offset;
 		} cup_holder_front;
@@ -232,8 +233,10 @@ struct i2c_cmd_slavedspic_set_mode {
 			uint8_t mode;
 #define I2C_SLAVEDSPIC_MODE_PS_IDLE							0
 
-#define I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_CATCH_AND_DROP		10
-#define I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_RELEASE			11
+#define I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_READY				10
+#define I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_CATCH_AND_DROP		11
+#define I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_RELEASE			12
+#define I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_HIDE				13
 
 #define I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_OPEN				20
 #define I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_CATCH				21
@@ -259,7 +262,7 @@ struct i2c_cmd_slavedspic_set_mode {
 #define I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT		12
 #define I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT	13
 
-			uint8_t blade_angle;
+			int8_t blade_angle;
 
 		} stands_system;
 

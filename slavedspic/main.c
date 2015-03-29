@@ -265,7 +265,7 @@ int main(void)
 	pwm_servo_enable();
 	pwm_servo_set(&gen.pwm_servo_oc1, 700);
 	pwm_servo_set(&gen.pwm_servo_oc2, 700);
-	pwm_servo_set(&gen.pwm_servo_oc3, 980);
+	pwm_servo_set(&gen.pwm_servo_oc3, 0);
 
 	/* SCHEDULER */
 	scheduler_init();

@@ -48,6 +48,9 @@ typedef struct {
 #define RELEASE_CUP_FRONT			13
 #define WAITING_CUP_FRONT_RELEASED	14
 
+#define HIDE_CUP_FRONT				18
+#define WAITING_CUP_FRONT_HIDDEN	19
+
 #define OPEN_RIGHT_CUP_REAR				21
 #define WAITING_CUP_REAR_OPENED_RIGHT	22
 #define OPEN_LEFT_CUP_REAR				23
@@ -81,15 +84,16 @@ typedef struct {
 #define CLOSE_RIGHT_CLAMP			83
 #define WAITING_RIGHT_CLAMP_CLOSED	84
 
-	unsigned status : 5;
+	uint8_t status : 4;
 #define STATUS_READY		1
 #define STATUS_BUSY			2
 #define STATUS_DONE			4
 #define STATUS_BLOCKED		8
 
-	unsigned cup_front_catched : 1;
-	unsigned cup_rear_catched : 1;
-	unsigned machine_popcorns_catched : 1;
+	uint8_t cup_front_catched : 1;
+	uint8_t cup_front_popcorns_harvested : 1;
+	uint8_t cup_rear_catched : 1;
+	uint8_t machine_popcorns_catched : 1;
 }popcorn_system_t;
 
 /* stands_system */
@@ -127,7 +131,12 @@ typedef struct {
 #define STATUS_DONE			4
 #define STATUS_BLOCKED		8
 
+	uint8_t spotlight_mode;
+#define SM_PRINCIPAL		1
+#define SM_SECUNDARIA		2
+
 	uint8_t stored_stands;
+	int8_t blade_angle;
 
 	/* sensors */
 	uint8_t stand_sensor;
