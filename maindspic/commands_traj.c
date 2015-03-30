@@ -82,7 +82,7 @@ struct cmd_traj_speed_result
 {
     fixed_string_t arg0;
     fixed_string_t arg1;
-    float s;
+    int16_t s;
 };
 
 /* function called when cmd_traj_speed is parsed successfully */
@@ -382,7 +382,7 @@ static void cmd_rs_gains_parsed(void * parsed_result, void * data)
         rs_set_left_ext_encoder(&mainboard.rs, encoders_dspic_get_value,
                                 LEFT_ENCODER, IMP_COEF * cl);
         rs_set_right_ext_encoder(&mainboard.rs, encoders_dspic_get_value,
-                                 RIGHT_ENCODER, IMP_COEF * -cr);
+                                 RIGHT_ENCODER, IMP_COEF * cr);
     }
 
     printf_P(PSTR("rs_gains set ed = %f, cr = %f, cl = %f\r\n"), ed, cr, cl);
@@ -1233,7 +1233,7 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 		}
 		
 	
-        strat_smart(MAIN_ROBOT);
+        strat_smart();
     }
 
     printf_P(PSTR("subtraj returned %s\r\n"), get_err(err));
@@ -1307,7 +1307,7 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 	printf_P(PSTR("\r\n"));
 	printf_P(PSTR("%d %s\r\n"),zone_num,numzone2name[zone_num]);
     if (zone_num < ZONES_MAX) {
-        err = strat_goto_zone(zone_num, MAIN_ROBOT);
+        err = strat_goto_zone(zone_num);
         printf_P(PSTR("goto returned %s\r\n"), get_err(err));    
 
        // err = strat_work_on_zone(zone_num);

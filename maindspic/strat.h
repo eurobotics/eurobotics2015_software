@@ -176,10 +176,12 @@
 #ifdef CALIBRATION
 
 /* default acc */
-#define ACC_DIST  1.
-#define ACC_ANGLE 1.
+#define ACC_DIST  10
+#define ACC_ANGLE 10
 
 /* default speeds */
+#define SPEED_DIST_VERY_FAST 	1000.
+#define SPEED_ANGLE_VERY_FAST 	1000.
 #define SPEED_DIST_FAST 		1000.
 #define SPEED_ANGLE_FAST 		1000.
 #define SPEED_DIST_SLOW 		1000.
@@ -190,8 +192,8 @@
 #else
 
 /* default acc */
-#define ACC_DIST  20. //35.
-#define ACC_ANGLE 20.
+#define ACC_DIST  75
+#define ACC_ANGLE 75
 
 /* default speeds */
 #ifdef HOMOLOGATION
@@ -199,6 +201,10 @@
 #define SPEED_ANGLE_FAST 		2000.
 #else
 
+//#define SPEED_DIST_VERY_FAST 	4500. /* XXX very clean wheels */
+//#define SPEED_ANGLE_VERY_FAST 4500.
+#define SPEED_DIST_VERY_FAST 	4000.
+#define SPEED_ANGLE_VERY_FAST 	4000.
 #define SPEED_DIST_FAST 		3000.
 #define SPEED_ANGLE_FAST 		3000.
 #endif
@@ -351,8 +357,6 @@ struct strat_infos {
 
 	/* opponent statistics */
 	uint8_t opp_score;
-	
-	uint8_t strat_smart_sec;
 };
 
 extern struct strat_infos strat_infos;
@@ -407,10 +411,10 @@ void strat_event_disable(void);
 uint8_t strat_main_loop(void);
 
 /* return new work zone, -1 if any zone is found */
-int8_t strat_get_new_zone(uint8_t robot);
+int8_t strat_get_new_zone(void);
 
 /* return END_TRAJ if zone is reached */
-uint8_t strat_goto_zone(uint8_t zone_num, uint8_t robot);
+uint8_t strat_goto_zone(uint8_t zone_num);
 
 /* return END_TRAJ if the work is done */
 uint8_t strat_work_on_zone(uint8_t zone_num);
@@ -420,7 +424,7 @@ void state_debug_wait_key_pressed(void);
 
 /* smart play */
 //#define DEBUG_STRAT_SMART
-uint8_t strat_smart(uint8_t robot);
+uint8_t strat_smart(void);
 void recalculate_priorities(void);
 
 /* tracking of zones where opp has been working */
