@@ -1,6 +1,6 @@
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2012)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -65,10 +65,10 @@
 
 #else
 
-/** 
-   XXX 
+/**
+   XXX
    strat.c is used for OA test for both robots.
-   We need define some robot dimensions here, depending on robot 
+   We need define some robot dimensions here, depending on robot
  */
 
 #ifndef IM_SECONDARY_ROBOT
@@ -114,7 +114,7 @@
 static volatile uint8_t strat_running = 0;
 
 
-struct strat_infos strat_infos = { 
+struct strat_infos strat_infos = {
     /* conf */
     .conf = {
         .flags = 0,
@@ -149,9 +149,9 @@ struct strat_infos strat_infos = {
    .zones[ZONE_MY_CLAP_1]=        {ZONE_TYPE_CLAP,  MY_CLAP_1_X,    CLAP_Y,     	180,      480,    0,    300, 	MY_CLAP_1_X,	LIMIT_BBOX_Y_DOWN,                   0,     0,            0,					(9000*1000L),					MAIN_ROBOT},
     .zones[ZONE_MY_CLAP_2]=        {ZONE_TYPE_CLAP,  MY_CLAP_2_X,     CLAP_Y,    	780,        1080,    0,    300, MY_CLAP_2_X,	LIMIT_BBOX_Y_DOWN,               0,     0,            0,					(9000*1000L),					MAIN_ROBOT},
     .zones[ZONE_MY_CLAP_3]=        {ZONE_TYPE_CLAP,  MY_CLAP_3_X,     CLAP_Y,    	 2230,    2530,    0,    300,   MY_CLAP_3_X,	LIMIT_BBOX_Y_DOWN,       0,     0,            0,					(9000*1000L),					SEC_ROBOT},
-  
+
    .zones[ZONE_MY_STAIRWAY]=     {ZONE_TYPE_STAIRWAY, MY_STAIRS_X,    MY_STAIRS_Y,  	1000,         1500,    1400,    2000,      0,            0,                    0,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-   
+
 	};
 
 /* points we get from each zone */
@@ -178,7 +178,7 @@ void strat_set_bounding_box(uint8_t type)
                 strat_infos.area_bbox.y2);
 #ifdef HOST_VERSION_OA_TEST
 
-  printf("boundingbox at: %d %d %d %d\n", 
+  printf("boundingbox at: %d %d %d %d\n",
         strat_infos.area_bbox.x1,
                 strat_infos.area_bbox.y1,
                 strat_infos.area_bbox.x2,
@@ -248,7 +248,7 @@ void strat_dump_infos(const char *caller)
 
     /* add here print infos */
 	printf_P("%d %d\n", opponent1_is_infront(),opponent2_is_infront());
-	
+
 }
 
 /* init current area state before a match. Dump update user conf
@@ -260,7 +260,7 @@ void strat_reset_infos(void)
     strat_infos.current_zone = ZONES_MAX;
     strat_infos.goto_zone = ZONES_MAX;
     strat_infos.last_zone = ZONES_MAX;
-	strat_infos.strat_smart_sec= 0;
+	strat_infos.strat_smart_sec= WAIT_FOR_ORDER;
 
     /* add here other infos resets */
 }
@@ -344,20 +344,46 @@ void strat_event(void *dummy)
     /* limit speed when opponent are close */
     strat_limit_speed();
 
-	if(strat_infos.strat_smart_sec == 1){
-		
-		strat_infos.strat_smart_sec = 0;
-		
-    //printf_P(PSTR("\r\n\r\n Thread\r\n"));
-		//strat_smart(MAIN_ROBOT);
-		//strat_infos.strat_smart_sec = 1;
+
+		switch (strat_infos.strat_smart_sec){
+			case GO_TO_ZONE:
+				if(has_2nd_finished() == 0){
+					strat_work_on_zone(ZONE);
+				}
+				break;
+
+			case WORK_ON_ZONE:
+				if(has_2nd_finished() == 0 ){
+					strat_infos.strat_smart_sec = GET_NEW_ZONE;
+				}
+				break;
+			case WAIT_NEW_ORDER:
+				break;
+
+			case GET_NEW_TASK:
+				ZONE = strat_get_new_zone(robot);
+				if(ZONE != -1){
+					strat_goto_zone(ZONE,robot);
+					strat_infos.strat_smart_sec = GO_TO_ZONE;
+				}
+				break;
+			default:
+				break;
+
+		}
 	}
-	
+
     /* tracking of zones where opp has been working */
     //strat_opp_tracking();
 
 }
 
+uint_8 has_2nd_finished(){
+	if(robot_2nd.cmd_ret!=0){
+		return 1;
+	}
+	return 0;
+}
 /* dump state (every 5 s max) XXX */
 #define DUMP_RATE_LIMIT(dump, last_print)        \
     do {                        \
@@ -383,7 +409,7 @@ uint8_t strat_main(void)
 
     strat_begin();
     strat_limit_speed_enable ();
-	
+
     /* auto-play  */
 	set_strat_sec_1();
     printf_P(PSTR("\r\n\r\nStrat smart\r\n"));
@@ -391,7 +417,7 @@ uint8_t strat_main(void)
     do{
         err = strat_smart(SEC_ROBOT);
     }while((err & END_TIMER) == 0);
-	
+
 
    strat_exit();
    return 0;
@@ -400,5 +426,3 @@ uint8_t strat_main(void)
 
 
 #endif /* HOST_VERSION_OA_TEST */
-
-

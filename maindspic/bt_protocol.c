@@ -1,6 +1,6 @@
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -55,14 +55,14 @@ static uint8_t bt_errors_checksum = 0;
 
 
 /* fill a link id buffer which has to be send */
-uint8_t bt_send_cmd (uint8_t link_id, uint8_t *data, uint16_t size) 
+uint8_t bt_send_cmd (uint8_t link_id, uint8_t *data, uint16_t size)
 {
 	int16_t i;
   	uint8_t flags;
 
 	/* check length */
 	if(size > WT11_MUX_LENGTH_MAX){
-		ERROR(E_USER_BT_PROTO, "Command size is too large");	
+		ERROR(E_USER_BT_PROTO, "Command size is too large");
 		return 1;
 	}
 
@@ -70,14 +70,14 @@ uint8_t bt_send_cmd (uint8_t link_id, uint8_t *data, uint16_t size)
   	//if (cmd_size[link_id])
 	//	NOTICE (E_USER_BT_PROTO, "waiting free buffer... ");
 	//while (cmd_size[link_id]);
-		
+
 	/* fill buffer */
 	for(i=0; i<size; i++){
-		cmd_data[link_id][i] = data[i];	
+		cmd_data[link_id][i] = data[i];
 	}
 
-	/* command size != 0 indicate 
-   	 * that there is a command to send */	
+	/* command size != 0 indicate
+   	 * that there is a command to send */
 	IRQ_LOCK(flags);
 	cmd_size[link_id] = size;
   	IRQ_UNLOCK(flags);
@@ -95,7 +95,7 @@ uint8_t bt_send_ascii_cmd (uint8_t link_id, const char * format, ...)
 
 	va_start (args, format);
 	n = vsprintf (&buffer[1],format, args);
-	
+
 	buffer[0]='\n';
 	buffer[n+1]='\n';
 
@@ -116,7 +116,7 @@ uint8_t bt_send_ascii_cmd (uint8_t link_id, const char * format, ...)
 
 
 /************************************************************
- * BEACON COMMANDS 
+ * BEACON COMMANDS
  ***********************************************************/
 
 /* set color */
@@ -154,15 +154,15 @@ void bt_beacon_req_status(void)
 	uint8_t buff[32];
 	uint8_t size;
    uint16_t checksum;
-	
+
 	IRQ_LOCK(flags);
 	robot_x = position_get_x_s16(&mainboard.pos);
 	robot_y = position_get_y_s16(&mainboard.pos);
 	robot_a = position_get_a_deg_s16(&mainboard.pos);
 	IRQ_UNLOCK(flags);
 
-  	rel_da_to_abs_xy(BEACON_OFFSET_D, RAD(BEACON_OFFSET_A), 
-                  &robot_x, &robot_y);    
+  	rel_da_to_abs_xy(BEACON_OFFSET_D, RAD(BEACON_OFFSET_A),
+                  &robot_x, &robot_y);
 
 	/* checksum */
 	checksum = (uint16_t)((int16_t)robot_x + (int16_t)robot_y + robot_a);
@@ -192,16 +192,16 @@ void bt_beacon_status_parser (int16_t c)
 
 	uint8_t sync_header[] = BT_BEACON_SYNC_HEADER;
    uint8_t flags = 0;
-    
+
 	c &= 0x00FF;
 
-	switch(state) 
+	switch(state)
 	{
 		case 0:
 			/* sync header */
 			if ((uint8_t)c == sync_header[i]) { i++; }
 			else { i = 0; }
-			
+
 			if(i == sizeof(sync_header)) {
 				i = 0;
 				state ++;
@@ -237,7 +237,7 @@ void bt_beacon_status_parser (int16_t c)
 			beaconboard.opponent1_x = (int16_t)x;
 			beaconboard.opponent1_y = (int16_t)y;
 			beaconboard.opponent1_a = (int16_t)(DEG(a) < 0? DEG(a)+360: DEG(a));
-			beaconboard.opponent1_d = (int16_t)d;       
+			beaconboard.opponent1_d = (int16_t)d;
 			IRQ_UNLOCK(flags);
 
 
@@ -254,15 +254,15 @@ void bt_beacon_status_parser (int16_t c)
 			beaconboard.opponent2_x = (int16_t)x;
 			beaconboard.opponent2_y = (int16_t)y;
 			beaconboard.opponent2_a = (int16_t)(DEG(a) < 0? DEG(a)+360: DEG(a));
-			beaconboard.opponent2_d = (int16_t)d;       
+			beaconboard.opponent2_d = (int16_t)d;
 			IRQ_UNLOCK(flags);
 			#endif
 
-			//DEBUG (E_USER_BT_PROTO, "BT_PROTO: opp1 %d %d %d %d", 
+			//DEBUG (E_USER_BT_PROTO, "BT_PROTO: opp1 %d %d %d %d",
 			//		beaconboard.opponent_x, beaconboard.opponent_y,
 			//		beaconboard.opponent_d, beaconboard.opponent_a);
 
-			//DEBUG (E_USER_BT_PROTO, "BT_PROTO: opp2 %d %d %d %d", 
+			//DEBUG (E_USER_BT_PROTO, "BT_PROTO: opp2 %d %d %d %d",
 			//		beaconboard.opponent2_x, beaconboard.opponent2_y,
 			//		beaconboard.opponent2_d, beaconboard.opponent2_a);
 
@@ -276,7 +276,7 @@ void bt_beacon_status_parser (int16_t c)
 
 	return;
 
- /* received errors */	
+ /* received errors */
 error_checksum:
 	state = 0;
 	bt_errors_checksum ++;
@@ -285,7 +285,7 @@ error_checksum:
 }
 
 /************************************************************
- * ROBOT_2ND COMMANDS 
+ * ROBOT_2ND COMMANDS
  ***********************************************************/
 
 
@@ -307,7 +307,7 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 			bt_send_ascii_cmd (robot_2nd.link_id, "color green");
 	}
 
-	else if (cmd_id == BT_AUTOPOS) 
+	else if (cmd_id == BT_AUTOPOS)
 		bt_send_ascii_cmd (robot_2nd.link_id, "position autoset");
 
 	else if (cmd_id == BT_GOTO_XY_ABS)
@@ -337,7 +337,7 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 	else if (cmd_id == BT_GOTO_AVOID)
 		bt_send_ascii_cmd (robot_2nd.link_id, "bt_goto avoid %d %d %d", arg0, arg1, (arg0 + arg1));
 	else if (cmd_id == BT_GOTO_AVOID_FW)
-		bt_send_ascii_cmd (robot_2nd.link_id, "bt_goto avoid_fw %d %d %d", arg0, arg1, (arg0 + arg1)); 
+		bt_send_ascii_cmd (robot_2nd.link_id, "bt_goto avoid_fw %d %d %d", arg0, arg1, (arg0 + arg1));
 	else if (cmd_id == BT_GOTO_AVOID_BW)
 		bt_send_ascii_cmd (robot_2nd.link_id, "bt_goto avoid_bw %d %d %d", arg0, arg1, (arg0 + arg1));
 
@@ -359,7 +359,7 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 //}
 
 /* return 1 if cmd arguments checksum matches */
-uint8_t bt_robot_2nd_test_ack (void) {
+uint8bt_robot_2nd_test_ack (void) {
 	return (robot_2nd.cmd_ret != 0xFF);
 }
 
@@ -386,7 +386,7 @@ uint8_t bt_robot_2nd_cmd (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 	}
 	else {
 		DEBUG (E_USER_STRAT, "ACK received (%d)", robot_2nd.cmd_ret);
-		ret = robot_2nd.cmd_ret;	
+		ret = robot_2nd.cmd_ret;
 	}
 
 	return ret;
@@ -401,7 +401,7 @@ uint8_t bt_robot_2nd_wait_end (void)
 		time_wait_ms(50); /* HACK */
 		ret = robot_2nd.cmd_ret;
 	}
-	
+
 	return ret;
 }
 
@@ -424,7 +424,7 @@ inline uint8_t bt_robot_2nd_goto_xy_rel (int16_t x, int16_t y) {
 	return bt_robot_2nd_cmd (BT_GOTO_XY_REL, x, y);
 }
 inline uint8_t bt_robot_2nd_goto_forward_xy_abs (int16_t x, int16_t y) {
-	return bt_robot_2nd_cmd (BT_GOTO_FW_XY_ABS, x, y); 
+	return bt_robot_2nd_cmd (BT_GOTO_FW_XY_ABS, x, y);
 }
 inline uint8_t bt_robot_2nd_goto_backward_xy_abs (int16_t x, int16_t y) {
 	return bt_robot_2nd_cmd (BT_GOTO_BW_XY_ABS, x, y);
@@ -467,7 +467,7 @@ void bt_robot_2nd_req_status(void)
 	uint8_t buff[64];
 	uint8_t size;
 	int16_t checksum = 0;
-	
+
 	IRQ_LOCK(flags);
 	robot_x = position_get_x_s16(&mainboard.pos);
 	robot_y = position_get_y_s16(&mainboard.pos);
@@ -485,14 +485,14 @@ void bt_robot_2nd_req_status(void)
 
 #if 0
   	bt_send_ascii_cmd (beaconboard.link_id, "status %d %d %d %d %d %d %d %d",
-						robot_x, robot_y, robot_a_abs, 
-						opp1_x, opp1_y, 
+						robot_x, robot_y, robot_a_abs,
+						opp1_x, opp1_y,
 						opp2_x, opp2_y,
 						checksum);
 #else
 	size = sprintf((char*)buff, "\nstatus %d %d %d %d %d %d %d %d\n",
-						robot_x, robot_y, robot_a_abs, 
-						opp1_x, opp1_y, 
+						robot_x, robot_y, robot_a_abs,
+						opp1_x, opp1_y,
 						opp2_x, opp2_y,
 						checksum);
 	wt11_send_mux (robot_2nd.link_id, buff, size);
@@ -515,16 +515,16 @@ void bt_robot_2nd_status_parser (int16_t c)
 
 	uint8_t sync_header[] = BT_ROBOT_2ND_SYNC_HEADER;
    uint8_t flags = 0;
-    
+
 	c &= 0x00FF;
 
-	switch(state) 
+	switch(state)
 	{
 		case 0:
 			/* sync header */
 			if ((uint8_t)c == sync_header[i]) { i++; }
 			else { i = 0; }
-			
+
 			if(i == sizeof(sync_header)) {
 				i = 0;
 				state ++;
@@ -547,7 +547,7 @@ void bt_robot_2nd_status_parser (int16_t c)
 			if (ans.checksum != bt_checksum(data, sizeof(ans)-sizeof(ans.checksum)))
 				goto error_checksum;
 
-			//DEBUG (E_USER_BEACON, "RX cmd id %d, args %d, ret %d", 
+			//DEBUG (E_USER_BEACON, "RX cmd id %d, args %d, ret %d",
 			//		ans.cmd_id, ans.cmd_args_checksum, get_err(ans.cmd_ret));
 
 			/* be sure that an status cycle is complete */
@@ -588,7 +588,7 @@ void bt_robot_2nd_status_parser (int16_t c)
 			robot_2nd.y = (int16_t)y;
 			robot_2nd.a = (int16_t)(DEG(a) < 0? DEG(a)+360: DEG(a));
 			robot_2nd.a_abs = (int16_t)a_abs;
-			robot_2nd.d = (int16_t)d;       
+			robot_2nd.d = (int16_t)d;
 			IRQ_UNLOCK(flags);
 
 			/* opponents pos with beacon correction */
@@ -604,7 +604,7 @@ void bt_robot_2nd_status_parser (int16_t c)
 			robot_2nd.opponent1_x = (int16_t)x;
 			robot_2nd.opponent1_y = (int16_t)y;
 			robot_2nd.opponent1_a = (int16_t)(DEG(a) < 0? DEG(a)+360: DEG(a));
-			robot_2nd.opponent1_d = (int16_t)d;       
+			robot_2nd.opponent1_d = (int16_t)d;
 			IRQ_UNLOCK(flags);
 
 
@@ -621,7 +621,7 @@ void bt_robot_2nd_status_parser (int16_t c)
 			robot_2nd.opponent2_x = (int16_t)x;
 			robot_2nd.opponent2_y = (int16_t)y;
 			robot_2nd.opponent2_a = (int16_t)(DEG(a) < 0? DEG(a)+360: DEG(a));
-			robot_2nd.opponent2_d = (int16_t)d;       
+			robot_2nd.opponent2_d = (int16_t)d;
 			IRQ_UNLOCK(flags);
 #endif
 		}
@@ -633,7 +633,7 @@ void bt_robot_2nd_status_parser (int16_t c)
 
 	return;
 
- /* received errors */	
+ /* received errors */
 error_checksum:
 	state = 0;
 	bt_errors_checksum ++;
@@ -659,8 +659,8 @@ void bt_protocol (void * dummy)
 		return;
 
 	/**
-	 * NOTE: in HOST mode, there is only comunication with robot 2nd 
-	 * 	   beacon status (opponent possition) is captured from 
+	 * NOTE: in HOST mode, there is only comunication with robot 2nd
+	 * 	   beacon status (opponent possition) is captured from
     *       python simulator.
     */
 
@@ -675,7 +675,7 @@ void bt_protocol (void * dummy)
 		bt_beacon_status_parser (c);
 		bt_robot_2nd_status_parser (c);
 
-		c = wt11_recv_mux_char (&link_id);	
+		c = wt11_recv_mux_char (&link_id);
 	}
 #else
   	c = robotsim_uart_recv_BT ();
@@ -711,7 +711,7 @@ void bt_protocol (void * dummy)
 		bt_robot_2nd_req_status ();
 
 		/* force beacon pulling next cycle */
-		toggle = 0; 
+		toggle = 0;
 		pull_time_us = time_get_us2();
 
 		return;
@@ -724,7 +724,7 @@ void bt_protocol (void * dummy)
 
 #ifndef HOST_VERSION
 		if ((mainboard.flags & DO_BEACON) && toggle)
-			bt_beacon_req_status ();	
+			bt_beacon_req_status ();
 #endif
 		if ((mainboard.flags & DO_ROBOT_2ND) && !toggle)
 			bt_robot_2nd_req_status ();
@@ -732,8 +732,3 @@ void bt_protocol (void * dummy)
 		pull_time_us = time_get_us2();
 	}
 }
-
-
-
-
-
