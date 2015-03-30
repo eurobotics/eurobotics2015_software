@@ -62,6 +62,7 @@
 #include "sensor.h"
 #include "actuator.h"
 #include "beacon.h"
+#include "bt_protocol.h"
 
 #else
 
@@ -379,6 +380,7 @@ uint8_t strat_main(void)
     /* auto-play  */
 	set_strat_sec_1();
     printf_P(PSTR("\r\n\r\nStrat smart\r\n"));
+	
     do{
         err = strat_smart();
     }while((err & END_TIMER) == 0);
