@@ -405,11 +405,11 @@ void strat_auto_position (void);
 void strat_initial_move(void);
 
 /* bt_tasks */
-void pick_popcorn_cup(void);
-void extend_carpet(void);
-void climb_stairs(void);
-void bring_cup_to_cinema(void);
-void close_clapperboard(void);
+uint8_t pick_popcorn_cup(void);
+uint8_t extend_carpet(void);
+uint8_t climb_stairs(void);
+uint8_t bring_cup_to_cinema(void);
+uint8_t close_clapperboard(void);
 
 /********************************************
  * in strat_event.c 
