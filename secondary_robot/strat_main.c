@@ -139,32 +139,42 @@ intr:
 
 
 
-void pick_popcorn_cup(void)
+uint8_t pick_popcorn_cup(void)
 {
+	uint8_t ret=0;
     printf_P(PSTR("pick_popcorn_cup\r\n"));
+    return ret;
 }
 
 
-void extend_carpet(void)
+uint8_t extend_carpet(void)
 {
+	uint8_t ret=0;
     printf_P(PSTR("extend_carpet\r\n"));
+    return ret;
 }
 
 
-void climb_stairs(void)
+uint8_t climb_stairs(void)
 {
+	uint8_t ret=0;
     printf_P(PSTR("climb_stairs\r\n"));
+    return ret;
 }
 
 
-void bring_cup_to_cinema(void)
+uint8_t bring_cup_to_cinema(void)
 {
+	uint8_t ret=0;
     printf_P(PSTR("bring_cup_to_cinema\r\n"));
+    return ret;
 }
 
 
-void close_clapperboard(void)
+uint8_t close_clapperboard(void)
 {
+	uint8_t ret=0;
     printf_P(PSTR("clapperboard\r\n"));
+    return ret;
 }
 

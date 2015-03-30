@@ -211,6 +211,7 @@ void io_pins_init(void)
 
 int main(void)
 {
+	uint8_t ret;
    /* disable interrupts */
    cli();
 
@@ -436,31 +437,33 @@ int main(void)
 		{
 			case  BT_TASK_NONE:
 			default:
+				ret=-1;
 				break;
 			
 			case  BT_TASK_PICK_CUP:
-				pick_popcorn_cup();
+				ret=pick_popcorn_cup();
 				break;
 			
 			case  BT_TASK_CARPET:
-				extend_carpet();
+				ret=extend_carpet();
 				break;
 			
 			case  BT_TASK_STAIRS:
-				climb_stairs();
+				ret=climb_stairs();
 				break;
 			
 			case  BT_TASK_BRING_CUP:
-				bring_cup_to_cinema();
+				ret=bring_cup_to_cinema();
 				break;
 			
 			case  BT_TASK_CLAP:
-				close_clapperboard();
+				ret=close_clapperboard();
 				break;
 		}
 		
 		// Return value from the functions indicating finish, to inform main robot.
-		bt_status_set_cmd_ret (END_TRAJ);
+		if(ret!=-1)
+			bt_status_set_cmd_ret (ret);
 	}
 
    return 0;
