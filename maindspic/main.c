@@ -151,9 +151,9 @@ void io_pins_init(void)
 	_TRISC7	= 0;
 	
 	/* encoders */	
-	_QEA1R 	= 21;	/* QEA1 <- RP21(RC5) <- R_ENC_CHA */
+	_QEA1R 	= 20;	/* QEA1 <- RP21(RC5) <- R_ENC_CHA */
 	_TRISC5 = 1;	
-	_QEB1R 	= 20;	/* QEB1 <- RP20(RC4) <- R_ENC_CHB */
+	_QEB1R 	= 21;	/* QEB1 <- RP20(RC4) <- R_ENC_CHB */
 	_TRISC4	= 1;
 
 	_QEA2R 	= 19;	/* QEA2 <- RP19(RC3) <- L_ENC_CHA */
