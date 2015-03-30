@@ -211,6 +211,7 @@ void io_pins_init(void)
 
 int main(void)
 {
+	uint8_t ret;
    /* disable interrupts */
    cli();
 
@@ -426,7 +427,44 @@ int main(void)
    	scheduler_add_periodical_event_priority(cmdline_interact_nowait, NULL,
     		EVENT_PERIOD_CMDLINE / SCHEDULER_UNIT, EVENT_PRIORITY_CMDLINE);
 	
-	while (1);
+	/* init bt_task */
+	end_bt_task_flag=0;
+	current_bt_task=0;
+	
+	while(1)
+	{
+		switch(current_bt_task)
+		{
+			case  BT_TASK_NONE:
+			default:
+				ret=-1;
+				break;
+			
+			case  BT_TASK_PICK_CUP:
+				ret=pick_popcorn_cup();
+				break;
+			
+			case  BT_TASK_CARPET:
+				ret=extend_carpet();
+				break;
+			
+			case  BT_TASK_STAIRS:
+				ret=climb_stairs();
+				break;
+			
+			case  BT_TASK_BRING_CUP:
+				ret=bring_cup_to_cinema();
+				break;
+			
+			case  BT_TASK_CLAP:
+				ret=close_clapperboard();
+				break;
+		}
+		
+		// Return value from the functions indicating finish, to inform main robot.
+		if(ret!=-1)
+			bt_status_set_cmd_ret (ret);
+	}
 
    return 0;
 }
