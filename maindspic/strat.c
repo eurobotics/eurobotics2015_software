@@ -157,7 +157,7 @@ struct strat_infos strat_infos = {
 
 /* points we get from each zone */
 /* TODO*/
-uint8_t strat_zones_points[ZONES_MAX]= {3,3,3,3,0,0,0,1,1,1,1,1,1,1,1,1,1,2,2,0,0,6,6,6};
+uint8_t strat_zones_points[ZONES_MAX]; /* @supernudo TODO = {3,3,3,3,0,0,0,1,1,1,1,1,1,1,1,1,1,2,2,0,0,6,6,6}; */
 
 /*************************************************************/
 
@@ -177,7 +177,7 @@ void strat_set_bounding_box(uint8_t type)
                 strat_infos.area_bbox.y1,
                 strat_infos.area_bbox.x2,
                 strat_infos.area_bbox.y2);
-//software% 
+
 #ifdef HOST_VERSION_OA_TEST
 
   printf("boundingbox at: %d %d %d %d\n", 
