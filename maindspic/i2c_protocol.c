@@ -70,9 +70,9 @@
 #define I2C_WATCH_DOG_TIMEOUT	10
 
 /* local headers */
-int8_t i2c_read_gpios_01_values(void);
-int8_t i2c_read_gpios_23_values(void);
-int8_t i2c_req_slavedspic_status(void);
+static int8_t i2c_read_gpios_01_values(void);
+static int8_t i2c_read_gpios_23_values(void);
+static int8_t i2c_req_slavedspic_status(void);
 
 /* limited error logs */
 #define I2C_MAX_ERRORS	5
@@ -430,7 +430,6 @@ void i2c_read_event(uint8_t * buf, uint16_t size)
 
          	/* infos */
          	slavedspic.status = ans->status;
-            slavedspic.nb_stored_fires = ans->nb_stored_fires;
 			break;
 		}
 	
