@@ -81,7 +81,7 @@
  */
 
 
-int8_t strat_is_valid_zone(uint8_t zone_num, uint8_t robot)
+int8_t strat_is_valid_zone(uint8_t zone_num)
 {
 //#define OPP_WAS_IN_ZONE_TIMES
 
@@ -105,9 +105,6 @@ int8_t strat_is_valid_zone(uint8_t zone_num, uint8_t robot)
 	if(strat_infos.zones[zone_num].flags & ZONE_AVOID)
 	{
 		//DEBUG(E_USER_STRAT,"zone num: %d. avoid.");
-		return -1;
-	}
-	if(strat_infos.zones[zone_num].robot != robot){
 		return -1;
 	}
 	return zone_num;
@@ -179,13 +176,15 @@ int8_t strat_get_new_zone(uint8_t robot)
 	for(i=0; i < ZONES_MAX; i++)
 	{
 		/* compare current priority */
-		if(strat_infos.zones[i].prio >= prio_max && (strat_infos.zones[i].flags != ZONE_CHECKED)) {
+		if(strat_infos.zones[i].prio >= prio_max 
+		&& (strat_infos.zones[i].flags != ZONE_CHECKED)
+		&& (strat_infos.zones[i].robot == robot)) {
 			/* check if is a valid zone */
 			prio_max = strat_infos.zones[i].prio;
 			zone_num = i;
 		}
 		if( i == ZONES_MAX-1 ){
-			valid_zone = strat_is_valid_zone(zone_num, robot);
+			valid_zone = strat_is_valid_zone(zone_num);
 			switch(valid_zone){
 				case -1:
 					//strategy has to change
@@ -219,6 +218,7 @@ uint8_t strat_goto_zone(uint8_t zone_num, uint8_t robot)
 	{
 		bt_robot_2nd_goto_and_avoid(COLOR_X(strat_infos.zones[zone_num].init_x),
 												strat_infos.zones[zone_num].init_y);
+												return END_TRAJ;
 
 	}else{
 		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
@@ -257,7 +257,7 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 	/* Secondary robot */
 	if(strat_infos.zones[zone_num].robot==SEC_ROBOT)
 	{
-
+		
 	}
 
 	/* Main robot */

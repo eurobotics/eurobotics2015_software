@@ -331,8 +331,7 @@ void strat_exit(void)
 }
 
 /* called periodically */
-void strat_event(void *dummy)
-{
+void strat_event(void *dummy) {
     /* XXX in parallel with main strat,
      *    disable/enable events depends on case or protect with IRQ_LOCK.
      */
@@ -344,35 +343,34 @@ void strat_event(void *dummy)
     /* limit speed when opponent are close */
     strat_limit_speed();
 
+	switch (strat_infos.strat_smart_sec){
+		case GO_TO_ZONE:
+			if(has_2nd_finished() == 0){
+				strat_work_on_zone(strat_infos.strat_smart_sec_task);
+			}
+			break;
+		case WORK_ON_ZONE:
+			if(has_2nd_finished() == 0 ){
 
-		switch (strat_infos.strat_smart_sec){
-			case GO_TO_ZONE:
-				if(has_2nd_finished() == 0){
-					strat_work_on_zone(ZONE);
-				}
-				break;
+				strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
+				strat_infos.strat_smart_sec = GET_NEW_ZONE;
+			}
+			break;
+		case WAIT_NEW_ORDER:
+			break;
 
-			case WORK_ON_ZONE:
-				if(has_2nd_finished() == 0 ){
-					strat_infos.strat_smart_sec = GET_NEW_ZONE;
-				}
-				break;
-			case WAIT_NEW_ORDER:
-				break;
-
-			case GET_NEW_TASK:
-				ZONE = strat_get_new_zone(robot);
-				if(ZONE != -1){
-					strat_goto_zone(ZONE,robot);
-					strat_infos.strat_smart_sec = GO_TO_ZONE;
-				}
-				break;
-			default:
-				break;
-
-		}
+		case GET_NEW_TASK:
+			strat_infos.strat_smart_sec_task = strat_get_new_zone(robot);
+			if(ZONE != -1){
+				strat_goto_zone(strat_infos.strat_smart_sec_task,robot);
+				strat_infos.strat_smart_sec = GO_TO_ZONE;
+			}
+			break;
+		default:
+			break;
 	}
-
+}
+	
     /* tracking of zones where opp has been working */
     //strat_opp_tracking();
 
@@ -413,9 +411,9 @@ uint8_t strat_main(void)
     /* auto-play  */
 	set_strat_sec_1();
     printf_P(PSTR("\r\n\r\nStrat smart\r\n"));
-	strat_infos.strat_smart_sec = 1;
+	strat_infos.strat_smart_sec = WAIT_NEW_ORDER;
     do{
-        err = strat_smart(SEC_ROBOT);
+        err = strat_smart(MAIN_ROBOT);
     }while((err & END_TIMER) == 0);
 
 
