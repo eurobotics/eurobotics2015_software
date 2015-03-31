@@ -359,11 +359,14 @@ struct strat_infos {
 	uint8_t opp_score;
 	/* state for robot_2nd strategy*/
 	uint8_t strat_smart_sec;
+	
 	#define WAIT_FOR_ORDER 0
 	#define GO_TO_ZONE 1
 	#define WORK_ON_ZONE 2
 	#define GET_NEW_TASK 3
+	
 
+	uint8_t strat_smart_sec_task;
 
 };
 
