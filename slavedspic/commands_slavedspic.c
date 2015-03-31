@@ -311,7 +311,9 @@ static void cmd_stands_clamp_parsed(__attribute__((unused)) void *parsed_result,
 	else if (!strcmp_P(res->arg0, PSTR("clamp_right")))
 		command.stands_clamp.type = I2C_STANDS_CLAMP_TYPE_RIGHT;	
 
-	if (!strcmp_P(res->arg1, PSTR("open")))
+	if (!strcmp_P(res->arg1, PSTR("full_open")))
+		command.stands_clamp.mode = I2C_STANDS_CLAMP_MODE_FULL_OPEN;
+	else if (!strcmp_P(res->arg1, PSTR("open")))
 		command.stands_clamp.mode = I2C_STANDS_CLAMP_MODE_OPEN;
 	else if (!strcmp_P(res->arg1, PSTR("close")))
 		command.stands_clamp.mode = I2C_STANDS_CLAMP_MODE_CLOSE;	
@@ -324,7 +326,7 @@ static void cmd_stands_clamp_parsed(__attribute__((unused)) void *parsed_result,
 
 prog_char str_stands_clamp_arg0[] = "clamp_left#clamp_right";
 parse_pgm_token_string_t cmd_stands_clamp_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_stands_clamp_result, arg0, str_stands_clamp_arg0);
-prog_char str_stands_clamp_arg1[] = "open#close";
+prog_char str_stands_clamp_arg1[] = "full_open#open#close";
 parse_pgm_token_string_t cmd_stands_clamp_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_stands_clamp_result, arg1, str_stands_clamp_arg1);
 parse_pgm_token_num_t cmd_stands_clamp_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_stands_clamp_result, arg2, INT8);
 

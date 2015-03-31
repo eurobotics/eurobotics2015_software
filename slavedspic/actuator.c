@@ -183,7 +183,7 @@ uint8_t ax12_test_traj_end (struct ax12_traj *ax12, uint8_t flags)
 	//		ret |= END_TIME;
 
 	//if (flags & END_BLOCKING)
-        if ((time_get_us2() - ax12->time_us)/1000 > (2*ax12->goal_time_ms)) {
+        if ((time_get_us2() - ax12->time_us)/1000 > (3*ax12->goal_time_ms)) {
             ax12_user_write_int(&gen.ax12, ax12->id , AA_GOAL_POSITION_L, ax12->pos);                       
 		    ret |= END_BLOCKING;
         }
@@ -312,8 +312,8 @@ int32_t stands_exchanger_get_position(void)
 int8_t stands_exchanger_check_position_reached(void)
 {
 	/* test consign end */
-	if(cs_get_consign(&slavedspic.stands_exchanger.cs) == cs_get_filtered_consign(&slavedspic.stands_exchanger.cs) &&
-	   ABS(cs_get_out(&slavedspic.stands_exchanger.cs)) < 300 ){
+	if(cs_get_consign(&slavedspic.stands_exchanger.cs) == cs_get_filtered_consign(&slavedspic.stands_exchanger.cs)/* &&
+	   ABS(cs_get_out(&slavedspic.stands_exchanger.cs)) < 300 */){
 		return END_TRAJ;
 	}
 
@@ -390,11 +390,13 @@ int8_t popcorn_tray_set_mode(popcorn_tray_t *popcorn_tray, uint8_t mode, int16_t
 
 /**** stands_clamp functions *********************************************************/
 uint16_t stands_clamp_servo_pos[STANDS_CLAMP_TYPE_MAX][STANDS_CLAMP_MODE_MAX] = {
-	[STANDS_CLAMP_TYPE_LEFT][STANDS_CLAMP_MODE_OPEN] 	= POS_STANDS_CLAMP_L_OPEN,
-	[STANDS_CLAMP_TYPE_LEFT][STANDS_CLAMP_MODE_CLOSE] 	= POS_STANDS_CLAMP_L_CLOSE,
+	[STANDS_CLAMP_TYPE_LEFT][STANDS_CLAMP_MODE_FULL_OPEN] 	= POS_STANDS_CLAMP_L_FULL_OPEN,
+	[STANDS_CLAMP_TYPE_LEFT][STANDS_CLAMP_MODE_OPEN] 		= POS_STANDS_CLAMP_L_OPEN,
+	[STANDS_CLAMP_TYPE_LEFT][STANDS_CLAMP_MODE_CLOSE] 		= POS_STANDS_CLAMP_L_CLOSE,
 
-	[STANDS_CLAMP_TYPE_RIGHT][STANDS_CLAMP_MODE_OPEN] 	= POS_STANDS_CLAMP_R_OPEN,
-	[STANDS_CLAMP_TYPE_RIGHT][STANDS_CLAMP_MODE_CLOSE] 	= POS_STANDS_CLAMP_R_CLOSE,
+	[STANDS_CLAMP_TYPE_RIGHT][STANDS_CLAMP_MODE_FULL_OPEN] 	= POS_STANDS_CLAMP_R_FULL_OPEN,
+	[STANDS_CLAMP_TYPE_RIGHT][STANDS_CLAMP_MODE_OPEN] 		= POS_STANDS_CLAMP_R_OPEN,
+	[STANDS_CLAMP_TYPE_RIGHT][STANDS_CLAMP_MODE_CLOSE] 		= POS_STANDS_CLAMP_R_CLOSE,
 
 };
 
@@ -490,8 +492,8 @@ uint8_t stands_tower_clamps_test_traj_end(stands_tower_clamps_t *stands_tower_cl
 {
     uint8_t ret_up, ret_down;
    
-   	ret_up = ax12_test_traj_end (&ax12_stands_tower_clamps_up, END_TRAJ|END_TIME);
-   	ret_down = ax12_test_traj_end (&ax12_stands_tower_clamps_down, END_TRAJ|END_TIME);
+   	ret_up = ax12_test_traj_end (&ax12_stands_tower_clamps_up, END_NEAR|END_TRAJ);
+   	ret_down = ax12_test_traj_end (&ax12_stands_tower_clamps_down, END_NEAR|END_TRAJ);
 
     return (ret_up | ret_down);
 }
@@ -501,8 +503,8 @@ uint8_t stands_tower_clamps_wait_end(stands_tower_clamps_t *stands_tower_clamps)
 {
     uint8_t ret_up, ret_down;
    
-   	ret_up = ax12_wait_traj_end (&ax12_stands_tower_clamps_up, END_TRAJ|END_TIME);
-   	ret_down = ax12_wait_traj_end (&ax12_stands_tower_clamps_down, END_TRAJ|END_TIME);
+   	ret_up = ax12_wait_traj_end (&ax12_stands_tower_clamps_up, END_NEAR|END_TRAJ);
+   	ret_down = ax12_wait_traj_end (&ax12_stands_tower_clamps_down, END_NEAR|END_TRAJ);
 
     return (ret_up | ret_down);
 }
@@ -562,10 +564,10 @@ uint8_t stands_elevator_test_traj_end(stands_elevator_t *stands_elevator)
     uint8_t ret = 0;
 
 	if(stands_elevator->type == STANDS_ELEVATOR_TYPE_LEFT) {
-    	ret = ax12_test_traj_end (&ax12_stands_elevator_l, END_TRAJ|END_TIME);
+    	ret = ax12_test_traj_end (&ax12_stands_elevator_l, END_NEAR|END_TRAJ);
 	} 
 	else if(stands_elevator->type == STANDS_ELEVATOR_TYPE_RIGHT) {
-    	ret = ax12_test_traj_end (&ax12_stands_elevator_r, END_TRAJ|END_TIME);
+    	ret = ax12_test_traj_end (&ax12_stands_elevator_r, END_NEAR|END_TRAJ);
 	} 
    
     return ret;
@@ -577,10 +579,10 @@ uint8_t stands_elevator_wait_end(stands_elevator_t *stands_elevator)
     uint8_t ret = 0;
 
 	if(stands_elevator->type == STANDS_ELEVATOR_TYPE_LEFT) {
-    	ret = ax12_wait_traj_end (&ax12_stands_elevator_l, END_TRAJ|END_TIME);
+    	ret = ax12_wait_traj_end (&ax12_stands_elevator_l, END_NEAR|END_TRAJ);
 	} 
 	else if(stands_elevator->type == STANDS_ELEVATOR_TYPE_RIGHT) {
-    	ret = ax12_wait_traj_end (&ax12_stands_elevator_r, END_TRAJ|END_TIME);
+    	ret = ax12_wait_traj_end (&ax12_stands_elevator_r, END_NEAR|END_TRAJ);
 	} 
    
     return ret;
@@ -650,10 +652,10 @@ uint8_t stands_blade_test_traj_end(stands_blade_t *stands_blade)
     uint8_t ret = 0;
    
 	if(stands_blade->type == STANDS_BLADE_TYPE_LEFT) {
-    	ret = ax12_test_traj_end (&ax12_stands_blade_l, END_TRAJ|END_TIME);
+    	ret = ax12_test_traj_end (&ax12_stands_blade_l, END_NEAR|END_TRAJ);
 	} 
 	else if(stands_blade->type == STANDS_BLADE_TYPE_RIGHT) {
-    	ret = ax12_test_traj_end (&ax12_stands_blade_r, END_TRAJ|END_TIME);
+    	ret = ax12_test_traj_end (&ax12_stands_blade_r, END_NEAR|END_TRAJ);
 	} 
 
     return ret;
@@ -665,10 +667,10 @@ uint8_t stands_blade_wait_end(stands_blade_t *stands_blade)
     uint8_t ret = 0;
    
 	if(stands_blade->type == STANDS_BLADE_TYPE_LEFT) {
-    	ret = ax12_wait_traj_end (&ax12_stands_blade_l, END_TRAJ|END_TIME);
+    	ret = ax12_wait_traj_end (&ax12_stands_blade_l, END_NEAR|END_TRAJ);
 	} 
 	else if(stands_blade->type == STANDS_BLADE_TYPE_RIGHT) {
-    	ret = ax12_wait_traj_end (&ax12_stands_blade_r, END_TRAJ|END_TIME);
+    	ret = ax12_wait_traj_end (&ax12_stands_blade_r, END_NEAR|END_TRAJ);
 	} 
 
     return ret;
@@ -746,9 +748,9 @@ uint8_t cup_clamp_popcorn_door_test_traj_end(cup_clamp_popcorn_door_t *cup_clamp
     uint8_t ret = 0;
  
 	if(cup_clamp_popcorn_door->type == CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT)
-		ret = ax12_test_traj_end (&ax12_cup_clamp_popcorn_door_l, END_TRAJ|END_TIME);
+		ret = ax12_test_traj_end (&ax12_cup_clamp_popcorn_door_l, END_NEAR|END_TRAJ);
 	else if(cup_clamp_popcorn_door->type == CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT)
-		ret = ax12_test_traj_end (&ax12_cup_clamp_popcorn_door_r, END_TRAJ|END_TIME);
+		ret = ax12_test_traj_end (&ax12_cup_clamp_popcorn_door_r, END_NEAR|END_TRAJ);
 
     return ret;
 }
@@ -759,9 +761,9 @@ uint8_t cup_clamp_popcorn_door_wait_end(cup_clamp_popcorn_door_t *cup_clamp_popc
     uint8_t ret = 0;
    
 	if(cup_clamp_popcorn_door->type == CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT)
-		ret = ax12_wait_traj_end (&ax12_cup_clamp_popcorn_door_l, END_TRAJ|END_TIME);
+		ret = ax12_wait_traj_end (&ax12_cup_clamp_popcorn_door_l, END_NEAR|END_TRAJ);
 	else if(cup_clamp_popcorn_door->type == CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT)
-		ret = ax12_wait_traj_end (&ax12_cup_clamp_popcorn_door_r, END_TRAJ|END_TIME);
+		ret = ax12_wait_traj_end (&ax12_cup_clamp_popcorn_door_r, END_NEAR|END_TRAJ);
 
     return ret;
 }
@@ -821,8 +823,8 @@ uint8_t popcorn_ramps_test_traj_end(popcorn_ramps_t *popcorn_ramps)
 {
     uint8_t ret_l, ret_r;
    
-    ret_l = ax12_test_traj_end (&ax12_popcorn_ramp_l, END_TRAJ|END_TIME);
-    ret_r = ax12_test_traj_end (&ax12_popcorn_ramp_r, END_TRAJ|END_TIME);
+    ret_l = ax12_test_traj_end (&ax12_popcorn_ramp_l, END_NEAR|END_TRAJ);
+    ret_r = ax12_test_traj_end (&ax12_popcorn_ramp_r, END_NEAR|END_TRAJ);
 
     return (ret_l | ret_r);
 }
@@ -832,8 +834,8 @@ uint8_t popcorn_ramps_wait_end(popcorn_ramps_t *popcorn_ramps)
 {
     uint8_t ret_l, ret_r;
    
-    ret_l = ax12_wait_traj_end (&ax12_popcorn_ramp_l, END_TRAJ|END_TIME);
-    ret_r = ax12_wait_traj_end (&ax12_popcorn_ramp_r, END_TRAJ|END_TIME);
+    ret_l = ax12_wait_traj_end (&ax12_popcorn_ramp_l, END_NEAR|END_TRAJ);
+    ret_r = ax12_wait_traj_end (&ax12_popcorn_ramp_r, END_NEAR|END_TRAJ);
 
     return (ret_l | ret_r);
 }
@@ -878,7 +880,7 @@ uint8_t cup_clamp_front_test_traj_end(cup_clamp_front_t *cup_clamp_front)
 {
     uint8_t ret;
    
-    ret = ax12_test_traj_end (&ax12_cup_clamp_front, END_TRAJ|END_TIME);
+    ret = ax12_test_traj_end (&ax12_cup_clamp_front, END_NEAR|END_TRAJ);
 
     return ret;
 }
@@ -888,7 +890,7 @@ uint8_t cup_clamp_front_wait_end(cup_clamp_front_t *cup_clamp_front)
 {
     uint8_t ret;
    
-    ret = ax12_wait_traj_end (&ax12_cup_clamp_front, END_TRAJ|END_TIME);
+    ret = ax12_wait_traj_end (&ax12_cup_clamp_front, END_NEAR|END_TRAJ);
 
     return ret;
 }
@@ -934,7 +936,7 @@ uint8_t cup_holder_front_test_traj_end(cup_holder_front_t *cup_holder_front)
 {
     uint8_t ret;
    
-    ret = ax12_test_traj_end (&ax12_cup_holder_front, END_TRAJ|END_TIME);
+    ret = ax12_test_traj_end (&ax12_cup_holder_front, END_NEAR|END_TRAJ);
 
     return ret;
 }
@@ -944,7 +946,7 @@ uint8_t cup_holder_front_wait_end(cup_holder_front_t *cup_holder_front)
 {
     uint8_t ret;
    
-    ret = ax12_wait_traj_end (&ax12_cup_holder_front, END_TRAJ|END_TIME);
+    ret = ax12_wait_traj_end (&ax12_cup_holder_front, END_NEAR|END_TRAJ);
 
     return ret;
 }
