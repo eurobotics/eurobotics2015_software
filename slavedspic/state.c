@@ -1767,9 +1767,8 @@ void state_init(void)
 	popcorn_tray_set_mode(&slavedspic.popcorn_tray, POPCORN_TRAY_MODE_CLOSE, 0);
 
 	BRAKE_OFF();
-	slavedspic.stands_exchanger.on = 0;
-	//stands_exchanger_calibrate();
-	///Desplazar carro junto a la torre secundaria
+	slavedspic.stands_exchanger.on = 1;
+	stands_exchanger_calibrate();
 
 #ifdef ACTUATOR_SYSTEMS
 	/* systems init */

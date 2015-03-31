@@ -178,9 +178,9 @@ uint8_t ax12_test_traj_end (struct ax12_traj *ax12, uint8_t flags)
 		if (ABS(ax12->goal_pos - ax12->pos) < AX12_WINDOW_NEAR)
 			ret |= END_NEAR;
 
-	if (flags & END_TIME)
-		if ((time_get_us2() - ax12->time_us)/1000 > ax12->goal_time_ms)
-			ret |= END_TIME;
+	//if (flags & END_TIME)
+	//	if ((time_get_us2() - ax12->time_us)/1000 > ax12->goal_time_ms)
+	//		ret |= END_TIME;
 
 	//if (flags & END_BLOCKING)
         if ((time_get_us2() - ax12->time_us)/1000 > (2*ax12->goal_time_ms)) {
@@ -228,10 +228,10 @@ void stands_exchanger_hard_stop(void)
 /* calibrate initial position */
 void stands_exchanger_calibrate(void)
 {
-#define AUTOPOS_SPEED			50
-#define AUTOPOS_ACCEL			1
-#define AUTOPOS_BIG_DIST_mm		60000
-#define AUTOPOS_BD_TIMEOUT_ms	5000
+#define AUTOPOS_SPEED			20
+#define AUTOPOS_ACCEL			10
+#define AUTOPOS_BIG_DIST_mm		-350
+#define AUTOPOS_BD_TIMEOUT_ms	10000
 
 	int8_t ret;
 	int16_t kp, ki, kd;
@@ -240,7 +240,7 @@ void stands_exchanger_calibrate(void)
 	kp = pid_get_gain_P(&slavedspic.stands_exchanger.pid);
 	ki = pid_get_gain_I(&slavedspic.stands_exchanger.pid);
 	kd = pid_get_gain_D(&slavedspic.stands_exchanger.pid);
-	pid_set_gains(&slavedspic.stands_exchanger.pid,  5000, 0, 0);
+	pid_set_gains(&slavedspic.stands_exchanger.pid,  50, 0, 0);
 
 	/* set low speed, and hi acceleration for fast response */
 	quadramp_set_1st_order_vars(&slavedspic.stands_exchanger.qr, AUTOPOS_SPEED, AUTOPOS_SPEED);
@@ -249,12 +249,11 @@ void stands_exchanger_calibrate(void)
 
 	/* goto zero with cs */
 	slavedspic.flags |= DO_CS;
-	//cs_set_consign(&slavedspic.stands_exchanger.cs, (int32_t)(AUTOPOS_BIG_DIST_mm * STANDS_EXCHANGER_K_IMP_mm));
-	cs_set_consign(&slavedspic.stands_exchanger.cs, (int32_t)(AUTOPOS_BIG_DIST_mm));
+	cs_set_consign(&slavedspic.stands_exchanger.cs, (int32_t)(AUTOPOS_BIG_DIST_mm * STANDS_EXCHANGER_K_IMP_mm));
 	ACTUATORS_DEBUG("Goto zero");	
 
 	/* wait end initial positioning */
-//	ret = WAIT_COND_OR_TIMEOUT(sensor_get(S_STAND_EXCHANGER_ENDSTOP), AUTOPOS_BD_TIMEOUT_ms);
+	ret = WAIT_COND_OR_TIMEOUT(bd_get(&slavedspic.stands_exchanger.bd), AUTOPOS_BD_TIMEOUT_ms);
 	if(!ret) {
 		ACTUATORS_DEBUG("Initial positioning not reached");
 		return;
@@ -277,7 +276,6 @@ void stands_exchanger_calibrate(void)
 
 	/* set calibration flag */
 	slavedspic.stands_exchanger.calibrated = 1;
-	//stands_exchanger_set_position(200);
 	stands_exchanger_wait_end();
 
 	return;
@@ -314,7 +312,8 @@ int32_t stands_exchanger_get_position(void)
 int8_t stands_exchanger_check_position_reached(void)
 {
 	/* test consign end */
-	if(cs_get_consign(&slavedspic.stands_exchanger.cs) == cs_get_filtered_consign(&slavedspic.stands_exchanger.cs)){
+	if(cs_get_consign(&slavedspic.stands_exchanger.cs) == cs_get_filtered_consign(&slavedspic.stands_exchanger.cs) &&
+	   ABS(cs_get_out(&slavedspic.stands_exchanger.cs)) < 300 ){
 		return END_TRAJ;
 	}
 

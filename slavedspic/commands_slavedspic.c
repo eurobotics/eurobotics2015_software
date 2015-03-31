@@ -189,13 +189,23 @@ static void cmd_stands_exchanger_parsed(__attribute__((unused)) void *parsed_res
 		stands_exchanger_set_position(res->arg1);
 	
 		t1 = time_get_us2();
+
 		while (!stands_exchanger_check_position_reached()) {
 			t2 = time_get_us2();
-			if (t2 - t1 > 20000) {
+			if (t2 - t1 > 5000) {
 				dump_cs_debug("exchanger", &slavedspic.stands_exchanger.cs);
 				t1 = t2;
 			}
 		}
+#if 0
+		while (!cmdline_keypressed()) {
+			t2 = time_get_us2();
+			if (t2 - t1 > 5000) {
+				dump_cs_debug("exchanger", &slavedspic.stands_exchanger.cs);
+				t1 = t2;
+			}
+		}
+#endif
 	}
 	else if (!strcmp_P(res->arg0, PSTR("exchanger_calibrate")))
 		stands_exchanger_calibrate();
