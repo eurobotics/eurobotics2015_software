@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Baliñas Santos <javier@arc-robots.org>
+ *  Javier Balias Santos <javier@arc-robots.org>
  */
 
 
@@ -69,11 +69,11 @@
 #define ANG_STANDS_BLADE_L_HIDE_RIGHT			80
 #define POS_OFFSET_STANDS_BLADE_L				356
 
-#define ANG_STANDS_BLADE_R_HIDE_LEFT			-80
+#define ANG_STANDS_BLADE_R_HIDE_LEFT			-80//
 #define ANG_STANDS_BLADE_R_PUSH_STAND_LEFT		-38
 #define ANG_STANDS_BLADE_R_CENTER				0
-#define ANG_STANDS_BLADE_R_PUSH_STAND_RIGHT		38
-#define ANG_STANDS_BLADE_R_HIDE_RIGHT			80
+#define ANG_STANDS_BLADE_R_PUSH_STAND_RIGHT		45//
+#define ANG_STANDS_BLADE_R_HIDE_RIGHT			80//
 #define POS_OFFSET_STANDS_BLADE_R				435
 
 #define POS_CUP_CLAMP_L_HIDE			729
