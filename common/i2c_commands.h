@@ -153,8 +153,9 @@ struct i2c_cmd_slavedspic_set_mode {
 #define I2C_STANDS_CLAMP_TYPE_RIGHT		1	
 
 			uint8_t mode;
-#define I2C_STANDS_CLAMP_MODE_OPEN		0
-#define I2C_STANDS_CLAMP_MODE_CLOSE		1
+#define I2C_STANDS_CLAMP_MODE_FULL_OPEN		0
+#define I2C_STANDS_CLAMP_MODE_OPEN			1
+#define I2C_STANDS_CLAMP_MODE_CLOSE			2
 
 			int8_t offset;
 		} stands_clamp;

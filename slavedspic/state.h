@@ -164,6 +164,9 @@ typedef struct {
 	uint8_t stored_stands;
 	int8_t blade_angle;
 
+	microseconds us;
+	microseconds us_system;
+
 	/* sensors */
 	uint8_t stand_sensor;
 
