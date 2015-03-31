@@ -295,7 +295,7 @@ int main(void)
 	/* LOGS */
  	gen.logs[0] = E_USER_ST_MACH;
 	gen.logs[1] = E_USER_ACTUATORS;
-	gen.logs[2] = E_USER_CS;
+	//gen.logs[2] = E_USER_CS;
 	gen.log_level = 5;
 
 	/* enable interrupt */
