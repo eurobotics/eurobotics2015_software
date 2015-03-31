@@ -359,12 +359,12 @@ struct strat_infos {
 	uint8_t opp_score;
 	/* state for robot_2nd strategy*/
 	uint8_t strat_smart_sec;
-	
+
 	#define WAIT_FOR_ORDER 0
 	#define GO_TO_ZONE 1
 	#define WORK_ON_ZONE 2
 	#define GET_NEW_TASK 3
-	
+
 
 	uint8_t strat_smart_sec_task;
 
@@ -405,6 +405,7 @@ void strat_event(void *dummy);
 void strat_event_enable(void);
 void strat_event_disable(void);
 
+uint8_t has_2nd_finished(void);
 /********************************************
  * in strat_spotlight.c
  *******************************************/
@@ -422,10 +423,10 @@ void strat_event_disable(void);
 uint8_t strat_main_loop(void);
 
 /* return new work zone, -1 if any zone is found */
-int8_t strat_get_new_zone(void);
+int8_t strat_get_new_zone(uint8_t robot);
 
 /* return END_TRAJ if zone is reached */
-uint8_t strat_goto_zone(uint8_t zone_num);
+uint8_t strat_goto_zone(uint8_t zone_num,uint8_t robot);
 
 /* return END_TRAJ if the work is done */
 uint8_t strat_work_on_zone(uint8_t zone_num);
@@ -435,8 +436,9 @@ void state_debug_wait_key_pressed(void);
 
 /* smart play */
 //#define DEBUG_STRAT_SMART
-uint8_t strat_smart(void);
+uint8_t strat_smart(uint8_t robot);
 void recalculate_priorities(void);
+void strat_smart_robot_2nd(void);
 
 /* tracking of zones where opp has been working */
 void strat_opp_tracking (void);

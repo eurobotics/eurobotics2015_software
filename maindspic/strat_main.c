@@ -176,7 +176,7 @@ int8_t strat_get_new_zone(uint8_t robot)
 	for(i=0; i < ZONES_MAX; i++)
 	{
 		/* compare current priority */
-		if(strat_infos.zones[i].prio >= prio_max 
+		if(strat_infos.zones[i].prio >= prio_max
 		&& (strat_infos.zones[i].flags != ZONE_CHECKED)
 		&& (strat_infos.zones[i].robot == robot)) {
 			/* check if is a valid zone */
@@ -218,7 +218,6 @@ uint8_t strat_goto_zone(uint8_t zone_num, uint8_t robot)
 	{
 		bt_robot_2nd_goto_and_avoid(COLOR_X(strat_infos.zones[zone_num].init_x),
 												strat_infos.zones[zone_num].init_y);
-												return END_TRAJ;
 
 	}else{
 		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
@@ -257,7 +256,7 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 	/* Secondary robot */
 	if(strat_infos.zones[zone_num].robot==SEC_ROBOT)
 	{
-		
+
 	}
 
 	/* Main robot */
@@ -484,6 +483,38 @@ uint8_t strat_smart(uint8_t robot)
 		strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
 
 		return END_TRAJ;
+	}
+}
+void strat_smart_robot_2nd(void){
+	switch (strat_infos.strat_smart_sec){
+		case GO_TO_ZONE:
+			if(robot_2nd.cmd_ret != 0){
+
+				printf_P"\r\n\r\nStrat GOTO_ZONE\r\n");
+				strat_work_on_zone(strat_infos.strat_smart_sec_task);
+			}
+			break;
+		case WORK_ON_ZONE:
+			if(robot_2nd.cmd_ret != 0){
+				printf_P("\r\n\r\nStrat WORK_ON_ZONE\r\n");
+				strat_infos.zones[strat_infos.strat_smart_sec_task].flags |= ZONE_CHECKED;
+				strat_infos.strat_smart_sec = GET_NEW_TASK;
+			}
+			break;
+		case WAIT_FOR_ORDER:
+			break;
+
+		case GET_NEW_TASK:
+			strat_infos.strat_smart_sec_task = strat_get_new_zone(MAIN_ROBOT);
+			if(strat_infos.strat_smart_sec_task != -1){
+
+				printf_P("\r\n\r\nStrat NEW_TASK\r\n");
+				strat_goto_zone(strat_infos.strat_smart_sec_task,MAIN_ROBOT);
+				strat_infos.strat_smart_sec = GO_TO_ZONE;
+			}
+			break;
+		default:
+			break;
 	}
 }
 

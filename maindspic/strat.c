@@ -139,16 +139,16 @@ struct strat_infos strat_infos = {
 	.zones[ZONE_POPCORNCUP_3]=        {ZONE_TYPE_POPCORNCUP, POPCORNCUP_CENTRE_X,     POPCORNCUP_CENTRE_Y,  	1350,       1650,    200,    500, POPCORNCUP_CENTRE_X-300, POPCORNCUP_CENTRE_Y	,                    0,     0,            0,					(9000*1000L),					MAIN_ROBOT},
 
    /*zones[W] =                 	{type, 				 x,         					y,	x_down,    x_up,   y_down,		 y_up,  init_x,       init_y, prio,         flags,        opp_time_zone_us	,	last_time_opp_here,	robot };  */
-	.zones[ZONE_MY_CINEMA_UP]=		{ZONE_TYPE_CINEMA,  MY_CINEMA_UP_X,    MY_CINEMA_UP_Y,     		 2600,        3000,    1200,    1600,3000-400-OBS_CLERANCE-50,  2000-400-(378/2) ,                    0,     0,            0,					(9000*1000L),					SEC_ROBOT},
-	.zones[ZONE_MY_CINEMA_DOWN]= 	{ZONE_TYPE_CINEMA,  MY_CINEMA_DOWN_X,    MY_CINEMA_DOWN_Y,     		2600,         3000,    400,   800,3000-400-OBS_CLERANCE-50, 400+(378/2) ,                    0,     0,            0,					(9000*1000L),					SEC_ROBOT},
-  .zones[ZONE_MY_STAIRS]=        {ZONE_TYPE_STAIRS,  MY_STAIRS_X,    MY_STAIRS_Y,   	1000,         1500,    1400,    2000,		MY_STAIRS_X,	1150,                    0,     0,            0,					(9000*1000L),					SEC_ROBOT},
+	.zones[ZONE_MY_CINEMA_UP]=		{ZONE_TYPE_CINEMA,  MY_CINEMA_UP_X,    MY_CINEMA_UP_Y,     		 2600,        3000,    1200,    1600,3000-400-OBS_CLERANCE-50,  2000-400-(378/2) ,                    0,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+	.zones[ZONE_MY_CINEMA_DOWN]= 	{ZONE_TYPE_CINEMA,  MY_CINEMA_DOWN_X,    MY_CINEMA_DOWN_Y,     		2600,         3000,    400,   800,3000-400-OBS_CLERANCE-50, 400+(378/2) ,                    0,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+  .zones[ZONE_MY_STAIRS]=        {ZONE_TYPE_STAIRS,  MY_STAIRS_X,    MY_STAIRS_Y,   	1000,         1500,    1400,    2000,		MY_STAIRS_X,	1150,                    0,     0,            0,					(9000*1000L),					MAIN_ROBOT},
 
   .zones[ZONE_MY_HOME]=        {ZONE_TYPE_HOME,  MY_HOME_X,    MY_HOME_Y, 	90,         650,    800,    1200,	650,	MY_HOME_Y,                    0,     0,            0,					(9000*1000L),					MAIN_ROBOT},
 
    /*zones[W] =                 {type,             x,        			y,        x_down,    x_up,   y_down, y_up,  init_x,       init_y, prio,         flags,        opp_time_zone_us,	last_time_opp_here,	robot };  */
    .zones[ZONE_MY_CLAP_1]=        {ZONE_TYPE_CLAP,  MY_CLAP_1_X,    CLAP_Y,     	180,      480,    0,    300, 	MY_CLAP_1_X,	LIMIT_BBOX_Y_DOWN,                   0,     0,            0,					(9000*1000L),					MAIN_ROBOT},
     .zones[ZONE_MY_CLAP_2]=        {ZONE_TYPE_CLAP,  MY_CLAP_2_X,     CLAP_Y,    	780,        1080,    0,    300, MY_CLAP_2_X,	LIMIT_BBOX_Y_DOWN,               0,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_MY_CLAP_3]=        {ZONE_TYPE_CLAP,  MY_CLAP_3_X,     CLAP_Y,    	 2230,    2530,    0,    300,   MY_CLAP_3_X,	LIMIT_BBOX_Y_DOWN,       0,     0,            0,					(9000*1000L),					SEC_ROBOT},
+    .zones[ZONE_MY_CLAP_3]=        {ZONE_TYPE_CLAP,  MY_CLAP_3_X,     CLAP_Y,    	 2230,    2530,    0,    300,   MY_CLAP_3_X,	LIMIT_BBOX_Y_DOWN,       0,     0,            0,					(9000*1000L),					MAIN_ROBOT},
 
    .zones[ZONE_MY_STAIRWAY]=     {ZONE_TYPE_STAIRWAY, MY_STAIRS_X,    MY_STAIRS_Y,  	1000,         1500,    1400,    2000,      0,            0,                    0,     0,            0,					(9000*1000L),					MAIN_ROBOT},
 
@@ -343,45 +343,11 @@ void strat_event(void *dummy) {
     /* limit speed when opponent are close */
     strat_limit_speed();
 
-	switch (strat_infos.strat_smart_sec){
-		case GO_TO_ZONE:
-			if(has_2nd_finished() == 0){
-				strat_work_on_zone(strat_infos.strat_smart_sec_task);
-			}
-			break;
-		case WORK_ON_ZONE:
-			if(has_2nd_finished() == 0 ){
-
-				strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
-				strat_infos.strat_smart_sec = GET_NEW_ZONE;
-			}
-			break;
-		case WAIT_NEW_ORDER:
-			break;
-
-		case GET_NEW_TASK:
-			strat_infos.strat_smart_sec_task = strat_get_new_zone(robot);
-			if(ZONE != -1){
-				strat_goto_zone(strat_infos.strat_smart_sec_task,robot);
-				strat_infos.strat_smart_sec = GO_TO_ZONE;
-			}
-			break;
-		default:
-			break;
-	}
 }
-	
+
     /* tracking of zones where opp has been working */
     //strat_opp_tracking();
 
-}
-
-uint_8 has_2nd_finished(){
-	if(robot_2nd.cmd_ret!=0){
-		return 1;
-	}
-	return 0;
-}
 /* dump state (every 5 s max) XXX */
 #define DUMP_RATE_LIMIT(dump, last_print)        \
     do {                        \
@@ -411,10 +377,12 @@ uint8_t strat_main(void)
     /* auto-play  */
 	set_strat_sec_1();
     printf_P(PSTR("\r\n\r\nStrat smart\r\n"));
-	strat_infos.strat_smart_sec = WAIT_NEW_ORDER;
-    do{
+strat_infos.strat_smart_sec = GET_NEW_TASK;
+    /*do{
+
         err = strat_smart(MAIN_ROBOT);
-    }while((err & END_TIMER) == 0);
+    }while((err & END_TIMER) == 0);*/
+	while(1)strat_smart_robot_2nd();
 
 
    strat_exit();
