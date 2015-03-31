@@ -168,27 +168,30 @@ const char *get_err (uint8_t err)
 uint8_t ax12_test_traj_end (struct ax12_traj *ax12, uint8_t flags)
 {
 	ax12_user_read_int(&gen.ax12, ax12->id, AA_PRESENT_POSITION_L, &ax12->pos);
-    //uint8_t ret = 0;
+    uint8_t ret = 0;
 
 	if (flags & END_TRAJ)
 		if (ABS(ax12->goal_pos - ax12->pos) < AX12_WINDOW_NO_NEAR)
-			return END_TRAJ;
+			ret |= END_TRAJ;
 
 	if (flags & END_NEAR)
 		if (ABS(ax12->goal_pos - ax12->pos) < AX12_WINDOW_NEAR)
-			return END_NEAR;
+			ret |= END_NEAR;
 
 	if (flags & END_TIME)
 		if ((time_get_us2() - ax12->time_us)/1000 > ax12->goal_time_ms)
-			return END_TIME;
+			ret |= END_TIME;
 
 	//if (flags & END_BLOCKING)
         if ((time_get_us2() - ax12->time_us)/1000 > (2*ax12->goal_time_ms)) {
             ax12_user_write_int(&gen.ax12, ax12->id , AA_GOAL_POSITION_L, ax12->pos);                       
-		    return END_BLOCKING;
+		    ret |= END_BLOCKING;
         }
 
-    return 0;
+	if (ret)
+		DEBUG(E_USER_ACTUATORS, "Got %s",  get_err (ret));
+
+    return ret;
 }
 
 /* wait traj end */
@@ -203,8 +206,10 @@ uint8_t ax12_wait_traj_end (struct ax12_traj *ax12, uint8_t flags)
             ret = ax12_test_traj_end (ax12, flags);
             us = time_get_us2();
         }
+
     }
-	DEBUG(E_USER_ACTUATORS, "Got %s",  get_err (ret));
+
+	//DEBUG(E_USER_ACTUATORS, "Got %s",  get_err (ret));
     return ret;
 }
 

@@ -20,7 +20,13 @@
  *  Olivier MATZ <zer0@droids-corp.org> 
  */
 
-/*   *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011) *  Javier Baliñas Santos <javier@arc-robots.org> * *  Code ported to family of microcontrollers dsPIC from *  commands_gen.c,v 1.4 2009/05/27 20:04:07 zer0 Exp  */
+/*  
+ *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
+ *  Javier Baliñas Santos <javier@arc-robots.org>
+ *
+ *  Code ported to family of microcontrollers dsPIC from
+ *  commands_gen.c,v 1.4 2009/05/27 20:04:07 zer0 Exp 
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -184,6 +190,8 @@ parse_pgm_inst_t cmd_scheduler = {
 /**********************************************************/
 /* pwm_mc tests */
 
+void pwm_mc_set_or_disable(void *pwm, int32_t value);
+
 /* this structure is filled when cmd_pwm is parsed successfully */
 struct cmd_pwm_mc_result {
 	fixed_string_t arg0;
@@ -197,13 +205,15 @@ static void cmd_pwm_mc_parsed(void * parsed_result, __attribute__((unused)) void
 	void * pwm_mc_ptr = NULL;
 	struct cmd_pwm_mc_result * res = parsed_result;
 
-	if (!strcmp_P(res->arg1, PSTR("mod1_ch2")))
-		pwm_mc_ptr = &gen.pwm_mc_mod1_ch2;
-	else if (!strcmp_P(res->arg1, PSTR("mod2_ch1")))
+	//if (!strcmp_P(res->arg1, PSTR("mod1_ch2")))
+	//	pwm_mc_ptr = &gen.pwm_mc_mod1_ch2;
+	//else if (!strcmp_P(res->arg1, PSTR("mod2_ch1")))
 		pwm_mc_ptr = &gen.pwm_mc_mod2_ch1;
 
-	if (pwm_mc_ptr)
-		pwm_mc_set(pwm_mc_ptr, res->arg2);
+	//if (pwm_mc_ptr) {
+			pwm_mc_set_or_disable(pwm_mc_ptr, res->arg2);
+	//		pwm_mc_set(pwm_mc_ptr, res->arg2);
+	//}
 
 	printf_P(PSTR("done\r\n"));
 }
@@ -221,7 +231,7 @@ parse_pgm_inst_t cmd_pwm_mc = {
 	.help_str = help_pwm_mc,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_pwm_mc_arg0, 
-		(prog_void *)&cmd_pwm_mc_arg1, 
+//		(prog_void *)&cmd_pwm_mc_arg1, 
 		(prog_void *)&cmd_pwm_mc_arg2, 
 		NULL,
 	},

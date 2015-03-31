@@ -1749,21 +1749,27 @@ void state_init(void)
 	popcorn_tray_set_mode(&slavedspic.popcorn_tray, POPCORN_TRAY_MODE_OPEN, 0);
 	us = time_get_us2();
 
+	STMCH_DEBUG ("POPCORN door R");
 	cup_clamp_popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_r, CUP_CLAMP_MODE_OPEN, 0);
-	while(!(cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_r) & END_TRAJ));
-	cup_clamp_popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_l, CUP_CLAMP_MODE_HIDE, 0);
-	while(!(cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_l) & END_TRAJ));
-	cup_clamp_popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_r, CUP_CLAMP_MODE_HIDE, 0);
+	cup_clamp_popcorn_door_wait_end(&slavedspic.cup_clamp_popcorn_door_r);
 
+	STMCH_DEBUG ("POPCORN door L");
+	cup_clamp_popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_l, CUP_CLAMP_MODE_HIDE, 0);
+	cup_clamp_popcorn_door_wait_end(&slavedspic.cup_clamp_popcorn_door_l);
+
+	cup_clamp_popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_r, CUP_CLAMP_MODE_HIDE, 0);
 	while(time_get_us2() - us < 1000000L);
+
+	STMCH_DEBUG ("RAMPS");
 	popcorn_ramps_set_mode(&slavedspic.popcorn_ramps, POPCORN_RAMPS_MODE_HIDE, 0);
-	while(!(popcorn_ramps_test_traj_end(&slavedspic.popcorn_ramps) & END_TRAJ));
+	popcorn_ramps_wait_end(&slavedspic.popcorn_ramps);
+
 	popcorn_tray_set_mode(&slavedspic.popcorn_tray, POPCORN_TRAY_MODE_CLOSE, 0);
 
 	BRAKE_OFF();
-	slavedspic.stands_exchanger.on = 1;
+	slavedspic.stands_exchanger.on = 0;
 	//stands_exchanger_calibrate();
-	//Desplazar carro junto a la torre secundaria
+	///Desplazar carro junto a la torre secundaria
 
 #ifdef ACTUATOR_SYSTEMS
 	/* systems init */

@@ -137,7 +137,7 @@ void io_pins_init(void)
 	_TRISA8 	= 1;		// SENSOR4
 	_TRISC3 	= 1;		// SENSOR5
 	_TRISB4 	= 1;		// SENSOR6
-	_TRISC2 	= 1;		// SENSOR7
+	//_TRISC2 	= 1;		// SENSOR7 XXX not 5V tolerant MCU destruction
 
 
 
@@ -264,7 +264,7 @@ int main(void)
 	pwm_servo_init(&gen.pwm_servo_oc3, 3, 600, 2400);
 	pwm_servo_enable();
 	pwm_servo_set(&gen.pwm_servo_oc1, 700);
-	pwm_servo_set(&gen.pwm_servo_oc2, 700);
+	pwm_servo_set(&gen.pwm_servo_oc2, 310);
 	pwm_servo_set(&gen.pwm_servo_oc3, 0);
 
 	/* SCHEDULER */

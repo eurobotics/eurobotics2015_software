@@ -36,8 +36,8 @@
 #define SENSOR4       	3
 #define SENSOR5       	4
 #define SENSOR6       	5
-#define SENSOR7			6
-#define SENSOR_MAX    	7
+//#define SENSOR7			6 XXX not 5V tolerant MCU destruction
+#define SENSOR_MAX    	6
 
 
 void sensor_init(void);

@@ -19,7 +19,13 @@
  *
  */
 
-/*   *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011) *  Javier Baliñas Santos <javier@arc-robots.org> * *  Code ported to family of microcontrollers dsPIC from *  state.h,v 1.4 2009/05/27 20:04:07 zer0 Exp. */
+/*  
+ *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
+ *  Javier Baliñas Santos <javier@arc-robots.org>
+ *
+ *  Code ported to family of microcontrollers dsPIC from
+ *  state.h,v 1.4 2009/05/27 20:04:07 zer0 Exp.
+ */
 
 #ifndef _STATE_H_
 #define _STATE_H_
@@ -27,12 +33,10 @@
 #include "../common/i2c_commands.h"
 #include "actuator.h"
 
-//#define SIMPLE_ACTUATORS
+#define SIMPLE_ACTUATORS
 #define ACTUATOR_SYSTEMS
 //#define INFOS
 
-
-#ifdef ACTUATOR_SYSTEMS
 
 /* popcorn_system */
 typedef struct {
@@ -155,7 +159,6 @@ typedef struct {
 
 }stands_system_t;
 
-#endif
 
 /* set a new state, return 0 on success */
 int8_t state_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd);

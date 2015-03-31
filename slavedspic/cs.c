@@ -95,10 +95,22 @@ void dump_pid(const char *name, struct pid_filter *pid)
 		 pid_get_value_out(pid));
 }
 
-void __pwm_mc_set(void *pwm, int32_t value)
+void pwm_mc_set_or_disable(void *pwm, int32_t value)
 {
+#define PWM_DISABLE_VALUE_TH 100
 
-	
+	/* absolute value */
+	if (value < 0)
+		value = -value;
+
+	if (value < PWM_DISABLE_VALUE_TH) {
+		/* breaked */
+		pwm_mc_init(&gen.pwm_mc_mod2_ch1, 19000, CH1_COMP&PDIS1H&PDIS1L);
+		_LATB12  = 0;	
+		_LATB13  = 0;
+	}
+	else
+		pwm_mc_init(&gen.pwm_mc_mod2_ch1, 19000, CH1_COMP&PEN1H&PEN1L);
 
 }
 
@@ -121,7 +133,7 @@ void slavedspic_cs_init(void)
 	cs_init(&slavedspic.stands_exchanger.cs);
 	cs_set_consign_filter(&slavedspic.stands_exchanger.cs, quadramp_do_filter, &slavedspic.stands_exchanger.qr);
 	cs_set_correct_filter(&slavedspic.stands_exchanger.cs, pid_do_filter, &slavedspic.stands_exchanger.pid);
-	cs_set_process_in(&slavedspic.stands_exchanger.cs, pwm_mc_set, PWM_MC_STANDS_EXCHANGER_MOTOR);
+	cs_set_process_in(&slavedspic.stands_exchanger.cs, pwm_mc_set_or_disable, PWM_MC_STANDS_EXCHANGER_MOTOR);
 	cs_set_process_out(&slavedspic.stands_exchanger.cs, encoders_dspic_get_value, STANDS_EXCHANGER_ENCODER);
 	cs_set_consign(&slavedspic.stands_exchanger.cs, 0);
 

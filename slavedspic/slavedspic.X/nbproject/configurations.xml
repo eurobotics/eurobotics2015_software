@@ -243,7 +243,7 @@
     <conf name="default" type="2">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
-        <targetDevice>dsPIC33FJ64MC804</targetDevice>
+        <targetDevice>dsPIC33FJ128MC804</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
         <platformTool>ICD3PlatformTool</platformTool>
@@ -272,7 +272,7 @@
       </makeCustomizationType>
       <C30>
         <property key="code-model" value="default"/>
-        <property key="const-model" value="const-in-data"/>
+        <property key="const-model" value="default"/>
         <property key="data-model" value="default"/>
         <property key="enable-all-warnings" value="true"/>
         <property key="enable-ansi-std" value="false"/>
@@ -353,7 +353,7 @@
         <property key="CRC" value="true"/>
         <property key="DAC 1" value="true"/>
         <property key="DUAL COMPARATOR" value="true"/>
-        <property key="ECAN 1" value="true"/>
+        <property key="ECAN" value="true"/>
         <property key="Freeze All Other Peripherals" value="true"/>
         <property key="I2C1" value="true"/>
         <property key="INPUT CAPTURE 1" value="true"/>
