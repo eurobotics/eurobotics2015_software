@@ -73,6 +73,7 @@
 
 #define POPCORN_SYSTEM 			I2C_SLAVEDSPIC_MODE_POPCORN_SYSTEM
 #define STANDS_SYSTEM			I2C_SLAVEDSPIC_MODE_STANDS_SYSTEM
+#define SET_INFOS				I2C_SLAVEDSPIC_MODE_SET_INFOS
 
 
 
@@ -104,7 +105,7 @@ int8_t state_set_mode(struct i2c_cmd_slavedspic_set_mode *cmd)
 	if (mainboard_command.mode == POWER_OFF) {
 
 		/* stands_exchanger */
-//		slavedspic.stands_exchanger.on = 0;
+		slavedspic.stands_exchanger.on = 0;
 		pwm_mc_set(&gen.pwm_mc_mod2_ch1, 0);
 		BRAKE_ON();
 
@@ -276,6 +277,8 @@ void state_do_stands_elevator_mode(void)
 /* set stands_tower_clamps mode */
 void state_do_stands_tower_clamps_mode(void)
 {
+	uint8_t err = 0;
+
 	/* return if no update */
 	if (!state_check_update(STANDS_TOWER_CLAMPS))
 		return;
@@ -286,7 +289,10 @@ void state_do_stands_tower_clamps_mode(void)
 	if(stands_tower_clamps_set_mode(&slavedspic.stands_tower_clamps, mainboard_command.stands_tower_clamps.mode, mainboard_command.stands_tower_clamps.offset))
 		STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
 
-	stands_tower_clamps_wait_end(&slavedspic.stands_tower_clamps);
+	err = stands_tower_clamps_wait_end(&slavedspic.stands_tower_clamps);
+
+	if(err & END_BLOCKING)
+		STMCH_DEBUG("TOWER CLAMPS mode ends with BLOCKING");
 
 	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
@@ -342,6 +348,8 @@ void state_do_popcorn_tray_mode(void)
 /* set popcorn_ramps mode */
 void state_do_popcorn_ramps_mode(void)
 {
+	uint8_t err = 0;
+
 	/* return if no update */
 	if (!state_check_update(POPCORN_RAMPS))
 		return;
@@ -352,7 +360,10 @@ void state_do_popcorn_ramps_mode(void)
 	if(popcorn_ramps_set_mode(&slavedspic.popcorn_ramps, mainboard_command.popcorn_ramps.mode, mainboard_command.popcorn_ramps.offset))
 		STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
 
-	popcorn_ramps_wait_end(&slavedspic.popcorn_ramps);
+	err = popcorn_ramps_wait_end(&slavedspic.popcorn_ramps);
+
+	if(err & END_BLOCKING)
+		STMCH_DEBUG("RAMPS mode ends with BLOCKING");
 
 	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
@@ -360,7 +371,7 @@ void state_do_popcorn_ramps_mode(void)
 /* set cup_clamp_front mode */
 void state_do_cup_clamp_front_mode(void)
 {
-//	uint8_t ret;
+	uint8_t err;
 
 	/* return if no update */
 	if (!state_check_update(CUP_CLAMP_FRONT))
@@ -372,8 +383,10 @@ void state_do_cup_clamp_front_mode(void)
 	if(cup_clamp_front_set_mode(&slavedspic.cup_clamp_front, mainboard_command.cup_clamp_front.mode, mainboard_command.cup_clamp_front.offset))
 		STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
 
-	/*ret =*/ cup_clamp_front_wait_end(&slavedspic.cup_clamp_front);
-	//STMCH_ERROR("actuator retuns %d", ret);
+	err = cup_clamp_front_wait_end(&slavedspic.cup_clamp_front);
+
+	if(err & END_BLOCKING)
+		STMCH_DEBUG("CUP_CLAMP_FRONT mode ends with BLOCKING");
 
 	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
@@ -382,6 +395,8 @@ void state_do_cup_clamp_front_mode(void)
 /* set cup_holder_front mode */
 void state_do_cup_holder_front_mode(void)
 {
+	uint8_t err = 0;
+
 	/* return if no update */
 	if (!state_check_update(CUP_HOLDER_FRONT))
 		return;
@@ -392,7 +407,10 @@ void state_do_cup_holder_front_mode(void)
 	if(cup_holder_front_set_mode(&slavedspic.cup_holder_front, mainboard_command.cup_holder_front.mode, mainboard_command.cup_holder_front.offset))
 		STMCH_ERROR("ERROR %s mode=%d", __FUNCTION__, state_get_mode());
 
-	cup_holder_front_wait_end(&slavedspic.cup_holder_front);
+	err = cup_holder_front_wait_end(&slavedspic.cup_holder_front);
+
+	if(err & END_BLOCKING)
+		STMCH_DEBUG("CUP_HOLDER_FRONT mode ends with BLOCKING");
 
 	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
@@ -427,7 +445,6 @@ uint8_t do_cup_front_catch_and_drop(popcorn_system_t *ps)
 		case CATCH_CUP_FRONT:
 			cup_clamp_front_set_mode(&slavedspic.cup_clamp_front, CUP_CLAMP_FRONT_MODE_CUP_LOCKED, 0);
 			ps->substate = WAITING_CUP_FRONT_CAUGHT;
-
 			break;
 
 		case WAITING_CUP_FRONT_CAUGHT:
@@ -439,13 +456,11 @@ uint8_t do_cup_front_catch_and_drop(popcorn_system_t *ps)
 				STMCH_ERROR("cup_clamp_front BLOCKED!!");
 				return STATUS_BLOCKED;
 			}
-
 			break;
 
 		case RAISE_CUP_FRONT:
 			cup_holder_front_set_mode(&slavedspic.cup_holder_front, CUP_HOLDER_FRONT_MODE_CUP_HOLD, 0);
 			ps->substate = WAITING_CUP_FRONT_RAISED;
-
 			break;
 
 		case WAITING_CUP_FRONT_RAISED:
@@ -460,7 +475,11 @@ uint8_t do_cup_front_catch_and_drop(popcorn_system_t *ps)
 				STMCH_ERROR("cup_holder_front BLOCKED!!");
 				return STATUS_BLOCKED;
 			}
-
+			break;
+		
+		default:
+			ps->substate = SAVE;
+			return STATUS_ERROR;
 			break;
 	}
 
@@ -514,7 +533,11 @@ uint8_t do_cup_front_release(popcorn_system_t *ps)
 				STMCH_ERROR("cup_clamp_front BLOCKED!!");
 				return STATUS_BLOCKED;
 			}
+			break;
 
+		default:
+			ps->substate = SAVE;
+			return STATUS_ERROR;
 			break;
 	}
 
@@ -555,7 +578,11 @@ uint8_t do_cup_front_hide(popcorn_system_t *ps)
 
 				return STATUS_BLOCKED;
 			}
+			break;
 
+		default:
+			ps->substate = SAVE;
+			return STATUS_ERROR;
 			break;
 	}
 
@@ -573,7 +600,6 @@ uint8_t do_cup_rear_open(popcorn_system_t *ps)
 		case OPEN_RIGHT_CUP_REAR:
 			cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_r, CUP_CLAMP_MODE_OPEN, 0);
 			ps->substate = WAITING_CUP_REAR_OPENED_RIGHT;
-
 			break;
 
 		case WAITING_CUP_REAR_OPENED_RIGHT:
@@ -586,13 +612,11 @@ uint8_t do_cup_rear_open(popcorn_system_t *ps)
 				STMCH_ERROR("cup_clamp_popcorn_door_r BLOCKED!!");
 				return STATUS_BLOCKED;
 			}
-
 			break;
 
 		case OPEN_LEFT_CUP_REAR:
 			cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_l, CUP_CLAMP_MODE_OPEN, 0);
 			ps->substate = WAITING_CUP_REAR_OPENED_LEFT;
-
 			break;
 
 		case WAITING_CUP_REAR_OPENED_LEFT:
@@ -606,7 +630,11 @@ uint8_t do_cup_rear_open(popcorn_system_t *ps)
 				STMCH_ERROR("cup_clamp_popcorn_door_l BLOCKED!!");
 				return STATUS_BLOCKED;
 			}
+			break;
 
+		default:
+			ps->substate = SAVE;
+			return STATUS_ERROR;
 			break;
 	}
 
@@ -631,7 +659,6 @@ uint8_t do_cup_rear_catch(popcorn_system_t *ps)
 			cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_l, CUP_CLAMP_MODE_LOCKED, 0);
 			cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_r, CUP_CLAMP_MODE_LOCKED, 0);
 			ps->substate = WAITING_CUP_REAR_CAUGHT;
-
 			break;
 
 		case WAITING_CUP_REAR_CAUGHT:
@@ -650,7 +677,11 @@ uint8_t do_cup_rear_catch(popcorn_system_t *ps)
 
 				return STATUS_BLOCKED;
 			}
+			break;
 
+		default:
+			ps->substate = SAVE;
+			return STATUS_ERROR;
 			break;
 	}
 
@@ -674,7 +705,6 @@ uint8_t do_cup_rear_release(popcorn_system_t *ps)
 			cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_l, CUP_CLAMP_MODE_OPEN, 0);
 			cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_r, CUP_CLAMP_MODE_OPEN, 0);
 			ps->substate = WAITING_CUP_REAR_RELEASED;
-
 			break;
 
 		case WAITING_CUP_REAR_RELEASED:
@@ -693,7 +723,11 @@ uint8_t do_cup_rear_release(popcorn_system_t *ps)
 
 				return STATUS_BLOCKED;
 			}
+			break;
 
+		default:
+			ps->substate = SAVE;
+			return STATUS_ERROR;
 			break;
 	}
 
@@ -713,19 +747,16 @@ uint8_t do_machines_ready(popcorn_system_t *ps)
 			popcorn_tray_set_mode(&slavedspic.popcorn_tray, POPCORN_TRAY_MODE_OPEN, 0);
 			us = time_get_us2();
 			ps->substate = WAITING_TRAY_OPENED;
-
 			break;
 
 		case WAITING_TRAY_OPENED:
 			if(time_get_us2() - us > 500000L)
 				ps->substate = OPEN_RAMPS;
-
 			break;
 
 		case OPEN_RAMPS:
 			popcorn_ramps_set_mode(&slavedspic.popcorn_ramps, POPCORN_RAMPS_MODE_OPEN, 0);
 			ps->substate = WAITING_RAMPS_OPENED;
-
 			break;
 
 		case WAITING_RAMPS_OPENED:
@@ -737,7 +768,11 @@ uint8_t do_machines_ready(popcorn_system_t *ps)
 				STMCH_ERROR("popcorn_ramps BLOCKED!!");
 				return STATUS_BLOCKED;
 			}
+			break;
 
+		default:
+			ps->substate = SAVE;
+			return STATUS_ERROR;
 			break;
 	}
 
@@ -760,7 +795,6 @@ uint8_t do_machines_harvest(popcorn_system_t *ps)
 		case MOVE_RAMPS:
 			popcorn_ramps_set_mode(&slavedspic.popcorn_ramps, POPCORN_RAMPS_MODE_HARVEST, 0);
 			ps->substate = WAITING_RAMPS_MOVED;
-
 			break;
 
 		case WAITING_RAMPS_MOVED:
@@ -774,7 +808,6 @@ uint8_t do_machines_harvest(popcorn_system_t *ps)
 				STMCH_ERROR("popcorn_ramps BLOCKED!!");
 				return STATUS_BLOCKED;
 			}
-
 			break;
 
 		case WAITING_POPCORNS_HARVESTED:
@@ -782,7 +815,11 @@ uint8_t do_machines_harvest(popcorn_system_t *ps)
 				ps->machine_popcorns_catched = 1;
 				return STATUS_DONE;
 			}
+			break;
 
+		default:
+			ps->substate = SAVE;
+			return STATUS_ERROR;
 			break;
 	}
 
@@ -804,7 +841,6 @@ uint8_t do_machines_end(popcorn_system_t *ps)
 		case CLOSE_RAMPS:
 			popcorn_ramps_set_mode(&slavedspic.popcorn_ramps, POPCORN_RAMPS_MODE_HIDE, 0);
 			ps->substate = WAITING_RAMPS_CLOSED;
-
 			break;
 
 		case WAITING_RAMPS_CLOSED:
@@ -816,13 +852,16 @@ uint8_t do_machines_end(popcorn_system_t *ps)
 				STMCH_ERROR("popcorn_ramps BLOCKED!!");
 				return STATUS_BLOCKED;
 			}
-
 			break;
 
 		case CLOSE_TRAY:
 			popcorn_tray_set_mode(&slavedspic.popcorn_tray, POPCORN_TRAY_MODE_CLOSE, 0);
 			return STATUS_DONE;
+			break;
 
+		default:
+			ps->substate = SAVE;
+			return STATUS_ERROR;
 			break;
 	}
 
@@ -851,7 +890,6 @@ uint8_t do_stock_drop(popcorn_system_t *ps)
 			popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_l, POPCORN_DOOR_MODE_OPEN, 0);
 			popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_r, POPCORN_DOOR_MODE_OPEN, 0);
 			ps->substate = WAITING_DOORS_OPENED;
-
 			break;
 
 		case WAITING_DOORS_OPENED:
@@ -873,14 +911,17 @@ uint8_t do_stock_drop(popcorn_system_t *ps)
 
 				return STATUS_BLOCKED;
 			}
-
 			break;
 
 		case WAITING_STOCK_DROPPED:
 			if(time_get_us2() - us > 1000000L) {
 				return STATUS_DONE;
 			}
+			break;
 
+		default:
+			ps->substate = SAVE;
+			return STATUS_ERROR;
 			break;
 	}
 
@@ -914,13 +955,11 @@ uint8_t do_stock_end(popcorn_system_t *ps)
 				STMCH_ERROR("cup_clamp_popcorn_door_l BLOCKED!!");
 				return STATUS_BLOCKED;
 			}
-
 			break;
 
 		case CLOSE_RIGHT_CLAMP:
 			cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_r, CUP_CLAMP_MODE_HIDE, 0);
 			ps->substate = WAITING_RIGHT_CLAMP_CLOSED;
-
 			break;
 
 		case WAITING_RIGHT_CLAMP_CLOSED:
@@ -932,7 +971,11 @@ uint8_t do_stock_end(popcorn_system_t *ps)
 				STMCH_ERROR("cup_clamp_popcorn_door_r BLOCKED!!");
 				return STATUS_BLOCKED;
 			}
+			break;
 
+		default:
+			ps->substate = SAVE;
+			return STATUS_ERROR;
 			break;
 	}
 
@@ -1003,12 +1046,31 @@ void popcorn_system_manage(popcorn_system_t *ps)
 		case I2C_SLAVEDSPIC_MODE_PS_STOCK_END:
 			ps->status = do_stock_end(ps);
 			break;
+
+		default:
+			ps->substate = SAVE;
+			ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
+			ps->status = STATUS_ERROR;
+			break;
 	}
 
+	/* status parser */
 	switch(ps->status)
 	{
+		case STATUS_READY:
+		case STATUS_BUSY:
+			break;
+
 		case STATUS_DONE:
+
+			/**
+	         * In some cases,  goto automaticaly to other modes after 
+			 * finish the current one. It's because we have the DONE state
+			 * previous to READY.
+			 */
+
 			ps->substate = SAVE;
+
 			if(ps->mode == I2C_SLAVEDSPIC_MODE_PS_MACHINES_HARVEST)
 				ps->mode = I2C_SLAVEDSPIC_MODE_PS_MACHINES_END;
 			else {
@@ -1018,11 +1080,10 @@ void popcorn_system_manage(popcorn_system_t *ps)
 			break;
 
 		case STATUS_BLOCKED:
+		case STATUS_ERROR:
+		default:
 			ps->substate = SAVE;
 			ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
-			break;
-
-		default:
 			break;
 	}
 }
@@ -1175,6 +1236,11 @@ uint8_t do_hide_tower(stands_system_t *ss)
 			}
 
 			break;
+
+		default:
+			ss->substate = SAVE;
+			return STATUS_ERROR;
+			break;
 	}
 
 	return STATUS_BUSY;
@@ -1323,6 +1389,11 @@ uint8_t do_harvest_stand(stands_system_t *ss)
 			}
 
 			break;
+
+		default:
+			ss->substate = SAVE;
+			return STATUS_ERROR;
+			break;
 	}
 
 	return STATUS_BUSY;
@@ -1386,6 +1457,11 @@ uint8_t do_release_stand(stands_system_t *ss)
 			}
 
 			break;
+
+		default:
+			ss->substate = SAVE;
+			return STATUS_ERROR;
+			break;
 	}
 
 	return STATUS_BUSY;
@@ -1420,6 +1496,11 @@ uint8_t do_center_stand(stands_system_t *ss)
 
 		case WAITING_RETURNED:
 			//esperar a que el selector vuelva
+			break;
+
+		default:
+			ss->substate = SAVE;
+			return STATUS_ERROR;
 			break;
 	}
 
@@ -1636,6 +1717,11 @@ uint8_t do_release_spotlight(stands_system_t *ss)
 			}
 
 			break;
+
+		default:
+			ss->substate = SAVE;
+			return STATUS_ERROR;
+			break;
 	}
 
 	return STATUS_BUSY;
@@ -1678,12 +1764,30 @@ void stands_system_manage(stands_system_t *ss, stands_system_t *ss_slave)
 		case I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT:
 			ss->status = do_release_spotlight(ss);
 			break;
+
+		default:
+			ss->mode = I2C_SLAVEDSPIC_MODE_SS_IDLE;
+			ss->status = STATUS_ERROR;
+			break;
 	}
 
+	/* status parser */
 	switch(ss->status)
 	{
+		case STATUS_READY:
+		case STATUS_BUSY:
+			break;
+
 		case STATUS_DONE:
+
+			/**
+	         * In some cases,  goto automaticaly to other modes after 
+			 * finish the current one. It's because we have the DONE state
+			 * previous to READY.
+			 */
+
 			ss->substate = SAVE;
+
 			if(ss->mode == I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND)
 				ss->mode = I2C_SLAVEDSPIC_MODE_SS_HIDE_TOWER;
 			else if(ss->mode == I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT && ss->spotlight_mode == SM_PRINCIPAL) {
@@ -1705,11 +1809,10 @@ void stands_system_manage(stands_system_t *ss, stands_system_t *ss_slave)
 			break;
 
 		case STATUS_BLOCKED:
-			ss->substate = SAVE;
-			ss->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
-			break;
-
+		case STATUS_ERROR:
 		default:
+			ss->substate = SAVE;
+			ss->mode = I2C_SLAVEDSPIC_MODE_SS_IDLE;
 			break;
 	}
 }
@@ -1721,7 +1824,6 @@ void state_do_stands_systems(void)
 }
 #endif
 
-#ifdef INFOS
 
 /* set infos */
 void state_do_set_infos(void)
@@ -1733,24 +1835,30 @@ void state_do_set_infos(void)
 
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
 
-	if(mainboard_command.set_infos.nb_goldbars_in_boot >= 0)
-		slavedspic.nb_goldbars_in_boot = mainboard_command.set_infos.nb_goldbars_in_boot;
-	if(mainboard_command.set_infos.nb_goldbars_in_mouth >= 0)
-		slavedspic.nb_goldbars_in_mouth = mainboard_command.set_infos.nb_goldbars_in_mouth;
-	if(mainboard_command.set_infos.nb_coins_in_boot >= 0)
-		slavedspic.nb_coins_in_boot = mainboard_command.set_infos.nb_coins_in_boot;
-	if(mainboard_command.set_infos.nb_coins_in_mouth >= 0)
-		slavedspic.nb_coins_in_mouth = mainboard_command.set_infos.nb_coins_in_mouth;
+	if(mainboard_command.set_infos.cup_front_catched >= 0)
+		slavedspic.ps.cup_front_catched = mainboard_command.set_infos.cup_front_catched;
 
-	STMCH_DEBUG("nb_goldbars_in_boot = %d", slavedspic.nb_goldbars_in_boot);
-	STMCH_DEBUG("nb_goldbars_in_mouth = %d", slavedspic.nb_goldbars_in_mouth);
-	STMCH_DEBUG("nb_coins_in_boot = %d", slavedspic.nb_coins_in_boot);
-	STMCH_DEBUG("nb_coins_in_mouth = %d", slavedspic.nb_coins_in_mouth);
+	if(mainboard_command.set_infos.cup_rear_catched >= 0)
+		slavedspic.ps.cup_rear_catched  = mainboard_command.set_infos.cup_rear_catched;
 
-   state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
+	if(mainboard_command.set_infos.machine_popcorns_catched >= 0)
+		slavedspic.ps.machine_popcorns_catched = mainboard_command.set_infos.machine_popcorns_catched;
+
+	if(mainboard_command.set_infos.stored_stands_l >= 0)
+		slavedspic.ss[I2C_SIDE_LEFT].stored_stands = mainboard_command.set_infos.stored_stands_l;
+
+	if(mainboard_command.set_infos.stored_stands_r >= 0)
+		slavedspic.ss[I2C_SIDE_RIGHT].stored_stands = mainboard_command.set_infos.stored_stands_r;
+
+	STMCH_DEBUG("cup_front_catched = %d", slavedspic.ps.cup_front_catched);
+	STMCH_DEBUG("cup_rear_catched = %d", slavedspic.ps.cup_rear_catched);
+	STMCH_DEBUG("machine_popcorns_catched = %d", slavedspic.ps.machine_popcorns_catched);
+	STMCH_DEBUG("stored_stands_l = %d", slavedspic.ss[I2C_SIDE_LEFT].stored_stands);
+	STMCH_DEBUG("stored_stands_r = %d", slavedspic.ss[I2C_SIDE_RIGHT].stored_stands);
+
+   	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
 }
 
-#endif
 
 /* state machines */
 void state_machines(void)
@@ -1759,6 +1867,7 @@ void state_machines(void)
 
 #ifdef SIMPLE_ACTUATORS
 	/* simple actuator modes */
+	/* XXX blocking implementation */
 	state_do_stands_blade_mode();
 	state_do_stands_clamp_mode();
 	state_do_stands_elevator_mode();
@@ -1776,9 +1885,7 @@ void state_machines(void)
 	state_do_stands_systems();
 #endif
 
-#ifdef INFOS
 	state_do_set_infos();
-#endif
 }
 
 void state_init(void)

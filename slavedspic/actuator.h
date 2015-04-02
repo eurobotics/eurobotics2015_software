@@ -144,7 +144,7 @@ uint8_t stands_exchanger_wait_end();
 
 typedef struct {
 	uint8_t mode;
-
+/* XXX syncronized with common/i2c_commands.h */
 #define POPCORN_TRAY_MODE_OPEN 		0	
 #define POPCORN_TRAY_MODE_CLOSE 	1		
 #define POPCORN_TRAY_MODE_MAX		2
@@ -163,11 +163,13 @@ int8_t popcorn_tray_set_mode(popcorn_tray_t *popcorn_tray, uint8_t mode, int16_t
 /****stands_clamps functions *********************************************************/
 typedef struct {
 	uint8_t type;
+/* XXX syncronized with common/i2c_commands.h */
 #define STANDS_CLAMP_TYPE_LEFT		0
 #define STANDS_CLAMP_TYPE_RIGHT		1
 #define STANDS_CLAMP_TYPE_MAX		2
 
 	uint8_t mode;
+/* XXX syncronized with common/i2c_commands.h */
 #define STANDS_CLAMP_MODE_FULL_OPEN		0
 #define STANDS_CLAMP_MODE_OPEN			1
 #define STANDS_CLAMP_MODE_CLOSE			2
@@ -189,6 +191,7 @@ int8_t stands_clamp_set_mode(stands_clamp_t *stands_clamp, uint8_t mode, int16_t
 /**** stands_tower_clamps functions *********************************************************/
 typedef struct {
 	uint8_t mode;
+/* XXX syncronized with common/i2c_commands.h */
 #define STANDS_TOWER_CLAMPS_MODE_UNLOCK_LEFT		0
 #define STANDS_TOWER_CLAMPS_MODE_LOCK				1
 #define STANDS_TOWER_CLAMPS_MODE_UNLOCK_RIGHT		2
@@ -217,11 +220,13 @@ uint8_t stands_tower_clamps_wait_end(stands_tower_clamps_t *stands_tower_clamps)
 /****stands_elevators functions *********************************************************/
 typedef struct {
 	uint8_t type;
+/* XXX syncronized with common/i2c_commands.h */
 #define STANDS_ELEVATOR_TYPE_LEFT		0
 #define STANDS_ELEVATOR_TYPE_RIGHT		1
 #define STANDS_ELEVATOR_TYPE_MAX		2	
 
 	uint8_t mode;
+/* XXX syncronized with common/i2c_commands.h */
 #define STANDS_ELEVATOR_MODE_UP			0
 #define STANDS_ELEVATOR_MODE_DOWN		1
 #define STANDS_ELEVATOR_MODE_MAX		2
@@ -248,11 +253,13 @@ uint8_t stands_elevator_wait_end(stands_elevator_t *stands_elevator);
 /****stands_blade functions *********************************************************/
 typedef struct {
 	uint8_t type;
+/* XXX syncronized with common/i2c_commands.h */
 #define STANDS_BLADE_TYPE_LEFT		0
 #define STANDS_BLADE_TYPE_RIGHT		1
 #define STANDS_BLADE_TYPE_MAX		2	
 
 	uint8_t mode;
+/* XXX syncronized with common/i2c_commands.h */
 #define STANDS_BLADE_MODE_HIDE_LEFT				0
 #define STANDS_BLADE_MODE_PUSH_STAND_LEFT		1
 #define STANDS_BLADE_MODE_CENTER				2
@@ -283,11 +290,13 @@ uint8_t stands_blade_wait_end(stands_blade_t *stands_blade);
 /****cup_clamp_popcorn_door functions *********************************************************/
 typedef struct {
 	uint8_t type;
+/* XXX syncronized with common/i2c_commands.h */
 #define CUP_CLAMP_POPCORN_DOOR_TYPE_LEFT	0
 #define CUP_CLAMP_POPCORN_DOOR_TYPE_RIGHT	1
 #define CUP_CLAMP_POPCORN_DOOR_TYPE_MAX		2	
 
 	uint8_t mode;
+/* XXX syncronized with common/i2c_commands.h */
 #define CUP_CLAMP_MODE_HIDE					0
 #define CUP_CLAMP_MODE_LOCKED				1
 #define CUP_CLAMP_MODE_OPEN					2
@@ -322,6 +331,7 @@ uint8_t cup_clamp_popcorn_door_wait_end(cup_clamp_popcorn_door_t *cup_clamp_popc
 /**** popcorn_ramps functions *********************************************************/
 typedef struct {
 	uint8_t mode;
+/* XXX syncronized with common/i2c_commands.h */
 #define POPCORN_RAMPS_MODE_HIDE			0
 #define POPCORN_RAMPS_MODE_HARVEST		1
 #define POPCORN_RAMPS_MODE_OPEN			2
@@ -350,6 +360,7 @@ uint8_t popcorn_ramps_wait_end(popcorn_ramps_t *popcorn_ramps);
 /**** cup_clamp_front functions *********************************************************/
 typedef struct {
 	uint8_t mode;
+/* XXX syncronized with common/i2c_commands.h */
 #define CUP_CLAMP_FRONT_MODE_OPEN			0
 #define CUP_CLAMP_FRONT_MODE_CUP_LOCKED		1
 #define CUP_CLAMP_FRONT_MODE_MAX			2
@@ -375,6 +386,7 @@ uint8_t cup_clamp_front_wait_end(cup_clamp_front_t *cup_clamp_front);
 /**** cup_holder_front functions *********************************************************/
 typedef struct {
 	uint8_t mode;
+/* XXX syncronized with common/i2c_commands.h */
 #define CUP_HOLDER_FRONT_MODE_CUP_HOLD		0
 #define CUP_HOLDER_FRONT_MODE_READY			1
 #define CUP_HOLDER_FRONT_MODE_HIDE			2

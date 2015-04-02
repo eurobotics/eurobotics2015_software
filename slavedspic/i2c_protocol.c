@@ -125,7 +125,7 @@ void i2c_read_event(uint8_t cmd_byte, uint8_t *buf)
 			
 			(*cmd).hdr.cmd = I2C_ANS_SLAVEDSPIC_STATUS;
 
-         /* XXX syncronized with maindspic */
+         	/* XXX syncronized with maindspic */
 
 			/* infos */
 			(*cmd).popcorn_system.mode = slavedspic.ps.mode;

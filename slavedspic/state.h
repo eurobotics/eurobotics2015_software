@@ -40,11 +40,13 @@
 
 /* popcorn_system */
 typedef struct {
+
+	/* working mode */
 	uint8_t mode;
 	uint8_t mode_rqst;
 	uint8_t mode_changed;
 
-	/* info */
+	/* substate of modes, XXX variable shared between them */
 	uint8_t substate;
 #define SAVE							0
 
@@ -95,25 +97,30 @@ typedef struct {
 #define CLOSE_RIGHT_CLAMP				83
 #define WAITING_RIGHT_CLAMP_CLOSED		84
 
-	uint8_t status : 4;
-#define STATUS_READY		1
-#define STATUS_BUSY			2
-#define STATUS_DONE			4
-#define STATUS_BLOCKED		8
+	/* system status */
+	uint8_t status;
+#define STATUS_READY		I2C_SLAVEDSPIC_STATUS_READY
+#define STATUS_BUSY			I2C_SLAVEDSPIC_STATUS_BUSY
+#define STATUS_DONE			I2C_SLAVEDSPIC_DONE	
+#define STATUS_BLOCKED		I2C_SLAVEDSPIC_BLOCKED
+#define STATUS_ERROR		I2C_SLAVEDSPIC_ERROR
 
-	uint8_t cup_front_catched : 1;
-	uint8_t cup_front_popcorns_harvested : 1;
-	uint8_t cup_rear_catched : 1;
-	uint8_t machine_popcorns_catched : 1;
+	/* infos */
+	uint8_t cup_front_catched;
+	uint8_t cup_front_popcorns_harvested;
+	uint8_t cup_rear_catched;
+	uint8_t machine_popcorns_catched;
 }popcorn_system_t;
 
 /* stands_system */
 typedef struct {
+
+	/* working mode */
 	uint8_t mode;
 	uint8_t mode_rqst;
 	uint8_t mode_changed;
 
-	/* info */
+	/* substate of each working mode, XXX variable shared between them */
 	uint8_t substate;
 #define SAVE						0
 
@@ -143,6 +150,10 @@ typedef struct {
 #define OPEN_ALL					31
 #define WAITING_ALL_OPENED			32
 
+	/* status */
+	uint8_t status;
+
+	/* XXX pecific for spotlight building */
 	uint8_t spotlight_substate;
 #define IDLE				0
 #define HIDE_TOWER			1
@@ -150,22 +161,20 @@ typedef struct {
 #define RELEASE_STAND		3
 #define CENTER_STAND		4
 
-	uint8_t status;
 	uint8_t spotlight_status;
-#define STATUS_READY		1
-#define STATUS_BUSY			2
-#define STATUS_DONE			4
-#define STATUS_BLOCKED		8
-
 	uint8_t spotlight_mode;
 #define SM_PRINCIPAL		1
 #define SM_SECONDARY		2
 
-	uint8_t stored_stands;
+	/* blade angle consign */
 	int8_t blade_angle;
 
+	/* time counters */
 	microseconds us;
 	microseconds us_system;
+
+	/* infos */
+	uint8_t stored_stands;
 
 	/* sensors */
 	uint8_t stand_sensor;
