@@ -303,6 +303,7 @@ void bt_trajectory_goto_xy_rel(int16_t x, int16_t y, int16_t args_checksum)
 
 uint8_t bt_goto_and_avoid (int16_t x, int16_t y, int16_t args_checksum)
 {
+	uint8_t err;
 	/* check args checksum */
 	if ((x+y) == args_checksum) {
 
@@ -319,20 +320,21 @@ uint8_t bt_goto_and_avoid (int16_t x, int16_t y, int16_t args_checksum)
 		mainboard.strat_event_data[0] = x;
 		mainboard.strat_event_data[1] = y;
 
-		//strat_event_schedule_single ( strat_goto_avoid_event,
-		//					 (void *)mainboard.strat_event_data);
-
-		return strat_goto_avoid_event((void *)mainboard.strat_event_data);
+		interrupt_traj_reset();
+		err=goto_and_avoid(x, y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+		if (err != END_TRAJ && err != END_NEAR)
+			strat_hardstop();
+		return err;
 	}
 	else {
-		/* set ACK */
-		//bt_status_set_cmd_ack (END_ERROR);
+		/* set NACK */
 		return END_ERROR;
-
 	}
 }
 uint8_t bt_goto_and_avoid_forward (int16_t x, int16_t y, int16_t args_checksum)
 {
+	uint8_t err;
+
 	/* check args checksum */
 	if ((x+y) == args_checksum) {
 
@@ -349,20 +351,23 @@ uint8_t bt_goto_and_avoid_forward (int16_t x, int16_t y, int16_t args_checksum)
 		mainboard.strat_event_data[0] = x;
 		mainboard.strat_event_data[1] = y;
 
-		//strat_event_schedule_single ( strat_goto_avoid_forward_event,
-		//					 (void *)mainboard.strat_event_data);
 
-		return strat_goto_avoid_forward_event((void *)mainboard.strat_event_data);
+		interrupt_traj_reset();
+		err=goto_and_avoid_forward( x, y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+		if (err != END_TRAJ && err != END_NEAR)
+			strat_hardstop();
+		return err;
 	}
 	else {
-		/* set ACK */
-		//bt_status_set_cmd_ack (END_ERROR);
+		/* set NACK */
 		return END_ERROR;
 
 	}
 }
 uint8_t bt_goto_and_avoid_backward (int16_t x, int16_t y, int16_t args_checksum)
 {
+	uint8_t err;
+
 	/* check args checksum */
 	if ((x+y) == args_checksum) {
 
@@ -379,14 +384,15 @@ uint8_t bt_goto_and_avoid_backward (int16_t x, int16_t y, int16_t args_checksum)
 		mainboard.strat_event_data[0] = x;
 		mainboard.strat_event_data[1] = y;
 
-		//strat_event_schedule_single ( strat_goto_avoid_backward_event,
-		//					 (void *)mainboard.strat_event_data);
+		interrupt_traj_reset();
+		err=goto_and_avoid_backward(x, y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+		if (err != END_TRAJ && err != END_NEAR)
+			strat_hardstop();
+		return err;
 
-		return strat_goto_avoid_backward_event((void *)mainboard.strat_event_data);
 	}
 	else {
-		/* set ACK */
-		//bt_status_set_cmd_ack (END_ERROR);
+		/* set NACK */
 		return END_ERROR;
 
 	}

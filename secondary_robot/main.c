@@ -464,6 +464,8 @@ int main(void)
 				//TODO: check task
 				ret = wait_traj_end(TRAJ_FLAGS_STD);
 				printf_P("BT_GOTO");
+
+				current_bt_task=BT_TASK_NONE;
 				break;
 
 			case BT_GOTO_AVOID_FW:
@@ -471,6 +473,8 @@ int main(void)
 				strat_bt_goto_avoid_x = -1;
 				strat_bt_goto_avoid_y = -1;
 				strat_bt_goto_avoid_checksum = -1;
+
+				current_bt_task=BT_TASK_NONE;
 				break;
 
 			case BT_GOTO_AVOID_BW:
@@ -478,6 +482,8 @@ int main(void)
 				strat_bt_goto_avoid_x = -1;
 				strat_bt_goto_avoid_y = -1;
 				strat_bt_goto_avoid_checksum = -1;
+
+				current_bt_task=BT_TASK_NONE;
 				break;
 
 			case BT_GOTO_AVOID:
@@ -487,14 +493,16 @@ int main(void)
 				strat_bt_goto_avoid_x = -1;
 				strat_bt_goto_avoid_y = -1;
 				strat_bt_goto_avoid_checksum = -1;
+
+				current_bt_task=BT_TASK_NONE;
 				break;
 		}
+		if(ret!=0){
 
 		// Return value from the functions indicating finish, to inform main robot.
 		if(current_bt_task!=BT_TASK_NONE)
 			bt_status_set_cmd_ret (ret);
 
-		current_bt_task=BT_TASK_NONE;
 		ret=0;
 	}
 
