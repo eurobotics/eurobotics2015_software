@@ -903,72 +903,72 @@ parse_pgm_inst_t cmd_state2 = {
 };
 
 
-///**********************************************************/
-///* State3 */
-//
-///* this structure is filled when cmd_state3 is parsed successfully */
-//struct cmd_state3_result {
-//	fixed_string_t arg0;
-//	fixed_string_t arg1;
-//	int8_t arg2;
-//	
-//};
-//
-///* function called when cmd_state3 is parsed successfully */
-//static void cmd_state3_parsed(void *parsed_result,
-//			      __attribute__((unused)) void *data)
-//{
-//	struct cmd_state3_result *res = parsed_result;
-//#if 0
-//	struct i2c_cmd_slavedspic_set_mode command;
-//
-//	command.set_infos.nb_goldbars_in_boot = -1;
-//	command.set_infos.nb_goldbars_in_mouth = -1;
-//	command.set_infos.nb_coins_in_boot = -1;
-//	command.set_infos.nb_coins_in_mouth = -1;
-//
-//	if (!strcmp(res->arg1, "nb_goldbars_in_boot")) {
-//		command.set_infos.nb_goldbars_in_boot = res->arg2;
-//	}
-//	else if (!strcmp(res->arg1, "nb_goldbars_in_mouth")) {
-//		command.set_infos.nb_goldbars_in_mouth = res->arg2;
-//	}
-//	else if (!strcmp(res->arg1, "nb_coins_in_boot")) {
-//		command.set_infos.nb_coins_in_boot = res->arg2;
-//	}
-//	else if (!strcmp(res->arg1, "nb_coins_in_mouth")) {
-//		command.set_infos.nb_coins_in_mouth = res->arg2;
-//	}
-//
-//	command.mode = I2C_SLAVEDSPIC_MODE_SET_INFOS;
-//	state_set_mode(&command);
-//#endif
-//
-//	if (!strcmp(res->arg1, "nb_stored_fires")) {
-//		slavedspic.nb_stored_fires = res->arg2;
-//	}
-//
-//}
-//
-//prog_char str_state3_arg0[] = "set_infos";
-//parse_pgm_token_string_t cmd_state3_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_state3_result, arg0, str_state3_arg0);
-//prog_char str_state3_arg1[] = "nb_stored_fires";
-//parse_pgm_token_string_t cmd_state3_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_state3_result, arg1, str_state3_arg1);
-//parse_pgm_token_num_t cmd_state3_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_state3_result, arg2, INT8);
-//
-//prog_char help_state3[] = "set slavedspic mode";
-//parse_pgm_inst_t cmd_state3 = {
-//	.f = cmd_state3_parsed,  /* function to call */
-//	.data = NULL,      /* 2nd arg of func */
-//	.help_str = help_state3,
-//	.tokens = {        /* token list, NULL terminated */
-//		(prog_void *)&cmd_state3_arg0, 
-//		(prog_void *)&cmd_state3_arg1, 
-//		(prog_void *)&cmd_state3_arg2,
-//		NULL,
-//	},
-//};
-//#endif
+/**********************************************************/
+/* State3 */
+
+/* this structure is filled when cmd_state3 is parsed successfully */
+struct cmd_state3_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+	int8_t arg2;
+	
+};
+
+/* function called when cmd_state3 is parsed successfully */
+static void cmd_state3_parsed(void *parsed_result,
+			      __attribute__((unused)) void *data)
+{
+	struct cmd_state3_result *res = parsed_result;
+
+	struct i2c_cmd_slavedspic_set_mode command;
+
+	command.set_infos.cup_front_catched = -1;
+	command.set_infos.cup_rear_catched = -1;
+	command.set_infos.machine_popcorns_catched = -1;
+	command.set_infos.stored_stands_l = -1;
+	command.set_infos.stored_stands_r = -1;
+
+	if (!strcmp(res->arg1, "cup_front_catched")) {
+		command.set_infos.cup_front_catched = res->arg2;
+	}
+	else if (!strcmp(res->arg1, "cup_rear_catched")) {
+		command.set_infos.cup_rear_catched = res->arg2;
+	}
+	else if (!strcmp(res->arg1, "machines_catched")) {
+		command.set_infos.machine_popcorns_catched = res->arg2;
+	}
+	else if (!strcmp(res->arg1, "stands_left")) {
+		command.set_infos.stored_stands_l = res->arg2;
+	}
+	else if (!strcmp(res->arg1, "stands_right")) {
+		command.set_infos.stored_stands_r = res->arg2;
+	}
+
+	command.mode = I2C_SLAVEDSPIC_MODE_SET_INFOS;
+	state_set_mode(&command);
+}
+
+prog_char str_state3_arg0[] = "set_infos";
+parse_pgm_token_string_t cmd_state3_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_state3_result, arg0, str_state3_arg0);
+prog_char str_state3_arg1[] = "cup_front_catched#cup_rear_catched#machine_catched#stands_left#stands_right";
+parse_pgm_token_string_t cmd_state3_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_state3_result, arg1, str_state3_arg1);
+parse_pgm_token_num_t cmd_state3_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_state3_result, arg2, INT8);
+
+prog_char help_state3[] = "set slavedspic mode";
+parse_pgm_inst_t cmd_state3 = {
+	.f = cmd_state3_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_state3,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_state3_arg0, 
+		(prog_void *)&cmd_state3_arg1, 
+		(prog_void *)&cmd_state3_arg2,
+		NULL,
+	},
+};
+
+
+
 //#if 0
 //#ifdef notyet
 ///**********************************************************/

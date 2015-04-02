@@ -105,7 +105,7 @@ extern parse_pgm_inst_t cmd_cup_holder_front;
 extern parse_pgm_inst_t cmd_popcorn_system;
 extern parse_pgm_inst_t cmd_stands_system;
 extern parse_pgm_inst_t cmd_state2;
-//extern parse_pgm_inst_t cmd_state3;
+extern parse_pgm_inst_t cmd_state3;
 
 #if 0
 //extern parse_pgm_inst_t cmd_state_debug;
@@ -181,7 +181,7 @@ parse_pgm_ctx_t main_ctx[]  = {
 	(parse_pgm_inst_t *)&cmd_stands_system,
 
 	(parse_pgm_inst_t *)&cmd_state2,
-//	(parse_pgm_inst_t *)&cmd_state3,
+	(parse_pgm_inst_t *)&cmd_state3,
 
 #if 0
 	//(parse_pgm_inst_t *)&cmd_state_debug,

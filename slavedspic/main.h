@@ -181,7 +181,7 @@ struct slavedspic {
 	popcorn_system_t ps;
 	stands_system_t ss[2];
 
-	/* infos */
+	/* status */
 	uint8_t status;
 
 	/* infos */
