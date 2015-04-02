@@ -490,14 +490,13 @@ uint8_t strat_smart(void)
 	}
 }
 
+// Must be called in diferent event
 
 void strat_opp_tracking (void) 
 {
-#if 0
 #define MAX_TIME_BETWEEN_VISITS_MS	4000
-#define TIME_MS_TREE				1500
-#define TIME_MS_HEART				1500
-#define TIME_MS_BASKET				1000
+#define TIME_MS_POPCORN_MACHINE		2000
+#define TIME_MS_POPCORNCUP			400
 #define UPDATE_ZONES_PERIOD_MS		25	
 	
 	uint8_t flags;
@@ -510,8 +509,7 @@ void strat_opp_tracking (void)
 	if(opponents_are_in_area(COLOR_X(strat_infos.zones[zone_opp].x_up), strat_infos.zones[zone_opp].y_up,
                                      COLOR_X(strat_infos.zones[zone_opp].x_down), strat_infos.zones[zone_opp].y_down)){
 			
-			if(!(strat_infos.zones[zone_opp].flags & (ZONE_CHECKED_OPP)))
-			{
+			if(!(strat_infos.zones[zone_opp].flags & (ZONE_CHECKED_OPP))){
 				IRQ_LOCK(flags);
 				strat_infos.zones[zone_opp].last_time_opp_here=time_get_us2();
 				IRQ_UNLOCK(flags);
@@ -526,39 +524,19 @@ void strat_opp_tracking (void)
 					/* Mark zone as checked and sum points */
 					switch(strat_infos.zones[zone_opp].type)
 					{
-						case ZONE_TYPE_TREE:
-							if(strat_infos.zones[zone_opp].opp_time_zone_us>=TIME_MS_TREE*1000L)
+						
+						case ZONE_TYPE_POPCORNMAC:
+							if(strat_infos.zones[zone_opp].opp_time_zone_us>=TIME_MS_POPCORN_MACHINE*1000L)
 							{
 								strat_infos.zones[zone_opp].flags |= ZONE_CHECKED_OPP;
-								strat_infos.opp_harvested_trees++;
-								DEBUG(E_USER_STRAT,"opp_harvested_trees=%d",strat_infos.opp_harvested_trees);
-								DEBUG(E_USER_STRAT,"OPP approximated score: %d", strat_infos.opp_score);
+							
 							}
-							break;
-						case ZONE_TYPE_BASKET:
-							if(((mainboard.our_color==I2C_COLOR_YELLOW) && (zone_opp==ZONE_BASKET_1)) ||
-							((mainboard.our_color==I2C_COLOR_GREEN) && (zone_opp==ZONE_BASKET_2)))
-							{
-								if(strat_infos.zones[zone_opp].opp_time_zone_us>=TIME_MS_BASKET*1000L)
-								{
-									if(strat_infos.opp_harvested_trees!=0)
-									{
-										strat_infos.opp_score += strat_infos.opp_harvested_trees * 3;
-										strat_infos.opp_harvested_trees=0;
-										DEBUG(E_USER_STRAT,"opp_harvested_trees=%d",strat_infos.opp_harvested_trees);
-										DEBUG(E_USER_STRAT,"OPP approximated score: %d", strat_infos.opp_score);
-									}
-								}
-							}
-							break;
-						case ZONE_TYPE_HEART:
-							if(strat_infos.zones[zone_opp].opp_time_zone_us>= TIME_MS_HEART*1000L)
+						case ZONE_TYPE_POPCORNCUP:
+							if(strat_infos.zones[zone_opp].opp_time_zone_us>=TIME_MS_POPCORNCUP*1000L)
 							{
 								strat_infos.zones[zone_opp].flags |= ZONE_CHECKED_OPP;
-								strat_infos.opp_score += 4;
-								DEBUG(E_USER_STRAT,"OPP approximated score: %d", strat_infos.opp_score);
+							
 							}
-							break;
 						default:
 							break;
 					}
@@ -575,7 +553,6 @@ void strat_opp_tracking (void)
 			}
 		}
 	}
-#endif
 }
 
 
