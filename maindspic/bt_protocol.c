@@ -318,7 +318,6 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 		bt_send_ascii_cmd (robot_2nd.link_id, "bt_goto xy_abs_back %d %d %d", arg0, arg1, (arg0 + arg1));
 	else if (cmd_id == BT_GOTO_XY_REL)
 		bt_send_ascii_cmd (robot_2nd.link_id, "bt_goto xy_rel %d %d %d", arg0, arg1, (arg0 + arg1));
-
 	else if (cmd_id == BT_PICK_CUP)
 		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task pick_cup");
 
@@ -350,7 +349,6 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 	robot_2nd.cmd_ret = 0xFF;
 	robot_2nd.valid_status = 0;
 	IRQ_UNLOCK (flags);
-
 }
 
 /* return 1 if cmd arguments checksum matches */
@@ -359,7 +357,7 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 //}
 
 /* return 1 if cmd arguments checksum matches */
-uint8bt_robot_2nd_test_ack (void) {
+uint8_t bt_robot_2nd_test_ack (void) {
 	return (robot_2nd.cmd_ret != 0xFF);
 }
 
@@ -377,7 +375,7 @@ uint8_t bt_robot_2nd_cmd (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 
 	/* XXX wait ack */
 	//ret = BT_WAIT_COND_OR_TIMEOUT( bt_robot_2nd_test_checksum (), 250);
-	ret = BT_WAIT_COND_OR_TIMEOUT( bt_robot_2nd_test_ack (), 250);
+	ret = BT_WAIT_COND_OR_TIMEOUT( bt_robot_2nd_test_ack(), 250);
 
 	if (!ret) {// && nb_tries--) {
 		ERROR (E_USER_BT_PROTO, "TIMEOUT waiting command ACK");
@@ -401,7 +399,7 @@ uint8_t bt_robot_2nd_wait_end (void)
 		time_wait_ms(50); /* HACK */
 		ret = robot_2nd.cmd_ret;
 	}
-
+	DEBUG (E_USER_STRAT, "RET:  (%d)", robot_2nd.cmd_ret);
 	return ret;
 }
 

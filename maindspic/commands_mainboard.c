@@ -1,6 +1,6 @@
 /*
  *  Copyright Droids Corporation (2009)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -17,10 +17,10 @@
  *
  *  Revision : $Id: commands_mainboard.c,v 1.8 2009/05/27 20:04:07 zer0 Exp $
  *
- *  Olivier MATZ <zer0@droids-corp.org> 
+ *  Olivier MATZ <zer0@droids-corp.org>
  */
 
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
  *  Javier Baliñas Santos <javier@arc-robots.org>
  *
@@ -367,7 +367,7 @@ static void cmd_init_parsed(void *parsed_result, void *data)
 	//bt_robot_2nd_set_color ();
 
 	/* TODO: init main robot mechanics */
-	
+
 	/* autopos secondary robot */
     //bt_robot_2nd_autopos();
 	//bt_robot_2nd_wait_end();
@@ -460,7 +460,7 @@ retry_on:
             goto retry_on;
         }
     }
-#endif	
+#endif
 
     if (!strcmp_P(res->color, PSTR("green")))
     {
@@ -678,7 +678,7 @@ static void cmd_beacon_parsed(void * parsed_result, void * data)
 
    vt100_init(&vt100);
 
-	
+
 	if(!strcmp_P(res->arg1, "raw")) {
 #ifdef HOST_VERSION
 		printf("not implemented\n");
@@ -691,15 +691,15 @@ static void cmd_beacon_parsed(void * parsed_result, void * data)
 
 		/* init vt100 character set */
 		vt100_init(&vt100);
-		
+
 		wt11_flush ();
 
 		/* interact */
-		while(cmd != KEY_CTRL_C) 
+		while(cmd != KEY_CTRL_C)
 		{
 			/* link --> cmd line */
 			wt11_bypass_to_stdo (beaconboard.link_id);
-			
+
 			/* cmd line --> link */
 			c = cmdline_getchar();
 			if (c == -1) {
@@ -712,7 +712,7 @@ static void cmd_beacon_parsed(void * parsed_result, void * data)
 			/* send to link */
 			wt11_send_mux(beaconboard.link_id, (uint8_t *)&c, 1);
 		}
-		
+
 		/* restore flags */
 		IRQ_LOCK (flags);
 		mainboard.flags = mainboard_flags;
@@ -735,7 +735,7 @@ static void cmd_beacon_parsed(void * parsed_result, void * data)
 
     else if (!strcmp_P(res->arg1, "watchdog_on"))
 		bt_beacon_set_on_watchdog ();
-    
+
     else if (!strcmp_P(res->arg1, "off"))
 		bt_beacon_set_off ();
 
@@ -788,8 +788,8 @@ static void cmd_robot_2nd_parsed(void * parsed_result, void * data)
    	struct cmd_robot_2nd_result *res = parsed_result;
 
    	vt100_init(&vt100);
-	
-	if(!strcmp_P(res->arg1, "raw")) 
+
+	if(!strcmp_P(res->arg1, "raw"))
 	{
 
 		/* save flags and disable BT_PROTO */
@@ -800,17 +800,17 @@ static void cmd_robot_2nd_parsed(void * parsed_result, void * data)
 
 		/* init vt100 character set */
 		vt100_init(&vt100);
-		
+
 #ifndef HOST_VERSION
 		wt11_flush ();
 #endif
 
 		/* interact */
-		while(cmd != KEY_CTRL_C) 
+		while(cmd != KEY_CTRL_C)
 		{
 			/* link --> cmd line */
 			wt11_bypass_to_stdo (robot_2nd.link_id);
-			
+
 			/* cmd line --> link */
 			c = cmdline_getchar();
 			if (c == -1) {
@@ -823,7 +823,7 @@ static void cmd_robot_2nd_parsed(void * parsed_result, void * data)
 			/* send to link */
 			wt11_send_mux(robot_2nd.link_id, (uint8_t *)&c, 1);
 		}
-		
+
 		/* restore flags */
 		IRQ_LOCK (flags);
 		mainboard.flags = mainboard_flags;
@@ -852,7 +852,7 @@ static void cmd_robot_2nd_parsed(void * parsed_result, void * data)
 			printf_P(PSTR("bt cmd ERROR"));
 
 		/* wait end traj */
-		err = bt_robot_2nd_wait_end();	
+		err = bt_robot_2nd_wait_end();
 	    printf_P(PSTR("traj returned %s\r\n"), get_err(err));
 	}
 
@@ -861,10 +861,10 @@ static void cmd_robot_2nd_parsed(void * parsed_result, void * data)
 
     else if (!strcmp_P(res->arg1, "show")) {
 
-		 do 
+		 do
 		 {
 				printf ("cmd %d %d %d %d %d\n\r", robot_2nd.cmd_id, robot_2nd.cmd_ret,
-													robot_2nd.cmd_args_checksum_send, 
+													robot_2nd.cmd_args_checksum_send,
 													robot_2nd.cmd_args_checksum_recv,
 													robot_2nd.valid_status);
 				printf ("color %s\n\r", robot_2nd.color == I2C_COLOR_YELLOW? "yellow":"green");
@@ -876,7 +876,7 @@ static void cmd_robot_2nd_parsed(void * parsed_result, void * data)
 				printf ("opp1 (%d %d %d %d)\n\r", robot_2nd.opponent1_x, robot_2nd.opponent1_y,
 														robot_2nd.opponent1_a, robot_2nd.opponent1_d);
 				printf ("opp2 (%d %d %d %d)\n\r", robot_2nd.opponent2_x, robot_2nd.opponent2_y,
-														robot_2nd.opponent2_a, robot_2nd.opponent2_d); 
+														robot_2nd.opponent2_a, robot_2nd.opponent2_d);
 
             wait_ms(200);
 
@@ -985,8 +985,7 @@ static void cmd_robot_2nd_goto_parsed(void * parsed_result, void * data)
 		printf_P(PSTR("bt cmd ERROR"));
 
 	/* wait end traj */
-	//err = bt_robot_2nd_wait_end();
-    //printf_P(PSTR("traj returned %s\r\n"), get_err(err));
+    printf_P(PSTR("traj returned %s\r\n"), get_err(err));
 }
 
 prog_char str_robot_2nd_goto_arga[] = "robot_2nd";
@@ -1055,34 +1054,34 @@ static void cmd_robot_2nd_bt_task_parsed(void * parsed_result, void * data)
     struct cmd_robot_2nd_bt_task_result * res = parsed_result;
     uint8_t err = END_ERROR;
 
-#define BT_PICK_CUP						8	
-#define BT_CARPET						9 	
-#define BT_STAIRS						10 		
-#define BT_BRING_CUP_CINEMA				11	
+#define BT_PICK_CUP						8
+#define BT_CARPET						9
+#define BT_STAIRS						10
+#define BT_BRING_CUP_CINEMA				11
 #define BT_CLAPPERBOARD					12
 
     /* TODO commented functions */
-	
+
     if (!strcmp_P(res->arg1, PSTR("pick_cup")))
     {
        bt_robot_2nd_bt_task_pick_cup();
     }
-    
+
     else if (!strcmp_P(res->arg1, PSTR("carpet")))
     {
         bt_robot_2nd_bt_task_carpet();
     }
-    
+
     else if (!strcmp_P(res->arg1, PSTR("stairs")))
     {
         bt_robot_2nd_bt_task_stairs();
     }
-    
+
     else if (!strcmp_P(res->arg1, PSTR("bring_cup")))
     {
         bt_robot_2nd_bt_task_bring_cup_cinema();
 	}
-	
+
     else if (!strcmp_P(res->arg1, PSTR("clap")))
     {
         bt_robot_2nd_bt_task_clapperboard();
@@ -1231,7 +1230,7 @@ parse_pgm_inst_t cmd_slavedspic = {
 };
 
 /* TODO 2014*/
-#if 0 
+#if 0
 
 /**********************************************************/
 /* Robot sensors test */
@@ -1870,12 +1869,3 @@ parse_pgm_inst_t cmd_update_zones = {
         NULL,
     },
 };
-
-
-
-
-
-
-
-
-

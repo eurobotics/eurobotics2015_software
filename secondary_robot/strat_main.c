@@ -1,6 +1,6 @@
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Bali?as Santos <javier@arc-robots.org> and Silvia Santano 
+ *  Javier Bali?as Santos <javier@arc-robots.org> and Silvia Santano
  */
 
 #include <stdio.h>
@@ -117,18 +117,18 @@ void strat_auto_position (void)
 	if (err == END_INTR)
 		goto intr;
 	wait_ms(100);
-	
+
 	/* set x and angle */
 	strat_reset_pos(COLOR_X(ROBOT_CENTER_TO_BACK), DO_NOT_SET_POS, COLOR_A_ABS(0));
-	
+
 	/* goto start position */
 	trajectory_d_rel(&mainboard.traj, 150);
 	err = wait_traj_end(END_INTR|END_TRAJ);
 	if (err == END_INTR)
 		goto intr;
 	wait_ms(100);
-	
-	/* restore speeds */	
+
+	/* restore speeds */
 	strat_set_speed(old_spdd, old_spda);
 	return;
 
@@ -137,7 +137,12 @@ intr:
 	strat_set_speed(old_spdd, old_spda);
 }
 
+//////////////////////////////////////////////////////////////////////////////
+// BT TASKS
+//////////////////////////////////////////////////////////////////////////////
 
+//TODO: inside these functions, current_task flag must be continuously checked
+//in blocking functions to be able to react and stop tasks when a new one comes
 
 uint8_t pick_popcorn_cup(void)
 {
@@ -177,4 +182,3 @@ uint8_t close_clapperboard(void)
     printf_P(PSTR("clapperboard\r\n"));
     return ret;
 }
-
