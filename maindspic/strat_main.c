@@ -485,7 +485,7 @@ uint8_t strat_smart(uint8_t robot)
 		return END_TRAJ;
 	}
 }
-void strat_smart_robot_2nd(void){
+void strat_smart_robot_2nd(void){}/*
 	switch (strat_infos.strat_smart_sec){
 		case GO_TO_ZONE:
 			if(robot_2nd.cmd_ret != 0){
@@ -516,7 +516,7 @@ void strat_smart_robot_2nd(void){
 		default:
 			break;
 	}
-}
+}*/
 
 
 void strat_opp_tracking (void)

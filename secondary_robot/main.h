@@ -1,6 +1,6 @@
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2010)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -55,7 +55,7 @@
 #define TWO_OPPONENTS
 #define ROBOT_2ND
 
-/* uart 0 is for cmds and uart 1 is 
+/* uart 0 is for cmds and uart 1 is
  * multiplexed between beacon and slavedspic */
 #define CMDLINE_UART 	0
 #define MUX_UART	1
@@ -115,7 +115,7 @@
 
 /* Some calculus:
  * it is a 5000 imps -> 20000 because we see 1/4 period
- * and diameter: 53mm -> perimeter 166.5mm 
+ * and diameter: 53mm -> perimeter 166.5mm
  * 20000/163.5 -> 1201 imps/10 mm */
 
 /* increase it to go further */
@@ -183,18 +183,21 @@
 #define NB_LOGS 10
 
 
-// 0: Continue with task
-// 1: END
-uint8_t end_bt_task_flag;
 // Current bt_task code
 uint8_t current_bt_task;
-      
+int16_t strat_bt_goto_avoid_x, strat_bt_goto_avoid_y, strat_bt_goto_avoid_checksum;
+
 #define BT_TASK_NONE	   		0
 #define BT_TASK_PICK_CUP   		1
 #define BT_TASK_CARPET         	2
 #define BT_TASK_STAIRS         	3
 #define BT_TASK_BRING_CUP       4
 #define BT_TASK_CLAP         	5
+#define BT_GOTO         		6
+#define BT_GOTO_AVOID         7
+#define BT_GOTO_AVOID_FW         8
+#define BT_GOTO_AVOID_BW         9
+
 
 
 /* MAIN DATA STRUCTURES **************************************/
@@ -223,7 +226,7 @@ struct genboard
 	/* servos */
 	struct pwm_servo pwm_servo_oc1;
 	struct pwm_servo pwm_servo_oc2;
-	struct pwm_servo pwm_servo_oc3;	
+	struct pwm_servo pwm_servo_oc3;
 	struct pwm_servo pwm_servo_oc4;
 
 	/* ax12 servos */
@@ -240,10 +243,10 @@ struct genboard
 };
 
 /* maindspic */
-struct mainboard 
+struct mainboard
 {
 	/* events flags */
-	uint8_t flags;                
+	uint8_t flags;
 #define DO_ENCODERS   1
 #define DO_CS         2
 #define DO_RS         4
@@ -279,12 +282,12 @@ struct mainboard
 
 
 /* state of beaconboard, synchronized through i2c */
-struct beaconboard 
+struct beaconboard
 {
 	/* status and color */
 	uint8_t status;
 	uint8_t color;
-	
+
 	/* opponent pos */
 	int16_t opponent1_x;
 	int16_t opponent1_y;
@@ -304,8 +307,8 @@ struct robot_2nd
 {
 	/* command requested */
 	//uint8_t cmd_id;					/* for ack test */
-	uint8_t cmd_ret; 					/* for end traj test, 
-												follows END_TRAJ flags rules, 
+	uint8_t cmd_ret; 					/* for end traj test,
+												follows END_TRAJ flags rules,
 												see strat_base.h */
 	//uint8_t cmd_args_checksum;		/* checksum of cmd arguments*/
 
@@ -343,7 +346,7 @@ extern struct robot_2nd robot_2nd;
 //void bootloader(void);
 
 #ifndef HOST_VERSION
-/* swap UART 2 between beacon and slavedspic */ 
+/* swap UART 2 between beacon and slavedspic */
 static inline void set_uart_mux(uint8_t channel)
 {
 #define BEACON_CHANNEL			0
@@ -394,4 +397,3 @@ static inline void set_uart_mux(uint8_t channel)
         __ret;                                                \
 })
 #endif
-

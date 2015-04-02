@@ -1,6 +1,6 @@
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2012)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -147,10 +147,10 @@
 #define CENTER_Y 1000
 
 #define SIDE_REAR		I2C_SIDE_REAR
-#define SIDE_FRONT 	I2C_SIDE_FRONT 
+#define SIDE_FRONT 	I2C_SIDE_FRONT
 #define SIDE_MAX		I2C_SIDE_MAX
 
-#define OPPOSITE_SIDE(side) ((side==I2C_SIDE_FRONT)? (I2C_SIDE_REAR) : (I2C_SIDE_FRONT))	
+#define OPPOSITE_SIDE(side) ((side==I2C_SIDE_FRONT)? (I2C_SIDE_REAR) : (I2C_SIDE_FRONT))
 
 #define GO_FORWARD	0
 #define GO_BACKWARD	1
@@ -258,8 +258,8 @@
 #define ZONE_OPP_STAIRWAY_2			46
 #define ZONES_MAX		    			47
 
-/************************************************************* 
- * Strat data structures 
+/*************************************************************
+ * Strat data structures
  ************************************************************/
 
 /* boulding box */
@@ -299,7 +299,7 @@ typedef struct {
 
 	/* target point */
 	int16_t x;
-	int16_t y;	
+	int16_t y;
 
 	/* boundinbox */
 	int16_t x_down;
@@ -331,7 +331,7 @@ typedef struct {
    #define ZONE_CHECKED_OPP		2
    #define ZONE_SEC_ROBOT	   	4
    #define ZONE_AVOID		    	8
-	
+
 	/* which robots can perform this action */
 	uint8_t robot;
 	#define MAIN_ROBOT  0
@@ -367,12 +367,12 @@ extern char numzone2name[ZONES_MAX + 1][3];
 
 #ifndef HOST_VERSION_OA_TEST
 
-/************************************************************* 
+/*************************************************************
  * Functions headers of strat files
  ************************************************************/
 
 /********************************************
- * in strat.c 
+ * in strat.c
  *******************************************/
 #define AREA_BBOX_6X5	0
 #define AREA_BBOX_4X4	1
@@ -395,7 +395,7 @@ void strat_start_match(uint8_t debug);
 
 
 /********************************************
- * in strat_main.c 
+ * in strat_main.c
  *******************************************/
 
 /* auto possition depending on color */
@@ -412,7 +412,7 @@ uint8_t bring_cup_to_cinema(void);
 uint8_t close_clapperboard(void);
 
 /********************************************
- * in strat_event.c 
+ * in strat_event.c
  *******************************************/
 
 /*************** STRAT EVENT SCHEDULE FUNCTIONS *******************************/
@@ -433,10 +433,11 @@ void strat_auto_position_event (void *data);
 void strat_goto_xy_abs_event (void *data);
 void strat_goto_forward_xy_abs_event (void *data);
 void strat_goto_backward_xy_abs_event (void *data);
+void strat_goto_xy_rel_event (void *data);
 
-void strat_goto_avoid_event (void *data);
-void strat_goto_avoid_forward_event (void *data);
-void strat_goto_avoid_backward_event (void *data);
+uint8_t strat_goto_avoid_event (void *data);
+uint8_t strat_goto_avoid_forward_event (void *data);
+uint8_t strat_goto_avoid_backward_event (void *data);
 /* match tasks */
 
 

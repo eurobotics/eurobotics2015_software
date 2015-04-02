@@ -1,6 +1,6 @@
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -36,10 +36,10 @@
 #define BT_GOTO_AVOID		5
 #define BT_GOTO_AVOID_FW	6
 #define BT_GOTO_AVOID_BW	7
-#define BT_PICK_CUP						8	
-#define BT_CARPET						9 	
-#define BT_STAIRS						10 		
-#define BT_BRING_CUP_CINEMA				11	
+#define BT_PICK_CUP						8
+#define BT_CARPET						9
+#define BT_STAIRS						10
+#define BT_BRING_CUP_CINEMA				11
 #define BT_CLAPPERBOARD					12
 #define BT_GOTO_FW_XY_ABS				13
 #define BT_GOTO_BW_XY_ABS				14
@@ -50,7 +50,7 @@ void bt_protocol (void * dummy);
 
 
 /************************************************************
- * BEACON COMMANDS 
+ * BEACON COMMANDS
  ***********************************************************/
 
 /* set color */
@@ -69,7 +69,7 @@ void bt_beacon_set_off (void);
 void bt_beacon_req_status(void);
 
 /************************************************************
- * ROBOT 2ND COMMANDS 
+ * ROBOT 2ND COMMANDS
  ***********************************************************/
 
 /* send command, and return after received ack */
@@ -88,7 +88,7 @@ uint8_t bt_robot_2nd_set_color (void);
 uint8_t bt_robot_2nd_goto_xy_abs (int16_t x, int16_t y);
 uint8_t bt_robot_2nd_goto_forward_xy_abs (int16_t x, int16_t y);
 uint8_t bt_robot_2nd_goto_backward_xy_abs (int16_t x, int16_t y);
- 
+
 /* goto xy_rel */
 uint8_t bt_robot_2nd_goto_xy_rel (int16_t x, int16_t y);
 
@@ -99,6 +99,7 @@ uint8_t bt_robot_2nd_wait_end (void);
 void bt_robot_2nd_req_status(void);
 
 
+uint8_t bt_robot_2nd_test_ack (void);
 void bt_robot_2nd_bt_task_pick_cup (void);
 void bt_robot_2nd_bt_task_carpet(void);
 void bt_robot_2nd_bt_task_stairs(void);
