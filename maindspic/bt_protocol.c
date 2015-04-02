@@ -357,7 +357,7 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 //}
 
 /* return 1 if cmd arguments checksum matches */
-uint8_t bt_robot_2nd_test_ack (void) {
+uint8_t bt_robot_2nd_is_ack_received (void) {
 	return (robot_2nd.cmd_ret != 0xFF);
 }
 
@@ -375,7 +375,9 @@ uint8_t bt_robot_2nd_cmd (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 
 	/* XXX wait ack */
 	//ret = BT_WAIT_COND_OR_TIMEOUT( bt_robot_2nd_test_checksum (), 250);
-	ret = BT_WAIT_COND_OR_TIMEOUT( bt_robot_2nd_test_ack(), 250);
+
+	//1 = condition, 0 = timeout
+	ret = BT_WAIT_COND_OR_TIMEOUT( bt_robot_2nd_is_ack_received(), 250);
 
 	if (!ret) {// && nb_tries--) {
 		ERROR (E_USER_BT_PROTO, "TIMEOUT waiting command ACK");
@@ -401,6 +403,13 @@ uint8_t bt_robot_2nd_wait_end (void)
 	}
 	DEBUG (E_USER_STRAT, "RET:  (%d)", robot_2nd.cmd_ret);
 	return ret;
+}
+
+
+/* XXX check if for robot 2nd ended */
+uint8_t bt_robot_2nd_test_end (void)
+{
+	return robot_2nd.cmd_ret;
 }
 
 /* set color */

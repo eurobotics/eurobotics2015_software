@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Baliñas Santos <javier@arc-robots.org>
+ *  Javier Bali\F1as Santos <javier@arc-robots.org>
  */
 
 #ifndef __BT_PROTOCOL_H__
@@ -94,12 +94,15 @@ uint8_t bt_robot_2nd_goto_xy_rel (int16_t x, int16_t y);
 
 /* wait for robot 2nd ends */
 uint8_t bt_robot_2nd_wait_end (void);
+/* check if for robot 2nd ended */
+uint8_t bt_robot_2nd_test_end (void);
+
 
 /* request opponent position */
 void bt_robot_2nd_req_status(void);
 
 
-uint8_t bt_robot_2nd_test_ack (void);
+uint8_t bt_robot_2nd_is_ack_received (void);
 void bt_robot_2nd_bt_task_pick_cup (void);
 void bt_robot_2nd_bt_task_carpet(void);
 void bt_robot_2nd_bt_task_stairs(void);

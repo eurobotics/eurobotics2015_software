@@ -434,10 +434,6 @@ void strat_goto_xy_abs_event (void *data);
 void strat_goto_forward_xy_abs_event (void *data);
 void strat_goto_backward_xy_abs_event (void *data);
 void strat_goto_xy_rel_event (void *data);
-
-uint8_t strat_goto_avoid_event (void *data);
-uint8_t strat_goto_avoid_forward_event (void *data);
-uint8_t strat_goto_avoid_backward_event (void *data);
 /* match tasks */
 
 

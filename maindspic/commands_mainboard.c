@@ -22,7 +22,7 @@
 
 /*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
- *  Javier Baliñas Santos <javier@arc-robots.org>
+ *  Javier Bali\F1as Santos <javier@arc-robots.org>
  *
  *  Code ported to family of microcontrollers dsPIC from
  *  commands_mainboard.c,v 1.8 2009/05/27 20:04:07 zer0 Exp.
@@ -985,6 +985,7 @@ static void cmd_robot_2nd_goto_parsed(void * parsed_result, void * data)
 		printf_P(PSTR("bt cmd ERROR"));
 
 	/* wait end traj */
+	err = bt_robot_2nd_wait_end();
     printf_P(PSTR("traj returned %s\r\n"), get_err(err));
 }
 
