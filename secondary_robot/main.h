@@ -182,6 +182,21 @@
 /* dynamic logs */
 #define NB_LOGS 10
 
+
+// 0: Continue with task
+// 1: END
+uint8_t end_bt_task_flag;
+// Current bt_task code
+uint8_t current_bt_task;
+      
+#define BT_TASK_NONE	   		0
+#define BT_TASK_PICK_CUP   		1
+#define BT_TASK_CARPET         	2
+#define BT_TASK_STAIRS         	3
+#define BT_TASK_BRING_CUP       4
+#define BT_TASK_CLAP         	5
+
+
 /* MAIN DATA STRUCTURES **************************************/
 
 /* cs data */

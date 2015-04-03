@@ -176,10 +176,12 @@
 #ifdef CALIBRATION
 
 /* default acc */
-#define ACC_DIST  1.
-#define ACC_ANGLE 1.
+#define ACC_DIST  10
+#define ACC_ANGLE 10
 
 /* default speeds */
+#define SPEED_DIST_VERY_FAST 	1000.
+#define SPEED_ANGLE_VERY_FAST 	1000.
 #define SPEED_DIST_FAST 		1000.
 #define SPEED_ANGLE_FAST 		1000.
 #define SPEED_DIST_SLOW 		1000.
@@ -190,8 +192,8 @@
 #else
 
 /* default acc */
-#define ACC_DIST  20. //35.
-#define ACC_ANGLE 20.
+#define ACC_DIST  75
+#define ACC_ANGLE 75
 
 /* default speeds */
 #ifdef HOMOLOGATION
@@ -199,6 +201,10 @@
 #define SPEED_ANGLE_FAST 		2000.
 #else
 
+//#define SPEED_DIST_VERY_FAST 	4500. /* XXX very clean wheels */
+//#define SPEED_ANGLE_VERY_FAST 4500.
+#define SPEED_DIST_VERY_FAST 	4000.
+#define SPEED_ANGLE_VERY_FAST 	4000.
 #define SPEED_DIST_FAST 		3000.
 #define SPEED_ANGLE_FAST 		3000.
 #endif
@@ -423,16 +429,17 @@ void recalculate_priorities(void);
 
 /* tracking of zones where opp has been working */
 void strat_opp_tracking (void);
-/* Sets of  strategies for secondary robot*/
 
+
+/* Sets of  strategies for secondary robot*/
 void set_strat_sec_1(void);
 void set_strat_sec_2(void);
 void set_strat_sec_3(void);
 void set_strat_main_1(void);
 void set_next_sec_strategy(void);
+
 /* homologation */
 void strat_homologation(void);
-
 void strat_initial_move(void);
 
 #else /* HOST_VERSION_OA_TEST */

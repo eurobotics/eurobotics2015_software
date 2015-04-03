@@ -22,7 +22,7 @@
 
 /*  
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
- *  Javier Baliñas Santos <javier@arc-robots.org>
+ *  Javier Balias Santos <javier@arc-robots.org>
  *
  *  Code ported to family of microcontrollers dsPIC from
  *  commands_cs.c,v 1.4 2009/05/02 10:08:09 zer0 Exp.
@@ -632,7 +632,7 @@ static void cmd_blocking_i_parsed(void *parsed_result, void *show)
 		bd_set_current_thresholds(&csb->bd, res->k1, res->k2,
 					  res->i, res->cpt);
 
-	printf_P(PSTR("%s %s %"PRIi32 " %"PRIi32" %"PRIi32"  %"PRIi16"\r\n"),
+	printf_P(PSTR("%s %s %"PRIi32 " %"PRIi32" %"PRIi32"  %"PRIu16"\r\n"),
 		 res->cs.cmdname,
 		 res->cs.csname,
 		 csb->bd.k1,
