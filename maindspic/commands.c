@@ -35,7 +35,7 @@
 #ifndef HOST_VERSION
 
 #define COMPILE_COMMANDS_GEN
-#define COMPILE_COMMANDS_GEN_OPTIONALS
+//#define COMPILE_COMMANDS_GEN_OPTIONALS
 #define COMPILE_COMMANDS_CS
 #define COMPILE_COMMANDS_MAINBOARD
 #define COMPILE_COMMANDS_MAINBOARD_OPTIONALS
@@ -139,11 +139,7 @@ extern parse_pgm_inst_t cmd_time_monitor;
 extern parse_pgm_inst_t cmd_sleep;
 #endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
 
-/* TODO 2014*/
-#if 0
 extern parse_pgm_inst_t cmd_sensor_robot;
-#endif
-
 extern parse_pgm_inst_t cmd_popcorn_system;
 extern parse_pgm_inst_t cmd_stands_system;
 
@@ -275,11 +271,7 @@ parse_pgm_ctx_t main_ctx[] = {
     (parse_pgm_inst_t *) & cmd_sleep,
 #endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
  
-    /* TODO 2015*/
-#if 0 
     (parse_pgm_inst_t *) & cmd_sensor_robot,
-#endif
-
     (parse_pgm_inst_t *) & cmd_popcorn_system,
     (parse_pgm_inst_t *) & cmd_stands_system,
 

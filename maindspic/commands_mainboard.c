@@ -1270,11 +1270,6 @@ parse_pgm_inst_t cmd_strat_event = {
 };
 
 
-
-
-/* TODO 2014*/
-#if 0 
-
 /**********************************************************/
 /* Robot sensors test */
 
@@ -1324,37 +1319,6 @@ static void cmd_sensor_robot_parsed(void *parsed_result, void *data)
                     {
                     case S_START_SWITCH: strcpy(sensor_string, "START");
                         break;
-
-                    case S_TOKEN_FRONT_R: strcpy(sensor_string, "T_FRONT_R");
-                        break;
-                    case S_TOKEN_FRONT_L: strcpy(sensor_string, "T_FRONT_L");
-                        break;
-                    case S_TOKEN_FRONT_45R: strcpy(sensor_string, "T_FRONT_45R");
-                        break;
-                    case S_TOKEN_FRONT_45L: strcpy(sensor_string, "T_FRONT_45L");
-                        break;
-                    case S_TOKEN_FRONT_TOWER2H: strcpy(sensor_string, "S_TOKEN_FRONT_TOWER2H");
-                        break;
-                    case S_TOKEN_FRONT_TOWER1H: strcpy(sensor_string, "S_TOKEN_FRONT_TOWER1H");
-                        break;
-                    case S_TOKEN_FRONT_FIGURE: strcpy(sensor_string, "S_TOKEN_FRONT_FIGURE");
-                        break;
-
-                    case S_TOKEN_REAR_R: strcpy(sensor_string, "T_REAR_R");
-                        break;
-                    case S_TOKEN_REAR_L: strcpy(sensor_string, "T_REAR_L");
-                        break;
-                    case S_TOKEN_REAR_45R: strcpy(sensor_string, "T_REAR_45R");
-                        break;
-                    case S_TOKEN_REAR_45L: strcpy(sensor_string, "T_REAR_45L");
-                        break;
-                    case S_TOKEN_REAR_TOWER2H: strcpy(sensor_string, "S_TOKEN_REAR_TOWER2H");
-                        break;
-                    case S_TOKEN_REAR_TOWER1H: strcpy(sensor_string, "S_TOKEN_REAR_TOWER1H");
-                        break;
-                    case S_TOKEN_REAR_FIGURE: strcpy(sensor_string, "S_TOKEN_REAR_FIGURE");
-                        break;
-
                     case S_OPPONENT_FRONT_R: strcpy(sensor_string, "OP_FRONT_R");
                         break;
                     case S_OPPONENT_FRONT_L: strcpy(sensor_string, "OP_FRONT_L");
@@ -1363,9 +1327,7 @@ static void cmd_sensor_robot_parsed(void *parsed_result, void *data)
                         break;
                     case S_OPPONENT_REAR_L: strcpy(sensor_string, "OP_REAR_L");
                         break;
-                    case S_OPPONENT_RIGHT: strcpy(sensor_string, "OP_RIGHT");
-                        break;
-                    case S_OPPONENT_LEFT: strcpy(sensor_string, "OP_LEFT");
+                    case S_CUP_REAR: strcpy(sensor_string, "CUP_REAR");
                         break;
 
                     default: strcpy(sensor_string, "S_UNKNOW");
@@ -1401,7 +1363,6 @@ parse_pgm_inst_t cmd_sensor_robot = {
     },
 };
 
-#endif /* notyet TODO 2014*/
 
 #ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
 
