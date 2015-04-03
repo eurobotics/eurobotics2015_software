@@ -1052,6 +1052,7 @@ uint8_t do_hide_tower(stands_system_t *ss)
 {
 	uint8_t ret = 0;
 	uint8_t ret2 = 0;
+	uint8_t ret3 = 0;
 
 	switch(ss->substate)
 	{
@@ -1110,6 +1111,7 @@ uint8_t do_hide_tower(stands_system_t *ss)
 					if(slavedspic.stands_elevator_r.mode == STANDS_ELEVATOR_MODE_UP) {
 						stands_blade_set_mode(&slavedspic.stands_blade_l, STANDS_BLADE_MODE_HIDE_RIGHT, 0);
 						stands_blade_set_mode(&slavedspic.stands_blade_r, STANDS_BLADE_MODE_HIDE_RIGHT, 0);
+						stands_exchanger_set_position(STANDS_EXCHANGER_POSITION_MIN_mm);
 					}
 					else
 						break;
@@ -1120,6 +1122,7 @@ uint8_t do_hide_tower(stands_system_t *ss)
 					if(slavedspic.stands_elevator_l.mode == STANDS_ELEVATOR_MODE_UP) {
 						stands_blade_set_mode(&slavedspic.stands_blade_l, STANDS_BLADE_MODE_HIDE_LEFT, 0);
 						stands_blade_set_mode(&slavedspic.stands_blade_r, STANDS_BLADE_MODE_HIDE_LEFT, 0);
+						stands_exchanger_set_position(STANDS_EXCHANGER_POSITION_MAX_mm);
 					}
 					else
 						break;
@@ -1148,14 +1151,17 @@ uint8_t do_hide_tower(stands_system_t *ss)
 			if(ss->mode == I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT) {
 				ret = stands_blade_test_traj_end(&slavedspic.stands_blade_l);
 				ret2 = stands_blade_test_traj_end(&slavedspic.stands_blade_r);
+				ret3 = stands_exchanger_test_traj_end();
 
-				if((ret & (END_NEAR|END_TRAJ)) && (ret2 & (END_NEAR|END_TRAJ)))
+				if((ret & (END_NEAR|END_TRAJ)) && (ret2 & (END_NEAR|END_TRAJ)) && (ret3 & END_TRAJ))
 					return STATUS_DONE;
-				else if((ret & END_BLOCKING) || (ret2 & END_BLOCKING)) {
+				else if((ret & END_BLOCKING) || (ret2 & END_BLOCKING) || (ret3 & END_BLOCKING)) {
 					if(!(ret & (END_NEAR|END_TRAJ)))
 						STMCH_ERROR("stands_blade_l BLOCKED!!");
 					else if(!(ret2 & (END_NEAR|END_TRAJ)))
 						STMCH_ERROR("stands_blade_r BLOCKED!!");
+					else if(!(ret3 & END_TRAJ))
+						STMCH_ERROR("stands_exchanger BLOCKED!!");
 					return STATUS_BLOCKED;
 				}
 			}
@@ -1393,33 +1399,54 @@ uint8_t do_release_stand(stands_system_t *ss)
 
 uint8_t do_center_stand(stands_system_t *ss)
 {
+	uint8_t ret = 0;
+
 	switch(ss->substate)
 	{
 		case SAVE:
 
 		case GO_CENTER:
 			if((slavedspic.stands_blade_l.mode == STANDS_BLADE_MODE_HIDE_LEFT || slavedspic.stands_blade_l.mode == STANDS_BLADE_MODE_HIDE_RIGHT) &&
-					(slavedspic.stands_blade_r.mode == STANDS_BLADE_MODE_HIDE_LEFT || slavedspic.stands_blade_r.mode == STANDS_BLADE_MODE_HIDE_RIGHT)) {
-				//desplazar selector al centro
+					(slavedspic.stands_blade_r.mode == STANDS_BLADE_MODE_HIDE_LEFT || slavedspic.stands_blade_r.mode == STANDS_BLADE_MODE_HIDE_RIGHT) &&
+					(stands_blade_test_traj_end(&slavedspic.stands_blade_l) & END_TRAJ) && (stands_blade_test_traj_end(&slavedspic.stands_blade_r) & END_TRAJ)) {
+				stands_exchanger_set_position(STANDS_EXCHANGER_POSITION_CENTER_mm);
 				ss->substate = WAITING_CENTERED;
 			}
 
 			break;
 
 		case WAITING_CENTERED:
-			//esperar a que el selector esté en el centro
+			ret = stands_exchanger_test_traj_end();
+
+			if(ret & END_TRAJ)
 				ss->substate = RETURN_HOME;
+			else if(ret & END_BLOCKING) {
+				STMCH_ERROR("stands_exchanger BLOCKED!!");
+				return STATUS_BLOCKED;
+			}
 
 			break;
 
 		case RETURN_HOME:
-			//desplazar selector al extremo
+			if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT)
+				stands_exchanger_set_position(STANDS_EXCHANGER_POSITION_MIN_mm);
+			else
+				stands_exchanger_set_position(STANDS_EXCHANGER_POSITION_MAX_mm);
+
 			ss->substate = WAITING_RETURNED;
 			
 			break;
 
 		case WAITING_RETURNED:
-			//esperar a que el selector vuelva
+			ret = stands_exchanger_test_traj_end();
+
+			if(ret & END_TRAJ)
+				return STATUS_DONE;
+			else if(ret & END_BLOCKING) {
+				STMCH_ERROR("stands_exchanger BLOCKED!!");
+				return STATUS_BLOCKED;
+			}
+
 			break;
 	}
 
@@ -1838,6 +1865,12 @@ void state_init(void)
 	BRAKE_OFF();
 	slavedspic.stands_exchanger.on = 1;
 	stands_exchanger_calibrate();
+
+//	if(build_spotlight_side == I2C_SIDE_LEFT)
+//		stands_exchanger_set_position(STANDS_EXCHANGER_POSITION_MIN_mm);
+//	else
+//		stands_exchanger_set_position(STANDS_EXCHANGER_POSITION_MAX_mm);
+//	stands_exchanger_wait_end();
 
 #ifdef ACTUATOR_SYSTEMS
 	/* systems init */
