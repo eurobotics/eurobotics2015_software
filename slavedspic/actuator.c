@@ -170,27 +170,28 @@ uint8_t ax12_test_traj_end (struct ax12_traj *ax12, uint8_t flags)
 	ax12_user_read_int(&gen.ax12, ax12->id, AA_PRESENT_POSITION_L, &ax12->pos);
     uint8_t ret = 0;
 
-	if (flags & END_TRAJ)
-		if (ABS(ax12->goal_pos - ax12->pos) < AX12_WINDOW_NO_NEAR)
-			ret |= END_TRAJ;
-
-	if (flags & END_NEAR)
-		if (ABS(ax12->goal_pos - ax12->pos) < AX12_WINDOW_NEAR)
-			ret |= END_NEAR;
-
+	if (flags & END_TRAJ) {
+		if (ABS((int16_t)ax12->goal_pos - (int16_t)ax12->pos) < AX12_WINDOW_NO_NEAR)
+			ret = END_TRAJ;
+	}
+	else if (flags & END_NEAR) {
+		if (ABS((int16_t)ax12->goal_pos - (int16_t)ax12->pos) < AX12_WINDOW_NEAR)
+			ret = END_NEAR;
+	}
 	//if (flags & END_TIME)
 	//	if ((time_get_us2() - ax12->time_us)/1000 > ax12->goal_time_ms)
 	//		ret |= END_TIME;
 
 	//if (flags & END_BLOCKING)
-        if ((time_get_us2() - ax12->time_us)/1000 > (3*ax12->goal_time_ms)) {
+    else if ((time_get_us2() - ax12->time_us)/1000 > (3*ax12->goal_time_ms)) {
             ax12_user_write_int(&gen.ax12, ax12->id , AA_GOAL_POSITION_L, ax12->pos);                       
-		    ret |= END_BLOCKING;
+		    ret = END_BLOCKING;
         }
 
-	if (ret)
+	if (ret) {
+		//DEBUG(E_USER_ACTUATORS, "goal_pos = %d, read_pos = %d",  ax12->goal_pos, ax12->pos);
 		DEBUG(E_USER_ACTUATORS, "Got %s",  get_err (ret));
-
+	}
     return ret;
 }
 
@@ -323,7 +324,6 @@ int8_t stands_exchanger_check_position_reached(void)
 		pid_reset(&slavedspic.stands_exchanger.pid);
 		bd_reset(&slavedspic.stands_exchanger.bd);
 		slavedspic.stands_exchanger.blocking = 1;
-		ACTUATORS_ERROR("Stands_exchanger ENDS BLOCKING");
 		return END_BLOCKING;
 	}
 
@@ -336,6 +336,10 @@ uint8_t stands_exchanger_test_traj_end()
 	uint8_t ret = 0;
 
 	ret = stands_exchanger_check_position_reached();
+
+	if (ret) {
+		DEBUG(E_USER_ACTUATORS, "Got %s",  get_err (ret));
+	}
 
 	return ret;
 }

@@ -190,7 +190,7 @@ static void cmd_stands_exchanger_parsed(__attribute__((unused)) void *parsed_res
 	
 		t1 = time_get_us2();
 
-		while (!stands_exchanger_check_position_reached()) {
+		while (!stands_exchanger_test_traj_end()) {
 			t2 = time_get_us2();
 			if (t2 - t1 > 5000) {
 				dump_cs_debug("exchanger", &slavedspic.stands_exchanger.cs);
@@ -950,7 +950,7 @@ static void cmd_state3_parsed(void *parsed_result,
 
 prog_char str_state3_arg0[] = "set_infos";
 parse_pgm_token_string_t cmd_state3_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_state3_result, arg0, str_state3_arg0);
-prog_char str_state3_arg1[] = "cup_front_catched#cup_rear_catched#machine_catched#stands_left#stands_right";
+prog_char str_state3_arg1[] = "cup_front_catched#cup_rear_catched#machines_catched#stands_left#stands_right";
 parse_pgm_token_string_t cmd_state3_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_state3_result, arg1, str_state3_arg1);
 parse_pgm_token_num_t cmd_state3_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_state3_result, arg2, INT8);
 

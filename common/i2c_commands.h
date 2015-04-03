@@ -290,11 +290,11 @@ struct i2c_cmd_slavedspic_set_mode {
 		} stands_system;
 
 		struct {
-			uint8_t cup_front_catched;
-			uint8_t cup_rear_catched;
-			uint8_t machine_popcorns_catched;
-			uint8_t stored_stands_l;
-			uint8_t stored_stands_r;
+			int8_t cup_front_catched;
+			int8_t cup_rear_catched;
+			int8_t machine_popcorns_catched;
+			int8_t stored_stands_l;
+			int8_t stored_stands_r;
 
 		} set_infos;
 

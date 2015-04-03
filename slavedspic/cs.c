@@ -153,8 +153,8 @@ void slavedspic_cs_init(void)
 	 */
 
 	bd_init(&slavedspic.stands_exchanger.bd);
-	bd_set_speed_threshold(&slavedspic.stands_exchanger.bd, 20);						/* speed */
-	bd_set_current_thresholds(&slavedspic.stands_exchanger.bd, 1200, 8000, 1000000, 20); /* k1, k2, i, cpt */
+	bd_set_speed_threshold(&slavedspic.stands_exchanger.bd, 50);						/* speed */
+	bd_set_current_thresholds(&slavedspic.stands_exchanger.bd, 800, 10000, 1000000, 10); /* k1, k2, i, cpt */
 
 
 	/* set on!! */
