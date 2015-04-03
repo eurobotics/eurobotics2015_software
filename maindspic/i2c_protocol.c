@@ -429,8 +429,26 @@ void i2c_read_event(uint8_t * buf, uint16_t size)
             /* XXX syncronized with slavedspic */
 
          	/* infos */
+
+			/* simple actuators status */
          	slavedspic.status = ans->status;
-            slavedspic.nb_stored_fires = ans->nb_stored_fires;
+
+			/* popcorn system */
+            slavedspic.popcorn_system.mode = ans->popcorn_system.mode;
+            slavedspic.popcorn_system.status = ans->popcorn_system.status;
+            slavedspic.popcorn_system.cup_front_catched = ans->popcorn_system.cup_front_catched;
+            slavedspic.popcorn_system.cup_rear_catched = ans->popcorn_system.cup_rear_catched;
+            slavedspic.popcorn_system.machines_catched = ans->popcorn_system.machine_popcorns_catched;
+
+			/* stands_systems */
+            slavedspic.stands_system[I2C_SIDE_LEFT].mode = ans->stands_system[I2C_SIDE_LEFT].mode;
+            slavedspic.stands_system[I2C_SIDE_LEFT].status = ans->stands_system[I2C_SIDE_LEFT].status;
+            slavedspic.stands_system[I2C_SIDE_LEFT].stored_stands = ans->stands_system[I2C_SIDE_LEFT].stored_stands;
+
+            slavedspic.stands_system[I2C_SIDE_RIGHT].mode = ans->stands_system[I2C_SIDE_RIGHT].mode;
+            slavedspic.stands_system[I2C_SIDE_RIGHT].status = ans->stands_system[I2C_SIDE_RIGHT].status;
+            slavedspic.stands_system[I2C_SIDE_RIGHT].stored_stands = ans->stands_system[I2C_SIDE_RIGHT].stored_stands;
+
 			break;
 		}
 	
@@ -555,7 +573,7 @@ int8_t i2c_led_control(uint8_t addr, uint8_t led, uint8_t state)
 }
 
 /*******************************************************************************
- * 2014 functions
+ * 2015 functions
  ******************************************************************************/
 
 /****** GENERIC FUNCTIONS */
@@ -598,318 +616,74 @@ void i2c_slavedspic_wait_ready(void)
 #endif
 }
 
+/* get slavedispic status */
+void i2c_slavedspic_get_status(void)
+{ 
+   i2cproto_wait_update();
+   return slavedspic.status;
+}
+
 /****** SIMPLE ACTUATORS */
 
-/* set stick mode */
-int8_t i2c_slavedspic_mode_stick(uint8_t type, uint8_t mode, int8_t offset)
-{
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_STICK;
-	buf.stick.mode = mode;
-	buf.stick.type = type;
-	buf.stick.offset = offset;
-	
-	if(mode==I2C_STICK_MODE_CLEAN_FLOOR) 
-	{
-		if(type==I2C_STICK_TYPE_RIGHT)
-			buf.stick.offset = 30;
-		else
-			buf.stick.offset = 40;
-	}
-		
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
-}
-
-
-/* set comb mode */
-int8_t i2c_slavedspic_mode_combs(uint8_t mode, int8_t offset)
-{
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_COMBS;
-	buf.combs.mode = mode;
-	buf.combs.offset = offset;
-	
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
-}
-
-/* set tree tray */
-int8_t i2c_slavedspic_mode_tree_tray (uint8_t mode, int8_t offset)
-{
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_TREE_TRAY;
-	buf.tree_tray.mode = mode;
-	buf.tree_tray.offset = offset;
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
-}
-
-/* set boot tray mode */
-int8_t i2c_slavedspic_mode_boot_tray(uint8_t mode)
-{
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_BOOT_TRAY;
-	buf.boot_tray.mode = mode;
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
-}
-
-/* set boot door mode*/
-int8_t i2c_slavedspic_mode_boot_door(uint8_t mode)
-{
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_BOOT_DOOR;
-	buf.boot_door.mode = mode;
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
-}
-
+/* TODO */
 
 /****** MULTIPLE ACTUATORS */
 
-/* set harvest fruits mode */
-int8_t i2c_slavedspic_mode_harvest_fruits(uint8_t mode)
+/* set popcorn system mode */
+int8_t i2c_slavedspic_mode_ps(uint8_t mode)
 {
 	struct i2c_cmd_slavedspic_set_mode buf;
 
 	/* fill cmd structure */
 	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_HARVEST_FRUITS;
-	buf.harvest_fruits.mode = mode;
+	buf.mode = I2C_SLAVEDSPIC_MODE_POPCORN_SYSTEM;
+	buf.popcorn_system.mode = mode;
 
 	/* send command and return */
 	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
 }
 
-/* set dump fruits mode */
-int8_t i2c_slavedspic_mode_dump_fruits(uint8_t mode)
+/* get popcorn system status */
+void i2c_slavedspic_get_ps_status(void)
+{ 
+   i2cproto_wait_update();
+   return slavedspic.popcorn_system.status;
+}
+
+/* set stands system mode */
+int8_t __i2c_slavedspic_mode_ss(uint8_t mode, uint8_t side, int8_t blade_angle_deg)
 {
 	struct i2c_cmd_slavedspic_set_mode buf;
 
 	/* fill cmd structure */
 	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_DUMP_FRUITS;
-	buf.dump_fruits.mode = mode;
+	buf.mode = I2C_SLAVEDSPIC_MODE_STANDS_SYSTEM;
+	buf.stands_system.mode = mode;
+	buf.stands_system.side = side;
+	buf.stands_system.blade_angle = blade_angle_deg;
 
 	/* send command and return */
 	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
 }
 
-
-/* ARM-FIRES modes */
-
-int8_t i2c_slavedspic_mode_hide_arm (uint8_t sucker_type) 
+/* set stands system mode */
+int8_t i2c_slavedspic_mode_ss_harvest(uint8_t side, int8_t blade_angle_deg)
 {
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_ARM;
-	buf.arm.mode = I2C_SLAVEDSPIC_MODE_ARM_HIDE;
-    buf.arm.sucker_type = sucker_type;
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+	return __i2c_slavedspic_mode_ss(I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND, side, blade_angle_deg)
 }
 
-int8_t i2c_slavedspic_mode_ready_for_pickup_torch (uint8_t sucker_type)
+/* set stands system mode */
+int8_t i2c_slavedspic_mode_ss(uint8_t mode, uint8_t side)
 {
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_ARM;
-	buf.arm.mode = I2C_SLAVEDSPIC_MODE_ARM_PICKUP_TORCH_READY;
-    buf.arm.sucker_type = sucker_type;
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+	return __i2c_slavedspic_mode_ss(mode, side, 0);
 }
 
-int8_t i2c_slavedspic_mode_pickup_torch (uint8_t sucker_type)
-{
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_ARM;
-	buf.arm.mode = I2C_SLAVEDSPIC_MODE_ARM_PICKUP_TORCH_DO;
-    buf.arm.sucker_type = sucker_type;
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+/* get popcorn system status */
+void i2c_slavedspic_get_ss_status(void)
+{ 
+   i2cproto_wait_update();
+   return slavedspic.stands_system.status;
 }
-
-
-int8_t i2c_slavedspic_mode_ready_for_pickup_fire (uint8_t sucker_type, uint8_t level)
-{
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_ARM;
-	buf.arm.mode = I2C_SLAVEDSPIC_MODE_ARM_PICKUP_FIRE_READY;
-    buf.arm.sucker_type = sucker_type;
-    buf.arm.level = level;
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
-}
-
-int8_t i2c_slavedspic_mode_pickup_fire (uint8_t sucker_type, uint8_t level)
-{
-#if 0
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_ARM;
-	buf.arm.mode = I2C_SLAVEDSPIC_MODE_ARM_PICKUP_FIRE_DO;
-    buf.arm.sucker_type = sucker_type;
-    buf.arm.level = level;
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
-#endif
-	return 0;
-
-}
-
-int8_t i2c_slavedspic_mode_store_fire (uint8_t sucker_type)
-{
-#if 0
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_ARM;
-	buf.arm.mode = I2C_SLAVEDSPIC_MODE_ARM_STORE;
-    buf.arm.sucker_type = sucker_type;
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
-#endif
-	return 0;
-}
-
-int8_t i2c_slavedspic_mode_load_fire (uint8_t sucker_type)
-{
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_ARM;
-	buf.arm.mode = I2C_SLAVEDSPIC_MODE_ARM_LOAD_FIRE;
-    buf.arm.sucker_type = sucker_type;
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
-}
-
-
-static void arm_x_to_ay (int16_t x, int16_t *a, int16_t *y)
-{
-/* XXX keep syncronized with slavedspic/actuators.c */
-#define SHOULDER_JOIN_X   (165-21) // 144
-#define SHOULDER_JOIN_Y   (130)
-#define ARM_LENGTH        (219.0)
-#define SUCKER_LENGTH_0	  (46.5)
-#define SUCKER_LENGTH_180 (55.5)
-
-    double a1, x1, y1;
-
-	x1 = (double) (x - SHOULDER_JOIN_X);
-    a1 = acos (x1 / ARM_LENGTH);
-    y1 = ARM_LENGTH * sin(a1);
-
-	//printf ("a1 = %f, x1 = %f, y1 = %f\n\r", DEG(a1), x1, y1);
-
-    *a = (int16_t)DEG(a1);
-    *y = (int16_t)y1 + SHOULDER_JOIN_Y; 
-
-	//printf ("a = %d, y = %d\n\r", *a, *y);  
-}
-
-int8_t i2c_slavedspic_mode_putdown_fire 
-        (uint8_t sucker_type, uint8_t level,
-         int16_t x, int16_t *y, int16_t *a, int8_t sucker_angle)
-{
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_ARM;
-	buf.arm.mode = I2C_SLAVEDSPIC_MODE_ARM_PUTDOWN_FIRE;
-    buf.arm.sucker_type = sucker_type;
-    buf.arm.level = level;
-    buf.arm.x_lsb = (uint8_t)((uint16_t)x & 0x00FF);
-    buf.arm.x_msb = (uint8_t)((uint16_t)(x >> 8) & 0x00FF);
-    buf.arm.sucker_angle = sucker_angle;
-
-    /* y,a final positions */
-    arm_x_to_ay (x, a, y);
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
-}
-
-
-int8_t i2c_slavedspic_mode_putdown_fire_inv
-        (uint8_t sucker_type, uint8_t level, int16_t x, int16_t *y, int16_t *a)
-{
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_ARM;
-	buf.arm.mode = I2C_SLAVEDSPIC_MODE_ARM_PUTDOWN_FIRE_INV;
-    buf.arm.sucker_type = sucker_type;
-    buf.arm.level = level;
-    buf.arm.x_lsb = (uint8_t)((uint16_t)x & 0x00FF);
-    buf.arm.x_msb = (uint8_t)((uint16_t)(x >> 8) & 0x00FF);
-    buf.arm.sucker_angle = 0;
-
-    /* y,a final positions */
-    arm_x_to_ay (x, a, y);
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
-}
-
-int8_t i2c_slavedspic_mode_release_fire (uint8_t sucker_type)
-{
-	struct i2c_cmd_slavedspic_set_mode buf;
-
-	/* fill cmd structure */
-	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_ARM;
-	buf.arm.mode = I2C_SLAVEDSPIC_MODE_ARM_RELEASE_FIRE;
-    buf.arm.sucker_type = sucker_type;
-
-	/* send command and return */
-	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
-}
-
   
 /*******************************************************************************
  * Debug functions
