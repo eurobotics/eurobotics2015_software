@@ -60,7 +60,7 @@ int8_t i2c_slavedspic_mode_power_off(void);
 void i2c_slavedspic_wait_ready(void);
 
 /* get slavedispic status */
-void i2c_slavedspic_get_status(void);
+uint8_t i2c_slavedspic_get_status(void);
 
 /****** SIMPLE ACTUATORS */
 
@@ -72,7 +72,7 @@ void i2c_slavedspic_get_status(void);
 int8_t i2c_slavedspic_mode_ps(uint8_t mode);
 
 /* get popcorn system status */
-void i2c_slavedspic_get_ps_status(void);
+uint8_t i2c_slavedspic_get_ps_status(void);
 
 /* set stands system mode */
 int8_t i2c_slavedspic_mode_ss_harvest(uint8_t side, int8_t blade_angle_deg);
@@ -81,7 +81,7 @@ int8_t i2c_slavedspic_mode_ss_harvest(uint8_t side, int8_t blade_angle_deg);
 int8_t i2c_slavedspic_mode_ss(uint8_t mode, uint8_t side);
 
 /* get popcorn system status */
-void i2c_slavedspic_get_ss_status(void);
+uint8_t i2c_slavedspic_get_ss_status(uint8_t side);
 
 
 #endif
