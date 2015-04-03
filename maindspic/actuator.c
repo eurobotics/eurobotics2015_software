@@ -31,21 +31,15 @@
 
 void dac_set_and_save(void *dac, int32_t val)
 {
-#ifdef EUROBOT2011_BOARD
-//#define RIGHT_MOTOR_OFFSET 2000 
-#define LEFT_MOTOR_OFFSET  0
-#else
 #define RIGHT_MOTOR_OFFSET	0 
-//#define LEFT_MOTOR_OFFSET  3500
-#define LEFT_MOTOR_OFFSET  0
-#endif
+#define LEFT_MOTOR_OFFSET   3500
 
 #define RIGHT_MOTOR_MAX		(65535-LEFT_MOTOR_OFFSET)
 #define LEFT_MOTOR_MAX		(65535-RIGHT_MOTOR_OFFSET)
 	
 	if (dac == LEFT_MOTOR) {
 		/* apply offset */
-		//val = val > 0? (val + LEFT_MOTOR_OFFSET):(val - LEFT_MOTOR_OFFSET);
+		val = val > 0? (val + LEFT_MOTOR_OFFSET):(val - LEFT_MOTOR_OFFSET);
 
 		/* we need to do the saturation here, before saving the value */
 		if (val > LEFT_MOTOR_MAX)
@@ -58,7 +52,7 @@ void dac_set_and_save(void *dac, int32_t val)
 	}
 	else if (dac == RIGHT_MOTOR){
 		/* apply offset */
-		//val = val > 0? (val + RIGHT_MOTOR_OFFSET):(val - RIGHT_MOTOR_OFFSET);
+		val = val > 0? (val + RIGHT_MOTOR_OFFSET):(val - RIGHT_MOTOR_OFFSET);
 
 		/* we need to do the saturation here, before saving the value */
 		if (val > RIGHT_MOTOR_MAX)

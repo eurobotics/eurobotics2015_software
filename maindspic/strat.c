@@ -62,6 +62,7 @@
 #include "sensor.h"
 #include "actuator.h"
 #include "beacon.h"
+#include "bt_protocol.h"
 
 #else
 
@@ -156,7 +157,7 @@ struct strat_infos strat_infos = {
 
 /* points we get from each zone */
 /* TODO*/
-uint8_t strat_zones_points[ZONES_MAX]; /* TODO = {3,3,3,3,0,0,0,1,1,1,1,1,1,1,1,1,1,2,2,0,0,6,6,6}; */
+uint8_t strat_zones_points[ZONES_MAX]; /* @supernudo TODO = {3,3,3,3,0,0,0,1,1,1,1,1,1,1,1,1,1,2,2,0,0,6,6,6}; */
 
 /*************************************************************/
 
@@ -194,7 +195,6 @@ void strat_preinit(void)
 {
     time_reset();
     interrupt_traj_reset();
-    //mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BEACON | DO_ROBOT_2ND;
     mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BEACON;
 
     /* XXX default conf */
@@ -289,12 +289,10 @@ void strat_init(void)
     interrupt_traj_reset();
 
     /* init other devices (lasers...) */
-    i2c_slavedspic_mode_init();
+    //i2c_slavedspic_mode_init();
 
     /* used in strat_base for END_TIMER */
-    //mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BEACON | DO_ROBOT_2ND;
     mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BEACON;
-
 }
 
 
@@ -317,14 +315,14 @@ void strat_exit(void)
     dac_mc_set(RIGHT_MOTOR, 0);
 #endif
 
-    /* stop beacon */
-    /* TODO beacon_cmd_beacon_off(); */
+    /* TODO stop beacon */
+    /* beacon_cmd_beacon_off(); */
 
-    /* slavespic exit TODO 2014 */
+    /* TODO slavespic exit */
     //i2c_slavedspic_mode_turbine_blow(0);
     //i2c_slavedspic_wait_ready();
 
-    /* turn off other devices (lasers...) */
+    /* TODO turn off other devices (lasers...) */
 
     /* TODO stop beacon
     beacon_cmd_beacon_off();
@@ -374,12 +372,15 @@ void strat_event(void *dummy)
 uint8_t strat_main(void)
 {
     uint8_t err, i;
+
+
     strat_begin();
     strat_limit_speed_enable ();
 	
     /* auto-play  */
 	set_strat_sec_1();
     printf_P(PSTR("\r\n\r\nStrat smart\r\n"));
+	
     do{
         err = strat_smart();
     }while((err & END_TIMER) == 0);
