@@ -1226,6 +1226,133 @@ parse_pgm_inst_t cmd_slavedspic = {
     },
 };
 
+/**********************************************************/
+/* popcorn_system */
+
+/* this structure is filled when cmd_popcorn_system is parsed successfully */
+struct cmd_popcorn_system_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+};
+
+/* function called when cmd_popcorn_system is parsed successfully */
+static void cmd_popcorn_system_parsed(__attribute__((unused)) void *parsed_result,
+			    __attribute__((unused)) void *data)
+{
+	struct cmd_popcorn_system_result *res = (struct cmd_popcorn_system_result *) parsed_result;
+	uint8_t mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
+
+	if (!strcmp_P(res->arg1, PSTR("idle")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
+	else if (!strcmp_P(res->arg1, PSTR("cup_f_ready")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_READY;
+	else if (!strcmp_P(res->arg1, PSTR("cup_f_drop")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_CATCH_AND_DROP;
+	else if (!strcmp_P(res->arg1, PSTR("cup_f_release")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_RELEASE;
+	else if (!strcmp_P(res->arg1, PSTR("cup_f_hide")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_HIDE;
+	else if (!strcmp_P(res->arg1, PSTR("cup_r_open")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_OPEN;
+	else if (!strcmp_P(res->arg1, PSTR("cup_r_catch")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_CATCH;
+	else if (!strcmp_P(res->arg1, PSTR("cup_r_release")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_RELEASE;
+	else if (!strcmp_P(res->arg1, PSTR("machines_ready")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_MACHINES_READY;
+	else if (!strcmp_P(res->arg1, PSTR("machines_harvest")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_MACHINES_HARVEST;
+	else if (!strcmp_P(res->arg1, PSTR("machines_end")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_MACHINES_END;
+	else if (!strcmp_P(res->arg1, PSTR("stock_drop")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_STOCK_DROP;
+	else if (!strcmp_P(res->arg1, PSTR("stock_end")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_STOCK_END;
+
+	i2c_slavedspic_mode_ps(mode);
+}
+
+prog_char str_popcorn_system_arg0[] = "ps";
+parse_pgm_token_string_t cmd_popcorn_system_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_popcorn_system_result, arg0, str_popcorn_system_arg0);
+prog_char str_popcorn_system_arg1[] = "idle#cup_f_ready#cup_f_drop#cup_f_release#cup_f_hide#cup_r_open#cup_r_catch#cup_r_release#machines_ready#machines_harvest#machines_end#stock_drop#stock_end";
+parse_pgm_token_string_t cmd_popcorn_system_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_popcorn_system_result, arg1, str_popcorn_system_arg1);
+
+prog_char help_popcorn_system[] = "set popcorn_system mode";
+parse_pgm_inst_t cmd_popcorn_system = {
+	.f = cmd_popcorn_system_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_popcorn_system,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_popcorn_system_arg0, 
+		(prog_void *)&cmd_popcorn_system_arg1,
+		NULL,
+	},
+};
+
+
+/**********************************************************/
+/* stands_system */
+
+/* this structure is filled when cmd_stands_system is parsed successfully */
+struct cmd_stands_system_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+	fixed_string_t arg2;
+	uint8_t arg3;
+};
+
+/* function called when cmd_stands_system is parsed successfully */
+static void cmd_stands_system_parsed(__attribute__((unused)) void *parsed_result,
+			    __attribute__((unused)) void *data)
+{
+	struct cmd_stands_system_result *res = (struct cmd_stands_system_result *) parsed_result;
+	uint8_t mode = I2C_SLAVEDSPIC_MODE_SS_IDLE;
+	uint8_t side = I2C_SIDE_LEFT;
+
+	if (!strcmp_P(res->arg1, PSTR("left")))
+		side = I2C_SIDE_LEFT;
+	else if (!strcmp_P(res->arg1, PSTR("right")))
+		side = I2C_SIDE_RIGHT;
+
+	if (!strcmp_P(res->arg2, PSTR("idle")))
+		mode = I2C_SLAVEDSPIC_MODE_SS_IDLE;
+	else if (!strcmp_P(res->arg2, PSTR("hide_tower")))
+		mode = I2C_SLAVEDSPIC_MODE_SS_HIDE_TOWER;
+	else if (!strcmp_P(res->arg2, PSTR("harvest_stand")))
+		mode = I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND;
+	else if (!strcmp_P(res->arg2, PSTR("build_spotlight")))
+		mode = I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT;
+	else if (!strcmp_P(res->arg2, PSTR("release_spotlight")))
+		mode = I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT;
+
+	if (!strcmp_P(res->arg2, PSTR("harvest_stand")))
+		i2c_slavedspic_mode_ss_harvest(side, res->arg3);
+	else
+		i2c_slavedspic_mode_ss(mode, side);
+}
+
+prog_char str_stands_system_arg0[] = "ss";
+parse_pgm_token_string_t cmd_stands_system_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_stands_system_result, arg0, str_stands_system_arg0);
+prog_char str_stands_system_arg1[] = "left#right";
+parse_pgm_token_string_t cmd_stands_system_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_stands_system_result, arg1, str_stands_system_arg1);
+prog_char str_stands_system_arg2[] = "idle#hide_tower#harvest_stand#build_spotlight#release_spotlight";
+parse_pgm_token_string_t cmd_stands_system_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_stands_system_result, arg2, str_stands_system_arg2);
+parse_pgm_token_num_t cmd_stands_system_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_stands_system_result, arg3, UINT8);
+
+prog_char help_stands_system[] = "set stands_system side, mode, blade angle";
+parse_pgm_inst_t cmd_stands_system = {
+	.f = cmd_stands_system_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_stands_system,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_stands_system_arg0, 
+		(prog_void *)&cmd_stands_system_arg1,
+		(prog_void *)&cmd_stands_system_arg2,
+		(prog_void *)&cmd_stands_system_arg3,
+		NULL,
+	},
+};
+
 /* TODO 2014*/
 #if 0 
 
