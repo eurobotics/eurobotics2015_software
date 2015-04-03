@@ -438,7 +438,7 @@ void i2c_read_event(uint8_t * buf, uint16_t size)
             slavedspic.popcorn_system.status = ans->popcorn_system.status;
             slavedspic.popcorn_system.cup_front_catched = ans->popcorn_system.cup_front_catched;
             slavedspic.popcorn_system.cup_rear_catched = ans->popcorn_system.cup_rear_catched;
-            slavedspic.popcorn_system.machines_catched = ans->popcorn_system.machine_popcorns_catched;
+            slavedspic.popcorn_system.machine_popcorns_catched = ans->popcorn_system.machine_popcorns_catched;
 
 			/* stands_systems */
             slavedspic.stands_system[I2C_SIDE_LEFT].mode = ans->stands_system[I2C_SIDE_LEFT].mode;
@@ -617,7 +617,7 @@ void i2c_slavedspic_wait_ready(void)
 }
 
 /* get slavedispic status */
-void i2c_slavedspic_get_status(void)
+uint8_t i2c_slavedspic_get_status(void)
 { 
    i2cproto_wait_update();
    return slavedspic.status;
@@ -644,7 +644,7 @@ int8_t i2c_slavedspic_mode_ps(uint8_t mode)
 }
 
 /* get popcorn system status */
-void i2c_slavedspic_get_ps_status(void)
+uint8_t i2c_slavedspic_get_ps_status(void)
 { 
    i2cproto_wait_update();
    return slavedspic.popcorn_system.status;
@@ -669,7 +669,7 @@ int8_t __i2c_slavedspic_mode_ss(uint8_t mode, uint8_t side, int8_t blade_angle_d
 /* set stands system mode */
 int8_t i2c_slavedspic_mode_ss_harvest(uint8_t side, int8_t blade_angle_deg)
 {
-	return __i2c_slavedspic_mode_ss(I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND, side, blade_angle_deg)
+	return __i2c_slavedspic_mode_ss(I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND, side, blade_angle_deg);
 }
 
 /* set stands system mode */
@@ -679,10 +679,10 @@ int8_t i2c_slavedspic_mode_ss(uint8_t mode, uint8_t side)
 }
 
 /* get popcorn system status */
-void i2c_slavedspic_get_ss_status(void)
+uint8_t i2c_slavedspic_get_ss_status(uint8_t side)
 { 
    i2cproto_wait_update();
-   return slavedspic.stands_system.status;
+   return slavedspic.stands_system[side].status;
 }
   
 /*******************************************************************************

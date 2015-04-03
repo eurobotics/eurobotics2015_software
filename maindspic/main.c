@@ -309,8 +309,8 @@ int main(void)
 
 #ifndef HOST_VERSION
 	/* i2c slaves polling (gpios and slavedspic) */
-	//scheduler_add_periodical_event_priority(i2c_poll_slaves, NULL,
-	//					EVENT_PERIOD_I2C_POLL / SCHEDULER_UNIT, EVENT_PRIORITY_I2C_POLL);
+	scheduler_add_periodical_event_priority(i2c_poll_slaves, NULL,
+						EVENT_PERIOD_I2C_POLL / SCHEDULER_UNIT, EVENT_PRIORITY_I2C_POLL);
 
 	/* beacon commnads and polling */
 	//scheduler_add_periodical_event_priority(beacon_protocol, NULL,

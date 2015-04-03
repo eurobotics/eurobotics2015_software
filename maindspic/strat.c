@@ -156,7 +156,7 @@ struct strat_infos strat_infos = {
 
 /* points we get from each zone */
 /* TODO*/
-uint8_t strat_zones_points[ZONES_MAX]= {3,3,3,3,0,0,0,1,1,1,1,1,1,1,1,1,1,2,2,0,0,6,6,6};
+uint8_t strat_zones_points[ZONES_MAX]; /* TODO = {3,3,3,3,0,0,0,1,1,1,1,1,1,1,1,1,1,2,2,0,0,6,6,6}; */
 
 /*************************************************************/
 
@@ -242,7 +242,7 @@ char numzone2name[ZONES_MAX +1][5]= {
 /* display current information about the state of the game */
 void strat_dump_infos(const char *caller)
 {
-	int8_t zone_opp;
+	//int8_t zone_opp;
     if (!strat_infos.dump_enabled)
         return;
 

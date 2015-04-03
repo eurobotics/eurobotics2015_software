@@ -127,8 +127,7 @@ extern parse_pgm_inst_t cmd_robot_2nd_goto1;
 extern parse_pgm_inst_t cmd_robot_2nd_goto2;
 extern parse_pgm_inst_t cmd_robot_2nd_bt_task;
 extern parse_pgm_inst_t cmd_slavedspic;
-extern parse_pgm_inst_t cmd_popcorn_system;
-extern parse_pgm_inst_t cmd_stands_system;
+extern parse_pgm_inst_t cmd_strat_event;
 
 #ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
 extern parse_pgm_inst_t cmd_interact;
@@ -140,23 +139,13 @@ extern parse_pgm_inst_t cmd_time_monitor;
 extern parse_pgm_inst_t cmd_sleep;
 #endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
 
-extern parse_pgm_inst_t cmd_strat_event;
-
-extern parse_pgm_inst_t cmd_boot;
-extern parse_pgm_inst_t cmd_combs;
-extern parse_pgm_inst_t cmd_tree_tray;
-extern parse_pgm_inst_t cmd_stick;
-
-extern parse_pgm_inst_t cmd_harvest_fruits;
-extern parse_pgm_inst_t cmd_dump_fruits;
-
-extern parse_pgm_inst_t cmd_update_zones;
-
-
 /* TODO 2014*/
 #if 0
 extern parse_pgm_inst_t cmd_sensor_robot;
 #endif
+
+extern parse_pgm_inst_t cmd_popcorn_system;
+extern parse_pgm_inst_t cmd_stands_system;
 
 #endif /* COMPILE_COMMANDS_MAINBOARD */
 
@@ -273,8 +262,6 @@ parse_pgm_ctx_t main_ctx[] = {
     (parse_pgm_inst_t *) & cmd_robot_2nd_goto2,
 	(parse_pgm_inst_t *) & cmd_robot_2nd_bt_task,
     (parse_pgm_inst_t *) & cmd_slavedspic,
-    (parse_pgm_inst_t *) & cmd_popcorn_system,
-    (parse_pgm_inst_t *) & cmd_stands_system,
     (parse_pgm_inst_t *) & cmd_strat_event,
 
 #ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
@@ -287,22 +274,14 @@ parse_pgm_ctx_t main_ctx[] = {
    // (parse_pgm_inst_t *) & cmd_strat_event,
     (parse_pgm_inst_t *) & cmd_sleep,
 #endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
-
-
-    (parse_pgm_inst_t *) & cmd_boot,
-    (parse_pgm_inst_t *) & cmd_combs,
-    (parse_pgm_inst_t *) & cmd_tree_tray,
-    (parse_pgm_inst_t *) & cmd_stick,
-
-    (parse_pgm_inst_t *) & cmd_harvest_fruits,
-    (parse_pgm_inst_t *) & cmd_dump_fruits,
-
-    (parse_pgm_inst_t *) & cmd_update_zones,
-
-    /* TODO 2014*/
+ 
+    /* TODO 2015*/
 #if 0 
     (parse_pgm_inst_t *) & cmd_sensor_robot,
 #endif
+
+    (parse_pgm_inst_t *) & cmd_popcorn_system,
+    (parse_pgm_inst_t *) & cmd_stands_system,
 
 #endif /* COMPILE_COMMANDS_MAINBOARD */
 
