@@ -519,7 +519,6 @@ uint8_t do_cup_front_release(popcorn_system_t *ps)
 		case RELEASE_CUP_FRONT:
 			cup_clamp_front_set_mode(&slavedspic.cup_clamp_front, CUP_CLAMP_FRONT_MODE_OPEN, 0);
 			ps->substate = WAITING_CUP_FRONT_RELEASED;
-
 			break;
 
 		case WAITING_CUP_FRONT_RELEASED:
