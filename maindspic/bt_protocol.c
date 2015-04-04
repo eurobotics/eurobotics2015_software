@@ -365,30 +365,27 @@ uint8_t bt_robot_2nd_is_ack_received (void) {
 /* send command, and return after received ack */
 uint8_t bt_robot_2nd_cmd (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 {
-//	uint8_t nb_tries = 3;
-	int8_t ret;
-
-//retry:
+	uint8_t ret;
 
 	bt_robot_2nd_cmd_no_wait_ack (cmd_id, arg0, arg1);
-	DEBUG (E_USER_STRAT, "cmd send");
+	uint8_t _ret=robot_2nd.cmd_ret;
 
-	/* XXX wait ack */
-	//ret = BT_WAIT_COND_OR_TIMEOUT( bt_robot_2nd_test_checksum (), 250);
+	DEBUG (E_USER_STRAT, "1- bt_robot_2nd_cmd %d",_ret);
+	time_wait_ms(200);
 
-	//1 = condition, 0 = timeout
+	//1 = ack received, 0 = timeout
 	ret = BT_WAIT_COND_OR_TIMEOUT( bt_robot_2nd_is_ack_received(), 250);
 
-	if (!ret) {// && nb_tries--) {
+	if (!ret) {
 		ERROR (E_USER_BT_PROTO, "TIMEOUT waiting command ACK");
-		//goto retry;
 		ret = END_ERROR;
 	}
 	else {
-		DEBUG (E_USER_STRAT, "ACK received (%d)", robot_2nd.cmd_ret);
 		ret = robot_2nd.cmd_ret;
+		DEBUG (E_USER_STRAT, "2- ACK received (%d)", ret);
 	}
 
+	DEBUG (E_USER_STRAT, "3- bt_robot_2nd_cmd %d",robot_2nd.cmd_ret);
 	return ret;
 }
 
@@ -402,6 +399,7 @@ uint8_t bt_robot_2nd_wait_end (void)
 		ret = robot_2nd.cmd_ret;
 	}
 	DEBUG (E_USER_STRAT, "RET:  (%d)", robot_2nd.cmd_ret);
+
 	return ret;
 }
 
@@ -483,6 +481,8 @@ void bt_robot_2nd_req_status(void)
 	opp1_y = beaconboard.opponent1_y;
 	opp2_x = beaconboard.opponent2_x;
 	opp2_y = beaconboard.opponent2_y;
+
+
 	IRQ_UNLOCK(flags);
 
 	/* checksum */

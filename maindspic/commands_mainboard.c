@@ -863,7 +863,7 @@ static void cmd_robot_2nd_parsed(void * parsed_result, void * data)
 
 		 do
 		 {
-				printf ("cmd %d %d %d %d %d\n\r", robot_2nd.cmd_id, robot_2nd.cmd_ret,
+				printf ("cmd %d ret: %d %d %d %d\n\r", robot_2nd.cmd_id, robot_2nd.cmd_ret,
 													robot_2nd.cmd_args_checksum_send,
 													robot_2nd.cmd_args_checksum_recv,
 													robot_2nd.valid_status);
@@ -981,12 +981,14 @@ static void cmd_robot_2nd_goto_parsed(void * parsed_result, void * data)
     }
 
 	/* check if command has been received */
+	DEBUG (E_USER_STRAT, "4- cmd_robot_2nd_goto_parsed %d",err);
 	if (err)
 		printf_P(PSTR("bt cmd ERROR"));
 
 	/* wait end traj */
 	err = bt_robot_2nd_wait_end();
-    printf_P(PSTR("traj returned %s\r\n"), get_err(err));
+     printf_P(PSTR("traj returned %s\r\n"), get_err(err));
+
 }
 
 prog_char str_robot_2nd_goto_arga[] = "robot_2nd";

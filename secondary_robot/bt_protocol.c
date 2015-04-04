@@ -81,6 +81,7 @@
 /* set bt cmd id and args checksum */
 void bt_status_set_cmd_ret (uint8_t ret) {
 	uint8_t flags;
+	printf("RET== %d\n",ret);
 	IRQ_LOCK (flags);
 	robot_2nd.cmd_ret = ret;
 	IRQ_UNLOCK (flags);
@@ -309,6 +310,7 @@ uint8_t bt_goto_and_avoid (int16_t x, int16_t y, int16_t args_checksum)
 
 		/* set ACK */
 		bt_status_set_cmd_ack (0);
+
 
 		/* execute command: can be a variable assigment, non blocking funtion
 		   or a single o periodical schedule event if it's a blocking funtion */
