@@ -344,6 +344,7 @@ static void cmd_init_parsed(void *parsed_result, void *data)
 	wt11_reset_mux();
 	time_wait_ms (1000);
 	wt11_open_link_mux(beacon_addr, &beaconboard.link_id);
+	/* TODO: discomented when robot secondary ready */
 	//time_wait_ms (1000);
 	//wt11_open_link_mux(robot_2nd_addr, &robot_2nd.link_id);
 #else
@@ -357,17 +358,22 @@ static void cmd_init_parsed(void *parsed_result, void *data)
 	/* set main robot color */
     if (!strcmp_P(res->color, PSTR("green"))){
         mainboard.our_color = I2C_COLOR_GREEN;
-		position_set(&mainboard.pos,COLOR_X(70+(ROBOT_WIDTH/2)), 778+22+20+(ROBOT_WIDTH/2), 180);
-		}
+	}
     else if (!strcmp_P(res->color, PSTR("yellow"))){
         mainboard.our_color = I2C_COLOR_YELLOW;
-		position_set(&mainboard.pos,COLOR_X(70+(ROBOT_WIDTH/2)),778+22+20+(ROBOT_WIDTH/2), 0);
 	}
+
+	/* TODO: discomented when robot secondary ready */
 	/* set secondary robot color */
 	//bt_robot_2nd_set_color ();
 
 	/* TODO: init main robot mechanics */
 	
+
+	/* autopos main robot */
+	auto_position();
+
+	/* TODO: discomented when robot secondary ready */
 	/* autopos secondary robot */
     //bt_robot_2nd_autopos();
 	//bt_robot_2nd_wait_end();
@@ -432,7 +438,7 @@ static void cmd_start_parsed(void *parsed_result, void *data)
 
 #ifndef HOST_VERSION
     int8_t c;
-//retry:
+
     printf_P(PSTR("Press a key when beacon ready, 'q' for skip \r\n"));
     c = -1;
     while (c == -1) {
@@ -462,15 +468,11 @@ retry_on:
     }
 #endif	
 
-    if (!strcmp_P(res->color, PSTR("green")))
-    {
+    if (!strcmp_P(res->color, PSTR("green"))) {
         mainboard.our_color = I2C_COLOR_GREEN;
-        //beacon_cmd_color();
     }
-    else if (!strcmp_P(res->color, PSTR("yellow")))
-    {
+    else if (!strcmp_P(res->color, PSTR("yellow"))) {
         mainboard.our_color = I2C_COLOR_YELLOW;
-        //beacon_cmd_color();
     }
 
     strat_start();
@@ -515,12 +517,10 @@ struct cmd_color_result
 static void cmd_color_parsed(void *parsed_result, void *data)
 {
     struct cmd_color_result *res = (struct cmd_color_result *) parsed_result;
-    if (!strcmp_P(res->color, PSTR("yellow")))
-    {
+    if (!strcmp_P(res->color, PSTR("yellow"))) {
         mainboard.our_color = I2C_COLOR_YELLOW;
     }
-    else if (!strcmp_P(res->color, PSTR("green")))
-    {
+    else if (!strcmp_P(res->color, PSTR("green"))) {
         mainboard.our_color = I2C_COLOR_GREEN;
     }
     printf_P(PSTR("Done\r\n"));
@@ -1226,45 +1226,6 @@ parse_pgm_inst_t cmd_slavedspic = {
     { /* token list, NULL terminated */
         (prog_void *) & cmd_slavedspic_arg0,
         (prog_void *) & cmd_slavedspic_arg1,
-        NULL,
-    },
-};
-
-/**********************************************************/
-/* Strat_Event */
-
-/* this structure is filled when cmd_strat_event is parsed successfully */
-struct cmd_strat_event_result
-{
-    fixed_string_t arg0;
-    fixed_string_t arg1;
-};
-
-/* function called when cmd_strat_event is parsed successfully */
-static void cmd_strat_event_parsed(void *parsed_result, void *data)
-{
-    struct cmd_strat_event_result *res = parsed_result;
-
-    if (!strcmp_P(res->arg1, PSTR("on")))
-        strat_event_enable();
-    else
-        strat_event_disable();
-}
-
-prog_char str_strat_event_arg0[] = "strat_event";
-parse_pgm_token_string_t cmd_strat_event_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_strat_event_result, arg0, str_strat_event_arg0);
-prog_char str_strat_event_arg1[] = "on#off";
-parse_pgm_token_string_t cmd_strat_event_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_strat_event_result, arg1, str_strat_event_arg1);
-
-prog_char help_strat_event[] = "Enable/disable strat_event callback";
-parse_pgm_inst_t cmd_strat_event = {
-    .f = cmd_strat_event_parsed, /* function to call */
-    .data = NULL, /* 2nd arg of func */
-    .help_str = help_strat_event,
-    .tokens =
-    { /* token list, NULL terminated */
-        (prog_void *) & cmd_strat_event_arg0,
-        (prog_void *) & cmd_strat_event_arg1,
         NULL,
     },
 };

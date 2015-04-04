@@ -312,9 +312,9 @@ void strat_limit_speed(void)
 #endif
 #endif
 
-#define LIMIT_SPEED_SPEED_MIN		20
+#define LIMIT_SPEED_SPEED_MIN		75
 #define LIMIT_SPEED_OPP_ANGLE       60
-#define LIMIT_SPEED_OPP_ANGLE_HALF  (A_OPP/2)
+#define LIMIT_SPEED_OPP_ANGLE_HALF  (LIMIT_SPEED_OPP_ANGLE/2)
 
 	uint16_t lim_d = 0, lim_a = 0;
 	int16_t opp_d, opp_a;
@@ -406,7 +406,7 @@ void strat_limit_speed(void)
 			lim_d = SPEED_DIST_VERY_SLOW;
 			lim_a = SPEED_ANGLE_VERY_SLOW;
 		}
-    	/* opp on the left/right */
+    	/* opp on the left/right and any angle when we are stoped */
 		else {
       		//DEBUG(E_USER_STRAT, "opp on the left/right < 500 (speed = %d)", speed_d);
 			lim_d = SPEED_DIST_SLOW;
@@ -521,7 +521,8 @@ uint8_t __strat_obstacle(uint8_t which)
 	if (ABS(mainboard.speed_d) < OBSTACLE_SPEED_MIN)
 		return 0;
 
-
+	/* TODO: enable/disable opponent sensors */
+#if 0
 	/* opponent is in front of us */
 	if (mainboard.speed_d > OBSTACLE_SPEED_MIN && (sensor_get(S_OPPONENT_FRONT_R) || sensor_get(S_OPPONENT_FRONT_L))) {
 		DEBUG(E_USER_STRAT, "opponent front");
@@ -540,7 +541,7 @@ uint8_t __strat_obstacle(uint8_t which)
 		sensor_obstacle_disable();
 		return 1;
 	}
-
+#endif
 #ifdef TWO_OPPONENTS
 	if(which == OBSTACLE_OPP1)
 		ret = get_opponent1_xyda(&opp_x, &opp_y,&opp_d, &opp_a);
