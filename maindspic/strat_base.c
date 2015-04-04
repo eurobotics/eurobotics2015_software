@@ -126,10 +126,14 @@ void strat_hardstop(void)
 	bd_reset(&mainboard.distance.bd);
 }
 
-/* go to an x,y point without checking for obstacle or blocking. It
+/**
+ * go to an x,y point without checking for obstacle or blocking. It
  * should be used for very small dist only. Return END_TRAJ if we
  * reach destination, or END_BLOCKING if the robot blocked more than 3
- * times. */
+ * times. 
+ *
+ * NOTE: it's used on strat_avoid for escape from polygons 
+ */
 uint8_t strat_goto_xy_force(int16_t x, int16_t y)
 {
 	int8_t i, err;
@@ -238,51 +242,13 @@ uint8_t strat_calib(int16_t dist, uint8_t flags)
 	int32_t d = pid_get_gain_D(&mainboard.angle.pid);
 	uint8_t err;
 
-	bd_set_current_thresholds(&mainboard.distance.bd, 100, 2000, 1000000, 10); //20, 8000, 1000000, 50);
-
 	pid_set_gains(&mainboard.angle.pid, 50, 0, 1000);
 	trajectory_d_rel(&mainboard.traj, dist);
 	err = wait_traj_end(flags);
 	pid_set_gains(&mainboard.angle.pid, p, i, d);
 
-	bd_set_current_thresholds(&mainboard.distance.bd, 100, 2000, 1000000, 25); //20, 8000, 1000000, 50);
 	return err;
 }
-
-///* escape from zone, and don't brake, so we can continue with another
-// * traj */
-//uint8_t strat_escape(struct build_zone *zone, uint8_t flags)
-//{
-//	uint8_t err;
-//	uint16_t old_spdd, old_spda;
-//
-//	strat_get_speed(&old_spdd, &old_spda);
-//
-//	err = WAIT_COND_OR_TIMEOUT(!opponent_is_behind(), 1000);
-//	if (err == 0) {
-//		strat_set_speed(SPEED_DIST_VERY_SLOW, SPEED_ANGLE_FAST);
-//		trajectory_d_rel(&mainboard.traj, -150);
-//		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-//		strat_set_speed(old_spdd, old_spda);
-//		return err;
-//	}
-//
-//	strat_set_speed(SPEED_DIST_FAST, SPEED_ANGLE_FAST);
-//
-//	if (zone->flags & ZONE_F_DISC) {
-//		trajectory_d_rel(&mainboard.traj, -350);
-//		err = WAIT_COND_OR_TRAJ_END(!robot_is_near_disc(), flags);
-//	}
-//	else {
-//		trajectory_d_rel(&mainboard.traj, -300);
-//		err = wait_traj_end(flags);
-//	}
-//
-//	strat_set_speed(old_spdd, old_spda);
-//	if (err == 0)
-//		return END_NEAR;
-//	return err;
-//}
 
 static void strat_update_traj_speed(void)
 {
@@ -308,7 +274,7 @@ void strat_set_speed(uint16_t d, uint16_t a)
 	IRQ_UNLOCK(flags);
 }
 
-#ifdef TODO
+#ifdef TRAJECTORY_MANAGER_V3
 void strat_set_acc(double d, double a)
 {
 	trajectory_set_acc(&mainboard.traj, d, a);
@@ -337,7 +303,6 @@ void strat_limit_speed_disable(void)
 /* called periodically */
 void strat_limit_speed(void)
 {
-#define SPEED_MIN	(20.0)
 
 #ifdef TWO_OPPONENTS
 #ifdef ROBOT_2ND
@@ -347,28 +312,33 @@ void strat_limit_speed(void)
 #endif
 #endif
 
+#define LIMIT_SPEED_SPEED_MIN		20
+#define LIMIT_SPEED_OPP_ANGLE       60
+#define LIMIT_SPEED_OPP_ANGLE_HALF  (A_OPP/2)
+
 	uint16_t lim_d = 0, lim_a = 0;
 	int16_t opp_d, opp_a;
 	int16_t speed_d = 0;
 	uint8_t flags;
-	#ifdef TWO_OPPONENTS
+#ifdef TWO_OPPONENTS
 	int16_t d[NB_OPPONENTS], a[NB_OPPONENTS];
 	int8_t ret[NB_OPPONENTS];
 	uint16_t lim_d_save = 0, lim_a_save = 0;
 	uint8_t i;
-	#endif
+#endif
 
+	/* return if limis speed is disable */
 	if (strat_limit_speed_enabled == 0)
 		goto update;
 
-
+	/* get robots (d,a), return if no robots detected */
 #ifdef TWO_OPPONENTS
 	ret[0] = get_opponent1_da(&d[0], &a[0]);
 	ret[1] = get_opponent2_da(&d[1], &a[1]);
 #ifdef ROBOT_2ND
 	ret[2] = get_robot_2nd_da(&d[2], &a[2]);
-#endif
-#endif
+#endif /* ROBOT_2ND */
+#endif /* TWO_OPPONENTS */
 
 
 #ifdef TWO_OPPONENTS
@@ -380,19 +350,21 @@ void strat_limit_speed(void)
    if(ret[0] == -1 && ret[1] == -1){	
       goto update;
    }
-#endif
+#endif /* ROBOT_2ND */
 
 #else
 	if (get_opponent_da(&opp_d, &opp_a) == -1)
 		goto update;
-#endif
+#endif /* TWO_OPPONENTS */
 
 
+	/* get current speed */
 	IRQ_LOCK(flags);
 	speed_d = mainboard.speed_d;
 	IRQ_UNLOCK(flags);
 
 
+	/* set a limit speed for each robot ...*/
 #ifdef TWO_OPPONENTS
 	for(i=0; i<NB_OPPONENTS; i++) 
 	{
@@ -400,7 +372,7 @@ void strat_limit_speed(void)
 		if(ret[i] == -1)
 			continue;
  
-		/* skip secondary robot */
+		/* XXX skip secondary robot */
 		if(i == 2)
 			continue;
 
@@ -413,65 +385,48 @@ void strat_limit_speed(void)
 		opp_a = a[i];
 #endif
 	
-#ifdef __HOMOLOGATION
-{
-	if(__strat_obstacle(OBSTACLE_OPP1))
-		return 1;
-#ifdef TWO_OPPONENTS
-	else if(__strat_obstacle(OBSTACLE_OPP2))
-		return 1;
-#ifdef ROBOT_2ND
-	else if(__strat_obstacle(OBSTACLE_R2ND))
-		return 1;
-#endif
-#endif
-	else
-		return 0;
-}
-
-void interrupt_traj(void)
-{
-	t
-	if (opp_d < 800) {
-		lim_d = SPEED_ANGLE_VERY_SLOW;
-		lim_a = SPEED_ANGLE_VERY_SLOW;
-	}
-#else
-
-#define A_OPP       60
-#define A_OPP_HALF  (A_OPP/2)
-
+	/**
+     * ... depending on the distance to the opponent and if it's in front, 
+	 * behind or on the left/right 
+     */
 	if (opp_d < 500) {
-    /* opp in front */
-		if ((speed_d > SPEED_MIN) && (opp_a > (360-A_OPP_HALF) || opp_a < A_OPP_HALF)) {
-      //DEBUG(E_USER_STRAT, "opp in front < 500 (speed = %d)", speed_d);
+    	/* opp in front */
+		if ((speed_d > LIMIT_SPEED_SPEED_MIN) && 
+			(opp_a > (360-LIMIT_SPEED_OPP_ANGLE_HALF) || opp_a < LIMIT_SPEED_OPP_ANGLE_HALF)) {
+
+      		//DEBUG(E_USER_STRAT, "opp in front < 500 (speed = %d)", speed_d);
 			lim_d = SPEED_DIST_VERY_SLOW;
 			lim_a = SPEED_ANGLE_VERY_SLOW;
 		}
-    /* opp behind */
-		else if ((speed_d < -SPEED_MIN) && (opp_a < (180+A_OPP_HALF) && opp_a > (180-A_OPP_HALF))) {
-      //DEBUG(E_USER_STRAT, "opp behind < 500 (speed = %d)", speed_d);
+    	/* opp behind */
+		else if ((speed_d < -LIMIT_SPEED_SPEED_MIN) && 
+				 (opp_a < (180+LIMIT_SPEED_OPP_ANGLE_HALF) && opp_a > (180-LIMIT_SPEED_OPP_ANGLE_HALF))) {
+
+      		//DEBUG(E_USER_STRAT, "opp behind < 500 (speed = %d)", speed_d);
 			lim_d = SPEED_DIST_VERY_SLOW;
 			lim_a = SPEED_ANGLE_VERY_SLOW;
 		}
-    /* opp on the left/right */
+    	/* opp on the left/right */
 		else {
-      //DEBUG(E_USER_STRAT, "opp on the left/right < 500 (speed = %d)", speed_d);
-			lim_d = SPEED_DIST_SLOW;
-			lim_a = SPEED_ANGLE_VERY_SLOW;
-		}
-	}
-#endif		
-	else if (opp_d < 800) {
-    /* opp in front */
-		if ((speed_d > SPEED_MIN) && (opp_a > (360-A_OPP_HALF) || opp_a < A_OPP_HALF)) {
-      //DEBUG(E_USER_STRAT, "opp in front < 800 (speed = %d)", speed_d);
+      		//DEBUG(E_USER_STRAT, "opp on the left/right < 500 (speed = %d)", speed_d);
 			lim_d = SPEED_DIST_SLOW;
 			lim_a = SPEED_ANGLE_SLOW;
 		}
-    /* opp behind */
-		else if ((speed_d < -SPEED_MIN) && (opp_a < (180+A_OPP_HALF) && opp_a > (180-A_OPP_HALF))) {
-      //DEBUG(E_USER_STRAT, "opp behind < 800 (speed = %d)", speed_d);
+	}		
+	else if (opp_d < 800) {
+    	/* opp in front */
+		if ((speed_d > LIMIT_SPEED_SPEED_MIN) && 
+			(opp_a > (360-LIMIT_SPEED_OPP_ANGLE_HALF) || opp_a < LIMIT_SPEED_OPP_ANGLE_HALF)) {
+      		
+			//DEBUG(E_USER_STRAT, "opp in front < 800 (speed = %d)", speed_d);
+			lim_d = SPEED_DIST_SLOW;
+			lim_a = SPEED_ANGLE_SLOW;
+		}
+    	/* opp behind */
+		else if ((speed_d < -LIMIT_SPEED_SPEED_MIN) && 
+				 (opp_a < (180+LIMIT_SPEED_OPP_ANGLE_HALF) && opp_a > (180-LIMIT_SPEED_OPP_ANGLE_HALF))) {
+      		
+			//DEBUG(E_USER_STRAT, "opp behind < 800 (speed = %d)", speed_d);
 			lim_d = SPEED_DIST_SLOW;
 			lim_a = SPEED_ANGLE_SLOW;
 		}
@@ -487,8 +442,7 @@ void interrupt_traj(void)
 #endif
 
 update:
-	if (lim_d != strat_limit_speed_d ||
-	    lim_a != strat_limit_speed_a) {
+	if (lim_d != strat_limit_speed_d || lim_a != strat_limit_speed_a) {
 		strat_limit_speed_d = lim_d;
 		strat_limit_speed_a = lim_a;
 
@@ -502,6 +456,7 @@ void strat_start(void)
 { 
 	uint8_t i, err;
 
+	/* dump strat configuration, set do flags, ... */
 	strat_preinit();
 
 #ifndef HOST_VERSION
@@ -548,29 +503,43 @@ uint8_t __strat_obstacle(uint8_t which)
 #define OBSTACLE_R2ND	2
 
 
+#ifndef HOMOLOGATION
+#define OBSTACLE_SPEED_MIN	150
+#define OBSTACLE_ANGLE		35
+#define OBSTACLE_DIST		600
+#else
+#define OBSTACLE_SPEED_MIN	150
+#define OBSTACLE_ANGLE		35
+#define OBSTACLE_DIST		800
+#endif
+
 	int16_t x_rel, y_rel;
 	int16_t opp_x, opp_y, opp_d, opp_a;
 	int8_t ret = -1;
 
 	/* too slow */
-	if (ABS(mainboard.speed_d) < 150)
+	if (ABS(mainboard.speed_d) < OBSTACLE_SPEED_MIN)
 		return 0;
 
 
-#ifdef __HOMOLOGATION
 	/* opponent is in front of us */
-	if (mainboard.speed_d > 0 && (sensor_get(S_OPPONENT_FRONT_R) || sensor_get(S_OPPONENT_FRONT_L))) {
+	if (mainboard.speed_d > OBSTACLE_SPEED_MIN && (sensor_get(S_OPPONENT_FRONT_R) || sensor_get(S_OPPONENT_FRONT_L))) {
 		DEBUG(E_USER_STRAT, "opponent front");
-		//sensor_obstacle_disable();
+
+		/* TODO: if no opponent from beacon, simulate it */
+
+		sensor_obstacle_disable();
 		return 1;
 	}
 	/* opponent is behind us */
-	if (mainboard.speed_d < 0 && (sensor_get(S_OPPONENT_REAR_R) || sensor_get(S_OPPONENT_REAR_L))) {
+	if (mainboard.speed_d < -OBSTACLE_SPEED_MIN && (sensor_get(S_OPPONENT_REAR_R) || sensor_get(S_OPPONENT_REAR_L))) {
 		DEBUG(E_USER_STRAT, "opponent behind");
-		//sensor_obstacle_disable();
+
+		/* TODO: if no opponent from beacon, simulate it */
+
+		sensor_obstacle_disable();
 		return 1;
 	}
-#endif
 
 #ifdef TWO_OPPONENTS
 	if(which == OBSTACLE_OPP1)
@@ -580,11 +549,11 @@ uint8_t __strat_obstacle(uint8_t which)
 #ifdef ROBOT_2ND
 	else if(which == OBSTACLE_R2ND)
 		ret = get_robot_2nd_xyda(&opp_x, &opp_y,&opp_d, &opp_a);
-#endif
+#endif /* ROBOT_2ND */
 
 #else
 	ret = get_opponent1_xyda(&opp_x, &opp_y,&opp_d, &opp_a);
-#endif
+#endif /* TWO_OPPONENTS */
 
 	/* no opponent detected */
 	if (ret == -1) {
@@ -606,26 +575,27 @@ uint8_t __strat_obstacle(uint8_t which)
 	y_rel = sin(RAD(opp_a)) * (double)opp_d;
 
 	/* opponent too far */
-#ifdef HOMOLOGATION
-	if (opp_d > 800)
+	if (opp_d > OBSTACLE_DIST)
 		return 0;
-#else
-	if (opp_d > 600)
-		return 0;
-#endif
 
 	/* XXX opponent is in front of us */
-	if (mainboard.speed_d > 200 && (opp_a > 325 || opp_a < 35)) {
+	if (mainboard.speed_d > OBSTACLE_SPEED_MIN &&
+	   (opp_a > (360-OBSTACLE_ANGLE) || opp_a < OBSTACLE_ANGLE)) {
+		
 		DEBUG(E_USER_STRAT, "opponent front d=%d, a=%d "
 		      "xrel=%d yrel=%d (speed_d=%d)", 
 		      opp_d, opp_a, x_rel, y_rel, mainboard.speed_d);
+
 		sensor_obstacle_disable();
 		return 1;
 	}
 	/* XXX opponent is behind us */
-	if (mainboard.speed_d < -200 && (opp_a < 215 && opp_a > 145)) {
+	if (mainboard.speed_d < -OBSTACLE_SPEED_MIN && 
+	   (opp_a < (180+OBSTACLE_ANGLE) && opp_a > (180-OBSTACLE_ANGLE))) {
+		
 		DEBUG(E_USER_STRAT, "opponent behind d=%d, a=%d xrel=%d yrel=%d", 
 		      opp_d, opp_a, x_rel, y_rel);
+
 		sensor_obstacle_disable();
 		return 1;
 	}
@@ -650,16 +620,19 @@ uint8_t strat_obstacle(void)
 		return 0;
 }
 
+/* interrupt the current trajectory, set a flat to TRUE */
 void interrupt_traj(void)
 {
 	traj_intr = 1;
 }
 
+/* reset interrupt trajectory flag to FALSE*/
 void interrupt_traj_reset(void)
 {
 	traj_intr = 0;
 }
 
+/* testing of several posible ends for a trajectory */
 uint8_t test_traj_end(uint8_t why)
 { 
 	uint16_t cur_timer;
@@ -719,6 +692,7 @@ uint8_t test_traj_end(uint8_t why)
 	return 0;
 }
 
+/* wait the ends of a trajectory (several ends are possible) */
 uint8_t __wait_traj_end_debug(uint8_t why, uint16_t line)
 {
 	uint8_t ret = 0;

@@ -197,23 +197,23 @@
 
 /* default speeds */
 #ifdef HOMOLOGATION
-#define SPEED_DIST_FAST 		2000.
-#define SPEED_ANGLE_FAST 		2000.
+#define SPEED_DIST_FAST 		2000
+#define SPEED_ANGLE_FAST 		2000
 #else
 
-//#define SPEED_DIST_VERY_FAST 	4500. /* XXX very clean wheels */
-//#define SPEED_ANGLE_VERY_FAST 4500.
-#define SPEED_DIST_VERY_FAST 	4000.
-#define SPEED_ANGLE_VERY_FAST 	4000.
-#define SPEED_DIST_FAST 		3000.
-#define SPEED_ANGLE_FAST 		3000.
+//#define SPEED_DIST_VERY_FAST 	4500 /* XXX very clean wheels */
+//#define SPEED_ANGLE_VERY_FAST 4500
+#define SPEED_DIST_VERY_FAST 	4000
+#define SPEED_ANGLE_VERY_FAST 	4000
+#define SPEED_DIST_FAST 		3000
+#define SPEED_ANGLE_FAST 		3000
 #endif
 
 //Do not change
-#define SPEED_DIST_SLOW 		2000.
-#define SPEED_ANGLE_SLOW 		2000.
-#define SPEED_DIST_VERY_SLOW 	500.
-#define SPEED_ANGLE_VERY_SLOW   500.
+#define SPEED_DIST_SLOW 		2000
+#define SPEED_ANGLE_SLOW 		2000
+#define SPEED_DIST_VERY_SLOW 	500
+#define SPEED_ANGLE_VERY_SLOW   500
 
 #endif
 

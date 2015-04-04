@@ -302,6 +302,7 @@ struct slavedspic
 /* state of beaconboard, synchronized through i2c */
 struct beaconboard 
 {
+#undef  BEACON_OFFSET
 #define BEACON_OFFSET_D	30
 #define BEACON_OFFSET_A	0
 

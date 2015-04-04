@@ -112,9 +112,6 @@
 #define LIMIT_BBOX_X_UP			3000 - OBS_CLERANCE
 #define LIMIT_BBOX_X_DOWN		OBS_CLERANCE
 
-static volatile uint8_t strat_running = 0;
-
-
 struct strat_infos strat_infos = { 
     /* conf */
     .conf = {
@@ -190,20 +187,6 @@ void strat_set_bounding_box(uint8_t type)
 
 #ifndef HOST_VERSION_OA_TEST
 
-/* called before each strat, and before the start switch */
-void strat_preinit(void)
-{
-    time_reset();
-    interrupt_traj_reset();
-    mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BEACON;
-
-    /* XXX default conf */
-    //strat_infos.conf.flags |= ENABLE_R2ND_POS;
-
-
-    strat_dump_conf();
-    strat_dump_infos(__FUNCTION__);
-}
 
 /* display curret strat configuration */
 void strat_dump_conf(void)
@@ -267,17 +250,18 @@ void strat_reset_infos(void)
     /* add here other infos resets */
 }
 
-void strat_event_enable(void)
+/* called before each strat, and before the start switch */
+void strat_preinit(void)
 {
-    strat_running = 1;
+    time_reset();
+    interrupt_traj_reset();
+    mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BEACON;
+
+    strat_dump_conf();
+    strat_dump_infos(__FUNCTION__);
 }
 
-void strat_event_disable(void)
-{
-    strat_running = 0;
-}
-
-/* call it just before launching the strat */
+/* called it just before launching the strat */
 void strat_init(void)
 {
     strat_reset_infos();
@@ -287,9 +271,6 @@ void strat_init(void)
     strat_set_speed(SPEED_DIST_FAST, SPEED_ANGLE_FAST);
     time_reset();
     interrupt_traj_reset();
-
-    /* init other devices (lasers...) */
-    //i2c_slavedspic_mode_init();
 
     /* used in strat_base for END_TIMER */
     mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BEACON;
@@ -322,8 +303,6 @@ void strat_exit(void)
     //i2c_slavedspic_mode_turbine_blow(0);
     //i2c_slavedspic_wait_ready();
 
-    /* TODO turn off other devices (lasers...) */
-
     /* TODO stop beacon
     beacon_cmd_beacon_off();
     beacon_cmd_beacon_off();
@@ -335,20 +314,11 @@ void strat_exit(void)
 /* called periodically */
 void strat_event(void *dummy)
 {
-    /* XXX in parallel with main strat,
-     *    disable/enable events depends on case or protect with IRQ_LOCK.
-     */
-
-    /* ignore when strat is not running */
-    //if (strat_running == 0)
-    //    return;
-
     /* limit speed when opponent are close */
     strat_limit_speed();
 
     /* tracking of zones where opp has been working */
     strat_opp_tracking();
-
 }
 
 /* dump state (every 5 s max) XXX */
@@ -367,19 +337,17 @@ void strat_event(void *dummy)
     } while(0)
 
 
-
 /* Strat main loop */
 uint8_t strat_main(void)
 {
     uint8_t err, i;
-
 
     strat_begin();
     strat_limit_speed_enable ();
 	
     /* auto-play  */
 	set_strat_sec_1();
-    printf_P(PSTR("\r\n\r\nStrat smart\r\n"));
+    DEBUG(E_USER_STRAT, PSTR("\r\n\r\nStrat smart"));
 	
     do{
         err = strat_smart();
