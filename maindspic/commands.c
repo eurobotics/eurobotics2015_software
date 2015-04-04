@@ -127,7 +127,6 @@ extern parse_pgm_inst_t cmd_robot_2nd_goto1;
 extern parse_pgm_inst_t cmd_robot_2nd_goto2;
 extern parse_pgm_inst_t cmd_robot_2nd_bt_task;
 extern parse_pgm_inst_t cmd_slavedspic;
-extern parse_pgm_inst_t cmd_strat_event;
 
 #ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
 extern parse_pgm_inst_t cmd_interact;
@@ -258,7 +257,6 @@ parse_pgm_ctx_t main_ctx[] = {
     (parse_pgm_inst_t *) & cmd_robot_2nd_goto2,
 	(parse_pgm_inst_t *) & cmd_robot_2nd_bt_task,
     (parse_pgm_inst_t *) & cmd_slavedspic,
-    (parse_pgm_inst_t *) & cmd_strat_event,
 
 #ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
     (parse_pgm_inst_t *) & cmd_interact,

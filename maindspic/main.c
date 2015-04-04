@@ -345,7 +345,6 @@ int main(void)
 #ifdef HOST_VERSION
 	mainboard.our_color = I2C_COLOR_YELLOW;
 	strat_reset_pos(COLOR_X(200), 500, COLOR_A_ABS(0));
-	//strat_event_enable();
 #endif
 
 	/* program WT-11 */

@@ -210,8 +210,8 @@
 #endif
 
 //Do not change
-#define SPEED_DIST_SLOW 		2000
-#define SPEED_ANGLE_SLOW 		2000
+#define SPEED_DIST_SLOW 		1500
+#define SPEED_ANGLE_SLOW 		1500
 #define SPEED_DIST_VERY_SLOW 	500
 #define SPEED_ANGLE_VERY_SLOW   500
 
@@ -386,13 +386,9 @@ void strat_preinit(void);
 void strat_init(void);
 void strat_exit(void);
 
-uint8_t strat_main(void);
-uint8_t strat_begin(void);
-uint8_t strat_begin_alcabot (void);
-
 void strat_event(void *dummy);
-void strat_event_enable(void);
-void strat_event_disable(void);
+uint8_t strat_main(void);
+
 
 /********************************************
  * in strat_spotlight.c 

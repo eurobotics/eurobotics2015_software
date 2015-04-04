@@ -261,7 +261,7 @@ struct mainboard
 	/* x,y positionning and traj*/
 	struct robot_system rs;
 	struct robot_position pos;
-   struct trajectory traj;
+   	struct trajectory traj;
 
 	/* robot status */
 	uint8_t our_color;
