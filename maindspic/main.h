@@ -164,7 +164,6 @@
 
 
 /* EVENTS PRIORITIES */
-#ifdef old_version
 #define EVENT_PRIORITY_LED 			  170
 #define EVENT_PRIORITY_TIME           160
 #define EVENT_PRIORITY_I2C_POLL       140
@@ -172,18 +171,6 @@
 #define EVENT_PRIORITY_CS             100
 #define EVENT_PRIORITY_BEACON_POLL    80
 #define EVENT_PRIORITY_STRAT          70
-
-#else
-
-#define EVENT_PRIORITY_LED 			  170
-#define EVENT_PRIORITY_TIME           160
-#define EVENT_PRIORITY_I2C_POLL       140
-#define EVENT_PRIORITY_SENSORS        120
-#define EVENT_PRIORITY_CS             100
-#define EVENT_PRIORITY_STRAT          30
-#define EVENT_PRIORITY_BEACON_POLL    20
-
-#endif
 
 /* EVENTS PERIODS */
 #define EVENT_PERIOD_LED 			1000000L

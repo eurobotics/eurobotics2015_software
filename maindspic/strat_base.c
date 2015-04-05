@@ -81,6 +81,8 @@ static volatile uint16_t strat_limit_speed_d = 0;
 
 static volatile uint8_t strat_limit_speed_enabled = 1;
 
+/* opponent front/rear sensors for obstacle detection */
+static volatile uint8_t strat_opp_sensors_enabled = 0;
 
 /* Strings that match the end traj cause */
 /* /!\ keep it sync with stat_base.h */
@@ -495,6 +497,17 @@ void strat_start(void)
 	strat_exit();
 }
 
+void strat_opp_sensor_enable(void)
+{
+	strat_opp_sensors_enabled = 1;
+}
+
+void strat_opp_sensor_disable(void)
+{
+	strat_opp_sensors_enabled = 0;
+}
+
+
 /* return true if we have to brake due to an obstacle */
 uint8_t __strat_obstacle(uint8_t which)
 {
@@ -502,16 +515,9 @@ uint8_t __strat_obstacle(uint8_t which)
 #define OBSTACLE_OPP2	1
 #define OBSTACLE_R2ND	2
 
-
-#ifndef HOMOLOGATION
-#define OBSTACLE_SPEED_MIN	150
-#define OBSTACLE_ANGLE		35
-#define OBSTACLE_DIST		600
-#else
-#define OBSTACLE_SPEED_MIN	150
+#define OBSTACLE_SPEED_MIN	20
 #define OBSTACLE_ANGLE		35
 #define OBSTACLE_DIST		800
-#endif
 
 	int16_t x_rel, y_rel;
 	int16_t opp_x, opp_y, opp_d, opp_a;
@@ -522,26 +528,31 @@ uint8_t __strat_obstacle(uint8_t which)
 		return 0;
 
 	/* TODO: enable/disable opponent sensors */
-#if 0
-	/* opponent is in front of us */
-	if (mainboard.speed_d > OBSTACLE_SPEED_MIN && (sensor_get(S_OPPONENT_FRONT_R) || sensor_get(S_OPPONENT_FRONT_L))) {
-		DEBUG(E_USER_STRAT, "opponent front");
+	/* opponent sensors obstacle */
+	if (strat_opp_sensors_enabled)
+	{
+		/* opponent is in front of us */
+		if (mainboard.speed_d > OBSTACLE_SPEED_MIN && (sensor_get(S_OPPONENT_FRONT_R) || sensor_get(S_OPPONENT_FRONT_L))) {
+			DEBUG(E_USER_STRAT, "opponent front (SENSOR_L = %d, SENSOR_R=%d",
+				 sensor_get(S_OPPONENT_FRONT_L), sensor_get(S_OPPONENT_FRONT_R));
 
-		/* TODO: if no opponent from beacon, simulate it */
+			/* TODO: if no opponent from beacon, simulate it */
 
-		sensor_obstacle_disable();
-		return 1;
+			sensor_obstacle_disable();
+			return 1;
+		}
+		/* opponent is behind us */
+		if (mainboard.speed_d < -OBSTACLE_SPEED_MIN && (sensor_get(S_OPPONENT_REAR_R) || sensor_get(S_OPPONENT_REAR_L))) {
+			DEBUG(E_USER_STRAT, "opponent behind (SENSOR_L = %d, SENSOR_R=%d",
+				 sensor_get(S_OPPONENT_REAR_L), sensor_get(S_OPPONENT_REAR_R));
+
+			/* TODO: if no opponent from beacon, simulate it */
+
+			sensor_obstacle_disable();
+			return 1;
+		}
 	}
-	/* opponent is behind us */
-	if (mainboard.speed_d < -OBSTACLE_SPEED_MIN && (sensor_get(S_OPPONENT_REAR_R) || sensor_get(S_OPPONENT_REAR_L))) {
-		DEBUG(E_USER_STRAT, "opponent behind");
 
-		/* TODO: if no opponent from beacon, simulate it */
-
-		sensor_obstacle_disable();
-		return 1;
-	}
-#endif
 #ifdef TWO_OPPONENTS
 	if(which == OBSTACLE_OPP1)
 		ret = get_opponent1_xyda(&opp_x, &opp_y,&opp_d, &opp_a);
