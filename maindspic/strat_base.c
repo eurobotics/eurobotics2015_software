@@ -82,7 +82,7 @@ static volatile uint16_t strat_limit_speed_d = 0;
 static volatile uint8_t strat_limit_speed_enabled = 1;
 
 /* opponent front/rear sensors for obstacle detection */
-static volatile uint8_t strat_opp_sensors_enabled = 0;
+static volatile uint8_t strat_opp_sensors_enabled = 1;
 
 /* Strings that match the end traj cause */
 /* /!\ keep it sync with stat_base.h */
@@ -527,13 +527,16 @@ uint8_t __strat_obstacle(uint8_t which)
 	if (ABS(mainboard.speed_d) < OBSTACLE_SPEED_MIN)
 		return 0;
 
-	/* TODO: enable/disable opponent sensors */
+	/* sensor are temporarily disabled */
+	if (sensor_obstacle_is_disabled()) 
+		return 0;
+
 	/* opponent sensors obstacle */
 	if (strat_opp_sensors_enabled)
 	{
 		/* opponent is in front of us */
 		if (mainboard.speed_d > OBSTACLE_SPEED_MIN && (sensor_get(S_OPPONENT_FRONT_R) || sensor_get(S_OPPONENT_FRONT_L))) {
-			DEBUG(E_USER_STRAT, "opponent front (SENSOR_L = %d, SENSOR_R=%d",
+			DEBUG(E_USER_STRAT, "opponent front (SENSOR_L = %d, SENSOR_R=%d)",
 				 sensor_get(S_OPPONENT_FRONT_L), sensor_get(S_OPPONENT_FRONT_R));
 
 			/* TODO: if no opponent from beacon, simulate it */
@@ -543,7 +546,7 @@ uint8_t __strat_obstacle(uint8_t which)
 		}
 		/* opponent is behind us */
 		if (mainboard.speed_d < -OBSTACLE_SPEED_MIN && (sensor_get(S_OPPONENT_REAR_R) || sensor_get(S_OPPONENT_REAR_L))) {
-			DEBUG(E_USER_STRAT, "opponent behind (SENSOR_L = %d, SENSOR_R=%d",
+			DEBUG(E_USER_STRAT, "opponent behind (SENSOR_L = %d, SENSOR_R=%d)",
 				 sensor_get(S_OPPONENT_REAR_L), sensor_get(S_OPPONENT_REAR_R));
 
 			/* TODO: if no opponent from beacon, simulate it */
@@ -578,9 +581,7 @@ uint8_t __strat_obstacle(uint8_t which)
 	opponent_obstacle.d = opp_d;
 	opponent_obstacle.a = opp_a;
 
-	/* sensor are temporarily disabled */
-	if (sensor_obstacle_is_disabled()) 
-		return 0;
+
 
 	/* relative position */
 	x_rel = cos(RAD(opp_a)) * (double)opp_d;

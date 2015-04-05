@@ -787,18 +787,27 @@ static void cmd_goto_parsed(void * parsed_result, void * data)
         err = goto_and_avoid(res->arg2, res->arg3, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
         if (err != END_TRAJ && err != END_NEAR)
             strat_hardstop();
+
+		printf_P(PSTR("returned %s\r\n"), get_err(err));
+		return;
     }
     else if (!strcmp_P(res->arg1, PSTR("avoid_fw")))
     {
         err = goto_and_avoid_forward(res->arg2, res->arg3, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
         if (err != END_TRAJ && err != END_NEAR)
             strat_hardstop();
+
+		printf_P(PSTR("returned %s\r\n"), get_err(err));
+		return;
     }
     else if (!strcmp_P(res->arg1, PSTR("avoid_bw")))
     {
         err = goto_and_avoid_backward(res->arg2, res->arg3, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
         if (err != END_TRAJ && err != END_NEAR)
             strat_hardstop();
+
+		printf_P(PSTR("returned %s\r\n"), get_err(err));
+		return;
     }
     else if (!strcmp_P(res->arg1, PSTR("xy_abs_fow")))
     {
@@ -812,6 +821,7 @@ static void cmd_goto_parsed(void * parsed_result, void * data)
     {
         trajectory_d_a_rel(&mainboard.traj, res->arg2, res->arg3);
     }
+
     t1 = time_get_us2();
     while ((err = test_traj_end(TRAJ_FLAGS_NO_NEAR)) == 0)
     {
@@ -825,6 +835,7 @@ static void cmd_goto_parsed(void * parsed_result, void * data)
     }
     if (err != END_TRAJ && err != END_NEAR)
         strat_hardstop();
+
     printf_P(PSTR("returned %s\r\n"), get_err(err));
 }
 
