@@ -294,12 +294,18 @@ void strat_get_speed(uint16_t *d, uint16_t *a)
 
 void strat_limit_speed_enable(void)
 {
+	uint8_t flags;
+	IRQ_LOCK(flags);
 	strat_limit_speed_enabled = 1;
+	IRQ_UNLOCK(flags);
 }
 
 void strat_limit_speed_disable(void)
 {
+	uint8_t flags;
+	IRQ_LOCK(flags);
 	strat_limit_speed_enabled = 0;
+	IRQ_UNLOCK(flags);
 }
 
 /* called periodically */

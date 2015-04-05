@@ -342,7 +342,7 @@ uint8_t strat_main(void)
 {
     uint8_t err, i;
 
-    strat_begin();
+//    strat_begin();
     strat_limit_speed_enable ();
 	
     /* auto-play  */

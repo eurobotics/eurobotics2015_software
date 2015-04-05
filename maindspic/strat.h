@@ -142,8 +142,6 @@
 #define COLOR_SIGN(x)  ((mainboard.our_color==I2C_COLOR_YELLOW)? (x) : (-x))
 #define COLOR_INVERT(x)((mainboard.our_color==I2C_COLOR_YELLOW)? (x) : (!x))
 
-#define COLOR_I(x)	  ((mainboard.our_color==I2C_COLOR_YELLOW)? (x) :  ((NB_SLOT_X-1)-x))
-
 #define START_X 200
 #define START_Y COLOR_Y(200)
 #define START_A COLOR_A(45)
