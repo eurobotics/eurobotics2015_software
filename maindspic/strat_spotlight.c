@@ -134,6 +134,8 @@ uint8_t strat_harvest_stands_and_cup_inline (void)
    	strat_limit_speed_disable ();
 	strat_set_speed (SPEED_DIST_FAST,SPEED_ANGLE_FAST);
    
+	/* TODO enable opponent sensors */
+
 	/* turn to central cup */
 	/* XXX done in start position 
 	trajectory_turnto_xy(&mainboard.traj, COLOR_X(POPCORNCUP_CENTRE_X), POPCORNCUP_CENTRE_Y);
@@ -180,8 +182,7 @@ end:
  *	return END_TRAJ if the work is done, err otherwise 
  */
 uint8_t strat_harvest_stands_parallel_to_wall (int16_t x, int16_t y,
-							 uint8_t left_nb, int8_t left_blade_angle,
-							 uint8_t right_nb, int8_t right_blade_angle, 
+							 uint8_t side, uint8_t blade_angle,
 							 uint8_t calib_x, uint8_t back_to_boundinbox)
 {
    	uint8_t err = 0;
@@ -194,10 +195,13 @@ uint8_t strat_harvest_stands_parallel_to_wall (int16_t x, int16_t y,
 	strat_set_speed (SPEED_DIST_SLOW,SPEED_ANGLE_SLOW);
 
 	/* prepare for harvesting */
-	if (left_nb)
-		i2c_slavedspic_mode_ss_harvest(I2C_SIDE_LEFT, left_blade_angle);
-	if (right_nb)	
-		i2c_slavedspic_mode_ss_harvest(I2C_SIDE_RIGHT, right_blade_angle);
+	if (side == I2C_SIDE_ALL) {
+		i2c_slavedspic_mode_ss_harvest(I2C_SIDE_LEFT, blade_angle);
+		i2c_slavedspic_mode_ss_harvest(I2C_SIDE_RIGHT, blade_angle);
+	}
+	else 
+		i2c_slavedspic_mode_ss_harvest(side, blade_angle);
+
 
 	/* turn to stands */
 	trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(180));
@@ -265,7 +269,8 @@ void get_stand_da (int16_t x, int16_t y, uint8_t side, int16_t *d, int16_t *a)
  *	Harvest stands parallel to the wall
  *	return END_TRAJ if the work is done, err otherwise 
  */
-uint8_t strat_harvest_orphan_stand (int16_t x, int16_t y, uint8_t side)
+uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
+									 uint8_t side, uint8_t blade_angle)
 {
    	uint8_t err = 0;
 	uint16_t old_spdd, old_spda;
@@ -277,10 +282,16 @@ uint8_t strat_harvest_orphan_stand (int16_t x, int16_t y, uint8_t side)
 	strat_set_speed (SPEED_DIST_SLOW,SPEED_ANGLE_SLOW);
 
 	/* prepare for harvesting */
-	i2c_slavedspic_mode_ss_harvest(side, 0);
+	if (side == I2C_SIDE_ALL) {
+		i2c_slavedspic_mode_ss_harvest(I2C_SIDE_LEFT, blade_angle);
+		i2c_slavedspic_mode_ss_harvest(I2C_SIDE_RIGHT, blade_angle);
+	}
+	else
+		i2c_slavedspic_mode_ss_harvest(side, blade_angle);
 
 	/* get d,a target */
-	get_stand_da (x, y, side, &d, &a);
+	if (side_target != I2C_SIDE_ALL)
+		get_stand_da (x, y, side_target, &d, &a);
 
 	/* turn to stand */
 	trajectory_a_rel(&mainboard.traj, a);

@@ -82,7 +82,7 @@ static volatile uint16_t strat_limit_speed_d = 0;
 static volatile uint8_t strat_limit_speed_enabled = 1;
 
 /* opponent front/rear sensors for obstacle detection */
-static volatile uint8_t strat_opp_sensors_enabled = 1;
+static volatile uint8_t strat_opp_sensors_enabled = 0;
 
 /* Strings that match the end traj cause */
 /* /!\ keep it sync with stat_base.h */
