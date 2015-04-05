@@ -1363,6 +1363,7 @@ retry:
 
 /* go to a x,y point. prefer backward but go forward if the point is
  * near and in front of us */
+#if 0
 uint8_t goto_and_avoid(int16_t x, int16_t y, uint8_t flags_intermediate,
 			       uint8_t flags_final)
 {
@@ -1386,16 +1387,15 @@ uint8_t goto_and_avoid(int16_t x, int16_t y, uint8_t flags_intermediate,
   }
   #endif
 }
+#endif
 
 
-#if 0
 /* go to a x,y point */
 uint8_t goto_and_avoid(int16_t x, int16_t y, uint8_t flags_intermediate,
 			       uint8_t flags_final)
 {
 	return __goto_and_avoid(x, y, flags_intermediate, flags_final, GO_AVOID_AUTO);
 }
-#endif
 
 /* go forward to a x,y point. use current speed for that */
 uint8_t goto_and_avoid_forward(int16_t x, int16_t y, uint8_t flags_intermediate,
