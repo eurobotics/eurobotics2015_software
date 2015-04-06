@@ -356,9 +356,13 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 //	return (robot_2nd.cmd_args_checksum_send == robot_2nd.cmd_args_checksum_recv);
 //}
 
-/* return 1 if cmd arguments checksum matches */
+/* return 1 if ack is received */
 uint8_t bt_robot_2nd_is_ack_received (void) {
 	return (robot_2nd.cmd_ret != 0xFF);
+}
+/* return 1 if ret is received */
+uint8_t bt_robot_2nd_is_ret_received (void) {
+	return (robot_2nd.cmd_ret != 0x00);
 }
 
 
@@ -369,7 +373,7 @@ uint8_t bt_robot_2nd_cmd (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 	bt_robot_2nd_cmd_no_wait_ack (cmd_id, arg0, arg1);
 	uint8_t _ret=robot_2nd.cmd_ret;
 
-	DEBUG (E_USER_STRAT, "1- bt_robot_2nd_cmd %d",_ret);
+	//DEBUG (E_USER_STRAT, "1- bt_robot_2nd_cmd %d",_ret);
 
 
 }

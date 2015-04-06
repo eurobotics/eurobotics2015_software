@@ -364,10 +364,11 @@ struct strat_infos {
 	#define GO_TO_ZONE 1
 	#define WORK_ON_ZONE 2
 	#define GET_NEW_TASK 3
-	#define RUNNING 4
+	#define WAIT_ACK_GOTO 4
+	#define WAIT_ACK_WORK 5
 
 
-	uint8_t strat_smart_sec_task;
+	int8_t strat_smart_sec_task;
 
 };
 

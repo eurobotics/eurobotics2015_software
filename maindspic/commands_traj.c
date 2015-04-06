@@ -1230,11 +1230,14 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
     else if (strcmp_P(res->arg1, PSTR("strat_smart")) == 0) {
 		if(res->arg2==1){
 			set_strat_sec_1();
+			strat_infos.strat_smart_sec = GET_NEW_TASK;
+
 		}
 
 
-		strat_infos.strat_smart_sec = GET_NEW_TASK;
-       // strat_<t(MAIN_ROBOT);
+
+	   strat_smart_robot_2nd();
+        //strat_smart(MAIN_ROBOT);
     }
 
     printf_P(PSTR("subtraj returned %s\r\n"), get_err(err));
