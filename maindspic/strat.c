@@ -335,13 +335,14 @@ void strat_event(void *dummy) {
     /* XXX in parallel with main strat,
      *    disable/enable events depends on case or protect with IRQ_LOCK.
      */
-
     /* ignore when strat is not running */
     //if (strat_running == 0)
     //    return;
 
     /* limit speed when opponent are close */
     strat_limit_speed();
+
+	//printf_P(PSTR("\r\n\r\nStrat event\r\n"));
 strat_smart_robot_2nd();
 }
 
@@ -384,8 +385,10 @@ uint8_t strat_main(void)
         err = strat_smart(MAIN_ROBOT);
     }while((err & END_TIMER) == 0);*/
 	while(1){
-	time_wait_ms(100);
-	printf_P(PSTR("\r\n\r\nStrat smart\r\n"));}
+
+	time_wait_ms(20);
+	//printf_P(PSTR("\r\n\r\nStrat smart\r\n"));
+}
 
 
    strat_exit();

@@ -431,6 +431,7 @@ int main(void)
 	current_bt_task=0;
 	strat_bt_goto_avoid_x = -1; strat_bt_goto_avoid_y = -1; strat_bt_goto_avoid_checksum = -1;
 
+
 	while(1)
 	{
 
