@@ -1251,33 +1251,61 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 {
     struct cmd_subtraj1_result *res = parsed_result;
     uint8_t err = 0;
+    uint8_t zone_num = ZONES_MAX;
 
-
-    if (strcmp_P(res->arg1, PSTR("homolog")) == 0) {
-        strat_homologation();
-    }
-    else if (strcmp_P(res->arg1, PSTR("begin")) == 0) {
-        //err = strat_begin();
-        //err = strat_begin_alcabot();
-    }
-    else if (strcmp_P(res->arg1, PSTR("strat_smart")) == 0) {
-		if(res->arg2==1){
-			set_strat_sec_1();
-		}
-		
-	
-        strat_smart();
+   	/**
+	 *	strat several zones 
+	 */
+    if (strcmp_P(res->arg1, PSTR("begining")) == 0) {
+        //err = strat_begining();
+		printf_P(PSTR("subtraj returned %s\r\n"), get_err(err));
     }
 
-    printf_P(PSTR("subtraj returned %s\r\n"), get_err(err));
+
+	/**
+     * 	go & work on zone 
+	 */
+
+	/* go and work on zone */
+   	else if (!strcmp_P(res->arg1, PSTR("home")))
+        zone_num = ZONE_MY_HOME;
+
+   	else if (!strcmp_P(res->arg1, PSTR("machine")))
+        zone_num = ZONE_MY_POPCORNMAC;
+
+   	else if (!strcmp_P(res->arg1, PSTR("machine_opp")))
+        zone_num = ZONE_OPP_POPCORNMAC;
+
+    else if (!strcmp_P(res->arg1, PSTR("cinema_up")))
+        zone_num = ZONE_MY_CINEMA_UP;
+
+    else if (!strcmp_P(res->arg1, PSTR("cinema_down")))
+        zone_num = ZONE_MY_CINEMA_DOWN;
+
+    else if (!strcmp_P(res->arg1, PSTR("platform"))) {
+        //zone_num = ZONE_MY_CINEMA_DOWN;
+		printf_P(PSTR("not yet supported\r\n"));
+		return;
+	}
+
+	/* go and work */
+    if (zone_num < ZONES_MAX) {
+
+        err = strat_goto_zone(zone_num);
+        printf_P(PSTR("goto returned %s\r\n"), get_err(err));    
+
+        err = strat_work_on_zone(zone_num);
+        printf_P(PSTR("work returned %s\r\n"), get_err(err));
+    }
+
     trajectory_hardstop(&mainboard.traj);
 }
 
 prog_char str_subtraj1_arg0[] = "subtraj";
 parse_pgm_token_string_t cmd_subtraj1_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg0, str_subtraj1_arg0);
-prog_char str_subtraj1_arg1[] = "homolog#begin#strat_smart";
+prog_char str_subtraj1_arg1[] = "begining#home#machine#machine_opp#cinema_up#cinema_down#platform";
 parse_pgm_token_string_t cmd_subtraj1_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg1, str_subtraj1_arg1);
-parse_pgm_token_num_t cmd_subtraj1_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg2, INT32);
+//parse_pgm_token_num_t cmd_subtraj1_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg2, INT32);
 //parse_pgm_token_num_t cmd_subtraj1_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg3, INT32);
 prog_char help_subtraj1[] = "Test sub-trajectories"; //" (a,b,c: specific params)";
 parse_pgm_inst_t cmd_subtraj1 = {
@@ -1286,9 +1314,9 @@ parse_pgm_inst_t cmd_subtraj1 = {
     .help_str = help_subtraj1,
     .tokens =
     { /* token list, NULL terminated */
-        (prog_void *) & cmd_subtraj1_arg0,
-        (prog_void *) & cmd_subtraj1_arg1,
-        (prog_void *)&cmd_subtraj1_arg2,
+        (prog_void *) &cmd_subtraj1_arg0,
+        (prog_void *) &cmd_subtraj1_arg1,
+        //(prog_void *) &cmd_subtraj1_arg2,
         //(prog_void *)&cmd_subtraj1_arg3,
         NULL,
     },
@@ -1318,42 +1346,57 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
     uint8_t err = 0;
     uint8_t zone_num = ZONES_MAX;
 
-    if (!strcmp_P(res->arg1, PSTR("stand"))){
-        zone_num = ZONE_MY_STAND_GROUP_1 + res->arg2 - 1;
-		printf_P(PSTR("STAND\r\n"));
+	/**
+	 *	strat smart 
+	 */
+    if (strcmp_P(res->arg1, PSTR("strat_smart")) == 0) {
+
+		/* select strategy number */
+		if(res->arg2==1){
+			set_strat_sec_1();
+		}
+	
+		/* play */
+        strat_smart();
+		return;
+    }
+
+	/**
+     * 	go & work on zone 
+	 */
+
+	/* return if arg2 is zero */
+	if (res->arg2 == 0) {
+		printf_P(PSTR("value 0 is NOT valid for an element\r\n"));
+		return;
 	}
+
+	/* get zone number */
+    if (!strcmp_P(res->arg1, PSTR("stand_group")))
+        zone_num = ZONE_MY_STAND_GROUP_1 + res->arg2 - 1;
+
     else if (!strcmp_P(res->arg1, PSTR("clapper")))
         zone_num = ZONE_MY_CLAP_1 + res->arg2 - 1;
-    else if (!strcmp_P(res->arg1, PSTR("cinema"))) {
-        zone_num = ZONE_MY_CINEMA_UP + res->arg2 - 1;
-	}
-    else if (!strcmp_P(res->arg1, PSTR("popcorn")))
-        zone_num = ZONE_POPCORNCUP_1 + res->arg2 - 1;
-    else if (!strcmp_P(res->arg1, PSTR("popcornmac")))
-        zone_num = ZONE_MY_POPCORNMAC + res->arg2 - 1;
-    else if (!strcmp_P(res->arg1, PSTR("home")))
-        zone_num = ZONE_MY_HOME;
-    else if (!strcmp_P(res->arg1, PSTR("stairs")))
-        zone_num = ZONE_MY_STAIRS;
-		
 
-	printf_P(PSTR("\r\n"));
-	printf_P(PSTR("%d %s\r\n"),zone_num,numzone2name[zone_num]);
+  	else if (!strcmp_P(res->arg1, PSTR("cup")))
+        zone_num = ZONE_POPCORNCUP_1 + res->arg2 - 1;
+		
+	/* go and work*/
     if (zone_num < ZONES_MAX) {
+
         err = strat_goto_zone(zone_num);
         printf_P(PSTR("goto returned %s\r\n"), get_err(err));    
 
-       // err = strat_work_on_zone(zone_num);
-        //printf_P(PSTR("work returned %s\r\n"), get_err(err));
+        err = strat_work_on_zone(zone_num);
+        printf_P(PSTR("work returned %s\r\n"), get_err(err));
     }
 
     trajectory_hardstop(&mainboard.traj);
- 
 }
 
 prog_char str_subtraj2_arg0[] = "subtraj";
 parse_pgm_token_string_t cmd_subtraj2_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj2_result, arg0, str_subtraj2_arg0);
-prog_char str_subtraj2_arg1[] = "stand#clapper#home#popcorn#popcornmac#cinema#stairs";
+prog_char str_subtraj2_arg1[] = "strat_smart#stand_group#clapper#cup";
 parse_pgm_token_string_t cmd_subtraj2_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj2_result, arg1, str_subtraj2_arg1);
 parse_pgm_token_num_t cmd_subtraj2_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj2_result, arg2, UINT8);
 //parse_pgm_token_num_t cmd_subtraj2_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj2_result, arg3, INT32);
@@ -1367,8 +1410,8 @@ parse_pgm_inst_t cmd_subtraj2 = {
     .help_str = help_subtraj2,
     .tokens =
     { /* token list, NULL terminated */
-        (prog_void *) & cmd_subtraj2_arg0,
-        (prog_void *) & cmd_subtraj2_arg1,
+        (prog_void *) &cmd_subtraj2_arg0,
+        (prog_void *) &cmd_subtraj2_arg1,
 		(prog_void *) &cmd_subtraj2_arg2,
         //		(prog_void *)&cmd_subtraj2_arg3,
         //		(prog_void *)&cmd_subtraj2_arg4,
@@ -1383,7 +1426,7 @@ parse_pgm_inst_t cmd_subtraj2 = {
 /* Work on a zone */
 
 // this structure is filled when cmd_workonzone is parsed successfully
-
+/* TODO remove 
 struct cmd_workonzone_result
 {
     fixed_string_t arg0;
@@ -1391,7 +1434,6 @@ struct cmd_workonzone_result
 };
 
 // function called when cmd_workonzone is parsed successfully
-
 static void cmd_workonzone_parsed(void *parsed_result, void *data)
 {
     struct cmd_workonzone_result *res = parsed_result;
@@ -1434,5 +1476,5 @@ parse_pgm_inst_t cmd_workonzone = {
         NULL,
     },
 };
-
+*/
 
