@@ -188,7 +188,7 @@ int8_t strat_get_new_zone(uint8_t robot)
 			switch(valid_zone){
 				case -1:
 					//strategy has to change
-					set_next_sec_strategy();
+					//set_next_sec_strategy();
 					i=0;
 					break;
 				default:
@@ -485,38 +485,59 @@ uint8_t strat_smart(uint8_t robot)
 		return END_TRAJ;
 	}
 }
-void strat_smart_robot_2nd(void){}/*
+void strat_smart_robot_2nd(void){
+
 	switch (strat_infos.strat_smart_sec){
 		case GO_TO_ZONE:
-			if(robot_2nd.cmd_ret != 0){
+			strat_infos.strat_smart_sec = RUNNING;
 
-				printf_P"\r\n\r\nStrat GOTO_ZONE\r\n");
-				strat_work_on_zone(strat_infos.strat_smart_sec_task);
+			if(bt_robot_2nd_is_ack_received ()){
+				DEBUG (E_USER_STRAT, "\r\n\r\nACK was received\r\n");
+
+				if(robot_2nd.cmd_ret != 0){
+					DEBUG (E_USER_STRAT, "\r\n\r\nWORK_ON_ZONE\r\n");
+					strat_work_on_zone(strat_infos.strat_smart_sec_task);
+					strat_infos.strat_smart_sec = WORK_ON_ZONE;
+				}else{
+
+					strat_infos.strat_smart_sec = GO_TO_ZONE;
+				}
+			}else{
+
+					strat_infos.strat_smart_sec = GO_TO_ZONE;
 			}
+
+
+
 			break;
 		case WORK_ON_ZONE:
+			strat_infos.strat_smart_sec = RUNNING;
 			if(robot_2nd.cmd_ret != 0){
-				printf_P("\r\n\r\nStrat WORK_ON_ZONE\r\n");
+				DEBUG (E_USER_STRAT, "\r\n\r\nGET_NEW_TASK\r\n");
 				strat_infos.zones[strat_infos.strat_smart_sec_task].flags |= ZONE_CHECKED;
+				strat_infos.strat_smart_sec = GET_NEW_TASK;
+			}else{
+				strat_infos.strat_smart_sec = WORK_ON_ZONE;
+			}
+			break;
+		case GET_NEW_TASK:
+			strat_infos.strat_smart_sec = RUNNING;
+			strat_infos.strat_smart_sec_task = strat_get_new_zone(SEC_ROBOT);
+			if(strat_infos.strat_smart_sec_task != -1){
+				DEBUG (E_USER_STRAT, "\r\n\r\nGO_TO_ZONE\r\n");
+				strat_goto_zone(strat_infos.strat_smart_sec_task,SEC_ROBOT);
+				strat_infos.strat_smart_sec = GO_TO_ZONE;
+			}else{
 				strat_infos.strat_smart_sec = GET_NEW_TASK;
 			}
 			break;
+
+		case RUNNING:
 		case WAIT_FOR_ORDER:
-			break;
-
-		case GET_NEW_TASK:
-			strat_infos.strat_smart_sec_task = strat_get_new_zone(MAIN_ROBOT);
-			if(strat_infos.strat_smart_sec_task != -1){
-
-				printf_P("\r\n\r\nStrat NEW_TASK\r\n");
-				strat_goto_zone(strat_infos.strat_smart_sec_task,MAIN_ROBOT);
-				strat_infos.strat_smart_sec = GO_TO_ZONE;
-			}
-			break;
 		default:
 			break;
 	}
-}*/
+}
 
 
 void strat_opp_tracking (void)

@@ -1233,7 +1233,8 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 		}
 
 
-        strat_smart(MAIN_ROBOT);
+		strat_infos.strat_smart_sec = GET_NEW_TASK;
+       // strat_<t(MAIN_ROBOT);
     }
 
     printf_P(PSTR("subtraj returned %s\r\n"), get_err(err));
