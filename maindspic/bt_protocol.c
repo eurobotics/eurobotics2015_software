@@ -365,12 +365,18 @@ uint8_t bt_robot_2nd_is_ack_received (void) {
 /* send command, and return after received ack */
 uint8_t bt_robot_2nd_cmd (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 {
-	uint8_t ret;
 
 	bt_robot_2nd_cmd_no_wait_ack (cmd_id, arg0, arg1);
 	uint8_t _ret=robot_2nd.cmd_ret;
 
 	DEBUG (E_USER_STRAT, "1- bt_robot_2nd_cmd %d",_ret);
+
+
+}
+
+/*uint8_t is (uint8_t cmd_id, int16_t arg0, int16_t arg1){
+
+	uint8_t ret;
 	time_wait_ms(200);
 
 	//1 = ack received, 0 = timeout
@@ -444,7 +450,6 @@ inline uint8_t bt_robot_2nd_goto_and_avoid_forward (int16_t x, int16_t y) {
 inline uint8_t bt_robot_2nd_goto_and_avoid_backward(int16_t x, int16_t y) {
 	return bt_robot_2nd_cmd (BT_GOTO_AVOID_BW, x, y);
 }
-
 
 /* bt_tasks */
 inline void bt_robot_2nd_bt_task_pick_cup (void) {
