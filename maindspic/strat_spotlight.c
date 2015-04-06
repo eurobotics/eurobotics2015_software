@@ -266,7 +266,7 @@ void get_stand_da (int16_t x, int16_t y, uint8_t side, int16_t *d, int16_t *a)
 }
 
 /** 
- *	Harvest stands parallel to the wall
+ *	Harvest orphan stands
  *	return END_TRAJ if the work is done, err otherwise 
  */
 uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,

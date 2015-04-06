@@ -211,6 +211,14 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 	/* update strat_infos */
 	strat_infos.current_zone=-1;
 	strat_infos.goto_zone=zone_num;
+
+
+	/* return if NULL xy */
+	if (strat_infos.zones[zone_num].x == NULL ||
+		strat_infos.zones[zone_num].y == NULL) {
+		WARNING (E_USER_STRAT, "WARNING, No where to go (xy is NULL)");
+		ERROUT(END_TRAJ);
+	}
 	
 	/* Secondary robot */
 	if(strat_infos.zones[zone_num].robot==SEC_ROBOT)
@@ -242,7 +250,6 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 		strat_infos.current_zone=zone_num;
 	}
 end:
-    /* TODO XXX if error put arm in safe position */
 	return err;
 }
 
@@ -254,20 +261,106 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 	uint16_t temp_spdd, temp_spda;
 
 #ifdef HOST_VERSION
-	DEBUG(E_USER_STRAT,"strat_work_on_zone %d %s: press a key",zone_num,numzone2name[zone_num]);
+	DEBUG(E_USER_STRAT,"%s %d %s: press a key", __FUNCTION__, zone_num,numzone2name[zone_num]);
 	while(!cmdline_keypressed());
 #endif
 
 
+	/* return if NULL xy */
+	if (strat_infos.zones[zone_num].x == NULL ||
+		strat_infos.zones[zone_num].y == NULL) {
+		ERROR (E_USER_STRAT, "ERROR zone xy is NULL");
+		ERROUT(END_ERROR);
+	}
+	
+
 	/* Secondary robot */
 	if(strat_infos.zones[zone_num].robot==SEC_ROBOT)
 	{
+		/* TODO */
 	}
-
-	/* Main robot */
-	/*XXX TEST*/
 	else
 	{
+		switch (zone_num)
+		{
+			case ZONE_MY_STAND_GROUP_1:
+
+				/* TODO: call specific function for stand group 1 */
+				err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_4_X), 
+												   MY_STAND_4_Y, 
+												   COLOR_INVERT(SIDE_RIGHT),
+									 			   COLOR_INVERT(SIDE_RIGHT), 
+												   0);
+			    if (!TRAJ_SUCCESS(err))
+				   ERROUT(err);
+
+				err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_5_X), 
+												   MY_STAND_5_Y, 
+												   COLOR_INVERT(SIDE_LEFT),
+									 			   COLOR_INVERT(SIDE_LEFT), 
+												   0);
+			    if (!TRAJ_SUCCESS(err))
+				   ERROUT(err);
+
+				err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_6_X), 
+												   MY_STAND_6_Y, 
+												   COLOR_INVERT(SIDE_LEFT),
+									 			   COLOR_INVERT(SIDE_LEFT), 
+												   0);
+				break;				
+
+			case ZONE_MY_STAND_GROUP_2:
+				err = strat_harvest_stands_parallel_to_wall (COLOR_X(strat_infos.zones[zone_num].x), 
+															 strat_infos.zones[zone_num].y,
+							 								 SIDE_ALL, 
+															 COLOR_A_REL(-20), /* angle */
+							 								 0, 1); 		   /* calib, back boundingbox */
+				break;
+
+			case ZONE_MY_STAND_GROUP_3:
+				err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x), 
+												   strat_infos.zones[zone_num].y, 
+												   COLOR_INVERT(SIDE_LEFT),
+									 			   SIDE_ALL, 
+												   COLOR_A_REL(-20));
+				break;
+
+			case ZONE_MY_STAND_GROUP_4:
+				err = strat_harvest_stands_parallel_to_wall (COLOR_X(strat_infos.zones[zone_num].x), 
+															 strat_infos.zones[zone_num].y,
+							 								 COLOR_INVERT(SIDE_RIGHT), 
+															 0, 	/* blade angle */
+							 								 1, 1); /* calib, back boundingbox */
+				break;
+
+			case ZONE_MY_HOME:
+				err = strat_buit_and_release_spotlight (COLOR_X(strat_infos.zones[zone_num].x),
+														strat_infos.zones[zone_num].y, 
+														COLOR_INVERT(SIDE_LEFT));
+				break;
+
+			case ZONE_MY_POPCORNMAC:
+			case ZONE_OPP_POPCORNMAC:
+
+			case ZONE_POPCORNCUP_1:
+			case ZONE_POPCORNCUP_2:
+			case ZONE_POPCORNCUP_3:
+
+			case ZONE_MY_CINEMA_UP:
+			case ZONE_MY_CINEMA_DOWN:
+
+			case ZONE_MY_CLAP_1:
+			case ZONE_MY_CLAP_2:
+			case ZONE_MY_CLAP_3:
+
+			default:
+				ERROR (E_USER_STRAT, "ERROR %s zone %d not supported", zone_num);
+				break;
+
+		}
+
+#if 0
+/* TODO: remove deprecated code */
 	    if(strat_infos.zones[zone_num].type!=ZONE_TYPE_STAND && strat_infos.zones[zone_num].type!=ZONE_TYPE_POPCORNCUP){
 			/* turn to wall */
 			trajectory_turnto_xy (&mainboard.traj, COLOR_X(strat_infos.zones[zone_num].x), strat_infos.zones[zone_num].y);
@@ -304,10 +397,11 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 				}
 
 			}
+#endif
 			
 	}
 
-	end:
+end:
 	return err;
 }
 

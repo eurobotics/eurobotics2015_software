@@ -128,7 +128,7 @@ struct strat_infos strat_infos = {
 		/* boundinbox: x_down, x_up,  y_down,  y_up, */		  
 		700, 1400, 150, 700,	
 		/* init_x, init_y */
-	  	MY_STAND_4_X-200, MY_STAND_4_Y,	
+	  	NULL, NULL,	
 		/* priority, flags */
 		0, 0, 
 		/* statistics: opp_time_zone_us, last_time_opp_here */
@@ -141,7 +141,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_STAND,
 		MY_STAND_8_X, MY_STAND_8_Y,
 		0, 100, 0, 300,
-		MY_STAND_7_X+200, LIMIT_BBOX_Y_DOWN,	
+		400, MY_CUP_2_Y,	
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
@@ -149,9 +149,9 @@ struct strat_infos strat_infos = {
     .zones[ZONE_MY_STAND_GROUP_3] =        
 	{
 		ZONE_TYPE_STAND,
-		MY_STAND_3_X, MY_STAND_3_Y,  
+		825, AREA_Y-70,  
 		650, 950, 1700, 1950, 	
-		MY_STAND_3_X-50, LIMIT_BBOX_Y_UP-500,	
+		MY_POPCORNMAC_X, LIMIT_BBOX_Y_UP-330,	
 		0, 0,            
 		0, (9000*1000L),
 		MAIN_ROBOT
@@ -161,7 +161,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_STAND,
 		MY_STAND_1_X, MY_STAND_1_Y,  
 		0, 150, 0, 300,
-		LIMIT_BBOX_X_DOWN, LIMIT_BBOX_Y_UP,
+		MY_POPCORNMAC_X, LIMIT_BBOX_Y_UP-330,
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
@@ -172,7 +172,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_POPCORNMAC, 
 		MY_POPCORNMAC_X, LIMIT_BBOX_Y_UP,
 		150, 750, 1700, 2000,
-		450, LIMIT_BBOX_Y_UP,
+		MY_POPCORNMAC_X, LIMIT_BBOX_Y_UP-330,
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
@@ -182,7 +182,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_POPCORNMAC,
 		OPP_POPCORNMAC_X, LIMIT_BBOX_Y_UP,
 		2250, 2850, 1700, 2000,
-		2550, LIMIT_BBOX_Y_UP,
+		OPP_POPCORNMAC_X, LIMIT_BBOX_Y_UP-330,
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
@@ -318,9 +318,9 @@ struct strat_infos strat_infos = {
   	.zones[ZONE_MY_HOME] =
 	{
 		ZONE_TYPE_HOME,
-		MY_HOME_X, MY_HOME_Y,
+		MY_HOME_SPOTLIGHT_X, MY_HOME_SPOTLIGHT_Y,
 		90, 650, 800, 1200,	
-		650, MY_HOME_Y,
+		670, MY_HOME_SPOTLIGHT_Y,
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
