@@ -1054,6 +1054,8 @@ uint8_t do_hide_tower(stands_system_t *ss)
 	uint8_t ret2 = 0;
 	uint8_t ret3 = 0;
 
+	STMCH_DEBUG("%s substate %d \tmodo %d \tspotlight_substate %d!!", __FUNCTION__, ss->spotlight_mode, ss->substate, ss->spotlight_substate);
+
 	switch(ss->substate)
 	{
 		case SAVE:
@@ -1111,7 +1113,7 @@ uint8_t do_hide_tower(stands_system_t *ss)
 					if(slavedspic.stands_elevator_r.mode == STANDS_ELEVATOR_MODE_UP) {
 						stands_blade_set_mode(&slavedspic.stands_blade_l, STANDS_BLADE_MODE_HIDE_RIGHT, 0);
 						stands_blade_set_mode(&slavedspic.stands_blade_r, STANDS_BLADE_MODE_HIDE_RIGHT, 0);
-						stands_exchanger_set_position(STANDS_EXCHANGER_POSITION_MIN_mm);
+						stands_exchanger_set_position(STANDS_EXCHANGER_POSITION_MAX_mm);
 					}
 					else
 						break;
@@ -1122,7 +1124,7 @@ uint8_t do_hide_tower(stands_system_t *ss)
 					if(slavedspic.stands_elevator_l.mode == STANDS_ELEVATOR_MODE_UP) {
 						stands_blade_set_mode(&slavedspic.stands_blade_l, STANDS_BLADE_MODE_HIDE_LEFT, 0);
 						stands_blade_set_mode(&slavedspic.stands_blade_r, STANDS_BLADE_MODE_HIDE_LEFT, 0);
-						stands_exchanger_set_position(STANDS_EXCHANGER_POSITION_MAX_mm);
+						stands_exchanger_set_position(STANDS_EXCHANGER_POSITION_MIN_mm);
 					}
 					else
 						break;
@@ -1189,6 +1191,8 @@ uint8_t do_hide_tower(stands_system_t *ss)
 uint8_t do_harvest_stand(stands_system_t *ss)
 {
 	uint8_t ret = 0;
+
+	STMCH_DEBUG("%s substate %d \tmodo %d \tspotlight_substate %d!!", __FUNCTION__, ss->spotlight_mode, ss->substate, ss->spotlight_substate);
 
 	switch(ss->substate)
 	{
@@ -1338,6 +1342,8 @@ uint8_t do_release_stand(stands_system_t *ss)
 {
 	uint8_t ret = 0;
 
+	STMCH_DEBUG("%s substate %d \tmodo %d \tspotlight_substate %d!!", __FUNCTION__, ss->spotlight_mode, ss->substate, ss->spotlight_substate);
+
 	switch(ss->substate)
 	{
 		case SAVE:
@@ -1400,6 +1406,8 @@ uint8_t do_release_stand(stands_system_t *ss)
 uint8_t do_center_stand(stands_system_t *ss)
 {
 	uint8_t ret = 0;
+
+	STMCH_DEBUG("%s substate %d \tmodo %d \tspotlight_substate %d!!", __FUNCTION__, ss->spotlight_mode, ss->substate, ss->spotlight_substate);
 
 	switch(ss->substate)
 	{
@@ -1464,8 +1472,8 @@ uint8_t do_build_spotlight(stands_system_t *ss, stands_system_t *ss_slave)
 		}
 
 		ss->spotlight_mode = SM_PRINCIPAL;
-		ss->mode_rqst = I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT;
-		ss->mode_changed = 1;
+//		ss->mode_rqst = I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT;
+//		ss->mode_changed = 1;
 		ss_slave->spotlight_mode = SM_SECONDARY;
 		ss_slave->mode_rqst = I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT;
 		ss_slave->mode_changed = 1;
@@ -1474,7 +1482,7 @@ uint8_t do_build_spotlight(stands_system_t *ss, stands_system_t *ss_slave)
 	if(ss->spotlight_mode == SM_PRINCIPAL) {
 		switch(ss->spotlight_substate) {
 			case IDLE:
-				break;
+//				break;
 
 			case HIDE_TOWER:
 				ss->spotlight_status = do_hide_tower(ss);
@@ -1488,7 +1496,7 @@ uint8_t do_build_spotlight(stands_system_t *ss, stands_system_t *ss_slave)
 	else if(ss->spotlight_mode == SM_SECONDARY) {
 		switch(ss->spotlight_substate) {
 			case IDLE:
-				break;
+//				break;
 
 			case HIDE_TOWER:
 				ss->spotlight_status = do_hide_tower(ss);
@@ -1507,7 +1515,6 @@ uint8_t do_build_spotlight(stands_system_t *ss, stands_system_t *ss_slave)
 	switch(ss->spotlight_status)
 	{
 		case STATUS_DONE:
-			ss->spotlight_substate = IDLE;
 
 			if(ss->spotlight_mode == SM_PRINCIPAL) {
 				if(ss->spotlight_substate == HIDE_TOWER) {
@@ -1515,8 +1522,10 @@ uint8_t do_build_spotlight(stands_system_t *ss, stands_system_t *ss_slave)
 					ss->spotlight_status = STATUS_READY;
 				}
 				else if(ss->spotlight_substate == HARVEST_STAND) {
-					if(ss_slave->stored_stands == 0)
+					if(ss_slave->stored_stands == 0) {
+						ss->spotlight_substate = IDLE;
 						goto exit_done;
+					}
 					else {
 						ss->spotlight_substate = HIDE_TOWER;
 						ss->spotlight_status = STATUS_READY;
@@ -1536,8 +1545,10 @@ uint8_t do_build_spotlight(stands_system_t *ss, stands_system_t *ss_slave)
 					}
 				}
 				else if(ss->spotlight_substate == CENTER_STAND) {
-					if(ss->stored_stands == 0)
+					if(ss->stored_stands == 0) {
+						ss->spotlight_substate = IDLE;
 						goto exit_done;
+					}
 					else {
 						ss->spotlight_substate = RELEASE_STAND;
 						ss->spotlight_status = STATUS_READY;
@@ -1579,6 +1590,8 @@ uint8_t do_release_spotlight(stands_system_t *ss)
 	uint8_t ret = 0;
 	uint8_t ret_sbl = 0;
 	uint8_t ret_sbr = 0;
+
+	STMCH_DEBUG("%s substate %d \tmodo %d \tspotlight_substate %d!!", __FUNCTION__, ss->spotlight_mode, ss->substate, ss->spotlight_substate);
 
 	switch(ss->substate) {
 		case SAVE:
