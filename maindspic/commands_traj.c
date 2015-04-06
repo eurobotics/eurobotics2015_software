@@ -1257,7 +1257,7 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
         strat_homologation();
     }
     else if (strcmp_P(res->arg1, PSTR("begin")) == 0) {
-        err = strat_begin();
+        //err = strat_begin();
         //err = strat_begin_alcabot();
     }
     else if (strcmp_P(res->arg1, PSTR("strat_smart")) == 0) {
