@@ -47,9 +47,9 @@
 #define CENTER_X 1500
 #define CENTER_Y 1000
 
-#define SIDE_REAR		I2C_SIDE_REAR
-#define SIDE_FRONT 	    I2C_SIDE_FRONT 
-#define SIDE_MAX		I2C_SIDE_MAX
+#define SIDE_LEFT		I2C_SIDE_LEFT
+#define SIDE_RIGHT 	    I2C_SIDE_RIGHT 
+#define SIDE_ALL		I2C_SIDE_ALL
 
 #define GO_FORWARD	    0
 #define GO_BACKWARD	    1
@@ -230,8 +230,11 @@ TODO: remove
 #define OPP_STAIRS_Y		1400
 */
 
-#define MY_HOME_X	250
-#define MY_HOME_Y	1000
+#define MY_HOME_SPOTLIGHT_X	400
+#define MY_HOME_SPOTLIGHT_Y	1000
+
+#define MY_HOME_POPCORNS_X	270
+#define MY_HOME_POPCORNS_Y	1000
 
 /* TODO remove
 #define OPP_HOME_X				2750
@@ -344,7 +347,7 @@ typedef struct {
 	#define ZONE_TYPE_STAIRS		6
 	#define ZONE_TYPE_STAIRWAY		7
 	#define ZONE_TYPE_CLAP			8
-	#define ZONE_TYPE_BAREA			9
+	#define ZONE_TYPE_PLATFORM		9
 	#define ZONE_TYPE_MAX			10
 
     /* target point */
@@ -463,7 +466,35 @@ uint8_t strat_main(void);
 /********************************************
  * in strat_spotlight.c 
  *******************************************/
+/** 
+ *	Harvest several the 2 stands and the central cup in a path line 
+ *	return END_TRAJ if the work is done, err otherwise 
+ */
+uint8_t strat_harvest_stands_and_cup_inline (void);
 
+
+/** 
+ *	Harvest stands parallel to the wall
+ *	return END_TRAJ if the work is done, err otherwise 
+ */
+uint8_t strat_harvest_stands_parallel_to_wall (int16_t x, int16_t y,
+							 uint8_t side, uint8_t blade_angle,
+							 uint8_t calib_x, uint8_t back_to_boundinbox);
+
+/* get the angle and distance to an stand depending on harvesting side */
+void get_stand_da (int16_t x, int16_t y, uint8_t side, int16_t *d, int16_t *a);
+/** 
+ *	Harvest orphan stands
+ *	return END_TRAJ if the work is done, err otherwise 
+ */
+uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
+									 uint8_t side, uint8_t blade_angle);
+
+/** 
+ *	Built a spotlight and release
+ *	return END_TRAJ if the work is done, err otherwise 
+ */
+uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side);
 
 /********************************************
  * in strat_popcorn.c 
