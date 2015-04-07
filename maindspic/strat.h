@@ -338,6 +338,7 @@ struct strat_infos {
 	uint8_t dump_enabled;
 	uint8_t debug_step;
 	uint8_t current_sec_strategy;
+	uint8_t current_main_strategy;
 	struct bbox area_bbox;
 
     /* strat configuration */
@@ -443,6 +444,10 @@ void state_debug_wait_key_pressed(void);
 uint8_t strat_smart(uint8_t robot);
 void recalculate_priorities(void);
 void strat_smart_robot_2nd(void);
+void strat_should_wait_new_order(void);
+void strat_set_sec_new_order(int8_t zone_num);
+
+int8_t strat_is_valid_zone(int8_t zone_num);
 
 /* tracking of zones where opp has been working */
 void strat_opp_tracking (void);
