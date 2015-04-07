@@ -837,8 +837,6 @@ parse_pgm_inst_t cmd_stands_system = {
 struct cmd_state2_result {
 	fixed_string_t arg0;
 	fixed_string_t arg1;
-	fixed_string_t arg2;
-	uint8_t arg3;	
 };
 
 /* function called when cmd_state2 is parsed successfully */
