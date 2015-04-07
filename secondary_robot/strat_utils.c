@@ -1,0 +1,1 @@
+../maindspic/strat_utils.c
