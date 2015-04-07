@@ -137,7 +137,7 @@ void io_pins_init(void)
 	_TRISA8 	= 1;		// SENSOR4
 	_TRISC3 	= 1;		// SENSOR5
 	_TRISB4 	= 1;		// SENSOR6
-	_TRISC2 	= 1;		// SENSOR7
+	//_TRISC2 	= 1;		// SENSOR7 XXX not 5V tolerant MCU destruction
 
 
 
@@ -250,7 +250,7 @@ int main(void)
 
 	/* DO FLAGS */
 	/* note: cs is enabled after calibration */
-	slavedspic.flags = DO_ENCODERS | DO_POWER | DO_BD;
+	slavedspic.flags = DO_ENCODERS | DO_POWER | DO_BD | DO_CS;
 
 
 	/* DAC_MC */
@@ -263,9 +263,9 @@ int main(void)
 	pwm_servo_init(&gen.pwm_servo_oc2, 2, 600, 2400);
 	pwm_servo_init(&gen.pwm_servo_oc3, 3, 600, 2400);
 	pwm_servo_enable();
-	pwm_servo_set(&gen.pwm_servo_oc1, 1000);
-	pwm_servo_set(&gen.pwm_servo_oc2, 1000);
-	pwm_servo_set(&gen.pwm_servo_oc3, 1000);
+	pwm_servo_set(&gen.pwm_servo_oc1, 700);
+	pwm_servo_set(&gen.pwm_servo_oc2, 310);
+	pwm_servo_set(&gen.pwm_servo_oc3, 0);
 
 	/* SCHEDULER */
 	scheduler_init();
@@ -278,13 +278,13 @@ int main(void)
 						CS_PERIOD / SCHEDULER_UNIT, 
 						CS_PRIO);
 
-	//scheduler_add_periodical_event_priority(do_i2c_watchdog, NULL,
-	//					8000L / SCHEDULER_UNIT,
-	//					I2C_POLL_PRIO);
+	scheduler_add_periodical_event_priority(do_i2c_watchdog, NULL,
+						8000L / SCHEDULER_UNIT,
+						I2C_POLL_PRIO);
 
-	//scheduler_add_periodical_event_priority(do_sensors, NULL, 
-	//					10000L / SCHEDULER_UNIT, 
-	//					SENSOR_PRIO);
+	scheduler_add_periodical_event_priority(do_sensors, NULL, 
+						10000L / SCHEDULER_UNIT, 
+						SENSOR_PRIO);
 
 	/* TIME */
 	time_init(TIME_PRIO);

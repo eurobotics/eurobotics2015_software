@@ -39,6 +39,7 @@
 #include "strat.h"
 #include "strat_utils.h"
 
+#ifdef NOT_USED_2015
 #ifndef HOST_VERSION
 
 /************ ADC */
@@ -192,7 +193,7 @@ int16_t sensor_get_adc(uint8_t i)
 	return tmp;
 #endif
 }
-
+#endif /* NOT_USED_2015 */
 
 /************ boolean sensors */
 
@@ -207,7 +208,7 @@ struct sensor_filter {
 };
 
 static struct sensor_filter sensor_filter[SENSOR_MAX] = {
-	[S_START_SWITCH] = { 1, 0, 0, 1, 0, 1 }, /* 0 */
+	[S_START_SWITCH] = { 10, 0, 0, 3, 0, 0 }, /* 0 */
 	[S_RESERVED0] = { 0, 0, 0, 1, 0, 0 }, /* 1 */
 	[S_RESERVED1] = { 0, 0, 0, 1, 0, 0 }, /* 2 */
 	[S_RESERVED2] = { 0, 0, 0, 1, 0, 0 }, /* 3 */
@@ -216,41 +217,41 @@ static struct sensor_filter sensor_filter[SENSOR_MAX] = {
 	[S_RESERVED5] = { 0, 0, 0, 1, 0, 0 }, /* 6 */
 	[S_RESERVED6] = { 0, 0, 0, 1, 0, 0 }, /* 7 */
 		
-	[S_GP0_0] = { 1, 0, 0, 1, 0, 1 }, /* 8 */
-	[S_GP0_1] = { 1, 0, 0, 1, 0, 1 }, /*  */
-	[S_GP0_2] = { 1, 0, 0, 1, 0, 1 }, /*  */
-	[S_GP0_3] = { 1, 0, 0, 1, 0, 1 }, /*  */
-	[S_GP0_4] = { 1, 0, 0, 1, 0, 1 }, /*  */
-	[S_GP0_5] = { 1, 0, 0, 1, 0, 1 }, /*  */
-	[S_GP0_6] = { 1, 0, 0, 1, 0, 1 }, /*  */
-	[S_GP0_7] = { 1, 0, 0, 1, 0, 1 }, /* 15 */
+	[S_GP0_0] = { 10, 0, 0, 5, 0, 0 }, /* 8 */
+	[S_GP0_1] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP0_2] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP0_3] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP0_4] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP0_5] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP0_6] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP0_7] = { 10, 0, 0, 5, 0, 0 }, /* 15 */
 
-	[S_GP1_0] = { 1, 0, 0, 1, 0, 1 }, /* 16 */
-	[S_GP1_1] = { 1, 0, 0, 1, 0, 1 }, /*  */
-	[S_GP1_2] = { 1, 0, 0, 1, 0, 1 }, /*  */
-	[S_GP1_3] = { 1, 0, 0, 1, 0, 1 }, /*  */
-	[S_GP1_4] = { 1, 0, 0, 1, 0, 1 }, /*  */
-	[S_GP1_5] = { 1, 0, 0, 1, 0, 1 }, /*  */
-	[S_GP1_6] = { 1, 0, 0, 1, 0, 1 }, /*  */
-	[S_GP1_7] = { 1, 0, 0, 1, 0, 1 }, /* 23 */
+	[S_GP1_0] = { 10, 0, 0, 5, 0, 0 }, /* 16 */
+	[S_GP1_1] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP1_2] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP1_3] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP1_4] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP1_5] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP1_6] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP1_7] = { 10, 0, 0, 5, 0, 0 }, /* 23 */
 
-	[S_GP2_0] = { 1, 0, 0, 1, 0, 0 }, /* 24 */
-	[S_GP2_1] = { 1, 0, 0, 1, 0, 0 }, /*  */
-	[S_GP2_2] = { 1, 0, 0, 1, 0, 0 }, /*  */
-	[S_GP2_3] = { 1, 0, 0, 1, 0, 0 }, /*  */
-	[S_GP2_4] = { 1, 0, 0, 1, 0, 0 }, /*  */
-	[S_GP2_5] = { 1, 0, 0, 1, 0, 0 }, /*  */
-	[S_GP2_6] = { 1, 0, 0, 1, 0, 0 }, /*  */
-	[S_GP2_7] = { 1, 0, 0, 1, 0, 0 }, /* 31 */
+	[S_GP2_0] = { 10, 0, 0, 5, 0, 0 }, /* 24 */
+	[S_GP2_1] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP2_2] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP2_3] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP2_4] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP2_5] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP2_6] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP2_7] = { 10, 0, 0, 5, 0, 0 }, /* 31 */
 
-	[S_GP3_0] = { 1, 0, 0, 1, 0, 1 }, /* 32 */
-	[S_GP3_1] = { 1, 0, 0, 1, 0, 1 }, /*  */
-	[S_GP3_2] = { 1, 0, 0, 1, 0, 0 }, /*  */
-	[S_GP3_3] = { 1, 0, 0, 1, 0, 1 }, /*  */
-	[S_GP3_4] = { 1, 0, 0, 1, 0, 1 }, /*  */
-	[S_GP3_5] = { 1, 0, 0, 1, 0, 0 }, /*  */
-	[S_GP3_6] = { 1, 0, 0, 1, 0, 0 }, /*  */
-	[S_GP3_7] = { 1, 0, 0, 1, 0, 0 }, /* 39 */
+	[S_GP3_0] = { 10, 0, 0, 5, 0, 0 }, /* 32 */
+	[S_GP3_1] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP3_2] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP3_3] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP3_4] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP3_5] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP3_6] = { 10, 0, 0, 5, 0, 0 }, /*  */
+	[S_GP3_7] = { 10, 0, 0, 5, 0, 0 }, /* 39 */
 
 };
 #endif /* !HOST_VERSION */
@@ -345,9 +346,10 @@ static void do_boolean_sensors(void *dummy)
 #endif /* !HOST_VERSION */
 
 /* virtual obstacle */
-#define DISABLE_CPT_MAX 250 /* XXX T_SENSORS = 10ms */
+#define DISABLE_CPT_MAX 200 	/* XXX T_SENSORS = 10ms */
 static uint16_t disable = 0; 	/* used to disable obstacle detection 
-			   				 		           * during some time */
+			   				     * during some time 
+								 */
 
 /* called every 10 ms */
 void sensor_obstacle_update(void)
@@ -382,7 +384,7 @@ uint8_t sensor_obstacle_is_disabled(void)
 static void do_sensors(void *dummy)
 {
 #ifndef HOST_VERSION
-	do_adc(NULL);
+//	do_adc(NULL);
 	do_boolean_sensors(NULL);
 #endif
 	sensor_obstacle_update();
@@ -391,7 +393,7 @@ static void do_sensors(void *dummy)
 void sensor_init(void)
 {
 #ifndef HOST_VERSION
-	adc_init();
+//	adc_init();
 #endif	
 	/* CS EVENT */
 	scheduler_add_periodical_event_priority(do_sensors, NULL, 

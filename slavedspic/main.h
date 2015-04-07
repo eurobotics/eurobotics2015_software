@@ -41,6 +41,7 @@
 #include <blocking_detection_manager.h>
 
 #include "actuator.h"
+#include "state.h"
 
 //#define EUROBOT_2012_BOARD
 
@@ -74,27 +75,25 @@
 #define STANDS_EXCHANGER_ENCODER		((void *)1)
 #define PWM_MC_STANDS_EXCHANGER_MOTOR	((void *)&gen.pwm_mc_mod2_ch1)
 
-#define PWM_SERVO_POPCORN_TRAY			&gen.pwm_servo_oc1
-#define PWM_SERVO_STANDS_CLAMP_L		&gen.pwm_servo_oc2
-#define PWM_SERVO_STANDS_CLAMP_R		&gen.pwm_servo_oc3
+#define PWM_SERVO_POPCORN_TRAY			&gen.pwm_servo_oc3
+#define PWM_SERVO_STANDS_CLAMP_L		&gen.pwm_servo_oc1
+#define PWM_SERVO_STANDS_CLAMP_R		&gen.pwm_servo_oc2
 
-#define AX12_ID_STANDS_TOWER_CLAMPS			2
-#define AX12_ID_STANDS_ELEVATOR_L			8
-#define AX12_ID_STANDS_ELEVATOR_R			9
-#define AX12_ID_STANDS_BLADE_L				6
+#define AX12_ID_STANDS_TOWER_CLAMPS_UP		3
+#define AX12_ID_STANDS_TOWER_CLAMPS_DOWN	8
+#define AX12_ID_STANDS_ELEVATOR_L			6
+#define AX12_ID_STANDS_ELEVATOR_R			0
+#define AX12_ID_STANDS_BLADE_L				4
 #define AX12_ID_STANDS_BLADE_R				7
 #define AX12_ID_CUP_CLAMP_POPCORN_DOOR_L	1
-#define AX12_ID_CUP_CLAMP_POPCORN_DOOR_R	3
-#define AX12_ID_POPCORN_RAMP_L				4
+#define AX12_ID_CUP_CLAMP_POPCORN_DOOR_R	10
+#define AX12_ID_POPCORN_RAMP_L				11
 #define AX12_ID_POPCORN_RAMP_R				5
-#define AX12_ID_CUP_CLAMP_FRONT				0
-#define AX12_ID_CUP_HOLDER_FRONT			10
+#define AX12_ID_CUP_CLAMP_FRONT				9
+#define AX12_ID_CUP_HOLDER_FRONT			2
 
 #define S_STAND_INSIDE_L			SENSOR1
 #define S_STAND_INSIDE_R			SENSOR2
-#define S_CUP_FRONT					SENSOR3
-#define S_CUP_REAR					SENSOR4
-#define S_STAND_EXCHANGER_ENDSTOP	SENSOR5
 
 /** ERROR NUMS */
 #define E_USER_I2C_PROTO   195
@@ -172,20 +171,18 @@ struct slavedspic {
 	stands_elevator_t stands_elevator_l, stands_elevator_r;
 	stands_tower_clamps_t stands_tower_clamps;
 
-	cup_clamp_popcorn_door_t cup_clamp_popcorn_door;
+	cup_clamp_popcorn_door_t cup_clamp_popcorn_door_l, cup_clamp_popcorn_door_r;
 	popcorn_tray_t popcorn_tray;
 	popcorn_ramps_t popcorn_ramps;
 	cup_clamp_front_t cup_clamp_front;
 	cup_holder_front_t cup_holder_front;
 
-	/* infos */
-	uint8_t status;
-	uint8_t harvest_popcorns_mode;
-	uint8_t dump_popcorns_mode;
-	uint8_t dump_front_cup_mode;
-//	uint8_t stands_mode;
+	/* systems */
+	popcorn_system_t ps;
+	stands_system_t ss[2];
 
-	uint8_t nb_stored_stands_l, nb_stored_stands_r;
+	/* status */
+	uint8_t status;
 
 	/* infos */
 	uint8_t our_color;

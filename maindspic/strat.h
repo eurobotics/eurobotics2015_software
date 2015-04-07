@@ -192,28 +192,34 @@
 #else
 
 /* default acc */
+#undef VERY_GOOD_CONDITIONS_OR_SPECIAL_CASES
+#ifdef VERY_GOOD_CONDITIONS_OR_SPECIAL_CASES
 #define ACC_DIST  75
 #define ACC_ANGLE 75
+#else
+#define ACC_DIST  40
+#define ACC_ANGLE 60
+#endif
 
 /* default speeds */
 #ifdef HOMOLOGATION
-#define SPEED_DIST_FAST 		2000.
-#define SPEED_ANGLE_FAST 		2000.
+#define SPEED_DIST_FAST 		2000
+#define SPEED_ANGLE_FAST 		2000
 #else
 
-//#define SPEED_DIST_VERY_FAST 	4500. /* XXX very clean wheels */
-//#define SPEED_ANGLE_VERY_FAST 4500.
-#define SPEED_DIST_VERY_FAST 	4000.
-#define SPEED_ANGLE_VERY_FAST 	4000.
-#define SPEED_DIST_FAST 		3000.
-#define SPEED_ANGLE_FAST 		3000.
+//#define SPEED_DIST_VERY_FAST 	4500 /* XXX very clean wheels */
+//#define SPEED_ANGLE_VERY_FAST 4500
+#define SPEED_DIST_VERY_FAST 	4000
+#define SPEED_ANGLE_VERY_FAST 	4000
+#define SPEED_DIST_FAST 		4000
+#define SPEED_ANGLE_FAST 		4000
 #endif
 
 //Do not change
-#define SPEED_DIST_SLOW 		2000.
-#define SPEED_ANGLE_SLOW 		2000.
-#define SPEED_DIST_VERY_SLOW 	500.
-#define SPEED_ANGLE_VERY_SLOW   500.
+#define SPEED_DIST_SLOW 		2000
+#define SPEED_ANGLE_SLOW 		2000
+#define SPEED_DIST_VERY_SLOW 	500
+#define SPEED_ANGLE_VERY_SLOW   500
 
 #endif
 
@@ -399,13 +405,9 @@ void strat_preinit(void);
 void strat_init(void);
 void strat_exit(void);
 
-uint8_t strat_main(void);
-uint8_t strat_begin(void);
-uint8_t strat_begin_alcabot (void);
-
 void strat_event(void *dummy);
-void strat_event_enable(void);
-void strat_event_disable(void);
+uint8_t strat_main(void);
+
 
 uint8_t has_2nd_finished(void);
 /********************************************

@@ -32,7 +32,7 @@
 #include <aversive/pgmspace.h>
 #include <parse.h>
 
-//#define COMPILE_COMMANDS_CS
+#define COMPILE_COMMANDS_CS
 #define COMPILE_COMMANDS_AX12
 
 /* commands_gen.c */
@@ -42,7 +42,7 @@ extern parse_pgm_inst_t cmd_encoders;
 extern parse_pgm_inst_t cmd_pwm_mc;
 extern parse_pgm_inst_t cmd_pwm_servo;
 extern parse_pgm_inst_t cmd_pwm_servo_show_range;
-extern parse_pgm_inst_t cmd_dac_mc;
+//extern parse_pgm_inst_t cmd_dac_mc;
 extern parse_pgm_inst_t cmd_sensor;
 extern parse_pgm_inst_t cmd_rele;
 extern parse_pgm_inst_t cmd_log;
@@ -102,11 +102,10 @@ extern parse_pgm_inst_t cmd_popcorn_ramps;
 extern parse_pgm_inst_t cmd_cup_clamp_front;
 extern parse_pgm_inst_t cmd_cup_holder_front;
 
-extern parse_pgm_inst_t cmd_harvest_popcorns;
-extern parse_pgm_inst_t cmd_dump_popcorns;
-extern parse_pgm_inst_t cmd_dump_front_cup;
+extern parse_pgm_inst_t cmd_popcorn_system;
+extern parse_pgm_inst_t cmd_stands_system;
 extern parse_pgm_inst_t cmd_state2;
-//extern parse_pgm_inst_t cmd_state3;
+extern parse_pgm_inst_t cmd_state3;
 
 #if 0
 //extern parse_pgm_inst_t cmd_state_debug;
@@ -124,7 +123,7 @@ parse_pgm_ctx_t main_ctx[]  = {
 	(parse_pgm_inst_t *)&cmd_pwm_mc,
 	(parse_pgm_inst_t *)&cmd_pwm_servo,
 	(parse_pgm_inst_t *)&cmd_pwm_servo_show_range,
-	(parse_pgm_inst_t *)&cmd_dac_mc,
+//	(parse_pgm_inst_t *)&cmd_dac_mc,
 	(parse_pgm_inst_t *)&cmd_sensor,
 	(parse_pgm_inst_t *)&cmd_rele,
 	(parse_pgm_inst_t *)&cmd_log,
@@ -178,11 +177,11 @@ parse_pgm_ctx_t main_ctx[]  = {
 	(parse_pgm_inst_t *)&cmd_cup_clamp_front,
 	(parse_pgm_inst_t *)&cmd_cup_holder_front,
 
-	(parse_pgm_inst_t *)&cmd_harvest_popcorns,
-	(parse_pgm_inst_t *)&cmd_dump_popcorns,
-	(parse_pgm_inst_t *)&cmd_dump_front_cup,
+	(parse_pgm_inst_t *)&cmd_popcorn_system,
+	(parse_pgm_inst_t *)&cmd_stands_system,
+
 	(parse_pgm_inst_t *)&cmd_state2,
-//	(parse_pgm_inst_t *)&cmd_state3,
+	(parse_pgm_inst_t *)&cmd_state3,
 
 #if 0
 	//(parse_pgm_inst_t *)&cmd_state_debug,

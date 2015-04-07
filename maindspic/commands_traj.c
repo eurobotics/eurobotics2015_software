@@ -787,18 +787,27 @@ static void cmd_goto_parsed(void * parsed_result, void * data)
         err = goto_and_avoid(res->arg2, res->arg3, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
         if (err != END_TRAJ && err != END_NEAR)
             strat_hardstop();
+
+		printf_P(PSTR("returned %s\r\n"), get_err(err));
+		return;
     }
     else if (!strcmp_P(res->arg1, PSTR("avoid_fw")))
     {
         err = goto_and_avoid_forward(res->arg2, res->arg3, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
         if (err != END_TRAJ && err != END_NEAR)
             strat_hardstop();
+
+		printf_P(PSTR("returned %s\r\n"), get_err(err));
+		return;
     }
     else if (!strcmp_P(res->arg1, PSTR("avoid_bw")))
     {
         err = goto_and_avoid_backward(res->arg2, res->arg3, TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
         if (err != END_TRAJ && err != END_NEAR)
             strat_hardstop();
+
+		printf_P(PSTR("returned %s\r\n"), get_err(err));
+		return;
     }
     else if (!strcmp_P(res->arg1, PSTR("xy_abs_fow")))
     {
@@ -812,6 +821,7 @@ static void cmd_goto_parsed(void * parsed_result, void * data)
     {
         trajectory_d_a_rel(&mainboard.traj, res->arg2, res->arg3);
     }
+
     t1 = time_get_us2();
     while ((err = test_traj_end(TRAJ_FLAGS_NO_NEAR)) == 0)
     {
@@ -825,6 +835,7 @@ static void cmd_goto_parsed(void * parsed_result, void * data)
     }
     if (err != END_TRAJ && err != END_NEAR)
         strat_hardstop();
+
     printf_P(PSTR("returned %s\r\n"), get_err(err));
 }
 
@@ -882,11 +893,15 @@ struct cmd_position_result
     int32_t arg4;
 };
 
-#define AUTOPOS_SPEED_FAST 	500
-#define ROBOT_DIS2_WALL         (int16_t)(119)
+
 
 void auto_position(void)
 {
+#define AUTOPOS_SPEED_FAST 	500
+#define TRESPA_BAR		17
+#define HOME_X_EDGE		70
+#define HOME_Y_UP_EDGE	1200
+
     uint8_t err;
     uint16_t old_spdd, old_spda;
 
@@ -895,6 +910,24 @@ void auto_position(void)
     strat_get_speed(&old_spdd, &old_spda);
     strat_set_speed(AUTOPOS_SPEED_FAST, AUTOPOS_SPEED_FAST);
 
+	/* set position of the robot aligned to home edges */
+	strat_reset_pos(COLOR_X(HOME_X_EDGE + ROBOT_CENTER_TO_BACK), 
+					COLOR_Y(HOME_Y_UP_EDGE - TRESPA_BAR - (ROBOT_WIDTH/2.0)), 
+					COLOR_A_ABS(0));
+	
+	/* goto in line with the center cup */
+	trajectory_d_rel(&mainboard.traj, 350-ROBOT_CENTER_TO_BACK);
+    err = wait_traj_end(END_INTR | END_TRAJ);
+    if (err == END_INTR)
+        goto intr;
+
+	trajectory_turnto_xy(&mainboard.traj, COLOR_X(POPCORNCUP_CENTRE_X), POPCORNCUP_CENTRE_Y);
+    err = wait_traj_end(END_INTR | END_TRAJ);
+    if (err == END_INTR)
+        goto intr;
+
+
+#if 0
     /* goto blocking to x axis */
     trajectory_d_rel(&mainboard.traj, -300);
     err = wait_traj_end(END_INTR | END_TRAJ | END_BLOCKING);
@@ -925,7 +958,7 @@ void auto_position(void)
 
     /* set y */
     strat_reset_pos(DO_NOT_SET_POS, COLOR_Y(ROBOT_CENTER_TO_BACK), 90);
-
+#endif
     /* restore speeds */
     strat_set_speed(old_spdd, old_spda);
     return;

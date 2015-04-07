@@ -309,12 +309,8 @@ int main(void)
 
 #ifndef HOST_VERSION
 	/* i2c slaves polling (gpios and slavedspic) */
-	//scheduler_add_periodical_event_priority(i2c_poll_slaves, NULL,
-	//					EVENT_PERIOD_I2C_POLL / SCHEDULER_UNIT, EVENT_PRIORITY_I2C_POLL);
-
-	/* beacon commnads and polling */
-	//scheduler_add_periodical_event_priority(beacon_protocol, NULL,
-	//				EVENT_PERIOD_BEACON_PULL / SCHEDULER_UNIT, EVENT_PRIORITY_BEACON_POLL);
+	scheduler_add_periodical_event_priority(i2c_poll_slaves, NULL,
+						EVENT_PERIOD_I2C_POLL / SCHEDULER_UNIT, EVENT_PRIORITY_I2C_POLL);
 #endif
 	/* beacon and robot 2nd commnads and polling */
 	scheduler_add_periodical_event_priority(bt_protocol, NULL,
@@ -349,7 +345,6 @@ int main(void)
 #ifdef HOST_VERSION
 	mainboard.our_color = I2C_COLOR_YELLOW;
 	strat_reset_pos(COLOR_X(200), 500, COLOR_A_ABS(0));
-	//strat_event_enable();
 #endif
 
 	/* program WT-11 */

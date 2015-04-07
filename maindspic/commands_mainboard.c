@@ -15,14 +15,14 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Revision : $Id: commands_mainboard.c,v 1.8 2009/05/27 20:04:07 zer0 Exp $
+ *  Revision : $Id$
  *
  *  Olivier MATZ <zer0@droids-corp.org>
  */
 
 /*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
- *  Javier Bali\F1as Santos <javier@arc-robots.org>
+ *  Javier Baliñas Santos <javier@arc-robots.org>
  *
  *  Code ported to family of microcontrollers dsPIC from
  *  commands_mainboard.c,v 1.8 2009/05/27 20:04:07 zer0 Exp.
@@ -344,6 +344,7 @@ static void cmd_init_parsed(void *parsed_result, void *data)
 	wt11_reset_mux();
 	time_wait_ms (1000);
 	wt11_open_link_mux(beacon_addr, &beaconboard.link_id);
+	/* TODO: discomented when robot secondary ready */
 	//time_wait_ms (1000);
 	//wt11_open_link_mux(robot_2nd_addr, &robot_2nd.link_id);
 #else
@@ -357,17 +358,22 @@ static void cmd_init_parsed(void *parsed_result, void *data)
 	/* set main robot color */
     if (!strcmp_P(res->color, PSTR("green"))){
         mainboard.our_color = I2C_COLOR_GREEN;
-		position_set(&mainboard.pos,COLOR_X(70+(ROBOT_WIDTH/2)), 778+22+20+(ROBOT_WIDTH/2), 180);
-		}
+	}
     else if (!strcmp_P(res->color, PSTR("yellow"))){
         mainboard.our_color = I2C_COLOR_YELLOW;
-		position_set(&mainboard.pos,COLOR_X(70+(ROBOT_WIDTH/2)),778+22+20+(ROBOT_WIDTH/2), 0);
 	}
+
+	/* TODO: discomented when robot secondary ready */
 	/* set secondary robot color */
 	//bt_robot_2nd_set_color ();
 
 	/* TODO: init main robot mechanics */
 
+
+	/* autopos main robot */
+	auto_position();
+
+	/* TODO: discomented when robot secondary ready */
 	/* autopos secondary robot */
     //bt_robot_2nd_autopos();
 	//bt_robot_2nd_wait_end();
@@ -432,7 +438,7 @@ static void cmd_start_parsed(void *parsed_result, void *data)
 
 #ifndef HOST_VERSION
     int8_t c;
-//retry:
+
     printf_P(PSTR("Press a key when beacon ready, 'q' for skip \r\n"));
     c = -1;
     while (c == -1) {
@@ -462,15 +468,11 @@ retry_on:
     }
 #endif
 
-    if (!strcmp_P(res->color, PSTR("green")))
-    {
+    if (!strcmp_P(res->color, PSTR("green"))) {
         mainboard.our_color = I2C_COLOR_GREEN;
-        //beacon_cmd_color();
     }
-    else if (!strcmp_P(res->color, PSTR("yellow")))
-    {
+    else if (!strcmp_P(res->color, PSTR("yellow"))) {
         mainboard.our_color = I2C_COLOR_YELLOW;
-        //beacon_cmd_color();
     }
 
     strat_start();
@@ -515,12 +517,10 @@ struct cmd_color_result
 static void cmd_color_parsed(void *parsed_result, void *data)
 {
     struct cmd_color_result *res = (struct cmd_color_result *) parsed_result;
-    if (!strcmp_P(res->color, PSTR("yellow")))
-    {
+    if (!strcmp_P(res->color, PSTR("yellow"))) {
         mainboard.our_color = I2C_COLOR_YELLOW;
     }
-    else if (!strcmp_P(res->color, PSTR("green")))
-    {
+    else if (!strcmp_P(res->color, PSTR("green"))) {
         mainboard.our_color = I2C_COLOR_GREEN;
     }
     printf_P(PSTR("Done\r\n"));
@@ -1232,8 +1232,6 @@ parse_pgm_inst_t cmd_slavedspic = {
     },
 };
 
-/* TODO 2014*/
-#if 0
 
 /**********************************************************/
 /* Robot sensors test */
@@ -1284,37 +1282,6 @@ static void cmd_sensor_robot_parsed(void *parsed_result, void *data)
                     {
                     case S_START_SWITCH: strcpy(sensor_string, "START");
                         break;
-
-                    case S_TOKEN_FRONT_R: strcpy(sensor_string, "T_FRONT_R");
-                        break;
-                    case S_TOKEN_FRONT_L: strcpy(sensor_string, "T_FRONT_L");
-                        break;
-                    case S_TOKEN_FRONT_45R: strcpy(sensor_string, "T_FRONT_45R");
-                        break;
-                    case S_TOKEN_FRONT_45L: strcpy(sensor_string, "T_FRONT_45L");
-                        break;
-                    case S_TOKEN_FRONT_TOWER2H: strcpy(sensor_string, "S_TOKEN_FRONT_TOWER2H");
-                        break;
-                    case S_TOKEN_FRONT_TOWER1H: strcpy(sensor_string, "S_TOKEN_FRONT_TOWER1H");
-                        break;
-                    case S_TOKEN_FRONT_FIGURE: strcpy(sensor_string, "S_TOKEN_FRONT_FIGURE");
-                        break;
-
-                    case S_TOKEN_REAR_R: strcpy(sensor_string, "T_REAR_R");
-                        break;
-                    case S_TOKEN_REAR_L: strcpy(sensor_string, "T_REAR_L");
-                        break;
-                    case S_TOKEN_REAR_45R: strcpy(sensor_string, "T_REAR_45R");
-                        break;
-                    case S_TOKEN_REAR_45L: strcpy(sensor_string, "T_REAR_45L");
-                        break;
-                    case S_TOKEN_REAR_TOWER2H: strcpy(sensor_string, "S_TOKEN_REAR_TOWER2H");
-                        break;
-                    case S_TOKEN_REAR_TOWER1H: strcpy(sensor_string, "S_TOKEN_REAR_TOWER1H");
-                        break;
-                    case S_TOKEN_REAR_FIGURE: strcpy(sensor_string, "S_TOKEN_REAR_FIGURE");
-                        break;
-
                     case S_OPPONENT_FRONT_R: strcpy(sensor_string, "OP_FRONT_R");
                         break;
                     case S_OPPONENT_FRONT_L: strcpy(sensor_string, "OP_FRONT_L");
@@ -1323,9 +1290,7 @@ static void cmd_sensor_robot_parsed(void *parsed_result, void *data)
                         break;
                     case S_OPPONENT_REAR_L: strcpy(sensor_string, "OP_REAR_L");
                         break;
-                    case S_OPPONENT_RIGHT: strcpy(sensor_string, "OP_RIGHT");
-                        break;
-                    case S_OPPONENT_LEFT: strcpy(sensor_string, "OP_LEFT");
+                    case S_CUP_REAR: strcpy(sensor_string, "CUP_REAR");
                         break;
 
                     default: strcpy(sensor_string, "S_UNKNOW");
@@ -1361,7 +1326,6 @@ parse_pgm_inst_t cmd_sensor_robot = {
     },
 };
 
-#endif /* notyet TODO 2014*/
 
 #ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
 
@@ -1795,80 +1759,146 @@ parse_pgm_inst_t cmd_sleep = {
 
 #endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
 
+
 /**********************************************************/
-/* Strat_Event */
+/* popcorn_system */
 
-/* this structure is filled when cmd_strat_event is parsed successfully */
-struct cmd_strat_event_result
-{
-    fixed_string_t arg0;
-    fixed_string_t arg1;
+/* this structure is filled when cmd_popcorn_system is parsed successfully */
+struct cmd_popcorn_system_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
 };
 
-/* function called when cmd_strat_event is parsed successfully */
-static void cmd_strat_event_parsed(void *parsed_result, void *data)
+/* function called when cmd_popcorn_system is parsed successfully */
+static void cmd_popcorn_system_parsed(__attribute__((unused)) void *parsed_result,
+			    __attribute__((unused)) void *data)
 {
-    struct cmd_strat_event_result *res = parsed_result;
+	struct cmd_popcorn_system_result *res = (struct cmd_popcorn_system_result *) parsed_result;
+	uint8_t mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
 
-    if (!strcmp_P(res->arg1, PSTR("on")))
-        strat_event_enable();
-    else
-        strat_event_disable();
+	if (!strcmp_P(res->arg1, PSTR("idle")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
+	else if (!strcmp_P(res->arg1, PSTR("front_ready")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_READY;
+	else if (!strcmp_P(res->arg1, PSTR("front_catch")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_CATCH_AND_DROP;
+	else if (!strcmp_P(res->arg1, PSTR("front_release")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_RELEASE;
+	else if (!strcmp_P(res->arg1, PSTR("front_hide")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_HIDE;
+	else if (!strcmp_P(res->arg1, PSTR("rear_open")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_OPEN;
+	else if (!strcmp_P(res->arg1, PSTR("rear_catch")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_CATCH;
+	else if (!strcmp_P(res->arg1, PSTR("rear_release")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_RELEASE;
+	else if (!strcmp_P(res->arg1, PSTR("machines_ready")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_MACHINES_READY;
+	else if (!strcmp_P(res->arg1, PSTR("machines_harvest")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_MACHINES_HARVEST;
+	else if (!strcmp_P(res->arg1, PSTR("machines_end")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_MACHINES_END;
+	else if (!strcmp_P(res->arg1, PSTR("dump")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_STOCK_DROP;
+	else if (!strcmp_P(res->arg1, PSTR("dump_end")))
+		mode = I2C_SLAVEDSPIC_MODE_PS_STOCK_END;
+
+	i2c_slavedspic_mode_ps(mode);
 }
 
-prog_char str_strat_event_arg0[] = "strat_event";
-parse_pgm_token_string_t cmd_strat_event_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_strat_event_result, arg0, str_strat_event_arg0);
-prog_char str_strat_event_arg1[] = "on#off";
-parse_pgm_token_string_t cmd_strat_event_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_strat_event_result, arg1, str_strat_event_arg1);
+prog_char str_popcorn_system_arg0[] = "ps";
+parse_pgm_token_string_t cmd_popcorn_system_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_popcorn_system_result, arg0, str_popcorn_system_arg0);
+prog_char str_popcorn_system_arg1[] = "idle#front_ready#front_catch#front_release#front_hide#rear_open#rear_catch#rear_release#machines_ready#machines_harvest#machines_end#dump#dump_end";
+parse_pgm_token_string_t cmd_popcorn_system_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_popcorn_system_result, arg1, str_popcorn_system_arg1);
 
-prog_char help_strat_event[] = "Enable/disable strat_event callback";
-parse_pgm_inst_t cmd_strat_event = {
-    .f = cmd_strat_event_parsed, /* function to call */
-    .data = NULL, /* 2nd arg of func */
-    .help_str = help_strat_event,
-    .tokens =
-    { /* token list, NULL terminated */
-        (prog_void *) & cmd_strat_event_arg0,
-        (prog_void *) & cmd_strat_event_arg1,
-        NULL,
-    },
+prog_char help_popcorn_system[] = "set popcorn_system mode: ps mode";
+parse_pgm_inst_t cmd_popcorn_system = {
+	.f = cmd_popcorn_system_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_popcorn_system,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_popcorn_system_arg0, 
+		(prog_void *)&cmd_popcorn_system_arg1,
+		NULL,
+	},
 };
 
 
-/* update_zones */
+/**********************************************************/
+/* stands_system */
 
-/* this structure is filled when strat_update_zones is parsed successfully */
-struct cmd_update_zones_result
-{
-    fixed_string_t arg0;
+/* this structure is filled when cmd_stands_system is parsed successfully */
+struct cmd_stands_system_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+	fixed_string_t arg2;
+	uint8_t arg3;
 };
 
-/* function called when cmd_update_zones is parsed successfully */
-static void cmd_update_zones_parsed(__attribute__((unused)) void *parsed_result,
-                                    __attribute__((unused)) void *data)
+/* function called when cmd_stands_system is parsed successfully */
+static void cmd_stands_system_parsed(__attribute__((unused)) void *parsed_result,
+			    __attribute__((unused)) void *data)
 {
-    //struct cmd_update_zones_result *res = parsed_result;
-	//printf_P("Time_get_us2: %ld\n",time_get_us2());
-    time_reset();
-	//printf_P("Time_get_us2: %ld\n",time_get_us2());
-	//printf_P("Time_get_us2: %ld\n",time_get_us2());
-	//printf_P("Time_get_us2: %ld\n",time_get_us2());
-	//printf_P("Time_get_us2: %ld\n",time_get_us2());
-    strat_opp_tracking();
+	struct cmd_stands_system_result *res = (struct cmd_stands_system_result *) parsed_result;
+	uint8_t mode = I2C_SLAVEDSPIC_MODE_SS_IDLE;
+	uint8_t side = I2C_SIDE_LEFT;
 
+	if (!strcmp_P(res->arg1, PSTR("left")))
+		side = I2C_SIDE_LEFT;
+	else if (!strcmp_P(res->arg1, PSTR("right")))
+		side = I2C_SIDE_RIGHT;
+	else if (!strcmp_P(res->arg1, PSTR("all")))
+		side = I2C_SIDE_ALL;
+
+	if (!strcmp_P(res->arg2, PSTR("idle")))
+		mode = I2C_SLAVEDSPIC_MODE_SS_IDLE;
+	else if (!strcmp_P(res->arg2, PSTR("hide")))
+		mode = I2C_SLAVEDSPIC_MODE_SS_HIDE_TOWER;
+	else if (!strcmp_P(res->arg2, PSTR("harvest")))
+		mode = I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND;
+	else if (!strcmp_P(res->arg2, PSTR("build")))
+		mode = I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT;
+	else if (!strcmp_P(res->arg2, PSTR("release")))
+		mode = I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT;
+
+	if (side != I2C_SIDE_ALL) {
+		if (!strcmp_P(res->arg2, PSTR("harvest")))
+			i2c_slavedspic_mode_ss_harvest(side, res->arg3);
+		else
+			i2c_slavedspic_mode_ss(mode, side);
+	}
+	else {
+		if (!strcmp_P(res->arg2, PSTR("harvest"))) {
+			i2c_slavedspic_mode_ss_harvest(I2C_SIDE_LEFT, res->arg3);
+			i2c_slavedspic_mode_ss_harvest(I2C_SIDE_RIGHT, res->arg3);
+		}
+		else {
+			i2c_slavedspic_mode_ss(mode, I2C_SIDE_LEFT);
+			i2c_slavedspic_mode_ss(mode, I2C_SIDE_RIGHT);
+		}	
+	}
 }
 
-prog_char str_update_zones_arg0[] = "update_zones";
-parse_pgm_token_string_t cmd_update_zones_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_update_zones_result, arg0, str_update_zones_arg0);
+prog_char str_stands_system_arg0[] = "ss";
+parse_pgm_token_string_t cmd_stands_system_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_stands_system_result, arg0, str_stands_system_arg0);
+prog_char str_stands_system_arg1[] = "left#right#all";
+parse_pgm_token_string_t cmd_stands_system_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_stands_system_result, arg1, str_stands_system_arg1);
+prog_char str_stands_system_arg2[] = "idle#hide#harvest#build#release";
+parse_pgm_token_string_t cmd_stands_system_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_stands_system_result, arg2, str_stands_system_arg2);
+parse_pgm_token_num_t cmd_stands_system_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_stands_system_result, arg3, UINT8);
 
-prog_char help_update_zones[] = "update_zones";
-parse_pgm_inst_t cmd_update_zones = {
-    .f = cmd_update_zones_parsed, /* function to call */
-    .data = NULL, /* 2nd arg of func */
-    .help_str = help_update_zones,
-    .tokens =
-    { /* token list, NULL terminated */
-        (prog_void *) & cmd_update_zones_arg0,
-        NULL,
-    },
+prog_char help_stands_system[] = "set stands_system mode: ss mode blade angle side";
+parse_pgm_inst_t cmd_stands_system = {
+	.f = cmd_stands_system_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_stands_system,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_stands_system_arg0, 
+		(prog_void *)&cmd_stands_system_arg2,
+		(prog_void *)&cmd_stands_system_arg3,
+		(prog_void *)&cmd_stands_system_arg1,
+		NULL,
+	},
 };
+
+

@@ -418,11 +418,18 @@ static void cmd_sensor_parsed(void *parsed_result, void *data)
 #else
 	struct cmd_sensor_result *res = parsed_result;
 	uint8_t i, loop = 0;
+	uint64_t sensors_saved = 0;
 
 	if (!strcmp_P(res->arg1, PSTR("loop_show")))
 		loop = 1;
 	
 	do {
+		
+		if (sensor_get_all() == sensors_saved)
+		continue;
+
+		sensors_saved = sensor_get_all();	
+
 		printf_P(PSTR("SENSOR values: \r\n"));
 		for (i=0; i<SENSOR_MAX; i++) {
 

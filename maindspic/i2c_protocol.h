@@ -56,58 +56,32 @@ int8_t i2c_slavedspic_mode_init(void);
 /* exit */
 int8_t i2c_slavedspic_mode_power_off(void);
 
-/* wait for slavedspic is ready */
+/* XXX wait for slavedspic is ready */
 void i2c_slavedspic_wait_ready(void);
+
+/* get slavedispic status */
+uint8_t i2c_slavedspic_get_status(void);
 
 /****** SIMPLE ACTUATORS */
 
-/* set stick mode */
-int8_t i2c_slavedspic_mode_stick(uint8_t type, uint8_t mode, int8_t offset);
-
-/* set comb mode */
-int8_t i2c_slavedspic_mode_combs(uint8_t mode, int8_t offset);
-
-/* set tree tray */
-int8_t i2c_slavedspic_mode_tree_tray (uint8_t mode, int8_t offset);
-
-/* set boot tray mode */
-int8_t i2c_slavedspic_mode_boot_tray(uint8_t mode);
-
-/* set boot door mode*/
-int8_t i2c_slavedspic_mode_boot_door(uint8_t mode);
-
+/* TODO */
 
 /****** MULTIPLE ACTUATORS */
 
-/* set harvest fruits mode */
-int8_t i2c_slavedspic_mode_harvest_fruits(uint8_t mode);
+/* set popcorn system mode */
+int8_t i2c_slavedspic_mode_ps(uint8_t mode);
 
-/* set dump fruits mode */
-int8_t i2c_slavedspic_mode_dump_fruits(uint8_t mode);
+/* get popcorn system status */
+uint8_t i2c_slavedspic_get_ps_status(void);
 
+/* set stands system mode */
+int8_t i2c_slavedspic_mode_ss_harvest(uint8_t side, int8_t blade_angle_deg);
 
-/* fires and torches modes */
-int8_t i2c_slavedspic_mode_hide_arm (uint8_t sucker_type);
+/* set stands system mode */
+int8_t i2c_slavedspic_mode_ss(uint8_t mode, uint8_t side);
 
-int8_t i2c_slavedspic_mode_ready_for_pickup_torch (uint8_t sucker_type);
-int8_t i2c_slavedspic_mode_pickup_torch (uint8_t sucker_type);
-
-
-int8_t i2c_slavedspic_mode_ready_for_pickup_fire (uint8_t sucker_type, uint8_t level);
-int8_t i2c_slavedspic_mode_pickup_fire (uint8_t sucker_type, uint8_t level);
-
-int8_t i2c_slavedspic_mode_store_fire (uint8_t sucker_type);
-int8_t i2c_slavedspic_mode_load_fire (uint8_t sucker_type);
-
-
-int8_t i2c_slavedspic_mode_putdown_fire 
-        (uint8_t sucker_type, uint8_t level,
-         int16_t x, int16_t *y, int16_t *a, int8_t sucker_angle);
-
-int8_t i2c_slavedspic_mode_putdown_fire_inv
-        (uint8_t sucker_type, uint8_t level, int16_t x, int16_t *y, int16_t *a);
-
-int8_t i2c_slavedspic_mode_release_fire (uint8_t sucker_type);
+/* get popcorn system status */
+uint8_t i2c_slavedspic_get_ss_status(uint8_t side);
 
 
 #endif

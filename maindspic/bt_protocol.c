@@ -153,7 +153,7 @@ void bt_beacon_req_status(void)
 	uint8_t flags;
 	uint8_t buff[32];
 	uint8_t size;
-   uint16_t checksum;
+   	uint16_t checksum;
 
 	IRQ_LOCK(flags);
 	robot_x = position_get_x_s16(&mainboard.pos);
@@ -161,9 +161,10 @@ void bt_beacon_req_status(void)
 	robot_a = position_get_a_deg_s16(&mainboard.pos);
 	IRQ_UNLOCK(flags);
 
+#ifdef BEACON_OFFSET
   	rel_da_to_abs_xy(BEACON_OFFSET_D, RAD(BEACON_OFFSET_A),
                   &robot_x, &robot_y);
-
+#endif
 	/* checksum */
 	checksum = (uint16_t)((int16_t)robot_x + (int16_t)robot_y + robot_a);
 
@@ -227,36 +228,51 @@ void bt_beacon_status_parser (int16_t c)
 			/* beacon correction */
 			x = ans.opponent1_x;
 			y = ans.opponent1_y;
-#ifdef debug_beacon_parser
+#ifndef BEACON_OFFSET
 			a = ans.opponent1_a;
 			d = ans.opponent1_d;
+
+			IRQ_LOCK(flags);
+			beaconboard.opponent1_x = (int16_t)x;
+			beaconboard.opponent1_y = (int16_t)y;
+			beaconboard.opponent1_a = (int16_t)a;
+			beaconboard.opponent1_d = (int16_t)d;       
+			IRQ_UNLOCK(flags);
 #else
 			abs_xy_to_rel_da(x, y, &d, &a);
-#endif
+
 			IRQ_LOCK(flags);
 			beaconboard.opponent1_x = (int16_t)x;
 			beaconboard.opponent1_y = (int16_t)y;
 			beaconboard.opponent1_a = (int16_t)(DEG(a) < 0? DEG(a)+360: DEG(a));
 			beaconboard.opponent1_d = (int16_t)d;
 			IRQ_UNLOCK(flags);
+#endif	/* !BEACON_OFFSET */
 
-
-			#ifdef TWO_OPPONENTS
+#ifdef TWO_OPPONENTS
 			x = ans.opponent2_x;
 			y = ans.opponent2_y;
-#ifdef debug_beacon_parser
+#ifndef BEACON_OFFSET 
 			a = ans.opponent2_a;
 			d = ans.opponent2_d;
+
+			IRQ_LOCK(flags);
+			beaconboard.opponent2_x = (int16_t)x;
+			beaconboard.opponent2_y = (int16_t)y;
+			beaconboard.opponent2_a = (int16_t)a;
+			beaconboard.opponent2_d = (int16_t)d;       
+			IRQ_UNLOCK(flags);
 #else
 			abs_xy_to_rel_da(x, y, &d, &a);
-#endif
+
 			IRQ_LOCK(flags);
 			beaconboard.opponent2_x = (int16_t)x;
 			beaconboard.opponent2_y = (int16_t)y;
 			beaconboard.opponent2_a = (int16_t)(DEG(a) < 0? DEG(a)+360: DEG(a));
 			beaconboard.opponent2_d = (int16_t)d;
 			IRQ_UNLOCK(flags);
-			#endif
+#endif	/* !BEACON_OFFSET */
+#endif	/* TWO_OPPONENTS */
 
 			//DEBUG (E_USER_BT_PROTO, "BT_PROTO: opp1 %d %d %d %d",
 			//		beaconboard.opponent_x, beaconboard.opponent_y,

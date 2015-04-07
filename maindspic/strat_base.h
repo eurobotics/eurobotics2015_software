@@ -71,8 +71,9 @@ void strat_start(void);
  * times. */
 uint8_t strat_goto_xy_force(int16_t x, int16_t y);
 
-/* escape from disc polygon or another zone */
-//uint8_t strat_escape(struct build_zone *zone, uint8_t flags);
+/* enable/disable opponent sensors on strat_obstacle */
+void strat_opp_sensor_enable(void);
+void strat_opp_sensor_disable(void);
 
 /* return true if we have to brake due to an obstacle */
 uint8_t strat_obstacle(void);
