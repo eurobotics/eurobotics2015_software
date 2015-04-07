@@ -122,49 +122,45 @@ typedef struct {
 
 	/* substate of each working mode, XXX variable shared between them */
 	uint8_t substate;
-#define SAVE						0
+#define SAVE							0
 
-#define CLOSE_CLAMPS				1
-#define WAITING_CLAMPS_CLOSED		2
-#define LIFT_ELEVATOR				3
-#define WAITING_ELEVATOR_LIFTED		4
-#define HIDE_BLADE					5
-#define WAITING_BLADE_HIDDEN		6
+#define CLOSE_CLAMPS					1
+#define WAITING_CLAMPS_CLOSED			2
+#define LIFT_ELEVATOR					3
+#define WAITING_ELEVATOR_LIFTED			4
+#define HIDE_BLADE						5
+#define WAITING_BLADE_HIDDEN			6
 
-#define READY_BLADE					11
-#define WAITING_BLADE_READY			12
-#define PUSH_STAND					13
-#define WAITING_STAND_PUSHED		14
-#define DESCEND_TOWER				15
-#define WAITING_TOWER_DESCENDED		16
-#define OPEN_CLAMP					17
-#define WAITING_CLAMP_OPENED		18
-#define DESCEND_ELEVATOR			19
-#define WAITING_ELEVATOR_DESCENDED	20
+#define READY_BLADE						11
+#define WAITING_BLADE_READY				12
+#define PUSH_STAND						13
+#define WAITING_STAND_PUSHED			14
+#define DESCEND_TOWER					15
+#define WAITING_TOWER_DESCENDED			16
+#define OPEN_CLAMP						17
+#define WAITING_CLAMP_OPENED			18
+#define DESCEND_ELEVATOR				19
+#define WAITING_ELEVATOR_DESCENDED		20
 
-#define GO_CENTER					21
-#define WAITING_CENTERED			22
-#define RETURN_HOME					23
-#define WAITING_RETURNED			24
+#define CENTER_STAND					21
+#define WAITING_STAND_CENTERED			22
+#define RETURN_HOME						23
+#define WAITING_RETURNED				24
+#define INIT_LIFT_ELEVATOR				25
+#define INIT_WAITING_ELEVATOR_LIFTED	26
+#define WAITING_BLADES_HIDDEN			27
 
-#define OPEN_ALL					31
-#define WAITING_ALL_OPENED			32
+#define OPEN_ALL						31
+#define WAITING_ALL_OPENED				32
 
 	/* status */
 	uint8_t status;
 
 	/* XXX pecific for spotlight building */
-	uint8_t spotlight_substate;
-#define IDLE				0
-#define HIDE_TOWER			1
-#define HARVEST_STAND		2
-#define RELEASE_STAND		3
-#define CENTER_STAND		4
-
-	uint8_t spotlight_status;
 	uint8_t spotlight_mode;
 #define SM_PRINCIPAL		1
 #define SM_SECONDARY		2
+	uint8_t stand_waiting;
 
 	/* blade angle consign */
 	int8_t blade_angle;
