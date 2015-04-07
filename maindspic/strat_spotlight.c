@@ -69,6 +69,8 @@
 		goto end;		 \
 	} while(0)
 
+#define STANDS_READY_TIMEOUT 5000
+
 /**
  * 	TODO
 	pickup_cup_rear (x,y)
@@ -192,16 +194,7 @@ uint8_t strat_harvest_stands_parallel_to_wall (int16_t x, int16_t y,
 	/* set local speed, and disable speed limit */
 	strat_get_speed (&old_spdd, &old_spda);
    	strat_limit_speed_disable ();
-	strat_set_speed (SPEED_DIST_SLOW,SPEED_ANGLE_SLOW);
-
-	/* prepare for harvesting */
-	if (side == I2C_SIDE_ALL) {
-		i2c_slavedspic_mode_ss_harvest(I2C_SIDE_LEFT, blade_angle);
-		i2c_slavedspic_mode_ss_harvest(I2C_SIDE_RIGHT, blade_angle);
-	}
-	else 
-		i2c_slavedspic_mode_ss_harvest(side, blade_angle);
-
+	strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 
 	/* turn to stands */
 	trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(180));
@@ -209,12 +202,31 @@ uint8_t strat_harvest_stands_parallel_to_wall (int16_t x, int16_t y,
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
 
+	/* prepare for harvesting */
+	if (side == I2C_SIDE_ALL) {
+		WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_is_ready(I2C_SIDE_LEFT) &&
+							 i2c_slavedspic_ss_is_ready(I2C_SIDE_RIGHT), STANDS_READY_TIMEOUT);
+
+		i2c_slavedspic_mode_ss_harvest(I2C_SIDE_LEFT, blade_angle);
+		i2c_slavedspic_mode_ss_harvest(I2C_SIDE_RIGHT, blade_angle);
+	}
+	else {
+		WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_is_ready(side), STANDS_READY_TIMEOUT);
+		i2c_slavedspic_mode_ss_harvest(side, blade_angle);
+	}
+
+	/* TODO: wait ready for harvest */
+
 	/* harvest */
-	d = distance_from_robot(x, y);
+	strat_set_speed (SPEED_DIST_VERY_SLOW, SPEED_ANGLE_SLOW);
+	d = ABS(position_get_x_s16(&mainboard.pos) - x);
 	trajectory_d_rel(&mainboard.traj, d-ROBOT_CENTER_TO_MOUTH);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);	
+
+	/* wait for stands catched */
+	time_wait_ms(500);
 
 	/* calib x position and angle */
 	if (calib_x)
@@ -234,8 +246,8 @@ uint8_t strat_harvest_stands_parallel_to_wall (int16_t x, int16_t y,
 
 	/* go in boundingbox */
 	if (back_to_boundinbox) {
-		d = distance_from_robot(COLOR_X(OBS_CLERANCE+20), position_get_y_s16(&mainboard.pos));
-		trajectory_d_rel(&mainboard.traj, d);
+		d = ABS(position_get_x_s16(&mainboard.pos) - COLOR_X(OBS_CLERANCE+20));		
+		trajectory_d_rel(&mainboard.traj, -d);
 		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 		if (!TRAJ_SUCCESS(err))
 		   ERROUT(err);	
@@ -257,10 +269,12 @@ void get_stand_da (int16_t x, int16_t y, uint8_t side, int16_t *d, int16_t *a)
 	abs_xy_to_rel_da((double)x, (double) y, &d1, &a1);
 	a2 = asin(L/d1);
 	
+	//DEBUG (E_USER_STRAT, "d1=%f, a1=%f, a2=%f", d1, a1, a2);
+
 	if (side == I2C_SIDE_LEFT)
-		*a = DEG((int16_t)(a1 - a2));
+		*a = (int16_t)DEG(a1 - a2);
 	else
-		*a = DEG((int16_t)(a1 + a2));
+		*a = (int16_t)DEG(a1 + a2);
 
 	*d =  (int16_t)sqrt((L*L) + d1*d1);
 }
@@ -270,28 +284,26 @@ void get_stand_da (int16_t x, int16_t y, uint8_t side, int16_t *d, int16_t *a)
  *	return END_TRAJ if the work is done, err otherwise 
  */
 uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
-									 uint8_t side, uint8_t blade_angle)
+									 uint8_t side, uint8_t blade_angle, 
+									 uint16_t harvest_speed, uint8_t back_to_init_pos,
+									 uint8_t calib_x)
 {
    	uint8_t err = 0;
 	uint16_t old_spdd, old_spda;
-	int16_t d = 0, a = 0;
+	int16_t d = 0, a = 0, d_blocking = 0;
 
 	/* set local speed, and disable speed limit */
 	strat_get_speed (&old_spdd, &old_spda);
    	strat_limit_speed_disable ();
-	strat_set_speed (SPEED_DIST_SLOW,SPEED_ANGLE_SLOW);
-
-	/* prepare for harvesting */
-	if (side == I2C_SIDE_ALL) {
-		i2c_slavedspic_mode_ss_harvest(I2C_SIDE_LEFT, blade_angle);
-		i2c_slavedspic_mode_ss_harvest(I2C_SIDE_RIGHT, blade_angle);
-	}
-	else
-		i2c_slavedspic_mode_ss_harvest(side, blade_angle);
+	strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 
 	/* get d,a target */
 	if (side_target != I2C_SIDE_ALL)
 		get_stand_da (x, y, side_target, &d, &a);
+
+
+	//DEBUG (E_USER_STRAT, "d = %d, a = %d", d, a);
+	//state_debug_wait_key_pressed();
 
 	/* turn to stand */
 	trajectory_a_rel(&mainboard.traj, a);
@@ -299,11 +311,67 @@ uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
 
+	/* prepare for harvesting */
+	if (side == I2C_SIDE_ALL) {
+		WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_is_ready(I2C_SIDE_LEFT) &&
+							 i2c_slavedspic_ss_is_ready(I2C_SIDE_RIGHT), STANDS_READY_TIMEOUT);
+		i2c_slavedspic_mode_ss_harvest(I2C_SIDE_LEFT, blade_angle);
+		i2c_slavedspic_mode_ss_harvest(I2C_SIDE_RIGHT, blade_angle);
+	}
+	else {
+		WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_is_ready(side), STANDS_READY_TIMEOUT);
+		i2c_slavedspic_mode_ss_harvest(side, blade_angle);
+	}
+
 	/* harvest */
-	trajectory_d_rel(&mainboard.traj, d-ROBOT_CENTER_TO_MOUTH);
+	strat_set_speed (harvest_speed, SPEED_ANGLE_SLOW);
+	d -= ROBOT_CENTER_TO_MOUTH;
+	trajectory_d_rel(&mainboard.traj, d);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);	
+
+	/* TODO: wait for blocking ? */
+
+	/* return to init position */
+	if (back_to_init_pos) {
+		strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
+		trajectory_d_rel(&mainboard.traj, -d);
+		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+		if (!TRAJ_SUCCESS(err))
+		   ERROUT(err);	
+	}
+
+	/* calib x position and angle */
+	if (calib_x)
+	{
+		/* calibrate position on the wall */
+		strat_set_speed(SPEED_DIST_VERY_SLOW, SPEED_ANGLE_SLOW);
+
+		trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(180));
+		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+		time_wait_ms(200);
+
+		d_blocking = position_get_x_s16(&mainboard.pos);
+
+		err = strat_calib(400, TRAJ_FLAGS_SMALL_DIST);
+		strat_reset_pos(COLOR_X(ROBOT_CENTER_TO_FRONT),
+						DO_NOT_SET_POS,
+						COLOR_A_ABS(180));
+
+		d_blocking = ABS(d_blocking-COLOR_X(ROBOT_CENTER_TO_FRONT));
+	}
+
+	/* return to init position */
+	if (back_to_init_pos) {
+		strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
+		d += d_blocking;
+		trajectory_d_rel(&mainboard.traj, -d);
+		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+		if (!TRAJ_SUCCESS(err))
+		   ERROUT(err);	
+	}
+
 
 end:
 	/* end stuff */

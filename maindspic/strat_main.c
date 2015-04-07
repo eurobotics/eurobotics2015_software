@@ -214,12 +214,18 @@ uint8_t strat_goto_zone(uint8_t zone_num)
 
 
 	/* return if NULL xy */
-	if (strat_infos.zones[zone_num].x == NULL ||
-		strat_infos.zones[zone_num].y == NULL) {
+	if (strat_infos.zones[zone_num].init_x == NULL ||
+		strat_infos.zones[zone_num].init_y == NULL) {
 		WARNING (E_USER_STRAT, "WARNING, No where to go (xy is NULL)");
 		ERROUT(END_TRAJ);
 	}
 	
+	/* set boundinbox */
+	if (zone_num == ZONE_POPCORNCUP_2 || zone_num == ZONE_MY_STAND_GROUP_2)
+		strat_set_bounding_box(BOUNDINBOX_WITHOUT_PLATFORM );
+	else
+		strat_set_bounding_box(BOUNDINBOX_INCLUDES_PLAFORM );
+
 	/* Secondary robot */
 	if(strat_infos.zones[zone_num].robot==SEC_ROBOT)
 	{
@@ -290,7 +296,10 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 												   MY_STAND_4_Y, 
 												   COLOR_INVERT(SIDE_RIGHT),
 									 			   COLOR_INVERT(SIDE_RIGHT), 
-												   0);
+												   0,
+												   SPEED_DIST_SLOW, /* harvest speed */
+												   0);				/* back to boundinbox */
+												   
 			    if (!TRAJ_SUCCESS(err))
 				   ERROUT(err);
 
@@ -298,7 +307,9 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 												   MY_STAND_5_Y, 
 												   COLOR_INVERT(SIDE_LEFT),
 									 			   COLOR_INVERT(SIDE_LEFT), 
-												   0);
+												   0,
+												   SPEED_DIST_SLOW, /* harvest speed */
+												   0);				/* back to boundinbox */
 			    if (!TRAJ_SUCCESS(err))
 				   ERROUT(err);
 
@@ -306,7 +317,9 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 												   MY_STAND_6_Y, 
 												   COLOR_INVERT(SIDE_LEFT),
 									 			   COLOR_INVERT(SIDE_LEFT), 
-												   0);
+												   0,
+												   SPEED_DIST_SLOW, /* harvest speed */
+												   0);				/* back to boundinbox */
 				break;				
 
 			case ZONE_MY_STAND_GROUP_2:
@@ -322,7 +335,9 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 												   strat_infos.zones[zone_num].y, 
 												   COLOR_INVERT(SIDE_LEFT),
 									 			   SIDE_ALL, 
-												   COLOR_A_REL(-20));
+												   COLOR_A_REL(-20),
+												   SPEED_DIST_SLOW, /* harvest speed */
+												   0);				/* back to boundinbox */
 				break;
 
 			case ZONE_MY_STAND_GROUP_4:

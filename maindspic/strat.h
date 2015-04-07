@@ -96,9 +96,12 @@
 #endif
 
 /* default speeds */
-#ifdef HOMOLOGATION
+#if 1
 #define SPEED_DIST_FAST 		2000
 #define SPEED_ANGLE_FAST 		2000
+#define SPEED_DIST_VERY_FAST 	2000
+#define SPEED_ANGLE_VERY_FAST 	2000
+
 #else
 
 //#define SPEED_DIST_VERY_FAST 	4500 /* XXX very clean wheels */
@@ -280,7 +283,8 @@ TODO: remove
 #define ZONE_MY_CLAP_2					16
 #define ZONE_MY_CLAP_3					17
 #define ZONE_MY_STAIRWAY				18
-#define ZONES_MAX		    			19
+#define ZONE_MY_PLATFORM				19
+#define ZONES_MAX		    			20
 
 /*
  * Strat diagram, valid for YELLOW.
@@ -449,6 +453,9 @@ extern uint8_t strat_zones_points[ZONES_MAX];
 /********************************************
  * in strat.c 
  *******************************************/
+
+#define BOUNDINBOX_INCLUDES_PLAFORM 0
+#define BOUNDINBOX_WITHOUT_PLATFORM 1
 void strat_set_bounding_box(uint8_t type);
 
 void strat_dump_infos(const char *caller);
@@ -488,7 +495,8 @@ void get_stand_da (int16_t x, int16_t y, uint8_t side, int16_t *d, int16_t *a);
  *	return END_TRAJ if the work is done, err otherwise 
  */
 uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
-									 uint8_t side, uint8_t blade_angle);
+									 uint8_t side, uint8_t blade_angle, 
+									 uint16_t harvest_speed, uint8_t back_to_boundinbox);
 
 /** 
  *	Built a spotlight and release

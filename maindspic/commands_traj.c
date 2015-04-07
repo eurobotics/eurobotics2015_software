@@ -74,6 +74,11 @@
 #define COMPILE_COMMANDS_TRAJ_OPTIONALS
 #endif
 
+#define ERROUT(e) do {\
+		err = e;			 \
+		goto end;		 \
+	} while(0)
+
 /**********************************************************/
 /* Traj_Speeds for trajectory_manager */
 
@@ -1253,6 +1258,8 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
     uint8_t err = 0;
     uint8_t zone_num = ZONES_MAX;
 
+	strat_infos.debug_step = 1;
+
    	/**
 	 *	strat several zones 
 	 */
@@ -1276,14 +1283,28 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
    	else if (!strcmp_P(res->arg1, PSTR("machine_opp")))
         zone_num = ZONE_OPP_POPCORNMAC;
 
-    else if (!strcmp_P(res->arg1, PSTR("cinema_up")))
+    else if (!strcmp_P(res->arg1, PSTR("cinema_up"))) {
         zone_num = ZONE_MY_CINEMA_UP;
-
-    else if (!strcmp_P(res->arg1, PSTR("cinema_down")))
+		printf_P(PSTR("not yet supported\r\n"));
+		return;
+	}
+    else if (!strcmp_P(res->arg1, PSTR("cinema_down"))) {
         zone_num = ZONE_MY_CINEMA_DOWN;
-
+		printf_P(PSTR("not yet supported\r\n"));
+		return;
+	}
     else if (!strcmp_P(res->arg1, PSTR("platform"))) {
         //zone_num = ZONE_MY_CINEMA_DOWN;
+		printf_P(PSTR("not yet supported\r\n"));
+		return;
+	}
+    else if (!strcmp_P(res->arg1, PSTR("stairs"))) {
+        //zone_num = ZONE_MY_STAIRS;
+		printf_P(PSTR("not yet supported\r\n"));
+		return;
+	}
+    else if (!strcmp_P(res->arg1, PSTR("stairs_ways"))) {
+        //zone_num = ZONE_MY_STAIRWAY;
 		printf_P(PSTR("not yet supported\r\n"));
 		return;
 	}
@@ -1293,17 +1314,20 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 
         err = strat_goto_zone(zone_num);
         printf_P(PSTR("goto returned %s\r\n"), get_err(err));    
+	    if (!TRAJ_SUCCESS(err))
+		   ERROUT(err);
 
         err = strat_work_on_zone(zone_num);
         printf_P(PSTR("work returned %s\r\n"), get_err(err));
     }
 
+end:
     trajectory_hardstop(&mainboard.traj);
 }
 
 prog_char str_subtraj1_arg0[] = "subtraj";
 parse_pgm_token_string_t cmd_subtraj1_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg0, str_subtraj1_arg0);
-prog_char str_subtraj1_arg1[] = "begining#home#machine#machine_opp#cinema_up#cinema_down#platform";
+prog_char str_subtraj1_arg1[] = "begining#home#machine#machine_opp#cinema_up#cinema_down#platform#stairs#stair_ways";
 parse_pgm_token_string_t cmd_subtraj1_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg1, str_subtraj1_arg1);
 //parse_pgm_token_num_t cmd_subtraj1_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg2, INT32);
 //parse_pgm_token_num_t cmd_subtraj1_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg3, INT32);
@@ -1346,6 +1370,8 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
     uint8_t err = 0;
     uint8_t zone_num = ZONES_MAX;
 
+	strat_infos.debug_step = 1;
+
 	/**
 	 *	strat smart 
 	 */
@@ -1365,32 +1391,44 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
      * 	go & work on zone 
 	 */
 
-	/* return if arg2 is zero */
+	/* get zone number */
 	if (res->arg2 == 0) {
-		printf_P(PSTR("value 0 is NOT valid for an element\r\n"));
-		return;
+		zone_num = ZONES_MAX;
+	}
+    else if (!strcmp_P(res->arg1, PSTR("stand_group"))) {
+		if (res->arg2 <= 4)
+        	zone_num = ZONE_MY_STAND_GROUP_1 + res->arg2 - 1;
+	}
+    else if (!strcmp_P(res->arg1, PSTR("clapper"))) {
+		if (res->arg2 <= 3)
+        	zone_num = ZONE_MY_CLAP_1 + res->arg2 - 1;
+	}
+  	else if (!strcmp_P(res->arg1, PSTR("cup"))) {
+
+		if (res->arg2 <= 3)
+        	zone_num = ZONE_POPCORNCUP_1 + res->arg2 - 1;
+		
+		if (res->arg2 == 1) {
+			printf_P(PSTR("not yet supported\r\n"));
+			return;
+		}
 	}
 
-	/* get zone number */
-    if (!strcmp_P(res->arg1, PSTR("stand_group")))
-        zone_num = ZONE_MY_STAND_GROUP_1 + res->arg2 - 1;
-
-    else if (!strcmp_P(res->arg1, PSTR("clapper")))
-        zone_num = ZONE_MY_CLAP_1 + res->arg2 - 1;
-
-  	else if (!strcmp_P(res->arg1, PSTR("cup")))
-        zone_num = ZONE_POPCORNCUP_1 + res->arg2 - 1;
-		
 	/* go and work*/
     if (zone_num < ZONES_MAX) {
 
         err = strat_goto_zone(zone_num);
-        printf_P(PSTR("goto returned %s\r\n"), get_err(err));    
+        printf_P(PSTR("goto returned %s\r\n"), get_err(err));
+	    if (!TRAJ_SUCCESS(err))
+		   ERROUT(err);
 
         err = strat_work_on_zone(zone_num);
         printf_P(PSTR("work returned %s\r\n"), get_err(err));
     }
+	else
+		printf_P(PSTR("invalid element number\r\n"));
 
+end:
     trajectory_hardstop(&mainboard.traj);
 }
 
