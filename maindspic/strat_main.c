@@ -381,6 +381,8 @@ uint8_t strat_smart(uint8_t robot)
 void strat_smart_robot_2nd(void)
 {
 	static microseconds us = 0;
+	uint8_t received_ack;
+	uint8_t err;
 
 	switch (strat_infos.strat_smart_sec){
 		case GO_TO_ZONE:
@@ -389,6 +391,8 @@ void strat_smart_robot_2nd(void)
 
 			if(bt_robot_2nd_is_ret_received()){
 				DEBUG (E_USER_STRAT, "\r\n\r\nFinished - Going to Zone: %d, RET= %d\r\n",strat_infos.strat_smart_sec_task,robot_2nd.cmd_ret);
+				// XXX evaluate ret value
+				err=bt_robot_2nd_test_end();
 				strat_work_on_zone(strat_infos.strat_smart_sec_task);
 				strat_infos.strat_smart_sec = WAIT_ACK_WORK;
 			}
@@ -415,16 +419,25 @@ void strat_smart_robot_2nd(void)
 			break;
 
 		case WAIT_ACK_GOTO:
+		    // Wait 200ms to avoid previous values
 			if (time_get_us2() - us < 200000L)
 				return;
-
-			if(bt_robot_2nd_is_ack_received ())
+				
+			// Check ACK
+			received_ack=bt_robot_2nd_is_ack_received ();
+			
+			// ACK
+			if(received_ack==1)
 			{
 				DEBUG (E_USER_STRAT, "\r\n\r\nReceived ACK - GOTO Zone: %d, RET= %d\r\n",strat_infos.strat_smart_sec_task,robot_2nd.cmd_ret);
 				us = time_get_us2();
-
 				strat_infos.strat_smart_sec = GO_TO_ZONE;
 			}
+			
+			// NACK: Communication error. Repeat command
+			else if(received_ack!=0)
+				strat_infos.strat_smart_sec = GET_NEW_TASK;
+				
 			break;
 
 		// Not implemented

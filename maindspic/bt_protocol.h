@@ -79,18 +79,18 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1);
 uint8_t bt_robot_2nd_cmd (uint8_t cmd_id, int16_t arg0, int16_t arg1);
 
 /* auto set possition */
-uint8_t bt_robot_2nd_autopos (void);
+void bt_robot_2nd_autopos (void);
 
 /* set color */
-uint8_t bt_robot_2nd_set_color (void);
+void bt_robot_2nd_set_color (void);
 
 /* goto xy_abs */
-uint8_t bt_robot_2nd_goto_xy_abs (int16_t x, int16_t y);
-uint8_t bt_robot_2nd_goto_forward_xy_abs (int16_t x, int16_t y);
-uint8_t bt_robot_2nd_goto_backward_xy_abs (int16_t x, int16_t y);
+void bt_robot_2nd_goto_xy_abs (int16_t x, int16_t y);
+void bt_robot_2nd_goto_forward_xy_abs (int16_t x, int16_t y);
+void bt_robot_2nd_goto_backward_xy_abs (int16_t x, int16_t y);
 
 /* goto xy_rel */
-uint8_t bt_robot_2nd_goto_xy_rel (int16_t x, int16_t y);
+void bt_robot_2nd_goto_xy_rel (int16_t x, int16_t y);
 
 /* wait for robot 2nd ends */
 uint8_t bt_robot_2nd_wait_end (void);
@@ -102,17 +102,20 @@ uint8_t bt_robot_2nd_test_end (void);
 void bt_robot_2nd_req_status(void);
 
 
+/* ACK */
+uint8_t bt_robot_2nd_wait_ack (void);
 uint8_t bt_robot_2nd_is_ack_received (void);
+
 void bt_robot_2nd_bt_task_pick_cup (void);
 void bt_robot_2nd_bt_task_carpet(void);
 void bt_robot_2nd_bt_task_stairs(void);
 void bt_robot_2nd_bt_task_bring_cup_cinema(void);
 void bt_robot_2nd_bt_task_clapperboard(void);
 
-uint8_t bt_robot_2nd_autopos (void);
+void bt_robot_2nd_autopos (void);
 
-uint8_t bt_robot_2nd_goto_and_avoid (int16_t x, int16_t y);
-uint8_t bt_robot_2nd_goto_and_avoid_forward (int16_t x, int16_t y);
-uint8_t bt_robot_2nd_goto_and_avoid_backward (int16_t x, int16_t y);
+void bt_robot_2nd_goto_and_avoid (int16_t x, int16_t y);
+void bt_robot_2nd_goto_and_avoid_forward (int16_t x, int16_t y);
+void bt_robot_2nd_goto_and_avoid_backward (int16_t x, int16_t y);
 
 #endif
