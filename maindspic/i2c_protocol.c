@@ -649,6 +649,10 @@ uint8_t i2c_slavedspic_get_ps_status(void)
    return slavedspic.popcorn_system.status;
 }
 
+uint8_t i2c_slavedspic_ps_is_ready(void) {
+	return (i2c_slavedspic_get_ps_status() == I2C_SLAVEDSPIC_STATUS_READY);
+}
+
 /* set stands system mode */
 int8_t __i2c_slavedspic_mode_ss(uint8_t mode, uint8_t side, int8_t blade_angle_deg)
 {
@@ -684,6 +688,10 @@ uint8_t i2c_slavedspic_get_ss_status(uint8_t side)
    return slavedspic.stands_system[side].status;
 }
 
+/* returns 1 if ready */
+uint8_t i2c_slavedspic_ss_is_ready(uint8_t side) {
+	return (i2c_slavedspic_get_ss_status(side) == I2C_SLAVEDSPIC_STATUS_READY);
+}
   
 /*******************************************************************************
  * Debug functions

@@ -141,7 +141,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_STAND,
 		MY_STAND_8_X, MY_STAND_8_Y,
 		0, 100, 0, 300,
-		400, MY_CUP_2_Y,	
+		400, OBS_CLERANCE+2,	
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
@@ -151,7 +151,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_STAND,
 		825, AREA_Y-70,  
 		650, 950, 1700, 1950, 	
-		MY_POPCORNMAC_X, LIMIT_BBOX_Y_UP-330,	
+		MY_POPCORNMAC_X, AREA_Y-330,	
 		0, 0,            
 		0, (9000*1000L),
 		MAIN_ROBOT
@@ -161,7 +161,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_STAND,
 		MY_STAND_1_X, MY_STAND_1_Y,  
 		0, 150, 0, 300,
-		MY_POPCORNMAC_X, LIMIT_BBOX_Y_UP-330,
+		MY_POPCORNMAC_X, AREA_Y-330,
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
@@ -336,13 +336,20 @@ uint8_t strat_zones_points[ZONES_MAX]; /* @supernudo TODO = {3,3,3,3,0,0,0,1,1,1
 /*                  INIT                                     */
 
 /*************************************************************/
-void strat_set_bounding_box(uint8_t type)
+#define BOUNDINBOX_INCLUDES_PLAFORM 0
+#define BOUNDINBOX_WITHOUT_PLATFORM 1
+
+void strat_set_bounding_box(uint8_t which)
 {
 
     strat_infos.area_bbox.x1 = OBS_CLERANCE;
     strat_infos.area_bbox.x2 = 3000 - OBS_CLERANCE;
 
-    strat_infos.area_bbox.y1 = OBS_CLERANCE+100;
+	if (which == BOUNDINBOX_INCLUDES_PLAFORM)
+	    strat_infos.area_bbox.y1 = OBS_CLERANCE+100;
+	else
+	    strat_infos.area_bbox.y1 = OBS_CLERANCE;
+
     strat_infos.area_bbox.y2 = 2000 - OBS_CLERANCE-70;
 
     polygon_set_boundingbox(strat_infos.area_bbox.x1,
@@ -419,7 +426,7 @@ void strat_dump_infos(const char *caller)
 void strat_reset_infos(void)
 {
     /* bounding box */
-    strat_set_bounding_box(mainboard.our_color);
+    strat_set_bounding_box(BOUNDINBOX_INCLUDES_PLAFORM);
     strat_infos.current_zone = ZONES_MAX;
     strat_infos.goto_zone = ZONES_MAX;
     strat_infos.last_zone = ZONES_MAX;
