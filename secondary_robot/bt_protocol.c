@@ -1,6 +1,6 @@
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -81,6 +81,7 @@
 /* set bt cmd id and args checksum */
 void bt_status_set_cmd_ret (uint8_t ret) {
 	uint8_t flags;
+	printf("RET== %d\n",ret);
 	IRQ_LOCK (flags);
 	robot_2nd.cmd_ret = ret;
 	IRQ_UNLOCK (flags);
@@ -91,7 +92,7 @@ inline void bt_status_set_cmd_ack (uint8_t val) {
 }
 
 /* send data in norma mode, any protocol is used */
-static void uart_send_buffer (uint8_t *buff, uint16_t length) 
+static void uart_send_buffer (uint8_t *buff, uint16_t length)
 {
   uint16_t i;
 
@@ -101,7 +102,7 @@ static void uart_send_buffer (uint8_t *buff, uint16_t length)
 #else
 		robotsim_uart_send_BT (buff[i]);
 #endif
-	}	
+	}
 }
 
 void bt_send_status (void)
@@ -147,8 +148,8 @@ void bt_send_status (void)
 
 	/* send answer */
 	uint8_t sync_header[] = BT_ROBOT_2ND_SYNC_HEADER;
-	uart_send_buffer (sync_header, sizeof(sync_header)); 
-	uart_send_buffer ((uint8_t*) &ans, sizeof(ans)); 
+	uart_send_buffer (sync_header, sizeof(sync_header));
+	uart_send_buffer ((uint8_t*) &ans, sizeof(ans));
 }
 
 
@@ -164,11 +165,11 @@ void bt_auto_position (void)
 	/* set ACK */
 	bt_status_set_cmd_ret (0);
 
-	/* execute command: can be a variable assigment, non blocking funtion 
+	/* execute command: can be a variable assigment, non blocking funtion
 	   or a single o periodical schedule event if it's a blocking funtion */
 
 	/**
-	 * schedule events have a data array asigned where the arguments are 
+	 * schedule events have a data array asigned where the arguments are
 	 * passed to the final function
 	 */
 
@@ -184,7 +185,7 @@ void bt_set_color (uint8_t color)
 	/* set ACK */
 	bt_status_set_cmd_ret (0);
 
-	/* execute command, can be a variable assigment, or a signe o periodic 
+	/* execute command, can be a variable assigment, or a signe o periodic
        schedule event */
 	mainboard.our_color = color;
 }
@@ -196,12 +197,12 @@ void bt_trajectory_goto_forward_xy_abs (int16_t x, int16_t y, int16_t args_check
 		/* set ACK */
 		bt_status_set_cmd_ack (0);
 
-		/* execute command: can be a variable assigment, non blocking funtion 
+		/* execute command: can be a variable assigment, non blocking funtion
 		   or a single o periodical schedule event if it's a blocking funtion */
 
 		/**
-		 * schedule events have a data array asigned where the arguments are 
-		 * passed to the final function 
+		 * schedule events have a data array asigned where the arguments are
+		 * passed to the final function
 		 */
 		mainboard.strat_event_data[0] = x;
 		mainboard.strat_event_data[1] = y;
@@ -223,12 +224,12 @@ void bt_trajectory_goto_backward_xy_abs (int16_t x, int16_t y, int16_t args_chec
 		/* set ACK */
 		bt_status_set_cmd_ack (0);
 
-		/* execute command: can be a variable assigment, non blocking funtion 
+		/* execute command: can be a variable assigment, non blocking funtion
 		   or a single o periodical schedule event if it's a blocking funtion */
 
 		/**
-		 * schedule events have a data array asigned where the arguments are 
-		 * passed to the final function 
+		 * schedule events have a data array asigned where the arguments are
+		 * passed to the final function
 		 */
 		mainboard.strat_event_data[0] = x;
 		mainboard.strat_event_data[1] = y;
@@ -251,12 +252,12 @@ void bt_trajectory_goto_xy_abs (int16_t x, int16_t y, int16_t args_checksum)
 		/* set ACK */
 		bt_status_set_cmd_ack (0);
 
-		/* execute command: can be a variable assigment, non blocking funtion 
+		/* execute command: can be a variable assigment, non blocking funtion
 		   or a single o periodical schedule event if it's a blocking funtion */
 
 		/**
-		 * schedule events have a data array asigned where the arguments are 
-		 * passed to the final function 
+		 * schedule events have a data array asigned where the arguments are
+		 * passed to the final function
 		 */
 		mainboard.strat_event_data[0] = x;
 		mainboard.strat_event_data[1] = y;
@@ -270,7 +271,8 @@ void bt_trajectory_goto_xy_abs (int16_t x, int16_t y, int16_t args_checksum)
 
 	}
 }
-void bt_goto_and_avoid (int16_t x, int16_t y, int16_t args_checksum)
+
+void bt_trajectory_goto_xy_rel(int16_t x, int16_t y, int16_t args_checksum)
 {
 	/* check args checksum */
 	if ((x+y) == args_checksum) {
@@ -278,17 +280,17 @@ void bt_goto_and_avoid (int16_t x, int16_t y, int16_t args_checksum)
 		/* set ACK */
 		bt_status_set_cmd_ack (0);
 
-		/* execute command: can be a variable assigment, non blocking funtion 
+		/* execute command: can be a variable assigment, non blocking funtion
 		   or a single o periodical schedule event if it's a blocking funtion */
 
 		/**
-		 * schedule events have a data array asigned where the arguments are 
-		 * passed to the final function 
+		 * schedule events have a data array asigned where the arguments are
+		 * passed to the final function
 		 */
 		mainboard.strat_event_data[0] = x;
 		mainboard.strat_event_data[1] = y;
 
-		strat_event_schedule_single ( strat_goto_avoid_event,
+		strat_event_schedule_single (strat_goto_xy_rel_event,
 							 (void *)mainboard.strat_event_data);
 	}
 	else {
@@ -297,57 +299,103 @@ void bt_goto_and_avoid (int16_t x, int16_t y, int16_t args_checksum)
 
 	}
 }
-void bt_goto_and_avoid_forward (int16_t x, int16_t y, int16_t args_checksum)
+
+
+
+uint8_t bt_goto_and_avoid (int16_t x, int16_t y, int16_t args_checksum)
 {
+	uint8_t err;
 	/* check args checksum */
 	if ((x+y) == args_checksum) {
 
 		/* set ACK */
 		bt_status_set_cmd_ack (0);
 
-		/* execute command: can be a variable assigment, non blocking funtion 
+
+		/* execute command: can be a variable assigment, non blocking funtion
 		   or a single o periodical schedule event if it's a blocking funtion */
 
 		/**
-		 * schedule events have a data array asigned where the arguments are 
-		 * passed to the final function 
+		 * schedule events have a data array asigned where the arguments are
+		 * passed to the final function
 		 */
 		mainboard.strat_event_data[0] = x;
 		mainboard.strat_event_data[1] = y;
 
-		strat_event_schedule_single ( strat_goto_avoid_forward_event,
-							 (void *)mainboard.strat_event_data);
+		interrupt_traj_reset();
+		err=goto_and_avoid(x, y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+		if (err != END_TRAJ && err != END_NEAR)
+			strat_hardstop();
+		return err;
 	}
 	else {
+		/* set NACK */
+		return END_ERROR;
+	}
+}
+uint8_t bt_goto_and_avoid_forward (int16_t x, int16_t y, int16_t args_checksum)
+{
+	uint8_t err;
+
+	/* check args checksum */
+	if ((x+y) == args_checksum) {
+
 		/* set ACK */
-		bt_status_set_cmd_ack (END_ERROR);
+		bt_status_set_cmd_ack (0);
+
+		/* execute command: can be a variable assigment, non blocking funtion
+		   or a single o periodical schedule event if it's a blocking funtion */
+
+		/**
+		 * schedule events have a data array asigned where the arguments are
+		 * passed to the final function
+		 */
+		mainboard.strat_event_data[0] = x;
+		mainboard.strat_event_data[1] = y;
+
+
+		interrupt_traj_reset();
+		err=goto_and_avoid_forward( x, y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+		if (err != END_TRAJ && err != END_NEAR)
+			strat_hardstop();
+		return err;
+	}
+	else {
+		/* set NACK */
+		return END_ERROR;
 
 	}
 }
-void bt_goto_and_avoid_backward (int16_t x, int16_t y, int16_t args_checksum)
+uint8_t bt_goto_and_avoid_backward (int16_t x, int16_t y, int16_t args_checksum)
 {
+	uint8_t err;
+
 	/* check args checksum */
 	if ((x+y) == args_checksum) {
 
 		/* set ACK */
 		bt_status_set_cmd_ack (0);
 
-		/* execute command: can be a variable assigment, non blocking funtion 
+		/* execute command: can be a variable assigment, non blocking funtion
 		   or a single o periodical schedule event if it's a blocking funtion */
 
 		/**
-		 * schedule events have a data array asigned where the arguments are 
-		 * passed to the final function 
+		 * schedule events have a data array asigned where the arguments are
+		 * passed to the final function
 		 */
 		mainboard.strat_event_data[0] = x;
 		mainboard.strat_event_data[1] = y;
 
-		strat_event_schedule_single ( strat_goto_avoid_backward_event,
-							 (void *)mainboard.strat_event_data);
+		interrupt_traj_reset();
+		err=goto_and_avoid_backward(x, y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+		if (err != END_TRAJ && err != END_NEAR)
+			strat_hardstop();
+		return err;
+
 	}
 	else {
-		/* set ACK */
-		bt_status_set_cmd_ack (END_ERROR);
+		/* set NACK */
+		return END_ERROR;
 
 	}
 }
@@ -357,12 +405,12 @@ void bt_strat_exit (void)
 	/* set ACK */
 	bt_status_set_cmd_ack (0);
 
-	/* execute command: can be a variable assigment, non blocking funtion 
+	/* execute command: can be a variable assigment, non blocking funtion
 	   or a single o periodical schedule event if it's a blocking funtion */
 
 	/**
-	 * schedule events have a data array asigned where the arguments are 
-	 * passed to the final function 
+	 * schedule events have a data array asigned where the arguments are
+	 * passed to the final function
 	 */
 	strat_exit();
 }
@@ -373,17 +421,12 @@ void bt_strat_init (void)
 	/* set ACK */
 	bt_status_set_cmd_ack (0);
 
-	/* execute command: can be a variable assigment, non blocking funtion 
+	/* execute command: can be a variable assigment, non blocking funtion
 	   or a single o periodical schedule event if it's a blocking funtion */
 
 	/**
-	 * schedule events have a data array asigned where the arguments are 
-	 * passed to the final function 
+	 * schedule events have a data array asigned where the arguments are
+	 * passed to the final function
 	 */
 	strat_init();
 }
-
-
-
-
-

@@ -1,6 +1,6 @@
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -76,7 +76,7 @@ void strat_event_schedule_single (void (*f)(void *), void * data)
 	interrupt_traj(); /* XXX unuseful */
 	strat_hardstop(); /* TODO: change to strat_stop and wait trajectory finished */
 	IRQ_UNLOCK(flags);
-	
+
 
 	/* delete current event */
 	if (mainboard.strat_event != -1)
@@ -84,7 +84,7 @@ void strat_event_schedule_single (void (*f)(void *), void * data)
 
 	/* add event */
 	IRQ_LOCK(flags);
-	ret  = scheduler_add_single_event_priority(f, data, 
+	ret  = scheduler_add_single_event_priority(f, data,
 			EVENT_PERIOD_STRAT/SCHEDULER_UNIT, EVENT_PRIORITY_STRAT_EVENT);
 	mainboard.strat_event = ret;
 	IRQ_UNLOCK(flags);
@@ -134,7 +134,7 @@ void strat_goto_xy_abs_event (void *data)
 {
 	int16_t *arg = (int16_t*)data;
 	uint8_t err;
- 
+
 	interrupt_traj_reset();
 
 	trajectory_goto_xy_abs(&mainboard.traj, arg[0], arg[1]);
@@ -146,11 +146,30 @@ void strat_goto_xy_abs_event (void *data)
 	/* return value */
 	bt_status_set_cmd_ret (err);
 }
+
+
+void strat_goto_xy_rel_event (void *data)
+{
+	int16_t *arg = (int16_t*)data;
+	uint8_t err;
+
+	interrupt_traj_reset();
+
+	trajectory_goto_xy_rel(&mainboard.traj, arg[0], arg[1]);
+	err = wait_traj_end(TRAJ_FLAGS_STD);
+
+	if (err != END_TRAJ && err != END_NEAR)
+		strat_hardstop();
+
+	/* return value */
+	bt_status_set_cmd_ret (err);
+}
+
 void strat_goto_forward_xy_abs_event (void *data)
 {
 	int16_t *arg = (int16_t*)data;
 	uint8_t err;
- 
+
 	interrupt_traj_reset();
 
 	trajectory_goto_forward_xy_abs(&mainboard.traj, arg[0], arg[1]);
@@ -166,7 +185,7 @@ void strat_goto_backward_xy_abs_event (void *data)
 {
 	int16_t *arg = (int16_t*)data;
 	uint8_t err;
- 
+
 	interrupt_traj_reset();
 
 	trajectory_goto_backward_xy_abs(&mainboard.traj, arg[0], arg[1]);
@@ -178,53 +197,3 @@ void strat_goto_backward_xy_abs_event (void *data)
 	/* return value */
 	bt_status_set_cmd_ret (err);
 }
-void strat_goto_avoid_event (void *data)
-{
-	int16_t *arg = (int16_t*)data;
-	uint8_t err;
- 
-	interrupt_traj_reset();
-
-	goto_and_avoid(arg[0], arg[1],  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
-
-	if (err != END_TRAJ && err != END_NEAR)
-		strat_hardstop();
-
-	/* return value */
-	bt_status_set_cmd_ret (err);
-}
-void strat_goto_avoid_forward_event (void *data)
-{
-	int16_t *arg = (int16_t*)data;
-	uint8_t err;
- 
-	interrupt_traj_reset();
-
-	goto_and_avoid_forward(arg[0], arg[1],  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
-
-	if (err != END_TRAJ && err != END_NEAR)
-		strat_hardstop();
-
-	/* return value */
-	bt_status_set_cmd_ret (err);
-}
-void strat_goto_avoid_backward_event (void *data)
-{
-	int16_t *arg = (int16_t*)data;
-	uint8_t err;
- 
-	interrupt_traj_reset();
-
-	goto_and_avoid_backward(arg[0], arg[1],  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
-
-	if (err != END_TRAJ && err != END_NEAR)
-		strat_hardstop();
-
-	/* return value */
-	bt_status_set_cmd_ret (err);
-}
-
-

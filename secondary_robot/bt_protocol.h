@@ -1,6 +1,6 @@
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -46,13 +46,15 @@ void bt_trajectory_goto_xy_abs (int16_t x, int16_t y, int16_t args_checksum);
 
 void bt_trajectory_goto_backward_xy_abs (int16_t x, int16_t y, int16_t args_checksum);
 
+void bt_trajectory_goto_xy_rel(int16_t x, int16_t y, int16_t args_checksum);
+
 void bt_trajectory_goto_forward_xy_abs (int16_t x, int16_t y, int16_t args_checksum);
 
-void bt_goto_and_avoid (int16_t x, int16_t y, int16_t args_checksum);
+uint8_t bt_goto_and_avoid (int16_t x, int16_t y, int16_t args_checksum);
 
-void bt_goto_and_avoid_forward (int16_t x, int16_t y, int16_t args_checksum);
+uint8_t bt_goto_and_avoid_forward (int16_t x, int16_t y, int16_t args_checksum);
 
-void bt_goto_and_avoid_backward (int16_t x, int16_t y, int16_t args_checksum);
+uint8_t bt_goto_and_avoid_backward (int16_t x, int16_t y, int16_t args_checksum);
 
 
 void bt_strat_exit (void);
@@ -64,6 +66,3 @@ void bt_strat_init (void);
 
 
 #endif /* __BT_PROTOCOL_H__ */
-
-
-

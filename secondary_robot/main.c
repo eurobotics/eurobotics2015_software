@@ -1,6 +1,6 @@
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -261,7 +261,7 @@ int main(void)
    /* UART */
    uart_init();
    uart_register_rx_event(CMDLINE_UART, emergency);
-#endif 
+#endif
 
    /* LOGS */
    error_register_emerg(mylog);
@@ -426,55 +426,90 @@ int main(void)
 	/* command line event */
    	scheduler_add_periodical_event_priority(cmdline_interact_nowait, NULL,
     		EVENT_PERIOD_CMDLINE / SCHEDULER_UNIT, EVENT_PRIORITY_CMDLINE);
-	
+
 	/* init bt_task */
-	end_bt_task_flag=0;
 	current_bt_task=0;
-	
+	strat_bt_goto_avoid_x = -1; strat_bt_goto_avoid_y = -1; strat_bt_goto_avoid_checksum = -1;
+
+
 	while(1)
 	{
+
 		switch(current_bt_task)
 		{
 			case  BT_TASK_NONE:
 			default:
-				ret=-1;
 				break;
-			
+
 			case  BT_TASK_PICK_CUP:
 				ret=pick_popcorn_cup();
 				break;
-			
+
 			case  BT_TASK_CARPET:
 				ret=extend_carpet();
 				break;
-			
+
 			case  BT_TASK_STAIRS:
 				ret=climb_stairs();
 				break;
-			
+
 			case  BT_TASK_BRING_CUP:
 				ret=bring_cup_to_cinema();
 				break;
-			
+
 			case  BT_TASK_CLAP:
 				ret=close_clapperboard();
 				break;
+
+			case  BT_GOTO:
+
+				//TODO: check task
+				ret = wait_traj_end(TRAJ_FLAGS_STD);
+				printf_P("BT_GOTO");
+
+				break;
+
+			case BT_GOTO_AVOID_FW:
+				//TODO: check task???????????
+				ret=bt_goto_and_avoid_forward(strat_bt_goto_avoid_x, strat_bt_goto_avoid_y, strat_bt_goto_avoid_checksum);
+				strat_bt_goto_avoid_x = -1;
+				strat_bt_goto_avoid_y = -1;
+				strat_bt_goto_avoid_checksum = -1;
+
+				break;
+
+			case BT_GOTO_AVOID_BW:
+				ret=bt_goto_and_avoid_backward (strat_bt_goto_avoid_x, strat_bt_goto_avoid_y, strat_bt_goto_avoid_checksum);
+				strat_bt_goto_avoid_x = -1;
+				strat_bt_goto_avoid_y = -1;
+				strat_bt_goto_avoid_checksum = -1;
+
+				break;
+
+			case BT_GOTO_AVOID:
+
+				printf_P("BT_GOTO_AVOID");
+
+				ret=bt_goto_and_avoid (strat_bt_goto_avoid_x, strat_bt_goto_avoid_y, strat_bt_goto_avoid_checksum);
+				strat_bt_goto_avoid_x = -1;
+				strat_bt_goto_avoid_y = -1;
+				strat_bt_goto_avoid_checksum = -1;
+
+				printf_P("BT_GOTO_AVOID	: %d",ret);
+				break;
 		}
-		
+
 		// Return value from the functions indicating finish, to inform main robot.
-		if(ret!=-1)
+		if(current_bt_task!=BT_TASK_NONE && ret != 0){
+
+			printf_P("Sending...");
+			time_wait_ms(200);
 			bt_status_set_cmd_ret (ret);
+
+			ret=0;
+			current_bt_task=BT_TASK_NONE;
+		}
 	}
 
    return 0;
 }
-
-
-
-
-
-
-
-
-
-

@@ -1,6 +1,6 @@
 /*
  *  Copyright Droids Corporation (2009)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -17,12 +17,12 @@
  *
  *  Revision : $Id$
  *
- *  Olivier MATZ <zer0@droids-corp.org> 
+ *  Olivier MATZ <zer0@droids-corp.org>
  */
 
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
- *  Javier Baliñas Santos <javier@arc-robots.org>
+ *  Javier Bali\F1as Santos <javier@arc-robots.org>
  *
  *  Code ported to family of microcontrollers dsPIC from
  *  commands_traj.c,v 1.7 2009/05/27 20:04:07 zer0 Exp.
@@ -1263,10 +1263,14 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
     else if (strcmp_P(res->arg1, PSTR("strat_smart")) == 0) {
 		if(res->arg2==1){
 			set_strat_sec_1();
+			strat_infos.strat_smart_sec = GET_NEW_TASK;
+
 		}
-		
-	
-        strat_smart();
+
+
+
+	   strat_smart_robot_2nd();
+        //strat_smart(MAIN_ROBOT);
     }
 
     printf_P(PSTR("subtraj returned %s\r\n"), get_err(err));
@@ -1335,20 +1339,20 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
         zone_num = ZONE_MY_HOME;
     else if (!strcmp_P(res->arg1, PSTR("stairs")))
         zone_num = ZONE_MY_STAIRS;
-		
+
 
 	printf_P(PSTR("\r\n"));
 	printf_P(PSTR("%d %s\r\n"),zone_num,numzone2name[zone_num]);
     if (zone_num < ZONES_MAX) {
-        err = strat_goto_zone(zone_num);
-        printf_P(PSTR("goto returned %s\r\n"), get_err(err));    
+        err = strat_goto_zone(zone_num,MAIN_ROBOT);
+        printf_P(PSTR("goto returned %s\r\n"), get_err(err));
 
        // err = strat_work_on_zone(zone_num);
         //printf_P(PSTR("work returned %s\r\n"), get_err(err));
     }
 
     trajectory_hardstop(&mainboard.traj);
- 
+
 }
 
 prog_char str_subtraj2_arg0[] = "subtraj";
@@ -1359,7 +1363,7 @@ parse_pgm_token_num_t cmd_subtraj2_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtr
 //parse_pgm_token_num_t cmd_subtraj2_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj2_result, arg3, INT32);
 //parse_pgm_token_num_t cmd_subtraj2_arg4 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj2_result, arg4, INT32);
 //parse_pgm_token_num_t cmd_subtraj2_arg5 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj2_result, arg5, INT32);
-	
+
 prog_char help_subtraj2[] = "Test sub-trajectories (a,b,c,d: specific params)";
 parse_pgm_inst_t cmd_subtraj2 = {
     .f = cmd_subtraj2_parsed, /* function to call */
@@ -1434,5 +1438,3 @@ parse_pgm_inst_t cmd_workonzone = {
         NULL,
     },
 };
-
-

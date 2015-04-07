@@ -1,6 +1,6 @@
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2012)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -62,14 +62,13 @@
 #include "sensor.h"
 #include "actuator.h"
 #include "beacon.h"
-#include "bt_protocol.h"
 
 #else
 
-/** 
-   XXX 
+/**
+   XXX
    strat.c is used for OA test for both robots.
-   We need define some robot dimensions here, depending on robot 
+   We need define some robot dimensions here, depending on robot
  */
 
 #ifndef IM_SECONDARY_ROBOT
@@ -112,7 +111,7 @@
 #define LIMIT_BBOX_X_UP			3000 - OBS_CLERANCE
 #define LIMIT_BBOX_X_DOWN		OBS_CLERANCE
 
-struct strat_infos strat_infos = { 
+struct strat_infos strat_infos = {
     /* conf */
     .conf = {
         .flags = 0,
@@ -137,24 +136,24 @@ struct strat_infos strat_infos = {
 	.zones[ZONE_POPCORNCUP_3]=        {ZONE_TYPE_POPCORNCUP, POPCORNCUP_CENTRE_X,     POPCORNCUP_CENTRE_Y,  	1350,       1650,    200,    500, POPCORNCUP_CENTRE_X-300, POPCORNCUP_CENTRE_Y	,                    0,     0,            0,					(9000*1000L),					MAIN_ROBOT},
 
    /*zones[W] =                 	{type, 				 x,         					y,	x_down,    x_up,   y_down,		 y_up,  init_x,       init_y, prio,         flags,        opp_time_zone_us	,	last_time_opp_here,	robot };  */
-	.zones[ZONE_MY_CINEMA_UP]=		{ZONE_TYPE_CINEMA,  MY_CINEMA_UP_X,    MY_CINEMA_UP_Y,     		 2600,        3000,    1200,    1600,3000-400-OBS_CLERANCE-50,  2000-400-(378/2) ,                    0,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-	.zones[ZONE_MY_CINEMA_DOWN]= 	{ZONE_TYPE_CINEMA,  MY_CINEMA_DOWN_X,    MY_CINEMA_DOWN_Y,     		2600,         3000,    400,   800,3000-400-OBS_CLERANCE-50, 400+(378/2) ,                    0,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-  .zones[ZONE_MY_STAIRS]=        {ZONE_TYPE_STAIRS,  MY_STAIRS_X,    MY_STAIRS_Y,   	1000,         1500,    1400,    2000,		MY_STAIRS_X,	1150,                    0,     0,            0,					(9000*1000L),					MAIN_ROBOT},
+	.zones[ZONE_MY_CINEMA_UP]=		{ZONE_TYPE_CINEMA,  MY_CINEMA_UP_X,    MY_CINEMA_UP_Y,     		 2600,        3000,    1200,    1600,3000-400-OBS_CLERANCE-50,  2000-400-(378/2) ,                    0,     0,            0,					(9000*1000L),					SEC_ROBOT},
+	.zones[ZONE_MY_CINEMA_DOWN]= 	{ZONE_TYPE_CINEMA,  MY_CINEMA_DOWN_X,    MY_CINEMA_DOWN_Y,     		2600,         3000,    400,   800,3000-400-OBS_CLERANCE-50, 400+(378/2) ,                    0,     0,            0,					(9000*1000L),					SEC_ROBOT},
+  .zones[ZONE_MY_STAIRS]=        {ZONE_TYPE_STAIRS,  MY_STAIRS_X,    MY_STAIRS_Y,   	1000,         1500,    1400,    2000,		MY_STAIRS_X,	1150,                    0,     0,            0,					(9000*1000L),					SEC_ROBOT},
 
   .zones[ZONE_MY_HOME]=        {ZONE_TYPE_HOME,  MY_HOME_X,    MY_HOME_Y, 	90,         650,    800,    1200,	650,	MY_HOME_Y,                    0,     0,            0,					(9000*1000L),					MAIN_ROBOT},
 
    /*zones[W] =                 {type,             x,        			y,        x_down,    x_up,   y_down, y_up,  init_x,       init_y, prio,         flags,        opp_time_zone_us,	last_time_opp_here,	robot };  */
    .zones[ZONE_MY_CLAP_1]=        {ZONE_TYPE_CLAP,  MY_CLAP_1_X,    CLAP_Y,     	180,      480,    0,    300, 	MY_CLAP_1_X,	LIMIT_BBOX_Y_DOWN,                   0,     0,            0,					(9000*1000L),					MAIN_ROBOT},
     .zones[ZONE_MY_CLAP_2]=        {ZONE_TYPE_CLAP,  MY_CLAP_2_X,     CLAP_Y,    	780,        1080,    0,    300, MY_CLAP_2_X,	LIMIT_BBOX_Y_DOWN,               0,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-    .zones[ZONE_MY_CLAP_3]=        {ZONE_TYPE_CLAP,  MY_CLAP_3_X,     CLAP_Y,    	 2230,    2530,    0,    300,   MY_CLAP_3_X,	LIMIT_BBOX_Y_DOWN,       0,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-  
+    .zones[ZONE_MY_CLAP_3]=        {ZONE_TYPE_CLAP,  MY_CLAP_3_X,     CLAP_Y,    	 2230,    2530,    0,    300,   MY_CLAP_3_X,	LIMIT_BBOX_Y_DOWN,       0,     0,            0,					(9000*1000L),					SEC_ROBOT},
+
    .zones[ZONE_MY_STAIRWAY]=     {ZONE_TYPE_STAIRWAY, MY_STAIRS_X,    MY_STAIRS_Y,  	1000,         1500,    1400,    2000,      0,            0,                    0,     0,            0,					(9000*1000L),					MAIN_ROBOT},
-   
+
 	};
 
 /* points we get from each zone */
 /* TODO*/
-uint8_t strat_zones_points[ZONES_MAX]; /* @supernudo TODO = {3,3,3,3,0,0,0,1,1,1,1,1,1,1,1,1,1,2,2,0,0,6,6,6}; */
+uint8_t strat_zones_points[ZONES_MAX]= {3,3,3,3,0,0,0,1,1,1,1,1,1,1,1,1,1,2,2,0,0,6,6,6};
 
 /*************************************************************/
 
@@ -174,10 +173,9 @@ void strat_set_bounding_box(uint8_t type)
                 strat_infos.area_bbox.y1,
                 strat_infos.area_bbox.x2,
                 strat_infos.area_bbox.y2);
-
 #ifdef HOST_VERSION_OA_TEST
 
-  printf("boundingbox at: %d %d %d %d\n", 
+  printf("boundingbox at: %d %d %d %d\n",
         strat_infos.area_bbox.x1,
                 strat_infos.area_bbox.y1,
                 strat_infos.area_bbox.x2,
@@ -231,10 +229,9 @@ void strat_dump_infos(const char *caller)
 
     printf(PSTR("%s() dump strat infos:\r\n"), caller);
 
-
     /* add here print infos */
 	printf_P("%d %d\n", opponent1_is_infront(),opponent2_is_infront());
-	
+
 }
 
 /* init current area state before a match. Dump update user conf
@@ -246,6 +243,7 @@ void strat_reset_infos(void)
     strat_infos.current_zone = ZONES_MAX;
     strat_infos.goto_zone = ZONES_MAX;
     strat_infos.last_zone = ZONES_MAX;
+	strat_infos.strat_smart_sec= WAIT_FOR_ORDER;
 
     /* add here other infos resets */
 }
@@ -273,7 +271,7 @@ void strat_init(void)
     interrupt_traj_reset();
 
     /* used in strat_base for END_TIMER */
-    mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BEACON;
+    mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BEACON | DO_BT_PROTO;
 }
 
 
@@ -312,14 +310,16 @@ void strat_exit(void)
 }
 
 /* called periodically */
-void strat_event(void *dummy)
-{
+void strat_event(void *dummy) {
     /* limit speed when opponent are close */
     strat_limit_speed();
 
-    /* tracking of zones where opp has been working */
-    strat_opp_tracking();
+	//printf_P(PSTR("\r\n\r\nStrat event\r\n"));
+strat_smart_robot_2nd();
 }
+
+    /* tracking of zones where opp has been working */
+    //strat_opp_tracking();
 
 /* dump state (every 5 s max) XXX */
 #define DUMP_RATE_LIMIT(dump, last_print)        \
@@ -340,19 +340,27 @@ void strat_event(void *dummy)
 /* Strat main loop */
 uint8_t strat_main(void)
 {
+
     uint8_t err, i;
 
     strat_begin();
     strat_limit_speed_enable ();
-	
+
     /* auto-play  */
 	set_strat_sec_1();
     DEBUG(E_USER_STRAT, PSTR("\r\n\r\nStrat smart"));
-	
-    do{
-        err = strat_smart();
-    }while((err & END_TIMER) == 0);
-	
+
+	strat_infos.strat_smart_sec = GET_NEW_TASK;
+    /*do{
+
+        err = strat_smart(MAIN_ROBOT);
+    }while((err & END_TIMER) == 0);*/
+	while(1){
+
+	time_wait_ms(20);
+	//printf_P(PSTR("\r\n\r\nStrat smart\r\n"));
+}
+
 
    strat_exit();
    return 0;
@@ -361,5 +369,3 @@ uint8_t strat_main(void)
 
 
 #endif /* HOST_VERSION_OA_TEST */
-
-

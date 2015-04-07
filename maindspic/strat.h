@@ -1,6 +1,6 @@
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2012)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -56,7 +56,7 @@
 #define MY_STAND_7_X			90
 #define MY_STAND_7_Y			2000-1850
 #define MY_STAND_8_X			90
-#define MY_STAND_8_Y			2000-1750	
+#define MY_STAND_8_Y			2000-1750
 
 #define OPP_STAND_1_X			3000-90
 #define OPP_STAND_1_Y			2000-200
@@ -152,10 +152,10 @@
 #define CENTER_Y 1000
 
 #define SIDE_REAR		I2C_SIDE_REAR
-#define SIDE_FRONT 	    I2C_SIDE_FRONT 
+#define SIDE_FRONT 	    I2C_SIDE_FRONT
 #define SIDE_MAX		I2C_SIDE_MAX
 
-#define OPPOSITE_SIDE(side) ((side==I2C_SIDE_FRONT)? (I2C_SIDE_REAR) : (I2C_SIDE_FRONT))	
+#define OPPOSITE_SIDE(side) ((side==I2C_SIDE_FRONT)? (I2C_SIDE_REAR) : (I2C_SIDE_FRONT))
 
 #define GO_FORWARD	    0
 #define GO_BACKWARD	    1
@@ -247,8 +247,8 @@
 
 
 
-/************************************************************* 
- * Strat data structures 
+/*************************************************************
+ * Strat data structures
  ************************************************************/
 
 /* boulding box */
@@ -318,19 +318,19 @@ typedef struct {
 	#define ZONE_CHECKED_OPP	2
 	#define ZONE_SEC_ROBOT	   	4
 	#define ZONE_AVOID		   	8
-  
+
 #ifndef HOST_VERSION_OA_TEST
 	/* opponent statistics */
 	microseconds opp_time_zone_us;
 	microseconds last_time_opp_here; 	/*in us, since beginning of the match*/
 #endif
-	
+
 	/* which robots can perform this action */
 	uint8_t robot;
 	#define MAIN_ROBOT  0
 	#define SEC_ROBOT   1
 	#define BOTH_ROBOTS 2
-	
+
 } strat_zones_t;
 
 /* information about strat stuff */
@@ -345,7 +345,7 @@ struct strat_infos {
 
 	/* points areas */
 	strat_zones_t zones[ZONES_MAX];
-	
+
 	/* our zone position */
 	uint8_t current_zone;
 	uint8_t goto_zone;
@@ -363,6 +363,19 @@ struct strat_infos {
 
 	/* opponent statistics */
 	uint8_t opp_score;
+	/* state for robot_2nd strategy*/
+	uint8_t strat_smart_sec;
+
+	#define WAIT_FOR_ORDER 0
+	#define GO_TO_ZONE 1
+	#define WORK_ON_ZONE 2
+	#define GET_NEW_TASK 3
+	#define WAIT_ACK_GOTO 4
+	#define WAIT_ACK_WORK 5
+
+
+	int8_t strat_smart_sec_task;
+
 };
 
 extern struct strat_infos strat_infos;
@@ -375,12 +388,12 @@ extern uint8_t strat_zones_points[ZONES_MAX];
 
 #ifndef HOST_VERSION_OA_TEST
 
-/************************************************************* 
+/*************************************************************
  * Functions headers of strat files
  ************************************************************/
 
 /********************************************
- * in strat.c 
+ * in strat.c
  *******************************************/
 void strat_set_bounding_box(uint8_t type);
 
@@ -396,27 +409,28 @@ void strat_event(void *dummy);
 uint8_t strat_main(void);
 
 
+uint8_t has_2nd_finished(void);
 /********************************************
- * in strat_spotlight.c 
+ * in strat_spotlight.c
  *******************************************/
 
 
 /********************************************
- * in strat_popcorn.c 
+ * in strat_popcorn.c
  *******************************************/
 
- 
+
 /********************************************
- * in strat_main.c 
+ * in strat_main.c
  *******************************************/
 
 uint8_t strat_main_loop(void);
 
 /* return new work zone, -1 if any zone is found */
-int8_t strat_get_new_zone(void);
+int8_t strat_get_new_zone(uint8_t robot);
 
 /* return END_TRAJ if zone is reached */
-uint8_t strat_goto_zone(uint8_t zone_num);
+uint8_t strat_goto_zone(uint8_t zone_num,uint8_t robot);
 
 /* return END_TRAJ if the work is done */
 uint8_t strat_work_on_zone(uint8_t zone_num);
@@ -426,8 +440,9 @@ void state_debug_wait_key_pressed(void);
 
 /* smart play */
 //#define DEBUG_STRAT_SMART
-uint8_t strat_smart(void);
+uint8_t strat_smart(uint8_t robot);
 void recalculate_priorities(void);
+void strat_smart_robot_2nd(void);
 
 /* tracking of zones where opp has been working */
 void strat_opp_tracking (void);
