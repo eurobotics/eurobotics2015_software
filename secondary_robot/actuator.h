@@ -35,11 +35,42 @@ int32_t encoders_update_beacon_speed(void * number);
 /* read actual beacon speed */
 int32_t encoders_get_beacon_speed(void * dummy);
 
-uint8_t blade_hide (void);
 
-uint8_t blade_push_fire (void);
+/* set arm position */
 
-void shoot_net (void);
+/* arm side */
+#define ARM_TYPE_LEFT	0
+#define ARM_TYPE_RIGHT	1
+
+/* left arm positions */
+#define ARM_POS_PICKUP_CARPET_L		500
+#define ARM_POS_PUT_CARPET_L		500	
+#define ARM_POS_CLOSE_CLAPERBOARD_L	500
+
+/* right arm positions */
+#define ARM_POS_PICKUP_CARPET_L		500
+#define ARM_POS_PUT_CARPET_L		500
+#define ARM_POS_CLOSE_CLAPERBOARD_L	500
+
+
+void arm_set_position (uint8_t type, uint16_t pos);
+
+/* set cup clamp position */
+
+#define CUP_CLAMP_POS_HIDDEN	500
+#define CUP_CLAMP_POS_OPEN		500
+#define CUP_CLAMP_POS_CLOSE		500
+
+void cup_clamp_set_position (uint16_t pos);
+
+
+/* set auxiliary wheels */
+
+#define AUX_WHEELS_POS_HIDDEN		500
+#define AUX_WHEELS_POS_ROLLER		500
+#define AUX_WHEELS_POS_CLIMB_STAIRS	500
+
+void aux_wheels_set_position (uint16_t pos);
 
 
 #endif

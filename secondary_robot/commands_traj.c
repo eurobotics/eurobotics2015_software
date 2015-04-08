@@ -1053,7 +1053,7 @@ static void cmd_bt_task_parsed(void *parsed_result, void *data)
 	struct cmd_bt_task_result *res = parsed_result;
 
 
-	/*TODO check args checksum
+	/*TODO check args checksum */
 
 		/* set ACK */
 		bt_status_set_cmd_ack(0);

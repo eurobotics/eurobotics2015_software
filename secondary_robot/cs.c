@@ -283,7 +283,7 @@ void maindspic_cs_init(void)
 	pid_set_out_shift(&mainboard.distance.pid, 6);
 	pid_set_derivate_filter(&mainboard.distance.pid, 1);
 
-	/* TODO QUADRAMP */
+	/* QUADRAMP */
 	quadramp_init(&mainboard.distance.qr);
 	quadramp_set_1st_order_vars(&mainboard.distance.qr, SPEED_DIST_FAST, SPEED_DIST_FAST); 	/* set speed */
 	quadramp_set_2nd_order_vars(&mainboard.distance.qr, ACC_DIST, ACC_DIST); 	/* set accel */

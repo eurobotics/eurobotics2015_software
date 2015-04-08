@@ -119,10 +119,10 @@
  * 20000/163.5 -> 1201 imps/10 mm */
 
 /* increase it to go further */
-#define IMP_ENCODERS 		  	    5000.0
+#define IMP_ENCODERS 		  	    1000.0
 #define WHEEL_DIAMETER_MM 		    53.0
 #define WHEEL_PERIM_MM 	    	    (WHEEL_DIAMETER_MM * M_PI)
-#define IMP_COEF 			        10.0
+#define IMP_COEF 			        50.0 /* XXX HACK for use the same PID gains of last year */
 #define DIST_IMP_MM 		    	(((IMP_ENCODERS*4) / WHEEL_PERIM_MM) * IMP_COEF)
 
 /* encoders handlers */
@@ -135,8 +135,8 @@
 #define MOTOR_3     	((void *)&gen.pwm_mc_3)
 
 #define BEACON_MOTOR	MOTOR_1
-#define LEFT_MOTOR	MOTOR_2
-#define RIGHT_MOTOR	MOTOR_3
+#define LEFT_MOTOR		MOTOR_2
+#define RIGHT_MOTOR		MOTOR_3
 
 
 /** ERROR NUMS */
@@ -275,9 +275,11 @@ struct mainboard
 	int32_t pwm_l;  /* current left dac */
 	int32_t pwm_r;  /* current right dac */
 
-	/* strat events */
-	int8_t  strat_event;
-	int16_t strat_event_data[3];
+	/* strat bt trasks */
+	int8_t  strat_bt_task_id;
+	int8_t  strat_bt_task_id_rqst;
+	int8_t  strat_bt_task_id_changed;
+	int16_t strat_bt_task_args[5];
 };
 
 

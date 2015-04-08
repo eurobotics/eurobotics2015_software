@@ -182,3 +182,116 @@ uint8_t close_clapperboard(void)
     printf_P(PSTR("clapperboard\r\n"));
     return ret;
 }
+
+
+/******************  BT TASKS ************************************************/
+
+#if 0
+/* set current bt task */
+void strat_set_bt_task (uint8_t task, int16_t )
+{
+	uint8_t flags;
+	IRQ_LOCK (flags);
+	maindspic.strat_bt_task = task;
+	IRQ_UNLOCK (flags);
+}
+
+void strat_bt_task_interrupt (void)
+{
+
+}
+
+
+/* never returns */
+void strat_bt_task_scheduler (void)
+{
+
+	/* init bt_task */
+	current_bt_task=0;
+	strat_bt_goto_avoid_x = -1; strat_bt_goto_avoid_y = -1; strat_bt_goto_avoid_checksum = -1;
+
+
+	while(1)
+	{
+
+		switch(current_bt_task)
+		{
+			case  BT_TASK_NONE:
+			default:
+				break;
+
+			case  BT_TASK_PICK_CUP:
+				ret=pick_popcorn_cup();
+				break;
+
+			case  BT_TASK_CARPET:
+				ret=extend_carpet();
+				break;
+
+			case  BT_TASK_STAIRS:
+				ret=climb_stairs();
+				break;
+
+			case  BT_TASK_BRING_CUP:
+				ret=bring_cup_to_cinema();
+				break;
+
+			case  BT_TASK_CLAP:
+				ret=close_clapperboard();
+				break;
+
+			case  BT_GOTO:
+
+				//TODO: check task
+				ret = wait_traj_end(TRAJ_FLAGS_STD);
+				printf_P("BT_GOTO");
+
+				break;
+
+			case BT_GOTO_AVOID_FW:
+				//TODO: check task???????????
+				ret=bt_goto_and_avoid_forward(strat_bt_goto_avoid_x, strat_bt_goto_avoid_y, strat_bt_goto_avoid_checksum);
+				strat_bt_goto_avoid_x = -1;
+				strat_bt_goto_avoid_y = -1;
+				strat_bt_goto_avoid_checksum = -1;
+
+				break;
+
+			case BT_GOTO_AVOID_BW:
+				ret=bt_goto_and_avoid_backward (strat_bt_goto_avoid_x, strat_bt_goto_avoid_y, strat_bt_goto_avoid_checksum);
+				strat_bt_goto_avoid_x = -1;
+				strat_bt_goto_avoid_y = -1;
+				strat_bt_goto_avoid_checksum = -1;
+
+				break;
+
+			case BT_GOTO_AVOID:
+
+				printf_P("BT_GOTO_AVOID");
+
+				ret=bt_goto_and_avoid (strat_bt_goto_avoid_x, strat_bt_goto_avoid_y, strat_bt_goto_avoid_checksum);
+				strat_bt_goto_avoid_x = -1;
+				strat_bt_goto_avoid_y = -1;
+				strat_bt_goto_avoid_checksum = -1;
+
+				printf_P("BT_GOTO_AVOID	: %d",ret);
+				break;
+		}
+
+		// Return value from the functions indicating finish, to inform main robot.
+		if(current_bt_task!=BT_TASK_NONE && ret != 0){
+
+			printf_P("Sending...");
+			time_wait_ms(200);
+			bt_status_set_cmd_ret (ret);
+
+			ret=0;
+			current_bt_task=BT_TASK_NONE;
+		}
+	}
+}
+
+#endif
+
+
+
