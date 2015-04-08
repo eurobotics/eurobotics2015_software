@@ -1586,13 +1586,13 @@ uint8_t do_build_spotlight_secondary(stands_system_t *ss, stands_system_t *ss_sl
 			ret = stands_tower_clamps_test_traj_end(&slavedspic.stands_tower_clamps);
 
 			if((ret & END_TRAJ) && (time_get_us2() - ss->us > 200000L))
-				ss->substate = LIFT_ELEVATOR;
+				ss->substate = INIT_LIFT_ELEVATOR;
 
 			break;
 
 		case INIT_LIFT_ELEVATOR:
 			stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, 0);
-			ss->substate = WAITING_ELEVATOR_LIFTED;
+			ss->substate = INIT_WAITING_ELEVATOR_LIFTED;
 
 			break;
 
