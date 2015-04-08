@@ -187,12 +187,12 @@ void bt_beacon_status_parser (int16_t c)
 //#define debug_beacon_parser
 
 	static uint8_t state = 0;
-   static uint16_t i = 0;
+    static uint16_t i = 0;
 	static struct bt_beacon_status_ans ans;
 	static uint8_t *data = (uint8_t *) (&ans);
 
 	uint8_t sync_header[] = BT_BEACON_SYNC_HEADER;
-   uint8_t flags = 0;
+    uint8_t flags = 0;
 
 	c &= 0x00FF;
 
@@ -309,7 +309,6 @@ error_checksum:
 /* send command, and return after received ack */
 void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 {
-
     uint8_t flags;
 	//DEBUG (E_USER_BT_PROTO, "TX cmd: id %d arg0 %d arg1 %d", cmd_id, arg0, arg1);
 
@@ -372,34 +371,47 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 //	return (robot_2nd.cmd_args_checksum_send == robot_2nd.cmd_args_checksum_recv);
 //}
 
+
 /* return 1 if ack is received */
 uint8_t bt_robot_2nd_is_ack_received (void) {
-	return (robot_2nd.cmd_ret != 0xFF);
+	if (robot_2nd.cmd_ret != 0xFF)
+	{
+		if(robot_2nd.cmd_ret == 0)
+		{
+			return 1;
+		}
+		else
+		{
+			// Communication error. Repeat command
+			return robot_2nd.cmd_ret;
+		}
+	}
+	return 0;
 }
+
+
 /* return 1 if ret is received */
 uint8_t bt_robot_2nd_is_ret_received (void) {
 	return (robot_2nd.cmd_ret != 0x00);
 }
 
 
-/* send command, and return after received ack */
-uint8_t bt_robot_2nd_cmd (uint8_t cmd_id, int16_t arg0, int16_t arg1)
+/* XXX check if for robot 2nd ended */
+uint8_t bt_robot_2nd_test_end (void)
 {
-
-	bt_robot_2nd_cmd_no_wait_ack (cmd_id, arg0, arg1);
-	uint8_t _ret=robot_2nd.cmd_ret;
-
-	//DEBUG (E_USER_STRAT, "1- bt_robot_2nd_cmd %d",_ret);
-
-
+	return robot_2nd.cmd_ret;
 }
 
-/*uint8_t is (uint8_t cmd_id, int16_t arg0, int16_t arg1){
 
-	uint8_t ret;
-	time_wait_ms(200);
+/* send command, and return after received ack */
+/*uint8_t bt_robot_2nd_cmd (uint8_t cmd_id, int16_t arg0, int16_t arg1)
+{
+	int8_t ret;
+	
+	bt_robot_2nd_cmd_no_wait_ack (cmd_id, arg0, arg1);
+	DEBUG (E_USER_STRAT, "cmd send");
 
-	//1 = ack received, 0 = timeout
+	//1 = condition, 0 = timeout
 	ret = BT_WAIT_COND_OR_TIMEOUT( bt_robot_2nd_is_ack_received(), 250);
 
 	if (!ret) {
@@ -407,13 +419,13 @@ uint8_t bt_robot_2nd_cmd (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 		ret = END_ERROR;
 	}
 	else {
+		DEBUG (E_USER_STRAT, "ACK received (%d)", robot_2nd.cmd_ret);
 		ret = robot_2nd.cmd_ret;
-		DEBUG (E_USER_STRAT, "2- ACK received (%d)", ret);
 	}
 
-	DEBUG (E_USER_STRAT, "3- bt_robot_2nd_cmd %d",robot_2nd.cmd_ret);
 	return ret;
-}
+}*/
+
 
 /* wait for robot 2nd ends */
 uint8_t bt_robot_2nd_wait_end (void)
@@ -429,63 +441,67 @@ uint8_t bt_robot_2nd_wait_end (void)
 	return ret;
 }
 
-
-/* XXX check if for robot 2nd ended */
-uint8_t bt_robot_2nd_test_end (void)
+/* wait for robot 2nd ack */
+uint8_t bt_robot_2nd_wait_ack (void)
 {
+	time_wait_ms(200);
+	while(bt_robot_2nd_is_ack_received ()==0);
+	
+	DEBUG (E_USER_STRAT, "RET:  (%d)", robot_2nd.cmd_ret);
+
 	return robot_2nd.cmd_ret;
 }
 
 /* set color */
-inline uint8_t bt_robot_2nd_set_color (void) {
-	return bt_robot_2nd_cmd (BT_SET_COLOR, 0, 0);
+inline void bt_robot_2nd_set_color (void) {
+	bt_robot_2nd_cmd_no_wait_ack (BT_SET_COLOR, 0, 0);
 }
 
 /* auto set possition */
-inline uint8_t bt_robot_2nd_autopos (void) {
-	return bt_robot_2nd_cmd (BT_AUTOPOS, 0, 0);
+inline void bt_robot_2nd_autopos (void) {
+	bt_robot_2nd_cmd_no_wait_ack (BT_AUTOPOS, 0, 0);
 }
 
 /* goto xy_abs */
-inline uint8_t bt_robot_2nd_goto_xy_abs (int16_t x, int16_t y) {
-	return bt_robot_2nd_cmd (BT_GOTO_XY_ABS, x, y);
+inline void bt_robot_2nd_goto_xy_abs (int16_t x, int16_t y) {
+	bt_robot_2nd_cmd_no_wait_ack (BT_GOTO_XY_ABS, x, y);
 }
 /* goto xy_rel */
-inline uint8_t bt_robot_2nd_goto_xy_rel (int16_t x, int16_t y) {
-	return bt_robot_2nd_cmd (BT_GOTO_XY_REL, x, y);
+inline void bt_robot_2nd_goto_xy_rel (int16_t x, int16_t y) {
+	bt_robot_2nd_cmd_no_wait_ack (BT_GOTO_XY_REL, x, y);
 }
-inline uint8_t bt_robot_2nd_goto_forward_xy_abs (int16_t x, int16_t y) {
-	return bt_robot_2nd_cmd (BT_GOTO_FW_XY_ABS, x, y);
+inline void bt_robot_2nd_goto_forward_xy_abs (int16_t x, int16_t y) {
+	bt_robot_2nd_cmd_no_wait_ack (BT_GOTO_FW_XY_ABS, x, y);
 }
-inline uint8_t bt_robot_2nd_goto_backward_xy_abs (int16_t x, int16_t y) {
-	return bt_robot_2nd_cmd (BT_GOTO_BW_XY_ABS, x, y);
+inline void bt_robot_2nd_goto_backward_xy_abs (int16_t x, int16_t y) {
+	bt_robot_2nd_cmd_no_wait_ack (BT_GOTO_BW_XY_ABS, x, y);
 }
 
-inline uint8_t bt_robot_2nd_goto_and_avoid (int16_t x, int16_t y) {
-	return bt_robot_2nd_cmd (BT_GOTO_AVOID, x, y);
+inline void bt_robot_2nd_goto_and_avoid (int16_t x, int16_t y) {
+	bt_robot_2nd_cmd_no_wait_ack (BT_GOTO_AVOID, x, y);
 }
-inline uint8_t bt_robot_2nd_goto_and_avoid_forward (int16_t x, int16_t y) {
-	return bt_robot_2nd_cmd (BT_GOTO_AVOID_FW, x, y);
+inline void bt_robot_2nd_goto_and_avoid_forward (int16_t x, int16_t y) {
+	bt_robot_2nd_cmd_no_wait_ack (BT_GOTO_AVOID_FW, x, y);
 }
-inline uint8_t bt_robot_2nd_goto_and_avoid_backward(int16_t x, int16_t y) {
-	return bt_robot_2nd_cmd (BT_GOTO_AVOID_BW, x, y);
+inline void bt_robot_2nd_goto_and_avoid_backward(int16_t x, int16_t y) {
+	bt_robot_2nd_cmd_no_wait_ack (BT_GOTO_AVOID_BW, x, y);
 }
 
 /* bt_tasks */
 inline void bt_robot_2nd_bt_task_pick_cup (void) {
- bt_robot_2nd_cmd(BT_PICK_CUP,0,0);
+ bt_robot_2nd_cmd_no_wait_ack(BT_PICK_CUP,0,0);
 }
 inline void bt_robot_2nd_bt_task_carpet(void) {
- bt_robot_2nd_cmd(BT_CARPET,0,0);
+ bt_robot_2nd_cmd_no_wait_ack(BT_CARPET,0,0);
 }
 inline void bt_robot_2nd_bt_task_stairs(void) {
- bt_robot_2nd_cmd(BT_STAIRS,0,0);
+ bt_robot_2nd_cmd_no_wait_ack(BT_STAIRS,0,0);
 }
 inline void bt_robot_2nd_bt_task_bring_cup_cinema(void) {
- bt_robot_2nd_cmd(BT_BRING_CUP_CINEMA,0,0);
+ bt_robot_2nd_cmd_no_wait_ack(BT_BRING_CUP_CINEMA,0,0);
 }
 inline void bt_robot_2nd_bt_task_clapperboard(void) {
- bt_robot_2nd_cmd(BT_CLAPPERBOARD,0,0);
+ bt_robot_2nd_cmd_no_wait_ack(BT_CLAPPERBOARD,0,0);
 }
 
 /* request opponent position */

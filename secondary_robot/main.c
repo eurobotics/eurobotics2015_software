@@ -434,7 +434,6 @@ int main(void)
 
 	while(1)
 	{
-
 		switch(current_bt_task)
 		{
 			case  BT_TASK_NONE:
@@ -462,10 +461,8 @@ int main(void)
 				break;
 
 			case  BT_GOTO:
-
-				//TODO: check task
+				//TODO: check task flag
 				ret = wait_traj_end(TRAJ_FLAGS_STD);
-				printf_P("BT_GOTO");
 
 				break;
 
@@ -487,26 +484,20 @@ int main(void)
 				break;
 
 			case BT_GOTO_AVOID:
-
 				printf_P("BT_GOTO_AVOID");
-
 				ret=bt_goto_and_avoid (strat_bt_goto_avoid_x, strat_bt_goto_avoid_y, strat_bt_goto_avoid_checksum);
 				strat_bt_goto_avoid_x = -1;
 				strat_bt_goto_avoid_y = -1;
 				strat_bt_goto_avoid_checksum = -1;
-
-				printf_P("BT_GOTO_AVOID	: %d",ret);
+				printf_P("\nBT_GOTO_AVOID	: %d\n",ret);
 				break;
 		}
 
 		// Return value from the functions indicating finish, to inform main robot.
 		if(current_bt_task!=BT_TASK_NONE && ret != 0){
 
-			printf_P("Sending...");
 			time_wait_ms(200);
 			bt_status_set_cmd_ret (ret);
-
-			ret=0;
 			current_bt_task=BT_TASK_NONE;
 		}
 	}

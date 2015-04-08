@@ -842,13 +842,19 @@ static void cmd_robot_2nd_parsed(void * parsed_result, void * data)
 		wt11_close_link_mux(robot_2nd.link_id);
 #endif
     else if (!strcmp_P(res->arg1, "color")) {
-		if (bt_robot_2nd_set_color ())
+		bt_robot_2nd_set_color ();
+		
+		/* wait until command has been received */
+		if (bt_robot_2nd_wait_ack()!=0)
 			printf_P(PSTR("bt cmd ERROR"));
 	}
 
     else if (!strcmp_P(res->arg1, "autopos")) {
 
-		if(bt_robot_2nd_autopos ())
+		bt_robot_2nd_autopos ();
+		
+		/* wait until command has been received */
+		if (bt_robot_2nd_wait_ack()!=0)
 			printf_P(PSTR("bt cmd ERROR"));
 
 		/* wait end traj */
@@ -929,65 +935,66 @@ static void cmd_robot_2nd_goto_parsed(void * parsed_result, void * data)
 
     if (!strcmp_P(res->arg1, PSTR("a_rel")))
     {
-        //err = bt_robot_2nd_goto_a_rel(res->arg2);
+        //bt_robot_2nd_goto_a_rel(res->arg2);
     }
     else if (!strcmp_P(res->arg1, PSTR("d_rel")))
     {
-        //err = bt_robot_2nd_goto_d_rel(res->arg2);
+        //bt_robot_2nd_goto_d_rel(res->arg2);
     }
     else if (!strcmp_P(res->arg1, PSTR("a_abs")))
     {
-        //err = bt_robot_2nd_goto_a_abs(res->arg2);
+        //bt_robot_2nd_goto_a_abs(res->arg2);
     }
     else if (!strcmp_P(res->arg1, PSTR("a_to_xy")))
     {
-        //err = bt_robot_2nd_goto_turnto_xy(res->arg2, res->arg3);
+        //bt_robot_2nd_goto_turnto_xy(res->arg2, res->arg3);
     }
     else if (!strcmp_P(res->arg1, PSTR("a_behind_xy")))
     {
-        //err = bt_robot_2nd_goto_turnto_xy_behind(res->arg2, res->arg3);
+        //bt_robot_2nd_goto_turnto_xy_behind(res->arg2, res->arg3);
     }
     else if (!strcmp_P(res->arg1, PSTR("xy_rel")))
     {
-        //err = bt_robot_2nd_goto_xy_rel(res->arg2, res->arg3);
-    }
-    else if (!strcmp_P(res->arg1, PSTR("xy_abs")))
-    {
-        err = bt_robot_2nd_goto_xy_abs(res->arg2, res->arg3);
-    }
-    else if (!strcmp_P(res->arg1, PSTR("avoid")))
-    {
-        err = bt_robot_2nd_goto_and_avoid(res->arg2, res->arg3);
-    }
-    else if (!strcmp_P(res->arg1, PSTR("avoid_fw")))
-    {
-        err = bt_robot_2nd_goto_and_avoid_forward(res->arg2, res->arg3);
-    }
-    else if (!strcmp_P(res->arg1, PSTR("avoid_bw")))
-    {
-        err = bt_robot_2nd_goto_and_avoid_backward(res->arg2, res->arg3);
-    }
-    else if (!strcmp_P(res->arg1, PSTR("xy_abs_fow")))
-    {
-        err = bt_robot_2nd_goto_forward_xy_abs(res->arg2, res->arg3);
-    }
-    else if (!strcmp_P(res->arg1, PSTR("xy_abs_back")))
-    {
-        err = bt_robot_2nd_goto_backward_xy_abs(res->arg2, res->arg3);
+        //bt_robot_2nd_goto_xy_rel(res->arg2, res->arg3);
     }
     else if (!strcmp_P(res->arg1, PSTR("da_rel")))
     {
-        //err = bt_robot_2nd_goto_d_a_rel(res->arg2, res->arg3);
+        //bt_robot_2nd_goto_d_a_rel(res->arg2, res->arg3);
+    }
+    
+    
+    else if (!strcmp_P(res->arg1, PSTR("xy_abs")))
+    {
+        bt_robot_2nd_goto_xy_abs(res->arg2, res->arg3);
+    }
+    else if (!strcmp_P(res->arg1, PSTR("avoid")))
+    {
+        bt_robot_2nd_goto_and_avoid(res->arg2, res->arg3);
+    }
+    else if (!strcmp_P(res->arg1, PSTR("avoid_fw")))
+    {
+        bt_robot_2nd_goto_and_avoid_forward(res->arg2, res->arg3);
+    }
+    else if (!strcmp_P(res->arg1, PSTR("avoid_bw")))
+    {
+        bt_robot_2nd_goto_and_avoid_backward(res->arg2, res->arg3);
+    }
+    else if (!strcmp_P(res->arg1, PSTR("xy_abs_fow")))
+    {
+        bt_robot_2nd_goto_forward_xy_abs(res->arg2, res->arg3);
+    }
+    else if (!strcmp_P(res->arg1, PSTR("xy_abs_back")))
+    {
+        bt_robot_2nd_goto_backward_xy_abs(res->arg2, res->arg3);
     }
 
-	/* check if command has been received */
-	DEBUG (E_USER_STRAT, "4- cmd_robot_2nd_goto_parsed %d",err);
-	if (err)
+	/* wait until command has been received */
+	if (bt_robot_2nd_wait_ack()!=0)
 		printf_P(PSTR("bt cmd ERROR"));
 
 	/* wait end traj */
 	err = bt_robot_2nd_wait_end();
-     printf_P(PSTR("traj returned %s\r\n"), get_err(err));
+    printf_P(PSTR("traj returned %s\r\n"), get_err(err));
 
 }
 
@@ -1089,6 +1096,14 @@ static void cmd_robot_2nd_bt_task_parsed(void * parsed_result, void * data)
     {
         bt_robot_2nd_bt_task_clapperboard();
 	}
+	
+	
+	/* wait until command has been received */
+	bt_robot_2nd_wait_ack();
+		
+	/* wait end traj */
+	err = bt_robot_2nd_wait_end();
+    printf_P(PSTR("traj returned %s\r\n"), get_err(err));
 }
 
 prog_char str_robot_2nd_bt_task_arga[] = "robot_2nd";
