@@ -174,14 +174,14 @@ void io_pins_init(void)
 
    /* XXX encoder 1 channels has been inverted for march with the other one */
 
-   _QEA1R    = 20;   /* QEA1 <- RP21(RC5) <- ENC_1_CHA */
+   _QEA1R    = 21;   /* QEA1 <- RP21(RC5) <- ENC_1_CHA */
    _TRISC5   = 1;
-   _QEB1R    = 21;   /* QEB1 <- RP20(RC4) <- ENC_1_CHB */
+   _QEB1R    = 20;   /* QEB1 <- RP20(RC4) <- ENC_1_CHB */
    _TRISC4   = 1;
 
-   _QEA2R    = 19;   /* QEA2 <- RP19(RC3) <- ENC_2_CHA */
+   _QEA2R    = 4;   /* QEA2 <- RP19(RC3) <- ENC_2_CHA */
    _TRISC3   = 1;
-   _QEB2R    = 4;   /* QEB2 <- RP4(RB4)  <- ENC_2_CHB */
+   _QEB2R    = 19;   /* QEB2 <- RP4(RB4)  <- ENC_2_CHB */
    _TRISB4   = 1;
 
    /* ENC 3 */
@@ -237,15 +237,13 @@ int main(void)
    memset(&beaconboard, 0, sizeof(beaconboard));
    memset(&robot_2nd, 0, sizeof(robot_2nd));
 
-   mainboard.strat_event = -1;
-
    /* init flags */
 #ifdef HOST_VERSION
   mainboard.flags = DO_ENCODERS | DO_CS | DO_RS |
       DO_POS | DO_POWER | DO_BD;
 #else
   mainboard.flags = DO_ENCODERS  | DO_RS |
-      DO_POS | DO_POWER | DO_BD| DO_CS ;
+      DO_POS | DO_POWER | DO_BD | DO_CS ;
 #endif
 
    beaconboard.opponent1_x = I2C_OPPONENT_NOT_THERE;
@@ -358,10 +356,6 @@ int main(void)
    /* i2c slaves polling (gpios and slavedspic) */
    scheduler_add_periodical_event_priority(i2c_poll_slaves, NULL,
     EVENT_PERIOD_I2C_POLL / SCHEDULER_UNIT, EVENT_PRIORITY_I2C_POLL);
-
-   /* beacon commnads and polling */
-   //scheduler_add_periodical_event_priority(beacon_protocol, NULL,
-   // EVENT_PERIOD_BEACON_PULL / SCHEDULER_UNIT, EVENT_PRIORITY_BEACON_POLL);
 #endif
 
    /* strat-related event */
@@ -396,7 +390,6 @@ int main(void)
 #ifdef HOST_VERSION
 	mainboard.our_color = I2C_COLOR_YELLOW;
    strat_reset_pos(COLOR_X(520), 420, COLOR_A_ABS(90));
-   //strat_event_enable();
 #endif
 
 	/* program WT-11 */

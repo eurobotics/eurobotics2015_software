@@ -805,6 +805,7 @@ parse_pgm_inst_t cmd_goto2 = {
 /* function called when cmd_goto is parsed successfully */
 static void cmd_bt_goto_parsed(void * parsed_result, void * data)
 {
+#if 0
 	struct cmd_goto_result * res = parsed_result;
 	/* TODO comment functions */
 
@@ -873,6 +874,8 @@ static void cmd_bt_goto_parsed(void * parsed_result, void * data)
 		strat_bt_goto_avoid_checksum = res->arg4;
 		current_bt_task=BT_GOTO_AVOID_BW;
 	}
+
+#endif
 }
 
 prog_char str_goto_arg0_bt[] = "bt_goto";
@@ -1052,7 +1055,7 @@ static void cmd_bt_task_parsed(void *parsed_result, void *data)
 {
 	struct cmd_bt_task_result *res = parsed_result;
 
-
+#if 0
 	/*TODO check args checksum */
 
 		/* set ACK */
@@ -1092,6 +1095,7 @@ static void cmd_bt_task_parsed(void *parsed_result, void *data)
 		// set NACK
 		bt_status_set_cmd_ack (END_ERROR);
 	}*/
+#endif
 }
 
 prog_char str_bt_task_arg0[] = "bt_task";

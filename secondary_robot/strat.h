@@ -168,7 +168,7 @@
 #define LAST_SECONDS_TIME	80
 
 
-//#define CALIBRATION
+#define CALIBRATION
 #ifdef CALIBRATION
 
 /* default acc */
@@ -186,25 +186,18 @@
 #else
 
 /* default acc */
-#define ACC_DIST  30 //40.
-#define ACC_ANGLE 30 //90.
+#define ACC_DIST  10 //40.
+#define ACC_ANGLE 10 //90.
 
 /* default speeds */
-//#define HOMOLOGATION_SPEED
-#ifdef HOMOLOGATION_SPEED
-#define SPEED_DIST_FAST 			2000.
-#define SPEED_ANGLE_FAST 			2000.
-#else
-
-#define SPEED_DIST_FAST 			5000.
-#define SPEED_ANGLE_FAST 			5000.
-#endif
 
 //Do not change
-#define SPEED_DIST_SLOW 		  	2500.
-#define SPEED_ANGLE_SLOW 		  	2500.
-#define SPEED_DIST_VERY_SLOW 		1000.
-#define SPEED_ANGLE_VERY_SLOW 		1000.
+#define SPEED_DIST_FAST 			2500.
+#define SPEED_ANGLE_FAST 			2500.
+#define SPEED_DIST_SLOW 		  	1000.
+#define SPEED_ANGLE_SLOW 		  	1000.
+#define SPEED_DIST_VERY_SLOW 		500.
+#define SPEED_ANGLE_VERY_SLOW 		500.
 
 #endif
 
@@ -410,33 +403,6 @@ uint8_t extend_carpet(void);
 uint8_t climb_stairs(void);
 uint8_t bring_cup_to_cinema(void);
 uint8_t close_clapperboard(void);
-
-/********************************************
- * in strat_event.c
- *******************************************/
-
-/*************** STRAT EVENT SCHEDULE FUNCTIONS *******************************/
-
-/* schedule a single strat tevent */
-void strat_event_schedule_single (void (*f)(void *), void * data);
-
-/* schedule a periodical strat tevent */
-void strat_event_schedule_periodical(void (*f)(void *), void * data);
-
-
-/*************** STRAT EVENT WRAPPER FUNCTIONS  *******************************/
-
-/* auto position event */
-void strat_auto_position_event (void *data);
-
-/* trajectory functions */
-void strat_goto_xy_abs_event (void *data);
-void strat_goto_forward_xy_abs_event (void *data);
-void strat_goto_backward_xy_abs_event (void *data);
-void strat_goto_xy_rel_event (void *data);
-/* match tasks */
-
-
 
 #else /* HOST_VERSION_OA_TEST */
 
