@@ -46,7 +46,6 @@
         <itemPath>../i2c_protocol.h</itemPath>
         <itemPath>../ax12_user.h</itemPath>
         <itemPath>../bt_protocol.h</itemPath>
-        <itemPath>../strat_event.c</itemPath>
         <itemPath>../beacon.h</itemPath>
         <itemPath>../beacon_calib.h</itemPath>
       </logicalFolder>
@@ -614,6 +613,7 @@
         <property key="UART 1" value="true"/>
         <property key="UART 2" value="true"/>
         <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="firmware.download.all" value="false"/>
         <property key="hwtoolclock.frcindebug" value="false"/>
         <property key="memories.aux" value="false"/>
         <property key="memories.bootflash" value="false"/>

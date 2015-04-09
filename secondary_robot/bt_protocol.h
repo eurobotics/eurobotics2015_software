@@ -50,11 +50,11 @@ void bt_trajectory_goto_xy_rel(int16_t x, int16_t y, int16_t args_checksum);
 
 void bt_trajectory_goto_forward_xy_abs (int16_t x, int16_t y, int16_t args_checksum);
 
-uint8_t bt_goto_and_avoid (int16_t x, int16_t y, int16_t args_checksum);
+void bt_goto_and_avoid (int16_t x, int16_t y, int16_t args_checksum);
 
-uint8_t bt_goto_and_avoid_forward (int16_t x, int16_t y, int16_t args_checksum);
+void bt_goto_and_avoid_forward (int16_t x, int16_t y, int16_t args_checksum);
 
-uint8_t bt_goto_and_avoid_backward (int16_t x, int16_t y, int16_t args_checksum);
+void bt_goto_and_avoid_backward (int16_t x, int16_t y, int16_t args_checksum);
 
 
 void bt_strat_exit (void);

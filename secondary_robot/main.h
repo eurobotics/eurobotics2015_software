@@ -120,14 +120,14 @@
 
 /* increase it to go further */
 #define IMP_ENCODERS 		  	    1000.0
-#define WHEEL_DIAMETER_MM 		    53.0
+#define WHEEL_DIAMETER_MM 		    109.0
 #define WHEEL_PERIM_MM 	    	    (WHEEL_DIAMETER_MM * M_PI)
 #define IMP_COEF 			        50.0 /* XXX HACK for use the same PID gains of last year */
 #define DIST_IMP_MM 		    	(((IMP_ENCODERS*4) / WHEEL_PERIM_MM) * IMP_COEF)
 
 /* encoders handlers */
-#define LEFT_ENCODER        ((void *)1)
-#define RIGHT_ENCODER       ((void *)2)
+#define LEFT_ENCODER        ((void *)2)
+#define RIGHT_ENCODER       ((void *)1)
 
 /* motor handles */
 #define MOTOR_1     	((void *)&gen.pwm_mc_1)
@@ -184,8 +184,8 @@
 
 
 // Current bt_task code
-uint8_t current_bt_task;
-int16_t strat_bt_goto_avoid_x, strat_bt_goto_avoid_y, strat_bt_goto_avoid_checksum;
+//uint8_t current_bt_task;
+//int16_t strat_bt_goto_avoid_x, strat_bt_goto_avoid_y, strat_bt_goto_avoid_checksum;
 
 #define BT_TASK_NONE	   		0
 #define BT_TASK_PICK_CUP   		1

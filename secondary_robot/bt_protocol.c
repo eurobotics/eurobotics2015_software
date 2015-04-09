@@ -156,7 +156,6 @@ void bt_send_status (void)
 
 /******************* BT PROTOCOL COMMANDS *************************************/
 
-
 void bt_auto_position (void)
 {
 	/* implicit checksum in cmdline because arguments are ascii tokens
@@ -165,16 +164,8 @@ void bt_auto_position (void)
 	/* set ACK */
 	bt_status_set_cmd_ret (0);
 
-	/* execute command: can be a variable assigment, non blocking funtion
-	   or a single o periodical schedule event if it's a blocking funtion */
+	/* TODO: set bt_task */
 
-	/**
-	 * schedule events have a data array asigned where the arguments are
-	 * passed to the final function
-	 */
-
-	/* in this case there's no arguments so NULL value is passed */
-	strat_event_schedule_single (strat_auto_position_event, NULL);
 }
 
 void bt_set_color (uint8_t color)
@@ -197,18 +188,7 @@ void bt_trajectory_goto_forward_xy_abs (int16_t x, int16_t y, int16_t args_check
 		/* set ACK */
 		bt_status_set_cmd_ack (0);
 
-		/* execute command: can be a variable assigment, non blocking funtion
-		   or a single o periodical schedule event if it's a blocking funtion */
-
-		/**
-		 * schedule events have a data array asigned where the arguments are
-		 * passed to the final function
-		 */
-		mainboard.strat_event_data[0] = x;
-		mainboard.strat_event_data[1] = y;
-
-		strat_event_schedule_single (strat_goto_forward_xy_abs_event,
-							 (void *)mainboard.strat_event_data);
+		/* TODO: set bt_task */
 	}
 	else {
 		/* set ACK */
@@ -224,18 +204,8 @@ void bt_trajectory_goto_backward_xy_abs (int16_t x, int16_t y, int16_t args_chec
 		/* set ACK */
 		bt_status_set_cmd_ack (0);
 
-		/* execute command: can be a variable assigment, non blocking funtion
-		   or a single o periodical schedule event if it's a blocking funtion */
 
-		/**
-		 * schedule events have a data array asigned where the arguments are
-		 * passed to the final function
-		 */
-		mainboard.strat_event_data[0] = x;
-		mainboard.strat_event_data[1] = y;
-
-		strat_event_schedule_single (strat_goto_backward_xy_abs_event,
-							 (void *)mainboard.strat_event_data);
+		/* TODO: set bt_task */
 	}
 	else {
 		/* set ACK */
@@ -252,18 +222,7 @@ void bt_trajectory_goto_xy_abs (int16_t x, int16_t y, int16_t args_checksum)
 		/* set ACK */
 		bt_status_set_cmd_ack (0);
 
-		/* execute command: can be a variable assigment, non blocking funtion
-		   or a single o periodical schedule event if it's a blocking funtion */
-
-		/**
-		 * schedule events have a data array asigned where the arguments are
-		 * passed to the final function
-		 */
-		mainboard.strat_event_data[0] = x;
-		mainboard.strat_event_data[1] = y;
-
-		strat_event_schedule_single (strat_goto_xy_abs_event,
-							 (void *)mainboard.strat_event_data);
+		/* TODO: set bt_task */
 	}
 	else {
 		/* set ACK */
@@ -283,15 +242,7 @@ void bt_trajectory_goto_xy_rel(int16_t x, int16_t y, int16_t args_checksum)
 		/* execute command: can be a variable assigment, non blocking funtion
 		   or a single o periodical schedule event if it's a blocking funtion */
 
-		/**
-		 * schedule events have a data array asigned where the arguments are
-		 * passed to the final function
-		 */
-		mainboard.strat_event_data[0] = x;
-		mainboard.strat_event_data[1] = y;
-
-		strat_event_schedule_single (strat_goto_xy_rel_event,
-							 (void *)mainboard.strat_event_data);
+		/* TODO: set bt_task */
 	}
 	else {
 		/* set ACK */
@@ -302,100 +253,51 @@ void bt_trajectory_goto_xy_rel(int16_t x, int16_t y, int16_t args_checksum)
 
 
 
-uint8_t bt_goto_and_avoid (int16_t x, int16_t y, int16_t args_checksum)
+void bt_goto_and_avoid (int16_t x, int16_t y, int16_t args_checksum)
 {
-	uint8_t err;
 	/* check args checksum */
 	if ((x+y) == args_checksum) {
 
 		/* set ACK */
 		bt_status_set_cmd_ack (0);
 
-
-		/* execute command: can be a variable assigment, non blocking funtion
-		   or a single o periodical schedule event if it's a blocking funtion */
-
-		/**
-		 * schedule events have a data array asigned where the arguments are
-		 * passed to the final function
-		 */
-		mainboard.strat_event_data[0] = x;
-		mainboard.strat_event_data[1] = y;
-
-		interrupt_traj_reset();
-		err=goto_and_avoid(x, y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-		if (err != END_TRAJ && err != END_NEAR)
-			strat_hardstop();
-		return err;
+		/* TODO: set bt_task */
 	}
 	else {
-		/* set NACK */
-		return END_ERROR;
+		/* set ACK */
+		bt_status_set_cmd_ack (END_ERROR);
 	}
 }
-uint8_t bt_goto_and_avoid_forward (int16_t x, int16_t y, int16_t args_checksum)
+void bt_goto_and_avoid_forward (int16_t x, int16_t y, int16_t args_checksum)
 {
-	uint8_t err;
-
 	/* check args checksum */
 	if ((x+y) == args_checksum) {
 
 		/* set ACK */
 		bt_status_set_cmd_ack (0);
 
-		/* execute command: can be a variable assigment, non blocking funtion
-		   or a single o periodical schedule event if it's a blocking funtion */
-
-		/**
-		 * schedule events have a data array asigned where the arguments are
-		 * passed to the final function
-		 */
-		mainboard.strat_event_data[0] = x;
-		mainboard.strat_event_data[1] = y;
-
-
-		interrupt_traj_reset();
-		err=goto_and_avoid_forward( x, y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-		if (err != END_TRAJ && err != END_NEAR)
-			strat_hardstop();
-		return err;
+		/* TODO: set bt_task */
 	}
 	else {
 		/* set NACK */
-		return END_ERROR;
+		bt_status_set_cmd_ack (END_ERROR);
 
 	}
 }
-uint8_t bt_goto_and_avoid_backward (int16_t x, int16_t y, int16_t args_checksum)
-{
-	uint8_t err;
 
+void bt_goto_and_avoid_backward (int16_t x, int16_t y, int16_t args_checksum)
+{
 	/* check args checksum */
 	if ((x+y) == args_checksum) {
 
 		/* set ACK */
 		bt_status_set_cmd_ack (0);
 
-		/* execute command: can be a variable assigment, non blocking funtion
-		   or a single o periodical schedule event if it's a blocking funtion */
-
-		/**
-		 * schedule events have a data array asigned where the arguments are
-		 * passed to the final function
-		 */
-		mainboard.strat_event_data[0] = x;
-		mainboard.strat_event_data[1] = y;
-
-		interrupt_traj_reset();
-		err=goto_and_avoid_backward(x, y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-		if (err != END_TRAJ && err != END_NEAR)
-			strat_hardstop();
-		return err;
-
+		/* TODO: set bt_task */
 	}
 	else {
-		/* set NACK */
-		return END_ERROR;
+		/* set ACK */
+		bt_status_set_cmd_ack (END_ERROR);
 
 	}
 }
@@ -405,13 +307,6 @@ void bt_strat_exit (void)
 	/* set ACK */
 	bt_status_set_cmd_ack (0);
 
-	/* execute command: can be a variable assigment, non blocking funtion
-	   or a single o periodical schedule event if it's a blocking funtion */
-
-	/**
-	 * schedule events have a data array asigned where the arguments are
-	 * passed to the final function
-	 */
 	strat_exit();
 }
 
@@ -421,12 +316,7 @@ void bt_strat_init (void)
 	/* set ACK */
 	bt_status_set_cmd_ack (0);
 
-	/* execute command: can be a variable assigment, non blocking funtion
-	   or a single o periodical schedule event if it's a blocking funtion */
-
-	/**
-	 * schedule events have a data array asigned where the arguments are
-	 * passed to the final function
-	 */
 	strat_init();
 }
+
+
