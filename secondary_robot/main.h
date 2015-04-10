@@ -103,10 +103,10 @@
 
 /* robot dimensions */
 #define IM_SECONDARY_ROBOT
-#define ROBOT_LENGTH      	    150.
-#define ROBOT_WIDTH 	    	230.
-#define ROBOT_CENTER_TO_FRONT   75.
-#define ROBOT_CENTER_TO_BACK    75.
+#define ROBOT_LENGTH      	    163.
+#define ROBOT_WIDTH 	    	210.
+#define ROBOT_CENTER_TO_BACK    105.0
+#define ROBOT_CENTER_TO_FRONT   (ROBOT_LENGTH-ROBOT_CENTER_TO_BACK)
 #define ROBOT_HALF_LENGTH_FRONT ROBOT_CENTER_TO_FRONT
 #define ROBOT_HALF_LENGTH_REAR  ROBOT_CENTER_TO_BACK
 
@@ -156,12 +156,7 @@
 #define EVENT_PRIORITY_CS           100
 #define EVENT_PRIO_BEACON	    	80
 #define EVENT_PRIORITY_STRAT        30
-#define EVENT_PRIORITY_BEACON_POLL  20 /* XXX unused */
 #define EVENT_PRIORITY_CMDLINE      15 /* XXX > trajectory_manager event priority */
-#define EVENT_PRIORITY_STRAT_EVENT	10 /* XXX > trajectory_manager event priority */
-
-
-
 
 
 /* EVENTS PERIODS */
@@ -197,6 +192,7 @@
 #define BT_GOTO_AVOID         7
 #define BT_GOTO_AVOID_FW         8
 #define BT_GOTO_AVOID_BW         9
+#define BT_AUTO_POSITION		10
 
 
 
@@ -276,10 +272,11 @@ struct mainboard
 	int32_t pwm_r;  /* current right dac */
 
 	/* strat bt trasks */
-	int8_t  strat_bt_task_id;
-	int8_t  strat_bt_task_id_rqst;
-	int8_t  strat_bt_task_id_changed;
-	int16_t strat_bt_task_args[5];
+	int8_t  bt_task_id;
+	int8_t  bt_task_id_rqst;
+	int8_t  bt_task_new_rqst;
+	int16_t bt_task_args[5];
+	int8_t  bt_task_interrupt;
 };
 
 

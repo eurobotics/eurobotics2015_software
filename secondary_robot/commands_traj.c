@@ -805,7 +805,7 @@ parse_pgm_inst_t cmd_goto2 = {
 /* function called when cmd_goto is parsed successfully */
 static void cmd_bt_goto_parsed(void * parsed_result, void * data)
 {
-#if 0
+
 	struct cmd_goto_result * res = parsed_result;
 	/* TODO comment functions */
 
@@ -834,48 +834,27 @@ static void cmd_bt_goto_parsed(void * parsed_result, void * data)
 	// GOTO
 	else if (!strcmp_P(res->arg1, PSTR("xy_rel"))) {
 		bt_trajectory_goto_xy_rel(res->arg2, res->arg3, res->arg4);
-		current_bt_task=BT_GOTO;
 	}
 
 	else if (!strcmp_P(res->arg1, PSTR("xy_abs"))) {
 		bt_trajectory_goto_xy_abs(res->arg2, res->arg3, res->arg4);
-		current_bt_task=BT_GOTO;
-
 	}
 	else if (!strcmp_P(res->arg1, PSTR("xy_abs_fow"))) {
 		bt_trajectory_goto_forward_xy_abs(res->arg2, res->arg3, res->arg4);
-		current_bt_task=BT_GOTO;
 	}
 	else if (!strcmp_P(res->arg1, PSTR("xy_abs_back"))) {
 		bt_trajectory_goto_backward_xy_abs(res->arg2, res->arg3, res->arg4);
-		current_bt_task=BT_GOTO;
 	}
-
 	//GOTO AVOID
 	else if (!strcmp_P(res->arg1, PSTR("avoid"))) {
-
-		strat_bt_goto_avoid_x = res->arg2;
-		strat_bt_goto_avoid_y = res->arg3;
-		strat_bt_goto_avoid_checksum = res->arg4;
-		current_bt_task=BT_GOTO_AVOID;
-
-    		printf_P("AVOID");
+		bt_goto_and_avoid (res->arg2, res->arg3, res->arg4);
 	}
 	else if (!strcmp_P(res->arg1, PSTR("avoid_fw"))) {
-		strat_bt_goto_avoid_x = res->arg2;
-		strat_bt_goto_avoid_y = res->arg3;
-		strat_bt_goto_avoid_checksum = res->arg4;
-		current_bt_task=BT_GOTO_AVOID_FW;
-
+		bt_goto_and_avoid_forward (res->arg2, res->arg3, res->arg4);
 	}
 	else if (!strcmp_P(res->arg1, PSTR("avoid_bw"))) {
-		strat_bt_goto_avoid_x = res->arg2;
-		strat_bt_goto_avoid_y = res->arg3;
-		strat_bt_goto_avoid_checksum = res->arg4;
-		current_bt_task=BT_GOTO_AVOID_BW;
+		bt_goto_and_avoid_backward (res->arg2, res->arg3, res->arg4);
 	}
-
-#endif
 }
 
 prog_char str_goto_arg0_bt[] = "bt_goto";
@@ -1055,47 +1034,33 @@ static void cmd_bt_task_parsed(void *parsed_result, void *data)
 {
 	struct cmd_bt_task_result *res = parsed_result;
 
-#if 0
-	/*TODO check args checksum */
+	/* set task flag */
+	if (strcmp_P(res->arg1, PSTR("pick_cup")) == 0) {
+		bt_task_pick_cup();
+	}
+	else if (strcmp_P(res->arg1, PSTR("carpet")) == 0) {
+		bt_task_carpet();
+	}
+	else if (strcmp_P(res->arg1, PSTR("stairs")) == 0) {
+		bt_task_stairs();
+	}
+	else if (strcmp_P(res->arg1, PSTR("bring_cup")) == 0) {
+		bt_task_bring_cup();
+	}
+	else if (strcmp_P(res->arg1, PSTR("clap")) == 0) {
+		bt_task_clap();
+	}
+	else if (strcmp_P(res->arg1, PSTR("strat_exit")) == 0){
+		bt_strat_exit();
+	}
+	else if (strcmp_P(res->arg1, PSTR("strat_init")) == 0){
+		bt_strat_init();
+	}
+	else
+	{
+		bt_status_set_cmd_ack(END_ERROR);
+	}
 
-		/* set ACK */
-		bt_status_set_cmd_ack(0);
-
-		/* set task flag */
-		if (strcmp_P(res->arg1, PSTR("pick_cup")) == 0) {
-			current_bt_task=BT_TASK_PICK_CUP;
-		}
-		else if (strcmp_P(res->arg1, PSTR("carpet")) == 0) {
-			current_bt_task=BT_TASK_CARPET;
-		}
-		else if (strcmp_P(res->arg1, PSTR("stairs")) == 0) {
-			current_bt_task=BT_TASK_STAIRS;
-		}
-		else if (strcmp_P(res->arg1, PSTR("bring_cup")) == 0) {
-			current_bt_task=BT_TASK_BRING_CUP;
-		}
-		else if (strcmp_P(res->arg1, PSTR("clap")) == 0) {
-			current_bt_task=BT_TASK_CLAP;
-		}
-
-		else if (strcmp_P(res->arg1, PSTR("strat_exit")) == 0){
-			bt_strat_exit();
-		}
-		else if (strcmp_P(res->arg1, PSTR("strat_init")) == 0){
-			bt_strat_init();
-		}
-		else
-		{
-			bt_status_set_cmd_ack(END_ERROR);
-		}
-
-
-	//if checksum does not match
-	/*else {
-		// set NACK
-		bt_status_set_cmd_ack (END_ERROR);
-	}*/
-#endif
 }
 
 prog_char str_bt_task_arg0[] = "bt_task";
