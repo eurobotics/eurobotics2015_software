@@ -69,7 +69,68 @@
 		goto end;		 \
 	} while(0)
 
+#define ROBOT_CENTER_CUP_FRONT  0
+#define ROBOT_CENTER_CUP_REAR   0
 
+/** 
+ *	Harvest orphan stands
+ *	return END_TRAJ if the work is done, err otherwise 
+ */
+
+uint8_t strat_harvest_popcorn_cup (int16_t x, int16_t y, uint8_t side, uint8_t flags)
+{
+   	uint8_t err = 0;
+	uint16_t old_spdd, old_spda;
+	int16_t d = 0;
+
+	/* set local speed, and disable speed limit */
+	strat_get_speed (&old_spdd, &old_spda);
+   	strat_limit_speed_disable ();
+	strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
+
+	//DEBUG (E_USER_STRAT, "d = %d, a = %d", d, a);
+	//state_debug_wait_key_pressed();
+
+    /* prepare cup clamp */
+    side == SIDE_FRONT? i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_READY):
+                        i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_OPEN);
+
+    /* turn to cup */
+    side == SIDE_FRONT? trajectory_turnto_xy(&mainboard.traj, x, y):
+                        trajectory_turnto_xy_behind(&mainboard.traj, x, y);
+
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+    if (!TRAJ_SUCCESS(err))
+	   ERROUT(err);	
+    
+    /* go in clamp range */
+    d = distance_from_robot(x, y);
+    side == SIDE_FRONT? d = d-ROBOT_CENTER_CUP_FRONT-10 :
+                        d = -(d-ROBOT_CENTER_CUP_REAR-50); 
+
+	trajectory_d_rel(&mainboard.traj, d);
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+    if (!TRAJ_SUCCESS(err))
+	   ERROUT(err);	
+
+
+    /* front cup: pick up, drop popcorns in side, and release the cup */
+    /* rear cup: pick up */
+    side == SIDE_FRONT? i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_CATCH_AND_DROP):
+                        i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_CATCH);
+
+    /* wait ready */
+    side == SIDE_FRONT? 
+    WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), POPCORN_FRONT_READY_TIMEOUT):
+    WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), POPCORN_REAR_READY_TIMEOUT);
+
+
+end:
+	/* end stuff */
+	strat_set_speed(old_spdd, old_spda);	
+   	strat_limit_speed_enable();
+   	return err;
+}
 
 
 
