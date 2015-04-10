@@ -211,7 +211,6 @@ void io_pins_init(void)
 
 int main(void)
 {
-	uint8_t ret;
    /* disable interrupts */
    cli();
 
@@ -414,11 +413,16 @@ int main(void)
 	cmdline_init();
 
 	/* command line event */
-   	scheduler_add_periodical_event_priority(cmdline_interact_nowait, NULL,
-    		EVENT_PERIOD_CMDLINE / SCHEDULER_UNIT, EVENT_PRIORITY_CMDLINE);
+   	//scheduler_add_periodical_event_priority(cmdline_interact_nowait, NULL,
+    //		EVENT_PERIOD_CMDLINE / SCHEDULER_UNIT, EVENT_PRIORITY_CMDLINE);
 
+	while (1)
+	{
+		cmdline_interact_nowait(NULL);
+	}
 
-	while (1);
+	strat_bt_task_scheduler();
+	//while (1);
 
    return 0;
 }

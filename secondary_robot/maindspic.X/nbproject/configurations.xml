@@ -38,7 +38,6 @@
         <itemPath>../main.h</itemPath>
         <itemPath>../actuator.h</itemPath>
         <itemPath>../strat.h</itemPath>
-        <itemPath>../strat_utils.h</itemPath>
         <itemPath>../../maindspic/strat_avoid.h</itemPath>
         <itemPath>../strat_base.h</itemPath>
         <itemPath>../../common/i2c_commands.h</itemPath>
@@ -48,6 +47,7 @@
         <itemPath>../bt_protocol.h</itemPath>
         <itemPath>../beacon.h</itemPath>
         <itemPath>../beacon_calib.h</itemPath>
+        <itemPath>../../maindspic/strat_utils.h</itemPath>
       </logicalFolder>
       <logicalFolder name="ax12" displayName="ax12" projectFiles="true">
         <itemPath>../../libs/aversive4dspic/modules/devices/servo/ax12/ax12.h</itemPath>
@@ -78,7 +78,6 @@
         <itemPath>../../libs/aversive4dspic/modules/base/math/geometry/vect_base.h</itemPath>
         <itemPath>../../libs/aversive4dspic/modules/base/math/geometry/lines.h</itemPath>
         <itemPath>../../libs/aversive4dspic/modules/base/math/geometry/polygon.h</itemPath>
-        <itemPath>../../libs/aversive4dspic/modules/base/math/geometry/circles.h</itemPath>
       </logicalFolder>
       <logicalFolder name="i2c" displayName="i2c" projectFiles="true">
         <itemPath>../i2c_mem.h</itemPath>
@@ -160,7 +159,6 @@
         <itemPath>../cs.c</itemPath>
         <itemPath>../actuator.c</itemPath>
         <itemPath>../sensor.c</itemPath>
-        <itemPath>../strat_utils.c</itemPath>
         <itemPath>../strat_base.c</itemPath>
         <itemPath>../../common/traps.c</itemPath>
         <itemPath>../i2c_protocol.c</itemPath>
@@ -172,6 +170,7 @@
         <itemPath>../bt_protocol.c</itemPath>
         <itemPath>../beacon.c</itemPath>
         <itemPath>../beacon_calib.c</itemPath>
+        <itemPath>../../maindspic/strat_utils.c</itemPath>
       </logicalFolder>
       <logicalFolder name="ax12" displayName="ax12" projectFiles="true">
         <itemPath>../../libs/aversive4dspic/modules/devices/servo/ax12/ax12.c</itemPath>
@@ -219,7 +218,6 @@
         <itemPath>../../libs/aversive4dspic/modules/base/math/geometry/vect_base.c</itemPath>
         <itemPath>../../libs/aversive4dspic/modules/base/math/geometry/lines.c</itemPath>
         <itemPath>../../libs/aversive4dspic/modules/base/math/geometry/polygon.c</itemPath>
-        <itemPath>../../libs/aversive4dspic/modules/base/math/geometry/circles.c</itemPath>
       </logicalFolder>
       <logicalFolder name="i2c" displayName="i2c" projectFiles="true">
         <itemPath>../i2c_mem.c</itemPath>
@@ -310,6 +308,7 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>..</Elem>
+    <Elem>../../maindspic</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

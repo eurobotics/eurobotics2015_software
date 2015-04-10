@@ -37,32 +37,23 @@ void bt_send_status (void);
 
 /******************* BT PROTOCOL COMMANDS *************************************/
 
-
+void bt_strat_exit (void);
+void bt_strat_init (void);
 void bt_auto_position (void);
-
 void bt_set_color (uint8_t color);
 
 void bt_trajectory_goto_xy_abs (int16_t x, int16_t y, int16_t args_checksum);
-
 void bt_trajectory_goto_backward_xy_abs (int16_t x, int16_t y, int16_t args_checksum);
-
 void bt_trajectory_goto_xy_rel(int16_t x, int16_t y, int16_t args_checksum);
-
 void bt_trajectory_goto_forward_xy_abs (int16_t x, int16_t y, int16_t args_checksum);
-
 void bt_goto_and_avoid (int16_t x, int16_t y, int16_t args_checksum);
-
 void bt_goto_and_avoid_forward (int16_t x, int16_t y, int16_t args_checksum);
-
 void bt_goto_and_avoid_backward (int16_t x, int16_t y, int16_t args_checksum);
 
-
-void bt_strat_exit (void);
-
-void bt_strat_init (void);
-
-/* TODO bt_trajectory_XXXX and bt_goto_avoid_XXXX functions */
-
-
+void bt_task_pick_cup(void);
+void bt_task_carpet(void);
+void bt_task_stairs(void);
+void bt_task_bring_cup(void);
+void bt_task_clap(void);
 
 #endif /* __BT_PROTOCOL_H__ */

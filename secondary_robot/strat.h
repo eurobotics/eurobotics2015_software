@@ -168,7 +168,7 @@
 #define LAST_SECONDS_TIME	80
 
 
-#define CALIBRATION
+//#define CALIBRATION
 #ifdef CALIBRATION
 
 /* default acc */
@@ -403,6 +403,15 @@ uint8_t extend_carpet(void);
 uint8_t climb_stairs(void);
 uint8_t bring_cup_to_cinema(void);
 uint8_t close_clapperboard(void);
+
+/* set current bt task */
+void strat_bt_task_rqst (uint8_t task_id, 
+						int16_t a, int16_t b, 
+						int16_t c, int16_t d, int16_t e);
+
+/* never returns */
+void strat_bt_task_scheduler (void);
+
 
 #else /* HOST_VERSION_OA_TEST */
 
