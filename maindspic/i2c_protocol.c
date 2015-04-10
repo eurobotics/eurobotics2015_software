@@ -649,8 +649,63 @@ uint8_t i2c_slavedspic_get_ps_status(void)
    return slavedspic.popcorn_system.status;
 }
 
-uint8_t i2c_slavedspic_ps_is_ready(void) {
-	return (i2c_slavedspic_get_ps_status() == I2C_SLAVEDSPIC_STATUS_READY);
+/* Strings that match the status */
+/* /!\ keep it sync with i2c_commands.h */
+const char *status_tab []= {
+	"BLOCKED",
+	"ERROR",
+	"READY",
+	"BUSY",
+	"WAITING",
+	"STORING",
+	"DONE",
+	"RESERVED",
+};
+
+/* return string from end traj type num */
+const char *get_status(uint8_t status)
+{
+	uint8_t i;
+	for (i=0 ; i<8; i++) {
+		if (status & (1 <<i))
+			return status_tab[i];
+	}
+	return "END_UNKNOWN";
+}
+
+/* return 0 if no status matched, or the status received */
+uint8_t i2c_slavedspic_ps_test_status(uint8_t status_flags)
+{
+    uint8_t ret = 0;
+    uint8_t status;
+    
+    status = i2c_slavedspic_get_ps_status(side);
+    
+    if ((status & STATUS_READY) && (status_flags & STATUS_READY))
+        ret |= status;
+
+    if ((status & STATUS_BUSY) && (status_flags & STATUS_BUSY))
+        ret |= status;
+
+    if ((status & STATUS_BLOCKED) && (status_flags & STATUS_BLOCKED))
+        ret |= status;
+
+    if ((status & STATUS_DONE) && (status_flags & STATUS_DONE))
+        ret |= status;
+
+    if ((status & STATUS_WAITING) && (status_flags & STATUS_WAITING))
+        ret |= status;
+
+    if ((status & STATUS_STORING) && (status_flags & STATUS_STORING))
+        ret |= status;
+
+    if ((status & STATUS_ERROR) && (status_flags & STATUS_ERROR))
+        ret |= status;
+
+    if (ret)
+        DEBUG (E_USER_STRAT, "popcorn system got status %s", get_status(ret));
+
+    return ret;
 }
 
 /* set stands system mode */
@@ -691,6 +746,42 @@ uint8_t i2c_slavedspic_get_ss_status(uint8_t side)
 /* returns 1 if ready */
 uint8_t i2c_slavedspic_ss_is_ready(uint8_t side) {
 	return (i2c_slavedspic_get_ss_status(side) == I2C_SLAVEDSPIC_STATUS_READY);
+}
+
+/* return 0 if no status matched, or the status received */
+uint8_t i2c_slavedspic_ss_test_status(uint8_t side, uint8_t status_flags)
+{
+    uint8_t ret = 0;
+    uint8_t status;
+    
+    status = i2c_slavedspic_get_ss_status(side);
+    
+    if ((status & STATUS_READY) && (status_flags & STATUS_READY))
+        ret |= status;
+
+    if ((status & STATUS_BUSY) && (status_flags & STATUS_BUSY))
+        ret |= status;
+
+    if ((status & STATUS_BLOCKED) && (status_flags & STATUS_BLOCKED))
+        ret |= status;
+
+    if ((status & STATUS_DONE) && (status_flags & STATUS_DONE))
+        ret |= status;
+
+    if ((status & STATUS_WAITING) && (status_flags & STATUS_WAITING))
+        ret |= status;
+
+    if ((status & STATUS_STORING) && (status_flags & STATUS_STORING))
+        ret |= status;
+
+    if ((status & STATUS_ERROR) && (status_flags & STATUS_ERROR))
+        ret |= status;
+
+    if (ret)
+        DEBUG (E_USER_STRAT, "stands system %s got status %s", 
+               side == I2C_SIDE_LEFT? "LEFT":"RIGHT", get_status(ret));
+
+    return ret;
 }
   
 /*******************************************************************************

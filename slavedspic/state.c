@@ -1058,6 +1058,8 @@ void popcorn_system_manage(popcorn_system_t *ps)
 	{
 		case STATUS_READY:
 		case STATUS_BUSY:
+        case STATUS_WAITING:
+        case STATUS_STORING:
 			break;
 
 		case STATUS_DONE:
@@ -1079,7 +1081,8 @@ void popcorn_system_manage(popcorn_system_t *ps)
 			break;
 
 		case STATUS_BLOCKED:
-		case STATUS_ERROR:
+		case STATUS_ERROR:  /* XXX ERROR status never should sucess */
+            ss->status |= STATUS_READY;
 		default:
 			ps->substate = SAVE;
 			ps->mode = I2C_SLAVEDSPIC_MODE_PS_IDLE;
@@ -1822,7 +1825,8 @@ void stands_system_manage(stands_system_t *ss, stands_system_t *ss_slave)
 			break;
 
 		case STATUS_BLOCKED:
-		case STATUS_ERROR:
+		case STATUS_ERROR:  /* XXX ERROR status never should sucess */
+            ss->status |= STATUS_READY;
 		default:
 			ss->substate = SAVE;
 			ss->mode = I2C_SLAVEDSPIC_MODE_SS_IDLE;
