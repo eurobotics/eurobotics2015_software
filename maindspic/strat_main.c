@@ -298,7 +298,7 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 									 			   COLOR_INVERT(SIDE_RIGHT), 
 												   0,
 												   SPEED_DIST_SLOW, /* harvest speed */
-												   0);				/* back to boundinbox */
+												   0);				/* flags */
 												   
 			    if (!TRAJ_SUCCESS(err))
 				   ERROUT(err);
@@ -309,7 +309,7 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 									 			   COLOR_INVERT(SIDE_LEFT), 
 												   0,
 												   SPEED_DIST_SLOW, /* harvest speed */
-												   0);				/* back to boundinbox */
+												   0);				/* flags */
 			    if (!TRAJ_SUCCESS(err))
 				   ERROUT(err);
 
@@ -319,33 +319,39 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 									 			   COLOR_INVERT(SIDE_LEFT), 
 												   0,
 												   SPEED_DIST_SLOW, /* harvest speed */
-												   0);				/* back to boundinbox */
+												   0);				/* flags */
 				break;				
 
 			case ZONE_MY_STAND_GROUP_2:
-				err = strat_harvest_stands_parallel_to_wall (COLOR_X(strat_infos.zones[zone_num].x), 
-															 strat_infos.zones[zone_num].y,
-							 								 SIDE_ALL, 
-															 COLOR_A_REL(-20), /* angle */
-							 								 0, 1); 		   /* calib, back boundingbox */
+				err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x), 
+												   strat_infos.zones[zone_num].y, 
+												   COLOR_INVERT(SIDE_LEFT),         /* side target */
+									 			   SIDE_ALL,                        /* storing sides */
+												   COLOR_A_REL(-10),                /* blade angle */
+												   SPEED_DIST_SLOW,                 /* harvest speed */
+												   STANDS_HARVEST_BACK_INIT_POS);	/* flags */
 				break;
 
 			case ZONE_MY_STAND_GROUP_3:
 				err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x), 
 												   strat_infos.zones[zone_num].y, 
-												   COLOR_INVERT(SIDE_LEFT),
-									 			   SIDE_ALL, 
-												   COLOR_A_REL(-20),
-												   SPEED_DIST_SLOW, /* harvest speed */
-												   0);				/* back to boundinbox */
+												   COLOR_INVERT(SIDE_LEFT),         /* side target */
+									 			   SIDE_ALL,                        /* storing sides */
+												   COLOR_A_REL(-20),                /* blade angle */
+												   SPEED_DIST_SLOW,                 /* harvest speed */
+												   STANDS_HARVEST_BACK_INIT_POS);	/* flags */
 				break;
 
 			case ZONE_MY_STAND_GROUP_4:
-				err = strat_harvest_stands_parallel_to_wall (COLOR_X(strat_infos.zones[zone_num].x), 
-															 strat_infos.zones[zone_num].y,
-							 								 COLOR_INVERT(SIDE_RIGHT), 
-															 0, 	/* blade angle */
-							 								 1, 1); /* calib, back boundingbox */
+				err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x), 
+												   strat_infos.zones[zone_num].y, 
+												   COLOR_INVERT(SIDE_RIGHT),        /* side target */
+									 			   COLOR_INVERT(SIDE_RIGHT),        /* storing sides */
+												   0,                               /* blade angle */
+												   SPEED_DIST_SLOW,                 /* harvest speed */
+												   STANDS_HARVEST_BACK_INIT_POS |
+                                                   STANDS_HARVEST_CALIB_X);	        /* flags */
+
 				break;
 
 			case ZONE_MY_HOME:

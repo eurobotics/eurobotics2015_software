@@ -74,9 +74,11 @@ struct i2c_slavedspic_status{
 	uint8_t status;
 #define I2C_SLAVEDSPIC_STATUS_READY		0
 #define I2C_SLAVEDSPIC_STATUS_BUSY		1
-#define I2C_SLAVEDSPIC_DONE				2
-#define I2C_SLAVEDSPIC_BLOCKED			3
-#define I2C_SLAVEDSPIC_ERROR			4
+#define I2C_SLAVEDSPIC_STATUS_WAITING	2
+#define I2C_SLAVEDSPIC_STATUS_STORING	3
+#define I2C_SLAVEDSPIC_DONE				4
+#define I2C_SLAVEDSPIC_BLOCKED			5
+#define I2C_SLAVEDSPIC_ERROR			6
     
 	/* systems */
 	struct {

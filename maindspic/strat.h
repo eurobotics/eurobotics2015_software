@@ -481,22 +481,15 @@ uint8_t strat_harvest_stands_and_cup_inline (void);
 
 
 /** 
- *	Harvest stands parallel to the wall
- *	return END_TRAJ if the work is done, err otherwise 
- */
-uint8_t strat_harvest_stands_parallel_to_wall (int16_t x, int16_t y,
-							 uint8_t side, uint8_t blade_angle,
-							 uint8_t calib_x, uint8_t back_to_boundinbox);
-
-/* get the angle and distance to an stand depending on harvesting side */
-void get_stand_da (int16_t x, int16_t y, uint8_t side, int16_t *d, int16_t *a);
-/** 
  *	Harvest orphan stands
  *	return END_TRAJ if the work is done, err otherwise 
  */
+#define STANDS_HARVEST_BACK_INIT_POS 1
+#define STANDS_HARVEST_CALIB_X       2
+
 uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
 									 uint8_t side, uint8_t blade_angle, 
-									 uint16_t harvest_speed, uint8_t back_to_boundinbox);
+									 uint16_t harvest_speed, uint8_t flags);
 
 /** 
  *	Built a spotlight and release

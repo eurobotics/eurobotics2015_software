@@ -1153,7 +1153,9 @@ uint8_t do_hide_tower(stands_system_t *ss)
 			if(ret & END_TRAJ) {
 				if(ss->mode == I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT && ss->spotlight_mode == SM_SECONDARY)
 					return STATUS_DONE;
-				ss->substate = HIDE_BLADE;
+                /* XXX dont' hide blade for save time */				
+                //ss->substate = HIDE_BLADE;
+                return STATUS_DONE;
 			}
 			else if(ret & END_BLOCKING) {
 				STMCH_ERROR("stands_elevator_%s BLOCKED!!", ss->elevator->type? "r":"l");
@@ -1242,7 +1244,7 @@ uint8_t do_hide_tower(stands_system_t *ss)
 			break;
 	}
 
-	return STATUS_BUSY;
+	return STATUS_STORING;
 }
 
 uint8_t do_harvest_stand(stands_system_t *ss)
@@ -1289,8 +1291,10 @@ uint8_t do_harvest_stand(stands_system_t *ss)
 		case WAITING_BLADE_READY:
 			ret = stands_blade_test_traj_end(ss->blade);
 
-			if(ret & END_TRAJ)
+			if(ret & END_TRAJ) {
 				ss->substate = PUSH_STAND;
+                return STATUS_WAITING;
+            }
 			else if(ret & END_BLOCKING) {
 				if(ss->blade->type == STANDS_BLADE_TYPE_LEFT)
 					STMCH_ERROR("stands_blade_l BLOCKED!!");
@@ -1303,7 +1307,7 @@ uint8_t do_harvest_stand(stands_system_t *ss)
 			break;
 
 		case PUSH_STAND:
-			if(sensor_get(ss->stand_sensor)) {
+			if(sensor_get(ss->stand_sensor) /* TODO: maindspic trigger */) {
 				if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT)
 					stands_blade_set_mode(ss->blade, STANDS_BLADE_MODE_PUSH_STAND_LEFT, 0);
 				else
@@ -1311,7 +1315,8 @@ uint8_t do_harvest_stand(stands_system_t *ss)
 
 				ss->substate = WAITING_STAND_PUSHED;
 			}
-
+            
+            return STATUS_WAITING;
 			break;
 
 		case WAITING_STAND_PUSHED:
@@ -1332,6 +1337,7 @@ uint8_t do_harvest_stand(stands_system_t *ss)
 				return STATUS_BLOCKED;
 			}
 
+            return STATUS_STORING;
 			break;
 
 		case DESCEND_TOWER:
@@ -1342,6 +1348,7 @@ uint8_t do_harvest_stand(stands_system_t *ss)
 
 			ss->substate = WAITING_TOWER_DESCENDED;
 
+            return STATUS_STORING;
 			break;
 
 		case WAITING_TOWER_DESCENDED:
@@ -1354,6 +1361,7 @@ uint8_t do_harvest_stand(stands_system_t *ss)
 				return STATUS_BLOCKED;
 			}
 
+            return STATUS_STORING;
 			break;
 
 		case OPEN_CLAMP:
@@ -1361,18 +1369,21 @@ uint8_t do_harvest_stand(stands_system_t *ss)
 			ss->us = time_get_us2();
 			ss->substate = WAITING_CLAMP_OPENED;
 
+            return STATUS_STORING;
 			break;
 
 		case WAITING_CLAMP_OPENED:
 			if(time_get_us2() - ss->us > 200000L)
 				ss->substate = DESCEND_ELEVATOR;
 
+            return STATUS_STORING;
 			break;
 
 		case DESCEND_ELEVATOR:
 			stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_DOWN, 0);
 			ss->substate = WAITING_ELEVATOR_DESCENDED;
 
+            return STATUS_STORING;
 			break;
 
 		case WAITING_ELEVATOR_DESCENDED:
@@ -1387,6 +1398,7 @@ uint8_t do_harvest_stand(stands_system_t *ss)
 				return STATUS_BLOCKED;
 			}
 
+            return STATUS_STORING;
 			break;
 
 		default:
@@ -1775,6 +1787,8 @@ void stands_system_manage(stands_system_t *ss, stands_system_t *ss_slave)
 	{
 		case STATUS_READY:
 		case STATUS_BUSY:
+        case STATUS_WAITING:
+        case STATUS_STORING:
 			break;
 
 		case STATUS_DONE:
