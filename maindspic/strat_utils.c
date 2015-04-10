@@ -59,7 +59,7 @@
 #include "../common/i2c_commands.h"
 
 #include "main.h"
-#include "../maindspic/strat_utils.h"
+#include "strat_utils.h"
 #include "strat.h"
 #include "strat_base.h"
 #include "sensor.h"

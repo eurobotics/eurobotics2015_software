@@ -177,11 +177,6 @@
 /* dynamic logs */
 #define NB_LOGS 10
 
-
-// Current bt_task code
-//uint8_t current_bt_task;
-//int16_t strat_bt_goto_avoid_x, strat_bt_goto_avoid_y, strat_bt_goto_avoid_checksum;
-
 #define BT_TASK_NONE	   		0
 #define BT_TASK_PICK_CUP   		1
 #define BT_TASK_CARPET         	2
