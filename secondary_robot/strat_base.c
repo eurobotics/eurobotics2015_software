@@ -60,7 +60,7 @@
 
 #include "main.h"
 #include "cmdline.h"
-#include "../maindspic/strat_utils.h"
+#include "strat_utils.h"
 #include "strat_base.h"
 #include "strat.h"
 #include "sensor.h"

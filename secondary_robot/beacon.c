@@ -50,7 +50,7 @@
 #include "main.h"
 #include "beacon.h"
 #include "beacon_calib.h"
-#include "../maindspic/strat_utils.h"
+#include "strat_utils.h"
 
 /* functional modes of beacon */
 #undef BEACON_MODE_EXTERNAL
