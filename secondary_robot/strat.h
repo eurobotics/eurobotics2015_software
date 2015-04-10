@@ -35,97 +35,7 @@
 #define LIMIT_BBOX_Y_DOWN		OBS_CLERANCE+100
 #define LIMIT_BBOX_X_UP			3000 - OBS_CLERANCE
 #define LIMIT_BBOX_X_DOWN		OBS_CLERANCE
-/* position of the elements */
 
-#define MY_STAND_1_X			90
-#define MY_STAND_1_Y			2000-200
-#define MY_STAND_2_X			850
-#define MY_STAND_2_Y			2000-100
-#define MY_STAND_3_X			850
-#define MY_STAND_3_Y			2000-200
-#define MY_STAND_4_X			870
-#define MY_STAND_4_Y			2000-1355
-#define MY_STAND_5_X			1300
-#define MY_STAND_5_Y			2000-1400
-#define MY_STAND_6_X			1100
-#define MY_STAND_6_Y			2000-1770
-#define MY_STAND_7_X			90
-#define MY_STAND_7_Y			2000-1850
-#define MY_STAND_8_X			90
-#define MY_STAND_8_Y			2000-1750
-
-#define OPP_STAND_1_X			3000-90
-#define OPP_STAND_1_Y			2000-200
-#define OPP_STAND_2_X			3000-850
-#define OPP_STAND_2_Y			2000-100
-#define OPP_STAND_3_X			3000-850
-#define OPP_STAND_3_Y			2000-200
-#define OPP_STAND_4_X			3000-870
-#define OPP_STAND_4_Y			2000-1355
-#define OPP_STAND_5_X			3000-1300
-#define OPP_STAND_5_Y			2000-1400
-#define OPP_STAND_6_X			3000-1100
-#define OPP_STAND_6_Y			2000-1770
-#define OPP_STAND_7_X			3000-90
-#define OPP_STAND_7_Y			2000-1850
-#define OPP_STAND_8_X			3000-90
-#define OPP_STAND_8_Y			2000-1750
-
-#define MY_LIGHTBULB_HOME_X				40
-#define MY_LIGHTBULB_HOME_Y					1000
-#define MY_LIGHTBULB_PLATFORM_X		1250
-#define MY_LIGHTBULB_PLATFORM_Y			50
-#define OPP_LIGHTBULB_HOME_X			2960
-#define OPP_LIGHTBULB_HOME_Y				1000
-#define OPP_LIGHTBULB_PLATFORM_X	1750
-#define OPP_LIGHTBULB_PLATFORM_Y		50
-
-#define MY_POPCORNMAC_1_X				300
-#define MY_POPCORNMAC_1_Y				2000-35
-#define MY_POPCORNMAC_2_X				600
-#define MY_POPCORNMAC_2_Y				2000-35
-#define OPP_POPCORNMAC_1_X				2400
-#define OPP_POPCORNMAC_1_Y				2000-35
-#define OPP_POPCORNMAC_2_X				2700
-#define OPP_POPCORNMAC_2_Y		        2000-35
-
-#define MY_POPCORNCUP_FRONT_X				910
-#define MY_POPCORNCUP_FRONT_Y				2000-830
-#define MY_POPCORNCUP_SIDE_X				250
-#define MY_POPCORNCUP_SIDE_Y				2000-1750
-#define OPP_POPCORNCUP_FRONT_X				2090
-#define OPP_POPCORNCUP_FRONT_Y				2000-830
-#define OPP_POPCORNCUP_SIDE_X				    2750
-#define OPP_POPCORNCUP_SIDE_Y				    2000-1750
-#define POPCORNCUP_CENTRE_X				1500
-#define POPCORNCUP_CENTRE_Y				2000-1650
-
-#define MY_CINEMA_UP_X						200
-#define MY_CINEMA_UP_Y						1400
-#define MY_CINEMA_DOWN_X					200
-#define MY_CINEMA_DOWN_Y					600
-#define OPP_CINEMA_UP_X						2800
-#define OPP_CINEMA_UP_Y						1400
-#define OPP_CINEMA_DOWN_X				2800
-#define OPP_CINEMA_DOWN_Y				600
-
-#define MY_STAIRS_X						1250
-#define MY_STAIRS_Y						1400
-#define OPP_STAIRS_X					1750
-#define OPP_STAIRS_Y					1400
-
-#define MY_HOME_X				250
-#define MY_HOME_Y				1000
-#define OPP_HOME_X				2750
-#define OPP_HOME_Y				1000
-
-#define MY_CLAP_1_X				320
-#define MY_CLAP_2_X				620
-#define MY_CLAP_3_X				920
-#define OPP_CLAP_1_X				2680
-#define OPP_CLAP_2_X				2320
-#define OPP_CLAP_3_X				2080
-#define CLAP_Y						0
 
 /* convert coords according to our color */
 #define COLOR_Y(y)     (y)
@@ -147,7 +57,7 @@
 #define CENTER_Y 1000
 
 #define SIDE_REAR		I2C_SIDE_REAR
-#define SIDE_FRONT 	I2C_SIDE_FRONT
+#define SIDE_FRONT 		I2C_SIDE_FRONT
 #define SIDE_MAX		I2C_SIDE_MAX
 
 #define OPPOSITE_SIDE(side) ((side==I2C_SIDE_FRONT)? (I2C_SIDE_REAR) : (I2C_SIDE_FRONT))
@@ -186,8 +96,8 @@
 #else
 
 /* default acc */
-#define ACC_DIST  10 //40.
-#define ACC_ANGLE 10 //90.
+#define ACC_DIST  5 //40.
+#define ACC_ANGLE 5 //90.
 
 /* default speeds */
 
@@ -201,55 +111,7 @@
 
 #endif
 
-/* zones */
-#define ZONE_MY_STAND_1			0
-#define ZONE_MY_STAND_2			1
-#define ZONE_MY_STAND_3			2
-#define ZONE_MY_STAND_4			3
-#define ZONE_MY_STAND_5			4
-#define ZONE_MY_STAND_6			5
-#define ZONE_MY_STAND_7			6
-#define ZONE_MY_STAND_8			7
-#define ZONE_OPP_STAND_1			8
-#define ZONE_OPP_STAND_2			9
-#define ZONE_OPP_STAND_3			10
-#define ZONE_OPP_STAND_4			11
-#define ZONE_OPP_STAND_5			12
-#define ZONE_OPP_STAND_6			13
-#define ZONE_OPP_STAND_7			14
-#define ZONE_OPP_STAND_8			15
-#define ZONE_MY_LIGHTBULB_HOME					16
-#define ZONE_MY_LIGHTBULB_PLATFORM			17
-#define ZONE_OPP_LIGHTBULB_HOME				18
-#define ZONE_OPP_LIGHTBULB_PLATFORM		19
-#define ZONE_MY_POPCORNMAC_1				20
-#define ZONE_MY_POPCORNMAC_2				21
-#define ZONE_OPP_POPCORNMAC_1				22
-#define ZONE_OPP_POPCORNMAC_2				23
-#define ZONE_MY_POPCORNCUP_FRONT				24
-#define ZONE_MY_POPCORNCUP_SIDE				25
-#define ZONE_OPP_POPCORNCUP_FRONT				26
-#define ZONE_OPP_POPCORNCUP_SIDE				    27
-#define ZONE_POPCORNCUP_CENTRE				28
-#define ZONE_MY_CINEMA_UP						29
-#define ZONE_MY_CINEMA_DOWN					30
-#define ZONE_OPP_CINEMA_UP						31
-#define ZONE_OPP_CINEMA_DOWN				32
-#define ZONE_MY_STAIRS						33
-#define ZONE_OPP_STAIRS					34
-#define ZONE_MY_HOME				35
-#define ZONE_OPP_HOME				36
-#define ZONE_MY_CLAP_1				37
-#define ZONE_MY_CLAP_2				38
-#define ZONE_MY_CLAP_3				39
-#define ZONE_OPP_CLAP_1				40
-#define ZONE_OPP_CLAP_2				41
-#define ZONE_OPP_CLAP_3				42
-#define ZONE_MY_STAIRWAY_1			43
-#define ZONE_MY_STAIRWAY_2			44
-#define ZONE_OPP_STAIRWAY_1			45
-#define ZONE_OPP_STAIRWAY_2			46
-#define ZONES_MAX		    			47
+
 
 /*************************************************************
  * Strat data structures
@@ -340,7 +202,7 @@ struct strat_infos {
 	struct bbox area_bbox;
 
 	/* points areas */
-	strat_zones zones[ZONES_MAX];
+	//strat_zones zones[ZONES_MAX];
 
 	/* our zone position */
 	uint8_t current_zone;
@@ -356,7 +218,7 @@ struct strat_infos {
 
 extern struct strat_infos strat_infos;
 
-extern char numzone2name[ZONES_MAX + 1][3];
+//extern char numzone2name[ZONES_MAX + 1][3];
 
 #ifndef HOST_VERSION_OA_TEST
 
