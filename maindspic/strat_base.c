@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Revision : $Id: strat_base.c,v 1.7 2009/05/27 20:04:07 zer0 Exp $
+ *  Revision : $Id$
  *
  */
 

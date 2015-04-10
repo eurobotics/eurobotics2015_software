@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Revision : $Id: state.h,v 1.4 2009/05/27 20:04:07 zer0 Exp $
+ *  Revision : $Id$
  *
  */
 
@@ -101,6 +101,8 @@ typedef struct {
 	uint8_t status;
 #define STATUS_READY		I2C_SLAVEDSPIC_STATUS_READY
 #define STATUS_BUSY			I2C_SLAVEDSPIC_STATUS_BUSY
+#define STATUS_WAITING      I2C_SLAVEDSPIC_STATUS_WAITING
+#define STATUS_STORING      I2C_SLAVEDSPIC_STATUS_STORING
 #define STATUS_DONE			I2C_SLAVEDSPIC_DONE	
 #define STATUS_BLOCKED		I2C_SLAVEDSPIC_BLOCKED
 #define STATUS_ERROR		I2C_SLAVEDSPIC_ERROR

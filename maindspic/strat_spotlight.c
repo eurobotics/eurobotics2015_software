@@ -178,7 +178,7 @@ end:
    	return err;
 }
 
-
+#ifdef DEPRECATED
 /** 
  *	Harvest stands parallel to the wall
  *	return END_TRAJ if the work is done, err otherwise 
@@ -259,6 +259,7 @@ end:
    	strat_limit_speed_enable();
    	return err;
 }
+#endif /* DEPRECATED*/
 
 /* get the angle and distance to an stand depending on harvesting side */
 void get_stand_da (int16_t x, int16_t y, uint8_t side, int16_t *d, int16_t *a)
@@ -283,10 +284,10 @@ void get_stand_da (int16_t x, int16_t y, uint8_t side, int16_t *d, int16_t *a)
  *	Harvest orphan stands
  *	return END_TRAJ if the work is done, err otherwise 
  */
+
 uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
 									 uint8_t side, uint8_t blade_angle, 
-									 uint16_t harvest_speed, uint8_t back_to_init_pos,
-									 uint8_t calib_x)
+									 uint16_t harvest_speed, uint8_t flags)
 {
    	uint8_t err = 0;
 	uint16_t old_spdd, old_spda;
@@ -311,6 +312,9 @@ uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
 
+
+	/* TODO: check blocking of previous operation */
+
 	/* prepare for harvesting */
 	if (side == I2C_SIDE_ALL) {
 		WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_is_ready(I2C_SIDE_LEFT) &&
@@ -323,18 +327,18 @@ uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
 		i2c_slavedspic_mode_ss_harvest(side, blade_angle);
 	}
 
-	/* harvest */
+	/* harvest, go close to stands but without touch */
 	strat_set_speed (harvest_speed, SPEED_ANGLE_SLOW);
-	d -= ROBOT_CENTER_TO_MOUTH;
+	d -= ROBOT_CENTER_TO_MOUTH-10;
 	trajectory_d_rel(&mainboard.traj, d);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);	
 
-	/* TODO: wait for blocking ? */
+
 
 	/* return to init position */
-	if (back_to_init_pos) {
+	if (flags & STANDS_HARVEST_BACK_INIT_POS) {
 		strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 		trajectory_d_rel(&mainboard.traj, -d);
 		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
@@ -343,8 +347,10 @@ uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
 	}
 
 	/* calib x position and angle */
-	if (calib_x)
+	if (flags & STANDS_HARVEST_CALIB_X)
 	{
+        /* TODO: wait for storing status */
+
 		/* calibrate position on the wall */
 		strat_set_speed(SPEED_DIST_VERY_SLOW, SPEED_ANGLE_SLOW);
 
@@ -360,18 +366,17 @@ uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
 						COLOR_A_ABS(180));
 
 		d_blocking = ABS(d_blocking-COLOR_X(ROBOT_CENTER_TO_FRONT));
-	}
 
-	/* return to init position */
-	if (back_to_init_pos) {
-		strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
-		d += d_blocking;
-		trajectory_d_rel(&mainboard.traj, -d);
-		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-		if (!TRAJ_SUCCESS(err))
-		   ERROUT(err);	
+	    /* return to init position */
+	    if (flags & STANDS_HARVEST_BACK_INIT_POS) {
+		    strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
+		    d += d_blocking;
+		    trajectory_d_rel(&mainboard.traj, -d);
+		    err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+		    if (!TRAJ_SUCCESS(err))
+		       ERROUT(err);	
+	    }
 	}
-
 
 end:
 	/* end stuff */
