@@ -69,7 +69,8 @@
 		goto end;		 \
 	} while(0)
 
-#define STANDS_READY_TIMEOUT 5000
+#define ROBOT_CENTER_TO_MOUTH	105.0
+#define STANDS_READY_TIMEOUT    5000
 
 /**
  * 	TODO
@@ -178,7 +179,10 @@ end:
    	return err;
 }
 
-#ifdef DEPRECATED
+#if 0
+
+/* DEPRECATED */
+
 /** 
  *	Harvest stands parallel to the wall
  *	return END_TRAJ if the work is done, err otherwise 
