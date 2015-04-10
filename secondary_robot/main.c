@@ -402,8 +402,8 @@ int main(void)
 	time_wait_ms (1000);
 #endif
 
-   /* start */
-   //strat_start_match(1);
+  	/* start */
+	beacon_start();
 
    /* process commands, never returns */
    //cmdline_interact(NULL);
@@ -413,16 +413,11 @@ int main(void)
 	cmdline_init();
 
 	/* command line event */
-   	//scheduler_add_periodical_event_priority(cmdline_interact_nowait, NULL,
-    //		EVENT_PERIOD_CMDLINE / SCHEDULER_UNIT, EVENT_PRIORITY_CMDLINE);
+   	scheduler_add_periodical_event_priority(cmdline_interact_nowait, NULL,
+    		EVENT_PERIOD_CMDLINE / SCHEDULER_UNIT, EVENT_PRIORITY_CMDLINE);
 
-	while (1)
-	{
-		cmdline_interact_nowait(NULL);
-	}
-
+	/* never returns */
 	strat_bt_task_scheduler();
-	//while (1);
 
-   return 0;
+   	return 0;
 }
