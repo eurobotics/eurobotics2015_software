@@ -444,6 +444,9 @@ uint8_t bt_robot_2nd_wait_ack (void)
     int8_t ret;
     
 	DEBUG (E_USER_BT_PROTO, "waiting command ACK ...");
+#ifdef HOST_VERSION
+	time_wait_ms(300);
+#endif
 	ret = BT_WAIT_COND_OR_TIMEOUT( bt_robot_2nd_is_ack_received(), 1000);
 
 	if (!ret) {
