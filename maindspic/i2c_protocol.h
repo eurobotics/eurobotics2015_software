@@ -31,6 +31,7 @@
 #define _I2C_PROTOCOL_H_
 
 #include "i2c_mem.h"
+#include "../common/i2c_commands.h"
 
 /* i2c protocol functions */
 void i2c_protocol_init(void);
@@ -49,6 +50,14 @@ int8_t i2c_led_control(uint8_t addr, uint8_t led, uint8_t state);
 /* slavedspic mode commands 2012 */
 
 /****** GENERIC FUNCTIONS */
+
+#define STATUS_READY		I2C_SLAVEDSPIC_STATUS_READY
+#define STATUS_BUSY			I2C_SLAVEDSPIC_STATUS_BUSY
+#define STATUS_WAITING      I2C_SLAVEDSPIC_STATUS_WAITING
+#define STATUS_STORING      I2C_SLAVEDSPIC_STATUS_STORING
+#define STATUS_DONE			I2C_SLAVEDSPIC_STATUS_DONE	
+#define STATUS_BLOCKED		I2C_SLAVEDSPIC_STATUS_BLOCKED
+#define STATUS_ERROR		I2C_SLAVEDSPIC_STATUS_ERROR
 
 /* initialize */
 int8_t i2c_slavedspic_mode_init(void);
@@ -74,6 +83,9 @@ int8_t i2c_slavedspic_mode_ps(uint8_t mode);
 /* get popcorn system status */
 uint8_t i2c_slavedspic_get_ps_status(void);
 
+/* return 0 if no status matched, or the status received */
+uint8_t i2c_slavedspic_ps_test_status(uint8_t status_flags);
+
 /* set stands system mode */
 int8_t i2c_slavedspic_mode_ss_harvest(uint8_t side, int8_t blade_angle_deg);
 
@@ -82,6 +94,9 @@ int8_t i2c_slavedspic_mode_ss(uint8_t mode, uint8_t side);
 
 /* get popcorn system status */
 uint8_t i2c_slavedspic_get_ss_status(uint8_t side);
+
+/* return 0 if no status matched, or the status received */
+uint8_t i2c_slavedspic_ss_test_status(uint8_t side, uint8_t status_flags);
 
 
 #endif
