@@ -1274,6 +1274,8 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 		if(res->arg2==1){
 			set_strat_sec_1();
 			strat_infos.strat_smart_sec = GET_NEW_TASK;
+		}else if(res->arg2==0){
+			strat_infos.strat_smart_sec = WAIT_FOR_ORDER;
 		}
 	}
 }

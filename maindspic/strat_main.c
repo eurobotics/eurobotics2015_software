@@ -175,6 +175,7 @@ void set_strat_main_1(void){
 
 	strat_infos.zones[ZONE_MY_HOME].prio = 10;
 
+
 }
 void set_strat_main_2(void){
 	strat_infos.current_main_strategy = 1;
@@ -195,13 +196,14 @@ void set_strat_main_2(void){
 
 	strat_infos.zones[ZONE_MY_HOME].prio = 10;
 
+
 }
 
 
 
 void set_strat_sec_1(void){
 	strat_infos.current_sec_strategy = 1;
-	strat_infos.zones[ZONE_POPCORNCUP_2].prio = 100;
+	strat_infos.zones[ZONE_POPCORNCUP_1].prio = 100;
 
 	strat_infos.zones[ZONE_MY_CLAP_3].prio = 90;
 	//DEBUG(E_USER_STRAT,"strat_sec_1");
@@ -212,7 +214,7 @@ void set_strat_sec_1(void){
 void set_strat_sec_2(void){
 	strat_infos.current_sec_strategy = 2;
 	//DEBUG(E_USER_STRAT,"strat_sec_2");
-	strat_infos.zones[ZONE_POPCORNCUP_2].prio = 100;
+	strat_infos.zones[ZONE_POPCORNCUP_1].prio = 100;
 	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 90;
 	strat_infos.zones[ZONE_MY_CLAP_3].prio = 80;
 	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 70;
@@ -223,7 +225,7 @@ void set_strat_sec_3(void){
 	strat_infos.current_sec_strategy = 3;
 	//DEBUG(E_USER_STRAT,"strat_sec_3");
 
-	strat_infos.zones[ZONE_POPCORNCUP_2].prio = 100;
+	strat_infos.zones[ZONE_POPCORNCUP_1].prio = 100;
 	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 90;
 	strat_infos.zones[ZONE_MY_CLAP_3].prio = 80;
 	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 70;
@@ -347,9 +349,11 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 			err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 			if (!TRAJ_SUCCESS(err))
 				ERROUT(err);
-			time_wait_ms(1000);
+			time_wait_ms(500);
 
             }
+
+
 			/*			/*ZONE_MY_STAND_GROUP_1
 			if(strat_infos.zones[zone_num].type == ZONE_MY_STAND_GROUP_1){
 
@@ -472,6 +476,8 @@ void strat_set_sec_new_order(int8_t zone_num){
 void strat_smart_robot_2nd(void)
 {
 	static microseconds us = 0;
+	uint8_t received_ack;
+	uint8_t err;
 
 	switch (strat_infos.strat_smart_sec){
 		case GO_TO_ZONE:
@@ -480,8 +486,15 @@ void strat_smart_robot_2nd(void)
 
 			if(bt_robot_2nd_is_ret_received()){
 				DEBUG (E_USER_STRAT, "\r\n\r\nFinished - Going to Zone: %d, RET= %d\r\n",strat_infos.strat_smart_sec_task,robot_2nd.cmd_ret);
-				strat_work_on_zone(strat_infos.strat_smart_sec_task);
-				strat_infos.strat_smart_sec = WAIT_ACK_WORK;
+				// XXX evaluate ret value
+				err=bt_robot_2nd_test_end();
+				if(err != END_ERROR){
+					strat_work_on_zone(strat_infos.strat_smart_sec_task);
+					strat_infos.strat_smart_sec = WAIT_ACK_WORK;
+				}else{
+					//set_next_sec_strategy();
+					strat_infos.strat_smart_sec = GET_NEW_TASK;
+				}
 			}
 
 			break;
@@ -508,16 +521,25 @@ void strat_smart_robot_2nd(void)
 			break;
 
 		case WAIT_ACK_GOTO:
+		    // Wait 200ms to avoid previous values
 			if (time_get_us2() - us < 200000L)
 				return;
 
-			if(bt_robot_2nd_is_ack_received ())
+			// Check ACK
+			received_ack=bt_robot_2nd_is_ack_received ();
+
+			// ACK
+			if(received_ack==1)
 			{
 				DEBUG (E_USER_STRAT, "\r\n\r\nReceived ACK - GOTO Zone: %d, RET= %d\r\n",strat_infos.strat_smart_sec_task,robot_2nd.cmd_ret);
 				us = time_get_us2();
-
 				strat_infos.strat_smart_sec = GO_TO_ZONE;
 			}
+
+			// NACK: Communication error. Repeat command
+			else if(received_ack!=0)
+				strat_infos.strat_smart_sec = GET_NEW_TASK;
+
 			break;
 
 		// Not implemented
