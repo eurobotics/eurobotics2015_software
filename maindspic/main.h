@@ -315,9 +315,9 @@ struct beaconboard
 
 // 0: Continue with task
 // 1: END
-uint8_t end_bt_task_flag;
+//uint8_t end_bt_task_flag;
 // Current bt_task code
-uint8_t current_bt_task;
+//uint8_t current_bt_task;
 
 struct robot_2nd
 {

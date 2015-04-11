@@ -69,7 +69,7 @@
 #include "sensor.h"
 #include "cmdline.h"
 #include "strat.h"
-#include "../maindspic/strat_utils.h"
+#include "strat_utils.h"
 #include "strat_base.h"
 #include "i2c_protocol.h"
 #include "actuator.h"
@@ -973,9 +973,6 @@ parse_pgm_inst_t cmd_status = {
 	},
 };
 
-/* TODO */
-#if 0
-
 /**********************************************************/
 /* Beacon */
 
@@ -1017,7 +1014,7 @@ parse_pgm_inst_t cmd_beacon = {
 	},
 };
 
-
+#if 0
 /**********************************************************/
 /* Robot sensors test */
 

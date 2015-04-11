@@ -157,6 +157,7 @@ extern parse_pgm_inst_t cmd_sleep;
 
 extern parse_pgm_inst_t cmd_strat_event;
 extern parse_pgm_inst_t cmd_status;
+extern parse_pgm_inst_t cmd_beacon;
 
 /* TODO */
 #if 0
@@ -296,10 +297,11 @@ parse_pgm_ctx_t main_ctx[] = {
 
 	(parse_pgm_inst_t *)&cmd_strat_event,
 	(parse_pgm_inst_t *)&cmd_status,
+	(parse_pgm_inst_t *)&cmd_beacon,
 
 /* TODO */
 #if 0
-	(parse_pgm_inst_t *)&cmd_beacon,
+
 	(parse_pgm_inst_t *)&cmd_sensor_robot,
 #endif
 #endif /* COMPILE_COMMANDS_MAINBOARD */

@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Baliñas Santos <javier@arc-robots.org>
+ *  Javier Balias Santos <javier@arc-robots.org>
  */
 
 #include <stdio.h>
@@ -135,10 +135,10 @@ void io_pins_init(void)
 
    /* sensor inputs */
    _TRISC9   = 1;   /* SENSOR_1 */
-	_IC7R		 = 25;  // IC7 <- RP25
+   _IC7R	 = 25;  // IC7 <- RP25
 
    _TRISB2   = 1;   /* SENSOR_2 */
-   _IC2R		 = 2;  // IC2 <- RP2
+   _IC2R	 = 2;   // IC2 <- RP2
 
    _TRISA8   = 1;   /* SENSOR_3 */
 
@@ -174,19 +174,19 @@ void io_pins_init(void)
 
    /* XXX encoder 1 channels has been inverted for march with the other one */
 
-   _QEA1R    = 20;   /* QEA1 <- RP21(RC5) <- ENC_1_CHA */
-   _TRISC5  = 1;
-   _QEB1R    = 21;   /* QEB1 <- RP20(RC4) <- ENC_1_CHB */
+   _QEA1R    = 21;   /* QEA1 <- RP21(RC5) <- ENC_1_CHA */
+   _TRISC5   = 1;
+   _QEB1R    = 20;   /* QEB1 <- RP20(RC4) <- ENC_1_CHB */
    _TRISC4   = 1;
 
-   _QEA2R    = 19;   /* QEA2 <- RP19(RC3) <- ENC_2_CHA */
-   _TRISC3  = 1;
-   _QEB2R    = 4;   /* QEB2 <- RP4(RB4)  <- ENC_2_CHB */
+   _QEA2R    = 4;   /* QEA2 <- RP19(RC3) <- ENC_2_CHA */
+   _TRISC3   = 1;
+   _QEB2R    = 19;   /* QEB2 <- RP4(RB4)  <- ENC_2_CHB */
    _TRISB4   = 1;
 
    /* ENC 3 */
-	_TRISB11 = 1;
-	_T4CKR = 11;	/* T3CK <-- RP11 */
+   _TRISB11 = 1;
+   _T4CKR   = 11;	/* T3CK <-- RP11 */
 
    /* i2c */
    /* XXX open collector */
@@ -196,13 +196,13 @@ void io_pins_init(void)
    /* uarts */
    /* U1 is for cmdline and bootloader */
    _U1RXR    = 8;   /* U1RX <- RP8(RB8) <- UART_RX   */
-   _TRISB8 = 1;   /* U1RX is input   */
-   _RP7R    = 3;   /* U1TX -> RP7(RB7) -> UART_TX   */
+   _TRISB8 = 1;   	/* U1RX is input   */
+   _RP7R    = 3;   	/* U1TX -> RP7(RB7) -> UART_TX   */
    _TRISB7   = 0;   /* U1TX is output   */
 
    /* UART SERVO AX12 */
    _U2RXR    = 9;   // U2RX <- RP9 <- SERVOS_AX12_UART
-   _RP9R    = 5;   // U2TX -> RP9 -> SERVOS_AX12_UART
+   _RP9R    = 5;   	// U2TX -> RP9 -> SERVOS_AX12_UART
    _TRISB9   = 0;   // U2TX is output
    _ODCB9    = 1;   // For half-duplex mode RP9 is open collector
 
@@ -211,7 +211,6 @@ void io_pins_init(void)
 
 int main(void)
 {
-	uint8_t ret;
    /* disable interrupts */
    cli();
 
@@ -237,15 +236,13 @@ int main(void)
    memset(&beaconboard, 0, sizeof(beaconboard));
    memset(&robot_2nd, 0, sizeof(robot_2nd));
 
-   mainboard.strat_event = -1;
-
    /* init flags */
 #ifdef HOST_VERSION
   mainboard.flags = DO_ENCODERS | DO_CS | DO_RS |
       DO_POS | DO_POWER | DO_BD;
 #else
   mainboard.flags = DO_ENCODERS  | DO_RS |
-      DO_POS | DO_POWER | DO_BD| DO_CS ;
+      DO_POS | DO_POWER | DO_BD | DO_CS ;
 #endif
 
    beaconboard.opponent1_x = I2C_OPPONENT_NOT_THERE;
@@ -314,10 +311,10 @@ int main(void)
    pwm_servo_init(&gen.pwm_servo_oc4, 4, 300, 2400);
    pwm_servo_enable();
 
-   pwm_servo_set(&gen.pwm_servo_oc1, 900);
-   pwm_servo_set(&gen.pwm_servo_oc2, 0);
-   pwm_servo_set(&gen.pwm_servo_oc3, 1200);
-   pwm_servo_set(&gen.pwm_servo_oc4, 1300);
+   pwm_servo_set(&gen.pwm_servo_oc1, 500);
+   pwm_servo_set(&gen.pwm_servo_oc2, 500);
+   pwm_servo_set(&gen.pwm_servo_oc3, 500);
+   pwm_servo_set(&gen.pwm_servo_oc4, 500);
 
    /* MAIN TIMER */
    main_timer_init();
@@ -358,10 +355,6 @@ int main(void)
    /* i2c slaves polling (gpios and slavedspic) */
    scheduler_add_periodical_event_priority(i2c_poll_slaves, NULL,
     EVENT_PERIOD_I2C_POLL / SCHEDULER_UNIT, EVENT_PRIORITY_I2C_POLL);
-
-   /* beacon commnads and polling */
-   //scheduler_add_periodical_event_priority(beacon_protocol, NULL,
-   // EVENT_PERIOD_BEACON_PULL / SCHEDULER_UNIT, EVENT_PRIORITY_BEACON_POLL);
 #endif
 
    /* strat-related event */
@@ -383,7 +376,6 @@ int main(void)
    /* reset strat infos */
    strat_reset_infos();
 
-
    /* enable interrupts */
    sei();
 
@@ -397,7 +389,6 @@ int main(void)
 #ifdef HOST_VERSION
 	mainboard.our_color = I2C_COLOR_YELLOW;
    strat_reset_pos(COLOR_X(520), 420, COLOR_A_ABS(90));
-   //strat_event_enable();
 #endif
 
 	/* program WT-11 */
@@ -411,96 +402,22 @@ int main(void)
 	time_wait_ms (1000);
 #endif
 
-   /* start */
-   //strat_start_match(1);
+  	/* start */
+	beacon_start();
 
    /* process commands, never returns */
    //cmdline_interact(NULL);
 
-#ifndef HOST_VERSION
-    blade_hide ();
-	beacon_start ();
-#endif
+	/* TODO: init mechanics */
+
 	cmdline_init();
 
 	/* command line event */
    	scheduler_add_periodical_event_priority(cmdline_interact_nowait, NULL,
     		EVENT_PERIOD_CMDLINE / SCHEDULER_UNIT, EVENT_PRIORITY_CMDLINE);
 
-	/* init bt_task */
-	current_bt_task=0;
-	strat_bt_goto_avoid_x = -1; strat_bt_goto_avoid_y = -1; strat_bt_goto_avoid_checksum = -1;
+	/* never returns */
+	strat_bt_task_scheduler();
 
-
-	while(1)
-	{
-		switch(current_bt_task)
-		{
-			case  BT_TASK_NONE:
-			default:
-				break;
-
-			case  BT_TASK_PICK_CUP:
-				ret=pick_popcorn_cup();
-				break;
-
-			case  BT_TASK_CARPET:
-				ret=extend_carpet();
-				break;
-
-			case  BT_TASK_STAIRS:
-				ret=climb_stairs();
-				break;
-
-			case  BT_TASK_BRING_CUP:
-				ret=bring_cup_to_cinema();
-				break;
-
-			case  BT_TASK_CLAP:
-				ret=close_clapperboard();
-				break;
-
-			case  BT_GOTO:
-				//TODO: check task flag
-				ret = wait_traj_end(TRAJ_FLAGS_STD);
-
-				break;
-
-			case BT_GOTO_AVOID_FW:
-				//TODO: check task???????????
-				ret=bt_goto_and_avoid_forward(strat_bt_goto_avoid_x, strat_bt_goto_avoid_y, strat_bt_goto_avoid_checksum);
-				strat_bt_goto_avoid_x = -1;
-				strat_bt_goto_avoid_y = -1;
-				strat_bt_goto_avoid_checksum = -1;
-
-				break;
-
-			case BT_GOTO_AVOID_BW:
-				ret=bt_goto_and_avoid_backward (strat_bt_goto_avoid_x, strat_bt_goto_avoid_y, strat_bt_goto_avoid_checksum);
-				strat_bt_goto_avoid_x = -1;
-				strat_bt_goto_avoid_y = -1;
-				strat_bt_goto_avoid_checksum = -1;
-
-				break;
-
-			case BT_GOTO_AVOID:
-				printf_P("BT_GOTO_AVOID");
-				ret=bt_goto_and_avoid (strat_bt_goto_avoid_x, strat_bt_goto_avoid_y, strat_bt_goto_avoid_checksum);
-				strat_bt_goto_avoid_x = -1;
-				strat_bt_goto_avoid_y = -1;
-				strat_bt_goto_avoid_checksum = -1;
-				printf_P("\nBT_GOTO_AVOID	: %d\n",ret);
-				break;
-		}
-
-		// Return value from the functions indicating finish, to inform main robot.
-		if(current_bt_task!=BT_TASK_NONE && ret != 0){
-
-			time_wait_ms(200);
-			bt_status_set_cmd_ret (ret);
-			current_bt_task=BT_TASK_NONE;
-		}
-	}
-
-   return 0;
+   	return 0;
 }

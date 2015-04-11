@@ -619,8 +619,9 @@ void i2c_slavedspic_wait_ready(void)
 /* get slavedispic status */
 uint8_t i2c_slavedspic_get_status(void)
 { 
-#ifndef HOST_VERSION     
+#ifndef HOST_VERSION
    i2cproto_wait_update();
+#endif
    return slavedspic.status;
 #endif
 }
@@ -647,7 +648,7 @@ int8_t i2c_slavedspic_mode_ps(uint8_t mode)
 /* get popcorn system status */
 uint8_t i2c_slavedspic_get_ps_status(void)
 { 
-#ifndef HOST_VERSION     
+#ifndef HOST_VERSION
    i2cproto_wait_update();
 #endif
    return slavedspic.popcorn_system.status;
@@ -684,7 +685,7 @@ int8_t i2c_slavedspic_mode_ss(uint8_t mode, uint8_t side)
 /* get popcorn system status */
 uint8_t i2c_slavedspic_get_ss_status(uint8_t side)
 { 
-#ifndef HOST_VERSION     
+#ifndef HOST_VERSION
    i2cproto_wait_update();
 #endif
    return slavedspic.stands_system[side].status;

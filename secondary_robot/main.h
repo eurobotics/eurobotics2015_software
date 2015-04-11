@@ -98,15 +98,15 @@
 
 /* distance between encoders weels,
  * decrease track to decrease angle */
-#define EXT_TRACK_MM      219.67487845028
+#define EXT_TRACK_MM      202.65952055139
 #define VIRTUAL_TRACK_MM  EXT_TRACK_MM
 
 /* robot dimensions */
 #define IM_SECONDARY_ROBOT
-#define ROBOT_LENGTH      	    150.
-#define ROBOT_WIDTH 	    	230.
-#define ROBOT_CENTER_TO_FRONT   75.
-#define ROBOT_CENTER_TO_BACK    75.
+#define ROBOT_LENGTH      	    163.
+#define ROBOT_WIDTH 	    	210.
+#define ROBOT_CENTER_TO_BACK    105.0
+#define ROBOT_CENTER_TO_FRONT   (ROBOT_LENGTH-ROBOT_CENTER_TO_BACK)
 #define ROBOT_HALF_LENGTH_FRONT ROBOT_CENTER_TO_FRONT
 #define ROBOT_HALF_LENGTH_REAR  ROBOT_CENTER_TO_BACK
 
@@ -119,15 +119,15 @@
  * 20000/163.5 -> 1201 imps/10 mm */
 
 /* increase it to go further */
-#define IMP_ENCODERS 		  	    5000.0
-#define WHEEL_DIAMETER_MM 		    53.0
+#define IMP_ENCODERS 		  	    1000.0
+#define WHEEL_DIAMETER_MM 		    109.0
 #define WHEEL_PERIM_MM 	    	    (WHEEL_DIAMETER_MM * M_PI)
-#define IMP_COEF 			        10.0
+#define IMP_COEF 			        50.0 /* XXX HACK for use the same PID gains of last year */
 #define DIST_IMP_MM 		    	(((IMP_ENCODERS*4) / WHEEL_PERIM_MM) * IMP_COEF)
 
 /* encoders handlers */
-#define LEFT_ENCODER        ((void *)1)
-#define RIGHT_ENCODER       ((void *)2)
+#define LEFT_ENCODER        ((void *)2)
+#define RIGHT_ENCODER       ((void *)1)
 
 /* motor handles */
 #define MOTOR_1     	((void *)&gen.pwm_mc_1)
@@ -135,8 +135,8 @@
 #define MOTOR_3     	((void *)&gen.pwm_mc_3)
 
 #define BEACON_MOTOR	MOTOR_1
-#define LEFT_MOTOR	MOTOR_2
-#define RIGHT_MOTOR	MOTOR_3
+#define LEFT_MOTOR		MOTOR_2
+#define RIGHT_MOTOR		MOTOR_3
 
 
 /** ERROR NUMS */
@@ -156,12 +156,7 @@
 #define EVENT_PRIORITY_CS           100
 #define EVENT_PRIO_BEACON	    	80
 #define EVENT_PRIORITY_STRAT        30
-#define EVENT_PRIORITY_BEACON_POLL  20 /* XXX unused */
 #define EVENT_PRIORITY_CMDLINE      15 /* XXX > trajectory_manager event priority */
-#define EVENT_PRIORITY_STRAT_EVENT	10 /* XXX > trajectory_manager event priority */
-
-
-
 
 
 /* EVENTS PERIODS */
@@ -182,11 +177,6 @@
 /* dynamic logs */
 #define NB_LOGS 10
 
-
-// Current bt_task code
-uint8_t current_bt_task;
-int16_t strat_bt_goto_avoid_x, strat_bt_goto_avoid_y, strat_bt_goto_avoid_checksum;
-
 #define BT_TASK_NONE	   		0
 #define BT_TASK_PICK_CUP   		1
 #define BT_TASK_CARPET         	2
@@ -197,6 +187,7 @@ int16_t strat_bt_goto_avoid_x, strat_bt_goto_avoid_y, strat_bt_goto_avoid_checks
 #define BT_GOTO_AVOID         7
 #define BT_GOTO_AVOID_FW         8
 #define BT_GOTO_AVOID_BW         9
+#define BT_AUTO_POSITION		10
 
 
 
@@ -275,9 +266,12 @@ struct mainboard
 	int32_t pwm_l;  /* current left dac */
 	int32_t pwm_r;  /* current right dac */
 
-	/* strat events */
-	int8_t  strat_event;
-	int16_t strat_event_data[3];
+	/* strat bt trasks */
+	int8_t  bt_task_id;
+	int8_t  bt_task_id_rqst;
+	int8_t  bt_task_new_rqst;
+	int16_t bt_task_args[5];
+	int8_t  bt_task_interrupt;
 };
 
 
