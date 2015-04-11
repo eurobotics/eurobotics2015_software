@@ -338,25 +338,6 @@ static void cmd_init_parsed(void *parsed_result, void *data)
 {
     struct cmd_init_result *res = parsed_result;
 
-	if (strcmp_P(res->arg0, PSTR("init_no_bt")))
-	{
-		/* open bt links */
-	#ifndef HOST_VERSION
-		wt11_reset_mux();
-		time_wait_ms (1000);
-		wt11_open_link_mux(beacon_addr, &beaconboard.link_id);
-		/* TODO: discomented when robot secondary ready */
-		//time_wait_ms (1000);
-		//wt11_open_link_mux(robot_2nd_addr, &robot_2nd.link_id);
-	#else
-		robot_2nd.link_id = 0;
-		beaconboard.link_id = 1;
-	#endif
-		/* enable bt protocol events */
-		mainboard.flags |= DO_BEACON ;//| DO_ROBOT_2ND
-		time_wait_ms (200);
-	}
-
 	/* set main robot color */
     if (!strcmp_P(res->color, PSTR("green"))){
         mainboard.our_color = I2C_COLOR_GREEN;
@@ -371,16 +352,38 @@ static void cmd_init_parsed(void *parsed_result, void *data)
 	/* init main robot mechanics */
 	i2c_slavedspic_mode_init();
 
+	/* with bluetooth */
+	if (strcmp_P(res->arg0, PSTR("init_no_bt")))
+	{
+		/* open bt links */
+	#ifndef HOST_VERSION
+		wt11_reset_mux();
+		time_wait_ms (1000);
+		wt11_open_link_mux(beacon_addr, &beaconboard.link_id);
+		time_wait_ms (1000);
+		wt11_open_link_mux(robot_2nd_addr, &robot_2nd.link_id);
+	#else
+		robot_2nd.link_id = 0;
+		beaconboard.link_id = 1;
+	#endif
+		/* enable bt protocol events */
+		mainboard.flags |= DO_BEACON | DO_ROBOT_2ND;
+		time_wait_ms (200);
+	}
+
+
 	if (strcmp_P(res->arg0, PSTR("init_no_bt")))
 	{
 		/* TODO: wait for secondary robot ready */
+		printf ("Press a key when secondary robot is READY\n\r");
+		while(!cmdline_keypressed());
 
-		/* TODO: set secondary robot color */
-		//bt_robot_2nd_set_color ();
+		/* set secondary robot color */
+		bt_robot_2nd_set_color ();
 
-		/* TODO: autopos secondary robot */
-		//bt_robot_2nd_autopos();
-		//bt_robot_2nd_wait_end();
+		/* autopos secondary robot */
+		bt_robot_2nd_autopos();
+		bt_robot_2nd_wait_end();
 	}
 	printf ("Done\n\r");
 }

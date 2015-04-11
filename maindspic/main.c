@@ -226,9 +226,13 @@ int main(void)
 	memset(&beaconboard, 0, sizeof(beaconboard));
 
 	/* init flags */
+#ifndef HOST_VERSION
+  	mainboard.flags = DO_ENCODERS  | DO_RS |
+		DO_POS | DO_POWER | DO_BD | DO_CS;
+#else
   	mainboard.flags = DO_ENCODERS  | DO_RS |
 		DO_POS | DO_POWER | DO_BD | DO_CS | DO_BT_PROTO;
-
+#endif
 	/* bt protocol */
 	beaconboard.link_id = 0xFF;
 	robot_2nd.link_id = 0xFF;

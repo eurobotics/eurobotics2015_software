@@ -386,6 +386,7 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 												   0);				/* flags */
 				break;				
 
+#if 0
 			case ZONE_MY_STAND_GROUP_2:
 				err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x), 
 												   strat_infos.zones[zone_num].y, 
@@ -423,7 +424,11 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 														strat_infos.zones[zone_num].y, 
 														COLOR_INVERT(SIDE_LEFT));
 				break;
+#endif
 
+			case ZONE_MY_STAND_GROUP_2:
+			case ZONE_MY_STAND_GROUP_3:
+			case ZONE_MY_STAND_GROUP_4:
 			case ZONE_MY_POPCORNMAC:
 			case ZONE_OPP_POPCORNMAC:
 
