@@ -60,10 +60,11 @@
 #include "main.h"
 #include "strat.h"
 #include "strat_base.h"
-#include "../maindspic/strat_utils.h"
+#include "strat_utils.h"
 #include "sensor.h"
 
 #else
+#warning HOST_VERSION_OA_TEST
 
 #define M_2PI (M_PI*2)
 #define DEG(x) ((x) * (180.0 / M_PI))
@@ -83,6 +84,8 @@
 #endif
 
 #if defined(HOMOLOGATION)
+#warning HOMOLOGATION compilation
+
 /* /!\ half size */
 
 #define O_HOME_WIDTH 200
@@ -106,10 +109,13 @@
 #endif
 
 #ifdef IM_SECONDARY_ROBOT
+#warning IM SENCONDARY ROBOT
+
 /* /!\ half size */
 #define ROBOT_2ND_WIDTH  ((330/2)+OBS_CLERANCE)
 #define ROBOT_2ND_LENGTH ((282/2)+OBS_CLERANCE)
 #else
+#warning IM MAIN ROBOT
 /* /!\ half size */
 #define ROBOT_2ND_WIDTH  ((230/2)+OBS_CLERANCE)
 #define ROBOT_2ND_LENGTH ((150/2)+OBS_CLERANCE)
@@ -127,27 +133,6 @@
 #define HOME_YELLOW_X 200
 #define HOME_YELLOW_Y 1000
 
-
-
-#ifndef IM_SECONDARY_ROBOT
-
-/* 
-  internal radius: ri = (150+OBS_CLERANCE-10) = 382 mm 
-  external radious: re = (ri^2*1.52))^.5 = 470 mm
-*/
-#define HEARTFIRE_RAD  470
-#define HEARTFIRE_RAD2 (150+OBS_CLERANCE+20)
-
-#else
-
-/* 
-  internal radius: ri = (150+OBS_CLERANCE-10) = 287 mm 
-  external radious: re = (ri^2*1.52))^.5 = 353 mm
-*/
-#define HEARTFIRE_RAD 353
-#define HEARTFIRE_RAD2 (150+OBS_CLERANCE+30)
-
-#endif /* !IM_SECONDARY_ROBOT */
 
 /* don't care about polygons further than this distance for escape */
 #define ESCAPE_POLY_THRES 500
@@ -173,6 +158,7 @@ int16_t g_robot_2nd_y;
 #endif
 
 #ifdef HOST_VERSION_OA_TEST
+#warning HOST_VERSION_OA_TEST compilation
 /* return the distance between two points */
 int16_t distance_between(int16_t x1, int16_t y1, int16_t x2, int16_t y2)
 {
@@ -188,6 +174,7 @@ int16_t distance_between(int16_t x1, int16_t y1, int16_t x2, int16_t y2)
 
 /* normalize vector from origin */
 #if HOST_VERSION_OA_TEST
+#warning HOST_VERSION_OA_TEST compilation
 double norm(double x, double y)
 {
 	return sqrt(x*x + y*y);
@@ -196,6 +183,7 @@ double norm(double x, double y)
 
 /* rotate point */
 #ifdef HOST_VERSION_OA_TEST
+#warning HOST_VERSION_OA_TEST compilation
 void rotate(double *x, double *y, double rot)
 {
 	double l, a;
@@ -451,6 +439,7 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 	   name = robot_2nd;
 	}
 #else
+#warning HOST_VERSION_OA_TEST compilation
    if(type == OPP1) {
 	   x = g_opp1_x;
 	   y = g_opp1_y;
@@ -1085,6 +1074,7 @@ static int8_t __goto_and_avoid(int16_t x, int16_t y,
 			       uint8_t flags_intermediate,
 			       uint8_t flags_final, uint8_t direction)
 #else
+#warning HOST_VERSION_OA_TEST compilation
 int8_t goto_and_avoid(int16_t x, int16_t y,
 					   	int16_t robot_x, int16_t robot_y, double robot_a,
 					   	int16_t robot_2nd_x, int16_t robot_2nd_y,
@@ -1121,6 +1111,7 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 	DEBUG(E_USER_STRAT, "%s(%d,%d) flags_i=%x flags_f=%x direct=%d",
 	      __FUNCTION__, x, y, flags_intermediate, flags_final, direction);
 #else
+#warning HOST_VERSION_OA_TEST compilation
 	g_robot_x = robot_x;
 	g_robot_y = robot_y;
 	g_robot_a = robot_a;
@@ -1155,7 +1146,11 @@ retry:
 #ifndef HOST_VERSION_OA_TEST
 	robot_pt.x = position_get_x_s16(&mainboard.pos);
 	robot_pt.y = position_get_y_s16(&mainboard.pos);
+
+	DEBUG (E_USER_STRAT, "robot xy %d, %d", robot_pt.x, robot_pt.y);
+
 #else
+#warning HOST_VERSION_OA_TEST compilation
 	robot_pt.x = robot_x;
 	robot_pt.y = robot_y;
 #endif

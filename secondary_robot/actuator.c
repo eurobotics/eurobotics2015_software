@@ -87,25 +87,33 @@ int32_t encoders_get_beacon_speed(void * dummy)
 	return beacon_speed;
 }
 
-uint8_t blade_hide (void) {
-#ifndef HOST_VERSION
-	ax12_user_write_int(&gen.ax12, 1, AA_GOAL_POSITION_L, 261);
-#endif
-    return 0;
-}
 
-uint8_t blade_push_fire (void) {
-#ifndef HOST_VERSION
-	ax12_user_write_int(&gen.ax12, 1, AA_GOAL_POSITION_L, 556);
-#endif
-    return 0;
-}
-
-void shoot_net (void)
+/* set arm position */
+void arm_set_position (uint8_t type, uint16_t pos)
 {
 #ifndef HOST_VERSION
-   pwm_servo_set(&gen.pwm_servo_oc1, 300);
+
+	if (type == ARM_TYPE_LEFT)
+   		pwm_servo_set(&gen.pwm_servo_oc1, pos);
+	else if (type == ARM_TYPE_RIGHT) 
+   		pwm_servo_set(&gen.pwm_servo_oc1, pos);
 #endif
 }
 
+/* set cup clamp position */
+void cup_clamp_set_position (uint16_t pos)
+{
+#ifndef HOST_VERSION
+	pwm_servo_set(&gen.pwm_servo_oc1, pos);
+#endif
+}
+
+
+/* set auxiliary wheels */
+void aux_wheels_set_position (uint16_t pos)
+{
+#ifndef HOST_VERSION
+	pwm_servo_set(&gen.pwm_servo_oc1, pos);
+#endif
+}
 
