@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
+        <file>file:/media/datos/Datos/Proyectos/ARC_Eurobotics/eurobotics/eurobot/eurobot2015/software/secondary_robot/main.c</file>
+        <file>file:/media/datos/Datos/Proyectos/ARC_Eurobotics/eurobotics/eurobot/eurobot2015/software/secondary_robot/commands_traj.c</file>
+        <file>file:/media/datos/Datos/Proyectos/ARC_Eurobotics/eurobotics/eurobot/eurobot2015/software/secondary_robot/strat_main.c</file>
+        <file>file:/media/datos/Datos/Proyectos/ARC_Eurobotics/eurobotics/eurobot/eurobot2015/software/secondary_robot/bt_protocol.c</file>
+        <file>file:/media/datos/Datos/Proyectos/ARC_Eurobotics/eurobotics/eurobot/eurobot2015/software/secondary_robot/scheduler_config.h</file>
+        <file>file:/media/datos/Datos/Proyectos/ARC_Eurobotics/eurobotics/eurobot/eurobot2015/software/maindspic/strat_avoid.h</file>
+        <file>file:/media/datos/Datos/Proyectos/ARC_Eurobotics/eurobotics/eurobot/eurobot2015/software/libs/aversive4dspic/modules/base/math/geometry/vect_base.h</file>
+        <file>file:/media/datos/Datos/Proyectos/ARC_Eurobotics/eurobotics/eurobot/eurobot2015/software/libs/aversive4dspic/modules/base/math/geometry/lines.h</file>
+        <file>file:/media/datos/Datos/Proyectos/ARC_Eurobotics/eurobotics/eurobot/eurobot2015/software/libs/aversive4dspic/modules/base/math/geometry/polygon.h</file>
+        <file>file:/media/datos/Datos/Proyectos/ARC_Eurobotics/eurobotics/eurobot/eurobot2015/software/libs/aversive4dspic/modules/base/math/geometry/vect_base.c</file>
+        <file>file:/media/datos/Datos/Proyectos/ARC_Eurobotics/eurobotics/eurobot/eurobot2015/software/maindspic/strat_avoid.c</file>
+        <file>file:/media/datos/Datos/Proyectos/ARC_Eurobotics/eurobotics/eurobot/eurobot2015/software/secondary_robot/main.h</file>
+        <file>file:/media/datos/Datos/Proyectos/ARC_Eurobotics/eurobotics/eurobot/eurobot2015/software/secondary_robot/beacon.c</file>
+        <file>file:/media/datos/Datos/Proyectos/ARC_Eurobotics/eurobotics/eurobot/eurobot2015/software/secondary_robot/commands_mainboard.c</file>
+        <file>file:/media/datos/Datos/Proyectos/ARC_Eurobotics/eurobotics/eurobot/eurobot2015/software/secondary_robot/sensor.c</file>
+        <file>file:/media/datos/Datos/Proyectos/ARC_Eurobotics/eurobotics/eurobot/eurobot2015/software/secondary_robot/strat.c</file>
+        <file>file:/media/datos/Datos/Proyectos/ARC_Eurobotics/eurobotics/eurobot/eurobot2015/software/secondary_robot/strat_base.c</file>
+        <file>file:/media/datos/Datos/Proyectos/ARC_Eurobotics/eurobotics/eurobot/eurobot2015/software/secondary_robot/strat_begin.c</file>
+        <file>file:/media/datos/Datos/Proyectos/ARC_Eurobotics/eurobotics/eurobot/eurobot2015/software/libs/aversive4dspic/include/aversive.h</file>
+        <file>file:/media/datos/Datos/Proyectos/ARC_Eurobotics/eurobotics/eurobot/eurobot2015/software/secondary_robot/strat.h</file>
+    </open-files>
+</project-private>
