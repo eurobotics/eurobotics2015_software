@@ -326,14 +326,14 @@ struct robot_2nd
 
 	/* running command info */
 	uint8_t cmd_id;					/* for ack test */
-	uint8_t cmd_ret; 					/* for end traj test,
+	volatile uint8_t cmd_ret; 					/* for end traj test,
 												follows END_TRAJ flags rules,
 												see strat_base.h */
 	/* for cmd ack test */
 	uint8_t cmd_args_checksum_send;	/* checksum of arguments sent */
 	uint8_t cmd_args_checksum_recv;	/* checksum received */
 
-	uint8_t valid_status;
+	volatile uint8_t valid_status;
 
 	/* strat info */
 	uint8_t color;
