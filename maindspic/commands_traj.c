@@ -911,10 +911,10 @@ void auto_position(void)
     strat_set_speed(AUTOPOS_SPEED_FAST, AUTOPOS_SPEED_FAST);
 
 	/* set position of the robot aligned to home edges */
-	strat_reset_pos(COLOR_X(HOME_X_EDGE + ROBOT_CENTER_TO_BACK), 
-					COLOR_Y(HOME_Y_UP_EDGE - TRESPA_BAR - (ROBOT_WIDTH/2.0)), 
+	strat_reset_pos(COLOR_X(HOME_X_EDGE + ROBOT_CENTER_TO_BACK),
+					COLOR_Y(HOME_Y_UP_EDGE - TRESPA_BAR - (ROBOT_WIDTH/2.0)),
 					COLOR_A_ABS(0));
-	
+
 	/* goto in line with the center cup */
 	trajectory_d_rel(&mainboard.traj, 350-ROBOT_CENTER_TO_BACK);
     err = wait_traj_end(END_INTR | END_TRAJ);
@@ -1262,24 +1262,27 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
     }
     else if (strcmp_P(res->arg1, PSTR("strat_smart")) == 0) {
 		if(res->arg2==1){
-			set_strat_sec_1();
-			strat_infos.strat_smart_sec = GET_NEW_TASK;
+			set_strat_main_1();
+			//strat_infos.strat_smart_sec = GET_NEW_TASK;
 
 		}
 
 
-
-	   strat_smart_robot_2nd();
-        //strat_smart(MAIN_ROBOT);
+       strat_smart(MAIN_ROBOT);
     }
-
-    printf_P(PSTR("subtraj returned %s\r\n"), get_err(err));
-    trajectory_hardstop(&mainboard.traj);
+ 	else if (strcmp_P(res->arg1, PSTR("sec")) == 0) {
+		if(res->arg2==1){
+			set_strat_sec_1();
+			strat_infos.strat_smart_sec = GET_NEW_TASK;
+		}else if(res->arg2==0){
+			strat_infos.strat_smart_sec = WAIT_FOR_ORDER;
+		}
+	}
 }
 
 prog_char str_subtraj1_arg0[] = "subtraj";
 parse_pgm_token_string_t cmd_subtraj1_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg0, str_subtraj1_arg0);
-prog_char str_subtraj1_arg1[] = "homolog#begin#strat_smart";
+prog_char str_subtraj1_arg1[] = "homolog#begin#strat_smart#sec";
 parse_pgm_token_string_t cmd_subtraj1_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg1, str_subtraj1_arg1);
 parse_pgm_token_num_t cmd_subtraj1_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg2, INT32);
 //parse_pgm_token_num_t cmd_subtraj1_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg3, INT32);

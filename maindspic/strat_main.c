@@ -81,12 +81,24 @@
  */
 
 
-int8_t strat_is_valid_zone(uint8_t zone_num)
+int8_t strat_is_valid_zone(int8_t zone_num)
 {
 //#define OPP_WAS_IN_ZONE_TIMES
 
 	//static uint16_t opp_times[ZONES_MAX];
 	//static microseconds opp_time_us = 0;
+	if(zone_num < 0){
+		return -1;
+	}
+
+
+	/* if the zone has 0 priority then must be avoided */
+	if(strat_infos.zones[zone_num].prio == 0)
+	{
+		//DEBUG(E_USER_STRAT,"zone num: %d. avoid.");
+		return -1;
+	}
+
 
 	/* discard current zone */
 	if(strat_infos.current_zone == zone_num)
@@ -107,9 +119,10 @@ int8_t strat_is_valid_zone(uint8_t zone_num)
 		//DEBUG(E_USER_STRAT,"zone num: %d. avoid.");
 		return -1;
 	}
+
 	return zone_num;
 }
-void set_next_sec_strategy(){
+void set_next_sec_strategy(void){
 	strat_infos.current_sec_strategy++;
 	switch(strat_infos.current_sec_strategy){
 		case 1:
@@ -127,42 +140,96 @@ void set_next_sec_strategy(){
 	}
 
 }
+void set_next_main_strategy(void){
+	strat_infos.current_main_strategy++;
+	switch(strat_infos.current_main_strategy){
+		case 1:
+			set_strat_main_1();
+			break;
+		case 2:
+			set_strat_main_2();
+			strat_infos.current_sec_strategy = 0;
+			break;
+		default:
+			break;
+	}
+
+}
 void set_strat_main_1(void){
+	strat_infos.current_main_strategy = 1;
+
 	strat_infos.zones[ZONE_MY_STAND_GROUP_1].prio = 100;
-	strat_infos.zones[ZONE_POPCORNCUP_2].prio = 90;
-	strat_infos.zones[ZONE_MY_STAND_GROUP_2].prio = 80;
-	strat_infos.zones[ZONE_MY_CLAP_1].prio = 70;
-	strat_infos.zones[ZONE_MY_CLAP_2].prio = 60;
+	strat_infos.zones[ZONE_POPCORNCUP_3].prio = 90;
+
+
+	strat_infos.zones[ZONE_MY_CLAP_2].prio = 80;
+	strat_infos.zones[ZONE_POPCORNCUP_2].prio = 70;
+	strat_infos.zones[ZONE_MY_STAND_GROUP_2].prio = 60;
+	strat_infos.zones[ZONE_MY_CLAP_1].prio = 50;
+
+
+	strat_infos.zones[ZONE_MY_STAND_GROUP_3].prio = 40;
+	strat_infos.zones[ZONE_MY_POPCORNMAC].prio = 30;
+	strat_infos.zones[ZONE_MY_STAND_GROUP_4].prio = 20;
+
+
+	strat_infos.zones[ZONE_MY_HOME].prio = 10;
+
+
+}
+void set_strat_main_2(void){
+	strat_infos.current_main_strategy = 1;
+
+	strat_infos.zones[ZONE_MY_STAND_GROUP_1].prio = 100;
+
+
+	strat_infos.zones[ZONE_MY_CLAP_2].prio = 90;
+	strat_infos.zones[ZONE_POPCORNCUP_2].prio = 80;
+	strat_infos.zones[ZONE_MY_STAND_GROUP_2].prio = 70;
+	strat_infos.zones[ZONE_MY_CLAP_1].prio = 60;
+
+
 	strat_infos.zones[ZONE_MY_STAND_GROUP_3].prio = 50;
 	strat_infos.zones[ZONE_MY_POPCORNMAC].prio = 40;
 	strat_infos.zones[ZONE_MY_STAND_GROUP_4].prio = 30;
-	strat_infos.zones[ZONE_MY_HOME].prio = 30;
+
+
+	strat_infos.zones[ZONE_MY_HOME].prio = 10;
+
+
 }
+
 
 
 void set_strat_sec_1(void){
 	strat_infos.current_sec_strategy = 1;
+	strat_infos.zones[ZONE_POPCORNCUP_1].prio = 100;
+
+	strat_infos.zones[ZONE_MY_CLAP_3].prio = 90;
 	//DEBUG(E_USER_STRAT,"strat_sec_1");
-	strat_infos.zones[ZONE_MY_CLAP_3].prio = 100;
-	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 90;
-	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 80;
-	strat_infos.zones[ZONE_MY_STAIRS].prio = 70;
+	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 80;
+	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 70;
+	strat_infos.zones[ZONE_MY_STAIRS].prio = 60;
 }
 void set_strat_sec_2(void){
 	strat_infos.current_sec_strategy = 2;
 	//DEBUG(E_USER_STRAT,"strat_sec_2");
-	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 100;
-	strat_infos.zones[ZONE_MY_CLAP_3].prio = 90;
-	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 80;
-	strat_infos.zones[ZONE_MY_STAIRS].prio = 70;
+	strat_infos.zones[ZONE_POPCORNCUP_1].prio = 100;
+	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 90;
+	strat_infos.zones[ZONE_MY_CLAP_3].prio = 80;
+	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 70;
+	strat_infos.zones[ZONE_MY_STAIRS].prio = 60;
 }
+
 void set_strat_sec_3(void){
 	strat_infos.current_sec_strategy = 3;
 	//DEBUG(E_USER_STRAT,"strat_sec_3");
-	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 100;
-	strat_infos.zones[ZONE_MY_CLAP_3].prio = 90;
-	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 80;
-	strat_infos.zones[ZONE_MY_STAIRS].prio = 70;
+
+	strat_infos.zones[ZONE_POPCORNCUP_1].prio = 100;
+	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 90;
+	strat_infos.zones[ZONE_MY_CLAP_3].prio = 80;
+	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 70;
+	strat_infos.zones[ZONE_MY_STAIRS].prio = 60;
 }
 
 
@@ -184,14 +251,15 @@ int8_t strat_get_new_zone(uint8_t robot)
 			zone_num = i;
 		}
 		if( i == ZONES_MAX-1 ){
-			if(zone_num==-1){
-				break;
-			}
 			valid_zone = strat_is_valid_zone(zone_num);
 			switch(valid_zone){
 				case -1:
 					//strategy has to change
-					set_next_sec_strategy();
+					if(robot==SEC_ROBOT){
+						set_next_sec_strategy();
+					}else{
+						set_next_main_strategy();
+					}
 					i=0;
 					break;
 				default:
@@ -221,6 +289,7 @@ uint8_t strat_goto_zone(uint8_t zone_num, uint8_t robot)
 	{
 		bt_robot_2nd_goto_and_avoid(COLOR_X(strat_infos.zones[zone_num].init_x),
 												strat_infos.zones[zone_num].init_y);
+		return 0;
 
 	}else{
 		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
@@ -280,10 +349,12 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 			err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 			if (!TRAJ_SUCCESS(err))
 				ERROUT(err);
-			time_wait_ms(1000);
+			time_wait_ms(500);
 
             }
-						/*ZONE_MY_STAND_GROUP_1*/
+
+
+			/*			/*ZONE_MY_STAND_GROUP_1
 			if(strat_infos.zones[zone_num].type == ZONE_MY_STAND_GROUP_1){
 
 				err= goto_and_avoid (COLOR_X(MY_STAND_4_X),
@@ -299,7 +370,7 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 					ERROUT(err);
 				}
 
-			}
+			}*/
 	}
 
 	end:
@@ -326,8 +397,8 @@ uint8_t strat_smart(uint8_t robot)
 	uint8_t err;
 
 	/* get new zone */
-
 	zone_num = strat_get_new_zone(robot);
+	strat_set_sec_new_order(zone_num);
 	DEBUG(E_USER_STRAT,"Zone: %d. Priority: %d",zone_num,strat_infos.zones[zone_num].prio);
 
 	if(zone_num == -1) {
@@ -376,7 +447,31 @@ uint8_t strat_smart(uint8_t robot)
 		return END_TRAJ;
 	}
 }
+/*Function to set robot_2nd in waiting state*/
+void strat_should_wait_new_order(void){
+	switch(strat_infos.strat_smart_sec_task){
 
+		case ZONE_POPCORNCUP_2:
+			strat_infos.strat_smart_sec = WAIT_FOR_ORDER;
+		break;
+
+		default:
+			strat_infos.strat_smart_sec = GET_NEW_TASK;
+		break;
+	}
+}
+/*Function to set robot_2nd in working state*/
+void strat_set_sec_new_order(int8_t zone_num){
+	switch(zone_num){
+
+		case ZONE_MY_CLAP_2:
+			strat_infos.strat_smart_sec = GET_NEW_TASK;
+		break;
+
+		default:
+		break;
+	}
+}
 
 void strat_smart_robot_2nd(void)
 {
@@ -393,14 +488,21 @@ void strat_smart_robot_2nd(void)
 				DEBUG (E_USER_STRAT, "\r\n\r\nFinished - Going to Zone: %d, RET= %d\r\n",strat_infos.strat_smart_sec_task,robot_2nd.cmd_ret);
 				// XXX evaluate ret value
 				err=bt_robot_2nd_test_end();
-				strat_work_on_zone(strat_infos.strat_smart_sec_task);
-				strat_infos.strat_smart_sec = WAIT_ACK_WORK;
+				if(err != END_ERROR){
+					strat_work_on_zone(strat_infos.strat_smart_sec_task);
+					strat_infos.strat_smart_sec = WAIT_ACK_WORK;
+				}else{
+					//set_next_sec_strategy();
+					strat_infos.strat_smart_sec = GET_NEW_TASK;
+				}
 			}
 
 			break;
 		case WORK_ON_ZONE:
+
 			strat_infos.zones[strat_infos.strat_smart_sec_task].flags |= ZONE_CHECKED;
-			strat_infos.strat_smart_sec = GET_NEW_TASK;
+			strat_should_wait_new_order();
+
 
 			break;
 
@@ -422,10 +524,10 @@ void strat_smart_robot_2nd(void)
 		    // Wait 200ms to avoid previous values
 			if (time_get_us2() - us < 200000L)
 				return;
-				
+
 			// Check ACK
 			received_ack=bt_robot_2nd_is_ack_received ();
-			
+
 			// ACK
 			if(received_ack==1)
 			{
@@ -433,11 +535,11 @@ void strat_smart_robot_2nd(void)
 				us = time_get_us2();
 				strat_infos.strat_smart_sec = GO_TO_ZONE;
 			}
-			
+
 			// NACK: Communication error. Repeat command
 			else if(received_ack!=0)
 				strat_infos.strat_smart_sec = GET_NEW_TASK;
-				
+
 			break;
 
 		// Not implemented
