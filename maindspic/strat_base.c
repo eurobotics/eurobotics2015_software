@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Revision : $Id: strat_base.c,v 1.7 2009/05/27 20:04:07 zer0 Exp $
+ *  Revision : $Id$
  *
  */
 
@@ -82,7 +82,7 @@ static volatile uint16_t strat_limit_speed_d = 0;
 static volatile uint8_t strat_limit_speed_enabled = 1;
 
 /* opponent front/rear sensors for obstacle detection */
-static volatile uint8_t strat_opp_sensors_enabled = 1;
+static volatile uint8_t strat_opp_sensors_enabled = 0;
 
 /* Strings that match the end traj cause */
 /* /!\ keep it sync with stat_base.h */
@@ -294,12 +294,18 @@ void strat_get_speed(uint16_t *d, uint16_t *a)
 
 void strat_limit_speed_enable(void)
 {
+	uint8_t flags;
+	IRQ_LOCK(flags);
 	strat_limit_speed_enabled = 1;
+	IRQ_UNLOCK(flags);
 }
 
 void strat_limit_speed_disable(void)
 {
+	uint8_t flags;
+	IRQ_LOCK(flags);
 	strat_limit_speed_enabled = 0;
+	IRQ_UNLOCK(flags);
 }
 
 /* called periodically */

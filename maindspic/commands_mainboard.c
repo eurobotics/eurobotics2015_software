@@ -22,7 +22,7 @@
 
 /*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
- *  Javier Baliñas Santos <javier@arc-robots.org>
+ *  Javier Balias Santos <javier@arc-robots.org>
  *
  *  Code ported to family of microcontrollers dsPIC from
  *  commands_mainboard.c,v 1.8 2009/05/27 20:04:07 zer0 Exp.
@@ -338,22 +338,24 @@ static void cmd_init_parsed(void *parsed_result, void *data)
 {
     struct cmd_init_result *res = parsed_result;
 
-
-	/* open bt links */
-#ifndef HOST_VERSION
-	wt11_reset_mux();
-	time_wait_ms (1000);
-	wt11_open_link_mux(beacon_addr, &beaconboard.link_id);
-	/* TODO: discomented when robot secondary ready */
-	//time_wait_ms (1000);
-	//wt11_open_link_mux(robot_2nd_addr, &robot_2nd.link_id);
-#else
-	robot_2nd.link_id = 0;
-	beaconboard.link_id = 1;
-#endif
-	/* enable bt protocol events */
-	mainboard.flags |= DO_BEACON ;//| DO_ROBOT_2ND
-	time_wait_ms (200);
+	if (strcmp_P(res->arg0, PSTR("init_no_bt")))
+	{
+		/* open bt links */
+	#ifndef HOST_VERSION
+		wt11_reset_mux();
+		time_wait_ms (1000);
+		wt11_open_link_mux(beacon_addr, &beaconboard.link_id);
+		/* TODO: discomented when robot secondary ready */
+		//time_wait_ms (1000);
+		//wt11_open_link_mux(robot_2nd_addr, &robot_2nd.link_id);
+	#else
+		robot_2nd.link_id = 0;
+		beaconboard.link_id = 1;
+	#endif
+		/* enable bt protocol events */
+		mainboard.flags |= DO_BEACON ;//| DO_ROBOT_2ND
+		time_wait_ms (200);
+	}
 
 	/* set main robot color */
     if (!strcmp_P(res->color, PSTR("green"))){
@@ -363,25 +365,27 @@ static void cmd_init_parsed(void *parsed_result, void *data)
         mainboard.our_color = I2C_COLOR_YELLOW;
 	}
 
-	/* TODO: discomented when robot secondary ready */
-	/* set secondary robot color */
-	//bt_robot_2nd_set_color ();
-
-	/* TODO: init main robot mechanics */
-
-
 	/* autopos main robot */
 	auto_position();
 
-	/* TODO: discomented when robot secondary ready */
-	/* autopos secondary robot */
-    //bt_robot_2nd_autopos();
-	//bt_robot_2nd_wait_end();
+	/* init main robot mechanics */
+	i2c_slavedspic_mode_init();
 
+	if (strcmp_P(res->arg0, PSTR("init_no_bt")))
+	{
+		/* TODO: wait for secondary robot ready */
+
+		/* TODO: set secondary robot color */
+		//bt_robot_2nd_set_color ();
+
+		/* TODO: autopos secondary robot */
+		//bt_robot_2nd_autopos();
+		//bt_robot_2nd_wait_end();
+	}
 	printf ("Done\n\r");
 }
 
-prog_char str_init_arg0[] = "init";
+prog_char str_init_arg0[] = "init#init_no_bt";
 parse_pgm_token_string_t cmd_init_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_init_result, arg0, str_init_arg0);
 prog_char str_init_color[] = "green#yellow";
 parse_pgm_token_string_t cmd_init_color = TOKEN_STRING_INITIALIZER(struct cmd_init_result, color, str_init_color);
@@ -1231,7 +1235,7 @@ static void cmd_slavedspic_parsed(void *parsed_result, void *data)
 
 prog_char str_slavedspic_arg0[] = "slavedspic";
 parse_pgm_token_string_t cmd_slavedspic_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_slavedspic_result, arg0, str_slavedspic_arg0);
-prog_char str_slavedspic_arg1[] = "raw#init#info#led#poweroff";
+prog_char str_slavedspic_arg1[] = "raw#init#led#poweroff";
 parse_pgm_token_string_t cmd_slavedspic_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_slavedspic_result, arg1, str_slavedspic_arg1);
 
 prog_char help_slavedspic[] = "control slavedspic";
