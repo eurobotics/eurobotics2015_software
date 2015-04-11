@@ -48,7 +48,7 @@
 #define CENTER_Y 1000
 
 #define SIDE_LEFT		I2C_SIDE_LEFT
-#define SIDE_RIGHT 	    I2C_SIDE_RIGHT 
+#define SIDE_RIGHT 	    I2C_SIDE_RIGHT
 #define SIDE_ALL		I2C_SIDE_ALL
 
 #define GO_FORWARD	    0
@@ -200,7 +200,7 @@ TODO: remove
 #define POPCORNCUP_CENTRE_X				1500
 #define POPCORNCUP_CENTRE_Y				2000-1650
 
-/* TODO remove 
+/* TODO remove
 #define OPP_POPCORNCUP_FRONT_X			2090
 #define OPP_POPCORNCUP_FRONT_Y			2000-830
 #define OPP_POPCORNCUP_SIDE_X			2750
@@ -208,9 +208,9 @@ TODO: remove
 */
 
 /* redefinitions for strat diagram */
-#define MY_CUP_1_X	MY_POPCORNCUP_FRONT_X			
-#define MY_CUP_1_Y	MY_POPCORNCUP_FRONT_Y			
-#define MY_CUP_2_X	MY_POPCORNCUP_SIDE_X		
+#define MY_CUP_1_X	MY_POPCORNCUP_FRONT_X
+#define MY_CUP_1_Y	MY_POPCORNCUP_FRONT_Y
+#define MY_CUP_2_X	MY_POPCORNCUP_SIDE_X
 #define MY_CUP_2_Y	MY_POPCORNCUP_SIDE_Y
 #define MY_CUP_3_X	POPCORNCUP_CENTRE_X
 #define MY_CUP_3_Y  POPCORNCUP_CENTRE_Y
@@ -228,7 +228,7 @@ TODO: remove
 #define MY_STAIRS_X		1250
 #define MY_STAIRS_Y		1400
 
-/* TODO: remove 
+/* TODO: remove
 #define OPP_STAIRS_X		1750
 #define OPP_STAIRS_Y		1400
 */
@@ -249,7 +249,7 @@ TODO: remove
 #define MY_CLAP_3_X		2320
 #define MY_CLAP_Y		0
 
-/* TODO: remove 
+/* TODO: remove
 #define OPP_CLAP_1_X				2680
 #define OPP_CLAP_2_X				620
 #define OPP_CLAP_3_X				2080
@@ -293,26 +293,26 @@ TODO: remove
  * G1: stand group 1
  * c1: popcorn cup 1
  *
- *           popcorn                         opp popcorn     
- *        G4 machines  G3                    machines           
+ *           popcorn                         opp popcorn
+ *        G4 machines  G3                    machines
  * 2000 +-!---|----|---!+--------+--------+----|----|-----+
  *      | s1          s2|        |        |               |
- *      |             s3|        |        |               | 
- *      |------·        |========|========|        ·------|   
- * opp  |      |        |========|========|        |      | cinema_up      
+ *      |             s3|        |        |               |
+ *      |------·        |========|========|        ·------|
+ * opp  |      |        |========|========|        |      | cinema_up
  * cinema_up   |        ·========·========·        |      |
- *      |------+--·    c1                       ·--+------|       
- *      | home     |                           | opp home |   
- *   y  | yellow   |                           | green    |        
- *      |------+--·   s4                        ·--+------| 
- * opp  |      |       · G1··s5                    |      | cinema_down   
+ *      |------+--·    c1                       ·--+------|
+ *      | home     |                           | opp home |
+ *   y  | yellow   |                           | green    |
+ *      |------+--·   s4                        ·--+------|
+ * opp  |      |       · G1··s5                    |      | cinema_down
  * cinema_down |         ·                         |      |
  *      |------·       s6        c3                ·------|
- *    G2··s8 c2          ·---------------·                | 
+ *    G2··s8 c2          ·---------------·                |
  *      | s7             | +-----------+ |                |
  *   0  +----|---|---|---+-+-----------+-+---|---|---|----+
  *      0  clap1    clap2        x             clap3      3000
- *                                                                                                                                                                   
+ *
  */
 
 /*************************************************************
@@ -444,7 +444,7 @@ struct strat_infos {
 	#define GET_NEW_TASK 3
 	#define WAIT_ACK_GOTO 4
 	#define WAIT_ACK_WORK 5
-
+	#define INIT_ROBOT_2ND 6
 
 	int8_t strat_smart_sec_task;
 
@@ -488,27 +488,27 @@ uint8_t has_2nd_finished(void);
 /********************************************
  * in strat_spotlight.c
  *******************************************/
-/** 
- *	Harvest several the 2 stands and the central cup in a path line 
- *	return END_TRAJ if the work is done, err otherwise 
+/**
+ *	Harvest several the 2 stands and the central cup in a path line
+ *	return END_TRAJ if the work is done, err otherwise
  */
 uint8_t strat_harvest_stands_and_cup_inline (void);
 
 
-/** 
+/**
  *	Harvest orphan stands
- *	return END_TRAJ if the work is done, err otherwise 
+ *	return END_TRAJ if the work is done, err otherwise
  */
 #define STANDS_HARVEST_BACK_INIT_POS 1
 #define STANDS_HARVEST_CALIB_X       2
 
 uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
-									 uint8_t side, uint8_t blade_angle, 
+									 uint8_t side, uint8_t blade_angle,
 									 uint16_t harvest_speed, uint8_t flags);
 
-/** 
+/**
  *	Built a spotlight and release
- *	return END_TRAJ if the work is done, err otherwise 
+ *	return END_TRAJ if the work is done, err otherwise
  */
 uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side);
 

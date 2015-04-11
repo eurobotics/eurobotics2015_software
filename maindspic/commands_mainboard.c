@@ -850,7 +850,7 @@ static void cmd_robot_2nd_parsed(void * parsed_result, void * data)
 #endif
     else if (!strcmp_P(res->arg1, "color")) {
 		bt_robot_2nd_set_color ();
-		
+
 		/* wait until command has been received */
 		if (bt_robot_2nd_wait_ack()!=0)
 			printf_P(PSTR("bt cmd ERROR"));
@@ -859,7 +859,7 @@ static void cmd_robot_2nd_parsed(void * parsed_result, void * data)
     else if (!strcmp_P(res->arg1, "autopos")) {
 
 		bt_robot_2nd_autopos ();
-		
+
 		/* wait until command has been received */
 		if (bt_robot_2nd_wait_ack()!=0)
 			printf_P(PSTR("bt cmd ERROR"));
@@ -897,11 +897,16 @@ static void cmd_robot_2nd_parsed(void * parsed_result, void * data)
         while (!cmdline_keypressed());
 	}
 
+	else if (!strcmp_P(res->arg1, PSTR("init_position"))){
+
+				strat_infos.strat_smart_sec = INIT_ROBOT_2ND;
+	}
+
 }
 
 prog_char str_robot_2nd_arg0[] = "robot_2nd";
 parse_pgm_token_string_t cmd_robot_2nd_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_robot_2nd_result, arg0, str_robot_2nd_arg0);
-prog_char str_robot_2nd_arg1[] = "raw#open#close#color#autopos#status#show";
+prog_char str_robot_2nd_arg1[] = "raw#open#close#color#autopos#status#show#init_position";
 parse_pgm_token_string_t cmd_robot_2nd_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_robot_2nd_result, arg1, str_robot_2nd_arg1);
 
 prog_char help_robot_2nd[] = "robot_2nd commads";
@@ -968,8 +973,8 @@ static void cmd_robot_2nd_goto_parsed(void * parsed_result, void * data)
     {
         //bt_robot_2nd_goto_d_a_rel(res->arg2, res->arg3);
     }
-    
-    
+
+
     else if (!strcmp_P(res->arg1, PSTR("xy_abs")))
     {
         bt_robot_2nd_goto_xy_abs(res->arg2, res->arg3);
@@ -1103,11 +1108,11 @@ static void cmd_robot_2nd_bt_task_parsed(void * parsed_result, void * data)
     {
         bt_robot_2nd_bt_task_clapperboard();
 	}
-	
-	
+
+
 	/* wait until command has been received */
 	bt_robot_2nd_wait_ack();
-		
+
 	/* wait end traj */
 	err = bt_robot_2nd_wait_end();
     printf_P(PSTR("traj returned %s\r\n"), get_err(err));
@@ -1839,7 +1844,7 @@ parse_pgm_inst_t cmd_popcorn_system = {
 	.data = NULL,      /* 2nd arg of func */
 	.help_str = help_popcorn_system,
 	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_popcorn_system_arg0, 
+		(prog_void *)&cmd_popcorn_system_arg0,
 		(prog_void *)&cmd_popcorn_system_arg1,
 		NULL,
 	},
@@ -1897,7 +1902,7 @@ static void cmd_stands_system_parsed(__attribute__((unused)) void *parsed_result
 		else {
 			i2c_slavedspic_mode_ss(mode, I2C_SIDE_LEFT);
 			i2c_slavedspic_mode_ss(mode, I2C_SIDE_RIGHT);
-		}	
+		}
 	}
 }
 
@@ -1915,12 +1920,10 @@ parse_pgm_inst_t cmd_stands_system = {
 	.data = NULL,      /* 2nd arg of func */
 	.help_str = help_stands_system,
 	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_stands_system_arg0, 
+		(prog_void *)&cmd_stands_system_arg0,
 		(prog_void *)&cmd_stands_system_arg2,
 		(prog_void *)&cmd_stands_system_arg3,
 		(prog_void *)&cmd_stands_system_arg1,
 		NULL,
 	},
 };
-
-
