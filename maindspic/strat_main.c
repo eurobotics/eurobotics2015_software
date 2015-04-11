@@ -275,7 +275,7 @@ int8_t strat_get_new_zone(uint8_t robot)
 }
 
 /* return END_TRAJ if zone is reached, err otherwise */
-uint8_t strat_goto_zone(uint8_t zone_num, uint8_t robot)
+uint8_t strat_goto_zone(uint8_t zone_num)
 {
 	int8_t err=0;
 
@@ -299,7 +299,7 @@ uint8_t strat_goto_zone(uint8_t zone_num, uint8_t robot)
 		strat_set_bounding_box(BOUNDINBOX_INCLUDES_PLAFORM );
 
 	/* Secondary robot */
-	if(robot==SEC_ROBOT)
+	if(strat_infos.zones[zone_num].robot==SEC_ROBOT)
 	{
 		bt_robot_2nd_goto_and_avoid(COLOR_X(strat_infos.zones[zone_num].init_x),
 												strat_infos.zones[zone_num].init_y);
@@ -443,6 +443,13 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 			case ZONE_MY_CLAP_2:
 			case ZONE_MY_CLAP_3:
 
+				DEBUG(E_USER_STRAT, "Working on zone... ");
+				time_wait_ms(2000);
+				DEBUG(E_USER_STRAT, "fishish!! ");
+				ERROUT(END_TRAJ);
+				
+				break;	
+
 			default:
 				ERROR (E_USER_STRAT, "ERROR %s zone %d not supported", zone_num);
 				break;
@@ -487,7 +494,7 @@ uint8_t strat_smart(uint8_t robot)
 		strat_infos.goto_zone = zone_num;
 		strat_dump_infos(__FUNCTION__);
 
-		err = strat_goto_zone(zone_num,robot);
+		err = strat_goto_zone(zone_num);
 
 		if (!TRAJ_SUCCESS(err)) {
 			DEBUG(E_USER_STRAT,"Can't reach zone %d.", zone_num);
@@ -588,7 +595,7 @@ void strat_smart_robot_2nd(void)
 		case GET_NEW_TASK:
 			strat_infos.strat_smart_sec_task = strat_get_new_zone(SEC_ROBOT);
 			if(strat_infos.strat_smart_sec_task != -1){
-				strat_goto_zone(strat_infos.strat_smart_sec_task,SEC_ROBOT);
+				strat_goto_zone(strat_infos.strat_smart_sec_task);
 				DEBUG (E_USER_STRAT, "\r\n\r\nSent command - Going to Zone: %d, RET= %d\r\n",strat_infos.strat_smart_sec_task,robot_2nd.cmd_ret);
 				strat_infos.strat_smart_sec = WAIT_ACK_GOTO;
 				us = time_get_us2();

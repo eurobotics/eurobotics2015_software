@@ -621,8 +621,10 @@ uint8_t i2c_slavedspic_get_status(void)
 {
 #ifndef HOST_VERSION
    i2cproto_wait_update();
-#endif
    return slavedspic.status;
+#endif
+
+	return STATUS_READY;
 }
 
 /****** SIMPLE ACTUATORS */
@@ -650,8 +652,11 @@ uint8_t i2c_slavedspic_get_ps_status(void)
 
 #ifndef HOST_VERSION
    i2cproto_wait_update();
-#endif
    return slavedspic.popcorn_system.status;
+#endif
+	
+	return STATUS_READY;
+
 }
 
 /* Strings that match the status */
@@ -746,8 +751,10 @@ uint8_t i2c_slavedspic_get_ss_status(uint8_t side)
 {
 #ifndef HOST_VERSION
    i2cproto_wait_update();
-#endif
    return slavedspic.stands_system[side].status;
+#endif
+
+   return STATUS_READY;
 }
 
 /* returns 1 if ready */

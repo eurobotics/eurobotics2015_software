@@ -380,9 +380,12 @@ static void cmd_init_parsed(void *parsed_result, void *data)
 
 		/* set secondary robot color */
 		bt_robot_2nd_set_color ();
+		bt_robot_2nd_wait_ack();
+		//time_wait_ms (300);
 
 		/* autopos secondary robot */
 		bt_robot_2nd_autopos();
+		bt_robot_2nd_wait_ack();
 		bt_robot_2nd_wait_end();
 	}
 	printf ("Done\n\r");
@@ -853,7 +856,7 @@ static void cmd_robot_2nd_parsed(void * parsed_result, void * data)
 
 		/* wait until command has been received */
 		if (bt_robot_2nd_wait_ack()!=0)
-			printf_P(PSTR("bt cmd ERROR"));
+			printf_P(PSTR("bt cmd ERROR\n\r"));
 	}
 
     else if (!strcmp_P(res->arg1, "autopos")) {
@@ -862,7 +865,7 @@ static void cmd_robot_2nd_parsed(void * parsed_result, void * data)
 
 		/* wait until command has been received */
 		if (bt_robot_2nd_wait_ack()!=0)
-			printf_P(PSTR("bt cmd ERROR"));
+			printf_P(PSTR("bt cmd ERROR\n\r"));
 
 		/* wait end traj */
 		err = bt_robot_2nd_wait_end();
@@ -1002,7 +1005,7 @@ static void cmd_robot_2nd_goto_parsed(void * parsed_result, void * data)
 
 	/* wait until command has been received */
 	if (bt_robot_2nd_wait_ack()!=0)
-		printf_P(PSTR("bt cmd ERROR"));
+		printf_P(PSTR("bt cmd ERROR\n\r"));
 
 	/* wait end traj */
 	err = bt_robot_2nd_wait_end();
