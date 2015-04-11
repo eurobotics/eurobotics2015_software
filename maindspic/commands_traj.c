@@ -905,7 +905,10 @@ void auto_position(void)
 #define AUTOPOS_SPEED_FAST 	500
 #define TRESPA_BAR		17
 #define HOME_X_EDGE		70
-#define HOME_Y_UP_EDGE	1200
+//#define HOME_Y_UP_EDGE	1200
+
+#define HOME_Y_UP_EDGE_YELLOW	1199
+#define HOME_Y_UP_EDGE_GREEN	1201
 
     uint8_t err;
     uint16_t old_spdd, old_spda;
@@ -916,9 +919,14 @@ void auto_position(void)
     strat_set_speed(AUTOPOS_SPEED_FAST, AUTOPOS_SPEED_FAST);
 
 	/* set position of the robot aligned to home edges */
+	mainboard.our_color == I2C_COLOR_YELLOW?
 	strat_reset_pos(COLOR_X(HOME_X_EDGE + ROBOT_CENTER_TO_BACK),
-					COLOR_Y(HOME_Y_UP_EDGE - TRESPA_BAR - (ROBOT_WIDTH/2.0)),
+					COLOR_Y(HOME_Y_UP_EDGE_YELLOW - TRESPA_BAR - (ROBOT_WIDTH/2.0)),
+					COLOR_A_ABS(0)):
+	strat_reset_pos(COLOR_X(HOME_X_EDGE + ROBOT_CENTER_TO_BACK),
+					COLOR_Y(HOME_Y_UP_EDGE_GREEN - TRESPA_BAR - (ROBOT_WIDTH/2.0)),
 					COLOR_A_ABS(0));
+
 
 	/* goto in line with the center cup */
 	trajectory_d_rel(&mainboard.traj, 350-ROBOT_CENTER_TO_BACK);
