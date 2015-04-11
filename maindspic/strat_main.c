@@ -378,48 +378,7 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 				ERROR (E_USER_STRAT, "ERROR %s zone %d not supported", zone_num);
 				break;
 
-		}
-
-#if 0
-/* TODO: remove deprecated code */
-	    if(strat_infos.zones[zone_num].type!=ZONE_TYPE_STAND && strat_infos.zones[zone_num].type!=ZONE_TYPE_POPCORNCUP){
-			/* turn to wall */
-			trajectory_turnto_xy (&mainboard.traj, COLOR_X(strat_infos.zones[zone_num].x), strat_infos.zones[zone_num].y);
-			err = wait_traj_end (TRAJ_FLAGS_SMALL_DIST);
-			if (!TRAJ_SUCCESS(err))
-					ERROUT(err);
-
-			trajectory_d_rel (&mainboard.traj, 100);
-			err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-			if (!TRAJ_SUCCESS(err))
-				ERROUT(err);
-			time_wait_ms(1000);
-			trajectory_d_rel (&mainboard.traj, -100);
-			err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-			if (!TRAJ_SUCCESS(err))
-				ERROUT(err);
-			time_wait_ms(1000);
-				
-            }
-						/*ZONE_MY_STAND_GROUP_1*/
-			if(strat_infos.zones[zone_num].type == ZONE_MY_STAND_GROUP_1){
-			
-				err= goto_and_avoid (COLOR_X(MY_STAND_4_X),
-									MY_STAND_4_Y,  
-									TRAJ_FLAGS_STD, TRAJ_FLAGS_STD);
-				err= goto_and_avoid (COLOR_X(MY_STAND_5_X),
-									MY_STAND_5_Y,  
-									TRAJ_FLAGS_STD, TRAJ_FLAGS_STD);
-				err= goto_and_avoid (COLOR_X(MY_STAND_6_X),
-									LIMIT_BBOX_Y_DOWN,  
-									TRAJ_FLAGS_STD, TRAJ_FLAGS_STD);
-				if (!TRAJ_SUCCESS(err)){
-					ERROUT(err);
-				}
-
-			}
-#endif
-			
+		}		
 	}
 
 end:

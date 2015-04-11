@@ -31,6 +31,7 @@
 #define _I2C_PROTOCOL_H_
 
 #include "i2c_mem.h"
+#include "../common/i2c_commands.h"
 
 /* i2c protocol functions */
 void i2c_protocol_init(void);
@@ -49,6 +50,14 @@ int8_t i2c_led_control(uint8_t addr, uint8_t led, uint8_t state);
 /* slavedspic mode commands 2012 */
 
 /****** GENERIC FUNCTIONS */
+
+#define STATUS_READY		I2C_SLAVEDSPIC_STATUS_READY
+#define STATUS_BUSY			I2C_SLAVEDSPIC_STATUS_BUSY
+#define STATUS_WAITING      I2C_SLAVEDSPIC_STATUS_WAITING
+#define STATUS_STORING      I2C_SLAVEDSPIC_STATUS_STORING
+#define STATUS_DONE			I2C_SLAVEDSPIC_STATUS_DONE	
+#define STATUS_BLOCKED		I2C_SLAVEDSPIC_STATUS_BLOCKED
+#define STATUS_ERROR		I2C_SLAVEDSPIC_STATUS_ERROR
 
 /* initialize */
 int8_t i2c_slavedspic_mode_init(void);
