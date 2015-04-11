@@ -679,27 +679,27 @@ uint8_t i2c_slavedspic_ps_test_status(uint8_t status_flags)
     uint8_t ret = 0;
     uint8_t status;
     
-    status = i2c_slavedspic_get_ps_status(side);
+    status = i2c_slavedspic_get_ps_status();
     
-    if ((status & STATUS_READY) && (status_flags & STATUS_READY))
+    if ((status & I2C_SLAVEDSPIC_STATUS_READY) && (status_flags & I2C_SLAVEDSPIC_STATUS_READY))
         ret |= status;
 
-    if ((status & STATUS_BUSY) && (status_flags & STATUS_BUSY))
+    if ((status & I2C_SLAVEDSPIC_STATUS_BUSY) && (status_flags & I2C_SLAVEDSPIC_STATUS_BUSY))
         ret |= status;
 
-    if ((status & STATUS_BLOCKED) && (status_flags & STATUS_BLOCKED))
+    if ((status & I2C_SLAVEDSPIC_STATUS_BLOCKED) && (status_flags & I2C_SLAVEDSPIC_STATUS_BLOCKED))
         ret |= status;
 
-    if ((status & STATUS_DONE) && (status_flags & STATUS_DONE))
+    if ((status & I2C_SLAVEDSPIC_STATUS_DONE) && (status_flags & I2C_SLAVEDSPIC_STATUS_DONE))
         ret |= status;
 
-    if ((status & STATUS_WAITING) && (status_flags & STATUS_WAITING))
+    if ((status & I2C_SLAVEDSPIC_STATUS_WAITING) && (status_flags & I2C_SLAVEDSPIC_STATUS_WAITING))
         ret |= status;
 
-    if ((status & STATUS_STORING) && (status_flags & STATUS_STORING))
+    if ((status & I2C_SLAVEDSPIC_STATUS_STORING) && (status_flags & I2C_SLAVEDSPIC_STATUS_STORING))
         ret |= status;
 
-    if ((status & STATUS_ERROR) && (status_flags & STATUS_ERROR))
+    if ((status & I2C_SLAVEDSPIC_STATUS_ERROR) && (status_flags & I2C_SLAVEDSPIC_STATUS_ERROR))
         ret |= status;
 
     if (ret)
@@ -756,25 +756,25 @@ uint8_t i2c_slavedspic_ss_test_status(uint8_t side, uint8_t status_flags)
     
     status = i2c_slavedspic_get_ss_status(side);
     
-    if ((status & STATUS_READY) && (status_flags & STATUS_READY))
+    if ((status & I2C_SLAVEDSPIC_STATUS_READY) && (status_flags & I2C_SLAVEDSPIC_STATUS_READY))
         ret |= status;
 
-    if ((status & STATUS_BUSY) && (status_flags & STATUS_BUSY))
+    if ((status & I2C_SLAVEDSPIC_STATUS_BUSY) && (status_flags & I2C_SLAVEDSPIC_STATUS_BUSY))
         ret |= status;
 
-    if ((status & STATUS_BLOCKED) && (status_flags & STATUS_BLOCKED))
+    if ((status & I2C_SLAVEDSPIC_STATUS_BLOCKED) && (status_flags & I2C_SLAVEDSPIC_STATUS_BLOCKED))
         ret |= status;
 
-    if ((status & STATUS_DONE) && (status_flags & STATUS_DONE))
+    if ((status & I2C_SLAVEDSPIC_STATUS_DONE) && (status_flags & I2C_SLAVEDSPIC_STATUS_DONE))
         ret |= status;
 
-    if ((status & STATUS_WAITING) && (status_flags & STATUS_WAITING))
+    if ((status & I2C_SLAVEDSPIC_STATUS_WAITING) && (status_flags & I2C_SLAVEDSPIC_STATUS_WAITING))
         ret |= status;
 
-    if ((status & STATUS_STORING) && (status_flags & STATUS_STORING))
+    if ((status & I2C_SLAVEDSPIC_STATUS_STORING) && (status_flags & I2C_SLAVEDSPIC_STATUS_STORING))
         ret |= status;
 
-    if ((status & STATUS_ERROR) && (status_flags & STATUS_ERROR))
+    if ((status & I2C_SLAVEDSPIC_STATUS_ERROR) && (status_flags & I2C_SLAVEDSPIC_STATUS_ERROR))
         ret |= status;
 
     if (ret)
