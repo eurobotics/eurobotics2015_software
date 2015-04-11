@@ -164,6 +164,7 @@
         <itemPath>../strat_main.c</itemPath>
         <itemPath>../wt11.c</itemPath>
         <itemPath>../bt_protocol.c</itemPath>
+        <itemPath>../strat_spotlight.c</itemPath>
       </logicalFolder>
       <logicalFolder name="bd" displayName="bd" projectFiles="true">
         <itemPath>../../libs/aversive4dspic/modules/devices/robot/blocking_detection_manager/blocking_detection_manager.c</itemPath>

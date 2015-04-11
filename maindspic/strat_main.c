@@ -284,6 +284,20 @@ uint8_t strat_goto_zone(uint8_t zone_num, uint8_t robot)
 	strat_infos.current_zone=-1;
 	strat_infos.goto_zone=zone_num;
 
+
+	/* return if NULL xy */
+	if (strat_infos.zones[zone_num].init_x == NULL ||
+		strat_infos.zones[zone_num].init_y == NULL) {
+		WARNING (E_USER_STRAT, "WARNING, No where to go (xy is NULL)");
+		ERROUT(END_TRAJ);
+	}
+	
+	/* set boundinbox */
+	if (zone_num == ZONE_POPCORNCUP_2 || zone_num == ZONE_MY_STAND_GROUP_2)
+		strat_set_bounding_box(BOUNDINBOX_WITHOUT_PLATFORM );
+	else
+		strat_set_bounding_box(BOUNDINBOX_INCLUDES_PLAFORM );
+
 	/* Secondary robot */
 	if(robot==SEC_ROBOT)
 	{
@@ -308,7 +322,6 @@ uint8_t strat_goto_zone(uint8_t zone_num, uint8_t robot)
 		strat_infos.current_zone=zone_num;
 	}
 end:
-    /* TODO XXX if error put arm in safe position */
 	return err;
 }
 
@@ -317,63 +330,122 @@ end:
 uint8_t strat_work_on_zone(uint8_t zone_num)
 {
 	uint8_t err = END_TRAJ;
-	uint16_t temp_spdd, temp_spda;
 
 #ifdef HOST_VERSION
-	//DEBUG(E_USER_STRAT,"strat_work_on_zone %d %s: press a key",zone_num,numzone2name[zone_num]);
+	DEBUG(E_USER_STRAT,"%s %d %s: press a key", __FUNCTION__, zone_num,numzone2name[zone_num]);
 #endif
 
+
+	/* return if NULL xy */
+	if (strat_infos.zones[zone_num].x == NULL ||
+		strat_infos.zones[zone_num].y == NULL) {
+		ERROR (E_USER_STRAT, "ERROR zone xy is NULL");
+		ERROUT(END_ERROR);
+	}
+	
 
 	/* Secondary robot */
 	if(strat_infos.zones[zone_num].robot==SEC_ROBOT)
 	{
-
+		/* TODO */
 	}
-
-	/* Main robot */
 	else
 	{
-	    if(strat_infos.zones[zone_num].type!=ZONE_TYPE_STAND && strat_infos.zones[zone_num].type!=ZONE_TYPE_POPCORNCUP){
-			/* turn to wall */
-			trajectory_turnto_xy (&mainboard.traj, COLOR_X(strat_infos.zones[zone_num].x), strat_infos.zones[zone_num].y);
-			err = wait_traj_end (TRAJ_FLAGS_SMALL_DIST);
-			if (!TRAJ_SUCCESS(err))
-					ERROUT(err);
+		switch (zone_num)
+		{
+			case ZONE_MY_STAND_GROUP_1:
 
-			trajectory_d_rel (&mainboard.traj, 100);
-			err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-			if (!TRAJ_SUCCESS(err))
-				ERROUT(err);
-			time_wait_ms(1000);
-			trajectory_d_rel (&mainboard.traj, -100);
-			err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-			if (!TRAJ_SUCCESS(err))
-				ERROUT(err);
-			time_wait_ms(500);
+				/* TODO: call specific function for stand group 1 */
+				err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_4_X), 
+												   MY_STAND_4_Y, 
+												   COLOR_INVERT(SIDE_RIGHT),
+									 			   COLOR_INVERT(SIDE_RIGHT), 
+												   0,
+												   SPEED_DIST_SLOW, /* harvest speed */
+												   0);				/* flags */
+												   
+			    if (!TRAJ_SUCCESS(err))
+				   ERROUT(err);
 
-            }
+				err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_5_X), 
+												   MY_STAND_5_Y, 
+												   COLOR_INVERT(SIDE_LEFT),
+									 			   COLOR_INVERT(SIDE_LEFT), 
+												   0,
+												   SPEED_DIST_SLOW, /* harvest speed */
+												   0);				/* flags */
+			    if (!TRAJ_SUCCESS(err))
+				   ERROUT(err);
 
+				err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_6_X), 
+												   MY_STAND_6_Y, 
+												   COLOR_INVERT(SIDE_LEFT),
+									 			   COLOR_INVERT(SIDE_LEFT), 
+												   0,
+												   SPEED_DIST_SLOW, /* harvest speed */
+												   0);				/* flags */
+				break;				
 
-			/*			/*ZONE_MY_STAND_GROUP_1
-			if(strat_infos.zones[zone_num].type == ZONE_MY_STAND_GROUP_1){
+			case ZONE_MY_STAND_GROUP_2:
+				err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x), 
+												   strat_infos.zones[zone_num].y, 
+												   COLOR_INVERT(SIDE_LEFT),         /* side target */
+									 			   SIDE_ALL,                        /* storing sides */
+												   COLOR_A_REL(-10),                /* blade angle */
+												   SPEED_DIST_SLOW,                 /* harvest speed */
+												   STANDS_HARVEST_BACK_INIT_POS);	/* flags */
+				break;
 
-				err= goto_and_avoid (COLOR_X(MY_STAND_4_X),
-									MY_STAND_4_Y,
-									TRAJ_FLAGS_STD, TRAJ_FLAGS_STD);
-				err= goto_and_avoid (COLOR_X(MY_STAND_5_X),
-									MY_STAND_5_Y,
-									TRAJ_FLAGS_STD, TRAJ_FLAGS_STD);
-				err= goto_and_avoid (COLOR_X(MY_STAND_6_X),
-									LIMIT_BBOX_Y_DOWN,
-									TRAJ_FLAGS_STD, TRAJ_FLAGS_STD);
-				if (!TRAJ_SUCCESS(err)){
-					ERROUT(err);
-				}
+			case ZONE_MY_STAND_GROUP_3:
+				err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x), 
+												   strat_infos.zones[zone_num].y, 
+												   COLOR_INVERT(SIDE_LEFT),         /* side target */
+									 			   SIDE_ALL,                        /* storing sides */
+												   COLOR_A_REL(-20),                /* blade angle */
+												   SPEED_DIST_SLOW,                 /* harvest speed */
+												   STANDS_HARVEST_BACK_INIT_POS);	/* flags */
+				break;
 
-			}*/
+			case ZONE_MY_STAND_GROUP_4:
+				err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x), 
+												   strat_infos.zones[zone_num].y, 
+												   COLOR_INVERT(SIDE_RIGHT),        /* side target */
+									 			   COLOR_INVERT(SIDE_RIGHT),        /* storing sides */
+												   0,                               /* blade angle */
+												   SPEED_DIST_SLOW,                 /* harvest speed */
+												   STANDS_HARVEST_BACK_INIT_POS |
+                                                   STANDS_HARVEST_CALIB_X);	        /* flags */
+
+				break;
+
+			case ZONE_MY_HOME:
+				err = strat_buit_and_release_spotlight (COLOR_X(strat_infos.zones[zone_num].x),
+														strat_infos.zones[zone_num].y, 
+														COLOR_INVERT(SIDE_LEFT));
+				break;
+
+			case ZONE_MY_POPCORNMAC:
+			case ZONE_OPP_POPCORNMAC:
+
+			case ZONE_POPCORNCUP_1:
+			case ZONE_POPCORNCUP_2:
+			case ZONE_POPCORNCUP_3:
+
+			case ZONE_MY_CINEMA_UP:
+			case ZONE_MY_CINEMA_DOWN:
+
+			case ZONE_MY_CLAP_1:
+			case ZONE_MY_CLAP_2:
+			case ZONE_MY_CLAP_3:
+
+			default:
+				ERROR (E_USER_STRAT, "ERROR %s zone %d not supported", zone_num);
+				break;
+
+		}		
 	}
 
-	end:
+end:
 	return err;
 }
 

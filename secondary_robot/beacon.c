@@ -50,7 +50,7 @@
 #include "main.h"
 #include "beacon.h"
 #include "beacon_calib.h"
-#include "../maindspic/strat_utils.h"
+#include "strat_utils.h"
 
 /* functional modes of beacon */
 #undef BEACON_MODE_EXTERNAL
@@ -437,11 +437,21 @@ void beacon_angle_dist_to_x_y(int32_t angle, int32_t dist, int32_t *x, int32_t *
     int32_t local_robot_angle = 0;
 
 #ifndef BEACON_MODE_EXTERNAL
+#ifndef IM_SECONDARY_ROBOT
     IRQ_LOCK(flags);
     local_x           = beacon.robot_x;
     local_y           = beacon.robot_y;
     local_robot_angle = beacon.robot_a;
     IRQ_UNLOCK(flags);
+#else
+    IRQ_LOCK(flags);
+	local_x = position_get_x_s16(&mainboard.pos);
+	local_y = position_get_y_s16(&mainboard.pos);
+	local_robot_angle = position_get_a_deg_s16(&mainboard.pos);
+    IRQ_UNLOCK(flags);
+#endif
+
+	
 #endif
 
     if (local_robot_angle < 0)
