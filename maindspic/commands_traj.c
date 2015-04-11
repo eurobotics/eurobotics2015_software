@@ -916,10 +916,10 @@ void auto_position(void)
     strat_set_speed(AUTOPOS_SPEED_FAST, AUTOPOS_SPEED_FAST);
 
 	/* set position of the robot aligned to home edges */
-	strat_reset_pos(COLOR_X(HOME_X_EDGE + ROBOT_CENTER_TO_BACK), 
-					COLOR_Y(HOME_Y_UP_EDGE - TRESPA_BAR - (ROBOT_WIDTH/2.0)), 
+	strat_reset_pos(COLOR_X(HOME_X_EDGE + ROBOT_CENTER_TO_BACK),
+					COLOR_Y(HOME_Y_UP_EDGE - TRESPA_BAR - (ROBOT_WIDTH/2.0)),
 					COLOR_A_ABS(0));
-	
+
 	/* goto in line with the center cup */
 	trajectory_d_rel(&mainboard.traj, 350-ROBOT_CENTER_TO_BACK);
     err = wait_traj_end(END_INTR | END_TRAJ);
@@ -1268,7 +1268,6 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 		printf_P(PSTR("subtraj returned %s\r\n"), get_err(err));
     }
 
-
 	/**
      * 	go & work on zone 
 	 */
@@ -1316,11 +1315,11 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
         printf_P(PSTR("goto returned %s\r\n"), get_err(err));    
 	    if (!TRAJ_SUCCESS(err))
 		   ERROUT(err);
-
+			set_strat_sec_1();
         err = strat_work_on_zone(zone_num);
         printf_P(PSTR("work returned %s\r\n"), get_err(err));
-    }
-
+			strat_infos.strat_smart_sec = WAIT_FOR_ORDER;
+		}
 end:
     trajectory_hardstop(&mainboard.traj);
 }

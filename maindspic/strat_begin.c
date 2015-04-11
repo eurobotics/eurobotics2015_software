@@ -76,7 +76,8 @@ uint8_t strat_begin(void){
 	uint8_t err;
 	trajectory_d_rel(&mainboard.traj, 400);
 	err = wait_traj_end(TRAJ_FLAGS_STD);
-end:
+    goto end;
+ end:
 	return err;
 }
 

@@ -106,6 +106,9 @@ void bt_robot_2nd_req_status(void);
 uint8_t bt_robot_2nd_wait_ack (void);
 uint8_t bt_robot_2nd_is_ack_received (void);
 
+/* return 1 if ret is received */
+uint8_t bt_robot_2nd_is_ret_received (void);
+
 void bt_robot_2nd_bt_task_pick_cup (void);
 void bt_robot_2nd_bt_task_carpet(void);
 void bt_robot_2nd_bt_task_stairs(void);

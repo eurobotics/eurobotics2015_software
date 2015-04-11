@@ -456,6 +456,7 @@ void strat_init(void)
 
     /* used in strat_base for END_TIMER */
     mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BEACON | DO_BT_PROTO;
+
 }
 
 
@@ -525,26 +526,20 @@ strat_smart_robot_2nd();
 uint8_t strat_main(void)
 {
 
-    uint8_t err, i;
+    uint8_t err;
 
 //    strat_begin();
     strat_limit_speed_enable ();
 
     /* auto-play  */
-	set_strat_sec_1();
+    set_strat_sec_1();
     DEBUG(E_USER_STRAT, PSTR("\r\n\r\nStrat smart"));
 
-	strat_infos.strat_smart_sec = GET_NEW_TASK;
-    /*do{
+	set_strat_main_1();
+    do{
 
         err = strat_smart(MAIN_ROBOT);
-    }while((err & END_TIMER) == 0);*/
-	while(1){
-
-	time_wait_ms(20);
-	//printf_P(PSTR("\r\n\r\nStrat smart\r\n"));
-}
-
+    }while((err & END_TIMER) == 0);
 
    strat_exit();
    return 0;

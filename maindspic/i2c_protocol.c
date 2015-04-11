@@ -1,6 +1,6 @@
 /*
  *  Copyright Droids Corporation (2009)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -19,7 +19,7 @@
  *
  */
 
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
  *  Javier Balias Santos <javier@arc-robots.org>
  *
@@ -199,15 +199,15 @@ void i2c_poll_slaves(void *dummy)
 	p_error_pull = &&error_pull;
 
 	/* watchdog */
-	watchdog_cnt++;	
+	watchdog_cnt++;
 	if(watchdog_cnt == I2C_WATCH_DOG_TIMEOUT){
-		
+
 		if(running_op == OP_CMD)
 			I2C_ERROR("I2C wathdog timeout wating COMMAND");
 		else{
 			I2C_ERROR("I2C wathdog timeout wating POLLING %d", i2c_state);
 			i2cproto_next_state(1);
-		}	
+		}
 		running_op = OP_READY;
 		i2c_errors = 0;
 
@@ -233,12 +233,12 @@ void i2c_poll_slaves(void *dummy)
 		return;
 	}
 
-	/* start of critical section */		
+	/* start of critical section */
 	IRQ_LOCK(flags);
 
 	/* return if last operation not finished */
 	if (running_op != OP_READY) {
-		
+
 		/* end of critical section */
 		IRQ_UNLOCK(flags);
 		return;
@@ -246,7 +246,7 @@ void i2c_poll_slaves(void *dummy)
 
 	/* reset watchdog */
 	watchdog_cnt = 0;
-	
+
 	/* led debug */
 	a++;
 	if (a & 0x4)
@@ -255,7 +255,7 @@ void i2c_poll_slaves(void *dummy)
 	/* if a command is ready to be sent, so send it */
 	if (command_size) {
 		running_op = OP_CMD;
-		err = i2c_write(command_dest, I2C_CMD_GENERIC, command_buf, command_size);		
+		err = i2c_write(command_dest, I2C_CMD_GENERIC, command_buf, command_size);
 
 		/* if i2c write error -> end with error */
 		if (err)
@@ -268,7 +268,7 @@ void i2c_poll_slaves(void *dummy)
 
 	/* at this point: no command, so do the polling */
 	running_op = OP_POLL;
-	
+
 	/* poll status of gpios and microcontrollers */
 	//i2c_state = I2C_REQ_SLAVEDSPIC;
 	switch(i2c_state) {
@@ -277,7 +277,7 @@ void i2c_poll_slaves(void *dummy)
 			if ((err = i2c_read_gpios_01_values()))
 				goto *p_error_pull;
 			break;
-	
+
 		case I2C_READ_GPIOS_23_VALUES:
 			if ((err = i2c_read_gpios_23_values()))
 				goto *p_error_pull;
@@ -303,16 +303,16 @@ error_pull:
 
 	/* reset op */
 	running_op = OP_READY;
-	
+
 	/* end critical section */
 	IRQ_UNLOCK(flags);
-	
+
 	/* manage error */
 	i2c_errors++;
 	if (i2c_errors > I2C_MAX_ERRORS) {
-		I2C_ERROR("I2C send is_cmd=%d proto_state=%d " 
+		I2C_ERROR("I2C send is_cmd=%d proto_state=%d "
 		      "err=%d i2c_status=%x", !!command_size, i2c_state, err, i2c_status());
-		
+
 		/* reset slavedspic */
 //		set_uart_mux(SLAVEDSPIC_CHANNEL);
 //		uart_send(MUX_UART,'\n');
@@ -350,14 +350,14 @@ void i2c_write_event(uint16_t size)
 		i2c_errors++;
 		NOTICE(E_USER_I2C_PROTO, "send error state=%d size=%d "
 			"op=%d", i2c_state, size, running_op);
-				
+
 		if (i2c_errors > I2C_MAX_ERRORS) {
 			I2C_ERROR("I2C error, slave not ready");
 
 			i2c_reset();
 			i2c_errors = 0;
 		}
-		
+
 		if (running_op == OP_POLL) {
 			/* skip associated answer */
 			i2cproto_next_state(2);
@@ -374,14 +374,14 @@ void i2c_read_event(uint8_t * buf, uint16_t size)
 	volatile uint8_t i2c_state_save = i2c_state;
 	void * p_error_recv;
 	p_error_recv = &&error_recv;
-	
+
 	/* if actual op is pulling, go next pulling state */
 	if (running_op == OP_POLL)
 		i2cproto_next_state(1);
 
 	/* recv is only trigged after a poll */
 	running_op = OP_READY;
-	
+
 	/* error if null size */
 	if (size == 0) {
 		goto *p_error_recv;
@@ -391,9 +391,9 @@ void i2c_read_event(uint8_t * buf, uint16_t size)
 	if(i2c_state_save == I2C_READ_GPIOS_01_VALUES ||
 		i2c_state_save == I2C_READ_GPIOS_23_VALUES)
 	{
-		struct i2c_gpios_status * ans = 
+		struct i2c_gpios_status * ans =
 			(struct i2c_gpios_status *)buf;
-		
+
 		/* error */
 		/* XXX read even is called on every data received,
        * will zero size be managed as error  ??         */
@@ -404,28 +404,28 @@ void i2c_read_event(uint8_t * buf, uint16_t size)
 		if(gpio_addr == I2C_GPIOS_01_ADDR){
 			gen.i2c_gpio0 = ans->gpio0;
 			gen.i2c_gpio1 = ans->gpio1;
-			
+
 		}
 		/* GPIO_23 */
 		else if(gpio_addr == I2C_GPIOS_23_ADDR){
 			gen.i2c_gpio2 = ans->gpio0;
 			gen.i2c_gpio3 = ans->gpio1;
-		
+
 		}
-		
+
 	}
 
 	/* parse microcontrolers answers */
-	switch (buf[0]) 
+	switch (buf[0])
 	{
-		/* slavedspic */	
+		/* slavedspic */
 		case I2C_ANS_SLAVEDSPIC_STATUS: {
-			struct i2c_slavedspic_status * ans = 
+			struct i2c_slavedspic_status * ans =
 				(struct i2c_slavedspic_status *)buf;
-			
+
 			if (size != sizeof (*ans))
 				goto *p_error_recv;
-	      
+
             /* XXX syncronized with slavedspic */
 
          	/* infos */
@@ -451,7 +451,7 @@ void i2c_read_event(uint8_t * buf, uint16_t size)
 
 			break;
 		}
-	
+
 
 		default:
 			break;
@@ -459,12 +459,12 @@ void i2c_read_event(uint8_t * buf, uint16_t size)
 
 	return;
 
- /* received error */	
+ /* received error */
 error_recv:
 
 	/* manage error */
 	i2c_errors++;
-	NOTICE(E_USER_I2C_PROTO, "recv error state=%d op=%d", 
+	NOTICE(E_USER_I2C_PROTO, "recv error state=%d op=%d",
 	       i2c_state, running_op);
 
 	if (i2c_errors > I2C_MAX_ERRORS) {
@@ -477,7 +477,7 @@ error_recv:
 #endif /* !HOST_VERSION */
 
 /* send generic command */
-static int8_t i2c_send_command(uint8_t addr, uint8_t *buf, uint8_t size) 
+static int8_t i2c_send_command(uint8_t addr, uint8_t *buf, uint8_t size)
 {
 #ifdef HOST_VERSION
 	return robotsim_i2c(addr, buf, size);
@@ -489,16 +489,16 @@ static int8_t i2c_send_command(uint8_t addr, uint8_t *buf, uint8_t size)
 	/* HACK: send 3 times the cmd */
 	for(i = 0; i < 3; i++) {
 		/* time out prevent */
-		while ((time_get_us2() - us) < (I2C_TIMEOUT)*1000L) 
+		while ((time_get_us2() - us) < (I2C_TIMEOUT)*1000L)
 		{
 			IRQ_LOCK(flags);
-	
+
 			/* copy data and fill params of cmd */
 			if (command_size == 0) {
 				memcpy(command_buf, buf, size);
 				command_dest = addr;
 				command_size = size;
-				
+
 				IRQ_UNLOCK(flags);
 				return 0;;
 			}
@@ -529,10 +529,10 @@ static int8_t i2c_read_gpios_01_values(void)
 
 	gpio_addr = I2C_GPIOS_01_ADDR;
 	err = i2c_read(I2C_GPIOS_01_ADDR, I2C_REQ_GPIOS_STATUS,	sizeof(buf));
-	
+
 	//printf("gp0 = %d gp1 = %d gp2 = %d gp3 = %d\r\n",
 	//gen.i2c_gpio0, gen.i2c_gpio1, gen.i2c_gpio2, gen.i2c_gpio3);
-	
+
 	return err;
 }
 
@@ -559,7 +559,7 @@ static int8_t i2c_req_slavedspic_status(void)
 #endif /* !HOST_VERSION */
 
 /****************************************************************************
- * CONTROL COMMANDS (write to slaves) 
+ * CONTROL COMMANDS (write to slaves)
  ****************************************************************************/
 
 /* dummy slavedspic led control */
@@ -604,11 +604,11 @@ int8_t i2c_slavedspic_mode_power_off(void)
 
 /* wait for slavedspic is ready */
 void i2c_slavedspic_wait_ready(void)
-{ 
-#ifndef HOST_VERSION                   
-   //microseconds __us = time_get_us2();                 
-   //uint8_t __ret = 1;             
-    
+{
+#ifndef HOST_VERSION
+   //microseconds __us = time_get_us2();
+   //uint8_t __ret = 1;
+
 	/* DANGEROUS */
    do{
       i2cproto_wait_update();
@@ -618,7 +618,7 @@ void i2c_slavedspic_wait_ready(void)
 
 /* get slavedispic status */
 uint8_t i2c_slavedspic_get_status(void)
-{ 
+{
 #ifndef HOST_VERSION
    i2cproto_wait_update();
 #endif
@@ -646,7 +646,8 @@ int8_t i2c_slavedspic_mode_ps(uint8_t mode)
 
 /* get popcorn system status */
 uint8_t i2c_slavedspic_get_ps_status(void)
-{ 
+{
+
 #ifndef HOST_VERSION
    i2cproto_wait_update();
 #endif
@@ -742,7 +743,7 @@ int8_t i2c_slavedspic_mode_ss(uint8_t mode, uint8_t side)
 
 /* get popcorn system status */
 uint8_t i2c_slavedspic_get_ss_status(uint8_t side)
-{ 
+{
 #ifndef HOST_VERSION
    i2cproto_wait_update();
 #endif
@@ -789,7 +790,7 @@ uint8_t i2c_slavedspic_ss_test_status(uint8_t side, uint8_t status_flags)
 
     return ret;
 }
-  
+
 /*******************************************************************************
  * Debug functions
  ******************************************************************************/
@@ -802,15 +803,15 @@ uint8_t error = 0;
 void i2c_test_read_event(uint8_t *rBuff, uint16_t size)
 {
 		error = 0;
-		
+
 		if(size == 1 && rBuff[0]==val[0])
 			printf("%d val_rd = %d\n\r", i++, rBuff[0]);
 		else{
 			printf("%d Error lectura: leido %d\r\n", i++, rBuff[0]);
 			error = 1;
 			i2c_reset();
-		}			
-			
+		}
+
 		val[0]++;
 }
 
@@ -828,15 +829,15 @@ void i2c_test_write_event(uint16_t size)
 void i2c_test(void)
 {
 	uint8_t ret;
-	
+
 	while(1){
-		ret = i2c_write(0x21, 0x02, val, 1);	
+		ret = i2c_write(0x21, 0x02, val, 1);
 		wait_ms(100);
 		ret = i2c_read(0x21, 0x02, 1);
 		wait_ms(100);
-	
+
 	}
-}	
+}
 #endif
 
 #if 0
@@ -847,6 +848,3 @@ void i2c_test(void)
 		printf("slavedspic led = %d\r\n", slavedspic.led);
 	}
 #endif
-
-
-
