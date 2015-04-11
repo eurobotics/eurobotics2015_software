@@ -339,7 +339,7 @@ try_again:
 
 	/* harvest, go close to stands but without touch */
 	strat_set_speed (harvest_speed, SPEED_ANGLE_SLOW);
-	d -= ROBOT_CENTER_TO_MOUTH-10;
+	d -= ROBOT_CENTER_TO_MOUTH+10;
 	trajectory_d_rel(&mainboard.traj, d);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
     if (!TRAJ_SUCCESS(err))

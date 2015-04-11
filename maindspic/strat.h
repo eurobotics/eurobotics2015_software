@@ -527,7 +527,7 @@ uint8_t strat_main_loop(void);
 int8_t strat_get_new_zone(uint8_t robot);
 
 /* return END_TRAJ if zone is reached */
-uint8_t strat_goto_zone(uint8_t zone_num,uint8_t robot);
+uint8_t strat_goto_zone(uint8_t zone_num);
 
 /* return END_TRAJ if the work is done */
 uint8_t strat_work_on_zone(uint8_t zone_num);

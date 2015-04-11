@@ -269,7 +269,7 @@ struct strat_infos strat_infos = {
 		MY_STAIRS_X, 1150,
 		0, 0,
 		0, (9000*1000L),
-		MAIN_ROBOT
+		SEC_ROBOT
 	},
 	/* stair ways */
    	.zones[ZONE_MY_STAIRWAY] =
@@ -280,7 +280,7 @@ struct strat_infos strat_infos = {
 		0, 0,
 		0, 0,
 		0, (9000*1000L),
-		MAIN_ROBOT
+		SEC_ROBOT
 	}, 
 	/* clapper boards */
    	.zones[ZONE_MY_CLAP_1] =
@@ -311,7 +311,7 @@ struct strat_infos strat_infos = {
 		MY_CLAP_3_X, LIMIT_BBOX_Y_DOWN,
 		0, 0,
 		0, (9000*1000L),
-		MAIN_ROBOT
+		SEC_ROBOT
 	},
 	/* home */
   	.zones[ZONE_MY_HOME] =
