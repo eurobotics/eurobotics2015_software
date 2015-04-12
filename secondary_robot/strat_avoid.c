@@ -1,0 +1,1 @@
+../maindspic/strat_avoid.c
