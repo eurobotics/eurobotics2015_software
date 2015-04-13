@@ -228,8 +228,8 @@ struct strat_infos strat_infos = {
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
-	},
-*/
+	},*/
+
 	.zones[ZONE_POPCORNCUP_3] =
 	{
 		ZONE_TYPE_POPCORNCUP,
@@ -538,7 +538,7 @@ uint8_t strat_main(void)
 
     do{
 
-        err = strat_smart(MAIN_ROBOT);
+        err = strat_smart();
     }while((err & END_TIMER) == 0);
 
    strat_exit();

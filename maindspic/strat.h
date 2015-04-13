@@ -536,7 +536,7 @@ void state_debug_wait_key_pressed(void);
 
 /* smart play */
 //#define DEBUG_STRAT_SMART
-uint8_t strat_smart(uint8_t robot);
+uint8_t strat_smart(void);
 void recalculate_priorities(void);
 void strat_smart_robot_2nd(void);
 void strat_should_wait_new_order(void);

@@ -907,8 +907,8 @@ void auto_position(void)
 #define HOME_X_EDGE		70
 //#define HOME_Y_UP_EDGE	1200
 
-#define HOME_Y_UP_EDGE_YELLOW	1199
-#define HOME_Y_UP_EDGE_GREEN	1201
+#define HOME_Y_UP_EDGE_YELLOW	1200
+#define HOME_Y_UP_EDGE_GREEN	1200
 
     uint8_t err;
     uint16_t old_spdd, old_spda;
@@ -1387,12 +1387,14 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 		/* select strategy number */
 		if(res->arg2==1){
 			set_strat_main_1();
+			set_strat_sec_1();
 		}
 
 		/* play */
-        strat_smart(MAIN_ROBOT);
+        	strat_smart();
 		return;
-    }else if (strcmp_P(res->arg1, PSTR("strat_sec")) == 0) {
+    	}
+	else if (strcmp_P(res->arg1, PSTR("strat_sec")) == 0) {
 
 		/* select strategy number */
 		if(res->arg2==1){
@@ -1405,7 +1407,7 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 
 
 		/* play */
-        strat_smart_robot_2nd();
+        	//strat_smart_robot_2nd();
 		return;
     }
 

@@ -125,6 +125,8 @@
 #define IMP_COEF 			        50.0 /* XXX HACK for use the same PID gains of last year */
 #define DIST_IMP_MM 		    	(((IMP_ENCODERS*4) / WHEEL_PERIM_MM) * IMP_COEF)
 
+
+
 /* encoders handlers */
 #define LEFT_ENCODER        ((void *)2)
 #define RIGHT_ENCODER       ((void *)1)

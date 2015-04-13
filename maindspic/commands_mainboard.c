@@ -359,7 +359,7 @@ static void cmd_init_parsed(void *parsed_result, void *data)
 	#ifndef HOST_VERSION
 		wt11_reset_mux();
 		time_wait_ms (1000);
-		wt11_open_link_mux(beacon_addr, &beaconboard.link_id);
+		//wt11_open_link_mux(beacon_addr, &beaconboard.link_id);
 		time_wait_ms (1000);
 		wt11_open_link_mux(robot_2nd_addr, &robot_2nd.link_id);
 	#else
@@ -367,7 +367,7 @@ static void cmd_init_parsed(void *parsed_result, void *data)
 		beaconboard.link_id = 1;
 	#endif
 		/* enable bt protocol events */
-		mainboard.flags |= DO_BEACON | DO_ROBOT_2ND;
+		mainboard.flags |=  DO_ROBOT_2ND;// DO_BT_PROTO
 		time_wait_ms (200);
 	}
 

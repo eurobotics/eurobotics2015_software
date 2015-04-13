@@ -130,15 +130,15 @@ void strat_auto_position (void)
 //#define HOME_Y_DOWN_EDGE 	 800
 #define ROBOT_ENCODERS_WIDTH 208
 
-#define HOME_Y_DOWN_EDGE_YELLOW  799
-#define HOME_Y_DOWN_EDGE_GREEN   808
+#define HOME_Y_DOWN_EDGE_YELLOW  800
+#define HOME_Y_DOWN_EDGE_GREEN   800
 
 	mainboard.our_color == I2C_COLOR_YELLOW?
-	strat_reset_pos(COLOR_X(HOME_X_EDGE+TRESPA_TRIANGLE+ROBOT_CENTER_TO_BACK), 
-					HOME_Y_DOWN_EDGE_YELLOW+TRESPA_BAR+(ROBOT_ENCODERS_WIDTH/2.0), 
+	strat_reset_pos(COLOR_X(HOME_X_EDGE+TRESPA_TRIANGLE+ROBOT_CENTER_TO_BACK),
+					HOME_Y_DOWN_EDGE_YELLOW+TRESPA_BAR+(ROBOT_ENCODERS_WIDTH/2.0),
 					COLOR_A_ABS(0)):
-	strat_reset_pos(COLOR_X(HOME_X_EDGE+TRESPA_TRIANGLE+ROBOT_CENTER_TO_BACK), 
-					HOME_Y_DOWN_EDGE_GREEN+TRESPA_BAR+(ROBOT_ENCODERS_WIDTH/2.0), 
+	strat_reset_pos(COLOR_X(HOME_X_EDGE+TRESPA_TRIANGLE+ROBOT_CENTER_TO_BACK),
+					HOME_Y_DOWN_EDGE_GREEN+TRESPA_BAR+(ROBOT_ENCODERS_WIDTH/2.0),
 					COLOR_A_ABS(0));
 
 #if 0
@@ -259,8 +259,8 @@ end:
 /******************  BT TASKS ************************************************/
 
 /* set current bt task */
-void strat_bt_task_rqst (uint8_t task_id, 
-						int16_t a, int16_t b, 
+void strat_bt_task_rqst (uint8_t task_id,
+						int16_t a, int16_t b,
 						int16_t c, int16_t d, int16_t e)
 {
 	uint8_t flags;
@@ -277,7 +277,7 @@ void strat_bt_task_rqst (uint8_t task_id,
 	mainboard.bt_task_args[2] = c;
 	mainboard.bt_task_args[3] = d;
 	mainboard.bt_task_args[4] = e;
-	
+
 	mainboard.bt_task_new_rqst = 1;
 	IRQ_UNLOCK (flags);
 }
@@ -287,10 +287,10 @@ void strat_bt_task_scheduler (void)
 {
     uint8_t flags, ret = 0;
     microseconds us;
-    
+
     /* init bt_task */
 	strat_bt_task_rqst (BT_TASK_NONE, 0,0,0,0,0);
-	
+
 	while(1)
 	{
 
@@ -300,7 +300,7 @@ void strat_bt_task_scheduler (void)
 			mainboard.bt_task_id = mainboard.bt_task_id_rqst;
 			mainboard.bt_task_id_rqst = 0;
 			mainboard.bt_task_new_rqst = 0;
-			
+
 			strat_bt_task_interrupt_reset();
 		}
 		IRQ_UNLOCK(flags);
@@ -373,7 +373,3 @@ void strat_bt_task_scheduler (void)
 		}
 	}
 }
-
-
-
-
