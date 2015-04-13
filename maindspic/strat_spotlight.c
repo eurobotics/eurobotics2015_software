@@ -297,7 +297,7 @@ uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
 {
    	uint8_t err = 0;
 	uint16_t old_spdd, old_spda;
-	int16_t d = 0, a = 0, d_blocking = 0;
+	int16_t d = 0, a = 0;
     int16_t ret_left, ret_right;
     uint8_t nb_tries=0;
 
@@ -339,7 +339,7 @@ try_again:
 
 	/* harvest, go close to stands but without touch */
 	strat_set_speed (harvest_speed, SPEED_ANGLE_SLOW);
-	d -= ROBOT_CENTER_TO_MOUTH-10;
+	d -= (ROBOT_CENTER_TO_MOUTH+10);
 	trajectory_d_rel(&mainboard.traj, d);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
     if (!TRAJ_SUCCESS(err))
@@ -391,19 +391,19 @@ try_again:
 		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 		time_wait_ms(200);
 
-		d_blocking = position_get_x_s16(&mainboard.pos);
+		d = position_get_x_s16(&mainboard.pos);
 
 		err = strat_calib(400, TRAJ_FLAGS_SMALL_DIST);
 		strat_reset_pos(COLOR_X(ROBOT_CENTER_TO_FRONT),
 						DO_NOT_SET_POS,
 						COLOR_A_ABS(180));
 
-		d_blocking = ABS(d_blocking-COLOR_X(ROBOT_CENTER_TO_FRONT));
+
 
 	    /* return to init position */
 	    if (flags & STANDS_HARVEST_BACK_INIT_POS) {
+            d = ABS(d-position_get_x_s16(&mainboard.pos));
 		    strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
-		    d += d_blocking;
 		    trajectory_d_rel(&mainboard.traj, -d);
 		    err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 		    if (!TRAJ_SUCCESS(err))
