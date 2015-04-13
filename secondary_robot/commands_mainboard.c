@@ -988,10 +988,10 @@ static void cmd_beacon_parsed(void *parsed_result, void *data)
 
 	struct cmd_beacon_result *res = (struct cmd_beacon_result *) parsed_result;
 	if (!strcmp_P(res->arg1, PSTR("on"))) {
-		beacon_start();
+		//beacon_start();
 	}
 	else if (!strcmp_P(res->arg1, PSTR("off"))) {
-		beacon_stop();
+		//beacon_stop();
 	}
 
 	printf_P(PSTR("Done\r\n"));

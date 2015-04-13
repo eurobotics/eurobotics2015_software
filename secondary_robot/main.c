@@ -403,7 +403,7 @@ int main(void)
 #endif
 
   	/* start */
-	beacon_start();
+//beacon_start();
 
    /* process commands, never returns */
    //cmdline_interact(NULL);

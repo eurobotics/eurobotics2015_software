@@ -141,15 +141,15 @@ void set_next_sec_strategy(void){
 
 }
 void set_next_main_strategy(void){
-	strat_infos.current_main_strategy++;
+	//strat_infos.current_main_strategy++;
 	switch(strat_infos.current_main_strategy){
 		case 1:
 			set_strat_main_1();
 			break;
-		case 2:
+		/*case 2:
 			set_strat_main_2();
 			strat_infos.current_sec_strategy = 0;
-			break;
+			break;*/
 		default:
 			break;
 	}
@@ -280,6 +280,7 @@ uint8_t strat_goto_zone(uint8_t zone_num, uint8_t robot)
 	int8_t err=0;
 
 
+while(!cmdline_keypressed());
 	/* update strat_infos */
 	strat_infos.current_zone=-1;
 	strat_infos.goto_zone=zone_num;
@@ -288,10 +289,11 @@ uint8_t strat_goto_zone(uint8_t zone_num, uint8_t robot)
 	/* return if NULL xy */
 	if (strat_infos.zones[zone_num].init_x == NULL ||
 		strat_infos.zones[zone_num].init_y == NULL) {
+		trajectory_d_rel(&mainboard.traj, 500);
 		WARNING (E_USER_STRAT, "WARNING, No where to go (xy is NULL)");
 		ERROUT(END_TRAJ);
 	}
-	
+
 	/* set boundinbox */
 	if (zone_num == ZONE_POPCORNCUP_2 || zone_num == ZONE_MY_STAND_GROUP_2)
 		strat_set_bounding_box(BOUNDINBOX_WITHOUT_PLATFORM );
@@ -330,19 +332,22 @@ end:
 uint8_t strat_work_on_zone(uint8_t zone_num)
 {
 	uint8_t err = END_TRAJ;
-
+#if 0
 #ifdef HOST_VERSION
 	DEBUG(E_USER_STRAT,"%s %d %s: press a key", __FUNCTION__, zone_num,numzone2name[zone_num]);
 #endif
 
 
+while(!cmdline_keypressed());
 	/* return if NULL xy */
 	if (strat_infos.zones[zone_num].x == NULL ||
 		strat_infos.zones[zone_num].y == NULL) {
-		ERROR (E_USER_STRAT, "ERROR zone xy is NULL");
-		ERROUT(END_ERROR);
+		/*ERROR (E_USER_STRAT, "ERROR zone xy is NULL");
+		ERROUT(END_ERROR);*/
+		return err;
 	}
-	
+
+while(!cmdline_keypressed());
 
 	/* Secondary robot */
 	if(strat_infos.zones[zone_num].robot==SEC_ROBOT)
@@ -356,40 +361,39 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 			case ZONE_MY_STAND_GROUP_1:
 
 				/* TODO: call specific function for stand group 1 */
-				err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_4_X), 
-												   MY_STAND_4_Y, 
+				err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_4_X),
+												   MY_STAND_4_Y,
 												   COLOR_INVERT(SIDE_RIGHT),
-									 			   COLOR_INVERT(SIDE_RIGHT), 
+									 			   COLOR_INVERT(SIDE_RIGHT),
 												   0,
 												   SPEED_DIST_SLOW, /* harvest speed */
-												   0);				/* flags */
-												   
+
 			    if (!TRAJ_SUCCESS(err))
 				   ERROUT(err);
 
-				err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_5_X), 
-												   MY_STAND_5_Y, 
+				err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_5_X),
+												   MY_STAND_5_Y,
 												   COLOR_INVERT(SIDE_LEFT),
-									 			   COLOR_INVERT(SIDE_LEFT), 
+									 			   COLOR_INVERT(SIDE_LEFT),
 												   0,
 												   SPEED_DIST_SLOW, /* harvest speed */
 												   0);				/* flags */
 			    if (!TRAJ_SUCCESS(err))
 				   ERROUT(err);
 
-				err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_6_X), 
-												   MY_STAND_6_Y, 
+				err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_6_X),
+												   MY_STAND_6_Y,
 												   COLOR_INVERT(SIDE_LEFT),
-									 			   COLOR_INVERT(SIDE_LEFT), 
+									 			   COLOR_INVERT(SIDE_LEFT),
 												   0,
 												   SPEED_DIST_SLOW, /* harvest speed */
 												   0);				/* flags */
-				break;				
+				break;
 
-#if 0
+
 			case ZONE_MY_STAND_GROUP_2:
-				err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x), 
-												   strat_infos.zones[zone_num].y, 
+				err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x),
+												   strat_infos.zones[zone_num].y,
 												   COLOR_INVERT(SIDE_LEFT),         /* side target */
 									 			   SIDE_ALL,                        /* storing sides */
 												   COLOR_A_REL(-10),                /* blade angle */
@@ -398,8 +402,8 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 				break;
 
 			case ZONE_MY_STAND_GROUP_3:
-				err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x), 
-												   strat_infos.zones[zone_num].y, 
+				err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x),
+												   strat_infos.zones[zone_num].y,
 												   COLOR_INVERT(SIDE_LEFT),         /* side target */
 									 			   SIDE_ALL,                        /* storing sides */
 												   COLOR_A_REL(-20),                /* blade angle */
@@ -408,8 +412,8 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 				break;
 
 			case ZONE_MY_STAND_GROUP_4:
-				err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x), 
-												   strat_infos.zones[zone_num].y, 
+				err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x),
+												   strat_infos.zones[zone_num].y,
 												   COLOR_INVERT(SIDE_RIGHT),        /* side target */
 									 			   COLOR_INVERT(SIDE_RIGHT),        /* storing sides */
 												   0,                               /* blade angle */
@@ -421,10 +425,10 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 
 			case ZONE_MY_HOME:
 				err = strat_buit_and_release_spotlight (COLOR_X(strat_infos.zones[zone_num].x),
-														strat_infos.zones[zone_num].y, 
+														strat_infos.zones[zone_num].y,
 														COLOR_INVERT(SIDE_LEFT));
 				break;
-#endif
+
 
 			case ZONE_MY_STAND_GROUP_2:
 			case ZONE_MY_STAND_GROUP_3:
@@ -447,9 +451,9 @@ uint8_t strat_work_on_zone(uint8_t zone_num)
 				ERROR (E_USER_STRAT, "ERROR %s zone %d not supported", zone_num);
 				break;
 
-		}		
+		}
 	}
-
+#endif
 end:
 	return err;
 }
@@ -479,11 +483,11 @@ uint8_t strat_smart(uint8_t robot)
 	DEBUG(E_USER_STRAT,"Zone: %d. Priority: %d",zone_num,strat_infos.zones[zone_num].prio);
 
 	if(zone_num == -1) {
-		//DEBUG(E_USER_STRAT,"No zone is found");
+		DEBUG(E_USER_STRAT,"No zone is found");
 		return END_TRAJ;
 	}else{
 		/* goto zone */
-		//DEBUG(E_USER_STRAT,"Going to zone %s.",numzone2name[zone_num]);
+		DEBUG(E_USER_STRAT,"Going to zone %s.",numzone2name[zone_num]);
 		strat_infos.goto_zone = zone_num;
 		strat_dump_infos(__FUNCTION__);
 
@@ -491,7 +495,7 @@ uint8_t strat_smart(uint8_t robot)
 
 		if (!TRAJ_SUCCESS(err)) {
 			DEBUG(E_USER_STRAT,"Can't reach zone %d.", zone_num);
-			set_next_sec_strategy();
+			//set_next_main_strategy();
 			return END_TRAJ;
 		}
 
@@ -501,8 +505,8 @@ uint8_t strat_smart(uint8_t robot)
 		strat_infos.last_zone = strat_infos.current_zone;
 		strat_infos.current_zone = strat_infos.goto_zone;
 		strat_dump_infos(__FUNCTION__);
-
 		err = strat_work_on_zone(zone_num);
+		DEBUG(E_USER_STRAT,"After Work on zone END-:%d", err);
 		if (!TRAJ_SUCCESS(err)) {
 		    DEBUG(E_USER_STRAT,"Work on zone %s fails.", numzone2name[zone_num]);
                     /* IMPORTANT: If in home, get out of it before continuing */
@@ -545,6 +549,8 @@ void strat_set_sec_new_order(int8_t zone_num){
 			strat_infos.strat_smart_sec = GET_NEW_TASK;
 		break;
 
+		case ZONE_MY_STAND_GROUP_1:
+			strat_infos.strat_smart_sec = GET_NEW_TASK;
 		default:
 		break;
 	}
@@ -555,6 +561,8 @@ void strat_smart_robot_2nd(void)
 	static microseconds us = 0;
 	uint8_t received_ack;
 	uint8_t err;
+
+	DEBUG (E_USER_STRAT, "Strat_SMART_SEC");
 
 	switch (strat_infos.strat_smart_sec){
 		case GO_TO_ZONE:
@@ -585,6 +593,8 @@ void strat_smart_robot_2nd(void)
 
 		case GET_NEW_TASK:
 			strat_infos.strat_smart_sec_task = strat_get_new_zone(SEC_ROBOT);
+
+			DEBUG (E_USER_STRAT, "ZONE: %d",strat_infos.strat_smart_sec_task);
 			if(strat_infos.strat_smart_sec_task != -1){
 				strat_goto_zone(strat_infos.strat_smart_sec_task,SEC_ROBOT);
 				DEBUG (E_USER_STRAT, "\r\n\r\nSent command - Going to Zone: %d, RET= %d\r\n",strat_infos.strat_smart_sec_task,robot_2nd.cmd_ret);
