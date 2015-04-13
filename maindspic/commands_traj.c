@@ -1261,7 +1261,7 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 	strat_infos.debug_step = 1;
 
    	/**
-	 *	strat several zones 
+	 *	strat several zones
 	 */
     if (strcmp_P(res->arg1, PSTR("begining")) == 0) {
         //err = strat_begining();
@@ -1269,7 +1269,7 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
     }
 
 	/**
-     * 	go & work on zone 
+     * 	go & work on zone
 	 */
 
 	/* go and work on zone */
@@ -1312,10 +1312,10 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
     if (zone_num < ZONES_MAX) {
 
         err = strat_goto_zone(zone_num, MAIN_ROBOT);
-        printf_P(PSTR("goto returned %s\r\n"), get_err(err));    
+        printf_P(PSTR("goto returned %s\r\n"), get_err(err));
 	    if (!TRAJ_SUCCESS(err))
 		   ERROUT(err);
-			set_strat_sec_1();
+			//set_strat_sec_1();
         err = strat_work_on_zone(zone_num);
         printf_P(PSTR("work returned %s\r\n"), get_err(err));
 			strat_infos.strat_smart_sec = WAIT_FOR_ORDER;
@@ -1372,22 +1372,33 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 	strat_infos.debug_step = 1;
 
 	/**
-	 *	strat smart 
+	 *	strat smart
 	 */
     if (strcmp_P(res->arg1, PSTR("strat_smart")) == 0) {
 
 		/* select strategy number */
 		if(res->arg2==1){
-			set_strat_sec_1();
+			set_strat_main_1();
 		}
-	
+
 		/* play */
         strat_smart(MAIN_ROBOT);
+		return;
+    }else if (strcmp_P(res->arg1, PSTR("strat_sec")) == 0) {
+
+		/* select strategy number */
+		if(res->arg2==1){
+			set_strat_sec_1();
+			strat_infos.strat_smart_sec = GET_NEW_TASK;
+		}
+
+		/* play */
+        strat_smart_robot_2nd();
 		return;
     }
 
 	/**
-     * 	go & work on zone 
+     * 	go & work on zone
 	 */
 
 	/* get zone number */
@@ -1432,7 +1443,7 @@ end:
 
 prog_char str_subtraj2_arg0[] = "subtraj";
 parse_pgm_token_string_t cmd_subtraj2_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj2_result, arg0, str_subtraj2_arg0);
-prog_char str_subtraj2_arg1[] = "strat_smart#stand_group#clapper#cup";
+prog_char str_subtraj2_arg1[] = "strat_smart#strat_sec#stand_group#clapper#cup";
 parse_pgm_token_string_t cmd_subtraj2_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj2_result, arg1, str_subtraj2_arg1);
 parse_pgm_token_num_t cmd_subtraj2_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj2_result, arg2, UINT8);
 //parse_pgm_token_num_t cmd_subtraj2_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj2_result, arg3, INT32);
@@ -1462,7 +1473,7 @@ parse_pgm_inst_t cmd_subtraj2 = {
 /* Work on a zone */
 
 // this structure is filled when cmd_workonzone is parsed successfully
-/* TODO remove 
+/* TODO remove
 struct cmd_workonzone_result
 {
     fixed_string_t arg0;

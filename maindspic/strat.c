@@ -116,51 +116,52 @@ struct strat_infos strat_infos = {
     .conf = {
         .flags = 0,
     },
-  
-	/* stands */ 
-    .zones[ZONE_MY_STAND_GROUP_1] = 
-	{ 
-		/* type */ 
-		ZONE_TYPE_STAND, 
-		/* target: x,y, */	
-		MY_STAND_4_X, MY_STAND_4_Y,  
-		/* boundinbox: x_down, x_up,  y_down,  y_up, */		  
-		700, 1400, 150, 700,	
+
+	/* stands */
+    .zones[ZONE_MY_STAND_GROUP_1] =
+	{
+		/* type */
+		ZONE_TYPE_STAND,
+		/* target: x,y, */
+		MY_STAND_4_X, MY_STAND_4_Y,
+		/* boundinbox: x_down, x_up,  y_down,  y_up, */
+		700, 1400, 150, 700,
 		/* init_x, init_y */
-	  	NULL, NULL,	
+	  	NULL, NULL,
 		/* priority, flags */
-		0, 0, 
+		0, 0,
 		/* statistics: opp_time_zone_us, last_time_opp_here */
-		0, (9000*1000L),	
-		/* robot in charge */			
+		0, (9000*1000L),
+		/* robot in charge */
 		MAIN_ROBOT
 	},
-    .zones[ZONE_MY_STAND_GROUP_2] =        
+    .zones[ZONE_MY_STAND_GROUP_2] =
 	{
 		ZONE_TYPE_STAND,
-		MY_STAND_8_X, MY_STAND_8_Y,
+		LIMIT_BBOX_X_DOWN, LIMIT_BBOX_Y_DOWN,
 		0, 100, 0, 300,
-		400, OBS_CLERANCE+2,	
+		LIMIT_BBOX_X_DOWN, LIMIT_BBOX_Y_DOWN,
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
 	},
-    .zones[ZONE_MY_STAND_GROUP_3] =        
+    .zones[ZONE_MY_STAND_GROUP_3] =
 	{
 		ZONE_TYPE_STAND,
-		825, AREA_Y-70,  
-		650, 950, 1700, 1950, 	
-		MY_POPCORNMAC_X, AREA_Y-330,	
-		0, 0,            
+		//825, AREA_Y-70,
+		MY_POPCORNMAC_X, LIMIT_BBOX_Y_UP,
+		650, 950, 1700, 1950,
+		MY_POPCORNMAC_X, LIMIT_BBOX_Y_UP,
+		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
 	},
-    .zones[ZONE_MY_STAND_GROUP_4] =        
+    .zones[ZONE_MY_STAND_GROUP_4] =
 	{
 		ZONE_TYPE_STAND,
-		MY_STAND_1_X, MY_STAND_1_Y,  
+		MY_STAND_1_X, MY_STAND_1_Y,
 		0, 150, 0, 300,
-		MY_POPCORNMAC_X, AREA_Y-330,
+		MY_POPCORNMAC_X, LIMIT_BBOX_Y_UP,
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
@@ -168,10 +169,10 @@ struct strat_infos strat_infos = {
 	/* popcorn machines */
 	.zones[ZONE_MY_POPCORNMAC] =
 	{
-		ZONE_TYPE_POPCORNMAC, 
+		ZONE_TYPE_POPCORNMAC,
 		MY_POPCORNMAC_X, LIMIT_BBOX_Y_UP,
 		150, 750, 1700, 2000,
-		MY_POPCORNMAC_X, LIMIT_BBOX_Y_UP-330,
+		MY_POPCORNMAC_X, LIMIT_BBOX_Y_UP,
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
@@ -181,7 +182,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_POPCORNMAC,
 		OPP_POPCORNMAC_X, LIMIT_BBOX_Y_UP,
 		2250, 2850, 1700, 2000,
-		OPP_POPCORNMAC_X, LIMIT_BBOX_Y_UP-330,
+		OPP_POPCORNMAC_X, LIMIT_BBOX_Y_UP,
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
@@ -191,11 +192,11 @@ struct strat_infos strat_infos = {
 	{
 		ZONE_TYPE_POPCORNCUP,
 		MY_CUP_1_X, MY_CUP_1_Y,
-		760, 1060, 1020, 1320,	
+		760, 1060, 1020, 1320,
 		MY_CUP_1_X-300,	MY_CUP_1_Y,
 		0, 0,
 		0, (9000*1000L),
-		MAIN_ROBOT
+		SEC_ROBOT
 	},
 	.zones[ZONE_POPCORNCUP_2] =
 	{
@@ -222,7 +223,7 @@ struct strat_infos strat_infos = {
 	{
 		ZONE_TYPE_POPCORNCUP,
 		OPP_POPCORNCUP_SIDE_X, OPP_POPCORNCUP_SIDE_Y,
-		2600, 2900, 100, 400, 
+		2600, 2900, 100, 400,
 		OPP_POPCORNCUP_SIDE_X-300, OPP_POPCORNCUP_SIDE_Y,
 		0, 0,
 		0, (9000*1000L),
@@ -248,7 +249,7 @@ struct strat_infos strat_infos = {
 		3000-400-OBS_CLERANCE-50, 2000-400-(378/2),
 		0, 0,
 	 	0, (9000*1000L),
-		MAIN_ROBOT
+		SEC_ROBOT
 	},
 	.zones[ZONE_MY_CINEMA_DOWN] =
 	{
@@ -258,7 +259,7 @@ struct strat_infos strat_infos = {
 		3000-400-OBS_CLERANCE-50, 400+(378/2),
 		0, 0,
 		0, (9000*1000L),
-		MAIN_ROBOT
+		SEC_ROBOT
 	},
 	/* stairs */
   	.zones[ZONE_MY_STAIRS] =
@@ -269,19 +270,19 @@ struct strat_infos strat_infos = {
 		MY_STAIRS_X, 1150,
 		0, 0,
 		0, (9000*1000L),
-		MAIN_ROBOT
+		SEC_ROBOT
 	},
 	/* stair ways */
    	.zones[ZONE_MY_STAIRWAY] =
 	{
-		ZONE_TYPE_STAIRWAY, 
+		ZONE_TYPE_STAIRWAY,
 		MY_STAIRS_X, MY_STAIRS_Y,
 		1000, 1500, 1400, 2000,
 		0, 0,
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
-	}, 
+	},
 	/* clapper boards */
    	.zones[ZONE_MY_CLAP_1] =
 	{
@@ -293,7 +294,7 @@ struct strat_infos strat_infos = {
 		0, (9000*1000L),
 		MAIN_ROBOT
 	},
-    .zones[ZONE_MY_CLAP_2] = 
+    .zones[ZONE_MY_CLAP_2] =
 	{
 		ZONE_TYPE_CLAP,
 		MY_CLAP_2_X, MY_CLAP_Y,
@@ -311,14 +312,14 @@ struct strat_infos strat_infos = {
 		MY_CLAP_3_X, LIMIT_BBOX_Y_DOWN,
 		0, 0,
 		0, (9000*1000L),
-		MAIN_ROBOT
+		SEC_ROBOT
 	},
 	/* home */
   	.zones[ZONE_MY_HOME] =
 	{
 		ZONE_TYPE_HOME,
 		MY_HOME_SPOTLIGHT_X, MY_HOME_SPOTLIGHT_Y,
-		90, 650, 800, 1200,	
+		90, 650, 800, 1200,
 		670, MY_HOME_SPOTLIGHT_Y,
 		0, 0,
 		0, (9000*1000L),
@@ -500,7 +501,7 @@ void strat_event(void *dummy) {
     strat_limit_speed();
 
 	//printf_P(PSTR("\r\n\r\nStrat event\r\n"));
-strat_smart_robot_2nd();
+//strat_smart_robot_2nd();
 }
 
     /* tracking of zones where opp has been working */
@@ -533,9 +534,8 @@ uint8_t strat_main(void)
 
     /* auto-play  */
     set_strat_sec_1();
-    DEBUG(E_USER_STRAT, PSTR("\r\n\r\nStrat smart"));
+    set_strat_main_1();
 
-	set_strat_main_1();
     do{
 
         err = strat_smart(MAIN_ROBOT);
