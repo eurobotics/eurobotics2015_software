@@ -281,7 +281,7 @@ struct strat_infos strat_infos = {
 		0, 0,
 		0, 0,
 		0, (9000*1000L),
-		MAIN_ROBOT
+		SEC_ROBOT
 	},
 	/* clapper boards */
    	.zones[ZONE_MY_CLAP_1] =
@@ -501,7 +501,7 @@ void strat_event(void *dummy) {
     strat_limit_speed();
 
 	//printf_P(PSTR("\r\n\r\nStrat event\r\n"));
-//strat_smart_robot_2nd();
+	strat_smart_robot_2nd();
 }
 
     /* tracking of zones where opp has been working */

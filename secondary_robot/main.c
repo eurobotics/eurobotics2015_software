@@ -403,8 +403,9 @@ int main(void)
 #endif
 
   	/* start */
-//beacon_start();
-
+#ifndef HOST_VERSION
+	beacon_start();
+#endif
    /* process commands, never returns */
    //cmdline_interact(NULL);
 
