@@ -239,6 +239,8 @@ int8_t strat_get_new_zone(uint8_t robot)
 	uint8_t prio_max = 0;
 	int8_t zone_num = -1, valid_zone= -1 ;
 	int8_t i=0;
+	static uint8_t no_more_zones = 0;
+
 	/* evaluate zones */
 	for(i=0; i < ZONES_MAX; i++)
 	{
@@ -252,24 +254,13 @@ int8_t strat_get_new_zone(uint8_t robot)
 		}
 		if( i == ZONES_MAX-1 ){
 			valid_zone = strat_is_valid_zone(zone_num);
-			switch(valid_zone){
-				case -1:
-					//strategy has to change
-					if(robot==SEC_ROBOT){
-						set_next_sec_strategy();
-					}else{
-						set_next_main_strategy();
-					}
-					i=0;
-					break;
-				default:
-					break;
-			}
+			zone_num = valid_zone;
 		}
 
 	}
-	if(zone_num == -1){
-		//DEBUG(E_USER_STRAT,"No more zones available");
+	if(zone_num == -1 && no_more_zones == 0){
+		no_more_zones = 1;
+		DEBUG(E_USER_STRAT,"No more zones available");
 	}
 	return zone_num;
 }
@@ -479,13 +470,13 @@ void state_debug_wait_key_pressed(void)
 
 
 /* smart play */
-uint8_t strat_smart()
+uint8_t strat_smart(void)
 {
 	int8_t zone_num;
 	uint8_t err;
 
 	/* get new zone */
-	zone_num = strat_get_new_zone(robot);
+	zone_num = strat_get_new_zone(MAIN_ROBOT);
 	strat_set_sec_new_order(zone_num);
 	DEBUG(E_USER_STRAT,"Zone: %d. Priority: %d",zone_num,strat_infos.zones[zone_num].prio);
 
@@ -506,7 +497,7 @@ uint8_t strat_smart()
 			return END_TRAJ;
 		}
 
-    		printf_P(PSTR("\r\n\r\nWORK ON ZONE\r\n"));
+    		DEBUG(E_USER_STRAT,"WORK ON ZONE");
 		DEBUG(E_USER_STRAT,"strat_work_on_zone");
 		/* work on zone */
 		strat_infos.last_zone = strat_infos.current_zone;
@@ -569,16 +560,65 @@ void strat_smart_robot_2nd(void)
 	uint8_t err;
 
 	switch (strat_infos.strat_smart_sec){
+
+		case WAIT_FOR_ORDER:
+			break;
+
+		case INIT_ROBOT_2ND:
+#define INIT_ROBOT_2ND_X 400
+#define INIT_ROBOT_2ND_Y 1000
+			bt_robot_2nd_goto_xy_abs(COLOR_X(INIT_ROBOT_2ND_X) , INIT_ROBOT_2ND_Y);
+			strat_infos.strat_smart_sec = WAIT_FOR_ORDER;
+			break;
+
+		case GET_NEW_TASK:
+			strat_infos.strat_smart_sec_task = strat_get_new_zone(SEC_ROBOT);
+ 			if(strat_infos.strat_smart_sec_task == -1 ){
+				 //set_new strategy,
+				break;
+			}
+			else {
+				DEBUG (E_USER_STRAT, "ZONE: %d",strat_infos.strat_smart_sec_task);
+				strat_goto_zone(strat_infos.strat_smart_sec_task);
+				DEBUG (E_USER_STRAT, "Sent command - Going to Zone: %d, RET= %d\r\n",strat_infos.strat_smart_sec_task,robot_2nd.cmd_ret);
+				strat_infos.strat_smart_sec = WAIT_ACK_GOTO;
+				us = time_get_us2();
+			}
+
+			break;
+
+		case WAIT_ACK_GOTO:
+		    // Wait 200ms to avoid previous values
+			if (time_get_us2() - us < 200000L)
+				break;
+
+			// Check ACK
+			received_ack=bt_robot_2nd_is_ack_received ();
+
+			// ACK
+			if(received_ack)
+			{
+				DEBUG (E_USER_STRAT, "Received ACK - GOTO Zone: %d, RET= %d\r\n",strat_infos.strat_smart_sec_task,robot_2nd.cmd_ret);
+				us = time_get_us2();
+				strat_infos.strat_smart_sec = GO_TO_ZONE;
+			}
+
+			// NACK: Communication error. Repeat command
+			else if (time_get_us2() - us > 1000000L)
+				strat_infos.strat_smart_sec = GET_NEW_TASK;
+
+			break;
+
 		case GO_TO_ZONE:
 			if (time_get_us2() - us < 200000L)
-				return;
+				break;
 
 			if(bt_robot_2nd_is_ret_received()){
-				DEBUG (E_USER_STRAT, "\r\n\r\nFinished - Going to Zone: %d, RET= %d\r\n",strat_infos.strat_smart_sec_task,robot_2nd.cmd_ret);
+				DEBUG (E_USER_STRAT, "Finished - Going to Zone: %d, RET= %d\r\n",strat_infos.strat_smart_sec_task,robot_2nd.cmd_ret);
 				// XXX evaluate ret value
 				err=bt_robot_2nd_test_end();
 				if (TRAJ_SUCCESS(err)) {
-					strat_work_on_zone(strat_infos.strat_smart_sec_task);
+					//strat_work_on_zone(strat_infos.strat_smart_sec_task);
 					strat_infos.strat_smart_sec = WAIT_ACK_WORK;
 				}else{
 					//set_next_sec_strategy();
@@ -587,66 +627,27 @@ void strat_smart_robot_2nd(void)
 			}
 
 			break;
+
+		// Not implemented
+		case WAIT_ACK_WORK:
+			us = time_get_us2();
+			strat_infos.strat_smart_sec = WORK_ON_ZONE;
+			break;
+
 		case WORK_ON_ZONE:
+			/* XXX HACK */
+			if (time_get_us2() - us < 2000000L)
+				break;
 
 			strat_infos.zones[strat_infos.strat_smart_sec_task].flags |= ZONE_CHECKED;
 			strat_should_wait_new_order();
 
-
 			break;
 
-		case GET_NEW_TASK:
-			strat_infos.strat_smart_sec_task = strat_get_new_zone(SEC_ROBOT);
 
-			DEBUG (E_USER_STRAT, "ZONE: %d",strat_infos.strat_smart_sec_task);
-			if(strat_infos.strat_smart_sec_task != -1){
-				strat_goto_zone(strat_infos.strat_smart_sec_task);
-				DEBUG (E_USER_STRAT, "\r\n\r\nSent command - Going to Zone: %d, RET= %d\r\n",strat_infos.strat_smart_sec_task,robot_2nd.cmd_ret);
-				strat_infos.strat_smart_sec = WAIT_ACK_GOTO;
-				us = time_get_us2();
-
-			}else{
-				strat_infos.strat_smart_sec = GET_NEW_TASK;
-			}
-
-			break;
-
-		case WAIT_ACK_GOTO:
-		    // Wait 200ms to avoid previous values
-			if (time_get_us2() - us < 200000L)
-				return;
-
-			// Check ACK
-			received_ack=bt_robot_2nd_is_ack_received ();
-
-			// ACK
-			if(received_ack==1)
-			{
-				DEBUG (E_USER_STRAT, "\r\n\r\nReceived ACK - GOTO Zone: %d, RET= %d\r\n",strat_infos.strat_smart_sec_task,robot_2nd.cmd_ret);
-				us = time_get_us2();
-				strat_infos.strat_smart_sec = GO_TO_ZONE;
-			}
-
-			// NACK: Communication error. Repeat command
-			else if(received_ack!=0)
-				strat_infos.strat_smart_sec = GET_NEW_TASK;
-
-			break;
-
-		// Not implemented
-		case WAIT_ACK_WORK:
-				strat_infos.strat_smart_sec = WORK_ON_ZONE;
-			break;
-		case INIT_ROBOT_2ND:
-#define INIT_ROBOT_2ND_X 400
-#define INIT_ROBOT_2ND_Y 1000
-				bt_robot_2nd_goto_xy_abs(INIT_ROBOT_2ND_X , INIT_ROBOT_2ND_Y);
-
-				strat_infos.strat_smart_sec = WAIT_FOR_ORDER;
-		case WAIT_FOR_ORDER:
 		default:
+			strat_infos.strat_smart_sec = WAIT_FOR_ORDER;
 			break;
-
 	}
 
 }
