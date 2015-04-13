@@ -443,7 +443,7 @@ struct strat_infos {
 	#define GET_NEW_TASK 3
 	#define WAIT_ACK_GOTO 4
 	#define WAIT_ACK_WORK 5
-
+	#define INIT_ROBOT_2ND 6
 
 	int8_t strat_smart_sec_task;
 
@@ -526,7 +526,7 @@ uint8_t strat_main_loop(void);
 int8_t strat_get_new_zone(uint8_t robot);
 
 /* return END_TRAJ if zone is reached */
-uint8_t strat_goto_zone(uint8_t zone_num,uint8_t robot);
+uint8_t strat_goto_zone(uint8_t zone_num);
 
 /* return END_TRAJ if the work is done */
 uint8_t strat_work_on_zone(uint8_t zone_num);

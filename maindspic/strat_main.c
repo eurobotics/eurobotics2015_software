@@ -275,12 +275,11 @@ int8_t strat_get_new_zone(uint8_t robot)
 }
 
 /* return END_TRAJ if zone is reached, err otherwise */
-uint8_t strat_goto_zone(uint8_t zone_num, uint8_t robot)
+uint8_t strat_goto_zone(uint8_t zone_num)
 {
 	int8_t err=0;
 
 
-while(!cmdline_keypressed());
 	/* update strat_infos */
 	strat_infos.current_zone=-1;
 	strat_infos.goto_zone=zone_num;
@@ -301,7 +300,7 @@ while(!cmdline_keypressed());
 		strat_set_bounding_box(BOUNDINBOX_INCLUDES_PLAFORM );
 
 	/* Secondary robot */
-	if(robot==SEC_ROBOT)
+	if(strat_infos.zones[zone_num].robot==SEC_ROBOT)
 	{
 		bt_robot_2nd_goto_and_avoid(COLOR_X(strat_infos.zones[zone_num].init_x),
 												strat_infos.zones[zone_num].init_y);
@@ -332,13 +331,15 @@ end:
 uint8_t strat_work_on_zone(uint8_t zone_num)
 {
 	uint8_t err = END_TRAJ;
+
+	time_wait_ms(2000);
 #if 0
 #ifdef HOST_VERSION
 	DEBUG(E_USER_STRAT,"%s %d %s: press a key", __FUNCTION__, zone_num,numzone2name[zone_num]);
 #endif
 
 
-while(!cmdline_keypressed());
+
 	/* return if NULL xy */
 	if (strat_infos.zones[zone_num].x == NULL ||
 		strat_infos.zones[zone_num].y == NULL) {
@@ -347,7 +348,6 @@ while(!cmdline_keypressed());
 		return err;
 	}
 
-while(!cmdline_keypressed());
 
 	/* Secondary robot */
 	if(strat_infos.zones[zone_num].robot==SEC_ROBOT)
@@ -447,6 +447,13 @@ while(!cmdline_keypressed());
 			case ZONE_MY_CLAP_2:
 			case ZONE_MY_CLAP_3:
 
+				DEBUG(E_USER_STRAT, "Working on zone... ");
+				time_wait_ms(2000);
+				DEBUG(E_USER_STRAT, "fishish!! ");
+				ERROUT(END_TRAJ);
+
+				break;
+
 			default:
 				ERROR (E_USER_STRAT, "ERROR %s zone %d not supported", zone_num);
 				break;
@@ -472,7 +479,7 @@ void state_debug_wait_key_pressed(void)
 
 
 /* smart play */
-uint8_t strat_smart(uint8_t robot)
+uint8_t strat_smart()
 {
 	int8_t zone_num;
 	uint8_t err;
@@ -491,7 +498,7 @@ uint8_t strat_smart(uint8_t robot)
 		strat_infos.goto_zone = zone_num;
 		strat_dump_infos(__FUNCTION__);
 
-		err = strat_goto_zone(zone_num,robot);
+		err = strat_goto_zone(zone_num);
 
 		if (!TRAJ_SUCCESS(err)) {
 			DEBUG(E_USER_STRAT,"Can't reach zone %d.", zone_num);
@@ -506,16 +513,15 @@ uint8_t strat_smart(uint8_t robot)
 		strat_infos.current_zone = strat_infos.goto_zone;
 		strat_dump_infos(__FUNCTION__);
 		err = strat_work_on_zone(zone_num);
-		DEBUG(E_USER_STRAT,"After Work on zone END-:%d", err);
 		if (!TRAJ_SUCCESS(err)) {
 		    DEBUG(E_USER_STRAT,"Work on zone %s fails.", numzone2name[zone_num]);
-                    /* IMPORTANT: If in home, get out of it before continuing */
+                    /* IMPORTANT: If in home, get out of it before continuing
                     if(strat_infos.zones[zone_num].type==ZONE_TYPE_HOME)
                     {
                         do{
                                 err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),  strat_infos.zones[zone_num].init_y,  TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
                         }while(!TRAJ_SUCCESS(err));
-                    }
+                    } */
 		}
 		else
 		{
@@ -548,9 +554,9 @@ void strat_set_sec_new_order(int8_t zone_num){
 		case ZONE_MY_CLAP_2:
 			strat_infos.strat_smart_sec = GET_NEW_TASK;
 		break;
-
 		case ZONE_MY_STAND_GROUP_1:
-			strat_infos.strat_smart_sec = GET_NEW_TASK;
+			strat_infos.strat_smart_sec = INIT_ROBOT_2ND;
+		break;
 		default:
 		break;
 	}
@@ -562,8 +568,6 @@ void strat_smart_robot_2nd(void)
 	uint8_t received_ack;
 	uint8_t err;
 
-	DEBUG (E_USER_STRAT, "Strat_SMART_SEC");
-
 	switch (strat_infos.strat_smart_sec){
 		case GO_TO_ZONE:
 			if (time_get_us2() - us < 200000L)
@@ -573,7 +577,7 @@ void strat_smart_robot_2nd(void)
 				DEBUG (E_USER_STRAT, "\r\n\r\nFinished - Going to Zone: %d, RET= %d\r\n",strat_infos.strat_smart_sec_task,robot_2nd.cmd_ret);
 				// XXX evaluate ret value
 				err=bt_robot_2nd_test_end();
-				if(err != END_ERROR){
+				if (TRAJ_SUCCESS(err)) {
 					strat_work_on_zone(strat_infos.strat_smart_sec_task);
 					strat_infos.strat_smart_sec = WAIT_ACK_WORK;
 				}else{
@@ -596,7 +600,7 @@ void strat_smart_robot_2nd(void)
 
 			DEBUG (E_USER_STRAT, "ZONE: %d",strat_infos.strat_smart_sec_task);
 			if(strat_infos.strat_smart_sec_task != -1){
-				strat_goto_zone(strat_infos.strat_smart_sec_task,SEC_ROBOT);
+				strat_goto_zone(strat_infos.strat_smart_sec_task);
 				DEBUG (E_USER_STRAT, "\r\n\r\nSent command - Going to Zone: %d, RET= %d\r\n",strat_infos.strat_smart_sec_task,robot_2nd.cmd_ret);
 				strat_infos.strat_smart_sec = WAIT_ACK_GOTO;
 				us = time_get_us2();
@@ -633,10 +637,16 @@ void strat_smart_robot_2nd(void)
 		case WAIT_ACK_WORK:
 				strat_infos.strat_smart_sec = WORK_ON_ZONE;
 			break;
+		case INIT_ROBOT_2ND:
+#define INIT_ROBOT_2ND_X 400
+#define INIT_ROBOT_2ND_Y 1000
+				bt_robot_2nd_goto_xy_abs(INIT_ROBOT_2ND_X , INIT_ROBOT_2ND_Y);
 
+				strat_infos.strat_smart_sec = WAIT_FOR_ORDER;
 		case WAIT_FOR_ORDER:
 		default:
 			break;
+
 	}
 
 }

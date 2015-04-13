@@ -905,7 +905,10 @@ void auto_position(void)
 #define AUTOPOS_SPEED_FAST 	500
 #define TRESPA_BAR		17
 #define HOME_X_EDGE		70
-#define HOME_Y_UP_EDGE	1200
+//#define HOME_Y_UP_EDGE	1200
+
+#define HOME_Y_UP_EDGE_YELLOW	1199
+#define HOME_Y_UP_EDGE_GREEN	1201
 
     uint8_t err;
     uint16_t old_spdd, old_spda;
@@ -916,9 +919,14 @@ void auto_position(void)
     strat_set_speed(AUTOPOS_SPEED_FAST, AUTOPOS_SPEED_FAST);
 
 	/* set position of the robot aligned to home edges */
+	mainboard.our_color == I2C_COLOR_YELLOW?
 	strat_reset_pos(COLOR_X(HOME_X_EDGE + ROBOT_CENTER_TO_BACK),
-					COLOR_Y(HOME_Y_UP_EDGE - TRESPA_BAR - (ROBOT_WIDTH/2.0)),
+					COLOR_Y(HOME_Y_UP_EDGE_YELLOW - TRESPA_BAR - (ROBOT_WIDTH/2.0)),
+					COLOR_A_ABS(0)):
+	strat_reset_pos(COLOR_X(HOME_X_EDGE + ROBOT_CENTER_TO_BACK),
+					COLOR_Y(HOME_Y_UP_EDGE_GREEN - TRESPA_BAR - (ROBOT_WIDTH/2.0)),
 					COLOR_A_ABS(0));
+
 
 	/* goto in line with the center cup */
 	trajectory_d_rel(&mainboard.traj, 350-ROBOT_CENTER_TO_BACK);
@@ -1311,7 +1319,7 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 	/* go and work */
     if (zone_num < ZONES_MAX) {
 
-        err = strat_goto_zone(zone_num, MAIN_ROBOT);
+        err = strat_goto_zone(zone_num);
         printf_P(PSTR("goto returned %s\r\n"), get_err(err));
 	    if (!TRAJ_SUCCESS(err))
 		   ERROUT(err);
@@ -1390,7 +1398,11 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 		if(res->arg2==1){
 			set_strat_sec_1();
 			strat_infos.strat_smart_sec = GET_NEW_TASK;
+		}else if(res->arg2==2){
+			set_strat_sec_1();
+			strat_infos.strat_smart_sec = INIT_ROBOT_2ND;
 		}
+
 
 		/* play */
         strat_smart_robot_2nd();
@@ -1427,10 +1439,28 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 	/* go and work*/
     if (zone_num < ZONES_MAX) {
 
-        printf_P(PSTR("goto returned %s\r\n"), get_err(err));
-	    if (!TRAJ_SUCCESS(err))
-		   ERROUT(err);
 
+		/* goto */
+		err = strat_goto_zone(zone_num);
+
+		if (strat_infos.zones[zone_num].robot==MAIN_ROBOT) {
+		    printf_P(PSTR("goto returned %s\r\n"), get_err(err));
+			if (!TRAJ_SUCCESS(err))
+			   ERROUT(err);
+		}
+		else {
+			if (bt_robot_2nd_wait_ack()!=0) {
+				printf_P(PSTR("bt cmd ERROR\n\r"));
+				ERROUT(END_ERROR);
+			}
+
+			err = bt_robot_2nd_wait_end();
+		    printf_P(PSTR("goto returned %s\r\n"), get_err(err));
+			if (!TRAJ_SUCCESS(err))
+			   ERROUT(err);
+		}
+
+		/* work */
         err = strat_work_on_zone(zone_num);
         printf_P(PSTR("work returned %s\r\n"), get_err(err));
     }
