@@ -73,33 +73,33 @@
 
 #ifndef IM_SECONDARY_ROBOT
 
-/* XXX synchronized with maindspic/main.h */
+/* XXX keep synchronized with maindspic/main.h */
 
 /* robot dimensions */
-#define ROBOT_LENGTH            281.5
+#define ROBOT_LENGTH            288.5
 #define ROBOT_WIDTH             330.0
-#define ROBOT_CENTER_TO_FRONT   162.5
-#define ROBOT_CENTER_TO_BACK    119.0
+#define ROBOT_CENTER_TO_FRONT   167.0
+#define ROBOT_CENTER_TO_BACK    121.5
 #define ROBOT_HALF_LENGTH_FRONT ROBOT_CENTER_TO_FRONT
 #define ROBOT_HALF_LENGTH_REAR  ROBOT_CENTER_TO_BACK
 
 /* XXX obstacle clerance */
-#define OBS_CLERANCE            (232.+10.)
+#define OBS_CLERANCE            (235.+10.)
 
 #else
 
-/* XXX synchronized with secondary_robot/main.h */
+/* XXX keep synchronized with secondary_robot/main.h */
 
 /* robot dimensions */
-#define ROBOT_LENGTH      	    150.
-#define ROBOT_WIDTH 	    	230.
-#define ROBOT_CENTER_TO_FRONT   75.
-#define ROBOT_CENTER_TO_BACK    75.
+#define ROBOT_LENGTH      	    163.
+#define ROBOT_WIDTH 	    	210.
+#define ROBOT_CENTER_TO_BACK    105.0
+#define ROBOT_CENTER_TO_FRONT   (ROBOT_LENGTH-ROBOT_CENTER_TO_BACK)
 #define ROBOT_HALF_LENGTH_FRONT ROBOT_CENTER_TO_FRONT
 #define ROBOT_HALF_LENGTH_REAR  ROBOT_CENTER_TO_BACK
 
 /* XXX obstacle clearance */
-#define OBS_CLERANCE            (137.+10.)
+#define OBS_CLERANCE            (149.+10.)
 
 #endif /* ! IM_SECONDARY_ROBOT */
 
@@ -138,30 +138,29 @@ struct strat_infos strat_infos = {
     .zones[ZONE_MY_STAND_GROUP_2] =
 	{
 		ZONE_TYPE_STAND,
-		LIMIT_BBOX_X_DOWN, LIMIT_BBOX_Y_DOWN,
+		MY_STAND_7_X, MY_STAND_7_Y,
 		0, 100, 0, 300,
-		LIMIT_BBOX_X_DOWN, LIMIT_BBOX_Y_DOWN,
+		MY_CUP_2_X+OBS_CLERANCE, MY_CUP_2_Y,	
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
 	},
-    .zones[ZONE_MY_STAND_GROUP_3] =
+    .zones[ZONE_MY_STAND_GROUP_3] =        
 	{
 		ZONE_TYPE_STAND,
-		//825, AREA_Y-70,
-		MY_POPCORNMAC_X, LIMIT_BBOX_Y_UP,
-		650, 950, 1700, 1950,
-		MY_POPCORNMAC_X, LIMIT_BBOX_Y_UP,
-		0, 0,
+		825, AREA_Y-70,              /* XXX: aprox. to be tested */
+		650, 950, 1700, 1950, 	
+		MY_POPCORNMAC_X, AREA_Y-330, /* TODO: xy closed to stands */ 	
+		0, 0,            
 		0, (9000*1000L),
 		MAIN_ROBOT
 	},
-    .zones[ZONE_MY_STAND_GROUP_4] =
+    .zones[ZONE_MY_STAND_GROUP_4] =        
 	{
 		ZONE_TYPE_STAND,
-		MY_STAND_1_X, MY_STAND_1_Y,
+		MY_STAND_1_X, MY_STAND_1_Y,  
 		0, 150, 0, 300,
-		MY_POPCORNMAC_X, LIMIT_BBOX_Y_UP,
+		MY_POPCORNMAC_X, AREA_Y-330, /* TODO: xy closed to stands */ 
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
@@ -169,10 +168,10 @@ struct strat_infos strat_infos = {
 	/* popcorn machines */
 	.zones[ZONE_MY_POPCORNMAC] =
 	{
-		ZONE_TYPE_POPCORNMAC,
-		MY_POPCORNMAC_X, LIMIT_BBOX_Y_UP,
+		ZONE_TYPE_POPCORNMAC, 
+		MY_POPCORNMAC_X, MY_POPCORNMAC_Y,
 		150, 750, 1700, 2000,
-		MY_POPCORNMAC_X, LIMIT_BBOX_Y_UP,
+		MY_POPCORNMAC_X, AREA_Y-330,
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
@@ -180,9 +179,9 @@ struct strat_infos strat_infos = {
 	.zones[ZONE_OPP_POPCORNMAC] =
 	{
 		ZONE_TYPE_POPCORNMAC,
-		OPP_POPCORNMAC_X, LIMIT_BBOX_Y_UP,
+		OPP_POPCORNMAC_X, OPP_POPCORNMAC_Y,
 		2250, 2850, 1700, 2000,
-		OPP_POPCORNMAC_X, LIMIT_BBOX_Y_UP,
+		OPP_POPCORNMAC_X, AREA_Y-330,
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
@@ -193,7 +192,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_POPCORNCUP,
 		MY_CUP_1_X, MY_CUP_1_Y,
 		760, 1060, 1020, 1320,
-		MY_CUP_1_X-300,	MY_CUP_1_Y,
+		MY_CUP_1_X-ROBOT_SEC_OBS_CLERANCE,	MY_CUP_1_Y-ROBOT_SEC_OBS_CLERANCE,
 		0, 0,
 		0, (9000*1000L),
 		SEC_ROBOT
@@ -203,39 +202,17 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_POPCORNCUP,
 		MY_CUP_2_X, MY_CUP_2_Y,
 		100, 400, 100, 400,
-		MY_POPCORNCUP_SIDE_X+300, LIMIT_BBOX_Y_DOWN,
+		MY_CUP_2_X+OBS_CLERANCE, MY_CUP_2_Y,
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
 	},
-/* TODO: remove
-	.zones[ZONE_POPCORNCUP_5] =
-	{
-		ZONE_TYPE_POPCORNCUP,
-		OPP_POPCORNCUP_FRONT_X, OPP_POPCORNCUP_FRONT_Y,
-		1940, 2240, 1020, 1320,
-		OPP_POPCORNCUP_FRONT_X-300, OPP_POPCORNCUP_FRONT_Y,
-		0, 0,
-		0, (9000*1000L),
-		MAIN_ROBOT
-	},
-	.zones[ZONE_POPCORNCUP_4] =
-	{
-		ZONE_TYPE_POPCORNCUP,
-		OPP_POPCORNCUP_SIDE_X, OPP_POPCORNCUP_SIDE_Y,
-		2600, 2900, 100, 400,
-		OPP_POPCORNCUP_SIDE_X-300, OPP_POPCORNCUP_SIDE_Y,
-		0, 0,
-		0, (9000*1000L),
-		MAIN_ROBOT
-	},*/
-
 	.zones[ZONE_POPCORNCUP_3] =
 	{
 		ZONE_TYPE_POPCORNCUP,
 	 	MY_CUP_3_X, MY_CUP_3_Y,
 		1350, 1650, 200, 500,
-		MY_CUP_3_X-300, MY_CUP_3_Y,
+		NULL, NULL,
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
@@ -246,7 +223,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_CINEMA,
 		MY_CINEMA_UP_X, MY_CINEMA_UP_Y,
 		2600, 3000, 1200, 1600,
-		3000-400-OBS_CLERANCE-50, 2000-400-(378/2),
+		MY_CINEMA_UP_X, MY_CINEMA_UP_Y+200,
 		0, 0,
 	 	0, (9000*1000L),
 		SEC_ROBOT
@@ -256,7 +233,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_CINEMA,
 		MY_CINEMA_DOWN_X, MY_CINEMA_DOWN_Y,
 		2600, 3000, 400, 800,
-		3000-400-OBS_CLERANCE-50, 400+(378/2),
+		MY_CINEMA_DOWN_X, MY_CINEMA_DOWN_Y-200,
 		0, 0,
 		0, (9000*1000L),
 		SEC_ROBOT
@@ -277,8 +254,7 @@ struct strat_infos strat_infos = {
 	{
 		ZONE_TYPE_STAIRWAY,
 		MY_STAIRS_X, MY_STAIRS_Y,
-		1000, 1500, 1400, 2000,
-		0, 0,
+		MY_STAIRS_X, 1150,
 		0, 0,
 		0, (9000*1000L),
 		SEC_ROBOT
@@ -289,7 +265,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_CLAP,
 		MY_CLAP_1_X,  MY_CLAP_Y,
 		180, 480, 0, 300,
-		MY_CLAP_1_X, LIMIT_BBOX_Y_DOWN,
+		MY_CLAP_1_X, MY_CUP_2_Y,
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
@@ -299,7 +275,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_CLAP,
 		MY_CLAP_2_X, MY_CLAP_Y,
 		780, 1080, 0, 300,
-		MY_CLAP_2_X, LIMIT_BBOX_Y_DOWN,
+		MY_CLAP_2_X, MY_CUP_2_Y,
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
@@ -309,7 +285,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_CLAP,
 		MY_CLAP_3_X,  MY_CLAP_Y,
 		2230, 2530, 0, 300,
-		MY_CLAP_3_X, LIMIT_BBOX_Y_DOWN,
+		MY_CLAP_3_X, MY_CUP_2_Y,
 		0, 0,
 		0, (9000*1000L),
 		SEC_ROBOT
@@ -328,8 +304,9 @@ struct strat_infos strat_infos = {
 };
 
 /* points we get from each zone */
-/* TODO remove ??*/
-uint8_t strat_zones_points[ZONES_MAX]; /* = {3,3,3,3,0,0,0,1,1,1,1,1,1,1,1,1,1,2,2,0,0,6,6,6}; */
+/* TODO; discoment when implemented
+uint8_t strat_zones_points[ZONES_MAX];/
+*/
 
 /*************************************************************/
 

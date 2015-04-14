@@ -116,10 +116,14 @@
 
 /* ROBOT PARAMETERS *************************************************/
 
+#undef IM_SECONDARY_ROBOT
+
 /* distance between encoders weels,
  * decrease track to decrease angle */
 #define EXT_TRACK_MM      303.626213203341000 //303.8
 #define VIRTUAL_TRACK_MM  EXT_TRACK_MM
+
+/* XXX keep synchronized with maindspic/strat.c */
 
 /* robot dimensions */
 #define ROBOT_LENGTH            288.5
@@ -131,6 +135,16 @@
 
 /* XXX obstacle clerance */
 #define OBS_CLERANCE            (235.+10.)
+
+/* XXX keep synchronized with secondary_robot/main.h */
+#define ROBOT_SEC_LENGTH      	    163.
+#define ROBOT_SEC_WIDTH 	    	210.
+#define ROBOT_SEC_CENTER_TO_BACK    105.0
+#define ROBOT_SEC_CENTER_TO_FRONT   (ROBOT_LENGTH-ROBOT_CENTER_TO_BACK)
+#define ROBOT_SEC_HALF_LENGTH_FRONT ROBOT_CENTER_TO_FRONT
+#define ROBOT_SEC_HALF_LENGTH_REAR  ROBOT_CENTER_TO_BACK
+
+#define ROBOT_SEC_OBS_CLERANCE      (149.+10.)
 
 
 /* Some calculus:

@@ -49,6 +49,8 @@
 
 #define SIDE_LEFT		I2C_SIDE_LEFT
 #define SIDE_RIGHT 	    I2C_SIDE_RIGHT
+#define SIDE_FRONT      SIDE_LEFT
+#define SIDE_REAR       SIDE_RIGHT
 #define SIDE_ALL		I2C_SIDE_ALL
 
 #define GO_FORWARD	    0
@@ -147,74 +149,27 @@
 #define MY_STAND_8_X			90
 #define MY_STAND_8_Y			2000-1750
 
-/* TODO: remove
-#define OPP_STAND_1_X			3000-90
-#define OPP_STAND_1_Y			2000-200
-#define OPP_STAND_2_X			3000-850
-#define OPP_STAND_2_Y			2000-100
-#define OPP_STAND_3_X			3000-850
-#define OPP_STAND_3_Y			2000-200
-#define OPP_STAND_4_X			3000-870
-#define OPP_STAND_4_Y			2000-1355
-#define OPP_STAND_5_X			3000-1300
-#define OPP_STAND_5_Y			2000-1400
-#define OPP_STAND_6_X			3000-1100
-#define OPP_STAND_6_Y			2000-1770
-#define OPP_STAND_7_X			3000-90
-#define OPP_STAND_7_Y			2000-1850
-#define OPP_STAND_8_X			3000-90
-#define OPP_STAND_8_Y			2000-1750
+#define MY_POPCORNMAC_X		    450
+#define MY_POPCORNMAC_Y		    2000-35
+#define OPP_POPCORNMAC_X	    2550
+#define OPP_POPCORNMAC_Y	    2000-35
 
-
-#define MY_LIGHTBULB_HOME_X			40
-#define MY_LIGHTBULB_HOME_Y			1000
-#define MY_LIGHTBULB_PLATFORM_X		1250
-#define MY_LIGHTBULB_PLATFORM_Y		50
-#define OPP_LIGHTBULB_HOME_X		2960
-#define OPP_LIGHTBULB_HOME_Y		1000
-#define OPP_LIGHTBULB_PLATFORM_X	1750
-#define OPP_LIGHTBULB_PLATFORM_Y	50
-*/
-
-#define MY_POPCORNMAC_X		450
-#define MY_POPCORNMAC_Y		2000-35
-#define OPP_POPCORNMAC_X	2550
-#define OPP_POPCORNMAC_Y	2000-35
-
-#if 0
-TODO: remove
-#define MY_POPCORNMAC_1_X				300
-#define MY_POPCORNMAC_1_Y				2000-35
-#define MY_POPCORNMAC_2_X				600
-#define MY_POPCORNMAC_2_Y				2000-35
-#define OPP_POPCORNMAC_1_X				2400
-#define OPP_POPCORNMAC_1_Y				2000-35
-#define OPP_POPCORNMAC_2_X				2700
-#define OPP_POPCORNMAC_2_Y		        2000-35
-#endif
-
-#define MY_POPCORNCUP_FRONT_X			910
-#define MY_POPCORNCUP_FRONT_Y			2000-830
-#define MY_POPCORNCUP_SIDE_X			250
-#define MY_POPCORNCUP_SIDE_Y			250
-#define POPCORNCUP_CENTRE_X				1500
-#define POPCORNCUP_CENTRE_Y				2000-1650
-
-/* TODO remove
-#define OPP_POPCORNCUP_FRONT_X			2090
-#define OPP_POPCORNCUP_FRONT_Y			2000-830
-#define OPP_POPCORNCUP_SIDE_X			2750
-#define OPP_POPCORNCUP_SIDE_Y			2000-1750
-*/
+#define MY_CUP_1_X			    910
+#define MY_CUP_1_Y			    2000-830
+#define MY_CUP_2_X			    250
+#define MY_CUP_2_Y			    250
+#define MY_CUP_3_X				1500
+#define MY_CUP_3_Y				2000-1650
 
 /* redefinitions for strat diagram */
+/*
 #define MY_CUP_1_X	MY_POPCORNCUP_FRONT_X
 #define MY_CUP_1_Y	MY_POPCORNCUP_FRONT_Y
 #define MY_CUP_2_X	MY_POPCORNCUP_SIDE_X
 #define MY_CUP_2_Y	MY_POPCORNCUP_SIDE_Y
 #define MY_CUP_3_X	POPCORNCUP_CENTRE_X
 #define MY_CUP_3_Y  POPCORNCUP_CENTRE_Y
-
+*/
 
 #define MY_CINEMA_UP_X		2800
 #define MY_CINEMA_UP_Y		1400
@@ -225,13 +180,8 @@ TODO: remove
 #define OPP_CINEMA_DOWN_X	200
 #define OPP_CINEMA_DOWN_Y	600
 
-#define MY_STAIRS_X		1250
-#define MY_STAIRS_Y		1400
-
-/* TODO: remove
-#define OPP_STAIRS_X		1750
-#define OPP_STAIRS_Y		1400
-*/
+#define MY_STAIRS_X		    1250
+#define MY_STAIRS_Y		    1400
 
 #define MY_HOME_SPOTLIGHT_X	400
 #define MY_HOME_SPOTLIGHT_Y	1000
@@ -239,21 +189,10 @@ TODO: remove
 #define MY_HOME_POPCORNS_X	270
 #define MY_HOME_POPCORNS_Y	1000
 
-/* TODO remove
-#define OPP_HOME_X				2750
-#define OPP_HOME_Y				1000
-*/
-
-#define MY_CLAP_1_X		320
-#define MY_CLAP_2_X		920
-#define MY_CLAP_3_X		2320
-#define MY_CLAP_Y		0
-
-/* TODO: remove
-#define OPP_CLAP_1_X				2680
-#define OPP_CLAP_2_X				620
-#define OPP_CLAP_3_X				2080
-*/
+#define MY_CLAP_1_X		    320
+#define MY_CLAP_2_X		    920
+#define MY_CLAP_3_X		    2320
+#define MY_CLAP_Y		    0
 
 
 /* zones */
@@ -269,21 +208,17 @@ TODO: remove
 #define ZONE_POPCORNCUP_2				7
 #define ZONE_POPCORNCUP_3				8
 
-#define ZONE_POPCORNCUP_4				9
-#define ZONE_POPCORNCUP_5				10
+#define ZONE_MY_CINEMA_UP				9
+#define ZONE_MY_CINEMA_DOWN				10
 
-
-#define ZONE_MY_CINEMA_UP				11
-#define ZONE_MY_CINEMA_DOWN				12
-
-#define ZONE_MY_STAIRS					13
-#define ZONE_MY_HOME					14
-#define ZONE_MY_CLAP_1					15
-#define ZONE_MY_CLAP_2					16
-#define ZONE_MY_CLAP_3					17
-#define ZONE_MY_STAIRWAY				18
-#define ZONE_MY_PLATFORM				19
-#define ZONES_MAX		    			20
+#define ZONE_MY_STAIRS					11
+#define ZONE_MY_HOME					12
+#define ZONE_MY_CLAP_1					13
+#define ZONE_MY_CLAP_2					14
+#define ZONE_MY_CLAP_3					15
+#define ZONE_MY_STAIRWAY				16
+#define ZONE_MY_PLATFORM				17
+#define ZONES_MAX		    			18
 
 /*
  * Strat diagram, valid for YELLOW.
