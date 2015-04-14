@@ -311,6 +311,7 @@ struct robot_2nd
 												see strat_base.h */
 	//uint8_t cmd_args_checksum;		/* checksum of cmd arguments*/
 
+
 	/* strat info */
 	uint16_t done_flags;
 

@@ -386,11 +386,6 @@ struct strat_infos {
 
 extern struct strat_infos strat_infos;
 
-/* get zone struct index */
-extern char numzone2name[ZONES_MAX+1][5];
-
-/* points we get from each zone */
-extern uint8_t strat_zones_points[ZONES_MAX];
 
 #ifndef HOST_VERSION_OA_TEST
 
@@ -402,10 +397,13 @@ extern uint8_t strat_zones_points[ZONES_MAX];
  * in strat.c
  *******************************************/
 
+
+
 #define BOUNDINBOX_INCLUDES_PLAFORM 0
 #define BOUNDINBOX_WITHOUT_PLATFORM 1
 void strat_set_bounding_box(uint8_t type);
 
+const char *get_zone_name(uint8_t zone_num);
 void strat_dump_infos(const char *caller);
 void strat_dump_conf(void);
 void strat_reset_infos(void);
@@ -417,8 +415,8 @@ void strat_exit(void);
 void strat_event(void *dummy);
 uint8_t strat_main(void);
 
-
 uint8_t has_2nd_finished(void);
+
 /********************************************
  * in strat_spotlight.c
  *******************************************/
