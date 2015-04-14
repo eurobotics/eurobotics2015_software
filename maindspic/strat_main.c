@@ -118,7 +118,7 @@ int8_t strat_is_valid_zone(uint8_t robot, int8_t zone_num)
 }
 
 /* set next SEC_ROBOT_ROBOT strategy */
-void set_next_sec_strategy(void)
+void strat_set_next_sec_strategy(void)
 {
 	strat_infos.current_sec_strategy++;
 
@@ -256,7 +256,7 @@ int8_t strat_get_new_zone(uint8_t robot)
 	/* 2. check if the maximun priority zone is valid */
 	if(zone_num != STRAT_NO_MORE_ZONES)
 	{
-		if (!strat_is_valid_zone(zone_num))
+		if (!strat_is_valid_zone(robot, zone_num))
 			zone_num = STRAT_NO_VALID_ZONE;
 	}
 
@@ -353,7 +353,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 								 			   COLOR_INVERT(SIDE_RIGHT),
 											   0,
 											   SPEED_DIST_SLOW, /* harvest speed */
-
+											   0);				/* flags */
 		    if (!TRAJ_SUCCESS(err))
 			   ERROUT(err);
 
@@ -465,11 +465,11 @@ void state_debug_wait_key_pressed(void)
 
 /* implements the stratety motor of the main robot,
    XXX: needs to be called periodically, BLOCKING implementation */
-uint8_t strat_smart(void)
+uint8_t strat_smart_main_robot(void)
 {
 	int8_t zone_num;
 	uint8_t err;
-	static no_more_zones;
+	static uint8_t no_more_zones;
 
 	/* get new zone */
 	zone_num = strat_get_new_zone(MAIN_ROBOT);
@@ -500,10 +500,10 @@ uint8_t strat_smart(void)
 						get_zone_name(zone_num), zone_num, strat_infos.zones[zone_num].prio);
 
 	/* update statistics */
-	strat_smart[robot].goto_zone = zone_num;
+	strat_smart[MAIN_ROBOT].goto_zone = zone_num;
 
 	/* goto, if can't reach the zone change the strategy and return */
-	err = strat_goto_zone(zone_num);
+	err = strat_goto_zone(MAIN_ROBOT, zone_num);
 	if (!TRAJ_SUCCESS(err)) {
 		DEBUG(E_USER_STRAT,"MAIN_ROBOT, ERROR, goto returned %s", get_err(err));
 		strat_set_next_main_strategy();
@@ -516,11 +516,11 @@ uint8_t strat_smart(void)
 						get_zone_name(zone_num), zone_num, strat_infos.zones[zone_num].prio);
 
 	/* update statistis */
-	strat_smart[robot].last_zone = strat_smart[robot].current_zone;
-	strat_smart[robot].current_zone = strat_smart[robot].goto_zone;
+	strat_smart[MAIN_ROBOT].last_zone = strat_smart[MAIN_ROBOT].current_zone;
+	strat_smart[MAIN_ROBOT].current_zone = strat_smart[MAIN_ROBOT].goto_zone;
 
 	/* work */
-	err = strat_work_on_zone(zone_num);
+	err = strat_work_on_zone(MAIN_ROBOT,zone_num);
 	if (!TRAJ_SUCCESS(err)) {
 		DEBUG(E_USER_STRAT,"MAIN_ROBOT, ERROR, work returned %s", get_err(err));
 		/* XXX should doesn't happend, return END_TRAJ */
@@ -534,7 +534,7 @@ uint8_t strat_smart(void)
 
 /*Function to set robot_2nd in waiting state*/
 void strat_should_wait_new_order(void){
-	switch(strat_infos.strat_smart_sec_task){
+	switch(strat_smart[SEC_ROBOT].current_zone){
 
 		case ZONE_POPCORNCUP_2:
 			strat_infos.strat_smart_sec = WAIT_FOR_ORDER;
@@ -565,24 +565,15 @@ void strat_set_sec_new_order(int8_t zone_num)
 
 /* implements the strategy motor of the secondary robot,
    XXX: needs to be called periodically, NON-BLOCKING implementation */
-void strat_smart_robot_2nd(void)
+void strat_smart_secondary_robot(void)
 {
-	#define WAIT_FOR_ORDER 	0
-	#define GET_NEW_ZONE	1
-	#define GOTO			2
-	#define GOTO_WAIT_ACK	3
-	#define GOTO_WAIT_END	4
-	#define WORK			5
-	#define WORK_WAIT_ACK	6
-	#define WORK_WAIT_END	7
-
-	#define INIT_ROBOT_2ND 	8
-
 	static microseconds us = 0;
 	uint8_t received_ack;
 	uint8_t err;
+
+	static int8_t zone_num;
 	static uint8_t no_more_zones = 0;
-	uint8_t state_old = 0;
+	static uint8_t state_saved = WAIT_FOR_ORDER;
 
 	/* transitions debug */
 	if (strat_infos.strat_smart_sec != state_saved) {
@@ -608,10 +599,10 @@ void strat_smart_robot_2nd(void)
 
 
 		case GET_NEW_ZONE:
-			strat_infos.strat_smart_sec_task = strat_get_new_zone(SEC_ROBOT);
+			zone_num = strat_get_new_zone(SEC_ROBOT);
 
 			/* if no more zones, goto idle state */
-			if(strat_infos.strat_smart_sec_task == STRAT_NO_MORE_ZONES ) {
+			if(zone_num == STRAT_NO_MORE_ZONES ) {
 				if (!no_more_zones) {
 					no_more_zones = 1;
 					DEBUG(E_USER_STRAT,"SEC_ROBOT, strat #%d, NO MORE ZONES AVAILABLE", strat_infos.current_sec_strategy);
@@ -621,23 +612,26 @@ void strat_smart_robot_2nd(void)
 			}
 
 			/* if no valid zone, change strategy */
- 			if(strat_infos.strat_smart_sec_task == STRAT_NO_VALID_ZONE ) {
+ 			if(zone_num == STRAT_NO_VALID_ZONE ) {
 				DEBUG(E_USER_STRAT,"SEC_ROBOT, strat #%d, NO VALID ZONE", strat_infos.current_sec_strategy);
 				/* TODO */				
 				//set_next_sec_strategy();
 				break;
 			}
 			
+			/* update statistics */
+			strat_smart[SEC_ROBOT].goto_zone = zone_num;
+
 			/* next state */
 			strat_infos.strat_smart_sec = GOTO;
 
 		case GOTO:
 			DEBUG(E_USER_STRAT,"SEC_ROBOT, strat #%d: goto zone %s (%d, %d)",
 						strat_infos.current_sec_strategy, 
-						get_zone_name(strat_smart_sec_task), strat_smart_sec_task, strat_infos.zones[strat_smart_sec_task].prio);
+						get_zone_name(zone_num), zone_num, strat_infos.zones[zone_num].prio);
 
 			/* goto, if can't reach the zone change the strategy and return */
-			err = strat_goto_zone(strat_infos.strat_smart_sec_task);
+			err = strat_goto_zone(SEC_ROBOT, zone_num);
 			if (err) {
 				/* XXX never shoud be reached, infinite loop */
 				DEBUG(E_USER_STRAT,"SEC_ROBOT, ERROR, goto returned %s at line %d", get_err(err), __LINE__);				
@@ -656,14 +650,13 @@ void strat_smart_robot_2nd(void)
 				break;
 
 			/* wait ACK value until ACK, NACK or timeout */
-			received_ack = bt_robot_2nd_is_ack_received ()
+			received_ack = bt_robot_2nd_is_ack_received ();
 
-		
 			if(received_ack == 1)
 			{
 				/* ACK, wait end trajectory */	
 				us = time_get_us2();
-				strat_infos.strat_smart_sec = GOTO_WAIT_END_TRAJ;
+				strat_infos.strat_smart_sec = GOTO_WAIT_END;
 			}
 			else if (received_ack !=1 && received_ack != 0) {
 				/* NACK, retry */
@@ -676,7 +669,7 @@ void strat_smart_robot_2nd(void)
 
 			break;
 
-		case GOTO_WAIT_END_TRAJ:
+		case GOTO_WAIT_END:
 		    /* return if no minimum time */
 			if (time_get_us2() - us < 200000L)
 				break;
@@ -688,15 +681,21 @@ void strat_smart_robot_2nd(void)
 			if (!TRAJ_SUCCESS(err)) {
 				DEBUG(E_USER_STRAT,"SEC_ROBOT, ERROR, goto returned %s", get_err(err));
 				/* TODO */
+				strat_smart[SEC_ROBOT].current_zone = -1;
 				strat_set_next_sec_strategy();
 				strat_infos.strat_smart_sec = GET_NEW_ZONE;
 				break;
 			}
-			
+
+			/* update statistis */
+			strat_smart[SEC_ROBOT].last_zone = strat_smart[SEC_ROBOT].current_zone;
+			strat_smart[SEC_ROBOT].current_zone = strat_smart[SEC_ROBOT].goto_zone;
+
+			/* next state */
 			strat_infos.strat_smart_sec = WORK;
 
 		case WORK:
-			err = strat_work_on_zone(strat_infos.strat_smart_sec_task);
+			err = strat_work_on_zone(SEC_ROBOT, zone_num);
 			if (err) {
 				/* XXX never shoud be reached, infinite loop */
 				DEBUG(E_USER_STRAT,"SEC_ROBOT, ERROR, work returned %s at line %d", get_err(err), __LINE__);
@@ -715,7 +714,7 @@ void strat_smart_robot_2nd(void)
 				break;
 
 			/* wait ACK value until ACK, NACK or timeout */
-			received_ack = bt_robot_2nd_is_ack_received ()
+			received_ack = bt_robot_2nd_is_ack_received ();
 
 			if(received_ack == 1)
 			{
@@ -735,12 +734,6 @@ void strat_smart_robot_2nd(void)
 			break;
 
 		case WORK_WAIT_END:
-			/* HACK */
-			if (time_get_us2() - us < 2000000L)
-				break;
-
-			
-#if 0
 		    /* return if no minimum time */
 			if (time_get_us2() - us < 200000L)
 				break;
@@ -754,13 +747,12 @@ void strat_smart_robot_2nd(void)
 				strat_infos.strat_smart_sec = GET_NEW_ZONE;
 				break;
 			}
-#endif			
 
-			/* TODO */
+			/* update statistics */
+			strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
 
-			strat_infos.zones[strat_infos.strat_smart_sec_task].flags |= ZONE_CHECKED;
+			/* XXX auto run */
 			strat_should_wait_new_order();
-
 			break;
 
 
@@ -768,7 +760,6 @@ void strat_smart_robot_2nd(void)
 			strat_infos.strat_smart_sec = WAIT_FOR_ORDER;
 			break;
 	}
-
 }
 
 

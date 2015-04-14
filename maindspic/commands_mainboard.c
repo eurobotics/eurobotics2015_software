@@ -554,114 +554,6 @@ parse_pgm_inst_t cmd_color = {
     },
 };
 
-#ifdef CMD_BEACON_OLD
-/**********************************************************/
-/* beacon */
-
-/* this structure is filled when cmd_interact is parsed successfully */
-struct cmd_beacon_result
-{
-    fixed_string_t arg0;
-    fixed_string_t arg1;
-};
-
-static void cmd_beacon_parsed(void * parsed_result, void * data)
-{
-    int16_t c;
-    int8_t cmd = 0;
-    struct vt100 vt100;
-
-    struct cmd_beacon_result *res = parsed_result;
-
-    vt100_init(&vt100);
-
-    if (!strcmp_P(res->arg1, "raw"))
-    {
-#ifdef HOST_VERSION
-        printf("not implemented\n");
-#else
-        /* init vt100 character set */
-        vt100_init(&vt100);
-
-        /* interact */
-        while (cmd != KEY_CTRL_C)
-        {
-            /* received from slave */
-            if ((c = uart_recv_nowait(MUX_UART)) != -1)
-                /* echo */
-                uart_send_nowait(CMDLINE_UART, c);
-
-            /* send to slavedspic */
-            c = cmdline_getchar();
-            if (c == -1)
-            {
-                continue;
-            }
-
-            /* check exit cmd */
-            cmd = vt100_parser(&vt100, c);
-
-            /* send to slave */
-            uart_send_nowait(MUX_UART, c);
-        }
-#endif
-    }
-    else if (!strcmp_P(res->arg1, "wt11_reset"))
-    {
-        beacon_cmd_wt11_local_reset();
-    }
-    else if (!strcmp_P(res->arg1, "call"))
-    {
-        beacon_cmd_wt11_call();
-    }
-    else if (!strcmp_P(res->arg1, "wt11_close"))
-    {
-        beacon_cmd_wt11_close();
-    }
-    else if (!strcmp_P(res->arg1, "on"))
-    {
-        beacon_cmd_beacon_on();
-    }
-    else if (!strcmp_P(res->arg1, "watchdog_on"))
-    {
-        beacon_cmd_beacon_on();
-    }
-    else if (!strcmp_P(res->arg1, "off"))
-    {
-        beacon_cmd_beacon_off();
-    }
-    else if (!strcmp_P(res->arg1, "color"))
-    {
-        beacon_cmd_color();
-    }
-    else if (!strcmp_P(res->arg1, "opponent"))
-    {
-        //beacon_cmd_opponent();
-        beacon_pull_opponent();
-    }
-
-    printf("Done\n\r");
-}
-
-prog_char str_beacon_arg0[] = "beacon";
-parse_pgm_token_string_t cmd_beacon_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_beacon_result, arg0, str_beacon_arg0);
-prog_char str_beacon_arg1[] = "raw#wt11_reset#call#wt11_close#on#watchdog_on#off#color#opponent";
-parse_pgm_token_string_t cmd_beacon_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_beacon_result, arg1, str_beacon_arg1);
-
-prog_char help_beacon[] = "beacon commads";
-parse_pgm_inst_t cmd_beacon = {
-    .f = cmd_beacon_parsed, /* function to call */
-    .data = NULL, /* 2nd arg of func */
-    .help_str = help_beacon,
-    .tokens =
-    { /* token list, NULL terminated */
-        (prog_void *) & cmd_beacon_arg0,
-        (prog_void *) & cmd_beacon_arg1,
-        NULL,
-    },
-};
-#endif
-
 /**********************************************************/
 /* beacon */
 
@@ -902,7 +794,7 @@ static void cmd_robot_2nd_parsed(void * parsed_result, void * data)
 
 	else if (!strcmp_P(res->arg1, PSTR("init_position"))){
 
-				strat_infos.strat_smart_sec = INIT_ROBOT_2ND;
+//				strat_infos.strat_smart_sec = INIT_ROBOT_2ND;
 	}
 
 }
