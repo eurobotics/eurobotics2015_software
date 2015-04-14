@@ -421,7 +421,7 @@ void strat_preinit(void)
 {
     time_reset();
     interrupt_traj_reset();
-    mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BT_PROTO;
+    mainboard.flags |=  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER;
 
     strat_dump_conf();
     strat_dump_infos(__FUNCTION__);
@@ -439,8 +439,7 @@ void strat_init(void)
     interrupt_traj_reset();
 
     /* used in strat_base for END_TIMER */
-    mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BT_PROTO;
-
+    mainboard.flags |=  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_TIMER;
 }
 
 
@@ -463,32 +462,26 @@ void strat_exit(void)
     dac_mc_set(RIGHT_MOTOR, 0);
 #endif
 
-    /* TODO stop beacon */
-    /* beacon_cmd_beacon_off(); */
-
     /* TODO slavespic exit */
-    //i2c_slavedspic_mode_turbine_blow(0);
-    //i2c_slavedspic_wait_ready();
 
-    /* TODO stop beacon
+    /* stop beacon */
     beacon_cmd_beacon_off();
     beacon_cmd_beacon_off();
     beacon_cmd_beacon_off();
     beacon_cmd_beacon_off();
-    */
+
 }
 
 /* called periodically */
 void strat_event(void *dummy) {
+
     /* limit speed when opponent are close */
     strat_limit_speed();
 
-	//printf_P(PSTR("\r\n\r\nStrat event\r\n"));
+    /* smart strategy of secondary robot */
 	strat_smart_robot_2nd();
 }
 
-    /* tracking of zones where opp has been working */
-    //strat_opp_tracking();
 
 /* dump state (every 5 s max) XXX */
 #define DUMP_RATE_LIMIT(dump, last_print)        \
@@ -509,20 +502,17 @@ void strat_event(void *dummy) {
 /* Strat main loop */
 uint8_t strat_main(void)
 {
-
     uint8_t err;
-
-//    strat_begin();
     strat_limit_speed_enable ();
 
-    /* auto-play  */
+    /* set strategy  */
     set_strat_sec_1();
     set_strat_main_1();
 
+    /* play */
     do{
-
         err = strat_smart();
-    }while((err & END_TIMER) == 0);
+    } while((err & END_TIMER) == 0);
 
    strat_exit();
    return 0;

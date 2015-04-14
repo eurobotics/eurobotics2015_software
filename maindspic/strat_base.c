@@ -474,7 +474,7 @@ void strat_start(void)
 
 		/* while start sw not plugged */
 		while (sensor_get(S_START_SWITCH)) {
-			if (! cmdline_keypressed())
+			if (!cmdline_keypressed())
 				continue;
 
 			for (i=3; i>0; i--) {
@@ -499,7 +499,7 @@ void strat_start(void)
 	/* go to play */
 	err = strat_main();
 	
-	NOTICE(E_USER_STRAT, "Finished !! returned %s", get_err(err));
+	NOTICE(E_USER_STRAT, "Finished!! returned %s", get_err(err));
 	strat_exit();
 }
 
