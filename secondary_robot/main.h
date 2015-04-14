@@ -96,13 +96,16 @@
 
 /* ROBOT PARAMETERS *************************************************/
 
+#define IM_SECONDARY_ROBOT
+
 /* distance between encoders weels,
  * decrease track to decrease angle */
 #define EXT_TRACK_MM      202.65952055139
 #define VIRTUAL_TRACK_MM  EXT_TRACK_MM
 
+/* XXX keep synchronized with maindspic/strat.c and maindspic/main.h */
+
 /* robot dimensions */
-#define IM_SECONDARY_ROBOT
 #define ROBOT_LENGTH      	    163.
 #define ROBOT_WIDTH 	    	210.
 #define ROBOT_CENTER_TO_BACK    105.0
@@ -111,7 +114,7 @@
 #define ROBOT_HALF_LENGTH_REAR  ROBOT_CENTER_TO_BACK
 
 /* XXX obstacle clerance */
-#define OBS_CLERANCE            (137.+10.)
+#define OBS_CLERANCE            (149.+10.)
 
 /* Some calculus:
  * it is a 5000 imps -> 20000 because we see 1/4 period
