@@ -304,7 +304,7 @@ struct strat_infos strat_infos = {
 };
 
 /* points we get from each zone */
-/* TODO; discoment when implemented
+/* TODO: implement a function to access to array. XXX Range must be assserted
 uint8_t strat_zones_points[ZONES_MAX];/
 */
 
@@ -346,6 +346,36 @@ void strat_set_bounding_box(uint8_t which)
 #ifndef HOST_VERSION_OA_TEST
 
 
+/* zone names */
+const char zone_name[ZONES_MAX][]= {
+    [ZONE_MY_STAND_GROUP_1]="STAND GROUP 1",
+    [ZONE_MY_STAND_GROUP_2]="STAND GROUP 2",
+    [ZONE_MY_STAND_GROUP_3]="STAND GROUP 3",
+    [ZONE_MY_STAND_GROUP_4]="STAND GROUP 4",
+    [ZONE_MY_POPCORNMAC]="MACHINE",
+    [ZONE_OPP_POPCORNMAC]="OPP MACHINE",
+    [ZONE_POPCORNCUP_1]="CUP 1",
+    [ZONE_POPCORNCUP_2]="CUP 1",
+    [ZONE_POPCORNCUP_3]="CUP 1",
+    [ZONE_MY_CINEMA_UP]="CINEMA UP",
+    [ZONE_MY_CINEMA_DOWN]="CINEMA DOWN",
+    [ZONE_MY_STAIRS]="STAIRS",
+    [ZONE_MY_HOME]="HOME",
+    [ZONE_MY_CLAP_1]="CLAPPER 1",
+    [ZONE_MY_CLAP_2]="CLAPPER 2",
+    [ZONE_MY_CLAP_3]="CLAPPER 3",
+    [ZONE_MY_STAIRWAY]="STAIRWAY",
+};
+
+/* return string with the zone name */
+const char *get_zone_name(uint8_t zone_num)
+{
+    if (zone_num >= ZONES_MAX)
+    	return "END_UNKNOWN";
+
+    return &zone_name[zone_num][0];
+}
+
 /* display curret strat configuration */
 void strat_dump_conf(void)
 {
@@ -357,30 +387,6 @@ void strat_dump_conf(void)
     /* add here configuration dump */
 }
 
-char numzone2name[ZONES_MAX +1][5]= {
-[ZONE_MY_STAND_GROUP_1]="ms1\0",
-[ZONE_MY_STAND_GROUP_2]="ms2\0",
-[ZONE_MY_STAND_GROUP_3]="ms3\0",
-[ZONE_MY_STAND_GROUP_4]="ms4\0",
-[ZONE_MY_POPCORNMAC]="mm\0",
-[ZONE_OPP_POPCORNMAC]="om\0",
-[ZONE_POPCORNCUP_1]="mcf\0",
-[ZONE_POPCORNCUP_2]="mcs\0",
-/* TODO: remove
-[ZONE_POPCORNCUP_5]="ocf\0",
-[ZONE_POPCORNCUP_4]="ocs\0",
-*/
-[ZONE_POPCORNCUP_3]="cc\0",
-[ZONE_MY_CINEMA_UP]="mcu\0",
-[ZONE_MY_CINEMA_DOWN]="mcd\0",
-[ZONE_MY_STAIRS]="ms\0",
-[ZONE_MY_HOME]="mh\0",
-[ZONE_MY_CLAP_1]="mb1\0",
-[ZONE_MY_CLAP_2]="mb2\0",
-[ZONE_MY_CLAP_3]="mb3\0",
-[ZONE_MY_STAIRWAY]="mw\0",
-[ZONES_MAX] = "nll\0",
-};
 
 /* display current information about the state of the game */
 void strat_dump_infos(const char *caller)
@@ -415,7 +421,7 @@ void strat_preinit(void)
 {
     time_reset();
     interrupt_traj_reset();
-    mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BEACON;
+    mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BT_PROTO;
 
     strat_dump_conf();
     strat_dump_infos(__FUNCTION__);
@@ -433,7 +439,7 @@ void strat_init(void)
     interrupt_traj_reset();
 
     /* used in strat_base for END_TIMER */
-    mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BEACON | DO_BT_PROTO;
+    mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BT_PROTO;
 
 }
 
