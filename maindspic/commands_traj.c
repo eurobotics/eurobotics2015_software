@@ -934,7 +934,7 @@ void auto_position(void)
     if (err == END_INTR)
         goto intr;
 
-	trajectory_turnto_xy(&mainboard.traj, COLOR_X(POPCORNCUP_CENTRE_X), POPCORNCUP_CENTRE_Y);
+	trajectory_turnto_xy(&mainboard.traj, COLOR_X(MY_CUP_3_X), MY_CUP_3_Y);
     err = wait_traj_end(END_INTR | END_TRAJ);
     if (err == END_INTR)
         goto intr;
@@ -1316,18 +1316,24 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 		return;
 	}
 
+
 	/* go and work */
     if (zone_num < ZONES_MAX) {
 
-        err = strat_goto_zone(zone_num);
-        printf_P(PSTR("goto returned %s\r\n"), get_err(err));
-	    if (!TRAJ_SUCCESS(err))
-		   ERROUT(err);
-			//set_strat_sec_1();
-        err = strat_work_on_zone(zone_num);
-        printf_P(PSTR("work returned %s\r\n"), get_err(err));
-			strat_infos.strat_smart_sec = WAIT_FOR_ORDER;
+        if (strat_infos.zones[zone_num].robot == MAIN_ROBOT)
+        {
+            err = strat_goto_zone(MAIN_ROBOT, zone_num);
+            printf_P(PSTR("goto returned %s\r\n"), get_err(err));
+            if (!TRAJ_SUCCESS(err))
+               ERROUT(err);
+
+            err = strat_work_on_zone(MAIN_ROBOT, zone_num);
+            printf_P(PSTR("work returned %s\r\n"), get_err(err));
 		}
+        else {
+            /* TODO */
+        }
+    }
 end:
     trajectory_hardstop(&mainboard.traj);
 }
@@ -1391,7 +1397,7 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 		}
 
 		/* play */
-        	strat_smart();
+        	strat_smart_main_robot();
 		return;
     	}
 	else if (strcmp_P(res->arg1, PSTR("strat_sec")) == 0) {
@@ -1399,7 +1405,7 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 		/* select strategy number */
 		if(res->arg2==1){
 			set_strat_sec_1();
-			strat_infos.strat_smart_sec = GET_NEW_TASK;
+			strat_infos.strat_smart_sec = GET_NEW_ZONE;
 		}else if(res->arg2==2){
 			set_strat_sec_1();
 			strat_infos.strat_smart_sec = INIT_ROBOT_2ND;
@@ -1441,30 +1447,41 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 	/* go and work*/
     if (zone_num < ZONES_MAX) {
 
-
-		/* goto */
-		err = strat_goto_zone(zone_num);
-
 		if (strat_infos.zones[zone_num].robot==MAIN_ROBOT) {
+
+            /* goto */
+            err = strat_goto_zone(MAIN_ROBOT, zone_num);
 		    printf_P(PSTR("goto returned %s\r\n"), get_err(err));
 			if (!TRAJ_SUCCESS(err))
 			   ERROUT(err);
+
+       		/* work */
+            err = strat_work_on_zone(MAIN_ROBOT, zone_num);
+            printf_P(PSTR("work returned %s\r\n"), get_err(err));
 		}
 		else {
+            /* goto */
+            err = strat_goto_zone(SEC_ROBOT, zone_num);
 			if (bt_robot_2nd_wait_ack()!=0) {
 				printf_P(PSTR("bt cmd ERROR\n\r"));
 				ERROUT(END_ERROR);
 			}
-
 			err = bt_robot_2nd_wait_end();
 		    printf_P(PSTR("goto returned %s\r\n"), get_err(err));
 			if (!TRAJ_SUCCESS(err))
 			   ERROUT(err);
-		}
 
-		/* work */
-        err = strat_work_on_zone(zone_num);
-        printf_P(PSTR("work returned %s\r\n"), get_err(err));
+            /* work */
+            err = strat_work_on_zone(SEC_ROBOT, zone_num);
+			if (bt_robot_2nd_wait_ack()!=0) {
+				printf_P(PSTR("bt cmd ERROR\n\r"));
+				ERROUT(END_ERROR);
+			}
+			err = bt_robot_2nd_wait_end();
+		    printf_P(PSTR("work returned %s\r\n"), get_err(err));
+			if (!TRAJ_SUCCESS(err))
+			   ERROUT(err);
+		}
     }
 	else
 		printf_P(PSTR("invalid element number\r\n"));

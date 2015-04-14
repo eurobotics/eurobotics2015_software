@@ -511,7 +511,7 @@ inline void wt11_reset_mux (void) {
 /* open serial link in multiplexin mode */
 void __wt11_open_link(uint8_t mode, uint8_t *addr, uint8_t *link_id)
 {
-	uint8_t __link_id;
+	uint16_t __link_id;
 	uint16_t size, i=0;
 	uint16_t ret = 0;
 
@@ -548,7 +548,7 @@ void __wt11_open_link(uint8_t mode, uint8_t *addr, uint8_t *link_id)
   			
 			ret = sscanf((char *)data, "CONNECT %d RFCOMM 1", &__link_id);
  			if(ret == 1) {
-				*link_id = __link_id;
+				*link_id = (uint8_t)__link_id;
 			  	NOTICE(E_USER_WT11, "WT11: link_id = %d", *link_id);
 				return;
 			}	

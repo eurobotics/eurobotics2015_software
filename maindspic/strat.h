@@ -373,7 +373,17 @@ struct strat_infos {
 
 	/* state for robot_2nd strategy*/
 	uint8_t strat_smart_sec;
-	int8_t strat_smart_sec_task;
+
+	#define WAIT_FOR_ORDER 	0
+	#define GET_NEW_ZONE	1
+	#define GOTO			2
+	#define GOTO_WAIT_ACK	3
+	#define GOTO_WAIT_END	4
+	#define WORK			5
+	#define WORK_WAIT_ACK	6
+	#define WORK_WAIT_END	7
+
+	#define INIT_ROBOT_2ND 	8
 };
 
 /* strat specific for each robot */
@@ -459,33 +469,24 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side);
  * in strat_main.c
  *******************************************/
 
-uint8_t strat_main_loop(void);
-
 /* return new work zone, -1 if any zone is found */
 int8_t strat_get_new_zone(uint8_t robot);
 
 /* return END_TRAJ if zone is reached */
-uint8_t strat_goto_zone(uint8_t zone_num);
+uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num);
 
 /* return END_TRAJ if the work is done */
-uint8_t strat_work_on_zone(uint8_t zone_num);
+uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num);
 
 /* debug state machines step to step */
 void state_debug_wait_key_pressed(void);
 
 /* smart play */
-//#define DEBUG_STRAT_SMART
-uint8_t strat_smart(void);
-void recalculate_priorities(void);
-void strat_smart_robot_2nd(void);
-void strat_should_wait_new_order(void);
-void strat_set_sec_new_order(int8_t zone_num);
-
-int8_t strat_is_valid_zone(int8_t zone_num);
+uint8_t strat_smart_main_robot(void);
+void strat_smart_secondary_robot(void);
 
 /* tracking of zones where opp has been working */
 void strat_opp_tracking (void);
-
 
 /* Sets of  strategies for secondary robot*/
 void set_strat_sec_1(void);

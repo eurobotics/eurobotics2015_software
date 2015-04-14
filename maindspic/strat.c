@@ -61,7 +61,7 @@
 #include "strat_utils.h"
 #include "sensor.h"
 #include "actuator.h"
-#include "beacon.h"
+#include "bt_protocol.h"
 
 #else
 
@@ -254,7 +254,8 @@ struct strat_infos strat_infos = {
 	{
 		ZONE_TYPE_STAIRWAY,
 		MY_STAIRS_X, MY_STAIRS_Y,
-		MY_STAIRS_X, 1150,
+		1000, 1500, 1400, 2000,
+        MY_STAIRS_X, 1150,
 		0, 0,
 		0, (9000*1000L),
 		SEC_ROBOT
@@ -303,6 +304,8 @@ struct strat_infos strat_infos = {
 	},
 };
 
+struct strat_smart strat_smart[ROBOT_MAX];
+
 /* points we get from each zone */
 /* TODO: implement a function to access to array. XXX Range must be assserted
 uint8_t strat_zones_points[ZONES_MAX];/
@@ -347,24 +350,24 @@ void strat_set_bounding_box(uint8_t which)
 
 
 /* zone names */
-const char zone_name[ZONES_MAX][]= {
-    [ZONE_MY_STAND_GROUP_1]="STAND GROUP 1",
-    [ZONE_MY_STAND_GROUP_2]="STAND GROUP 2",
-    [ZONE_MY_STAND_GROUP_3]="STAND GROUP 3",
-    [ZONE_MY_STAND_GROUP_4]="STAND GROUP 4",
-    [ZONE_MY_POPCORNMAC]="MACHINE",
-    [ZONE_OPP_POPCORNMAC]="OPP MACHINE",
-    [ZONE_POPCORNCUP_1]="CUP 1",
-    [ZONE_POPCORNCUP_2]="CUP 1",
-    [ZONE_POPCORNCUP_3]="CUP 1",
-    [ZONE_MY_CINEMA_UP]="CINEMA UP",
-    [ZONE_MY_CINEMA_DOWN]="CINEMA DOWN",
-    [ZONE_MY_STAIRS]="STAIRS",
-    [ZONE_MY_HOME]="HOME",
-    [ZONE_MY_CLAP_1]="CLAPPER 1",
-    [ZONE_MY_CLAP_2]="CLAPPER 2",
-    [ZONE_MY_CLAP_3]="CLAPPER 3",
-    [ZONE_MY_STAIRWAY]="STAIRWAY",
+const char zone_name[ZONES_MAX][14]= {
+    [ZONE_MY_STAND_GROUP_1]="STAND GROUP 1\0",
+    [ZONE_MY_STAND_GROUP_2]="STAND GROUP 2\0",
+    [ZONE_MY_STAND_GROUP_3]="STAND GROUP 3\0",
+    [ZONE_MY_STAND_GROUP_4]="STAND GROUP 4\0",
+    [ZONE_MY_POPCORNMAC]="MACHINE\0",
+    [ZONE_OPP_POPCORNMAC]="OPP MACHINE\0",
+    [ZONE_POPCORNCUP_1]="CUP 1\0",
+    [ZONE_POPCORNCUP_2]="CUP 1\0",
+    [ZONE_POPCORNCUP_3]="CUP 1\0",
+    [ZONE_MY_CINEMA_UP]="CINEMA UP\0",
+    [ZONE_MY_CINEMA_DOWN]="CINEMA DOWN\0",
+    [ZONE_MY_STAIRS]="STAIRS\0",
+    [ZONE_MY_HOME]="HOME\0",
+    [ZONE_MY_CLAP_1]="CLAPPER 1\0",
+    [ZONE_MY_CLAP_2]="CLAPPER 2\0",
+    [ZONE_MY_CLAP_3]="CLAPPER 3\0",
+    [ZONE_MY_STAIRWAY]="STAIRWAY\0",
 };
 
 /* return string with the zone name */
@@ -408,10 +411,16 @@ void strat_reset_infos(void)
 {
     /* bounding box */
     strat_set_bounding_box(BOUNDINBOX_INCLUDES_PLAFORM);
-    strat_infos.current_zone = ZONES_MAX;
-    strat_infos.goto_zone = ZONES_MAX;
-    strat_infos.last_zone = ZONES_MAX;
-	strat_infos.strat_smart_sec= WAIT_FOR_ORDER;
+    strat_smart[MAIN_ROBOT].current_zone = ZONES_MAX;
+    strat_smart[MAIN_ROBOT].goto_zone = ZONES_MAX;
+    strat_smart[MAIN_ROBOT].last_zone = ZONES_MAX;
+
+    strat_smart[SEC_ROBOT].current_zone = ZONES_MAX;
+    strat_smart[SEC_ROBOT].goto_zone = ZONES_MAX;
+    strat_smart[SEC_ROBOT].last_zone = ZONES_MAX;
+
+    /* TODO */
+    strat_infos.strat_smart_sec= WAIT_FOR_ORDER;
 
     /* add here other infos resets */
 }
@@ -465,10 +474,10 @@ void strat_exit(void)
     /* TODO slavespic exit */
 
     /* stop beacon */
-    beacon_cmd_beacon_off();
-    beacon_cmd_beacon_off();
-    beacon_cmd_beacon_off();
-    beacon_cmd_beacon_off();
+    bt_beacon_set_off();
+    bt_beacon_set_off();
+    bt_beacon_set_off();
+    bt_beacon_set_off();
 
 }
 
@@ -479,7 +488,7 @@ void strat_event(void *dummy) {
     strat_limit_speed();
 
     /* smart strategy of secondary robot */
-	strat_smart_robot_2nd();
+	strat_smart_secondary_robot();
 }
 
 
@@ -511,7 +520,7 @@ uint8_t strat_main(void)
 
     /* play */
     do{
-        err = strat_smart();
+        err = strat_smart_main_robot();
     } while((err & END_TIMER) == 0);
 
    strat_exit();
