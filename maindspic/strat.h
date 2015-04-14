@@ -335,11 +335,14 @@ typedef struct {
 	#define MAIN_ROBOT  0
 	#define SEC_ROBOT   1
 	#define BOTH_ROBOTS 2
+	#define ROBOT_MAX 	2
 
 } strat_zones_t;
 
-/* information about strat stuff */
+/* information about general strat stuff */
 struct strat_infos {
+
+	/* debug */
 	uint8_t dump_enabled;
 	uint8_t debug_step;
 	uint8_t current_sec_strategy;
@@ -352,16 +355,13 @@ struct strat_infos {
 	/* points areas */
 	strat_zones_t zones[ZONES_MAX];
 
-	/* our zone position */
-	uint8_t current_zone;
-	uint8_t goto_zone;
-	uint8_t last_zone;
-
+#if 0
 	/* state of the robot */
 	uint8_t lightbulbs;
 	uint8_t stands;
 	uint8_t carpets;
 	uint8_t popcornbaskets;
+
 
 	/* opponent zone position */
 	uint8_t opp_current_zone;
@@ -369,22 +369,28 @@ struct strat_infos {
 
 	/* opponent statistics */
 	uint8_t opp_score;
+#endif
+
 	/* state for robot_2nd strategy*/
 	uint8_t strat_smart_sec;
-
-	#define WAIT_FOR_ORDER 0
-	#define GO_TO_ZONE 1
-	#define WORK_ON_ZONE 2
-	#define GET_NEW_TASK 3
-	#define WAIT_ACK_GOTO 4
-	#define WAIT_ACK_WORK 5
-	#define INIT_ROBOT_2ND 6
-
 	int8_t strat_smart_sec_task;
+};
 
+/* strat specific for each robot */
+struct strat_smart 
+{
+	/* our zone position */
+	uint8_t current_zone;
+	uint8_t goto_zone;
+	uint8_t last_zone;
+
+	/* strategy */
+	//uint8_t current_strategy;
 };
 
 extern struct strat_infos strat_infos;
+extern struct strat_smart strat_smart[ROBOT_MAX];
+
 
 
 #ifndef HOST_VERSION_OA_TEST
