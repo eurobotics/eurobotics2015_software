@@ -20,7 +20,17 @@
  *
  */
 
-/*   *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011) *  Javier Baliñas Santos <javier@arc-robots.org> * *  Code ported to family of microcontrollers dsPIC from *  cmdline.h,v 1.2 2009/05/27 20:04:07 zer0 Exp. */
+/*  
+ *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
+ *  Javier Baliñas Santos <javier@arc-robots.org>
+ *
+ *  Code ported to family of microcontrollers dsPIC from
+ *  cmdline.h,v 1.2 2009/05/27 20:04:07 zer0 Exp.
+ */
+
+#ifndef _CMDLINE_H_
+#define _CMDLINE_H_
+
  
 #include <aversive/error.h>
 
@@ -35,6 +45,10 @@ void mylog(struct error * e, ...);
 /* launch cmdline */
 int cmdline_interact(void);
 
+/* echo enable/disable */
+void cmdline_echo_enable (void);
+void cmdline_echo_disable (void);
+
 static inline uint8_t cmdline_keypressed(void) {
 	return (uart_recv_nowait(CMDLINE_UART) != -1);
 }
@@ -42,3 +56,8 @@ static inline uint8_t cmdline_keypressed(void) {
 static inline uint8_t cmdline_getchar(void) {
 	return uart_recv_nowait(CMDLINE_UART);
 }
+
+#endif /* _CMDLINE_H_ */
+
+
+

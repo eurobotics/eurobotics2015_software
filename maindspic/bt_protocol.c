@@ -362,7 +362,7 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 	robot_2nd.valid_status = 0;
 	IRQ_UNLOCK (flags);
 
-	DEBUG (E_USER_STRAT, "%s ret = %d, valid_status = %d", __FILE__, robot_2nd.cmd_ret, robot_2nd.valid_status);
+	DEBUG (E_USER_STRAT, "bt_protocol: ret = %d, valid_status = %d", robot_2nd.cmd_ret, robot_2nd.valid_status);
 }
 
 /* return 1 if cmd arguments checksum matches */
@@ -377,13 +377,13 @@ uint8_t bt_robot_2nd_is_ack_received (void) {
 	{
 		if(robot_2nd.cmd_ret == 0)
 		{
-			DEBUG (E_USER_STRAT, "%s, received ACK", __FILE__);
+			DEBUG (E_USER_STRAT, "bt_protocol: received ACK");
 			return 1;
 		}
 		else
 		{
 			// Communication error. Repeat command
-			DEBUG (E_USER_STRAT, "%s, received NACK (%d)", __FILE__, robot_2nd.cmd_ret);
+			DEBUG (E_USER_STRAT, "bt_protocol: received NACK (%d)", robot_2nd.cmd_ret);
 			return robot_2nd.cmd_ret;
 		}
 	}

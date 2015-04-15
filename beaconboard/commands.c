@@ -41,6 +41,7 @@ extern parse_pgm_inst_t cmd_log;
 extern parse_pgm_inst_t cmd_log_show;
 extern parse_pgm_inst_t cmd_log_type;
 extern parse_pgm_inst_t cmd_scheduler;
+extern parse_pgm_inst_t cmd_echo;
 
 /* commands_cs.c */
 extern parse_pgm_inst_t cmd_gain;
@@ -78,6 +79,7 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_log_show,
 	(parse_pgm_inst_t *)&cmd_log_type,
 	(parse_pgm_inst_t *)&cmd_scheduler,
+	(parse_pgm_inst_t *)&cmd_echo,
 
 	/* commands_cs.c */
 	(parse_pgm_inst_t *)&cmd_gain,
