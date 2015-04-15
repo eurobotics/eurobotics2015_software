@@ -470,11 +470,21 @@ uint8_t strat_smart_main_robot(void)
 	int8_t zone_num;
 	uint8_t err;
 	static uint8_t no_more_zones;
+    static microseconds us;
+
+    /* TODO: syncronization mechanism */
+    /*
+    if( strat_sync_main_robot()) {
+        if (time_get_us2()-us > 1000000) {
+            DEBUG(E_USER_STRAT,"MAIN_ROBOT, WAITING syncronization");
+            us = time_get_us2();
+        }
+        return END_TRA;
+    }
+    */
 
 	/* get new zone */
 	zone_num = strat_get_new_zone(MAIN_ROBOT);
-
-	/* XXX */
 
 	/* if no more zones return */
 	if (zone_num == STRAT_NO_MORE_ZONES) {
@@ -537,7 +547,7 @@ void strat_should_wait_new_order(void){
 	switch(strat_smart[SEC_ROBOT].current_zone){
 
 		case ZONE_POPCORNCUP_2:
-			strat_infos.strat_smart_sec = WAIT_FOR_ORDER;
+			strat_infos.strat_smart_sec = IDLE;
 		break;
 
 		default:
@@ -573,7 +583,7 @@ void strat_smart_secondary_robot(void)
 
 	static int8_t zone_num;
 	static uint8_t no_more_zones = 0;
-	static uint8_t state_saved = WAIT_FOR_ORDER;
+	static uint8_t state_saved = IDLE;
 
 	/* transitions debug */
 	if (strat_infos.strat_smart_sec != state_saved) {
@@ -584,9 +594,22 @@ void strat_smart_secondary_robot(void)
 	/* strat smart state machine implementation */
 	switch (strat_infos.strat_smart_sec){
 
-		case WAIT_FOR_ORDER:
+		case IDLE:
+            /* TODO: syncronization mechanism */
+            /*
+            if( strat_sync_secondary_robot()) {
+                if (time_get_us2()-us > 1000000) {
+                    DEBUG(E_USER_STRAT,"SEC_ROBOT, WAITING syncronization");
+                    us = time_get_us2();
+                }
+            }
+            */
+            
+            /* next state */
+            strat_infos.strat_smart_sec = GET_NEW_ZONE;        
 			break;
 
+        /* TODO: remove from here, add new zone ZONE_ */
 		case INIT_ROBOT_2ND:
 #define INIT_ROBOT_2ND_X 400
 #define INIT_ROBOT_2ND_Y 1000
@@ -594,7 +617,7 @@ void strat_smart_secondary_robot(void)
 
 			/* next state */
 			/* XXX no wait either ACK and END_TRAJ */
-			strat_infos.strat_smart_sec = WAIT_FOR_ORDER;
+			strat_infos.strat_smart_sec = IDLE;
 			break;
 
 
@@ -607,7 +630,7 @@ void strat_smart_secondary_robot(void)
 					no_more_zones = 1;
 					DEBUG(E_USER_STRAT,"SEC_ROBOT, strat #%d, NO MORE ZONES AVAILABLE", strat_infos.current_sec_strategy);
 				}
-				strat_infos.strat_smart_sec = WAIT_FOR_ORDER;
+				strat_infos.strat_smart_sec = IDLE;
 				break;
 			}
 
@@ -751,13 +774,16 @@ void strat_smart_secondary_robot(void)
 			/* update statistics */
 			strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
 
-			/* XXX auto run */
-			strat_should_wait_new_order();
+			/* TODO: remove instead new implemntation of robots syncronization */
+			//strat_should_wait_new_order();
+
+            /* next state */
+            strat_infos.strat_smart_sec = IDLE;
 			break;
 
 
 		default:
-			strat_infos.strat_smart_sec = WAIT_FOR_ORDER;
+			strat_infos.strat_smart_sec = IDLE;
 			break;
 	}
 }
