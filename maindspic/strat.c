@@ -176,13 +176,14 @@ struct strat_infos strat_infos = {
 		0, (9000*1000L),
 		MAIN_ROBOT
 	},
+	/* XXX AVOID for the moment */ 
 	.zones[ZONE_OPP_POPCORNMAC] =
 	{
 		ZONE_TYPE_POPCORNMAC,
 		OPP_POPCORNMAC_X, OPP_POPCORNMAC_Y,
 		2250, 2850, 1700, 2000,
 		OPP_POPCORNMAC_X, AREA_Y-330,
-		0, 0,
+		0, ZONE_AVOID,
 		0, (9000*1000L),
 		MAIN_ROBOT
 	},
@@ -302,6 +303,17 @@ struct strat_infos strat_infos = {
 		0, (9000*1000L),
 		MAIN_ROBOT
 	},
+	/* home */
+  	.zones[ZONE_MY_HOME_OUTSIDE] =
+	{
+		ZONE_TYPE_STRAT,
+		500, 800-(ROBOT_SEC_WIDTH/2),
+		90, 650, 800, 1200,				/* not matter xy init is NULL */
+		NULL, NULL,
+		0, 0,
+		0, (9000*1000L),
+		SEC_ROBOT
+	},
 };
 
 struct strat_smart strat_smart[ROBOT_MAX];
@@ -419,9 +431,6 @@ void strat_reset_infos(void)
     strat_smart[SEC_ROBOT].goto_zone = ZONES_MAX;
     strat_smart[SEC_ROBOT].last_zone = ZONES_MAX;
 
-    /* TODO */
-    strat_infos.strat_smart_sec= WAIT_FOR_ORDER;
-
     /* add here other infos resets */
 }
 
@@ -488,7 +497,8 @@ void strat_event(void *dummy) {
     strat_limit_speed();
 
     /* smart strategy of secondary robot */
-	strat_smart_secondary_robot();
+	if (strat_secondary_robot_is_enabled())
+		strat_smart_secondary_robot();
 }
 
 

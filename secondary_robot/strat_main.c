@@ -94,7 +94,7 @@
         __ret;                                                \
 })
 
-#define strat_bt_task_wait_ms(time)		BT_TASK_WAIT_COND_OR_TIMEOUT(mainboard.bt_task_interrupt, ms);
+#define strat_bt_task_wait_ms(time)		BT_TASK_WAIT_COND_OR_TIMEOUT(mainboard.bt_task_interrupt, time);
 
 
 /* interrupt a bt task */

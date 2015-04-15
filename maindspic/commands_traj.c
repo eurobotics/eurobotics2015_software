@@ -1318,21 +1318,44 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 
 
 	/* go and work */
-    if (zone_num < ZONES_MAX) {
+    if (zone_num < ZONES_MAX) 
+	{
+		if (strat_infos.zones[zone_num].robot==MAIN_ROBOT) {
 
-        if (strat_infos.zones[zone_num].robot == MAIN_ROBOT)
-        {
+            /* goto */
             err = strat_goto_zone(MAIN_ROBOT, zone_num);
-            printf_P(PSTR("goto returned %s\r\n"), get_err(err));
-            if (!TRAJ_SUCCESS(err))
-               ERROUT(err);
+		    printf_P(PSTR("goto returned %s\r\n"), get_err(err));
+			if (!TRAJ_SUCCESS(err))
+			   ERROUT(err);
 
+       		/* work */
             err = strat_work_on_zone(MAIN_ROBOT, zone_num);
             printf_P(PSTR("work returned %s\r\n"), get_err(err));
 		}
-        else {
-            /* TODO */
-        }
+		else {
+            /* goto */
+            err = strat_goto_zone(SEC_ROBOT, zone_num);
+			if (bt_robot_2nd_wait_ack()!=0) {
+				printf_P(PSTR("bt cmd ERROR\n\r"));
+				ERROUT(END_ERROR);
+			}
+			err = bt_robot_2nd_wait_end();
+		    printf_P(PSTR("goto returned %s\r\n"), get_err(err));
+			if (!TRAJ_SUCCESS(err))
+			   ERROUT(err);
+
+            /* work */
+            err = strat_work_on_zone(SEC_ROBOT, zone_num);
+			if (bt_robot_2nd_wait_ack()!=0) {
+				printf_P(PSTR("bt cmd ERROR\n\r"));
+				ERROUT(END_ERROR);
+			}
+			err = bt_robot_2nd_wait_end();
+		    printf_P(PSTR("work returned %s\r\n"), get_err(err));
+			if (!TRAJ_SUCCESS(err))
+			   ERROUT(err);
+		}
+
     }
 end:
     trajectory_hardstop(&mainboard.traj);
@@ -1388,33 +1411,34 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 	/**
 	 *	strat smart
 	 */
-    if (strcmp_P(res->arg1, PSTR("strat_smart")) == 0) {
+    if (!strcmp_P(res->arg1, PSTR("strat_ptinto"))) {
 
 		/* select strategy number */
 		if(res->arg2==1){
 			set_strat_main_1();
-			set_strat_sec_1();
 		}
 
 		/* play */
-        	strat_smart_main_robot();
-		return;
-    	}
-	else if (strcmp_P(res->arg1, PSTR("strat_sec")) == 0) {
+		err = strat_smart_main_robot();
+		printf_P(PSTR("strat smart returned %s\r\n"), get_err(err));
+		ERROUT(err);		
+    }
+    else if (!strcmp_P(res->arg1, PSTR("strat_tirantes"))) {
 
 		/* select strategy number */
 		if(res->arg2==1){
 			set_strat_sec_1();
-			strat_infos.strat_smart_sec = GET_NEW_ZONE;
-		}else if(res->arg2==2){
-			set_strat_sec_1();
-			strat_infos.strat_smart_sec = INIT_ROBOT_2ND;
 		}
 
 
 		/* play */
-        	//strat_smart_robot_2nd();
-		return;
+		strat_secondary_robot_disable ();
+		do {
+			time_wait_ms(200);
+			err = strat_smart_secondary_robot();
+		} while (!err);		
+		printf_P(PSTR("strat smart returned %s\r\n"), get_err(err));
+		ERROUT(err);		
     }
 
 	/**
@@ -1492,7 +1516,7 @@ end:
 
 prog_char str_subtraj2_arg0[] = "subtraj";
 parse_pgm_token_string_t cmd_subtraj2_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj2_result, arg0, str_subtraj2_arg0);
-prog_char str_subtraj2_arg1[] = "strat_smart#strat_sec#stand_group#clapper#cup";
+prog_char str_subtraj2_arg1[] = "strat_ptinto#strat_tirantes#stand_group#clapper#cup";
 parse_pgm_token_string_t cmd_subtraj2_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj2_result, arg1, str_subtraj2_arg1);
 parse_pgm_token_num_t cmd_subtraj2_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj2_result, arg2, UINT8);
 //parse_pgm_token_num_t cmd_subtraj2_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj2_result, arg3, INT32);
@@ -1518,58 +1542,3 @@ parse_pgm_inst_t cmd_subtraj2 = {
 
 
 
-/**********************************************************/
-/* Work on a zone */
-
-// this structure is filled when cmd_workonzone is parsed successfully
-/* TODO remove
-struct cmd_workonzone_result
-{
-    fixed_string_t arg0;
-    fixed_string_t arg1;
-};
-
-// function called when cmd_workonzone is parsed successfully
-static void cmd_workonzone_parsed(void *parsed_result, void *data)
-{
-    struct cmd_workonzone_result *res = parsed_result;
-    int8_t num = -1;
-    uint8_t i = 0;
-    uint8_t err = 0;
-
-    for (i = 0; i < ZONES_MAX; i++)
-    {
-        if (strcmp(numzone2name[i], res->arg1) == 0)
-        {
-            num = i;
-            break;
-        }
-    }
-    if (num != -1)
-    {
-        err = strat_work_on_zone(num);
-        printf_P(PSTR("work_on_zone %s\r\n"), get_err(err));
-    }
-    else
-        printf("Error: can't find zone!\n\r");
-}
-
-prog_char str_workonzone_arg0[] = "workon_zone";
-parse_pgm_token_string_t cmd_workonzone_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_workonzone_result, arg0, str_workonzone_arg0);
-prog_char str_workonzone_arg1[] = "ms1#ms2#ms3#ms4#ms5#ms6#ms7#ms8#os1#os2#os3#os4#os5#os6#os7#os8#mlh#mlp#olh#olp#mm1#mm2#mm1#mm2#mcf#mcs#ocf#ocs#cc#mcu#mcd#ocu#ocd#ms#os#mh#oh#mb1#mb2#mb3#ob1#ob2#ob3#mw1#mw2#ow1#ow2#nll";
-parse_pgm_token_string_t cmd_workonzone_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_workonzone_result, arg1, str_workonzone_arg1);
-
-
-prog_char help_workonzone[] = "Work on a zone of the field";
-parse_pgm_inst_t cmd_workonzone = {
-    .f = cmd_workonzone_parsed, // function to call
-    .data = NULL, // 2nd arg of func
-    .help_str = help_workonzone,
-    .tokens =
-    { // token list, NULL terminated
-        (prog_void *) & cmd_workonzone_arg0,
-        (prog_void *) & cmd_workonzone_arg1,
-        NULL,
-    },
-};
-*/

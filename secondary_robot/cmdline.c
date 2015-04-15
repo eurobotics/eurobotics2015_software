@@ -54,9 +54,27 @@
 /* see in commands.c for the list of commands. */
 extern parse_pgm_ctx_t main_ctx[];
 
+
+static uint8_t echo_enable = 0;
+
+void cmdline_echo_enable (void) {
+	echo_enable = 1;
+}
+
+void cmdline_echo_disable (void) {
+	echo_enable = 0;
+}
+
+
 /* generic write char function */
 static void write_char(char c) 
 {
+
+	/* if echo is OFF, returns */	
+	if (!echo_enable) {
+		return;
+	}
+
 	uart_send(CMDLINE_UART, c);
 #ifdef HOST_VERSION
 	robotsim_uart_send_BT(c);
@@ -74,18 +92,25 @@ static void valid_buffer(const char *buf, uint8_t size)
 	interrupt_traj_reset();
 
 	ret = parse(main_ctx, buf);
-	
+
+	/* if parse fails it's a BT protocol error */	
+	if (ret == PARSE_AMBIGUOUS || ret == PARSE_NOMATCH || ret == PARSE_BAD_ARGS) 
+		bt_status_set_cmd_ack (END_ERROR);
+
+
+	/* if echo is OFF, returns */	
+	if (!echo_enable) {
+		return;
+	}
+
 	if (ret == PARSE_AMBIGUOUS) {
 		printf_P(PSTR("Ambiguous command\r\n"));
-		bt_status_set_cmd_ack (END_ERROR);
 	}	
 	else if (ret == PARSE_NOMATCH) {
 		printf_P(PSTR("Command not found\r\n"));
-		bt_status_set_cmd_ack (END_ERROR);
 	}	
 	else if (ret == PARSE_BAD_ARGS) {
 		printf_P(PSTR("Bad arguments\r\n"));
-		bt_status_set_cmd_ack (END_ERROR);
 	}
 }
 

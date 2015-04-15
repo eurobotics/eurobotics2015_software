@@ -46,6 +46,10 @@ void cmdline_init(void);
 /* execute cmdline without waiting, pull input commands */
 void cmdline_interact_nowait(void *dummy);
 
+/* echo enable/disable */
+void cmdline_echo_enable (void);
+void cmdline_echo_disable (void);
+
 /* detect a key */
 static inline uint8_t cmdline_keypressed(void) {
 	return (uart_recv_nowait(CMDLINE_UART) != -1);
@@ -60,5 +64,6 @@ static inline int16_t cmdline_getchar(void) {
 static inline uint8_t cmdline_getchar_wait(void) {
 	return uart_recv(CMDLINE_UART);
 }
+
 
 #endif

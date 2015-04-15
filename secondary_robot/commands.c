@@ -92,6 +92,7 @@ extern parse_pgm_inst_t cmd_log_show;
 extern parse_pgm_inst_t cmd_log_type;
 //TODO extern parse_pgm_inst_t cmd_stack_space;
 extern parse_pgm_inst_t cmd_scheduler;
+extern parse_pgm_inst_t cmd_echo;
 
 #endif /* COMPILE_COMMANDS_GEN */
 
@@ -241,6 +242,7 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_log_type,
 //	(parse_pgm_inst_t *)&cmd_stack_space,
 	(parse_pgm_inst_t *)&cmd_scheduler,
+	(parse_pgm_inst_t *)&cmd_echo,
 
 #endif /* COMPILE_COMMANDS_GEN */
 

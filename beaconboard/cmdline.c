@@ -53,6 +53,16 @@
 /* See in commands.c for the list of commands. */
 extern parse_pgm_ctx_t main_ctx[];
 
+static uint8_t echo_enable = 0;
+
+void cmdline_echo_enable (void) {
+	echo_enable = 1;
+}
+
+void cmdline_echo_disable (void) {
+	echo_enable = 0;
+}
+
 static void write_char(char c) 
 {
 	uart_send(CMDLINE_UART, c);

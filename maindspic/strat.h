@@ -218,7 +218,10 @@
 #define ZONE_MY_CLAP_3					15
 #define ZONE_MY_STAIRWAY				16
 #define ZONE_MY_PLATFORM				17
-#define ZONES_MAX		    			18
+
+#define ZONE_MY_HOME_OUTSIDE			18
+
+#define ZONES_MAX		    			19
 
 /*
  * Strat diagram, valid for YELLOW.
@@ -286,7 +289,8 @@ typedef struct {
 	#define ZONE_TYPE_STAIRWAY		7
 	#define ZONE_TYPE_CLAP			8
 	#define ZONE_TYPE_PLATFORM		9
-	#define ZONE_TYPE_MAX			10
+	#define ZONE_TYPE_STRAT			10
+	#define ZONE_TYPE_MAX			11
 
     /* target point */
 	int16_t x;
@@ -345,8 +349,8 @@ struct strat_infos {
 	/* debug */
 	uint8_t dump_enabled;
 	uint8_t debug_step;
-	uint8_t current_sec_strategy;
-	uint8_t current_main_strategy;
+
+	/* bounding box area */
 	struct bbox area_bbox;
 
     /* strat configuration */
@@ -370,20 +374,6 @@ struct strat_infos {
 	/* opponent statistics */
 	uint8_t opp_score;
 #endif
-
-	/* state for robot_2nd strategy*/
-	uint8_t strat_smart_sec;
-
-	#define WAIT_FOR_ORDER 	0
-	#define GET_NEW_ZONE	1
-	#define GOTO			2
-	#define GOTO_WAIT_ACK	3
-	#define GOTO_WAIT_END	4
-	#define WORK			5
-	#define WORK_WAIT_ACK	6
-	#define WORK_WAIT_END	7
-
-	#define INIT_ROBOT_2ND 	8
 };
 
 /* strat specific for each robot */
@@ -395,7 +385,7 @@ struct strat_smart
 	uint8_t last_zone;
 
 	/* strategy */
-	//uint8_t current_strategy;
+	uint8_t current_strategy;
 };
 
 extern struct strat_infos strat_infos;
@@ -413,11 +403,9 @@ extern struct strat_smart strat_smart[ROBOT_MAX];
  * in strat.c
  *******************************************/
 
-
-
 #define BOUNDINBOX_INCLUDES_PLAFORM 0
 #define BOUNDINBOX_WITHOUT_PLATFORM 1
-void strat_set_bounding_box(uint8_t type);
+void strat_set_bounding_box(uint8_t which);
 
 const char *get_zone_name(uint8_t zone_num);
 void strat_dump_infos(const char *caller);
@@ -428,10 +416,9 @@ void strat_preinit(void);
 void strat_init(void);
 void strat_exit(void);
 
+/* Strat main loop and events */
 void strat_event(void *dummy);
 uint8_t strat_main(void);
-
-uint8_t has_2nd_finished(void);
 
 /********************************************
  * in strat_spotlight.c
@@ -483,7 +470,13 @@ void state_debug_wait_key_pressed(void);
 
 /* smart play */
 uint8_t strat_smart_main_robot(void);
-void strat_smart_secondary_robot(void);
+uint8_t strat_smart_secondary_robot(void);
+
+/* enable/disable smart_strat of secondary_robot */
+uint8_t strat_secondary_robot_enable (void);
+uint8_t strat_secondary_robot_disable (void);
+uint8_t strat_secondary_robot_is_enabled (void); 
+
 
 /* tracking of zones where opp has been working */
 void strat_opp_tracking (void);
@@ -496,13 +489,12 @@ void set_strat_main_1(void);
 void set_strat_main_2(void);
 void set_next_sec_strategy(void);
 
-/* homologation */
-void strat_homologation(void);
-void strat_initial_move(void);
 
 #else /* HOST_VERSION_OA_TEST */
 
-void strat_set_bounding_box(uint8_t type);
+#define BOUNDINBOX_INCLUDES_PLAFORM 0
+#define BOUNDINBOX_WITHOUT_PLATFORM 1
+void strat_set_bounding_box(uint8_t which);
 
 #endif /* HOST_VERSION_OA_TEST */
 

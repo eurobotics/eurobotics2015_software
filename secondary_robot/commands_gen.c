@@ -680,4 +680,39 @@ parse_pgm_inst_t cmd_log_type = {
 	},
 };
 
+/* this structure is filled when cmd_echo is parsed successfully */
+struct cmd_echo_result {
+	fixed_string_t arg0;
+	fixed_string_t arg1;
+};
+
+
+/* function called when cmd_echo is parsed successfully */
+static void cmd_echo_parsed(void *parsed_result, void *data)
+{
+	struct cmd_echo_result * res = parsed_result;
+
+	if (!strcmp_P(res->arg1, PSTR("on")))
+		cmdline_echo_enable();
+	else if (!strcmp_P(res->arg1, PSTR("off")))
+		cmdline_echo_disable();
+}
+
+prog_char str_echo_arg0[] = "echo";
+parse_pgm_token_string_t cmd_echo_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_echo_result, arg0, str_echo_arg0);
+prog_char str_echo_arg1[] = "on#off";
+parse_pgm_token_string_t cmd_echo_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_echo_result, arg1, str_echo_arg1);
+
+prog_char help_echo[] = "Enable/disable cmdline echo";
+parse_pgm_inst_t cmd_echo = {
+	.f = cmd_echo_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_echo,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_echo_arg0,
+		(prog_void *)&cmd_echo_arg1,
+		NULL,
+	},
+};
+
 

@@ -320,7 +320,13 @@ void strat_limit_speed(void)
 #endif
 #endif
 
+/* FIXME  */
+#ifndef HOST_VERSION
 #define LIMIT_SPEED_SPEED_MIN		75
+#else
+#define LIMIT_SPEED_SPEED_MIN		300
+#endif
+
 #define LIMIT_SPEED_OPP_ANGLE       60
 #define LIMIT_SPEED_OPP_ANGLE_HALF  (LIMIT_SPEED_OPP_ANGLE/2)
 
@@ -521,7 +527,13 @@ uint8_t __strat_obstacle(uint8_t which)
 #define OBSTACLE_OPP2	1
 #define OBSTACLE_R2ND	2
 
-#define OBSTACLE_SPEED_MIN	20
+/* FIXME  */
+#ifndef HOST_VERSION
+#define OBSTACLE_SPEED_MIN		20
+#else
+#define OBSTACLE_SPEED_MIN		300
+#endif
+
 #define OBSTACLE_ANGLE		35
 #define OBSTACLE_DIST		800
 
