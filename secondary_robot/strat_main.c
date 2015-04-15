@@ -152,7 +152,7 @@ uint8_t pick_popcorn_cup(void)
     printf_P(PSTR("pick_popcorn_cup\r\n"));
 
 	/* TODO */
-	time_wait_ms(3000);
+	strat_bt_task_wait_ms(3000);
 	err = END_TRAJ;
 
 end:
@@ -166,7 +166,7 @@ uint8_t extend_carpet(void)
     printf_P(PSTR("extend_carpet\r\n"));
 
 	/* TODO */
-	time_wait_ms(3000);
+	strat_bt_task_wait_ms(3000);
 	err = END_TRAJ;
 
 end:
@@ -180,7 +180,7 @@ uint8_t climb_stairs(void)
     printf_P(PSTR("climb_stairs\r\n"));
 
 	/* TODO */
-	time_wait_ms(3000);
+	strat_bt_task_wait_ms(3000);
 	err = END_TRAJ;
 
 end:
@@ -194,7 +194,7 @@ uint8_t bring_cup_to_cinema(void)
     printf_P(PSTR("bring_cup_to_cinema\r\n"));
 
 	/* TODO */
-	time_wait_ms(3000);
+	strat_bt_task_wait_ms(3000);
 	err = END_TRAJ;
 
 end:
@@ -208,7 +208,7 @@ uint8_t close_clapperboard(void)
     printf_P(PSTR("clapperboard\r\n"));
 
 	/* TODO */
-	time_wait_ms(3000);
+	strat_bt_task_wait_ms(3000);
 	err = END_TRAJ;
 
 end:
