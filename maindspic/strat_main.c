@@ -258,11 +258,18 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 	/* XXX secondary robot: goto and return */
 	if(strat_infos.zones[zone_num].robot==SEC_ROBOT) {
 
-		/* XXX, HACK */
-		//bt_robot_2nd_goto_and_avoid(COLOR_X(strat_infos.zones[zone_num].init_x),
-		//										strat_infos.zones[zone_num].init_y);
-		bt_robot_2nd_goto_xy_abs(COLOR_X(strat_infos.zones[zone_num].init_x),
-												strat_infos.zones[zone_num].init_y);
+
+		/* specific zones */
+		if (zone_num == ZONE_MY_HOME_OUTSIDE) {
+			bt_robot_2nd_goto_xy_abs(COLOR_X(strat_infos.zones[zone_num].init_x),
+									strat_infos.zones[zone_num].init_y);
+		}
+		/* normaly we go with avoid */
+		else {
+			bt_robot_2nd_goto_and_avoid(COLOR_X(strat_infos.zones[zone_num].init_x),
+										strat_infos.zones[zone_num].init_y);
+		}
+
 		return 0;
 	}
 
@@ -546,6 +553,9 @@ void set_strat_main_2(void){
 
 void set_strat_sec_1(void){
 	strat_smart[SEC_ROBOT].current_strategy = 1;
+
+	strat_infos.zones[ZONE_MY_HOME_OUTSIDE].prio = 110;
+
 	strat_infos.zones[ZONE_POPCORNCUP_1].prio = 100;
 
 	strat_infos.zones[ZONE_MY_CLAP_3].prio = 90;
@@ -613,25 +623,17 @@ uint8_t strat_debug_is_key_pressed (uint8_t robot)
 /* return 1 if need to wait syncronization */
 uint8_t strat_wait_sync_main_robot(void)
 {
-    int16_t c;
-
     /* XXX HACK */	
-    return 0;
+    //return 0;
     
 	/* manual syncro */
 	if (strat_infos.debug_step)
 	{
-        /* key capture */
-        c = cmdline_getchar();
-        if ((char)c == 'p')
-            strat_smart[MAIN_ROBOT].key_trigger = 1;
-        else if ((char)c == 't')
-            strat_smart[SEC_ROBOT].key_trigger = 1;
-
         /* key trigger */
-        if (strat_smart[MAIN_ROBOT].key_trigger)
+        if (strat_smart[MAIN_ROBOT].key_trigger) {
             strat_smart[MAIN_ROBOT].key_trigger = 0;
             return 0;
+		}
         else
             return 1;
 	}
@@ -654,7 +656,7 @@ uint8_t strat_smart_main_robot(void)
 
     /* syncronization mechanism */
     if(strat_wait_sync_main_robot()) {
-        if (time_get_us2()-us > 1000000) {
+        if (time_get_us2()-us > 10000000) {
             DEBUG(E_USER_STRAT,"MAIN_ROBOT, WAITING syncronization");
 			if (strat_infos.debug_step)
             	DEBUG(E_USER_STRAT,"MAIN_ROBOT, press key 'p' for continue");
@@ -689,7 +691,7 @@ uint8_t strat_smart_main_robot(void)
 						strat_smart[MAIN_ROBOT].current_strategy, 
 						get_zone_name(zone_num), zone_num, strat_infos.zones[zone_num].prio);
 
-	/* debug step */
+	/* XXX debug step use only for subtraj command */
 	//strat_debug_wait_key_pressed (MAIN_ROBOT);
 
 	/* goto zone */
@@ -706,7 +708,7 @@ uint8_t strat_smart_main_robot(void)
 		return err;
 	}
 
-	/* debug step */
+	/* XXX debug step use only for subtraj command */
 	//strat_debug_wait_key_pressed (MAIN_ROBOT);
 
 	/* work on zone */
@@ -764,15 +766,26 @@ void strat_set_sec_new_order(int8_t zone_num)
 /* return 1 if need to wait syncronization */
 uint8_t strat_wait_sync_secondary_robot(void)
 {
+    int16_t c;
+
     /* XXX HACK */	
-    return 0;
+    //return 0;
     
 	/* manual syncro */
 	if (strat_infos.debug_step)
 	{
-        if (strat_smart[SEC_ROBOT].key_trigger)
+        /* key capture */
+        c = cmdline_getchar();
+        if ((char)c == 'p')
+            strat_smart[MAIN_ROBOT].key_trigger = 1;
+        else if ((char)c == 't')
+            strat_smart[SEC_ROBOT].key_trigger = 1;
+
+
+        if (strat_smart[SEC_ROBOT].key_trigger) {
             strat_smart[SEC_ROBOT].key_trigger = 0;
             return 0;
+		}
         else
             return 1;
 	}
@@ -848,7 +861,7 @@ uint8_t strat_smart_secondary_robot(void)
 		case SYNCRONIZATION:
             /* syncronization mechanism */
             if(strat_wait_sync_secondary_robot()) {
-                if (time_get_us2()-us > 1000000) {
+                if (time_get_us2()-us > 10000000) {
                     DEBUG(E_USER_STRAT,"SEC_ROBOT, WAITING syncronization");
 					if (strat_infos.debug_step)
             			DEBUG(E_USER_STRAT,"SEC_ROBOT, press key 't' for continue");
@@ -920,7 +933,7 @@ uint8_t strat_smart_secondary_robot(void)
                 state = WORK;
                 break;
             }
-			else {
+			else if (err) {
 				/* XXX never shoud be reached, infinite loop */
 				DEBUG(E_USER_STRAT,"SEC_ROBOT, ERROR, goto returned %s at line %d", get_err(err), __LINE__);				
 				state = GET_NEW_ZONE;
@@ -1010,7 +1023,7 @@ uint8_t strat_smart_secondary_robot(void)
                 state = SYNCRONIZATION;
 			    break;
             }
-			else {
+			else if (err) {
 				/* XXX never shoud be reached, infinite loop */
 				DEBUG(E_USER_STRAT,"SEC_ROBOT, ERROR, work returned %s at line %d", get_err(err), __LINE__);
 				state = GET_NEW_ZONE;

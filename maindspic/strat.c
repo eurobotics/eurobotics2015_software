@@ -224,7 +224,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_CINEMA,
 		MY_CINEMA_UP_X, MY_CINEMA_UP_Y,
 		2600, 3000, 1200, 1600,
-		MY_CINEMA_UP_X, MY_CINEMA_UP_Y+200,
+		AREA_X-400-ROBOT_SEC_OBS_CLERANCE, MY_CINEMA_UP_Y,
 		0, 0,
 	 	0, (9000*1000L),
 		SEC_ROBOT
@@ -234,7 +234,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_CINEMA,
 		MY_CINEMA_DOWN_X, MY_CINEMA_DOWN_Y,
 		2600, 3000, 400, 800,
-		MY_CINEMA_DOWN_X, MY_CINEMA_DOWN_Y-200,
+		AREA_X-400-ROBOT_SEC_OBS_CLERANCE, MY_CINEMA_DOWN_Y,
 		0, 0,
 		0, (9000*1000L),
 		SEC_ROBOT
@@ -287,7 +287,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_CLAP,
 		MY_CLAP_3_X,  MY_CLAP_Y,
 		2230, 2530, 0, 300,
-		MY_CLAP_3_X, MY_CUP_2_Y,
+		MY_CLAP_3_X, ROBOT_SEC_OBS_CLERANCE + 100, /* platform + clearance */
 		0, 0,
 		0, (9000*1000L),
 		SEC_ROBOT
@@ -307,9 +307,9 @@ struct strat_infos strat_infos = {
   	.zones[ZONE_MY_HOME_OUTSIDE] =
 	{
 		ZONE_TYPE_STRAT,
-		500, 800-(ROBOT_SEC_WIDTH/2),
-		90, 650, 800, 1200,				/* not matter xy init is 0 */
 		0, 0,
+		90, 650, 800, 1200,	 /* not matter xy init is 0 */
+		402+ROBOT_SEC_OBS_CLERANCE, 800+(ROBOT_SEC_WIDTH/2),
 		0, 0,
 		0, (9000*1000L),
 		SEC_ROBOT
@@ -457,7 +457,10 @@ void strat_init(void)
     interrupt_traj_reset();
 
     /* used in strat_base for END_TIMER */
-    mainboard.flags |=  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_TIMER;
+	if (!strat_infos.debug_step)
+    	mainboard.flags |=  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_TIMER;
+	else
+    	mainboard.flags |=  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER;
 }
 
 
@@ -527,6 +530,9 @@ uint8_t strat_main(void)
     /* set strategy  */
     set_strat_sec_1();
     set_strat_main_1();
+
+	/* enable smart_trat of secondary robot */
+	strat_secondary_robot_enable ();
 
     /* play */
     do{
