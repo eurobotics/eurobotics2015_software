@@ -127,7 +127,7 @@ struct strat_infos strat_infos = {
 		/* boundinbox: x_down, x_up,  y_down,  y_up, */
 		700, 1400, 150, 700,
 		/* init_x, init_y */
-	  	NULL, NULL,
+	  	0, 0,
 		/* priority, flags */
 		0, 0,
 		/* statistics: opp_time_zone_us, last_time_opp_here */
@@ -213,7 +213,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_POPCORNCUP,
 	 	MY_CUP_3_X, MY_CUP_3_Y,
 		1350, 1650, 200, 500,
-		NULL, NULL,
+		0, 0,
 		0, 0,
 		0, (9000*1000L),
 		MAIN_ROBOT
@@ -308,8 +308,8 @@ struct strat_infos strat_infos = {
 	{
 		ZONE_TYPE_STRAT,
 		500, 800-(ROBOT_SEC_WIDTH/2),
-		90, 650, 800, 1200,				/* not matter xy init is NULL */
-		NULL, NULL,
+		90, 650, 800, 1200,				/* not matter xy init is 0 */
+		0, 0,
 		0, 0,
 		0, (9000*1000L),
 		SEC_ROBOT
