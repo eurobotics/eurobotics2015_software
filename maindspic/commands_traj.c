@@ -1430,7 +1430,6 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 			set_strat_sec_1();
 		}
 
-
 		/* play */
 		strat_secondary_robot_disable ();
 		do {

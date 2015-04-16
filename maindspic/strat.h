@@ -473,8 +473,8 @@ uint8_t strat_smart_main_robot(void);
 uint8_t strat_smart_secondary_robot(void);
 
 /* enable/disable smart_strat of secondary_robot */
-uint8_t strat_secondary_robot_enable (void);
-uint8_t strat_secondary_robot_disable (void);
+void strat_secondary_robot_enable (void);
+void strat_secondary_robot_disable (void);
 uint8_t strat_secondary_robot_is_enabled (void); 
 
 
