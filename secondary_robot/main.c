@@ -383,8 +383,8 @@ int main(void)
    wait_ms(2000);
 
    /* say hello */
-   printf("\r\n");
-   printf("Don't turn it on, take it a part!!\r\n");
+   //printf("\r\n");
+   //printf("Don't turn it on, take it a part!!\r\n");
 
 #ifdef HOST_VERSION
 	mainboard.our_color = I2C_COLOR_YELLOW;
@@ -396,9 +396,9 @@ int main(void)
 	time_wait_ms (1000);
 	printf ("+++\n\r");
 	time_wait_ms (1000);
-	printf ("SET BT NAME Tirantes\n\r");
+	printf ("SET BT NAME secondary\n\r");
 	time_wait_ms (1000);
-	printf ("SET BT AUTH * 5551\n\r");
+	printf ("SET BT AUTH * gomaespuminos\n\r");
 	time_wait_ms (1000);
 #endif
 
