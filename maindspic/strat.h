@@ -161,16 +161,6 @@
 #define MY_CUP_3_X				1500
 #define MY_CUP_3_Y				2000-1650
 
-/* redefinitions for strat diagram */
-/*
-#define MY_CUP_1_X	MY_POPCORNCUP_FRONT_X
-#define MY_CUP_1_Y	MY_POPCORNCUP_FRONT_Y
-#define MY_CUP_2_X	MY_POPCORNCUP_SIDE_X
-#define MY_CUP_2_Y	MY_POPCORNCUP_SIDE_Y
-#define MY_CUP_3_X	POPCORNCUP_CENTRE_X
-#define MY_CUP_3_Y  POPCORNCUP_CENTRE_Y
-*/
-
 #define MY_CINEMA_UP_X		2800
 #define MY_CINEMA_UP_Y		1400
 #define MY_CINEMA_DOWN_X	2800
@@ -386,6 +376,7 @@ struct strat_smart
 
 	/* strategy */
 	uint8_t current_strategy;
+	uint8_t key_trigger;
 };
 
 extern struct strat_infos strat_infos;
