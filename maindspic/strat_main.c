@@ -213,8 +213,6 @@ int8_t strat_get_new_zone(uint8_t robot)
 	int8_t zone_num = STRAT_NO_MORE_ZONES;
 	int8_t i=0;
 
-	/* FIXME: never returns NO_MORE_ZONES */
-
 	/* 1. get the valid zone with the maximun priority  */
 	for(i=0; i < ZONES_MAX; i++)
 	{
@@ -239,13 +237,15 @@ int8_t strat_get_new_zone(uint8_t robot)
 
 #endif /* old_version */
 
-/* return END_TRAJ if zone is reached, err otherwise */
+/**
+ *  main robot: return END_TRAJ if zone is reached or no where to go, err otherwise 
+ *  secondary robot: return 0 if command SUCESSED, END_TRAJ no where to go, err otherwise
+ */
 uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 {
 	int8_t err=0;
 
 	/* update strat_infos */
-	strat_smart[robot].current_zone = -1;
 	strat_smart[robot].goto_zone = zone_num;
 
 	/* TODO return if -1000  xy */
@@ -283,18 +283,20 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 	strat_smart[robot].last_zone = strat_smart[robot].current_zone;
 	strat_smart[robot].goto_zone = -1;
 
-	if (!TRAJ_SUCCESS(err)) {
+	if (!TRAJ_SUCCESS(err))
 		strat_smart[robot].current_zone = -1;
-	}
-	else{
+	else
 		strat_smart[robot].current_zone=zone_num;
-	}
+
 end:
 	return err;
 }
 
 
-/* return END_TRAJ if the work is done, err otherwise */
+/**
+ *  main robot: return END_TRAJ if work is done or no wher to work, err otherwise 
+ *  secondary robot: return 0 if command SUCESSED, END_TRAJ no where to work, err otherwise
+ */
 uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 {
 	uint8_t err = END_TRAJ;
@@ -611,23 +613,32 @@ uint8_t strat_debug_is_key_pressed (uint8_t robot)
 /* return 1 if need to wait syncronization */
 uint8_t strat_wait_sync_main_robot(void)
 {
-	uint16_t c;
+    int16_t c;
 
-
-	return 0;	
-
+    /* XXX HACK */	
+    return 0;
+    
 	/* manual syncro */
-	//if (strat_infos.debug_step)
+	if (strat_infos.debug_step)
 	{
-		c = cmdline_getchar();
-		if ((uint8_t)c == 'p')
-			return 0;
-		else
-			return 1;
+        /* key capture */
+        c = cmdline_getchar();
+        if ((char)c == 'p')
+            strat_smart[MAIN_ROBOT].key_trigger = 1;
+        else if ((char)c == 't')
+            strat_smart[SEC_ROBOT].key_trigger = 1;
+
+        /* key trigger */
+        if (strat_smart[MAIN_ROBOT].key_trigger)
+            strat_smart[MAIN_ROBOT].key_trigger = 0;
+            return 0;
+        else
+            return 1;
 	}
 
 	/* strat syncro */
 	/* TODO */
+
     return 0;
 }
 
@@ -686,8 +697,6 @@ uint8_t strat_smart_main_robot(void)
 						strat_smart[MAIN_ROBOT].current_strategy, 
 						get_zone_name(zone_num), zone_num, strat_infos.zones[zone_num].prio);
 
-	/* update statistics */
-	strat_smart[MAIN_ROBOT].goto_zone = zone_num;
 
 	/* goto, if can't reach the zone change the strategy and return */
 	err = strat_goto_zone(MAIN_ROBOT, zone_num);
@@ -704,10 +713,6 @@ uint8_t strat_smart_main_robot(void)
 	DEBUG(E_USER_STRAT,"MAIN_ROBOT, strat #%d: work on zone %s (%d, %d)",
 						strat_smart[MAIN_ROBOT].current_strategy, 
 						get_zone_name(zone_num), zone_num, strat_infos.zones[zone_num].prio);
-
-	/* update statistis */
-	strat_smart[MAIN_ROBOT].last_zone = strat_smart[MAIN_ROBOT].current_zone;
-	strat_smart[MAIN_ROBOT].current_zone = strat_smart[MAIN_ROBOT].goto_zone;
 
 	/* work */
 	err = strat_work_on_zone(MAIN_ROBOT, zone_num);
@@ -759,18 +764,17 @@ void strat_set_sec_new_order(int8_t zone_num)
 /* return 1 if need to wait syncronization */
 uint8_t strat_wait_sync_secondary_robot(void)
 {
-    int16_t c;
-
-	return 0;
+    /* XXX HACK */	
+    return 0;
     
 	/* manual syncro */
-	//if (strat_infos.debug_step)
+	if (strat_infos.debug_step)
 	{
-		c = cmdline_getchar();
-		if ((uint8_t)c == 't')
-			return 0;
-		else
-			return 1;
+        if (strat_smart[SEC_ROBOT].key_trigger)
+            strat_smart[SEC_ROBOT].key_trigger = 0;
+            return 0;
+        else
+            return 1;
 	}
 
 	/* strat syncro */
@@ -910,7 +914,13 @@ uint8_t strat_smart_secondary_robot(void)
 						get_zone_name(zone_num), zone_num, strat_infos.zones[zone_num].prio);
 
 			err = strat_goto_zone(SEC_ROBOT, zone_num);
-			if (err) {
+            
+            /* END_TRAJ means "no where to go", go directly to work */            
+            if (TRAJ_SUCCESS(err)) {
+                state = WORK;
+                break;
+            }
+			else {
 				/* XXX never shoud be reached, infinite loop */
 				DEBUG(E_USER_STRAT,"SEC_ROBOT, ERROR, goto returned %s at line %d", get_err(err), __LINE__);				
 				state = GET_NEW_ZONE;
@@ -990,7 +1000,17 @@ uint8_t strat_smart_secondary_robot(void)
 						get_zone_name(zone_num), zone_num, strat_infos.zones[zone_num].prio);
 
 			err = strat_work_on_zone(SEC_ROBOT, zone_num);
-			if (err) {
+
+            /* END_TRAJ means "no where to work", check zone and go directly to synchronize */            
+            if (TRAJ_SUCCESS(err)) {
+		        /* update statistics */
+		        strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
+
+                /* next state */
+                state = SYNCRONIZATION;
+			    break;
+            }
+			else {
 				/* XXX never shoud be reached, infinite loop */
 				DEBUG(E_USER_STRAT,"SEC_ROBOT, ERROR, work returned %s at line %d", get_err(err), __LINE__);
 				state = GET_NEW_ZONE;
