@@ -65,7 +65,12 @@ void cmdline_echo_disable (void) {
 
 static void write_char(char c) 
 {
-	uart_send(CMDLINE_UART, c);
+	/* if echo is OFF, returns */
+	if (!echo_enable) {
+		return;
+	}
+
+    uart_send(CMDLINE_UART, c);
 }
 
 /* rdline execute this function when has a line valid */
@@ -73,11 +78,6 @@ static void valid_buffer(const char *buf, uint8_t size)
 {
 	int8_t ret;
 	ret = parse(main_ctx, buf);
-
-	/* if parse fails it's a BT protocol error */	
-	if (ret == PARSE_AMBIGUOUS || ret == PARSE_NOMATCH || ret == PARSE_BAD_ARGS) 
-		bt_status_set_cmd_ack (END_ERROR);
-
 
 	/* if echo is OFF, returns */	
 	if (!echo_enable) {

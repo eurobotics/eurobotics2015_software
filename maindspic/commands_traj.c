@@ -1419,6 +1419,7 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 		}
 
 		/* play */
+		strat_secondary_robot_disable ();
 		err = strat_smart_main_robot();
 		printf_P(PSTR("strat smart returned %s\r\n"), get_err(err));
 		ERROUT(err);		

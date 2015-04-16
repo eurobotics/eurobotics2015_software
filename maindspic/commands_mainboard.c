@@ -337,6 +337,8 @@ struct cmd_init_result
 static void cmd_init_parsed(void *parsed_result, void *data)
 {
     struct cmd_init_result *res = parsed_result;
+	int8_t c;
+	uint8_t beacon_link_ok = 0, robot_link_ok = 0;
 
 	/* set main robot color */
     if (!strcmp_P(res->color, PSTR("green"))){
@@ -352,46 +354,84 @@ static void cmd_init_parsed(void *parsed_result, void *data)
 	/* init main robot mechanics */
 	i2c_slavedspic_mode_init();
 
-	/* with bluetooth */
-	if (strcmp_P(res->arg0, PSTR("init_no_bt")))
-	{
-		/* open bt links */
-	#ifndef HOST_VERSION
-		wt11_reset_mux();
-		time_wait_ms (1000);
-		//wt11_open_link_mux(beacon_addr, &beaconboard.link_id);
-		time_wait_ms (1000);
-		wt11_open_link_mux(robot_2nd_addr, &robot_2nd.link_id);
-	#else
-		robot_2nd.link_id = 0;
-		beaconboard.link_id = 1;
-	#endif
-		/* enable bt protocol events */
-		mainboard.flags |=  DO_ROBOT_2ND;// DO_BT_PROTO
-		time_wait_ms (200);
+#ifndef HOST_VERSION
+	/* reset local wt11 */
+	wt11_reset_mux();
+	time_wait_ms (1000);
+
+	/* beacon */
+beacon_retry:
+   	printf_P(PSTR("TURN ON and OFF the beacon\r\n"));
+   	printf_P(PSTR("Press a key when beacon ready, 'q' for skip \r\n"));	
+	c = cmdline_getchar_wait();
+
+    if (c != 'q') {
+	   	printf_P(PSTR("Trying to open beacon link ...\n"));	
+		wt11_open_link_mux(beacon_addr, &beaconboard.link_id);
+
+		printf_P(PSTR("Is beacon link OK? (y/n) \r\n"));	
+		c = cmdline_getchar_wait();
+		if (c != 'y' && c != 'Y')
+			goto beacon_retry;
+		beacon_link_ok = 1;
+    }
+	else {
+    	printf("Play without beacon\r\n");
 	}
 
+	/* secondary robot */
+robot_retry:
+   	printf_P(PSTR("TURN ON and OFF the secondary robot\r\n"));
+   	printf_P(PSTR("Press a key when robot ready, 'q' for skip \r\n"));	
+	c = cmdline_getchar_wait();
 
-	if (strcmp_P(res->arg0, PSTR("init_no_bt")))
-	{
-		/* TODO: wait for secondary robot ready */
-		printf ("Press a key when secondary robot is READY\n\r");
-		while(!cmdline_keypressed());
+    if (c != 'q') {
+	   	printf_P(PSTR("Trying to open robot link ...\n"));	
+		wt11_open_link_mux(robot_2nd_addr, &robot_2nd.link_id);
 
+		printf_P(PSTR("Is robot link OK? (y/n) \r\n"));	
+		c = cmdline_getchar_wait();
+		if (c != 'y' && c != 'Y')
+			goto robot_retry;
+		robot_link_ok = 1;
+    }
+	else {
+    	printf("Play without secondary robot\r\n");
+	}
+#else
+		/* on HOST */
+		robot_2nd.link_id = 0;
+		beaconboard.link_id = 1;
+		beacon_link_ok = 1;
+		robot_link_ok = 1;
+#endif
+
+	/* enable bt protocol events */
+	if (beacon_link_ok && robot_link_ok)
+		mainboard.flags |=  DO_BT_PROTO;
+	else if (beacon_link_ok)
+		mainboard.flags |=  DO_BEACON;
+	else if (robot_link_ok)
+		mainboard.flags |=  DO_ROBOT_2ND;
+
+	time_wait_ms (200);
+
+	/* secondary robot init */
+	if (robot_link_ok) {
 		/* set secondary robot color */
 		bt_robot_2nd_set_color ();
 		bt_robot_2nd_wait_ack();
-		//time_wait_ms (300);
 
 		/* autopos secondary robot */
 		bt_robot_2nd_autopos();
 		bt_robot_2nd_wait_ack();
 		bt_robot_2nd_wait_end();
 	}
+
 	printf ("Done\n\r");
 }
 
-prog_char str_init_arg0[] = "init#init_no_bt";
+prog_char str_init_arg0[] = "init";
 parse_pgm_token_string_t cmd_init_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_init_result, arg0, str_init_arg0);
 prog_char str_init_color[] = "green#yellow";
 parse_pgm_token_string_t cmd_init_color = TOKEN_STRING_INITIALIZER(struct cmd_init_result, color, str_init_color);
@@ -434,7 +474,7 @@ static void cmd_start_parsed(void *parsed_result, void *data)
         strat_infos.dump_enabled = 1;
         gen.log_level = 5;
     }
-    else if (!strcmp_P(res->debug, PSTR("debug_step")))
+    else if (!strcmp_P(res->debug, PSTR("step_debug")))
     {
         strat_infos.dump_enabled = 1;
         strat_infos.debug_step = 1;
@@ -495,7 +535,7 @@ prog_char str_start_arg0[] = "start";
 parse_pgm_token_string_t cmd_start_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_start_result, arg0, str_start_arg0);
 prog_char str_start_color[] = "green#yellow";
 parse_pgm_token_string_t cmd_start_color = TOKEN_STRING_INITIALIZER(struct cmd_start_result, color, str_start_color);
-prog_char str_start_debug[] = "debug#debug_step#match";
+prog_char str_start_debug[] = "debug#step_debug#match";
 parse_pgm_token_string_t cmd_start_debug = TOKEN_STRING_INITIALIZER(struct cmd_start_result, debug, str_start_debug);
 
 prog_char help_start[] = "Start the robot";

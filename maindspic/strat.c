@@ -131,7 +131,7 @@ struct strat_infos strat_infos = {
 		/* priority, flags */
 		0, 0,
 		/* statistics: opp_time_zone_us, last_time_opp_here */
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		/* robot in charge */
 		MAIN_ROBOT
 	},
@@ -142,7 +142,7 @@ struct strat_infos strat_infos = {
 		0, 100, 0, 300,
 		MY_CUP_2_X+OBS_CLERANCE, MY_CUP_2_Y,	
 		0, 0,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
     .zones[ZONE_MY_STAND_GROUP_3] =        
@@ -152,7 +152,7 @@ struct strat_infos strat_infos = {
 		650, 950, 1700, 1950, 	
 		MY_POPCORNMAC_X, AREA_Y-330, /* TODO: xy closed to stands */ 	
 		0, 0,            
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
     .zones[ZONE_MY_STAND_GROUP_4] =        
@@ -162,7 +162,7 @@ struct strat_infos strat_infos = {
 		0, 150, 0, 300,
 		MY_POPCORNMAC_X, AREA_Y-330, /* TODO: xy closed to stands */ 
 		0, 0,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
 	/* popcorn machines */
@@ -173,7 +173,7 @@ struct strat_infos strat_infos = {
 		150, 750, 1700, 2000,
 		MY_POPCORNMAC_X, AREA_Y-330,
 		0, 0,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
 	/* XXX AVOID for the moment */ 
@@ -184,7 +184,7 @@ struct strat_infos strat_infos = {
 		2250, 2850, 1700, 2000,
 		OPP_POPCORNMAC_X, AREA_Y-330,
 		0, ZONE_AVOID,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
 	/* popcorn cups */
@@ -195,7 +195,7 @@ struct strat_infos strat_infos = {
 		760, 1060, 1020, 1320,
 		MY_CUP_1_X-ROBOT_SEC_OBS_CLERANCE,	MY_CUP_1_Y-ROBOT_SEC_OBS_CLERANCE,
 		0, 0,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		SEC_ROBOT
 	},
 	.zones[ZONE_POPCORNCUP_2] =
@@ -205,7 +205,7 @@ struct strat_infos strat_infos = {
 		100, 400, 100, 400,
 		MY_CUP_2_X+OBS_CLERANCE, MY_CUP_2_Y,
 		0, 0,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
 	.zones[ZONE_POPCORNCUP_3] =
@@ -215,7 +215,7 @@ struct strat_infos strat_infos = {
 		1350, 1650, 200, 500,
 		0, 0,
 		0, 0,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
 	/* cinemas */
@@ -226,7 +226,7 @@ struct strat_infos strat_infos = {
 		2600, 3000, 1200, 1600,
 		AREA_X-400-ROBOT_SEC_OBS_CLERANCE, MY_CINEMA_UP_Y,
 		0, 0,
-	 	0, (9000*1000L),
+//	 	0, (9000*1000L),
 		SEC_ROBOT
 	},
 	.zones[ZONE_MY_CINEMA_DOWN] =
@@ -236,7 +236,7 @@ struct strat_infos strat_infos = {
 		2600, 3000, 400, 800,
 		AREA_X-400-ROBOT_SEC_OBS_CLERANCE, MY_CINEMA_DOWN_Y,
 		0, 0,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		SEC_ROBOT
 	},
 	/* stairs */
@@ -247,7 +247,7 @@ struct strat_infos strat_infos = {
 		1000, 1500, 1400, 2000,
 		MY_STAIRS_X, 1150,
 		0, 0,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		SEC_ROBOT
 	},
 	/* stair ways */
@@ -258,7 +258,7 @@ struct strat_infos strat_infos = {
 		1000, 1500, 1400, 2000,
         MY_STAIRS_X, 1150,
 		0, 0,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		SEC_ROBOT
 	},
 	/* clapper boards */
@@ -269,7 +269,7 @@ struct strat_infos strat_infos = {
 		180, 480, 0, 300,
 		MY_CLAP_1_X, MY_CUP_2_Y,
 		0, 0,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
     .zones[ZONE_MY_CLAP_2] =
@@ -279,7 +279,7 @@ struct strat_infos strat_infos = {
 		780, 1080, 0, 300,
 		MY_CLAP_2_X, MY_CUP_2_Y,
 		0, 0,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
     .zones[ZONE_MY_CLAP_3] =
@@ -289,7 +289,7 @@ struct strat_infos strat_infos = {
 		2230, 2530, 0, 300,
 		MY_CLAP_3_X, ROBOT_SEC_OBS_CLERANCE + 100, /* platform + clearance */
 		0, 0,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		SEC_ROBOT
 	},
 	/* home */
@@ -300,7 +300,7 @@ struct strat_infos strat_infos = {
 		90, 650, 800, 1200,
 		670, MY_HOME_SPOTLIGHT_Y,
 		0, 0,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
 	/* home */
@@ -311,7 +311,7 @@ struct strat_infos strat_infos = {
 		90, 650, 800, 1200,	 /* not matter xy init is 0 */
 		402+ROBOT_SEC_OBS_CLERANCE, 800+(ROBOT_SEC_WIDTH/2),
 		0, 0,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		SEC_ROBOT
 	},
 };
@@ -370,8 +370,8 @@ const char zone_name[ZONES_MAX][14]= {
     [ZONE_MY_POPCORNMAC]="MACHINE\0",
     [ZONE_OPP_POPCORNMAC]="OPP MACHINE\0",
     [ZONE_POPCORNCUP_1]="CUP 1\0",
-    [ZONE_POPCORNCUP_2]="CUP 1\0",
-    [ZONE_POPCORNCUP_3]="CUP 1\0",
+    [ZONE_POPCORNCUP_2]="CUP 2\0",
+    [ZONE_POPCORNCUP_3]="CUP 3\0",
     [ZONE_MY_CINEMA_UP]="CINEMA UP\0",
     [ZONE_MY_CINEMA_DOWN]="CINEMA DOWN\0",
     [ZONE_MY_STAIRS]="STAIRS\0",

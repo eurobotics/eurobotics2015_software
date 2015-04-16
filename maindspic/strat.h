@@ -319,8 +319,8 @@ typedef struct {
 
 #ifndef HOST_VERSION_OA_TEST
 	/* opponent statistics */
-	microseconds opp_time_zone_us;
-	microseconds last_time_opp_here; 	/*in us, since beginning of the match*/
+	//microseconds opp_time_zone_us;
+	//microseconds last_time_opp_here; 	/*in us, since beginning of the match*/
 #endif
 
 	/* which robots can perform this action */
