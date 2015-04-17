@@ -320,7 +320,13 @@ void strat_limit_speed(void)
 #endif
 #endif
 
+/* FIXME  */
+#ifndef HOST_VERSION
 #define LIMIT_SPEED_SPEED_MIN		75
+#else
+#define LIMIT_SPEED_SPEED_MIN		300
+#endif
+
 #define LIMIT_SPEED_OPP_ANGLE       60
 #define LIMIT_SPEED_OPP_ANGLE_HALF  (LIMIT_SPEED_OPP_ANGLE/2)
 
@@ -470,11 +476,11 @@ void strat_start(void)
 #ifndef HOST_VERSION
 	/* if start sw not plugged */
 	if (sensor_get(S_START_SWITCH)) {
-		printf_P(PSTR("No start switch, press a key or plug it\r\n"));
+		printf_P(PSTR("NO START SWITCH, press a key or plug it\r\n"));
 
 		/* while start sw not plugged */
 		while (sensor_get(S_START_SWITCH)) {
-			if (! cmdline_keypressed())
+			if (!cmdline_keypressed())
 				continue;
 
 			for (i=3; i>0; i--) {
@@ -487,7 +493,7 @@ void strat_start(void)
 	
 	/* if start sw plugged */
 	if (!sensor_get(S_START_SWITCH)) {
-		printf_P(PSTR("Ready, unplug start switch to start\r\n"));
+		printf_P(PSTR("READY!!!, unplug start switch to start\r\n"));
 		/* while start sw plugged */
 		while (!sensor_get(S_START_SWITCH));
 	}
@@ -499,7 +505,7 @@ void strat_start(void)
 	/* go to play */
 	err = strat_main();
 	
-	NOTICE(E_USER_STRAT, "Finished !! returned %s", get_err(err));
+	NOTICE(E_USER_STRAT, "Finished!! returned %s", get_err(err));
 	strat_exit();
 }
 
@@ -521,7 +527,13 @@ uint8_t __strat_obstacle(uint8_t which)
 #define OBSTACLE_OPP2	1
 #define OBSTACLE_R2ND	2
 
-#define OBSTACLE_SPEED_MIN	20
+/* FIXME  */
+#ifndef HOST_VERSION
+#define OBSTACLE_SPEED_MIN		20
+#else
+#define OBSTACLE_SPEED_MIN		300
+#endif
+
 #define OBSTACLE_ANGLE		35
 #define OBSTACLE_DIST		800
 

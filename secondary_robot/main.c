@@ -261,11 +261,11 @@ int main(void)
 #endif
 
    /* LOGS */
-   error_register_emerg(mylog);
-   error_register_error(mylog);
-   error_register_warning(mylog);
-   error_register_notice(mylog);
-   error_register_debug(mylog);
+   //error_register_emerg(mylog);
+   //error_register_error(mylog);
+   //error_register_warning(mylog);
+   //error_register_notice(mylog);
+   //error_register_debug(mylog);
 
 #ifndef HOST_VERSION
    /* ENCODERS */
@@ -366,12 +366,12 @@ int main(void)
 #endif
 
    /* log setup */
-    gen.logs[0] = E_USER_STRAT;
+    //gen.logs[0] = E_USER_STRAT;
     //gen.logs[1] = E_USER_BEACON;
     //gen.logs[2] = E_USER_I2C_PROTO;
     //gen.logs[3] = E_OA;
     //gen.logs[2] = E_USER_BT_PROTO;
-    gen.log_level = 5;
+    gen.log_level = 0;
 
    /* reset strat infos */
    strat_reset_infos();
@@ -383,8 +383,8 @@ int main(void)
    wait_ms(2000);
 
    /* say hello */
-   printf("\r\n");
-   printf("Don't turn it on, take it a part!!\r\n");
+   //printf("\r\n");
+   //printf("Don't turn it on, take it a part!!\r\n");
 
 #ifdef HOST_VERSION
 	mainboard.our_color = I2C_COLOR_YELLOW;
@@ -396,15 +396,16 @@ int main(void)
 	time_wait_ms (1000);
 	printf ("+++\n\r");
 	time_wait_ms (1000);
-	printf ("SET BT NAME Seskapa\n\r");
+	printf ("SET BT NAME secondary\n\r");
 	time_wait_ms (1000);
 	printf ("SET BT AUTH * gomaespuminos\n\r");
 	time_wait_ms (1000);
 #endif
 
   	/* start */
+#ifndef HOST_VERSION
 	beacon_start();
-
+#endif
    /* process commands, never returns */
    //cmdline_interact(NULL);
 

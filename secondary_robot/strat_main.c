@@ -94,7 +94,7 @@
         __ret;                                                \
 })
 
-#define strat_bt_task_wait_ms(time)		BT_TASK_WAIT_COND_OR_TIMEOUT(mainboard.bt_task_interrupt, ms);
+#define strat_bt_task_wait_ms(time)		BT_TASK_WAIT_COND_OR_TIMEOUT(mainboard.bt_task_interrupt, time);
 
 
 /* interrupt a bt task */
@@ -118,81 +118,25 @@ void strat_bt_task_interrupt_reset (void)
 }
 
 
-
-
-
 /* auto possition depending on color */
 void strat_auto_position (void)
 {
 #define TRESPA_TRIANGLE		 20
 #define TRESPA_BAR			 17
 #define HOME_X_EDGE			 70
-#define HOME_Y_DOWN_EDGE 	 800
+//#define HOME_Y_DOWN_EDGE 	 800
 #define ROBOT_ENCODERS_WIDTH 208
 
-	strat_reset_pos(COLOR_X(HOME_X_EDGE+TRESPA_TRIANGLE+ROBOT_CENTER_TO_BACK), 
-					HOME_Y_DOWN_EDGE+TRESPA_BAR+(ROBOT_ENCODERS_WIDTH/2.0), 
+#define HOME_Y_DOWN_EDGE_YELLOW  800
+#define HOME_Y_DOWN_EDGE_GREEN   800
+
+	mainboard.our_color == I2C_COLOR_YELLOW?
+	strat_reset_pos(COLOR_X(HOME_X_EDGE+TRESPA_TRIANGLE+ROBOT_CENTER_TO_BACK),
+					HOME_Y_DOWN_EDGE_YELLOW+TRESPA_BAR+(ROBOT_ENCODERS_WIDTH/2.0),
+					COLOR_A_ABS(0)):
+	strat_reset_pos(COLOR_X(HOME_X_EDGE+TRESPA_TRIANGLE+ROBOT_CENTER_TO_BACK),
+					HOME_Y_DOWN_EDGE_GREEN+TRESPA_BAR+(ROBOT_ENCODERS_WIDTH/2.0),
 					COLOR_A_ABS(0));
-
-#if 0
-
-#define AUTOPOS_SPEED_FAST 	1000
-
-	uint8_t err;
-	uint16_t old_spdd, old_spda;
-
-	/* save & set speeds */
-	interrupt_traj_reset();
-	strat_get_speed(&old_spdd, &old_spda);
-	strat_set_speed(AUTOPOS_SPEED_FAST, AUTOPOS_SPEED_FAST);
-
-	/* goto blocking to y axis */
-	trajectory_d_rel(&mainboard.traj, -200);
-	err = wait_traj_end(END_INTR|END_TRAJ|END_BLOCKING);
-	if (err == END_INTR)
-		goto intr;
-	wait_ms(100);
-
-	/* set y */
-	strat_reset_pos(DO_NOT_SET_POS, BASKET_WIDTH + ROBOT_CENTER_TO_BACK, 90);
-
-	/* prepare to x axis */
-	trajectory_d_rel(&mainboard.traj, 60);
-	err = wait_traj_end(END_INTR|END_TRAJ);
-	if (err == END_INTR)
-		goto intr;
-
-	trajectory_a_rel(&mainboard.traj, COLOR_A_REL(-90));
-	err = wait_traj_end(END_INTR|END_TRAJ);
-	if (err == END_INTR)
-		goto intr;
-
-
-	/* goto blocking to x axis */
-	trajectory_d_rel(&mainboard.traj, -700);
-	err = wait_traj_end(END_INTR|END_TRAJ|END_BLOCKING);
-	if (err == END_INTR)
-		goto intr;
-	wait_ms(100);
-
-	/* set x and angle */
-	strat_reset_pos(COLOR_X(ROBOT_CENTER_TO_BACK), DO_NOT_SET_POS, COLOR_A_ABS(0));
-
-	/* goto start position */
-	trajectory_d_rel(&mainboard.traj, 150);
-	err = wait_traj_end(END_INTR|END_TRAJ);
-	if (err == END_INTR)
-		goto intr;
-	wait_ms(100);
-
-	/* restore speeds */
-	strat_set_speed(old_spdd, old_spda);
-	return;
-
-intr:
-	strat_hardstop();
-	strat_set_speed(old_spdd, old_spda);
-#endif
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -207,6 +151,9 @@ uint8_t pick_popcorn_cup(void)
 	uint8_t err=0;
     printf_P(PSTR("pick_popcorn_cup\r\n"));
 
+	/* TODO */
+	strat_bt_task_wait_ms(3000);
+	err = END_TRAJ;
 
 end:
     return err;
@@ -217,6 +164,11 @@ uint8_t extend_carpet(void)
 {
 	uint8_t err=0;
     printf_P(PSTR("extend_carpet\r\n"));
+
+	/* TODO */
+	strat_bt_task_wait_ms(3000);
+	err = END_TRAJ;
+
 end:
     return err;
 }
@@ -226,6 +178,11 @@ uint8_t climb_stairs(void)
 {
 	uint8_t err=0;
     printf_P(PSTR("climb_stairs\r\n"));
+
+	/* TODO */
+	strat_bt_task_wait_ms(3000);
+	err = END_TRAJ;
+
 end:
     return err;
 }
@@ -235,6 +192,11 @@ uint8_t bring_cup_to_cinema(void)
 {
 	uint8_t err=0;
     printf_P(PSTR("bring_cup_to_cinema\r\n"));
+
+	/* TODO */
+	strat_bt_task_wait_ms(3000);
+	err = END_TRAJ;
+
 end:
     return err;
 }
@@ -244,6 +206,11 @@ uint8_t close_clapperboard(void)
 {
 	uint8_t err=0;
     printf_P(PSTR("clapperboard\r\n"));
+
+	/* TODO */
+	strat_bt_task_wait_ms(3000);
+	err = END_TRAJ;
+
 end:
     return err;
 }
@@ -252,8 +219,8 @@ end:
 /******************  BT TASKS ************************************************/
 
 /* set current bt task */
-void strat_bt_task_rqst (uint8_t task_id, 
-						int16_t a, int16_t b, 
+void strat_bt_task_rqst (uint8_t task_id,
+						int16_t a, int16_t b,
 						int16_t c, int16_t d, int16_t e)
 {
 	uint8_t flags;
@@ -270,7 +237,7 @@ void strat_bt_task_rqst (uint8_t task_id,
 	mainboard.bt_task_args[2] = c;
 	mainboard.bt_task_args[3] = d;
 	mainboard.bt_task_args[4] = e;
-	
+
 	mainboard.bt_task_new_rqst = 1;
 	IRQ_UNLOCK (flags);
 }
@@ -280,10 +247,10 @@ void strat_bt_task_scheduler (void)
 {
     uint8_t flags, ret = 0;
     microseconds us;
-    
+
     /* init bt_task */
 	strat_bt_task_rqst (BT_TASK_NONE, 0,0,0,0,0);
-	
+
 	while(1)
 	{
 
@@ -293,7 +260,7 @@ void strat_bt_task_scheduler (void)
 			mainboard.bt_task_id = mainboard.bt_task_id_rqst;
 			mainboard.bt_task_id_rqst = 0;
 			mainboard.bt_task_new_rqst = 0;
-			
+
 			strat_bt_task_interrupt_reset();
 		}
 		IRQ_UNLOCK(flags);
@@ -366,7 +333,3 @@ void strat_bt_task_scheduler (void)
 		}
 	}
 }
-
-
-
-

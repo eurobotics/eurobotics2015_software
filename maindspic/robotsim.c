@@ -425,9 +425,9 @@ void robotsim_pwm(void *arg, int32_t val)
 {
 	//	printf("%p, %d\n", arg, val);
 	if (arg == LEFT_MOTOR)
-		l_pwm = (val / (1.55*3));
+		l_pwm = (val / (5.0));
 	else if (arg == RIGHT_MOTOR)
-		r_pwm = (val / (1.55*3));
+		r_pwm = (val / (5.0));
 }
 
 int32_t robotsim_encoder_get(void *arg)

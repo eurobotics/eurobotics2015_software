@@ -61,7 +61,7 @@
 #include "strat_utils.h"
 #include "sensor.h"
 #include "actuator.h"
-#include "beacon.h"
+#include "bt_protocol.h"
 
 #else
 
@@ -73,33 +73,33 @@
 
 #ifndef IM_SECONDARY_ROBOT
 
-/* XXX synchronized with maindspic/main.h */
+/* XXX keep synchronized with maindspic/main.h */
 
 /* robot dimensions */
-#define ROBOT_LENGTH            281.5
+#define ROBOT_LENGTH            288.5
 #define ROBOT_WIDTH             330.0
-#define ROBOT_CENTER_TO_FRONT   162.5
-#define ROBOT_CENTER_TO_BACK    119.0
+#define ROBOT_CENTER_TO_FRONT   167.0
+#define ROBOT_CENTER_TO_BACK    121.5
 #define ROBOT_HALF_LENGTH_FRONT ROBOT_CENTER_TO_FRONT
 #define ROBOT_HALF_LENGTH_REAR  ROBOT_CENTER_TO_BACK
 
 /* XXX obstacle clerance */
-#define OBS_CLERANCE            (232.+10.)
+#define OBS_CLERANCE            (235.+10.)
 
 #else
 
-/* XXX synchronized with secondary_robot/main.h */
+/* XXX keep synchronized with secondary_robot/main.h */
 
 /* robot dimensions */
-#define ROBOT_LENGTH      	    150.
-#define ROBOT_WIDTH 	    	230.
-#define ROBOT_CENTER_TO_FRONT   75.
-#define ROBOT_CENTER_TO_BACK    75.
+#define ROBOT_LENGTH      	    163.
+#define ROBOT_WIDTH 	    	210.
+#define ROBOT_CENTER_TO_BACK    105.0
+#define ROBOT_CENTER_TO_FRONT   (ROBOT_LENGTH-ROBOT_CENTER_TO_BACK)
 #define ROBOT_HALF_LENGTH_FRONT ROBOT_CENTER_TO_FRONT
 #define ROBOT_HALF_LENGTH_REAR  ROBOT_CENTER_TO_BACK
 
 /* XXX obstacle clearance */
-#define OBS_CLERANCE            (137.+10.)
+#define OBS_CLERANCE            (149.+10.)
 
 #endif /* ! IM_SECONDARY_ROBOT */
 
@@ -116,43 +116,43 @@ struct strat_infos strat_infos = {
     .conf = {
         .flags = 0,
     },
-  
-	/* stands */ 
-    .zones[ZONE_MY_STAND_GROUP_1] = 
-	{ 
-		/* type */ 
-		ZONE_TYPE_STAND, 
-		/* target: x,y, */	
-		MY_STAND_4_X, MY_STAND_4_Y,  
-		/* boundinbox: x_down, x_up,  y_down,  y_up, */		  
-		700, 1400, 150, 700,	
+
+	/* stands */
+    .zones[ZONE_MY_STAND_GROUP_1] =
+	{
+		/* type */
+		ZONE_TYPE_STAND,
+		/* target: x,y, */
+		MY_STAND_4_X, MY_STAND_4_Y,
+		/* boundinbox: x_down, x_up,  y_down,  y_up, */
+		700, 1400, 150, 700,
 		/* init_x, init_y */
-	  	NULL, NULL,	
+	  	0, 0,
 		/* priority, flags */
-		0, 0, 
+		0, 0,
 		/* statistics: opp_time_zone_us, last_time_opp_here */
-		0, (9000*1000L),	
-		/* robot in charge */			
+//		0, (9000*1000L),
+		/* robot in charge */
 		MAIN_ROBOT
 	},
-    .zones[ZONE_MY_STAND_GROUP_2] =        
+    .zones[ZONE_MY_STAND_GROUP_2] =
 	{
 		ZONE_TYPE_STAND,
-		MY_STAND_8_X, MY_STAND_8_Y,
+		MY_STAND_7_X, MY_STAND_7_Y,
 		0, 100, 0, 300,
-		400, OBS_CLERANCE+2,	
+		MY_CUP_2_X+OBS_CLERANCE, MY_CUP_2_Y,	
 		0, 0,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
     .zones[ZONE_MY_STAND_GROUP_3] =        
 	{
 		ZONE_TYPE_STAND,
-		825, AREA_Y-70,  
+		825, AREA_Y-70,              /* XXX: aprox. to be tested */
 		650, 950, 1700, 1950, 	
-		MY_POPCORNMAC_X, AREA_Y-330,	
+		MY_POPCORNMAC_X, AREA_Y-330, /* TODO: xy closed to stands */ 	
 		0, 0,            
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
     .zones[ZONE_MY_STAND_GROUP_4] =        
@@ -160,30 +160,31 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_STAND,
 		MY_STAND_1_X, MY_STAND_1_Y,  
 		0, 150, 0, 300,
-		MY_POPCORNMAC_X, AREA_Y-330,
+		MY_POPCORNMAC_X, AREA_Y-330, /* TODO: xy closed to stands */ 
 		0, 0,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
 	/* popcorn machines */
 	.zones[ZONE_MY_POPCORNMAC] =
 	{
 		ZONE_TYPE_POPCORNMAC, 
-		MY_POPCORNMAC_X, LIMIT_BBOX_Y_UP,
+		MY_POPCORNMAC_X, MY_POPCORNMAC_Y,
 		150, 750, 1700, 2000,
-		MY_POPCORNMAC_X, LIMIT_BBOX_Y_UP-330,
+		MY_POPCORNMAC_X, AREA_Y-330,
 		0, 0,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
+	/* XXX AVOID for the moment */ 
 	.zones[ZONE_OPP_POPCORNMAC] =
 	{
 		ZONE_TYPE_POPCORNMAC,
-		OPP_POPCORNMAC_X, LIMIT_BBOX_Y_UP,
+		OPP_POPCORNMAC_X, OPP_POPCORNMAC_Y,
 		2250, 2850, 1700, 2000,
-		OPP_POPCORNMAC_X, LIMIT_BBOX_Y_UP-330,
-		0, 0,
-		0, (9000*1000L),
+		OPP_POPCORNMAC_X, AREA_Y-330,
+		0, ZONE_AVOID,
+//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
 	/* popcorn cups */
@@ -191,52 +192,30 @@ struct strat_infos strat_infos = {
 	{
 		ZONE_TYPE_POPCORNCUP,
 		MY_CUP_1_X, MY_CUP_1_Y,
-		760, 1060, 1020, 1320,	
-		MY_CUP_1_X-300,	MY_CUP_1_Y,
+		760, 1060, 1020, 1320,
+		MY_CUP_1_X-ROBOT_SEC_OBS_CLERANCE,	MY_CUP_1_Y-ROBOT_SEC_OBS_CLERANCE,
 		0, 0,
-		0, (9000*1000L),
-		MAIN_ROBOT
+//		0, (9000*1000L),
+		SEC_ROBOT
 	},
 	.zones[ZONE_POPCORNCUP_2] =
 	{
 		ZONE_TYPE_POPCORNCUP,
 		MY_CUP_2_X, MY_CUP_2_Y,
 		100, 400, 100, 400,
-		MY_POPCORNCUP_SIDE_X+300, LIMIT_BBOX_Y_DOWN,
+		MY_CUP_2_X+OBS_CLERANCE, MY_CUP_2_Y,
 		0, 0,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
-/* TODO: remove
-	.zones[ZONE_POPCORNCUP_5] =
-	{
-		ZONE_TYPE_POPCORNCUP,
-		OPP_POPCORNCUP_FRONT_X, OPP_POPCORNCUP_FRONT_Y,
-		1940, 2240, 1020, 1320,
-		OPP_POPCORNCUP_FRONT_X-300, OPP_POPCORNCUP_FRONT_Y,
-		0, 0,
-		0, (9000*1000L),
-		MAIN_ROBOT
-	},
-	.zones[ZONE_POPCORNCUP_4] =
-	{
-		ZONE_TYPE_POPCORNCUP,
-		OPP_POPCORNCUP_SIDE_X, OPP_POPCORNCUP_SIDE_Y,
-		2600, 2900, 100, 400, 
-		OPP_POPCORNCUP_SIDE_X-300, OPP_POPCORNCUP_SIDE_Y,
-		0, 0,
-		0, (9000*1000L),
-		MAIN_ROBOT
-	},
-*/
 	.zones[ZONE_POPCORNCUP_3] =
 	{
 		ZONE_TYPE_POPCORNCUP,
 	 	MY_CUP_3_X, MY_CUP_3_Y,
 		1350, 1650, 200, 500,
-		MY_CUP_3_X-300, MY_CUP_3_Y,
 		0, 0,
-		0, (9000*1000L),
+		0, 0,
+//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
 	/* cinemas */
@@ -245,20 +224,20 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_CINEMA,
 		MY_CINEMA_UP_X, MY_CINEMA_UP_Y,
 		2600, 3000, 1200, 1600,
-		3000-400-OBS_CLERANCE-50, 2000-400-(378/2),
+		AREA_X-400-ROBOT_SEC_OBS_CLERANCE, MY_CINEMA_UP_Y,
 		0, 0,
-	 	0, (9000*1000L),
-		MAIN_ROBOT
+//	 	0, (9000*1000L),
+		SEC_ROBOT
 	},
 	.zones[ZONE_MY_CINEMA_DOWN] =
 	{
 		ZONE_TYPE_CINEMA,
 		MY_CINEMA_DOWN_X, MY_CINEMA_DOWN_Y,
 		2600, 3000, 400, 800,
-		3000-400-OBS_CLERANCE-50, 400+(378/2),
+		AREA_X-400-ROBOT_SEC_OBS_CLERANCE, MY_CINEMA_DOWN_Y,
 		0, 0,
-		0, (9000*1000L),
-		MAIN_ROBOT
+//		0, (9000*1000L),
+		SEC_ROBOT
 	},
 	/* stairs */
   	.zones[ZONE_MY_STAIRS] =
@@ -268,39 +247,39 @@ struct strat_infos strat_infos = {
 		1000, 1500, 1400, 2000,
 		MY_STAIRS_X, 1150,
 		0, 0,
-		0, (9000*1000L),
-		MAIN_ROBOT
+//		0, (9000*1000L),
+		SEC_ROBOT
 	},
 	/* stair ways */
    	.zones[ZONE_MY_STAIRWAY] =
 	{
-		ZONE_TYPE_STAIRWAY, 
+		ZONE_TYPE_STAIRWAY,
 		MY_STAIRS_X, MY_STAIRS_Y,
 		1000, 1500, 1400, 2000,
+        MY_STAIRS_X, 1150,
 		0, 0,
-		0, 0,
-		0, (9000*1000L),
-		MAIN_ROBOT
-	}, 
+//		0, (9000*1000L),
+		SEC_ROBOT
+	},
 	/* clapper boards */
    	.zones[ZONE_MY_CLAP_1] =
 	{
 		ZONE_TYPE_CLAP,
 		MY_CLAP_1_X,  MY_CLAP_Y,
 		180, 480, 0, 300,
-		MY_CLAP_1_X, LIMIT_BBOX_Y_DOWN,
+		MY_CLAP_1_X, MY_CUP_2_Y,
 		0, 0,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
-    .zones[ZONE_MY_CLAP_2] = 
+    .zones[ZONE_MY_CLAP_2] =
 	{
 		ZONE_TYPE_CLAP,
 		MY_CLAP_2_X, MY_CLAP_Y,
 		780, 1080, 0, 300,
-		MY_CLAP_2_X, LIMIT_BBOX_Y_DOWN,
+		MY_CLAP_2_X, MY_CUP_2_Y,
 		0, 0,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
     .zones[ZONE_MY_CLAP_3] =
@@ -308,27 +287,41 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_CLAP,
 		MY_CLAP_3_X,  MY_CLAP_Y,
 		2230, 2530, 0, 300,
-		MY_CLAP_3_X, LIMIT_BBOX_Y_DOWN,
+		MY_CLAP_3_X, ROBOT_SEC_OBS_CLERANCE + 100, /* platform + clearance */
 		0, 0,
-		0, (9000*1000L),
-		MAIN_ROBOT
+//		0, (9000*1000L),
+		SEC_ROBOT
 	},
 	/* home */
   	.zones[ZONE_MY_HOME] =
 	{
 		ZONE_TYPE_HOME,
 		MY_HOME_SPOTLIGHT_X, MY_HOME_SPOTLIGHT_Y,
-		90, 650, 800, 1200,	
+		90, 650, 800, 1200,
 		670, MY_HOME_SPOTLIGHT_Y,
 		0, 0,
-		0, (9000*1000L),
+//		0, (9000*1000L),
 		MAIN_ROBOT
+	},
+	/* home */
+  	.zones[ZONE_MY_HOME_OUTSIDE] =
+	{
+		ZONE_TYPE_STRAT,
+		0, 0,
+		90, 650, 800, 1200,	 /* not matter xy init is 0 */
+		402+ROBOT_SEC_OBS_CLERANCE, 800+(ROBOT_SEC_WIDTH/2),
+		0, 0,
+//		0, (9000*1000L),
+		SEC_ROBOT
 	},
 };
 
+struct strat_smart strat_smart[ROBOT_MAX];
+
 /* points we get from each zone */
-/* TODO remove ??*/
-uint8_t strat_zones_points[ZONES_MAX]; /* = {3,3,3,3,0,0,0,1,1,1,1,1,1,1,1,1,1,2,2,0,0,6,6,6}; */
+/* TODO: implement a function to access to array. XXX Range must be assserted
+uint8_t strat_zones_points[ZONES_MAX];/
+*/
 
 /*************************************************************/
 
@@ -368,6 +361,36 @@ void strat_set_bounding_box(uint8_t which)
 #ifndef HOST_VERSION_OA_TEST
 
 
+/* zone names */
+const char zone_name[ZONES_MAX][14]= {
+    [ZONE_MY_STAND_GROUP_1]="STAND GROUP 1\0",
+    [ZONE_MY_STAND_GROUP_2]="STAND GROUP 2\0",
+    [ZONE_MY_STAND_GROUP_3]="STAND GROUP 3\0",
+    [ZONE_MY_STAND_GROUP_4]="STAND GROUP 4\0",
+    [ZONE_MY_POPCORNMAC]="MACHINE\0",
+    [ZONE_OPP_POPCORNMAC]="OPP MACHINE\0",
+    [ZONE_POPCORNCUP_1]="CUP 1\0",
+    [ZONE_POPCORNCUP_2]="CUP 2\0",
+    [ZONE_POPCORNCUP_3]="CUP 3\0",
+    [ZONE_MY_CINEMA_UP]="CINEMA UP\0",
+    [ZONE_MY_CINEMA_DOWN]="CINEMA DOWN\0",
+    [ZONE_MY_STAIRS]="STAIRS\0",
+    [ZONE_MY_HOME]="HOME\0",
+    [ZONE_MY_CLAP_1]="CLAPPER 1\0",
+    [ZONE_MY_CLAP_2]="CLAPPER 2\0",
+    [ZONE_MY_CLAP_3]="CLAPPER 3\0",
+    [ZONE_MY_STAIRWAY]="STAIRWAY\0",
+};
+
+/* return string with the zone name */
+const char *get_zone_name(uint8_t zone_num)
+{
+    if (zone_num >= ZONES_MAX)
+    	return "END_UNKNOWN";
+
+    return &zone_name[zone_num][0];
+}
+
 /* display curret strat configuration */
 void strat_dump_conf(void)
 {
@@ -379,30 +402,6 @@ void strat_dump_conf(void)
     /* add here configuration dump */
 }
 
-char numzone2name[ZONES_MAX +1][5]= {
-[ZONE_MY_STAND_GROUP_1]="ms1\0",
-[ZONE_MY_STAND_GROUP_2]="ms2\0",
-[ZONE_MY_STAND_GROUP_3]="ms3\0",
-[ZONE_MY_STAND_GROUP_4]="ms4\0",
-[ZONE_MY_POPCORNMAC]="mm\0",
-[ZONE_OPP_POPCORNMAC]="om\0",
-[ZONE_POPCORNCUP_1]="mcf\0",
-[ZONE_POPCORNCUP_2]="mcs\0",
-/* TODO: remove
-[ZONE_POPCORNCUP_5]="ocf\0",
-[ZONE_POPCORNCUP_4]="ocs\0",
-*/
-[ZONE_POPCORNCUP_3]="cc\0",
-[ZONE_MY_CINEMA_UP]="mcu\0",
-[ZONE_MY_CINEMA_DOWN]="mcd\0",
-[ZONE_MY_STAIRS]="ms\0",
-[ZONE_MY_HOME]="mh\0",
-[ZONE_MY_CLAP_1]="mb1\0",
-[ZONE_MY_CLAP_2]="mb2\0",
-[ZONE_MY_CLAP_3]="mb3\0",
-[ZONE_MY_STAIRWAY]="mw\0",
-[ZONES_MAX] = "nll\0",
-};
 
 /* display current information about the state of the game */
 void strat_dump_infos(const char *caller)
@@ -424,10 +423,13 @@ void strat_reset_infos(void)
 {
     /* bounding box */
     strat_set_bounding_box(BOUNDINBOX_INCLUDES_PLAFORM);
-    strat_infos.current_zone = ZONES_MAX;
-    strat_infos.goto_zone = ZONES_MAX;
-    strat_infos.last_zone = ZONES_MAX;
-	strat_infos.strat_smart_sec= WAIT_FOR_ORDER;
+    strat_smart[MAIN_ROBOT].current_zone = ZONES_MAX;
+    strat_smart[MAIN_ROBOT].goto_zone = ZONES_MAX;
+    strat_smart[MAIN_ROBOT].last_zone = ZONES_MAX;
+
+    strat_smart[SEC_ROBOT].current_zone = ZONES_MAX;
+    strat_smart[SEC_ROBOT].goto_zone = ZONES_MAX;
+    strat_smart[SEC_ROBOT].last_zone = ZONES_MAX;
 
     /* add here other infos resets */
 }
@@ -437,7 +439,7 @@ void strat_preinit(void)
 {
     time_reset();
     interrupt_traj_reset();
-    mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BEACON;
+    mainboard.flags |=  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER;
 
     strat_dump_conf();
     strat_dump_infos(__FUNCTION__);
@@ -455,7 +457,10 @@ void strat_init(void)
     interrupt_traj_reset();
 
     /* used in strat_base for END_TIMER */
-    mainboard.flags =  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_BEACON | DO_BT_PROTO;
+	if (!strat_infos.debug_step)
+    	mainboard.flags |=  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER | DO_TIMER;
+	else
+    	mainboard.flags |=  DO_ENCODERS | DO_CS | DO_RS | DO_POS | DO_BD | DO_POWER;
 }
 
 
@@ -478,32 +483,27 @@ void strat_exit(void)
     dac_mc_set(RIGHT_MOTOR, 0);
 #endif
 
-    /* TODO stop beacon */
-    /* beacon_cmd_beacon_off(); */
-
     /* TODO slavespic exit */
-    //i2c_slavedspic_mode_turbine_blow(0);
-    //i2c_slavedspic_wait_ready();
 
-    /* TODO stop beacon
-    beacon_cmd_beacon_off();
-    beacon_cmd_beacon_off();
-    beacon_cmd_beacon_off();
-    beacon_cmd_beacon_off();
-    */
+    /* stop beacon */
+    bt_beacon_set_off();
+    bt_beacon_set_off();
+    bt_beacon_set_off();
+    bt_beacon_set_off();
+
 }
 
 /* called periodically */
 void strat_event(void *dummy) {
+
     /* limit speed when opponent are close */
     strat_limit_speed();
 
-	//printf_P(PSTR("\r\n\r\nStrat event\r\n"));
-strat_smart_robot_2nd();
+    /* smart strategy of secondary robot */
+	if (strat_secondary_robot_is_enabled())
+		strat_smart_secondary_robot();
 }
 
-    /* tracking of zones where opp has been working */
-    //strat_opp_tracking();
 
 /* dump state (every 5 s max) XXX */
 #define DUMP_RATE_LIMIT(dump, last_print)        \
@@ -524,27 +524,20 @@ strat_smart_robot_2nd();
 /* Strat main loop */
 uint8_t strat_main(void)
 {
-
-    uint8_t err, i;
-
-//    strat_begin();
+    uint8_t err;
     strat_limit_speed_enable ();
 
-    /* auto-play  */
-	set_strat_sec_1();
-    DEBUG(E_USER_STRAT, PSTR("\r\n\r\nStrat smart"));
+    /* set strategy  */
+    set_strat_sec_1();
+    set_strat_main_1();
 
-	strat_infos.strat_smart_sec = GET_NEW_TASK;
-    /*do{
+	/* enable smart_trat of secondary robot */
+	strat_secondary_robot_enable ();
 
-        err = strat_smart(MAIN_ROBOT);
-    }while((err & END_TIMER) == 0);*/
-	while(1){
-
-	time_wait_ms(20);
-	//printf_P(PSTR("\r\n\r\nStrat smart\r\n"));
-}
-
+    /* play */
+    do{
+        err = strat_smart_main_robot();
+    } while((err & END_TIMER) == 0);
 
    strat_exit();
    return 0;

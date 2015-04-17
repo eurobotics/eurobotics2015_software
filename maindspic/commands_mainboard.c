@@ -337,25 +337,8 @@ struct cmd_init_result
 static void cmd_init_parsed(void *parsed_result, void *data)
 {
     struct cmd_init_result *res = parsed_result;
-
-	if (strcmp_P(res->arg0, PSTR("init_no_bt")))
-	{
-		/* open bt links */
-	#ifndef HOST_VERSION
-		wt11_reset_mux();
-		time_wait_ms (1000);
-		wt11_open_link_mux(beacon_addr, &beaconboard.link_id);
-		/* TODO: discomented when robot secondary ready */
-		//time_wait_ms (1000);
-		//wt11_open_link_mux(robot_2nd_addr, &robot_2nd.link_id);
-	#else
-		robot_2nd.link_id = 0;
-		beaconboard.link_id = 1;
-	#endif
-		/* enable bt protocol events */
-		mainboard.flags |= DO_BEACON ;//| DO_ROBOT_2ND
-		time_wait_ms (200);
-	}
+	int8_t c;
+	uint8_t beacon_link_ok = 0, robot_link_ok = 0;
 
 	/* set main robot color */
     if (!strcmp_P(res->color, PSTR("green"))){
@@ -371,21 +354,84 @@ static void cmd_init_parsed(void *parsed_result, void *data)
 	/* init main robot mechanics */
 	i2c_slavedspic_mode_init();
 
-	if (strcmp_P(res->arg0, PSTR("init_no_bt")))
-	{
-		/* TODO: wait for secondary robot ready */
+#ifndef HOST_VERSION
+	/* reset local wt11 */
+	wt11_reset_mux();
+	time_wait_ms (1000);
 
-		/* TODO: set secondary robot color */
-		//bt_robot_2nd_set_color ();
+	/* beacon */
+beacon_retry:
+   	printf_P(PSTR("TURN ON and OFF the beacon\r\n"));
+   	printf_P(PSTR("Press a key when beacon ready, 'q' for skip \r\n"));	
+	c = cmdline_getchar_wait();
 
-		/* TODO: autopos secondary robot */
-		//bt_robot_2nd_autopos();
-		//bt_robot_2nd_wait_end();
+    if (c != 'q') {
+	   	printf_P(PSTR("Trying to open beacon link ...\n"));	
+		wt11_open_link_mux(beacon_addr, &beaconboard.link_id);
+
+		printf_P(PSTR("Is beacon link OK? (y/n) \r\n"));	
+		c = cmdline_getchar_wait();
+		if (c != 'y' && c != 'Y')
+			goto beacon_retry;
+		beacon_link_ok = 1;
+    }
+	else {
+    	printf("Play without beacon\r\n");
 	}
+
+	/* secondary robot */
+robot_retry:
+   	printf_P(PSTR("TURN ON and OFF the secondary robot\r\n"));
+   	printf_P(PSTR("Press a key when robot ready, 'q' for skip \r\n"));	
+	c = cmdline_getchar_wait();
+
+    if (c != 'q') {
+	   	printf_P(PSTR("Trying to open robot link ...\n"));	
+		wt11_open_link_mux(robot_2nd_addr, &robot_2nd.link_id);
+
+		printf_P(PSTR("Is robot link OK? (y/n) \r\n"));	
+		c = cmdline_getchar_wait();
+		if (c != 'y' && c != 'Y')
+			goto robot_retry;
+		robot_link_ok = 1;
+    }
+	else {
+    	printf("Play without secondary robot\r\n");
+	}
+#else
+		/* on HOST */
+		robot_2nd.link_id = 0;
+		beaconboard.link_id = 1;
+		beacon_link_ok = 1;
+		robot_link_ok = 1;
+#endif
+
+	/* enable bt protocol events */
+	if (beacon_link_ok && robot_link_ok)
+		mainboard.flags |=  DO_BT_PROTO;
+	else if (beacon_link_ok)
+		mainboard.flags |=  DO_BEACON;
+	else if (robot_link_ok)
+		mainboard.flags |=  DO_ROBOT_2ND;
+
+	time_wait_ms (200);
+
+	/* secondary robot init */
+	if (robot_link_ok) {
+		/* set secondary robot color */
+		bt_robot_2nd_set_color ();
+		bt_robot_2nd_wait_ack();
+
+		/* autopos secondary robot */
+		bt_robot_2nd_autopos();
+		bt_robot_2nd_wait_ack();
+		bt_robot_2nd_wait_end();
+	}
+
 	printf ("Done\n\r");
 }
 
-prog_char str_init_arg0[] = "init#init_no_bt";
+prog_char str_init_arg0[] = "init";
 parse_pgm_token_string_t cmd_init_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_init_result, arg0, str_init_arg0);
 prog_char str_init_color[] = "green#yellow";
 parse_pgm_token_string_t cmd_init_color = TOKEN_STRING_INITIALIZER(struct cmd_init_result, color, str_init_color);
@@ -428,7 +474,7 @@ static void cmd_start_parsed(void *parsed_result, void *data)
         strat_infos.dump_enabled = 1;
         gen.log_level = 5;
     }
-    else if (!strcmp_P(res->debug, PSTR("debug_step")))
+    else if (!strcmp_P(res->debug, PSTR("step_debug")))
     {
         strat_infos.dump_enabled = 1;
         strat_infos.debug_step = 1;
@@ -489,7 +535,7 @@ prog_char str_start_arg0[] = "start";
 parse_pgm_token_string_t cmd_start_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_start_result, arg0, str_start_arg0);
 prog_char str_start_color[] = "green#yellow";
 parse_pgm_token_string_t cmd_start_color = TOKEN_STRING_INITIALIZER(struct cmd_start_result, color, str_start_color);
-prog_char str_start_debug[] = "debug#debug_step#match";
+prog_char str_start_debug[] = "debug#step_debug#match";
 parse_pgm_token_string_t cmd_start_debug = TOKEN_STRING_INITIALIZER(struct cmd_start_result, debug, str_start_debug);
 
 prog_char help_start[] = "Start the robot";
@@ -547,114 +593,6 @@ parse_pgm_inst_t cmd_color = {
         NULL,
     },
 };
-
-#ifdef CMD_BEACON_OLD
-/**********************************************************/
-/* beacon */
-
-/* this structure is filled when cmd_interact is parsed successfully */
-struct cmd_beacon_result
-{
-    fixed_string_t arg0;
-    fixed_string_t arg1;
-};
-
-static void cmd_beacon_parsed(void * parsed_result, void * data)
-{
-    int16_t c;
-    int8_t cmd = 0;
-    struct vt100 vt100;
-
-    struct cmd_beacon_result *res = parsed_result;
-
-    vt100_init(&vt100);
-
-    if (!strcmp_P(res->arg1, "raw"))
-    {
-#ifdef HOST_VERSION
-        printf("not implemented\n");
-#else
-        /* init vt100 character set */
-        vt100_init(&vt100);
-
-        /* interact */
-        while (cmd != KEY_CTRL_C)
-        {
-            /* received from slave */
-            if ((c = uart_recv_nowait(MUX_UART)) != -1)
-                /* echo */
-                uart_send_nowait(CMDLINE_UART, c);
-
-            /* send to slavedspic */
-            c = cmdline_getchar();
-            if (c == -1)
-            {
-                continue;
-            }
-
-            /* check exit cmd */
-            cmd = vt100_parser(&vt100, c);
-
-            /* send to slave */
-            uart_send_nowait(MUX_UART, c);
-        }
-#endif
-    }
-    else if (!strcmp_P(res->arg1, "wt11_reset"))
-    {
-        beacon_cmd_wt11_local_reset();
-    }
-    else if (!strcmp_P(res->arg1, "call"))
-    {
-        beacon_cmd_wt11_call();
-    }
-    else if (!strcmp_P(res->arg1, "wt11_close"))
-    {
-        beacon_cmd_wt11_close();
-    }
-    else if (!strcmp_P(res->arg1, "on"))
-    {
-        beacon_cmd_beacon_on();
-    }
-    else if (!strcmp_P(res->arg1, "watchdog_on"))
-    {
-        beacon_cmd_beacon_on();
-    }
-    else if (!strcmp_P(res->arg1, "off"))
-    {
-        beacon_cmd_beacon_off();
-    }
-    else if (!strcmp_P(res->arg1, "color"))
-    {
-        beacon_cmd_color();
-    }
-    else if (!strcmp_P(res->arg1, "opponent"))
-    {
-        //beacon_cmd_opponent();
-        beacon_pull_opponent();
-    }
-
-    printf("Done\n\r");
-}
-
-prog_char str_beacon_arg0[] = "beacon";
-parse_pgm_token_string_t cmd_beacon_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_beacon_result, arg0, str_beacon_arg0);
-prog_char str_beacon_arg1[] = "raw#wt11_reset#call#wt11_close#on#watchdog_on#off#color#opponent";
-parse_pgm_token_string_t cmd_beacon_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_beacon_result, arg1, str_beacon_arg1);
-
-prog_char help_beacon[] = "beacon commads";
-parse_pgm_inst_t cmd_beacon = {
-    .f = cmd_beacon_parsed, /* function to call */
-    .data = NULL, /* 2nd arg of func */
-    .help_str = help_beacon,
-    .tokens =
-    { /* token list, NULL terminated */
-        (prog_void *) & cmd_beacon_arg0,
-        (prog_void *) & cmd_beacon_arg1,
-        NULL,
-    },
-};
-#endif
 
 /**********************************************************/
 /* beacon */
@@ -847,19 +785,19 @@ static void cmd_robot_2nd_parsed(void * parsed_result, void * data)
 #endif
     else if (!strcmp_P(res->arg1, "color")) {
 		bt_robot_2nd_set_color ();
-		
+
 		/* wait until command has been received */
 		if (bt_robot_2nd_wait_ack()!=0)
-			printf_P(PSTR("bt cmd ERROR"));
+			printf_P(PSTR("bt cmd ERROR\n\r"));
 	}
 
     else if (!strcmp_P(res->arg1, "autopos")) {
 
 		bt_robot_2nd_autopos ();
-		
+
 		/* wait until command has been received */
 		if (bt_robot_2nd_wait_ack()!=0)
-			printf_P(PSTR("bt cmd ERROR"));
+			printf_P(PSTR("bt cmd ERROR\n\r"));
 
 		/* wait end traj */
 		err = bt_robot_2nd_wait_end();
@@ -894,11 +832,16 @@ static void cmd_robot_2nd_parsed(void * parsed_result, void * data)
         while (!cmdline_keypressed());
 	}
 
+	else if (!strcmp_P(res->arg1, PSTR("init_position"))){
+
+//				strat_infos.strat_smart_sec = INIT_ROBOT_2ND;
+	}
+
 }
 
 prog_char str_robot_2nd_arg0[] = "robot_2nd";
 parse_pgm_token_string_t cmd_robot_2nd_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_robot_2nd_result, arg0, str_robot_2nd_arg0);
-prog_char str_robot_2nd_arg1[] = "raw#open#close#color#autopos#status#show";
+prog_char str_robot_2nd_arg1[] = "raw#open#close#color#autopos#status#show#init_position";
 parse_pgm_token_string_t cmd_robot_2nd_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_robot_2nd_result, arg1, str_robot_2nd_arg1);
 
 prog_char help_robot_2nd[] = "robot_2nd commads";
@@ -965,8 +908,8 @@ static void cmd_robot_2nd_goto_parsed(void * parsed_result, void * data)
     {
         //bt_robot_2nd_goto_d_a_rel(res->arg2, res->arg3);
     }
-    
-    
+
+
     else if (!strcmp_P(res->arg1, PSTR("xy_abs")))
     {
         bt_robot_2nd_goto_xy_abs(res->arg2, res->arg3);
@@ -994,7 +937,7 @@ static void cmd_robot_2nd_goto_parsed(void * parsed_result, void * data)
 
 	/* wait until command has been received */
 	if (bt_robot_2nd_wait_ack()!=0)
-		printf_P(PSTR("bt cmd ERROR"));
+		printf_P(PSTR("bt cmd ERROR\n\r"));
 
 	/* wait end traj */
 	err = bt_robot_2nd_wait_end();
@@ -1100,11 +1043,11 @@ static void cmd_robot_2nd_bt_task_parsed(void * parsed_result, void * data)
     {
         bt_robot_2nd_bt_task_clapperboard();
 	}
-	
-	
+
+
 	/* wait until command has been received */
 	bt_robot_2nd_wait_ack();
-		
+
 	/* wait end traj */
 	err = bt_robot_2nd_wait_end();
     printf_P(PSTR("traj returned %s\r\n"), get_err(err));
@@ -1836,7 +1779,7 @@ parse_pgm_inst_t cmd_popcorn_system = {
 	.data = NULL,      /* 2nd arg of func */
 	.help_str = help_popcorn_system,
 	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_popcorn_system_arg0, 
+		(prog_void *)&cmd_popcorn_system_arg0,
 		(prog_void *)&cmd_popcorn_system_arg1,
 		NULL,
 	},
@@ -1894,7 +1837,7 @@ static void cmd_stands_system_parsed(__attribute__((unused)) void *parsed_result
 		else {
 			i2c_slavedspic_mode_ss(mode, I2C_SIDE_LEFT);
 			i2c_slavedspic_mode_ss(mode, I2C_SIDE_RIGHT);
-		}	
+		}
 	}
 }
 
@@ -1912,12 +1855,10 @@ parse_pgm_inst_t cmd_stands_system = {
 	.data = NULL,      /* 2nd arg of func */
 	.help_str = help_stands_system,
 	.tokens = {        /* token list, NULL terminated */
-		(prog_void *)&cmd_stands_system_arg0, 
+		(prog_void *)&cmd_stands_system_arg0,
 		(prog_void *)&cmd_stands_system_arg2,
 		(prog_void *)&cmd_stands_system_arg3,
 		(prog_void *)&cmd_stands_system_arg1,
 		NULL,
 	},
 };
-
-
