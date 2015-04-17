@@ -358,12 +358,11 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 
 	/* ACK mechanism */
 	IRQ_LOCK (flags);
-	//robot_2nd.cmd_id = cmd_id;
-	//robot_2nd.cmd_args_checksum_send = (uint8_t) (cmd_id + arg0 + arg1);
-	//robot_2nd.cmd_args_checksum_recv = 0;
 	robot_2nd.cmd_ret = 0xFF;
 	robot_2nd.valid_status = 0;
 	IRQ_UNLOCK (flags);
+
+	DEBUG (E_USER_STRAT, "bt_protocol: ret = %d, valid_status = %d", robot_2nd.cmd_ret, robot_2nd.valid_status);
 }
 
 /* return 1 if cmd arguments checksum matches */
@@ -378,14 +377,17 @@ uint8_t bt_robot_2nd_is_ack_received (void) {
 	{
 		if(robot_2nd.cmd_ret == 0)
 		{
+			DEBUG (E_USER_STRAT, "bt_protocol: received ACK");
 			return 1;
 		}
 		else
 		{
 			// Communication error. Repeat command
+			DEBUG (E_USER_STRAT, "bt_protocol: received NACK (%d)", robot_2nd.cmd_ret);
 			return robot_2nd.cmd_ret;
 		}
 	}
+
 	return 0;
 }
 
@@ -444,11 +446,22 @@ uint8_t bt_robot_2nd_wait_end (void)
 /* wait for robot 2nd ack */
 uint8_t bt_robot_2nd_wait_ack (void)
 {
-	time_wait_ms(200);
-	while(bt_robot_2nd_is_ack_received ()==0);
-	
-	DEBUG (E_USER_STRAT, "RET:  (%d)", robot_2nd.cmd_ret);
+    int8_t ret;
+    
+	DEBUG (E_USER_BT_PROTO, "waiting command ACK ...");
+#ifdef HOST_VERSION
+	time_wait_ms(300);
+#endif
+	ret = BT_WAIT_COND_OR_TIMEOUT( bt_robot_2nd_is_ack_received(), 1000);
 
+	if (!ret) {
+		ERROR (E_USER_BT_PROTO, "TIMEOUT waiting command ACK");
+		ret = END_ERROR;
+	}
+	else {
+		DEBUG (E_USER_STRAT, "ACK received (%d)", robot_2nd.cmd_ret);
+		ret = robot_2nd.cmd_ret;
+	}
 	return robot_2nd.cmd_ret;
 }
 
@@ -602,7 +615,7 @@ void bt_robot_2nd_status_parser (int16_t c)
 			if (robot_2nd.valid_status == 1)
 				robot_2nd.valid_status = 2;
 
-			if (robot_2nd.valid_status == 2) {
+			else if (robot_2nd.valid_status == 2) {
 				IRQ_LOCK(flags);
 				robot_2nd.cmd_ret = ans.cmd_ret;
 				IRQ_UNLOCK(flags);
@@ -756,7 +769,7 @@ void bt_protocol (void * dummy)
 
 		/* mainly a robot 2nd cmd has been sent right now */
 		/* request status inmediately */
-		bt_robot_2nd_req_status ();
+		//bt_robot_2nd_req_status ();
 
 		/* force beacon pulling next cycle */
 		toggle = 0;
@@ -765,7 +778,7 @@ void bt_protocol (void * dummy)
 		return;
 	}
 
-  	/* pulling of status */
+  	/* pulling of status, TODO: 30ms */
 	if((time_get_us2() - pull_time_us > 60000UL)) {
 
 		toggle ^= 1;

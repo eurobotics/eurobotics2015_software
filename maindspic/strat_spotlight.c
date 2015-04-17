@@ -153,7 +153,7 @@ uint8_t strat_harvest_stands_and_cup_inline (void)
 	i2c_slavedspic_mode_ps(I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_READY);
 
 	/* go close to central cup */
-	d = distance_from_robot(COLOR_X(POPCORNCUP_CENTRE_X), POPCORNCUP_CENTRE_Y);
+	d = distance_from_robot(COLOR_X(MY_CUP_3_X), MY_CUP_3_Y);
 	trajectory_d_rel(&mainboard.traj, d-ROBOT_CENTER_TO_FRONT);
 	err = wait_traj_end(TRAJ_FLAGS_STD);
     if (!TRAJ_SUCCESS(err))

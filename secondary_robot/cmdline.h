@@ -16,7 +16,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Revision : $Id: cmdline.h,v 1.3 2009/05/27 20:04:07 zer0 Exp $
+ *  Revision : $Id$
  *
  */
 
@@ -46,6 +46,10 @@ void cmdline_init(void);
 /* execute cmdline without waiting, pull input commands */
 void cmdline_interact_nowait(void *dummy);
 
+/* echo enable/disable */
+void cmdline_echo_enable (void);
+void cmdline_echo_disable (void);
+
 /* detect a key */
 static inline uint8_t cmdline_keypressed(void) {
 	return (uart_recv_nowait(CMDLINE_UART) != -1);
@@ -60,5 +64,6 @@ static inline int16_t cmdline_getchar(void) {
 static inline uint8_t cmdline_getchar_wait(void) {
 	return uart_recv(CMDLINE_UART);
 }
+
 
 #endif

@@ -22,7 +22,7 @@
 
 /*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
- *  Javier Baliñas Santos <javier@arc-robots.org>
+ *  Javier Baliï¿½as Santos <javier@arc-robots.org>
  *
  *  Code ported to family of microcontrollers dsPIC from
  *  commands_mainboard.c,v 1.8 2009/05/27 20:04:07 zer0 Exp.
@@ -985,7 +985,7 @@ struct cmd_beacon_result {
 /* function called when cmd_beacon is parsed successfully */
 static void cmd_beacon_parsed(void *parsed_result, void *data)
 {
-
+#ifndef HOST_VERSION
 	struct cmd_beacon_result *res = (struct cmd_beacon_result *) parsed_result;
 	if (!strcmp_P(res->arg1, PSTR("on"))) {
 		beacon_start();
@@ -995,7 +995,11 @@ static void cmd_beacon_parsed(void *parsed_result, void *data)
 	}
 
 	printf_P(PSTR("Done\r\n"));
+#else
+	printf_P(PSTR("Not implemented on HOST\r\n"));
+#endif
 }
+
 
 prog_char str_beacon_arg0[] = "beacon";
 parse_pgm_token_string_t cmd_beacon_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_beacon_result, arg0, str_beacon_arg0);

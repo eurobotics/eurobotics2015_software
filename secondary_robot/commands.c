@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Revision : $Id: commands.c,v 1.8 2009/05/27 20:04:07 zer0 Exp $
+ *  Revision : $Id$
  *
  *  Olivier MATZ <zer0@droids-corp.org> 
  */
@@ -92,6 +92,7 @@ extern parse_pgm_inst_t cmd_log_show;
 extern parse_pgm_inst_t cmd_log_type;
 //TODO extern parse_pgm_inst_t cmd_stack_space;
 extern parse_pgm_inst_t cmd_scheduler;
+extern parse_pgm_inst_t cmd_echo;
 
 #endif /* COMPILE_COMMANDS_GEN */
 
@@ -241,6 +242,7 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_log_type,
 //	(parse_pgm_inst_t *)&cmd_stack_space,
 	(parse_pgm_inst_t *)&cmd_scheduler,
+	(parse_pgm_inst_t *)&cmd_echo,
 
 #endif /* COMPILE_COMMANDS_GEN */
 
