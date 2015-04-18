@@ -149,7 +149,7 @@ static void do_cs(void *dummy)
 			beacon_stop ();
 
 			/* kill strat */
-			//strat_exit();
+			strat_exit();
 
 			printf_P(PSTR("END OF TIME\r\n"));
 	

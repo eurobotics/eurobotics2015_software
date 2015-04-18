@@ -439,7 +439,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 											   SPEED_DIST_SLOW,                 /* harvest speed */
 											   0);		
 			break;
-
+#if 0
 		case ZONE_MY_STAND_GROUP_3:
 			err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x),
 											   strat_infos.zones[zone_num].y,
@@ -449,7 +449,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 											   SPEED_DIST_VERY_SLOW,            /* harvest speed */
 											   STANDS_HARVEST_BACK_INIT_POS);	/* flags */
 			break;
-
+#endif
 		case ZONE_MY_STAND_GROUP_4:
 			err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x),
 											   strat_infos.zones[zone_num].y,
@@ -467,6 +467,11 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 													strat_infos.zones[zone_num].y,
 													COLOR_INVERT(SIDE_LEFT));
 			break;
+
+		//case ZONE_MY_STAND_GROUP_2:
+		case ZONE_MY_STAND_GROUP_3:
+		//case ZONE_MY_STAND_GROUP_4:
+
 
 		case ZONE_MY_POPCORNMAC:
 		case ZONE_OPP_POPCORNMAC:
@@ -618,8 +623,6 @@ uint8_t strat_smart_main_robot(void)
 
 	/* check the zone as DONE */
 	strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
-
-end:
 	return err;
 }
 

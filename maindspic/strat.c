@@ -488,14 +488,19 @@ void strat_exit(void)
 
     /* stop beacon */
     bt_beacon_set_off();
-    bt_beacon_set_off();
-    bt_beacon_set_off();
-    bt_beacon_set_off();
-
+	
+	strat_infos.match_ends = 1;
 }
 
 /* called periodically */
 void strat_event(void *dummy) {
+
+	/* stop beacon */
+	if (strat_infos.match_ends) {
+	    bt_beacon_set_off();
+	}
+	
+	strat_infos.match_ends = 1;
 
     /* limit speed when opponent are close */
     strat_limit_speed();
@@ -528,6 +533,9 @@ uint8_t strat_main(void)
     uint8_t err;
     strat_limit_speed_enable ();
 
+	/* init time for secondary robot */
+	bt_robot_2nd_start_matchtimer ();
+	bt_robot_2nd_wait_ack();
 
 	/* XXX enable smart_trat of secondary robot */
 	strat_secondary_robot_enable ();

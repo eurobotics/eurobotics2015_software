@@ -475,11 +475,11 @@ void strat_start(void)
 
 #ifndef HOST_VERSION
 	/* if start sw not plugged */
-	if (sensor_get(S_START_SWITCH)) {
+	if (!sensor_get(S_START_SWITCH)) {
 		printf_P(PSTR("NO START SWITCH, press a key or plug it\r\n"));
 
 		/* while start sw not plugged */
-		while (sensor_get(S_START_SWITCH)) {
+		while (!sensor_get(S_START_SWITCH)) {
 			if (!cmdline_keypressed())
 				continue;
 
@@ -492,10 +492,10 @@ void strat_start(void)
 	}
 	
 	/* if start sw plugged */
-	if (!sensor_get(S_START_SWITCH)) {
+	if (sensor_get(S_START_SWITCH)) {
 		printf_P(PSTR("READY!!!, unplug start switch to start\r\n"));
 		/* while start sw plugged */
-		while (!sensor_get(S_START_SWITCH));
+		while (sensor_get(S_START_SWITCH));
 	}
 #endif
 

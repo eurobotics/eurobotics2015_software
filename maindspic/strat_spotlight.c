@@ -339,7 +339,7 @@ try_again:
 
 	/* harvest, go close to stands but without touch */
 	strat_set_speed (harvest_speed, SPEED_ANGLE_SLOW);
-	d -= (ROBOT_CENTER_TO_MOUTH + STANDS_RADIOUS + 20);
+	d -= (ROBOT_CENTER_TO_MOUTH + STANDS_RADIOUS + 10);
 	trajectory_d_rel(&mainboard.traj, d);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
     if (!TRAJ_SUCCESS(err))
@@ -476,6 +476,13 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side)
 	   ERROUT(err);	
 #endif
 
+
+	/* open blades */
+	i2c_slavedspic_mode_blades(SIDE_RIGHT, I2C_STANDS_BLADE_MODE_CENTER);
+	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_get_status() != STATUS_READY, STANDS_READY_TIMEOUT);    
+
+	i2c_slavedspic_mode_blades(SIDE_LEFT, I2C_STANDS_BLADE_MODE_CENTER);
+	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_get_status() != STATUS_READY, STANDS_READY_TIMEOUT);    
 
 	/* release spotlight left */
 	i2c_slavedspic_mode_ss(I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT, SIDE_LEFT);
