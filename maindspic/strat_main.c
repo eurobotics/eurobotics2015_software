@@ -400,7 +400,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 											   COLOR_A_REL(-10),                /* blade angle */
 											   SPEED_DIST_SLOW,                 /* harvest speed */
 											   STANDS_HARVEST_BACK_INIT_POS);	/* flags */
-#endif			
+#endif
 			break;
 
 		case ZONE_MY_STAND_GROUP_3:
@@ -816,8 +816,7 @@ uint8_t strat_smart_secondary_robot(void)
             if (TRAJ_SUCCESS(err)) {
                 state = WORK;
                 break;
-            }
-			else if (err) {
+            }else if (err) {
 				/* XXX never shoud be reached, infinite loop */
 				DEBUG(E_USER_STRAT,"R2, ERROR, goto returned %s at line %d", get_err(err), __LINE__);
 				state = GET_NEW_ZONE;
