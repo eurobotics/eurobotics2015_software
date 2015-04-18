@@ -321,21 +321,26 @@ try_again:
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
 
-
-
 	/* prepare for harvesting */
 	if (side == I2C_SIDE_ALL) {
-        /* wait ready */
-		//WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(I2C_SIDE_LEFT, STATUS_READY) &&
-		//					 i2c_slavedspic_ss_test_status(I2C_SIDE_RIGHT, STATUS_READY), STANDS_READY_TIMEOUT);
+        /* wait ready and harvest */
+		WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(I2C_SIDE_LEFT, STATUS_READY), STANDS_READY_TIMEOUT);
 		i2c_slavedspic_mode_ss_harvest(I2C_SIDE_LEFT, blade_angle);
+
+		WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(I2C_SIDE_RIGHT, STATUS_READY), STANDS_READY_TIMEOUT);
 		i2c_slavedspic_mode_ss_harvest(I2C_SIDE_RIGHT, blade_angle);
+
 	}
 	else {
         /* wait ready */
-		//WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(side, STATUS_READY), STANDS_READY_TIMEOUT);
+		WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(side, STATUS_READY), STANDS_READY_TIMEOUT);
 		i2c_slavedspic_mode_ss_harvest(side, blade_angle);
+		i2cproto_wait_update();
+		ret_left = i2c_slavedspic_ss_test_status(SIDE_LEFT, STATUS_READY | STATUS_BLOCKED);
 	}
+
+	/* wait blades ready */
+	time_wait_ms(500);
 
 	/* harvest, go close to stands but without touch */
 	strat_set_speed (harvest_speed, SPEED_ANGLE_SLOW);
@@ -346,6 +351,19 @@ try_again:
 	   ERROUT(err);	
 
 
+	/* force push stands */
+	if (side == I2C_SIDE_ALL) {
+		i2c_slavedspic_mode_blades(SIDE_RIGHT, I2C_STANDS_BLADE_MODE_PUSH_STAND_RIGHT);
+		i2c_slavedspic_wait_ready();
+		i2c_slavedspic_mode_blades(SIDE_LEFT, I2C_STANDS_BLADE_MODE_PUSH_STAND_LEFT);
+	}
+	else {
+		i2c_slavedspic_mode_blades(side, 
+								   side == I2C_SIDE_LEFT? I2C_STANDS_BLADE_MODE_PUSH_STAND_LEFT:
+									 					  I2C_STANDS_BLADE_MODE_PUSH_STAND_RIGHT);
+	}
+
+
 	/* return to init position */
 	if (flags & STANDS_HARVEST_BACK_INIT_POS) {
 		strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
@@ -354,17 +372,15 @@ try_again:
 		if (!TRAJ_SUCCESS(err))
 		   ERROUT(err);	
 	}
-#if 0
+
 	/* wait end, try again if ends blocking */
-	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(SIDE_LEFT, STATUS_READY | STATUS_BLOCKED), STANDS_READY_TIMEOUT);
-	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(SIDE_RIGHT, STATUS_READY | STATUS_BLOCKED), STANDS_READY_TIMEOUT);      
+#if 0
+	i2cproto_wait_update();
+	ret_left = i2c_slavedspic_ss_test_status(SIDE_LEFT, STATUS_READY | STATUS_BLOCKED);
+	ret_right = i2c_slavedspic_ss_test_status(SIDE_RIGHT, STATUS_READY | STATUS_BLOCKED);		
 
-    ret_left = i2c_slavedspic_ss_test_status(SIDE_LEFT, STATUS_READY | STATUS_BLOCKED);
-    ret_right = i2c_slavedspic_ss_test_status(SIDE_RIGHT, STATUS_READY | STATUS_BLOCKED);
-
-
-    if ((ret_left|ret_right) & STATUS_BLOCKED) {
-
+    if ((ret_left|ret_right) & STATUS_BLOCKED) 
+	{
         if ((ret_left & STATUS_BLOCKED) && (ret_right & STATUS_BLOCKED) && (side == SIDE_ALL)) 
             side = SIDE_ALL;
         else if ((ret_left & STATUS_BLOCKED) && !(ret_right & STATUS_BLOCKED)) 
@@ -379,6 +395,7 @@ try_again:
         goto try_again;
     }
 #endif
+
 	/* calib x position and angle */
 	if (flags & STANDS_HARVEST_CALIB_X)
 	{
@@ -484,20 +501,26 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side)
 	i2c_slavedspic_mode_blades(SIDE_LEFT, I2C_STANDS_BLADE_MODE_CENTER);
 	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_get_status() != STATUS_READY, STANDS_READY_TIMEOUT);    
 
+	time_wait_ms(500);
+
 	/* release spotlight left */
 	i2c_slavedspic_mode_ss(I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT, SIDE_LEFT);
+	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(SIDE_LEFT, STATUS_READY|STATUS_BLOCKED), STANDS_READY_TIMEOUT);
 
+	/* go backwards */
 	strat_set_speed (SPEED_DIST_VERY_SLOW, SPEED_ANGLE_VERY_SLOW);
-	trajectory_d_rel(&mainboard.traj, -(ROBOT_CENTER_TO_FRONT-ROBOT_CENTER_TO_MOUTH+10));
+	trajectory_d_rel(&mainboard.traj, -100);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);	
 
 	/* release spotlight right */
 	i2c_slavedspic_mode_ss(I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT, SIDE_RIGHT);
+	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(SIDE_RIGHT, STATUS_READY|STATUS_BLOCKED), STANDS_READY_TIMEOUT);
 
+	/* go backwards */
 	strat_set_speed (SPEED_DIST_VERY_SLOW, SPEED_ANGLE_VERY_SLOW);
-	trajectory_d_rel(&mainboard.traj, -(ROBOT_CENTER_TO_FRONT-ROBOT_CENTER_TO_MOUTH+10));
+	trajectory_d_rel(&mainboard.traj, -100);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);	
