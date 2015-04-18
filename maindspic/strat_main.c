@@ -403,6 +403,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 		    if (!TRAJ_SUCCESS(err))
 			   ERROUT(err);
 
+
 			/* XXX debug step use only for subtraj command */
 			strat_debug_wait_key_pressed (MAIN_ROBOT);
 
@@ -608,10 +609,17 @@ uint8_t strat_smart_main_robot(void)
 		DEBUG(E_USER_STRAT,"R1, ERROR, work returned %s", get_err(err));
 		/* XXX should doesn't happend, return END_TRAJ */
 		err = END_TRAJ;
+
+		/* special case */
+		if (zone_num == ZONE_MY_STAND_GROUP_1)
+			return err;
+			
 	}
 
 	/* check the zone as DONE */
 	strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
+
+end:
 	return err;
 }
 
@@ -678,6 +686,10 @@ uint8_t strat_wait_sync_secondary_robot(void)
 
 	/* strat syncro */
 	/* TODO */
+
+	if (!(strat_infos.zones[ZONE_MY_STAND_GROUP_1].flags & ZONE_CHECKED))
+		return 1;
+
     return 0;
 }
 
