@@ -73,6 +73,41 @@
 
 /* Add here the main strategy, the intelligence of robot */
 
+/* debug step to step */
+void state_debug_wait_key_pressed (void)
+{
+	if (!strat_infos.debug_step)
+		return;
+
+	DEBUG(E_USER_STRAT,"press a key");
+	while(!cmdline_keypressed());
+}
+
+/* debug strat step to step */
+void strat_debug_wait_key_pressed (uint8_t robot)
+{
+	if (!strat_infos.debug_step)
+		return;
+
+	DEBUG(E_USER_STRAT,"%s, press a key", 
+			robot==MAIN_ROBOT? "R1":"R2");
+
+	while(!cmdline_keypressed());
+}
+
+/* debug strat step to step */
+uint8_t strat_debug_is_key_pressed (uint8_t robot)
+{
+	if (!strat_infos.debug_step)
+		return 1;
+
+	DEBUG(E_USER_STRAT,"%s, press a key", 
+			robot==MAIN_ROBOT? "R1":"R2");
+
+	return cmdline_keypressed();
+}
+
+
 #ifdef old_version
 /*
  * Check if the zone is available.
@@ -356,9 +391,6 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 	switch (zone_num)
 	{
 		case ZONE_MY_STAND_GROUP_1:
-			trajectory_d_rel(&mainboard.traj, 500);
-			err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-
 
 			/* TODO: call specific function for stand group 1 */
 			err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_4_X),
@@ -371,7 +403,9 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 		    if (!TRAJ_SUCCESS(err))
 			   ERROUT(err);
 
-#if 1
+			/* XXX debug step use only for subtraj command */
+			strat_debug_wait_key_pressed (MAIN_ROBOT);
+
 			err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_5_X),
 											   MY_STAND_5_Y,
 											   COLOR_INVERT(SIDE_LEFT),
@@ -381,6 +415,9 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 											   0);				/* flags */
 		    if (!TRAJ_SUCCESS(err))
 			   ERROUT(err);
+
+			/* XXX debug step use only for subtraj command */
+			strat_debug_wait_key_pressed (MAIN_ROBOT);
 
 			err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_6_X),
 											   MY_STAND_6_Y,
@@ -399,8 +436,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 								 			   SIDE_ALL,                        /* storing sides */
 											   COLOR_A_REL(-10),                /* blade angle */
 											   SPEED_DIST_SLOW,                 /* harvest speed */
-											   STANDS_HARVEST_BACK_INIT_POS);	/* flags */
-#endif			
+											   0);		
 			break;
 
 		case ZONE_MY_STAND_GROUP_3:
@@ -409,7 +445,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 											   COLOR_INVERT(SIDE_LEFT),         /* side target */
 								 			   SIDE_ALL,                        /* storing sides */
 											   COLOR_A_REL(-20),                /* blade angle */
-											   SPEED_DIST_SLOW,                 /* harvest speed */
+											   SPEED_DIST_VERY_SLOW,            /* harvest speed */
 											   STANDS_HARVEST_BACK_INIT_POS);	/* flags */
 			break;
 
@@ -586,39 +622,6 @@ void set_strat_sec_3(void){
 }
 
 
-/* debug step to step */
-void state_debug_wait_key_pressed (void)
-{
-	if (!strat_infos.debug_step)
-		return;
-
-	DEBUG(E_USER_STRAT,"press a key");
-	while(!cmdline_keypressed());
-}
-
-/* debug strat step to step */
-void strat_debug_wait_key_pressed (uint8_t robot)
-{
-	if (!strat_infos.debug_step)
-		return;
-
-	DEBUG(E_USER_STRAT,"%s, press a key", 
-			robot==MAIN_ROBOT? "R1":"R2");
-
-	while(!cmdline_keypressed());
-}
-
-/* debug strat step to step */
-uint8_t strat_debug_is_key_pressed (uint8_t robot)
-{
-	if (!strat_infos.debug_step)
-		return 1;
-
-	DEBUG(E_USER_STRAT,"%s, press a key", 
-			robot==MAIN_ROBOT? "R1":"R2");
-
-	return cmdline_keypressed();
-}
 
 /* return 1 if need to wait syncronization */
 uint8_t strat_wait_sync_main_robot(void)

@@ -148,9 +148,9 @@ struct strat_infos strat_infos = {
     .zones[ZONE_MY_STAND_GROUP_3] =        
 	{
 		ZONE_TYPE_STAND,
-		825, AREA_Y-70,              /* XXX: aprox. to be tested */
+		MY_STAND_2_X+50, MY_STAND_2_Y,              /* XXX: aprox. to be tested */
 		650, 950, 1700, 1950, 	
-		MY_POPCORNMAC_X, AREA_Y-330, /* TODO: xy closed to stands */ 	
+		MY_STAND_2_X-OBS_CLERANCE, AREA_Y-330, /* TODO: xy closed to stands */ 	
 		0, 0,            
 //		0, (9000*1000L),
 		MAIN_ROBOT
@@ -160,7 +160,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_STAND,
 		MY_STAND_1_X, MY_STAND_1_Y,  
 		0, 150, 0, 300,
-		MY_POPCORNMAC_X, AREA_Y-330, /* TODO: xy closed to stands */ 
+		MY_STAND_1_X+OBS_CLERANCE, AREA_Y-330, /* TODO: xy closed to stands */ 
 		0, 0,
 //		0, (9000*1000L),
 		MAIN_ROBOT

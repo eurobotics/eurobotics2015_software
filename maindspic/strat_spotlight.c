@@ -69,7 +69,8 @@
 		goto end;		 \
 	} while(0)
 
-#define ROBOT_CENTER_TO_MOUTH	105.0
+#define ROBOT_CENTER_TO_MOUTH	105
+#define STANDS_RADIOUS			30
 #define STANDS_READY_TIMEOUT    5000
 
 /**
@@ -283,14 +284,13 @@ void get_stand_da (int16_t x, int16_t y, uint8_t side, int16_t *d, int16_t *a)
 	else
 		*a = (int16_t)DEG(a1 + a2);
 
-	*d =  (int16_t)sqrt((L*L) + d1*d1);
+	*d =  (int16_t)sqrt((L*L) + (d1*d1));
 }
 
 /** 
  *	Harvest orphan stands
  *	return END_TRAJ if the work is done, err otherwise 
  */
-
 uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
 									 uint8_t side, uint8_t blade_angle, 
 									 uint16_t harvest_speed, uint8_t flags)
@@ -339,7 +339,7 @@ try_again:
 
 	/* harvest, go close to stands but without touch */
 	strat_set_speed (harvest_speed, SPEED_ANGLE_SLOW);
-	d -= (ROBOT_CENTER_TO_MOUTH+10);
+	d -= (ROBOT_CENTER_TO_MOUTH + STANDS_RADIOUS + 20);
 	trajectory_d_rel(&mainboard.traj, d);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
     if (!TRAJ_SUCCESS(err))

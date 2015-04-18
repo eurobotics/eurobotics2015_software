@@ -19,8 +19,9 @@ WALL_HEIGHT = 70.0
 
 ROBOT_WIDTH  = 330.0
 ROBOT_LENGTH = 288.5
-ROBOT_X_OFFSET = ROBOT_LENGTH/2.0 - 121.5
-ROBOT_LENGTH_MOUTH = 2*(105.0-ROBOT_X_OFFSET)
+#ROBOT_LENGTH = 210.0 #105.0*2.0
+#ROBOT_X_OFFSET = ROBOT_LENGTH/2.0 - 121.5
+
 
 #define ROBOT_LENGTH      	    163.
 #define ROBOT_WIDTH 	    	210.
@@ -29,7 +30,7 @@ ROBOT_LENGTH_MOUTH = 2*(105.0-ROBOT_X_OFFSET)
 
 ROBOT2_WIDTH  = 210.0
 ROBOT2_LENGTH = 163.0
-ROBOT2_X_OFFSET = -ROBOT2_LENGTH/2.0 + (163-105)
+#ROBOT2_X_OFFSET = -ROBOT2_LENGTH/2.0 + (163-105)
 
 area = [ (0.0, 0.0, -0.2), (3000.0, 2000.0, 0.2) ]
 areasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , area)
@@ -42,11 +43,10 @@ save_pos = []
 save_pos2 = []
 
 robot = box(color=(1.0, 1.0, 1.0))
-robot.opacity = 0.6
-robot_mouth = box(color=(1.0, 1.0, 1.0))
+robot.opacity = 0.5
 
 robot2 = box(color=(1.0, 1.0, 1.0))
-robot2.opacity = 0.8
+robot2.opacity = 0.5
 
 steam_shovel = box(color=(0.6, 0.6, 0.6))
 
@@ -175,10 +175,10 @@ def toggle_obj_disp():
 		stand_yellow(-AREA_X/2+90,-AREA_Y/2+150)
 		stand_yellow(-AREA_X/2+870,+AREA_Y/2-1355)
 		stand_green(+AREA_X/2-870,+AREA_Y/2-1355)
-		stand_yellow(-250,+AREA_Y/2-1400)
-		stand_green(250,+AREA_Y/2-1400)
-		stand_yellow(-400,-AREA_Y/2+330)
-		stand_green(400,-AREA_Y/2+330)
+		stand_yellow(-200,+AREA_Y/2-1400)
+		stand_green(200,+AREA_Y/2-1400)
+		stand_yellow(-400,-AREA_Y/2+230)
+		stand_green(400,-AREA_Y/2+230)
 		popcorn_func(-590,200)
 		popcorn_func(590,200)
 		popcorn_func(0,-650)
@@ -410,7 +410,7 @@ def set_robot():
         tmp_y = -robot_y + AREA_Y/2
         tmp_a = robot_a
 
-	"""
+	
     robot.pos = (tmp_x, tmp_y, ROBOT_HEIGHT/2)
     axis = (math.cos(tmp_a*math.pi/180),
             math.sin(tmp_a*math.pi/180),
@@ -418,17 +418,8 @@ def set_robot():
 
     robot.axis = axis
     robot.size = (ROBOT_LENGTH, ROBOT_WIDTH, ROBOT_HEIGHT)
-	"""
+	
 
-    #robot mouth box
-    robot_mouth.pos = (tmp_x, tmp_y, ROBOT_HEIGHT/2)
-    axis = (math.cos(tmp_a*math.pi/180),
-            math.sin(tmp_a*math.pi/180),
-            0)
-
-    robot_mouth.axis = axis
-    robot_mouth.size = (ROBOT_LENGTH_MOUTH, ROBOT_WIDTH, ROBOT_HEIGHT)
-    
     """
 	# Left stick
     lstick.pos = (tmp_x + ROBOT_X_OFFSET + (lstick_offset * 60 ) * math.cos((tmp_a-90)*math.pi/180),
@@ -496,7 +487,6 @@ def set_robot2():
         tmp_y = -robot2_y + AREA_Y/2
         tmp_a = robot2_a
 
-    #robot2.pos = (tmp_x, tmp_y, ROBOT_HEIGHT/2)
     robot2.pos = (tmp_x, tmp_y, ROBOT_HEIGHT/2)
     axis = (math.cos(tmp_a*math.pi/180),
             math.sin(tmp_a*math.pi/180),
