@@ -455,6 +455,16 @@ uint8_t strat_harvest_popcorn_cup (int16_t x, int16_t y, uint8_t side, uint8_t f
 
 
 /********************************************
+ * in strat_clapperboard.c
+ *******************************************/
+
+/**
+ *	Close clapper board
+ *	return END_TRAJ if the work is done, err otherwise
+ */
+uint8_t strat_close_clapperboards (int16_t x, int16_t y, uint8_t side, uint8_t flags);
+
+/********************************************
  * in strat_main.c
  *******************************************/
 
