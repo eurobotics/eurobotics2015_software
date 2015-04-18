@@ -550,6 +550,7 @@ uint8_t __strat_obstacle(uint8_t which)
 		return 0;
 
 	/* opponent sensors obstacle */
+#if 0
 	if (strat_opp_sensors_enabled)
 	{
 		/* opponent is in front of us */
@@ -573,7 +574,7 @@ uint8_t __strat_obstacle(uint8_t which)
 			return 1;
 		}
 	}
-
+#endif
 #ifdef TWO_OPPONENTS
 	if(which == OBSTACLE_OPP1)
 		ret = get_opponent1_xyda(&opp_x, &opp_y,&opp_d, &opp_a);
