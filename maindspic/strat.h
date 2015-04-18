@@ -349,6 +349,10 @@ struct strat_infos {
 	/* points areas */
 	strat_zones_t zones[ZONES_MAX];
 
+#define STR_HOMOLOGATION 0
+#define STR_BASE 1
+	uint8_t match_strategy;
+
 #if 0
 	/* state of the robot */
 	uint8_t lightbulbs;
@@ -367,7 +371,7 @@ struct strat_infos {
 };
 
 /* strat specific for each robot */
-struct strat_smart 
+struct strat_smart
 {
 	/* our zone position */
 	uint8_t current_zone;
@@ -466,19 +470,33 @@ uint8_t strat_smart_secondary_robot(void);
 /* enable/disable smart_strat of secondary_robot */
 void strat_secondary_robot_enable (void);
 void strat_secondary_robot_disable (void);
-uint8_t strat_secondary_robot_is_enabled (void); 
+uint8_t strat_secondary_robot_is_enabled (void);
 
 
 /* tracking of zones where opp has been working */
 void strat_opp_tracking (void);
 
+
+
+/********************************************
+ * in strat_strategies.c
+ *******************************************/
+
 /* Sets of  strategies for secondary robot*/
-void set_strat_sec_1(void);
+/*void set_strat_sec_1(void);
 void set_strat_sec_2(void);
 void set_strat_sec_3(void);
+void set_strat_sec_homologation(void);
+void set_strat_main_homologation(void);
+void strat_set_next_strategy_homologation(uint8_t robot);
 void set_strat_main_1(void);
 void set_strat_main_2(void);
-void set_next_sec_strategy(void);
+void set_next_sec_strategy(void);*/
+
+void strat_set_next_sec_strategy(void);
+void strat_set_next_main_strategy(void);
+void strat_change_sequence_homologation(uint8_t robot);
+void strat_change_sequence_base(uint8_t robot);
 
 
 #else /* HOST_VERSION_OA_TEST */

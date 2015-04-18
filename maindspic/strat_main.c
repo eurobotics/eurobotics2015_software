@@ -83,7 +83,7 @@ int8_t strat_is_valid_zone(uint8_t robot, int8_t zone_num)
 {
 	/* return if zone_num out of range */
 	if(zone_num < 0 || zone_num >= ZONES_MAX){
-		ERROR (E_USER_STRAT, "ERROR, %s, zone_num out of range"); 
+		ERROR (E_USER_STRAT, "ERROR, %s, zone_num out of range");
 		return 0;
 	}
 
@@ -126,10 +126,10 @@ int8_t strat_get_new_zone(uint8_t robot)
 	/* 1. get the robot NO CHECKED zone with the maximun priority  */
 	for(i=0; i < ZONES_MAX; i++)
 	{
-		if(strat_infos.zones[i].prio >= prio_max && 
-		  (strat_infos.zones[i].flags != ZONE_CHECKED) && 
+		if(strat_infos.zones[i].prio >= prio_max &&
+		  (strat_infos.zones[i].flags != ZONE_CHECKED) &&
 		  (strat_infos.zones[i].flags != ZONE_AVOID) &&
-		  (strat_infos.zones[i].robot == robot)) 
+		  (strat_infos.zones[i].robot == robot))
 		{
 			/* check if is a valid zone */
 			prio_max = strat_infos.zones[i].prio;
@@ -139,16 +139,16 @@ int8_t strat_get_new_zone(uint8_t robot)
 
 	/* 2. check if the maximun priority zone is valid */
 	if(zone_num != STRAT_NO_MORE_ZONES)
-	{	
+	{
 		if (!strat_is_valid_zone(robot, zone_num))
 			zone_num = STRAT_NO_VALID_ZONE;
 	}
 
 	/* XXX: here we have the zone with the maximun priority, and then
-			we check if this zone is valid. 
+			we check if this zone is valid.
 
 			Why we don't discard the no valid zones in the maximun priority
-			zone calculation at point 1. 
+			zone calculation at point 1.
 	*/
 
 	return zone_num;
@@ -161,7 +161,7 @@ uint8_t strat_is_valid_zone(uint8_t robot, int8_t zone_num)
 {
 	/* return if zone_num out of range */
 	if(zone_num < 0 || zone_num >= ZONES_MAX){
-		ERROR (E_USER_STRAT, "ERROR, zone_num out of range"); 
+		ERROR (E_USER_STRAT, "ERROR, zone_num out of range");
 		return 0;
 	}
 
@@ -217,7 +217,7 @@ int8_t strat_get_new_zone(uint8_t robot)
 	for(i=0; i < ZONES_MAX; i++)
 	{
 		if (strat_is_valid_zone(robot, i) &&
-			strat_infos.zones[i].prio >= prio_max) 
+			strat_infos.zones[i].prio >= prio_max)
 		{
 			prio_max = strat_infos.zones[i].prio;
 			zone_num = i;
@@ -226,7 +226,7 @@ int8_t strat_get_new_zone(uint8_t robot)
 
 	/* 2. check if the maximun priority zone is free */
 	if(zone_num != STRAT_NO_MORE_ZONES)
-	{	
+	{
 		if (strat_is_opp_in_zone(zone_num))
 			zone_num = STRAT_OPP_IS_IN_ZONE;
 	}
@@ -238,7 +238,7 @@ int8_t strat_get_new_zone(uint8_t robot)
 #endif /* old_version */
 
 /**
- *  main robot: return END_TRAJ if zone is reached or no where to go, err otherwise 
+ *  main robot: return END_TRAJ if zone is reached or no where to go, err otherwise
  *  secondary robot: return 0 if command SUCESSED, END_TRAJ no where to go, err otherwise
  */
 uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
@@ -285,7 +285,7 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 	err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
 									strat_infos.zones[zone_num].init_y,
 									TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
-	
+
 	/* update strat_infos */
 	strat_smart[robot].last_zone = strat_smart[robot].current_zone;
 	strat_smart[robot].goto_zone = -1;
@@ -301,7 +301,7 @@ end:
 
 
 /**
- *  main robot: return END_TRAJ if work is done or no wher to work, err otherwise 
+ *  main robot: return END_TRAJ if work is done or no wher to work, err otherwise
  *  secondary robot: return 0 if command SUCESSED, END_TRAJ no where to work, err otherwise
  */
 uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
@@ -311,7 +311,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 	/* TODO: return if -1000 xy */
 	if (strat_infos.zones[zone_num].x == 0 &&
 		strat_infos.zones[zone_num].y == 0) {
-		WARNING (E_USER_STRAT, "%s, WARNING, No where to WORK (xy is NULL)", 
+		WARNING (E_USER_STRAT, "%s, WARNING, No where to WORK (xy is NULL)",
 				 robot == MAIN_ROBOT? "R1":"R2");
 		ERROUT(END_TRAJ);
 	}
@@ -340,14 +340,14 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 
 			case ZONE_MY_STAIRS:
 				bt_robot_2nd_bt_task_stairs();
-				break;				
+				break;
 
 			default:
 				ERROR (E_USER_STRAT, "R2, ERROR zone %d not supported", zone_num);
 				ERROUT(END_ERROR);
-		
+
 		}
-	
+
 		/* return SUCCESS */
 		ERROUT(0);
 	}
@@ -359,7 +359,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 			trajectory_d_rel(&mainboard.traj, 500);
 			err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 			//if (!TRAJ_SUCCESS(err))
-			//   ERROUT(err);	
+			//   ERROUT(err);
 
 
 #if 0
@@ -453,9 +453,9 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 		case ZONE_MY_HOME:
 
 			DEBUG(E_USER_STRAT, "R1, Working on zone ... ");
-			trajectory_turnto_xy (&mainboard.traj, 
+			trajectory_turnto_xy (&mainboard.traj,
 								  COLOR_X(strat_infos.zones[zone_num].x),
-								  strat_infos.zones[zone_num].y); 
+								  strat_infos.zones[zone_num].y);
 			err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 
 			//time_wait_ms(2000);
@@ -474,123 +474,6 @@ end:
 }
 
 
-/* set next SEC_ROBOT_ROBOT strategy */
-void strat_set_next_sec_strategy(void)
-{
-	/* XXX HACK */
-	//strat_smart[SEC_ROBOT].current_strategy++;
-	switch(strat_smart[SEC_ROBOT].current_strategy)
-	{
-		case 1:
-			set_strat_sec_1();
-			break;
-/* XXX HACK
-		case 2:
-			set_strat_sec_2();
-			break;
-		case 3:
-			set_strat_sec_3();
-			strat_smart[SEC_ROBOT].current_strategy = 0;
-			break;
-*/
-		default:
-			break;
-	}
-	DEBUG(E_USER_STRAT,"R2, NEW strat #%d", strat_smart[SEC_ROBOT].current_strategy);
-}
-
-/* set next MAIN_ROBOT_ROBOT_ROBOT strategy */
-void strat_set_next_main_strategy(void)
-{
-	/* XXX HACK */
-	//strat_smart[MAIN_ROBOT].current_strategy++;
-	switch(strat_smart[MAIN_ROBOT].current_strategy){
-		case 1:
-			set_strat_main_1();
-			break;
-/* XXX HACK
-		case 2:
-			set_strat_main_2();
-			strat_smart[SEC_ROBOT].current_strategy = 0;
-			break;
-*/
-		default:
-			break;
-	}
-	DEBUG(E_USER_STRAT,"R1, NEW strat #%d", strat_smart[MAIN_ROBOT].current_strategy);
-}
-
-void set_strat_main_1(void)
-{
-	strat_smart[MAIN_ROBOT].current_strategy = 1;
-
-	strat_infos.zones[ZONE_MY_STAND_GROUP_1].prio = 100;
-	strat_infos.zones[ZONE_POPCORNCUP_3].prio = 90;
-
-	strat_infos.zones[ZONE_MY_CLAP_2].prio = 80;
-	strat_infos.zones[ZONE_POPCORNCUP_2].prio = 70;
-	strat_infos.zones[ZONE_MY_STAND_GROUP_2].prio = 60;
-	strat_infos.zones[ZONE_MY_CLAP_1].prio = 50;
-
-	strat_infos.zones[ZONE_MY_STAND_GROUP_3].prio = 40;
-	strat_infos.zones[ZONE_MY_POPCORNMAC].prio = 30;
-	strat_infos.zones[ZONE_MY_STAND_GROUP_4].prio = 20;
-
-	strat_infos.zones[ZONE_MY_HOME].prio = 10;
-}
-
-void set_strat_main_2(void){
-	strat_smart[MAIN_ROBOT].current_strategy = 1;
-
-	strat_infos.zones[ZONE_MY_STAND_GROUP_1].prio = 100;
-
-	strat_infos.zones[ZONE_MY_CLAP_2].prio = 90;
-	strat_infos.zones[ZONE_POPCORNCUP_2].prio = 80;
-	strat_infos.zones[ZONE_MY_STAND_GROUP_2].prio = 70;
-	strat_infos.zones[ZONE_MY_CLAP_1].prio = 60;
-
-	strat_infos.zones[ZONE_MY_STAND_GROUP_3].prio = 50;
-	strat_infos.zones[ZONE_MY_POPCORNMAC].prio = 40;
-	strat_infos.zones[ZONE_MY_STAND_GROUP_4].prio = 30;
-
-	strat_infos.zones[ZONE_MY_HOME].prio = 10;
-
-}
-
-
-void set_strat_sec_1(void){
-	strat_smart[SEC_ROBOT].current_strategy = 1;
-
-	strat_infos.zones[ZONE_MY_HOME_OUTSIDE].prio = 110;
-
-	strat_infos.zones[ZONE_POPCORNCUP_1].prio = 100;
-
-	strat_infos.zones[ZONE_MY_CLAP_3].prio = 90;
-	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 80;
-	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 70;
-	strat_infos.zones[ZONE_MY_STAIRS].prio = 60;
-}
-void set_strat_sec_2(void){
-	strat_smart[SEC_ROBOT].current_strategy = 2;
-	//DEBUG(E_USER_STRAT,"strat_sec_2");
-	strat_infos.zones[ZONE_POPCORNCUP_1].prio = 100;
-	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 90;
-
-	strat_infos.zones[ZONE_MY_CLAP_3].prio = 80;
-	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 70;
-	strat_infos.zones[ZONE_MY_STAIRS].prio = 60;
-}
-
-void set_strat_sec_3(void){
-	strat_smart[SEC_ROBOT].current_strategy = 3;
-	//DEBUG(E_USER_STRAT,"strat_sec_3");
-
-	strat_infos.zones[ZONE_POPCORNCUP_1].prio = 100;
-	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 90;
-	strat_infos.zones[ZONE_MY_CLAP_3].prio = 80;
-	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 70;
-	strat_infos.zones[ZONE_MY_STAIRS].prio = 60;
-}
 
 
 /* debug step to step */
@@ -609,7 +492,7 @@ void strat_debug_wait_key_pressed (uint8_t robot)
 	if (!strat_infos.debug_step)
 		return;
 
-	DEBUG(E_USER_STRAT,"%s, press a key", 
+	DEBUG(E_USER_STRAT,"%s, press a key",
 			robot==MAIN_ROBOT? "R1":"R2");
 
 	while(!cmdline_keypressed());
@@ -621,7 +504,7 @@ uint8_t strat_debug_is_key_pressed (uint8_t robot)
 	if (!strat_infos.debug_step)
 		return 1;
 
-	DEBUG(E_USER_STRAT,"%s, press a key", 
+	DEBUG(E_USER_STRAT,"%s, press a key",
 			robot==MAIN_ROBOT? "R1":"R2");
 
 	return cmdline_keypressed();
@@ -630,9 +513,9 @@ uint8_t strat_debug_is_key_pressed (uint8_t robot)
 /* return 1 if need to wait syncronization */
 uint8_t strat_wait_sync_main_robot(void)
 {
-    /* XXX HACK */	
+    /* XXX HACK */
     //return 0;
-    
+
 	/* manual syncro */
 	if (strat_infos.debug_step)
 	{
@@ -695,7 +578,7 @@ uint8_t strat_smart_main_robot(void)
 	}
 
 	DEBUG(E_USER_STRAT,"R1, strat #%d: get zone %s (%d, %d)",
-						strat_smart[MAIN_ROBOT].current_strategy, 
+						strat_smart[MAIN_ROBOT].current_strategy,
 						get_zone_name(zone_num), zone_num, strat_infos.zones[zone_num].prio);
 
 	/* XXX debug step use only for subtraj command */
@@ -703,7 +586,7 @@ uint8_t strat_smart_main_robot(void)
 
 	/* goto zone */
 	DEBUG(E_USER_STRAT,"R1, strat #%d: goto zone %s (%d, %d)",
-						strat_smart[MAIN_ROBOT].current_strategy, 
+						strat_smart[MAIN_ROBOT].current_strategy,
 						get_zone_name(zone_num), zone_num, strat_infos.zones[zone_num].prio);
 
 
@@ -720,7 +603,7 @@ uint8_t strat_smart_main_robot(void)
 
 	/* work on zone */
 	DEBUG(E_USER_STRAT,"R1, strat #%d: work on zone %s (%d, %d)",
-						strat_smart[MAIN_ROBOT].current_strategy, 
+						strat_smart[MAIN_ROBOT].current_strategy,
 						get_zone_name(zone_num), zone_num, strat_infos.zones[zone_num].prio);
 
 	/* work */
@@ -775,9 +658,9 @@ uint8_t strat_wait_sync_secondary_robot(void)
 {
     int16_t c;
 
-    /* XXX HACK */	
+    /* XXX HACK */
     //return 0;
-    
+
 	/* manual syncro */
 	if (strat_infos.debug_step)
 	{
@@ -804,7 +687,7 @@ uint8_t strat_wait_sync_secondary_robot(void)
 
 static uint8_t strat_secondary_robot_on = 0;
 
-void strat_secondary_robot_enable (void) 
+void strat_secondary_robot_enable (void)
 {
 	uint8_t flags;
 
@@ -813,7 +696,7 @@ void strat_secondary_robot_enable (void)
 	IRQ_UNLOCK(flags);
 }
 
-void strat_secondary_robot_disable (void) 
+void strat_secondary_robot_disable (void)
 {
 	uint8_t flags;
 
@@ -822,7 +705,7 @@ void strat_secondary_robot_disable (void)
 	IRQ_UNLOCK(flags);
 }
 
-uint8_t strat_secondary_robot_is_enabled (void) 
+uint8_t strat_secondary_robot_is_enabled (void)
 {
 	return strat_secondary_robot_on;
 }
@@ -876,20 +759,20 @@ uint8_t strat_smart_secondary_robot(void)
                 }
 				break;
             }
-            
+
             /* next state */
-            state = GET_NEW_ZONE;        
+            state = GET_NEW_ZONE;
 
 #ifdef DEBUG_STRAT_SECONDARY
 			state_saved = state;
-			DEBUG(E_USER_STRAT,"R2, new state is %d", state);		
+			DEBUG(E_USER_STRAT,"R2, new state is %d", state);
 #endif
-			/* XXX: continue without break */	
+			/* XXX: continue without break */
 			//break;
 
 		case GET_NEW_ZONE:
 			zone_num = strat_get_new_zone(SEC_ROBOT);
-			
+
 			/* if no more zones, goto SYNCRONIZATION state */
 			if(zone_num == STRAT_NO_MORE_ZONES ) {
 				if (!no_more_zones) {
@@ -908,13 +791,13 @@ uint8_t strat_smart_secondary_robot(void)
 				strat_set_next_sec_strategy();
 				break;
 			}
-            
+
 
 			DEBUG(E_USER_STRAT,"R2, strat #%d: get zone %s (%d, %d)",
-						strat_smart[SEC_ROBOT].current_strategy, 
+						strat_smart[SEC_ROBOT].current_strategy,
 						get_zone_name(zone_num), zone_num, strat_infos.zones[zone_num].prio);
 
-			
+
 			/* update statistics */
 			strat_smart[SEC_ROBOT].goto_zone = zone_num;
 
@@ -923,27 +806,27 @@ uint8_t strat_smart_secondary_robot(void)
 
 #ifdef DEBUG_STRAT_SECONDARY
 			state_saved = state;
-			DEBUG(E_USER_STRAT,"R2, new state is %d", state);	
-#endif		
-			/* XXX: continue without break */	
+			DEBUG(E_USER_STRAT,"R2, new state is %d", state);
+#endif
+			/* XXX: continue without break */
 			//break;
 
 		case GOTO:
 			/* goto zone */
 			DEBUG(E_USER_STRAT,"R2, strat #%d: goto zone %s (%d, %d)",
-						strat_smart[SEC_ROBOT].current_strategy, 
+						strat_smart[SEC_ROBOT].current_strategy,
 						get_zone_name(zone_num), zone_num, strat_infos.zones[zone_num].prio);
 
 			err = strat_goto_zone(SEC_ROBOT, zone_num);
-            
-            /* END_TRAJ means "no where to go", go directly to work */            
+
+            /* END_TRAJ means "no where to go", go directly to work */
             if (TRAJ_SUCCESS(err)) {
                 state = WORK;
                 break;
             }
 			else if (err) {
 				/* XXX never shoud be reached, infinite loop */
-				DEBUG(E_USER_STRAT,"R2, ERROR, goto returned %s at line %d", get_err(err), __LINE__);				
+				DEBUG(E_USER_STRAT,"R2, ERROR, goto returned %s at line %d", get_err(err), __LINE__);
 				state = GET_NEW_ZONE;
 				break;
 			}
@@ -963,7 +846,7 @@ uint8_t strat_smart_secondary_robot(void)
 
 			if(received_ack == 1)
 			{
-				/* ACK, wait end trajectory */	
+				/* ACK, wait end trajectory */
 				us = time_get_us2();
 				state = GOTO_WAIT_END;
 			}
@@ -1007,7 +890,7 @@ uint8_t strat_smart_secondary_robot(void)
 			state_old = state;
 			DEBUG(E_USER_STRAT,"R2, new state is %d", state);
 #endif
-			/* XXX: continue without break */			
+			/* XXX: continue without break */
 			//break;
 
 		case WORK:
@@ -1017,12 +900,12 @@ uint8_t strat_smart_secondary_robot(void)
 
 			/* work */
 			DEBUG(E_USER_STRAT,"R2, strat #%d: work on zone %s (%d, %d)",
-						strat_smart[SEC_ROBOT].current_strategy, 
+						strat_smart[SEC_ROBOT].current_strategy,
 						get_zone_name(zone_num), zone_num, strat_infos.zones[zone_num].prio);
 
 			err = strat_work_on_zone(SEC_ROBOT, zone_num);
 
-            /* END_TRAJ means "no where to work", check zone and go directly to synchronize */            
+            /* END_TRAJ means "no where to work", check zone and go directly to synchronize */
             if (TRAJ_SUCCESS(err)) {
 		        /* update statistics */
 		        strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
@@ -1053,7 +936,7 @@ uint8_t strat_smart_secondary_robot(void)
 
 			if(received_ack == 1)
 			{
-				/* ACK, wait end work */	
+				/* ACK, wait end work */
 				us = time_get_us2();
 				state = WORK_WAIT_END;
 			}
@@ -1186,5 +1069,3 @@ void strat_opp_tracking (void)
 	}
 #endif
 }
-
-
