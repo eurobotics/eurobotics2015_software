@@ -358,11 +358,8 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 		case ZONE_MY_STAND_GROUP_1:
 			trajectory_d_rel(&mainboard.traj, 500);
 			err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-			//if (!TRAJ_SUCCESS(err))
-			//   ERROUT(err);
 
 
-#if 0
 			/* TODO: call specific function for stand group 1 */
 			err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_4_X),
 											   MY_STAND_4_Y,
@@ -374,7 +371,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 		    if (!TRAJ_SUCCESS(err))
 			   ERROUT(err);
 
-
+#if 1
 			err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_5_X),
 											   MY_STAND_5_Y,
 											   COLOR_INVERT(SIDE_LEFT),
@@ -403,6 +400,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 											   COLOR_A_REL(-10),                /* blade angle */
 											   SPEED_DIST_SLOW,                 /* harvest speed */
 											   STANDS_HARVEST_BACK_INIT_POS);	/* flags */
+#endif			
 			break;
 
 		case ZONE_MY_STAND_GROUP_3:
@@ -433,10 +431,6 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 													COLOR_INVERT(SIDE_LEFT));
 			break;
 
-#endif
-		case ZONE_MY_STAND_GROUP_2:
-		case ZONE_MY_STAND_GROUP_3:
-		case ZONE_MY_STAND_GROUP_4:
 		case ZONE_MY_POPCORNMAC:
 		case ZONE_OPP_POPCORNMAC:
 
@@ -450,7 +444,6 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 		case ZONE_MY_CLAP_1:
 		case ZONE_MY_CLAP_2:
 		case ZONE_MY_CLAP_3:
-		case ZONE_MY_HOME:
 
 			DEBUG(E_USER_STRAT, "R1, Working on zone ... ");
 			trajectory_turnto_xy (&mainboard.traj,

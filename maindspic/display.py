@@ -11,11 +11,25 @@ AREA_Y = 2000.
 ROBOT_HEIGHT = 350.0
 WALL_HEIGHT = 70.0
 
+#define ROBOT_LENGTH            288.5
+#define ROBOT_WIDTH             330.0
+#define ROBOT_CENTER_TO_FRONT   167.0
+#define ROBOT_CENTER_TO_BACK    121.5
+#define ROBOT_CENTER_TO_MOUTH	105.0
+
 ROBOT_WIDTH  = 330.0
-ROBOT_LENGTH = 282.0
-ROBOT_X_OFFSET = 21.75
-ROBOT2_WIDTH  = 230.0
-ROBOT2_LENGTH = 150.0
+ROBOT_LENGTH = 288.5
+ROBOT_X_OFFSET = ROBOT_LENGTH/2.0 - 121.5
+ROBOT_LENGTH_MOUTH = 2*(105.0-ROBOT_X_OFFSET)
+
+#define ROBOT_LENGTH      	    163.
+#define ROBOT_WIDTH 	    	210.
+#define ROBOT_CENTER_TO_BACK    105.0
+#define ROBOT_CENTER_TO_FRONT   (ROBOT_LENGTH-ROBOT_CENTER_TO_BACK)
+
+ROBOT2_WIDTH  = 210.0
+ROBOT2_LENGTH = 163.0
+ROBOT2_X_OFFSET = -ROBOT2_LENGTH/2.0 + (163-105)
 
 area = [ (0.0, 0.0, -0.2), (3000.0, 2000.0, 0.2) ]
 areasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , area)
@@ -27,8 +41,12 @@ scene.autoscale = 1
 save_pos = []
 save_pos2 = []
 
-robot = box(color=(0.4, 0.4, 0.4))
-robot2 = box(color=(0.4, 0.4, 0.4))
+robot = box(color=(1.0, 1.0, 1.0))
+robot.opacity = 0.6
+robot_mouth = box(color=(1.0, 1.0, 1.0))
+
+robot2 = box(color=(1.0, 1.0, 1.0))
+robot2.opacity = 0.8
 
 steam_shovel = box(color=(0.6, 0.6, 0.6))
 
@@ -392,15 +410,26 @@ def set_robot():
         tmp_y = -robot_y + AREA_Y/2
         tmp_a = robot_a
 
-    robot.pos = (tmp_x+ROBOT_X_OFFSET, tmp_y, ROBOT_HEIGHT/2)
+	"""
+    robot.pos = (tmp_x, tmp_y, ROBOT_HEIGHT/2)
     axis = (math.cos(tmp_a*math.pi/180),
             math.sin(tmp_a*math.pi/180),
             0)
 
     robot.axis = axis
     robot.size = (ROBOT_LENGTH, ROBOT_WIDTH, ROBOT_HEIGHT)
-    
+	"""
 
+    #robot mouth box
+    robot_mouth.pos = (tmp_x, tmp_y, ROBOT_HEIGHT/2)
+    axis = (math.cos(tmp_a*math.pi/180),
+            math.sin(tmp_a*math.pi/180),
+            0)
+
+    robot_mouth.axis = axis
+    robot_mouth.size = (ROBOT_LENGTH_MOUTH, ROBOT_WIDTH, ROBOT_HEIGHT)
+    
+    """
 	# Left stick
     lstick.pos = (tmp_x + ROBOT_X_OFFSET + (lstick_offset * 60 ) * math.cos((tmp_a-90)*math.pi/180),
                     tmp_y + (lstick_offset * 60) * math.sin((tmp_a-90)*math.pi/180),
@@ -432,6 +461,7 @@ def set_robot():
 		    ROBOT_HEIGHT/4)
 
     harvester.axis = axis 
+    """
     # save position
     save_pos.append((robot.pos.x, robot.pos.y, tmp_a))
 
@@ -443,7 +473,6 @@ def set_robot():
     if robot_trail_l > max_trail:
         robot_trail_list = robot_trail_list[robot_trail_l - max_trail:]
     robot_trail.pos = robot_trail_list
-
 
 
 def set_steam_shovel():
@@ -467,6 +496,7 @@ def set_robot2():
         tmp_y = -robot2_y + AREA_Y/2
         tmp_a = robot2_a
 
+    #robot2.pos = (tmp_x, tmp_y, ROBOT_HEIGHT/2)
     robot2.pos = (tmp_x, tmp_y, ROBOT_HEIGHT/2)
     axis = (math.cos(tmp_a*math.pi/180),
             math.sin(tmp_a*math.pi/180),
@@ -475,6 +505,7 @@ def set_robot2():
     robot2.axis = axis
     robot2.size = (ROBOT2_LENGTH, ROBOT2_WIDTH, ROBOT_HEIGHT)
     
+    """
     steam_shovel.pos = (tmp_x + (steam_shovel_offset * 15) * math.cos((tmp_a)*math.pi/180),
 		    tmp_y + (steam_shovel_offset * 15) * math.sin((tmp_a)*math.pi/180),
     ROBOT_HEIGHT/6)
@@ -482,7 +513,8 @@ def set_robot2():
             math.sin(tmp_a*math.pi/180),
             0)
     steam_shovel.size=(70, ROBOT2_WIDTH, 15)
-    
+    """
+
     # save position
     save_pos2.append((robot2.pos.x, robot2.pos.y, tmp_a))
 
@@ -537,7 +569,7 @@ while True:
                 if m:
                     robot_x = int(m.groups()[0])
                     robot_y = int(m.groups()[1])
-                    robot_a = int(m.groups()[2])
+                    robot_a = int(m.groups()[2])                  
                     set_robot()
                     # XXX HACK, send pos robot mate
                     #fw2.write("r2nd %d %d %d"%(int(robot_x), int(robot_y), int(robot_a)))
