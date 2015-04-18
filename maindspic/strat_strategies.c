@@ -155,7 +155,9 @@ void strat_change_sequence_base(uint8_t robot){
 #if 0
 				case 2:
 					strat_update_priorities(9,ZONE_MY_STAND_GROUP_1,ZONE_MY_CLAP_2,ZONE_POPCORNCUP_2,ZONE_MY_STAND_GROUP_2,ZONE_MY_CLAP_1,ZONE_MY_STAND_GROUP_3,
-#endif											ZONE_MY_POPCORNMAC,ZONE_MY_STAND_GROUP_4,ZONE_MY_HOME);
+											ZONE_MY_POPCORNMAC,ZONE_MY_STAND_GROUP_4,ZONE_MY_HOME);
+#endif
+
 				default:
 					break;
 			}

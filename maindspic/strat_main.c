@@ -487,7 +487,20 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 			break;
 
 
+		case ZONE_MY_CLAP_1:
+			err = strat_close_clapperboards (COLOR_X(strat_infos.zones[zone_num].x),
+									   strat_infos.zones[zone_num].y, 
+									   COLOR_INVERT(SIDE_RIGHT), 0);
+			break;
+
+		case ZONE_MY_CLAP_2:
+			err = strat_close_clapperboards (COLOR_X(strat_infos.zones[zone_num].x),
+									   strat_infos.zones[zone_num].y, 
+									   COLOR_INVERT(SIDE_RIGHT), 0);
+			break;
+
 		/* not yet or don't know how to work in the zones */
+		case ZONE_MY_CLAP_3:
 		case ZONE_MY_STAND_GROUP_3:
 
 		case ZONE_MY_POPCORNMAC:
@@ -498,10 +511,6 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 
 		case ZONE_MY_CINEMA_UP:
 		case ZONE_MY_CINEMA_DOWN:
-
-		case ZONE_MY_CLAP_1:
-		case ZONE_MY_CLAP_2:
-		case ZONE_MY_CLAP_3:
 
 			DEBUG(E_USER_STRAT, "R1, Working on zone ... ");
 			trajectory_turnto_xy (&mainboard.traj,

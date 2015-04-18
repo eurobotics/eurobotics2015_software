@@ -287,7 +287,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_CLAP,
 		MY_CLAP_3_X,  MY_CLAP_Y,
 		2230, 2530, 0, 300,
-		MY_CLAP_3_X, ROBOT_SEC_OBS_CLERANCE + 100, /* platform + clearance */
+		MY_CLAP_3_X, MY_CUP_2_Y,
 		0, 0,
 //		0, (9000*1000L),
 		SEC_ROBOT

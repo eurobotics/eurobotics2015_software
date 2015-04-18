@@ -284,8 +284,8 @@ int main(void)
 	pwm_servo_init(&gen.pwm_servo_oc1, 1, 600, 2400);
 	pwm_servo_init(&gen.pwm_servo_oc2, 2, 600, 2400);
 	pwm_servo_enable();
-	pwm_servo_set(&gen.pwm_servo_oc1, 500);
-	pwm_servo_set(&gen.pwm_servo_oc2, 500);
+	pwm_servo_set(&gen.pwm_servo_oc1, 0);
+	pwm_servo_set(&gen.pwm_servo_oc2, 0);
 
 	/* MAIN TIMER */
 	main_timer_init();
