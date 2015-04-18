@@ -150,130 +150,31 @@ void strat_change_sequence_base(uint8_t robot){
 		strat_smart[robot].current_strategy ++;
 		switch(strat_smart[robot].current_strategy){
 				case 1:
-					strat_update_priorities(robot,10,ZONE_MY_STAND_GROUP_1,ZONE_POPCORNCUP_3,ZONE_MY_CLAP_2,ZONE_POPCORNCUP_2,ZONE_MY_STAND_GROUP_2,
+					strat_update_priorities(10,ZONE_MY_STAND_GROUP_1,ZONE_POPCORNCUP_3,ZONE_MY_CLAP_2,ZONE_POPCORNCUP_2,ZONE_MY_STAND_GROUP_2,
 											ZONE_MY_CLAP_1,ZONE_MY_STAND_GROUP_3,ZONE_MY_POPCORNMAC,ZONE_MY_STAND_GROUP_4,ZONE_MY_HOME);
 					break;
 				case 2:
-					strat_update_priorities(robot,9,ZONE_MY_STAND_GROUP_1,ZONE_MY_CLAP_2,ZONE_POPCORNCUP_2,ZONE_MY_STAND_GROUP_2,ZONE_MY_CLAP_1,ZONE_MY_STAND_GROUP_3,
+					strat_update_priorities(9,ZONE_MY_STAND_GROUP_1,ZONE_MY_CLAP_2,ZONE_POPCORNCUP_2,ZONE_MY_STAND_GROUP_2,ZONE_MY_CLAP_1,ZONE_MY_STAND_GROUP_3,
 											ZONE_MY_POPCORNMAC,ZONE_MY_STAND_GROUP_4,ZONE_MY_HOME);
 				default:
 					break;
 			}
 	}
 	else{
+		strat_smart[robot].current_strategy ++;
 		switch(strat_smart[robot].current_strategy){
-				strat_smart[robot].current_strategy ++;
 				case 1:
-					strat_update_priorities(robot,6,ZONE_MY_HOME_OUTSIDE,ZONE_POPCORNCUP_1,ZONE_MY_CLAP_3,ZONE_MY_CINEMA_DOWN,ZONE_MY_CINEMA_UP,ZONE_MY_STAIRS);
+					strat_update_priorities(6,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, ZONE_MY_CLAP_3, ZONE_MY_CINEMA_DOWN, ZONE_MY_CINEMA_UP, ZONE_MY_STAIRWAY);
 					break;
 				case 2:
-					strat_update_priorities(robot,5,ZONE_MY_HOME_OUTSIDE,ZONE_POPCORNCUP_1,ZONE_MY_CINEMA_UP,ZONE_MY_CINEMA_DOWN,ZONE_MY_STAIRS);
+					strat_update_priorities(6,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, ZONE_MY_CINEMA_UP, ZONE_MY_CLAP_3, ZONE_MY_CINEMA_DOWN, ZONE_MY_STAIRWAY);
 					break;
 				case 3:
-					strat_update_priorities(robot,5,ZONE_MY_HOME_OUTSIDE,ZONE_POPCORNCUP_1,ZONE_MY_CINEMA_DOWN,ZONE_MY_CLAP_3,ZONE_MY_CINEMA_UP,ZONE_MY_STAIRS);
+					strat_update_priorities(6,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, ZONE_MY_CINEMA_DOWN, ZONE_MY_CINEMA_UP, ZONE_MY_CLAP_3, ZONE_MY_STAIRWAY);;
+					strat_smart[robot].current_strategy=0;
 					break;
 				default:
 					break;
 			}
 	}
 }
-
-
-
-#if 0
-void set_strat_main_1(void)
-{
-	strat_smart[MAIN_ROBOT].current_strategy = 1;
-
-	strat_infos.zones[ZONE_MY_STAND_GROUP_1].prio = 100;
-	strat_infos.zones[ZONE_POPCORNCUP_3].prio = 90;
-
-	strat_infos.zones[ZONE_MY_CLAP_2].prio = 80;
-	strat_infos.zones[ZONE_POPCORNCUP_2].prio = 70;
-	strat_infos.zones[ZONE_MY_STAND_GROUP_2].prio = 60;
-	strat_infos.zones[ZONE_MY_CLAP_1].prio = 50;
-
-	strat_infos.zones[ZONE_MY_STAND_GROUP_3].prio = 40;
-	strat_infos.zones[ZONE_MY_POPCORNMAC].prio = 30;
-	strat_infos.zones[ZONE_MY_STAND_GROUP_4].prio = 20;
-
-	strat_infos.zones[ZONE_MY_HOME].prio = 10;
-}
-
-void set_strat_main_2(void){
-	strat_smart[MAIN_ROBOT].current_strategy = 1;
-
-	strat_infos.zones[ZONE_MY_STAND_GROUP_1].prio = 100;
-
-	strat_infos.zones[ZONE_MY_CLAP_2].prio = 90;
-	strat_infos.zones[ZONE_POPCORNCUP_2].prio = 80;
-	strat_infos.zones[ZONE_MY_STAND_GROUP_2].prio = 70;
-	strat_infos.zones[ZONE_MY_CLAP_1].prio = 60;
-
-	strat_infos.zones[ZONE_MY_STAND_GROUP_3].prio = 50;
-	strat_infos.zones[ZONE_MY_POPCORNMAC].prio = 40;
-	strat_infos.zones[ZONE_MY_STAND_GROUP_4].prio = 30;
-
-	strat_infos.zones[ZONE_MY_HOME].prio = 10;
-
-}
-/*
- * strat Homologation
-*/
-void set_strat_sec_homologation(void){
-
-	strat_smart[SEC_ROBOT].current_strategy = 0;
-
-	strat_infos.zones[ZONE_MY_HOME_OUTSIDE].prio = 110;
-	strat_infos.zones[ZONE_POPCORNCUP_1].prio = 100;
-	strat_infos.zones[ZONE_MY_CLAP_3].prio = 90;
-}
-
-
-void set_strat_main_homologation(void){
-	strat_smart[MAIN_ROBOT].current_strategy = 0;
-	strat_infos.zones[ZONE_MY_STAND_GROUP_1].prio = 100;
-
-	strat_infos.zones[ZONE_MY_CLAP_2].prio = 80;
-	strat_infos.zones[ZONE_POPCORNCUP_2].prio = 70;
-	strat_infos.zones[ZONE_MY_STAND_GROUP_2].prio = 60;
-	strat_infos.zones[ZONE_MY_CLAP_1].prio = 50;
-
-	strat_infos.zones[ZONE_MY_HOME].prio = 10;
-}
-
-void set_strat_sec_1(void){
-	strat_smart[SEC_ROBOT].current_strategy = 1;
-
-	strat_infos.zones[ZONE_MY_HOME_OUTSIDE].prio = 110;
-
-	strat_infos.zones[ZONE_POPCORNCUP_1].prio = 100;
-
-	strat_infos.zones[ZONE_MY_CLAP_3].prio = 90;
-	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 80;
-	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 70;
-	strat_infos.zones[ZONE_MY_STAIRS].prio = 60;
-}
-
-void set_strat_sec_2(void){
-	strat_smart[SEC_ROBOT].current_strategy = 2;
-	//DEBUG(E_USER_STRAT,"strat_sec_2");
-	strat_infos.zones[ZONE_POPCORNCUP_1].prio = 100;
-	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 90;
-
-	strat_infos.zones[ZONE_MY_CLAP_3].prio = 80;
-	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 70;
-	strat_infos.zones[ZONE_MY_STAIRS].prio = 60;
-}
-
-void set_strat_sec_3(void){
-	strat_smart[SEC_ROBOT].current_strategy = 3;
-	//DEBUG(E_USER_STRAT,"strat_sec_3");
-
-	strat_infos.zones[ZONE_POPCORNCUP_1].prio = 100;
-	strat_infos.zones[ZONE_MY_CINEMA_DOWN].prio = 90;
-	strat_infos.zones[ZONE_MY_CLAP_3].prio = 80;
-	strat_infos.zones[ZONE_MY_CINEMA_UP].prio = 70;
-	strat_infos.zones[ZONE_MY_STAIRS].prio = 60;
-}
-#endif
