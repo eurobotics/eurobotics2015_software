@@ -9,12 +9,12 @@ SRC += commands_cs.c commands_mainboard.c commands_traj.c commands.c
 SRC += i2c_mem.c i2c_protocol.c sensor.c actuator.c cs.c
 SRC += strat_utils.c strat_base.c strat_avoid.c strat.c wt11.c
 SRC += bt_protocol.c
-SRC += strat_main.c strat_begin.c strat_spotlight.c
+SRC += strat_main.c strat_begin.c strat_spotlight.c strat_strategies.c
 ifeq ($(H),1)
 SRC += robotsim.c
 endif
 
-ASRC = 
+ASRC =
 
 CFLAGS += -Wall
 #-Werror -Wno-unused-but-set-variable -Wno-unused-value -Wno-unused-result
@@ -29,4 +29,3 @@ AVRDUDE_DELAY=50
 program_noerase: $(TARGET).$(FORMAT_EXTENSION) $(TARGET).eep
 	echo $(AVRDUDE) -D -V $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH) $(AVRDUDE_WRITE_EEPROM) ;\
 	$(AVRDUDE) -D -V $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH) $(AVRDUDE_WRITE_EEPROM) ;\
-

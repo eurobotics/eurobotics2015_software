@@ -1114,12 +1114,24 @@ static void cmd_strat_conf_parsed(void *parsed_result, void *data)
 
     if (!strcmp_P(res->arg1, PSTR("base")))
     {
-
         /* flags */
         strat_infos.conf.flags = 0;
-#ifndef HOMOLOGATION
+	   strat_infos.match_strategy=STR_BASE;
+	   strat_smart[MAIN_ROBOT].current_strategy=0;
+	   strat_smart[SEC_ROBOT].current_strategy=0;
+        strat_set_next_sec_strategy();
+        strat_set_next_main_strategy();
+    }
 
-#endif
+    if (!strcmp_P(res->arg1, PSTR("homologation")))
+    {
+        /* flags */
+        strat_infos.conf.flags = 0;
+	   strat_infos.match_strategy=STR_HOMOLOGATION;
+	   strat_smart[MAIN_ROBOT].current_strategy=0;
+	   strat_smart[SEC_ROBOT].current_strategy=0;
+        strat_set_next_sec_strategy();
+        strat_set_next_main_strategy();
     }
 
     strat_infos.dump_enabled = 1;
@@ -1128,7 +1140,7 @@ static void cmd_strat_conf_parsed(void *parsed_result, void *data)
 
 prog_char str_strat_conf_arg0[] = "strat_conf";
 parse_pgm_token_string_t cmd_strat_conf_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_strat_conf_result, arg0, str_strat_conf_arg0);
-prog_char str_strat_conf_arg1[] = "show#base";
+prog_char str_strat_conf_arg1[] = "show#base#homologation";
 parse_pgm_token_string_t cmd_strat_conf_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_strat_conf_result, arg1, str_strat_conf_arg1);
 
 prog_char help_strat_conf[] = "configure specific strat for a match";
@@ -1318,7 +1330,7 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 
 
 	/* go and work */
-    if (zone_num < ZONES_MAX) 
+    if (zone_num < ZONES_MAX)
 	{
 		if (strat_infos.zones[zone_num].robot==MAIN_ROBOT) {
 
@@ -1413,32 +1425,24 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 	 */
     if (!strcmp_P(res->arg1, PSTR("strat_ptinto"))) {
 
-		/* select strategy number */
-		if(res->arg2==1){
-			set_strat_main_1();
-		}
 
 		/* play */
 		strat_secondary_robot_disable ();
 		err = strat_smart_main_robot();
 		printf_P(PSTR("strat smart returned %s\r\n"), get_err(err));
-		ERROUT(err);		
+		ERROUT(err);
     }
     else if (!strcmp_P(res->arg1, PSTR("strat_tirantes"))) {
 
-		/* select strategy number */
-		if(res->arg2==1){
-			set_strat_sec_1();
-		}
 
 		/* play */
 		strat_secondary_robot_disable ();
 		do {
 			time_wait_ms(200);
 			err = strat_smart_secondary_robot();
-		} while (!err);		
+		} while (!err);
 		printf_P(PSTR("strat smart returned %s\r\n"), get_err(err));
-		ERROUT(err);		
+		ERROUT(err);
     }
 
 	/**
@@ -1539,6 +1543,3 @@ parse_pgm_inst_t cmd_subtraj2 = {
         NULL,
     },
 };
-
-
-
