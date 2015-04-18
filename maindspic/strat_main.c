@@ -371,7 +371,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 		    if (!TRAJ_SUCCESS(err))
 			   ERROUT(err);
 
-
+#if 1
 			err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_5_X),
 											   MY_STAND_5_Y,
 											   COLOR_INVERT(SIDE_LEFT),
@@ -400,6 +400,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 											   COLOR_A_REL(-10),                /* blade angle */
 											   SPEED_DIST_SLOW,                 /* harvest speed */
 											   STANDS_HARVEST_BACK_INIT_POS);	/* flags */
+#endif			
 			break;
 
 		case ZONE_MY_STAND_GROUP_3:

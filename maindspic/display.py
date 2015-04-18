@@ -20,7 +20,7 @@ WALL_HEIGHT = 70.0
 ROBOT_WIDTH  = 330.0
 ROBOT_LENGTH = 288.5
 ROBOT_X_OFFSET = ROBOT_LENGTH/2.0 - 121.5
-ROBOT_LENGTH_MOUTH = 2*(105.0-ROBOT_X_OFFSET) 
+ROBOT_LENGTH_MOUTH = 2*(105.0-ROBOT_X_OFFSET)
 
 #define ROBOT_LENGTH      	    163.
 #define ROBOT_WIDTH 	    	210.
@@ -29,7 +29,7 @@ ROBOT_LENGTH_MOUTH = 2*(105.0-ROBOT_X_OFFSET)
 
 ROBOT2_WIDTH  = 210.0
 ROBOT2_LENGTH = 163.0
-ROBOT2_X_OFFSET = ROBOT2_LENGTH/2.0 + (163-105)
+ROBOT2_X_OFFSET = -ROBOT2_LENGTH/2.0 + (163-105)
 
 area = [ (0.0, 0.0, -0.2), (3000.0, 2000.0, 0.2) ]
 areasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , area)
@@ -43,7 +43,7 @@ save_pos2 = []
 
 robot = box(color=(1.0, 1.0, 1.0))
 robot.opacity = 0.6
-robot_mouth = box(color=(0.5, 0.1, 0.1))
+robot_mouth = box(color=(1.0, 1.0, 1.0))
 
 robot2 = box(color=(1.0, 1.0, 1.0))
 robot2.opacity = 0.8
@@ -410,16 +410,18 @@ def set_robot():
         tmp_y = -robot_y + AREA_Y/2
         tmp_a = robot_a
 
-    robot.pos = (tmp_x+ROBOT_X_OFFSET, tmp_y, ROBOT_HEIGHT/2)
+	"""
+    robot.pos = (tmp_x, tmp_y, ROBOT_HEIGHT/2)
     axis = (math.cos(tmp_a*math.pi/180),
             math.sin(tmp_a*math.pi/180),
             0)
 
     robot.axis = axis
     robot.size = (ROBOT_LENGTH, ROBOT_WIDTH, ROBOT_HEIGHT)
+	"""
 
     #robot mouth box
-    robot_mouth.pos = (tmp_x+ROBOT_X_OFFSET, tmp_y, ROBOT_HEIGHT/2)
+    robot_mouth.pos = (tmp_x, tmp_y, ROBOT_HEIGHT/2)
     axis = (math.cos(tmp_a*math.pi/180),
             math.sin(tmp_a*math.pi/180),
             0)
@@ -495,7 +497,7 @@ def set_robot2():
         tmp_a = robot2_a
 
     #robot2.pos = (tmp_x, tmp_y, ROBOT_HEIGHT/2)
-    robot2.pos = (tmp_x+ROBOT2_X_OFFSET, tmp_y, ROBOT_HEIGHT/2)
+    robot2.pos = (tmp_x, tmp_y, ROBOT_HEIGHT/2)
     axis = (math.cos(tmp_a*math.pi/180),
             math.sin(tmp_a*math.pi/180),
             0)
