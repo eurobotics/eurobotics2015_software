@@ -324,6 +324,8 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 
 	else if (cmd_id == BT_AUTOPOS)
 		bt_send_ascii_cmd (robot_2nd.link_id, "position autoset");
+	else if (cmd_id == BT_MATCHTIMER)
+		bt_send_ascii_cmd (robot_2nd.link_id, "start match timer");
 
 	else if (cmd_id == BT_GOTO_XY_ABS)
 		bt_send_ascii_cmd (robot_2nd.link_id, "bt_goto xy_abs %d %d %d", arg0, arg1, (arg0 + arg1));
@@ -474,6 +476,12 @@ inline void bt_robot_2nd_set_color (void) {
 inline void bt_robot_2nd_autopos (void) {
 	bt_robot_2nd_cmd_no_wait_ack (BT_AUTOPOS, 0, 0);
 }
+
+/* start macth timer */
+inline void bt_robot_2nd_start_matchtimer (void) {
+	bt_robot_2nd_cmd_no_wait_ack (BT_MATCHTIMER, 0, 0);
+}
+
 
 /* goto xy_abs */
 inline void bt_robot_2nd_goto_xy_abs (int16_t x, int16_t y) {

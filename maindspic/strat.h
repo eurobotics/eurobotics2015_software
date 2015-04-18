@@ -339,6 +339,7 @@ struct strat_infos {
 	/* debug */
 	uint8_t dump_enabled;
 	uint8_t debug_step;
+	uint8_t match_ends;
 
 	/* bounding box area */
 	struct bbox area_bbox;

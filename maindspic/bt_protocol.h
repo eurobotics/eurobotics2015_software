@@ -43,6 +43,7 @@
 #define BT_CLAPPERBOARD					12
 #define BT_GOTO_FW_XY_ABS				13
 #define BT_GOTO_BW_XY_ABS				14
+#define BT_MATCHTIMER					15
 
 
 /* send and receive commands to/from bt devices, periodic dev status pulling */
@@ -80,6 +81,9 @@ uint8_t bt_robot_2nd_cmd (uint8_t cmd_id, int16_t arg0, int16_t arg1);
 
 /* auto set possition */
 void bt_robot_2nd_autopos (void);
+
+/* start macth timer */
+void bt_robot_2nd_start_matchtimer (void);
 
 /* set color */
 void bt_robot_2nd_set_color (void);

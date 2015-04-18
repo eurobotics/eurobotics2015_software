@@ -73,7 +73,7 @@ uint8_t i2c_slavedspic_get_status(void);
 
 /****** SIMPLE ACTUATORS */
 
-/* TODO */
+int8_t i2c_slavedspic_mode_blades(uint8_t side, uint8_t mode);
 
 /****** MULTIPLE ACTUATORS */
 

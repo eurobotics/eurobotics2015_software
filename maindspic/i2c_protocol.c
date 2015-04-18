@@ -628,7 +628,22 @@ uint8_t i2c_slavedspic_get_status(void)
 }
 
 /****** SIMPLE ACTUATORS */
-/* TODO */
+
+int8_t i2c_slavedspic_mode_blades(uint8_t side, uint8_t mode)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_STANDS_BLADE;
+	buf.stands_blade.type = side;
+	buf.stands_blade.mode = mode;
+	buf.stands_blade.offset = 0;
+	
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
 
 /****** MULTIPLE ACTUATORS */
 

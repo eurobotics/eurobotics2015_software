@@ -207,7 +207,7 @@ void strat_init(void)
 
 	/* used in strat_base for END_TIMER */
 	mainboard.flags = DO_ENCODERS | DO_CS | DO_RS | 
-		DO_POS | DO_BD | DO_TIMER | DO_POWER | DO_BEACON;
+		DO_POS | DO_BD | DO_TIMER | DO_POWER | DO_BEACON | DO_TIMER;
 }
 
 

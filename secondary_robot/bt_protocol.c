@@ -163,15 +163,6 @@ void bt_strat_exit (void)
 	strat_exit();
 }
 
-
-void bt_strat_init (void)
-{
-	/* set ACK */
-	bt_status_set_cmd_ack (0);
-
-	strat_init();
-}
-
 void bt_auto_position (void)
 {
 	/* implicit checksum in cmdline because arguments are ascii tokens
@@ -195,6 +186,17 @@ void bt_set_color (uint8_t color)
 	/* execute command, can be a variable assigment, or a signe o periodic
        schedule event */
 	mainboard.our_color = color;
+}
+
+void bt_strat_init (void)
+{
+	/* implicit checksum in cmdline because arguments are acii tokens
+	   pe. "color yellow" or "color red" */
+
+	/* set ACK */
+	bt_status_set_cmd_ret (0);
+
+	strat_init();
 }
 
 void bt_trajectory_goto_forward_xy_abs (int16_t x, int16_t y, int16_t args_checksum)

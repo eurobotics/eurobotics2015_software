@@ -144,9 +144,6 @@ static void do_cs(void *dummy)
 			strat_exit();
 
 			printf_P(PSTR("END OF TIME\r\n"));
-	
-			/* never returns */
-			while(1);
 		}
 	}
 #endif	

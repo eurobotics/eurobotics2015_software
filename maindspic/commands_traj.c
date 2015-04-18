@@ -1333,7 +1333,6 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
     if (zone_num < ZONES_MAX)
 	{
 		if (strat_infos.zones[zone_num].robot==MAIN_ROBOT) {
-
             /* goto */
             err = strat_goto_zone(MAIN_ROBOT, zone_num);
 		    printf_P(PSTR("goto returned %s\r\n"), get_err(err));
