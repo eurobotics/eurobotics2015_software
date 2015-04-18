@@ -239,7 +239,7 @@ void maindspic_cs_init(void)
 	trajectory_set_speed(&mainboard.traj, SPEED_DIST_FAST, SPEED_ANGLE_FAST);	
 	
 	/* distance window, angle window, angle start */
-  	trajectory_set_windows(&mainboard.traj, 200., 5.0, 30.0); //50., 5.0, 5.0
+  	trajectory_set_windows(&mainboard.traj, 100., 5.0, 30.0); //50., 5.0, 5.0
 
 	/* ---- CS angle */
 	/* PID */
