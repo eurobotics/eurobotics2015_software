@@ -69,14 +69,16 @@
 		goto end;		 \
 	} while(0)
 
-#define ROBOT_CENTER_CUP_FRONT  0
-#define ROBOT_CENTER_CUP_REAR   0
+#define ROBOT_CENTER_CUP_FRONT  212
+#define ROBOT_CENTER_CUP_REAR   119
+
+#define POPCORN_FRONT_READY_TIMEOUT 3000
+#define POPCORN_REAR_READY_TIMEOUT  1000
 
 /**
- *	Harvest orphan stands
+ *	Harvest popcorn cups
  *	return END_TRAJ if the work is done, err otherwise
  */
-
 uint8_t strat_harvest_popcorn_cup (int16_t x, int16_t y, uint8_t side, uint8_t flags)
 {
    	uint8_t err = 0;
@@ -88,42 +90,57 @@ uint8_t strat_harvest_popcorn_cup (int16_t x, int16_t y, uint8_t side, uint8_t f
    	strat_limit_speed_disable ();
 	strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 
-	//DEBUG (E_USER_STRAT, "d = %d, a = %d", d, a);
-	//state_debug_wait_key_pressed();
-
-    /* prepare cup clamp
+    /* prepare cup clamp */
     side == SIDE_FRONT? i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_READY):
                         i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_OPEN);
-*/
-    /* turn to cup
+
+    /* turn to cup */
     side == SIDE_FRONT? trajectory_turnto_xy(&mainboard.traj, x, y):
                         trajectory_turnto_xy_behind(&mainboard.traj, x, y);
- */
+ 
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
 
-    /* go in clamp range
+    /* go in clamp range */
     d = distance_from_robot(x, y);
-    side == SIDE_FRONT? d = d-ROBOT_CENTER_CUP_FRONT-10 :
-                        d = -(d-ROBOT_CENTER_CUP_REAR-50);
+    side == SIDE_FRONT? (d = d-ROBOT_CENTER_CUP_FRONT-10) :
+                        (d = -(d-ROBOT_CENTER_CUP_REAR-50));
 
 	trajectory_d_rel(&mainboard.traj, d);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
-*/
+
+
+	/* XXX debug step use only for subtraj command */
+	//state_debug_wait_key_pressed();
 
     /* front cup: pick up, drop popcorns in side, and release the cup */
-    /* rear cup: pick up
+    /* rear cup: pick up */
     side == SIDE_FRONT? i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_CATCH_AND_DROP):
                         i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_CATCH);
-*/
-    /* wait ready
+
+    /* wait ready */
     side == SIDE_FRONT?
     WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), POPCORN_FRONT_READY_TIMEOUT):
     WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), POPCORN_REAR_READY_TIMEOUT);
- */
+
+	/* release fornt cap and hide system */
+	if (side == SIDE_FRONT) {
+		time_wait_ms(1500);
+		i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_RELEASE);
+    	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), 1000);
+
+		trajectory_d_rel(&mainboard.traj, -d);
+		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+    	if (!TRAJ_SUCCESS(err))
+	   	ERROUT(err);
+
+		i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_HIDE);		
+    	//WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), 1000);
+	}
+
 
 end:
 	/* end stuff */

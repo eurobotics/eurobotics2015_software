@@ -417,6 +417,11 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 		    if (!TRAJ_SUCCESS(err))
 			   ERROUT(err);
 
+			/* POPCORNCUP_3 */
+			err = strat_harvest_popcorn_cup (COLOR_X(strat_infos.zones[ZONE_POPCORNCUP_3].x),
+									   strat_infos.zones[ZONE_POPCORNCUP_3].y, 
+									   SIDE_FRONT, 0);
+
 			/* XXX debug step use only for subtraj command */
 			//strat_debug_wait_key_pressed (MAIN_ROBOT);
 
@@ -468,17 +473,28 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 													COLOR_INVERT(SIDE_LEFT));
 			break;
 
-		//case ZONE_MY_STAND_GROUP_2:
-		case ZONE_MY_STAND_GROUP_3:
-		//case ZONE_MY_STAND_GROUP_4:
 
+		case ZONE_POPCORNCUP_2:
+			err = strat_harvest_popcorn_cup (COLOR_X(strat_infos.zones[zone_num].x),
+									   strat_infos.zones[zone_num].y, 
+									   SIDE_REAR, 0);
+			break;
+
+		case ZONE_POPCORNCUP_3:
+			err = strat_harvest_popcorn_cup (COLOR_X(strat_infos.zones[zone_num].x),
+									   strat_infos.zones[zone_num].y, 
+									   SIDE_FRONT, 0);
+			break;
+
+
+		/* not yet or don't know how to work in the zones */
+		case ZONE_MY_STAND_GROUP_3:
 
 		case ZONE_MY_POPCORNMAC:
 		case ZONE_OPP_POPCORNMAC:
 
 		case ZONE_POPCORNCUP_1:
-		case ZONE_POPCORNCUP_2:
-		case ZONE_POPCORNCUP_3:
+
 
 		case ZONE_MY_CINEMA_UP:
 		case ZONE_MY_CINEMA_DOWN:

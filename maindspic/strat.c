@@ -140,7 +140,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_STAND,
 		MY_STAND_7_X, MY_STAND_7_Y,
 		0, 100, 0, 300,
-		MY_CUP_2_X+OBS_CLERANCE, MY_CUP_2_Y,
+		0, 0, //MY_CUP_2_X+OBS_CLERANCE, MY_CUP_2_Y,
 		0, 0,
 //		0, (9000*1000L),
 		MAIN_ROBOT
@@ -203,7 +203,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_POPCORNCUP,
 		MY_CUP_2_X, MY_CUP_2_Y,
 		100, 400, 100, 400,
-		MY_CUP_2_X+OBS_CLERANCE, MY_CUP_2_Y,
+		MY_CUP_2_X+OBS_CLERANCE+30+80, MY_CUP_2_Y,
 		0, 0,
 //		0, (9000*1000L),
 		MAIN_ROBOT
@@ -213,7 +213,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_POPCORNCUP,
 	 	MY_CUP_3_X, MY_CUP_3_Y,
 		1350, 1650, 200, 500,
-		0, 0,
+		MY_CUP_3_X-OBS_CLERANCE-50, MY_CUP_3_Y,
 		0, 0,
 //		0, (9000*1000L),
 		MAIN_ROBOT

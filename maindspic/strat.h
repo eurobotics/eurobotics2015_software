@@ -99,10 +99,10 @@
 
 /* default speeds */
 #if 1
-#define SPEED_DIST_FAST 		2000
-#define SPEED_ANGLE_FAST 		2000
-#define SPEED_DIST_VERY_FAST 	2000
-#define SPEED_ANGLE_VERY_FAST 	2000
+#define SPEED_DIST_FAST 		1000
+#define SPEED_ANGLE_FAST 		1000
+#define SPEED_DIST_VERY_FAST 	1000
+#define SPEED_ANGLE_VERY_FAST 	1000
 
 #else
 
@@ -115,8 +115,8 @@
 #endif
 
 //Do not change
-#define SPEED_DIST_SLOW 		2000
-#define SPEED_ANGLE_SLOW 		2000
+#define SPEED_DIST_SLOW 		1000
+#define SPEED_ANGLE_SLOW 		1000
 #define SPEED_DIST_VERY_SLOW 	500
 #define SPEED_ANGLE_VERY_SLOW   500
 
@@ -446,6 +446,12 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side);
 /********************************************
  * in strat_popcorn.c
  *******************************************/
+
+/**
+ *	Harvest popcorn cups
+ *	return END_TRAJ if the work is done, err otherwise
+ */
+uint8_t strat_harvest_popcorn_cup (int16_t x, int16_t y, uint8_t side, uint8_t flags);
 
 
 /********************************************
