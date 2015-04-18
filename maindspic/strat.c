@@ -140,25 +140,25 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_STAND,
 		MY_STAND_7_X, MY_STAND_7_Y,
 		0, 100, 0, 300,
-		MY_CUP_2_X+OBS_CLERANCE, MY_CUP_2_Y,	
+		MY_CUP_2_X+OBS_CLERANCE, MY_CUP_2_Y,
 		0, 0,
 //		0, (9000*1000L),
 		MAIN_ROBOT
 	},
-    .zones[ZONE_MY_STAND_GROUP_3] =        
+    .zones[ZONE_MY_STAND_GROUP_3] =
 	{
 		ZONE_TYPE_STAND,
 		MY_STAND_2_X+50, MY_STAND_2_Y,              /* XXX: aprox. to be tested */
-		650, 950, 1700, 1950, 	
+		650, 950, 1700, 1950,
 		MY_STAND_2_X-OBS_CLERANCE, AREA_Y-330, /* TODO: xy closed to stands */ 	
-		0, 0,            
+		0, 0,
 //		0, (9000*1000L),
 		MAIN_ROBOT
 	},
-    .zones[ZONE_MY_STAND_GROUP_4] =        
+    .zones[ZONE_MY_STAND_GROUP_4] =
 	{
 		ZONE_TYPE_STAND,
-		MY_STAND_1_X, MY_STAND_1_Y,  
+		MY_STAND_1_X, MY_STAND_1_Y,
 		0, 150, 0, 300,
 		MY_STAND_1_X+OBS_CLERANCE, AREA_Y-330, /* TODO: xy closed to stands */ 
 		0, 0,
@@ -168,7 +168,7 @@ struct strat_infos strat_infos = {
 	/* popcorn machines */
 	.zones[ZONE_MY_POPCORNMAC] =
 	{
-		ZONE_TYPE_POPCORNMAC, 
+		ZONE_TYPE_POPCORNMAC,
 		MY_POPCORNMAC_X, MY_POPCORNMAC_Y,
 		150, 750, 1700, 2000,
 		MY_POPCORNMAC_X, AREA_Y-330,
@@ -176,7 +176,7 @@ struct strat_infos strat_infos = {
 //		0, (9000*1000L),
 		MAIN_ROBOT
 	},
-	/* XXX AVOID for the moment */ 
+	/* XXX AVOID for the moment */
 	.zones[ZONE_OPP_POPCORNMAC] =
 	{
 		ZONE_TYPE_POPCORNMAC,
@@ -380,6 +380,7 @@ const char zone_name[ZONES_MAX][14]= {
     [ZONE_MY_CLAP_2]="CLAPPER 2\0",
     [ZONE_MY_CLAP_3]="CLAPPER 3\0",
     [ZONE_MY_STAIRWAY]="STAIRWAY\0",
+    [ZONE_MY_HOME_OUTSIDE]="OUTSIDE\0",
 };
 
 /* return string with the zone name */
@@ -527,9 +528,6 @@ uint8_t strat_main(void)
     uint8_t err;
     strat_limit_speed_enable ();
 
-    /* set strategy  */
-    set_strat_sec_1();
-    set_strat_main_1();
 
 	/* enable smart_trat of secondary robot */
 	strat_secondary_robot_enable ();
