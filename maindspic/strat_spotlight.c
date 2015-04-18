@@ -326,14 +326,14 @@ try_again:
 	/* prepare for harvesting */
 	if (side == I2C_SIDE_ALL) {
         /* wait ready */
-		WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(I2C_SIDE_LEFT, STATUS_READY) &&
-							 i2c_slavedspic_ss_test_status(I2C_SIDE_RIGHT, STATUS_READY), STANDS_READY_TIMEOUT);
+		//WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(I2C_SIDE_LEFT, STATUS_READY) &&
+		//					 i2c_slavedspic_ss_test_status(I2C_SIDE_RIGHT, STATUS_READY), STANDS_READY_TIMEOUT);
 		i2c_slavedspic_mode_ss_harvest(I2C_SIDE_LEFT, blade_angle);
 		i2c_slavedspic_mode_ss_harvest(I2C_SIDE_RIGHT, blade_angle);
 	}
 	else {
         /* wait ready */
-		WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(side, STATUS_READY), STANDS_READY_TIMEOUT);
+		//WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(side, STATUS_READY), STANDS_READY_TIMEOUT);
 		i2c_slavedspic_mode_ss_harvest(side, blade_angle);
 	}
 
@@ -354,7 +354,7 @@ try_again:
 		if (!TRAJ_SUCCESS(err))
 		   ERROUT(err);	
 	}
-
+#if 0
 	/* wait end, try again if ends blocking */
 	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(SIDE_LEFT, STATUS_READY | STATUS_BLOCKED), STANDS_READY_TIMEOUT);
 	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(SIDE_RIGHT, STATUS_READY | STATUS_BLOCKED), STANDS_READY_TIMEOUT);      
@@ -378,7 +378,7 @@ try_again:
 
         goto try_again;
     }
-
+#endif
 	/* calib x position and angle */
 	if (flags & STANDS_HARVEST_CALIB_X)
 	{

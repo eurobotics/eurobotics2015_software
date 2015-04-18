@@ -499,8 +499,6 @@ void strat_event(void *dummy) {
 	if (strat_infos.match_ends) {
 	    bt_beacon_set_off();
 	}
-	
-	strat_infos.match_ends = 1;
 
     /* limit speed when opponent are close */
     strat_limit_speed();
@@ -534,11 +532,10 @@ uint8_t strat_main(void)
     strat_limit_speed_enable ();
 
 	/* init time for secondary robot */
-	bt_robot_2nd_start_matchtimer ();
-	bt_robot_2nd_wait_ack();
+	//bt_robot_2nd_start_matchtimer ();
 
 	/* XXX enable smart_trat of secondary robot */
-	strat_secondary_robot_enable ();
+	//strat_secondary_robot_enable ();
 
     /* play */
     do{
