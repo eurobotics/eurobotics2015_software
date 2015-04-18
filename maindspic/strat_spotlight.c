@@ -412,6 +412,10 @@ try_again:
 	}
 
 end:
+	/* wait sensor reinforcement */
+	if(!TRAJ_SUCCESS(err))
+		time_wait_ms(2500);
+
 	/* end stuff */
 	strat_set_speed(old_spdd, old_spda);	
    	strat_limit_speed_enable();

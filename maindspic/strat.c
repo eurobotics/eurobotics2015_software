@@ -529,7 +529,7 @@ uint8_t strat_main(void)
     strat_limit_speed_enable ();
 
 
-	/* enable smart_trat of secondary robot */
+	/* XXX enable smart_trat of secondary robot */
 	strat_secondary_robot_enable ();
 
     /* play */
