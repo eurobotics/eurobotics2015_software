@@ -479,7 +479,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 		case ZONE_MY_HOME_POPCORNS:
 
 			err = strat_release_popcorns_in_home (COLOR_X(strat_infos.zones[zone_num].x),
-													strat_infos.zones[zone_num].y);
+													strat_infos.zones[zone_num].y, 0);
 			break;
 
 		case ZONE_MY_HOME_SPOTLIGHT:
@@ -487,6 +487,12 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 			err = strat_buit_and_release_spotlight (COLOR_X(strat_infos.zones[zone_num].x),
 													strat_infos.zones[zone_num].y,
 													COLOR_INVERT(SIDE_LEFT));
+			break;
+
+		case ZONE_POPCORNCUP_1:
+			err = strat_harvest_popcorn_cup (COLOR_X(strat_infos.zones[zone_num].x),
+									   strat_infos.zones[zone_num].y, 
+									   SIDE_REAR, 0);
 			break;
 
 
@@ -532,14 +538,19 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 									   strat_infos.zones[zone_num].y);
 			break;
 
-		/* not yet or don't know how to work in the zones */
-
-
-		case ZONE_POPCORNCUP_1:
-
-
 		case ZONE_MY_CINEMA_UP:
+			err = strat_release_popcorns_in_home (COLOR_X(strat_infos.zones[zone_num].x),
+													strat_infos.zones[zone_num].y, POPCORN_ONLY_CUP);
+			break;
+
 		case ZONE_MY_CINEMA_DOWN:
+			err = strat_release_popcorns_in_home (COLOR_X(strat_infos.zones[zone_num].x),
+													strat_infos.zones[zone_num].y, POPCORN_ONLY_CUP);
+			break;
+
+		/* not yet or don't know how to work in the zones */
+		case ZONE_MY_STAIRS:
+		case ZONE_MY_STAIRWAY:
 
 			DEBUG(E_USER_STRAT, "R1, Working on zone ... ");
 			trajectory_turnto_xy (&mainboard.traj,

@@ -150,10 +150,11 @@ void strat_change_sequence_base(uint8_t robot){
 		strat_smart[robot].current_strategy ++;
 		switch(strat_smart[robot].current_strategy){
 				case 1:
-					strat_update_priorities(11,ZONE_MY_STAND_GROUP_1, ZONE_MY_CLAP_2, ZONE_POPCORNCUP_2, 
+					strat_update_priorities(13,ZONE_MY_STAND_GROUP_1, ZONE_MY_CLAP_2, ZONE_POPCORNCUP_2, 
 											  ZONE_MY_STAND_GROUP_2, ZONE_MY_CLAP_1, ZONE_MY_STAND_GROUP_4,
 											  ZONE_MY_POPCORNMAC, ZONE_MY_STAND_GROUP_3, ZONE_MY_HOME_POPCORNS, 
-											  ZONE_MY_HOME_SPOTLIGHT, ZONE_MY_CLAP_3);
+											  ZONE_MY_HOME_SPOTLIGHT, ZONE_POPCORNCUP_1, ZONE_MY_CLAP_3,
+											  ZONE_MY_CINEMA_DOWN);
 					break;
 #if 0
 				case 2:

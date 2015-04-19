@@ -235,7 +235,7 @@ end:
  *	Release popcorns in home area
  *	return END_TRAJ if the work is done, err otherwise 
  */
-uint8_t strat_release_popcorns_in_home (int16_t x, int16_t y)
+uint8_t strat_release_popcorns_in_home (int16_t x, int16_t y, uint8_t flags)
 {
    	uint8_t err = 0;
 	uint16_t old_spdd, old_spda;
@@ -247,7 +247,8 @@ uint8_t strat_release_popcorns_in_home (int16_t x, int16_t y)
 	strat_set_speed (SPEED_DIST_SLOW,SPEED_ANGLE_SLOW);
 
 	/* turn to home */
-	trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(0));
+	//trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(0));
+	trajectory_turnto_xy_behind(&mainboard.traj, x, y);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
@@ -266,25 +267,34 @@ uint8_t strat_release_popcorns_in_home (int16_t x, int16_t y)
 	i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_RELEASE);		
    	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY|STATUS_BLOCKED), 1000);
 
-	/* open popcorn doors */
-	i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_STOCK_DROP);		
-   	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY|STATUS_BLOCKED), 1000);
+	if (!(flags & POPCORN_ONLY_CUP))
+	{
+		/* open popcorn doors */
+		i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_STOCK_DROP);		
+	   	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY|STATUS_BLOCKED), 1000);
 
+		/* wait for popcorn dump */
+		time_wait_ms(1500);
 
-	/* wait for popcorn dump */
-	time_wait_ms(1500);
+		/* return to init position and close gadgets in the path */
+		trajectory_d_rel(&mainboard.traj, d);
+		time_wait_ms(500);
 
-	/* return to init position and close gadgets in the path */
-	trajectory_d_rel(&mainboard.traj, d);
-	time_wait_ms(500);
+		i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_STOCK_END);		
 
-	i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_STOCK_END);		
+		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+		if (!TRAJ_SUCCESS(err))
+		   ERROUT(err);	
 
-	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-    if (!TRAJ_SUCCESS(err))
-	   ERROUT(err);	
-
-   	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY|STATUS_BLOCKED), 1000);
+	   	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY|STATUS_BLOCKED), 1000);
+	}
+	else {
+		/* go far cup */
+		trajectory_d_rel(&mainboard.traj, d);
+		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+		if (!TRAJ_SUCCESS(err))
+		   ERROUT(err);	
+	}
 
 end:
 	/* end stuff */
