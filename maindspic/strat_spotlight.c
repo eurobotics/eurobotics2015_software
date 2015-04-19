@@ -416,14 +416,14 @@ try_again:
 		d = position_get_x_s16(&mainboard.pos);
 
 		err = strat_calib(400, TRAJ_FLAGS_SMALL_DIST);
-#if 0
+#if 1
 		if (ABS(position_get_x_s16(&mainboard.pos)- COLOR_X(ROBOT_CENTER_TO_FRONT)) < 30)
 		{
 #endif
 		strat_reset_pos(COLOR_X(ROBOT_CENTER_TO_FRONT),
 						DO_NOT_SET_POS,
 						COLOR_A_ABS(180));
-//		}
+		}
 
 
 	    /* return to init position */

@@ -99,10 +99,10 @@
 
 /* default speeds */
 #if 1
-#define SPEED_DIST_FAST 		2000
-#define SPEED_ANGLE_FAST 		2000
-#define SPEED_DIST_VERY_FAST 	2000
-#define SPEED_ANGLE_VERY_FAST 	2000
+#define SPEED_DIST_FAST 		3000
+#define SPEED_ANGLE_FAST 		3000
+#define SPEED_DIST_VERY_FAST 	3000
+#define SPEED_ANGLE_VERY_FAST 	3000
 
 #else
 
@@ -181,7 +181,7 @@
 
 #define MY_CLAP_1_X		    320
 #define MY_CLAP_2_X		    920
-#define MY_CLAP_3_X		    2320
+#define MY_CLAP_3_X		    (AREA_X-(700-160-80-20)) //2380
 #define MY_CLAP_Y		    0
 
 
@@ -450,6 +450,8 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side);
  * in strat_popcorn.c
  *******************************************/
 
+#define POPCORN_ONLY_CUP 1
+
 /**
  *	Harvest popcorn cups
  *	return END_TRAJ if the work is done, err otherwise
@@ -466,7 +468,7 @@ uint8_t strat_harvest_popcorns_machine (int16_t x, int16_t y);
  *	Release popcorns in home area
  *	return END_TRAJ if the work is done, err otherwise 
  */
-uint8_t strat_release_popcorns_in_home (int16_t x, int16_t y);
+uint8_t strat_release_popcorns_in_home (int16_t x, int16_t y, uint8_t flags);
 
 
 /********************************************
