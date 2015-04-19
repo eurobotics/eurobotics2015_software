@@ -442,9 +442,9 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 								 			   SIDE_ALL,                        /* storing sides */
 											   COLOR_A_REL(-10),                /* blade angle */
 											   SPEED_DIST_SLOW,                 /* harvest speed */
-											   0);		
+											   STANDS_HARVEST_BACK_INIT_POS);		
 			break;
-#if 0
+
 		case ZONE_MY_STAND_GROUP_3:
 			err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x),
 											   strat_infos.zones[zone_num].y,
@@ -454,7 +454,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 											   SPEED_DIST_VERY_SLOW,            /* harvest speed */
 											   STANDS_HARVEST_BACK_INIT_POS);	/* flags */
 			break;
-#endif
+
 		case ZONE_MY_STAND_GROUP_4:
 			err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x),
 											   strat_infos.zones[zone_num].y,
@@ -467,7 +467,14 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 
 			break;
 
-		case ZONE_MY_HOME:
+		case ZONE_MY_HOME_POPCORNS:
+
+			err = strat_release_popcorns_in_home (COLOR_X(strat_infos.zones[zone_num].x),
+													strat_infos.zones[zone_num].y);
+			break;
+
+		case ZONE_MY_HOME_SPOTLIGHT:
+
 			err = strat_buit_and_release_spotlight (COLOR_X(strat_infos.zones[zone_num].x),
 													strat_infos.zones[zone_num].y,
 													COLOR_INVERT(SIDE_LEFT));
@@ -501,7 +508,6 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 
 		/* not yet or don't know how to work in the zones */
 		case ZONE_MY_CLAP_3:
-		case ZONE_MY_STAND_GROUP_3:
 
 		case ZONE_MY_POPCORNMAC:
 		case ZONE_OPP_POPCORNMAC:

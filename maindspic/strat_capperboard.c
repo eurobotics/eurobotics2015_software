@@ -92,9 +92,9 @@ uint8_t strat_close_clapperboards (int16_t x, int16_t y, uint8_t side, uint8_t f
 		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 		if (!TRAJ_SUCCESS(err))
 		   ERROUT(err);
-
+#ifndef HOST_VERSION
 		pwm_servo_set(&gen.pwm_servo_oc2, 450);
-
+#endif
 		trajectory_a_rel(&mainboard.traj, 180);
 		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 		if (!TRAJ_SUCCESS(err))
@@ -107,8 +107,9 @@ uint8_t strat_close_clapperboards (int16_t x, int16_t y, uint8_t side, uint8_t f
 		if (!TRAJ_SUCCESS(err))
 		   ERROUT(err);
 
+#ifndef HOST_VERSION
 		pwm_servo_set(&gen.pwm_servo_oc1, 700);
-
+#endif
 		trajectory_a_rel(&mainboard.traj, -180);
 		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 		if (!TRAJ_SUCCESS(err))
@@ -117,9 +118,13 @@ uint8_t strat_close_clapperboards (int16_t x, int16_t y, uint8_t side, uint8_t f
 
 end:
 	/* end stuff and close sticks */
+#ifndef HOST_VERSION
 	pwm_servo_set(&gen.pwm_servo_oc1, 0);
 	pwm_servo_set(&gen.pwm_servo_oc2, 0);
+#endif
 	strat_set_speed(old_spdd, old_spda);
    	strat_limit_speed_enable();
    	return err;
 }
+
+

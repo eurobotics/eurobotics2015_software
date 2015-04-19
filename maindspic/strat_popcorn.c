@@ -148,3 +148,139 @@ end:
    	strat_limit_speed_enable();
    	return err;
 }
+
+
+/** 
+ *	Harvest popcorns machine
+ *	return END_TRAJ if the work is done, err otherwise 
+ */
+uint8_t strat_harvest_popcorns_machine (int16_t x, int16_t y)
+{
+   	uint8_t err = 0;
+	uint16_t old_spdd, old_spda;
+	int16_t d = 0;
+
+	/* set local speed, and disable speed limit */
+	strat_get_speed (&old_spdd, &old_spda);
+   	strat_limit_speed_disable ();
+	strat_set_speed (SPEED_DIST_SLOW,SPEED_ANGLE_SLOW);
+
+
+	/* turn to machine */
+	trajectory_a_abs(&mainboard.traj, 90);
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+    if (!TRAJ_SUCCESS(err))
+	   ERROUT(err);
+
+	/* open system */
+	i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_MACHINES_READY);		
+	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), 1000);
+
+
+	/* go to close to machine and  calibrate position on the wall */
+	strat_set_speed(SPEED_DIST_VERY_SLOW, SPEED_ANGLE_SLOW);
+
+	//trajectory_a_abs(&mainboard.traj, 90);
+	//err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+	//time_wait_ms(200);
+
+	d = position_get_y_s16(&mainboard.pos);
+
+	err = strat_calib(-400, TRAJ_FLAGS_SMALL_DIST);
+	strat_reset_pos(DO_NOT_SET_POS,
+					ROBOT_CENTER_TO_FRONT,
+					90);
+
+	/* harvest */
+	i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_MACHINES_HARVEST);		
+	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), 1000);
+
+	/* wait popcorn inside */
+	time_wait_ms(2000);
+
+    /* return to init position */
+    d = ABS(d-position_get_y_s16(&mainboard.pos));
+    strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
+    trajectory_d_rel(&mainboard.traj, d);
+    err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+    if (!TRAJ_SUCCESS(err))
+       ERROUT(err);	
+
+end:
+	/* close system */
+	i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_MACHINES_END);		
+	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), 2000);
+
+	/* end stuff */
+	strat_set_speed(old_spdd, old_spda);	
+   	strat_limit_speed_enable();
+   	return err;
+}
+
+
+
+/** 
+ *	Release popcorns in home area
+ *	return END_TRAJ if the work is done, err otherwise 
+ */
+uint8_t strat_release_popcorns_in_home (int16_t x, int16_t y)
+{
+   	uint8_t err = 0;
+	uint16_t old_spdd, old_spda;
+	int16_t d = 0;
+
+	/* set local speed, and disable speed limit */
+	strat_get_speed (&old_spdd, &old_spda);
+   	strat_limit_speed_disable ();
+	strat_set_speed (SPEED_DIST_SLOW,SPEED_ANGLE_SLOW);
+
+	/* turn to home */
+	trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(0));
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+    if (!TRAJ_SUCCESS(err))
+	   ERROUT(err);
+
+    /* be sure we are in angle */
+	time_wait_ms (200);
+
+    /* go inside to the building position */
+	d = distance_from_robot(x, y);
+	trajectory_d_rel(&mainboard.traj, -d);
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+    if (!TRAJ_SUCCESS(err))
+	   ERROUT(err);	
+
+	/* open rear cup */
+	i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_RELEASE);		
+   	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), 1000);
+
+	/* open popcorn doors */
+	i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_STOCK_DROP);		
+   	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), 1000);
+
+
+	/* wait for popcorn dump */
+	time_wait_ms(1500);
+
+	/* return to init position and close gadgets in the path */
+	trajectory_d_rel(&mainboard.traj, d);
+	time_wait_ms(500);
+
+	i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_STOCK_DROP);		
+
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+    if (!TRAJ_SUCCESS(err))
+	   ERROUT(err);	
+
+   	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), 1000);
+
+end:
+	/* end stuff */
+	strat_set_speed(old_spdd, old_spda);	
+   	strat_limit_speed_enable();
+   	return err;
+}
+
+
+
+

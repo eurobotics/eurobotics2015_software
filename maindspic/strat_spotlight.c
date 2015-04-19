@@ -350,6 +350,9 @@ try_again:
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);	
 
+	/* debug */
+	state_debug_wait_key_pressed();
+
 
 	/* force push stands */
 	if (side == I2C_SIDE_ALL) {
@@ -496,10 +499,10 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side)
 
 	/* open blades */
 	i2c_slavedspic_mode_blades(SIDE_RIGHT, I2C_STANDS_BLADE_MODE_CENTER);
-	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_get_status() != STATUS_READY, STANDS_READY_TIMEOUT);    
+	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_get_status() == STATUS_READY, STANDS_READY_TIMEOUT);    
 
 	i2c_slavedspic_mode_blades(SIDE_LEFT, I2C_STANDS_BLADE_MODE_CENTER);
-	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_get_status() != STATUS_READY, STANDS_READY_TIMEOUT);    
+	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_get_status() == STATUS_READY, STANDS_READY_TIMEOUT);    
 
 	time_wait_ms(500);
 
