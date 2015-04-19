@@ -310,7 +310,7 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 
 	/* set boundinbox */
 	if (zone_num == ZONE_POPCORNCUP_2 || zone_num == ZONE_MY_STAND_GROUP_2 ||
-		zone_num == ZONE_MY_CLAP_1 || zone_num == ZONE_MY_CLAP_2)
+		zone_num == ZONE_MY_CLAP_1 || zone_num == ZONE_MY_CLAP_2 || zone_num == ZONE_MY_CLAP_3)
 		strat_set_bounding_box(BOUNDINBOX_WITHOUT_PLATFORM );
 	else
 		strat_set_bounding_box(BOUNDINBOX_INCLUDES_PLAFORM );
@@ -446,12 +446,21 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 			break;
 
 		case ZONE_MY_STAND_GROUP_3:
+#if 0
 			err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x),
 											   strat_infos.zones[zone_num].y,
 											   COLOR_INVERT(SIDE_LEFT),         /* side target */
 								 			   SIDE_ALL,                        /* storing sides */
 											   COLOR_A_REL(-20),                /* blade angle */
 											   SPEED_DIST_VERY_SLOW,            /* harvest speed */
+											   STANDS_HARVEST_BACK_INIT_POS);	/* flags */
+#endif
+			err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_3_X),
+											   MY_STAND_3_Y,
+											   COLOR_INVERT(SIDE_LEFT),         /* side target */
+								 			   COLOR_INVERT(SIDE_LEFT),        /* storing sides */
+											   COLOR_A_REL(0),                /* blade angle */
+											   SPEED_DIST_SLOW,            /* harvest speed */
 											   STANDS_HARVEST_BACK_INIT_POS);	/* flags */
 			break;
 
@@ -506,11 +515,25 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 									   COLOR_INVERT(SIDE_RIGHT), 0);
 			break;
 
-		/* not yet or don't know how to work in the zones */
 		case ZONE_MY_CLAP_3:
+			err = strat_close_clapperboards (COLOR_X(strat_infos.zones[zone_num].x),
+									   strat_infos.zones[zone_num].y, 
+									   COLOR_INVERT(SIDE_LEFT), 0);
+			break;
+
 
 		case ZONE_MY_POPCORNMAC:
+			err = strat_harvest_popcorns_machine (COLOR_X(strat_infos.zones[zone_num].x),
+									   strat_infos.zones[zone_num].y);
+			break;
+		
 		case ZONE_OPP_POPCORNMAC:
+			err = strat_harvest_popcorns_machine (COLOR_X(strat_infos.zones[zone_num].x),
+									   strat_infos.zones[zone_num].y);
+			break;
+
+		/* not yet or don't know how to work in the zones */
+
 
 		case ZONE_POPCORNCUP_1:
 
