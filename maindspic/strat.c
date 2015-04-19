@@ -290,7 +290,7 @@ struct strat_infos strat_infos = {
 		MY_CLAP_3_X, MY_CUP_2_Y,
 		0, 0,
 //		0, (9000*1000L),
-		SEC_ROBOT
+		MAIN_ROBOT
 	},
 	/* home */
   	.zones[ZONE_MY_HOME_SPOTLIGHT] =
@@ -350,7 +350,7 @@ void strat_set_bounding_box(uint8_t which)
 	if (which == BOUNDINBOX_INCLUDES_PLAFORM)
 	    strat_infos.area_bbox.y1 = OBS_CLERANCE+100;
 	else
-	    strat_infos.area_bbox.y1 = OBS_CLERANCE;
+	    strat_infos.area_bbox.y1 = OBS_CLERANCE-5;
 
     strat_infos.area_bbox.y2 = 2000 - OBS_CLERANCE-70;
 

@@ -351,7 +351,7 @@ try_again:
 	   ERROUT(err);	
 
 	/* debug */
-	state_debug_wait_key_pressed();
+	//state_debug_wait_key_pressed();
 
 
 	/* force push stands */
@@ -366,6 +366,8 @@ try_again:
 									 					  I2C_STANDS_BLADE_MODE_PUSH_STAND_RIGHT);
 	}
 
+	/* wait harvesting */
+	time_wait_ms(700);
 
 	/* return to init position */
 	if (flags & STANDS_HARVEST_BACK_INIT_POS) {
@@ -414,10 +416,14 @@ try_again:
 		d = position_get_x_s16(&mainboard.pos);
 
 		err = strat_calib(400, TRAJ_FLAGS_SMALL_DIST);
+#if 0
+		if (ABS(position_get_x_s16(&mainboard.pos)- COLOR_X(ROBOT_CENTER_TO_FRONT)) < 30)
+		{
+#endif
 		strat_reset_pos(COLOR_X(ROBOT_CENTER_TO_FRONT),
 						DO_NOT_SET_POS,
 						COLOR_A_ABS(180));
-
+//		}
 
 
 	    /* return to init position */
@@ -499,11 +505,11 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side)
 
 	/* open blades */
 	i2c_slavedspic_mode_blades(SIDE_RIGHT, I2C_STANDS_BLADE_MODE_CENTER);
-	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_get_status() == STATUS_READY, STANDS_READY_TIMEOUT);    
+	//WAIT_COND_OR_TIMEOUT(i2c_slavedspic_get_status() == STATUS_READY, STANDS_READY_TIMEOUT);    
+	time_wait_ms(500);
 
 	i2c_slavedspic_mode_blades(SIDE_LEFT, I2C_STANDS_BLADE_MODE_CENTER);
-	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_get_status() == STATUS_READY, STANDS_READY_TIMEOUT);    
-
+	//WAIT_COND_OR_TIMEOUT(i2c_slavedspic_get_status() == STATUS_READY, STANDS_READY_TIMEOUT);    
 	time_wait_ms(500);
 
 	/* release spotlight left */
@@ -511,7 +517,7 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side)
 	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(SIDE_LEFT, STATUS_READY|STATUS_BLOCKED), STANDS_READY_TIMEOUT);
 
 	/* go backwards */
-	strat_set_speed (SPEED_DIST_VERY_SLOW, SPEED_ANGLE_VERY_SLOW);
+	strat_set_speed (300, SPEED_ANGLE_VERY_SLOW);
 	trajectory_d_rel(&mainboard.traj, -100);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
     if (!TRAJ_SUCCESS(err))
@@ -522,8 +528,8 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side)
 	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(SIDE_RIGHT, STATUS_READY|STATUS_BLOCKED), STANDS_READY_TIMEOUT);
 
 	/* go backwards */
-	strat_set_speed (SPEED_DIST_VERY_SLOW, SPEED_ANGLE_VERY_SLOW);
-	trajectory_d_rel(&mainboard.traj, -100);
+	strat_set_speed (300, SPEED_ANGLE_VERY_SLOW);
+	trajectory_d_rel(&mainboard.traj, -200);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);	
