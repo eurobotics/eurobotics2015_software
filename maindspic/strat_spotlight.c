@@ -335,8 +335,8 @@ try_again:
         /* wait ready */
 		WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(side, STATUS_READY), STANDS_READY_TIMEOUT);
 		i2c_slavedspic_mode_ss_harvest(side, blade_angle);
-		i2cproto_wait_update();
-		ret_left = i2c_slavedspic_ss_test_status(SIDE_LEFT, STATUS_READY | STATUS_BLOCKED);
+		//i2cproto_wait_update();
+		//ret_left = i2c_slavedspic_ss_test_status(SIDE_LEFT, STATUS_READY | STATUS_BLOCKED);
 	}
 
 	/* wait blades ready */
