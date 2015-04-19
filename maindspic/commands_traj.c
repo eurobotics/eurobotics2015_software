@@ -1293,8 +1293,11 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 	 */
 
 	/* go and work on zone */
-   	else if (!strcmp_P(res->arg1, PSTR("home")))
-        zone_num = ZONE_MY_HOME;
+   	else if (!strcmp_P(res->arg1, PSTR("home_spotlight")))
+        zone_num = ZONE_MY_HOME_SPOTLIGHT;
+
+   	else if (!strcmp_P(res->arg1, PSTR("home_popcorns")))
+        zone_num = ZONE_MY_HOME_POPCORNS;
 
    	else if (!strcmp_P(res->arg1, PSTR("machine")))
         zone_num = ZONE_MY_POPCORNMAC;
@@ -1374,7 +1377,7 @@ end:
 
 prog_char str_subtraj1_arg0[] = "subtraj";
 parse_pgm_token_string_t cmd_subtraj1_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg0, str_subtraj1_arg0);
-prog_char str_subtraj1_arg1[] = "begining#home#machine#machine_opp#cinema_up#cinema_down#platform#stairs#stair_ways";
+prog_char str_subtraj1_arg1[] = "begining#home_popcorns#home_spotlight#machine#machine_opp#cinema_up#cinema_down#platform#stairs#stair_ways";
 parse_pgm_token_string_t cmd_subtraj1_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg1, str_subtraj1_arg1);
 //parse_pgm_token_num_t cmd_subtraj1_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg2, INT32);
 //parse_pgm_token_num_t cmd_subtraj1_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg3, INT32);

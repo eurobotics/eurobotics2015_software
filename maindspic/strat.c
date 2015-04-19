@@ -148,9 +148,9 @@ struct strat_infos strat_infos = {
     .zones[ZONE_MY_STAND_GROUP_3] =
 	{
 		ZONE_TYPE_STAND,
-		MY_STAND_2_X+50, MY_STAND_2_Y,              /* XXX: aprox. to be tested */
+		MY_STAND_2_X-20, MY_STAND_2_Y,         /* XXX: aprox. to be tested */
 		650, 950, 1700, 1950,
-		MY_STAND_2_X-OBS_CLERANCE, AREA_Y-330, /* TODO: xy closed to stands */ 	
+		MY_STAND_2_X-OBS_CLERANCE, LIMIT_BBOX_Y_UP,	
 		0, 0,
 //		0, (9000*1000L),
 		MAIN_ROBOT
@@ -160,7 +160,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_STAND,
 		MY_STAND_1_X, MY_STAND_1_Y,
 		0, 150, 0, 300,
-		MY_STAND_1_X+OBS_CLERANCE, AREA_Y-330, /* TODO: xy closed to stands */ 
+		MY_STAND_1_X+OBS_CLERANCE, AREA_Y-330, 
 		0, 0,
 //		0, (9000*1000L),
 		MAIN_ROBOT
@@ -293,12 +293,22 @@ struct strat_infos strat_infos = {
 		SEC_ROBOT
 	},
 	/* home */
-  	.zones[ZONE_MY_HOME] =
+  	.zones[ZONE_MY_HOME_SPOTLIGHT] =
 	{
 		ZONE_TYPE_HOME,
 		MY_HOME_SPOTLIGHT_X, MY_HOME_SPOTLIGHT_Y,
 		90, 650, 800, 1200,
 		670, MY_HOME_SPOTLIGHT_Y,
+		0, 0,
+//		0, (9000*1000L),
+		MAIN_ROBOT
+	},
+  	.zones[ZONE_MY_HOME_POPCORNS] =
+	{
+		ZONE_TYPE_HOME,
+		MY_HOME_POPCORNS_X, MY_HOME_POPCORNS_Y,
+		90, 650, 800, 1200,
+		670, MY_HOME_POPCORNS_Y,
 		0, 0,
 //		0, (9000*1000L),
 		MAIN_ROBOT
@@ -375,12 +385,13 @@ const char zone_name[ZONES_MAX][14]= {
     [ZONE_MY_CINEMA_UP]="CINEMA UP\0",
     [ZONE_MY_CINEMA_DOWN]="CINEMA DOWN\0",
     [ZONE_MY_STAIRS]="STAIRS\0",
-    [ZONE_MY_HOME]="HOME\0",
+    [ZONE_MY_HOME_SPOTLIGHT]="H.SPOTLIGHT\0",
+    [ZONE_MY_HOME_POPCORNS]="H.POPCORNS\0",
     [ZONE_MY_CLAP_1]="CLAPPER 1\0",
     [ZONE_MY_CLAP_2]="CLAPPER 2\0",
     [ZONE_MY_CLAP_3]="CLAPPER 3\0",
     [ZONE_MY_STAIRWAY]="STAIRWAY\0",
-    [ZONE_MY_HOME_OUTSIDE]="OUTSIDE\0",
+    [ZONE_MY_HOME_OUTSIDE]="H.OUTSIDE\0",
 };
 
 /* return string with the zone name */

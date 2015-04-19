@@ -202,16 +202,19 @@
 #define ZONE_MY_CINEMA_DOWN				10
 
 #define ZONE_MY_STAIRS					11
-#define ZONE_MY_HOME					12
+#define ZONE_MY_STAIRWAY				12
+
 #define ZONE_MY_CLAP_1					13
 #define ZONE_MY_CLAP_2					14
 #define ZONE_MY_CLAP_3					15
-#define ZONE_MY_STAIRWAY				16
-#define ZONE_MY_PLATFORM				17
 
-#define ZONE_MY_HOME_OUTSIDE			18
+#define ZONE_MY_PLATFORM				16
 
-#define ZONES_MAX		    			19
+#define ZONE_MY_HOME_OUTSIDE			17
+#define ZONE_MY_HOME_POPCORNS			18
+#define ZONE_MY_HOME_SPOTLIGHT			19
+
+#define ZONES_MAX		    			20
 
 /*
  * Strat diagram, valid for YELLOW.
@@ -452,6 +455,12 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side);
  *	return END_TRAJ if the work is done, err otherwise
  */
 uint8_t strat_harvest_popcorn_cup (int16_t x, int16_t y, uint8_t side, uint8_t flags);
+
+/** 
+ *	Release popcorns in home area
+ *	return END_TRAJ if the work is done, err otherwise 
+ */
+uint8_t strat_release_popcorns_in_home (int16_t x, int16_t y);
 
 
 /********************************************
