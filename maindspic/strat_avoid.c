@@ -101,6 +101,7 @@
 #define O_WIDTH  330 //360
 #define O_LENGTH 500
 #define O_HOME_WIDTH 200
+#define O_HOME_WIDTH_GREEN 275
 #define O_HOME_HEIGHT 222
 
 #define O_STAIRS_WIDTH 533
@@ -127,7 +128,7 @@
 #define STAIRS_X 1500
 #define STAIRS_Y 1710
 
-#define HOME_GREEN_X 2800
+#define HOME_GREEN_X 2725
 #define HOME_GREEN_Y 1000
 
 #define HOME_YELLOW_X 200
@@ -1174,7 +1175,7 @@ retry:
 	set_poly_abs(pol_home_yellow,O_HOME_WIDTH+ OBS_CLERANCE/2 ,O_HOME_HEIGHT + OBS_CLERANCE,HOME_YELLOW_X+OBS_CLERANCE/2,HOME_YELLOW_Y); 
 	
 	pol_home_green= oa_new_poly(4);
-	set_poly_abs(pol_home_green,O_HOME_WIDTH + OBS_CLERANCE/2,O_HOME_HEIGHT + OBS_CLERANCE,HOME_GREEN_X-OBS_CLERANCE/2,HOME_GREEN_Y); 
+	set_poly_abs(pol_home_green,O_HOME_WIDTH_GREEN + OBS_CLERANCE/2,O_HOME_HEIGHT_GREEN + OBS_CLERANCE,HOME_GREEN_X-OBS_CLERANCE/2,HOME_GREEN_Y); 
 
 	/* if we are not in the limited area, try to go in it. */
 	ret = go_in_area(&robot_pt);
