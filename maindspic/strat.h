@@ -244,6 +244,20 @@
  *      0  clap1    clap2        x             clap3      3000
  *
  */
+/*
+ ******************* PTINTO*****************
+ * STARTING SECTION => ZONE_MY_STAND_GROUP_1,ZONE_POPCORNCUP_3
+ *
+ * DOWN SECTION => ZONE_MY_CLAP_3, ZONE_POPCORNCUP_2, 
+ *				  ZONE_MY_STAND_GROUP_2, ZONE_MY_CLAP_1,
+ *
+ * UP SECTION  => ZONE_MY_STAND_GROUP_4,ZONE_MY_POPCORNMAC, ZONE_MY_STAND_GROUP_3,
+ *							   
+ * HOME SECTION => ZONE_MY_HOME_POPCORNS, ZONE_MY_HOME_SPOTLIGHT,
+ *
+ * OPTIONAL SECTION => ZONE_POPCORNCUP_1, ZONE_MY_CLAP_3, ZONE_MY_CINEMA_DOWN
+ *
+ */
 
 /*************************************************************
  * Strat data structures
