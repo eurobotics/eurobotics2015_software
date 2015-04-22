@@ -76,6 +76,7 @@
 
 void strat_update_priorities(int num_args, ...)
 {
+	/*TODO set all properties to 0 before to update priorities*/
 	va_list arg_list;
 	int num_zone,i;
 	uint8_t priority;
@@ -164,7 +165,9 @@ void strat_change_sequence_base(uint8_t robot){
 										  ZONE_MY_CLAP_2, ZONE_POPCORNCUP_2, ZONE_MY_STAND_GROUP_2, ZONE_MY_CLAP_1,
 										  ZONE_MY_HOME_POPCORNS, ZONE_MY_HOME_SPOTLIGHT);
 					break;						  
-				
+				case 3: 
+					/*If time left is 20 sec, go to home*/
+					break;
 				default:
 					break;
 			}
