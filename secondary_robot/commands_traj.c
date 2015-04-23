@@ -1081,7 +1081,7 @@ parse_pgm_inst_t cmd_bt_task = {
 };
 
 prog_char str_bt_task2_arg1[] = "pick_cup#bring_cup#clap";
-parse_pgm_token_string_t cmd_bt_task2_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task_result, arg1, str_bt_task_arg1);
+parse_pgm_token_string_t cmd_bt_task2_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task_result, arg1, str_bt_task2_arg1);
 parse_pgm_token_num_t cmd_bt_task2_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task_result, arg2, INT32);
 parse_pgm_token_num_t cmd_bt_task2_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task_result, arg3, INT32);
 parse_pgm_token_num_t cmd_bt_task2_arg4 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task_result, arg4, INT32);

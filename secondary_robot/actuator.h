@@ -55,8 +55,8 @@ int32_t encoders_get_beacon_speed(void * dummy);
 #define ARM_LEFT_POS_CLAPPER	820
 
 /* right arm positions */
-#define ARM_RIGHT_POS_HIDE		730
-#define ARM_RIGHT_POS_CARPET		400
+#define ARM_RIGHT_POS_HIDE		700 //730
+#define ARM_RIGHT_POS_CARPET	400
 #define ARM_RIGHT_POS_CLAPPER	400
 
 void arm_set_mode (uint8_t type, uint8_t mode);

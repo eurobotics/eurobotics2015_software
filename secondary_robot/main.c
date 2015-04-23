@@ -311,9 +311,13 @@ int main(void)
    pwm_servo_init(&gen.pwm_servo_oc4, 4, 300, 2400);
    pwm_servo_enable();
 
-   pwm_servo_set(&gen.pwm_servo_oc1, 500);
-   pwm_servo_set(&gen.pwm_servo_oc2, 500);
-   pwm_servo_set(&gen.pwm_servo_oc3, 500);
+   arm_set_mode (ARM_TYPE_LEFT, ARM_MODE_HIDE);
+   arm_set_mode (ARM_TYPE_RIGHT, ARM_MODE_HIDE);
+   cup_clamp_set_position (CUP_CLAMP_POS_CLOSE);
+
+   //pwm_servo_set(&gen.pwm_servo_oc1, 500);
+   //pwm_servo_set(&gen.pwm_servo_oc2, 500);
+   //pwm_servo_set(&gen.pwm_servo_oc3, 500);
    pwm_servo_set(&gen.pwm_servo_oc4, 500);
 
    /* MAIN TIMER */
