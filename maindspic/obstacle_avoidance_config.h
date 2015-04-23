@@ -1,6 +1,6 @@
-/*  
+/*
  *  Copyright Droids Corporation, Microb Technology (2009)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -19,7 +19,7 @@
  *
  */
 
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
  *  Javier Baliñas Santos <javier@arc-robots.org>
  *
@@ -29,7 +29,5 @@
 
 #define MAX_POLY 			7					// 2 opp + 2nd robot + totem area + boundingbox
 #define MAX_PTS 			MAX_POLY*4 + 8	// MAX_POLY * 4 (all polys are squares) + 4 points more of totems poly
-#define MAX_RAYS 			200				
+#define MAX_RAYS 			500
 #define MAX_CHKPOINTS 	20
-
-
