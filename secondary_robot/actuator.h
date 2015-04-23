@@ -36,36 +36,38 @@ int32_t encoders_update_beacon_speed(void * number);
 int32_t encoders_get_beacon_speed(void * dummy);
 
 
-/* set arm position */
+/* set arm mode */
 
 /* arm side */
 #define ARM_TYPE_LEFT	0
 #define ARM_TYPE_RIGHT	1
+#define ARM_TYPE_MAX	2
+
+/* arm modes */
+#define ARM_MODE_HIDE		0
+#define ARM_MODE_CARPET		1
+#define ARM_MODE_CLAPPER	2
+#define ARM_MODE_MAX		3
 
 /* left arm positions */
-#define ARM_POS_PICKUP_CARPET_L		500
-#define ARM_POS_PUT_CARPET_L		500	
-#define ARM_POS_CLOSE_CLAPERBOARD_L	500
+#define ARM_LEFT_POS_HIDE		530
+#define ARM_LEFT_POS_CARPET		820
+#define ARM_LEFT_POS_CLAPPER	820
 
 /* right arm positions */
-#define ARM_POS_PICKUP_CARPET_L		500
-#define ARM_POS_PUT_CARPET_L		500
-#define ARM_POS_CLOSE_CLAPERBOARD_L	500
+#define ARM_RIGHT_POS_HIDE		730
+#define ARM_RIGHT_POS_CARPET		400
+#define ARM_RIGHT_POS_CLAPPER	400
 
-
-void arm_set_position (uint8_t type, uint16_t pos);
+void arm_set_mode (uint8_t type, uint8_t mode);
 
 /* set cup clamp position */
-
-#define CUP_CLAMP_POS_HIDDEN	500
-#define CUP_CLAMP_POS_OPEN		500
-#define CUP_CLAMP_POS_CLOSE		500
+#define CUP_CLAMP_POS_OPEN		650
+#define CUP_CLAMP_POS_CLOSE		350
 
 void cup_clamp_set_position (uint16_t pos);
 
-
-/* set auxiliary wheels */
-
+/* TODO: set auxiliary mode */
 #define AUX_WHEELS_POS_HIDDEN		500
 #define AUX_WHEELS_POS_ROLLER		500
 #define AUX_WHEELS_POS_CLIMB_STAIRS	500

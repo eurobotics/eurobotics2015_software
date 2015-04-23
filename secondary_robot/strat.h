@@ -253,18 +253,18 @@ void strat_start_match(uint8_t debug);
  * in strat_main.c
  *******************************************/
 
-/* auto possition depending on color */
-void strat_auto_position (void);
-
-/* match tasks */
-void strat_initial_move(void);
-
-/* bt_tasks */
-uint8_t pick_popcorn_cup(void);
-uint8_t extend_carpet(void);
-uint8_t climb_stairs(void);
-uint8_t bring_cup_to_cinema(void);
-uint8_t close_clapperboard(void);
+/* bt tasks ids */
+#define BT_TASK_NONE	   		0
+#define BT_TASK_PICK_CUP   		1
+#define BT_TASK_CARPET         	2
+#define BT_TASK_STAIRS         	3
+#define BT_TASK_BRING_CUP       4
+#define BT_TASK_CLAP         	5
+#define BT_GOTO         		6
+#define BT_GOTO_AVOID         	7
+#define BT_GOTO_AVOID_FW        8
+#define BT_GOTO_AVOID_BW        9
+#define BT_AUTO_POSITION		10
 
 /* set current bt task */
 void strat_bt_task_rqst (uint8_t task_id, 
@@ -273,6 +273,49 @@ void strat_bt_task_rqst (uint8_t task_id,
 
 /* never returns */
 void strat_bt_task_scheduler (void);
+
+/********************************************
+ * in strat_main_tasks.c
+ *******************************************/
+
+/* auto possition depending on color */
+void strat_auto_position (void);
+
+/**
+ *	Pickup a popcorn cup
+ *	return END_TRAJ if the work is done, err otherwise
+ */
+uint8_t strat_pickup_cup (int16_t x, int16_t y);
+
+/**
+ *	Release a popcorn cup
+ *	return END_TRAJ if the work is done, err otherwise
+ */
+uint8_t strat_release_cup (int16_t x, int16_t y);
+
+/**
+ *	Put carpets on stairs
+ *	return END_TRAJ if the work is done, err otherwise
+ */
+uint8_t strat_put_carpets (void);
+
+
+
+/**
+ *	Put carpets on stairs
+ *	return END_TRAJ if the work is done, err otherwise
+ */
+uint8_t strat_close_clapperboard (int16_t x, int16_t y);
+
+
+/**
+ *	Put carpets on stairs
+ *	return END_TRAJ if the work is done, err otherwise
+ */
+uint8_t strat_put_carpets (void);
+
+/* TODO */
+uint8_t climb_stairs(void);
 
 
 #else /* HOST_VERSION_OA_TEST */

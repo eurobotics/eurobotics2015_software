@@ -336,13 +336,22 @@ void bt_goto_and_avoid_backward (int16_t x, int16_t y, int16_t args_checksum)
 	}
 }
 
-void bt_task_pick_cup(void)
+void bt_task_pick_cup(int16_t x, int16_t y, int16_t args_checksum)
 {
-	/* set ACK */
-	bt_status_set_cmd_ack (0);
+	/* check args checksum */
+	if ((x+y) == args_checksum) {
 
-	/* set bt_task */
-	strat_bt_task_rqst (BT_TASK_PICK_CUP, 0,0,0,0,0);
+		/* set ACK */
+		bt_status_set_cmd_ack (0);
+
+		/* set bt_task */
+		strat_bt_task_rqst (BT_TASK_PICK_CUP, x,y, 0,0,0);
+	}
+	else {
+		/* set ACK */
+		bt_status_set_cmd_ack (END_ERROR);
+
+	}
 }
 
 void bt_task_carpet(void)
@@ -353,6 +362,7 @@ void bt_task_carpet(void)
 	/* set bt_task */
 	strat_bt_task_rqst (BT_TASK_CARPET, 0,0,0,0,0);
 }
+
 void bt_task_stairs(void)
 {
 	/* set ACK */
@@ -361,21 +371,41 @@ void bt_task_stairs(void)
 	/* set bt_task */
 	strat_bt_task_rqst (BT_TASK_STAIRS, 0,0,0,0,0);
 }
-void bt_task_bring_cup(void)
-{
-	/* set ACK */
-	bt_status_set_cmd_ack (0);
 
-	/* set bt_task */
-	strat_bt_task_rqst (BT_TASK_BRING_CUP, 0,0,0,0,0);
+void bt_task_bring_cup(int16_t x, int16_t y, int16_t args_checksum)
+{
+	/* check args checksum */
+	if ((x+y) == args_checksum) {
+
+		/* set ACK */
+		bt_status_set_cmd_ack (0);
+
+		/* set bt_task */
+		strat_bt_task_rqst (BT_TASK_BRING_CUP, x,y, 0,0,0);
+	}
+	else {
+		/* set ACK */
+		bt_status_set_cmd_ack (END_ERROR);
+
+	}
 }
-void bt_task_clap(void)
-{
-	/* set ACK */
-	bt_status_set_cmd_ack (0);
 
-	/* set bt_task */
-	strat_bt_task_rqst (BT_TASK_CLAP, 0,0,0,0,0);
+void bt_task_clap(int16_t x, int16_t y, int16_t args_checksum)
+{
+	/* check args checksum */
+	if ((x+y) == args_checksum) {
+
+		/* set ACK */
+		bt_status_set_cmd_ack (0);
+
+		/* set bt_task */
+		strat_bt_task_rqst (BT_TASK_CLAP, x,y, 0,0,0);
+	}
+	else {
+		/* set ACK */
+		bt_status_set_cmd_ack (END_ERROR);
+
+	}
 }
 
 
