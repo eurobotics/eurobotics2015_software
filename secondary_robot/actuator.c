@@ -89,14 +89,37 @@ int32_t encoders_get_beacon_speed(void * dummy)
 
 
 /* set arm position */
-void arm_set_position (uint8_t type, uint16_t pos)
+
+static uint16_t arm_position[ARM_TYPE_MAX][ARM_MODE_MAX] = {
+	[ARM_TYPE_LEFT][ARM_MODE_HIDE] 		= ARM_LEFT_POS_HIDE,
+	[ARM_TYPE_LEFT][ARM_MODE_CARPET] 	= ARM_LEFT_POS_CARPET,
+	[ARM_TYPE_LEFT][ARM_MODE_CLAPPER] 	= ARM_LEFT_POS_CLAPPER,
+
+	[ARM_TYPE_RIGHT][ARM_MODE_HIDE] 	= ARM_RIGHT_POS_HIDE,
+	[ARM_TYPE_RIGHT][ARM_MODE_CARPET] 	= ARM_RIGHT_POS_CARPET,
+	[ARM_TYPE_RIGHT][ARM_MODE_CLAPPER] 	= ARM_RIGHT_POS_CLAPPER,
+};
+
+static uint8_t arm_mode[ARM_TYPE_MAX] = { ARM_MODE_HIDE, ARM_MODE_HIDE};
+
+void arm_set_mode (uint8_t type, uint8_t mode)
 {
 #ifndef HOST_VERSION
 
-	if (type == ARM_TYPE_LEFT)
-   		pwm_servo_set(&gen.pwm_servo_oc1, pos);
-	else if (type == ARM_TYPE_RIGHT) 
-   		pwm_servo_set(&gen.pwm_servo_oc1, pos);
+	struct pwm_servo *servo;
+	
+	/* be sure the other arm is hidden, and update this mode */
+	if (mode != ARM_MODE_HIDE && arm_mode[!type] != ARM_MODE_HIDE) {
+		servo = (!type==ARM_TYPE_LEFT? &gen.pwm_servo_oc3 : &gen.pwm_servo_oc1);
+	   	pwm_servo_set(servo, arm_position[!type][ARM_MODE_HIDE]);
+		arm_mode[!type] = ARM_MODE_HIDE;
+	}
+
+	/* set position and update mode */
+	servo = (type==ARM_TYPE_LEFT? &gen.pwm_servo_oc3 : &gen.pwm_servo_oc1);
+	pwm_servo_set(servo, arm_position[type][mode]);
+	arm_mode[type] = ARM_MODE_HIDE;
+
 #endif
 }
 
@@ -104,16 +127,16 @@ void arm_set_position (uint8_t type, uint16_t pos)
 void cup_clamp_set_position (uint16_t pos)
 {
 #ifndef HOST_VERSION
-	pwm_servo_set(&gen.pwm_servo_oc1, pos);
+	pwm_servo_set(&gen.pwm_servo_oc2, pos);
 #endif
 }
 
 
-/* set auxiliary wheels */
+/* TODO: set auxiliary wheels */
 void aux_wheels_set_position (uint16_t pos)
 {
 #ifndef HOST_VERSION
-	pwm_servo_set(&gen.pwm_servo_oc1, pos);
+	pwm_servo_set(&gen.pwm_servo_oc4, pos);
 #endif
 }
 

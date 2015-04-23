@@ -112,6 +112,7 @@
 #define ROBOT_CENTER_TO_FRONT   (ROBOT_LENGTH-ROBOT_CENTER_TO_BACK)
 #define ROBOT_HALF_LENGTH_FRONT ROBOT_CENTER_TO_FRONT
 #define ROBOT_HALF_LENGTH_REAR  ROBOT_CENTER_TO_BACK
+#define ROBOT_CENTER_TO_ARM		50.0
 
 /* XXX obstacle clerance */
 #define OBS_CLERANCE            (149.+10.)
@@ -181,20 +182,6 @@
 
 /* dynamic logs */
 #define NB_LOGS 10
-
-#define BT_TASK_NONE	   		0
-#define BT_TASK_PICK_CUP   		1
-#define BT_TASK_CARPET         	2
-#define BT_TASK_STAIRS         	3
-#define BT_TASK_BRING_CUP       4
-#define BT_TASK_CLAP         	5
-#define BT_GOTO         		6
-#define BT_GOTO_AVOID         7
-#define BT_GOTO_AVOID_FW         8
-#define BT_GOTO_AVOID_BW         9
-#define BT_AUTO_POSITION		10
-
-
 
 /* MAIN DATA STRUCTURES **************************************/
 

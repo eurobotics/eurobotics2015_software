@@ -8,6 +8,12 @@
 #ifndef __BT_COMMANDS_H__
 #define __BT_COMMANDS_H__
 
+#define STAIRS_EDGE_Y			(AREA_Y-580)
+#define STAIRS_EDGE_X			(967)
+#define STAIRS_WIDE_HALF		(50)
+#define CARPET_LEFT_INFRONT_X	(STAIRS_EDGE_X+STAIRS_WIDE_HALF+ROBOT_CENTER_TO_ARM)
+#define CARPET_RIGHT_INFRONT_X	((AREA_X/2)-STAIRS_WIDE_HALF-ROBOT_CENTER_TO_ARM)
+
 
 struct bt_cmd_hdr {
 	uint16_t cmd;
@@ -105,7 +111,6 @@ inline uint16_t bt_checksum(uint8_t *data, uint16_t length) {
 							      \
         __ret;                                                \
 })
-
 
 #endif /* __BT_COMMANDS__ */
 

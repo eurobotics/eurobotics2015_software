@@ -169,6 +169,7 @@
         <itemPath>../beacon_calib.c</itemPath>
         <itemPath>../strat_avoid.c</itemPath>
         <itemPath>../strat_utils.c</itemPath>
+        <itemPath>../strat_main_tasks.c</itemPath>
       </logicalFolder>
       <logicalFolder name="ax12" displayName="ax12" projectFiles="true">
         <itemPath>../../libs/aversive4dspic/modules/devices/servo/ax12/ax12.c</itemPath>
