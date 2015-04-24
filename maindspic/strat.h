@@ -212,9 +212,10 @@
 
 #define ZONE_MY_HOME_OUTSIDE			17
 #define ZONE_MY_HOME_POPCORNS			18
-#define ZONE_MY_HOME_SPOTLIGHT			19
+#define ZONE_MY_HOME_SPOTLIGHT 		19
+#define ZONE_MY_HOME					20
 
-#define ZONES_MAX		    			20
+#define ZONES_MAX		    			21
 
 /*
  * Strat diagram, valid for YELLOW.
@@ -248,11 +249,11 @@
  ******************* PTINTO*****************
  * STARTING SECTION => ZONE_MY_STAND_GROUP_1,ZONE_POPCORNCUP_3
  *
- * DOWN SECTION => ZONE_MY_CLAP_3, ZONE_POPCORNCUP_2, 
+ * DOWN SECTION => ZONE_MY_CLAP_3, ZONE_POPCORNCUP_2,
  *				  ZONE_MY_STAND_GROUP_2, ZONE_MY_CLAP_1,
  *
  * UP SECTION  => ZONE_MY_STAND_GROUP_4,ZONE_MY_POPCORNMAC, ZONE_MY_STAND_GROUP_3,
- *							   
+ *
  * HOME SECTION => ZONE_MY_HOME_POPCORNS, ZONE_MY_HOME_SPOTLIGHT,
  *
  * OPTIONAL SECTION => ZONE_POPCORNCUP_1, ZONE_MY_CLAP_3, ZONE_MY_CINEMA_DOWN
@@ -472,15 +473,15 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side);
  */
 uint8_t strat_harvest_popcorn_cup (int16_t x, int16_t y, uint8_t side, uint8_t flags);
 
-/** 
+/**
  *	Harvest popcorns machine
- *	return END_TRAJ if the work is done, err otherwise 
+ *	return END_TRAJ if the work is done, err otherwise
  */
 uint8_t strat_harvest_popcorns_machine (int16_t x, int16_t y);
 
-/** 
+/**
  *	Release popcorns in home area
- *	return END_TRAJ if the work is done, err otherwise 
+ *	return END_TRAJ if the work is done, err otherwise
  */
 uint8_t strat_release_popcorns_in_home (int16_t x, int16_t y, uint8_t flags);
 
