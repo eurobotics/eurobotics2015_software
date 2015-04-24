@@ -987,6 +987,7 @@ uint8_t strat_smart_secondary_robot(void)
 			{
 				DEBUG(E_USER_STRAT,"R2, in ZONE_BLOCK_UPPER_SIDE.");
 				strat_smart_set_msg(UPPER_SIDE_IS_BLOCKED);
+				
 			}
 			else if(strat_smart[SEC_ROBOT].current_zone == ZONE_FREE_UPPER_SIDE)
 			{
