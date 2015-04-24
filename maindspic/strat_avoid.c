@@ -301,7 +301,6 @@ void set_home_yellow_poly_abs(poly_t *pol,
 	tmp_x += x;
 	tmp_y += y;
 
-	printf("x1 : %g y1: %g\n",tmp_x,tmp_y);
 	oa_poly_set_point(pol, tmp_x, tmp_y, 0);
 
 	/* point 2 */
@@ -309,8 +308,6 @@ void set_home_yellow_poly_abs(poly_t *pol,
 	tmp_y = l;
 	tmp_x += x;
 	tmp_y += y;
-
-	printf("x2 : %g y2: %g\n",tmp_x,tmp_y);
 	oa_poly_set_point(pol, tmp_x, tmp_y, 1);
 
 	/* point 3 */
@@ -319,7 +316,6 @@ void set_home_yellow_poly_abs(poly_t *pol,
 	tmp_x += x;
 	tmp_y += y;
 
-	printf("x4 : %g y4: %g\n",tmp_x,tmp_y);
 	oa_poly_set_point(pol, tmp_x, tmp_y, 2);
 
 	/* point 4 */
@@ -327,14 +323,11 @@ void set_home_yellow_poly_abs(poly_t *pol,
 	tmp_y = -l;
 	tmp_x += x;
 	tmp_y += y;
-	printf("x5 : %g y5: %g\n",tmp_x,tmp_y);
 	oa_poly_set_point(pol, tmp_x, tmp_y, 3);
 	/* point 5 */
 	tmp_x = 650+OBS_CLERANCE/2;
-
 	tmp_y = 1000;
 
-	printf("x3 : %g y3: %g\n",tmp_x,tmp_y);
 	oa_poly_set_point(pol, tmp_x, tmp_y, 4);
 }
 /* set poly*/
@@ -350,7 +343,6 @@ void set_home_green_poly_abs(poly_t *pol,
 	tmp_x += x;
 	tmp_y += y;
 
-	printf("x1 : %g y1: %g\n",tmp_x,tmp_y);
 	oa_poly_set_point(pol, tmp_x, tmp_y, 0);
 
 	/* point 2 */
@@ -359,15 +351,12 @@ void set_home_green_poly_abs(poly_t *pol,
 	tmp_x += x;
 	tmp_y += y;
 
-	printf("x2 : %g y2: %g\n",tmp_x,tmp_y);
 	oa_poly_set_point(pol, tmp_x, tmp_y, 1);
 
 	/* point 2 */
 	tmp_x = 2350-OBS_CLERANCE/2;
-
 	tmp_y = 1000;
 
-	printf("x3 : %g y3: %g\n",tmp_x,tmp_y);
 	oa_poly_set_point(pol, tmp_x, tmp_y, 2);
 	/* point 3 */
 	tmp_x = -w;
@@ -375,7 +364,6 @@ void set_home_green_poly_abs(poly_t *pol,
 	tmp_x += x;
 	tmp_y += y;
 
-	printf("x4 : %g y4: %g\n",tmp_x,tmp_y);
 	oa_poly_set_point(pol, tmp_x, tmp_y, 3);
 
 	/* point 4 */
@@ -383,7 +371,6 @@ void set_home_green_poly_abs(poly_t *pol,
 	tmp_y = -l;
 	tmp_x += x;
 	tmp_y += y;
-	printf("x5 : %g y5: %g\n",tmp_x,tmp_y);
 	oa_poly_set_point(pol, tmp_x, tmp_y, 4);
 }
 /* set poly*/
