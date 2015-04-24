@@ -160,11 +160,17 @@
 #define MY_CUP_2_Y			    250
 #define MY_CUP_3_X				1500
 #define MY_CUP_3_Y				2000-1650
+#define CUP_DIAMETER            94
 
 #define MY_CINEMA_UP_X		2800
 #define MY_CINEMA_UP_Y		1400
 #define MY_CINEMA_DOWN_X	2800
 #define MY_CINEMA_DOWN_Y	600
+
+#define MY_CINEMA_UP_EDGE_Y     (1200+22)
+#define MY_CINEMA_DOWN_EDGE_Y   (800-22)
+
+
 #define OPP_CINEMA_UP_X		200
 #define OPP_CINEMA_UP_Y		1400
 #define OPP_CINEMA_DOWN_X	200
@@ -183,6 +189,16 @@
 #define MY_CLAP_2_X		    920
 #define MY_CLAP_3_X		    (AREA_X-(700-160-80-20)) //2380
 #define MY_CLAP_Y		    0
+
+#define PLATFORM_WIDTH      100
+
+
+/* XXX keep synchronized with secondary robot */
+#define STAIRS_EDGE_Y			(AREA_Y-580)
+#define STAIRS_EDGE_X			(967)
+#define STAIRS_WIDE_HALF		(50)
+#define CARPET_LEFT_INFRONT_X	(STAIRS_EDGE_X+STAIRS_WIDE_HALF+ROBOT_SEC_CENTER_TO_ARM)
+#define CARPET_RIGHT_INFRONT_X	((AREA_X/2)-STAIRS_WIDE_HALF-ROBOT_SEC_CENTER_TO_ARM)
 
 
 /* zones */

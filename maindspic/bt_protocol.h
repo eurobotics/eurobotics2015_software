@@ -113,11 +113,11 @@ uint8_t bt_robot_2nd_is_ack_received (void);
 /* return 1 if ret is received */
 uint8_t bt_robot_2nd_is_ret_received (void);
 
-void bt_robot_2nd_bt_task_pick_cup (void);
+void bt_robot_2nd_bt_task_pick_cup (int16_t x, int16_t y);
 void bt_robot_2nd_bt_task_carpet(void);
 void bt_robot_2nd_bt_task_stairs(void);
-void bt_robot_2nd_bt_task_bring_cup_cinema(void);
-void bt_robot_2nd_bt_task_clapperboard(void);
+void bt_robot_2nd_bt_task_bring_cup_cinema(int16_t x, int16_t y);
+void bt_robot_2nd_bt_task_clapperboard(int16_t x, int16_t y);
 
 void bt_robot_2nd_autopos (void);
 

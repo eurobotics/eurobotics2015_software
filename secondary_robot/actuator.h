@@ -62,7 +62,7 @@ int32_t encoders_get_beacon_speed(void * dummy);
 void arm_set_mode (uint8_t type, uint8_t mode);
 
 /* set cup clamp position */
-#define CUP_CLAMP_POS_OPEN		650
+#define CUP_CLAMP_POS_OPEN		700 //650
 #define CUP_CLAMP_POS_CLOSE		350
 
 void cup_clamp_set_position (uint16_t pos);
