@@ -146,7 +146,7 @@ uint8_t strat_pickup_cup (int16_t x, int16_t y)
 
 	/* go forward in clamp range */
 	d = distance_from_robot(x, y);
-	trajectory_d_rel(&mainboard.traj, d-ROBOT_CENTER_TO_FRONT-(CUP_DIAMETER/2));
+	trajectory_d_rel(&mainboard.traj, d-ROBOT_CENTER_TO_FRONT-(CUP_DIAMETER/2)+10);
  	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
@@ -195,8 +195,7 @@ uint8_t strat_release_cup (int16_t x, int16_t y)
 	cup_clamp_set_position (CUP_CLAMP_POS_OPEN);
 	time_wait_ms(500);
 
-	/* go backwards from point */
-	d = distance_from_robot(x, y);
+	/* return to init point */
 	trajectory_d_rel(&mainboard.traj, -d);
  	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
@@ -266,7 +265,7 @@ uint8_t strat_put_carpets (void)
 
 	/* go infront of second stairs */
 	d = distance_from_robot(COLOR_X(CARPET_RIGHT_INFRONT_X), position_get_y_s16(&mainboard.pos));
-	trajectory_d_rel(&mainboard.traj, d);
+	trajectory_d_rel(&mainboard.traj, -d);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);	
@@ -306,7 +305,7 @@ uint8_t strat_close_clapperboard (int16_t x, int16_t y)
 
 
 	/* turn to clapperboard behind */
-	trajectory_a_abs(&mainboard.traj, -90);
+	trajectory_a_abs(&mainboard.traj, 90);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
@@ -322,12 +321,12 @@ uint8_t strat_close_clapperboard (int16_t x, int16_t y)
 	/* TODO: go forward a bit */
 
 	/* open arm */
-	arm = x > (AREA_X/2)? ARM_TYPE_RIGHT : ARM_TYPE_LEFT;	
+	arm = (x > (AREA_X/2)? ARM_TYPE_RIGHT : ARM_TYPE_LEFT);	
 	arm_set_mode (arm, ARM_MODE_CLAPPER);
 	time_wait_ms(500);
 
 	/* turn 90 degrees */
-	a = x > (AREA_X/2)? 0 : 180;
+	a = (x > (AREA_X/2)? 0 : 180);
 	trajectory_a_abs(&mainboard.traj, 0);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))

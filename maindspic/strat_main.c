@@ -300,6 +300,13 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 									strat_infos.zones[zone_num].init_y);
 		}
 		/* normaly we go with avoid */
+        else if (zone_num == ZONE_MY_STAIRWAY || zone_num == ZONE_MY_CLAP_3 || 
+                 zone_num == ZONE_MY_CINEMA_UP ||  zone_num == ZONE_MY_CINEMA_DOWN) 
+        {
+            /* force go backwards */        
+			bt_robot_2nd_goto_and_avoid_backward(COLOR_X(strat_infos.zones[zone_num].init_x),
+										strat_infos.zones[zone_num].init_y);
+        }
 		else {
 			bt_robot_2nd_goto_and_avoid(COLOR_X(strat_infos.zones[zone_num].init_x),
 										strat_infos.zones[zone_num].init_y);
@@ -357,16 +364,23 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 		switch (zone_num)
 		{
 			case ZONE_POPCORNCUP_1:
-				bt_robot_2nd_bt_task_pick_cup ();
+				bt_robot_2nd_bt_task_pick_cup (COLOR_X(strat_infos.zones[zone_num].x),
+											   strat_infos.zones[zone_num].y);
 				break;
 
 			case ZONE_MY_CLAP_3:
-				bt_robot_2nd_bt_task_clapperboard();
+				bt_robot_2nd_bt_task_clapperboard(COLOR_X(strat_infos.zones[zone_num].x),
+											   strat_infos.zones[zone_num].y);
 				break;
 
 			case ZONE_MY_CINEMA_DOWN:
+				bt_robot_2nd_bt_task_bring_cup_cinema(COLOR_X(strat_infos.zones[zone_num].x),
+											   strat_infos.zones[zone_num].y);
+				break;
+
 			case ZONE_MY_CINEMA_UP:
-				bt_robot_2nd_bt_task_bring_cup_cinema();
+				bt_robot_2nd_bt_task_bring_cup_cinema(COLOR_X(strat_infos.zones[zone_num].x),
+											   strat_infos.zones[zone_num].y);
 				break;
 
 			case ZONE_MY_STAIRWAY:
