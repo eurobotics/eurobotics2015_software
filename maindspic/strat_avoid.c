@@ -90,7 +90,6 @@
 
 #define O_HOME_WIDTH 200
 
-#define O_HOME_WIDTH_GREEN 275
 #define O_HOME_HEIGHT 200
 
 #define O_STAIRS_WIDTH 533
@@ -104,7 +103,6 @@
 #define O_LENGTH 500
 #define O_HOME_WIDTH 200
 #define O_HOME_HEIGHT 222
-#define O_HOME_WIDTH_GREEN 275
 #define O_STAIRS_WIDTH 533
 #define O_STAIRS_HEIGHT 265
 
@@ -129,7 +127,7 @@
 #define STAIRS_X 1500
 #define STAIRS_Y 1710
 
-#define HOME_GREEN_X 2725
+#define HOME_GREEN_X 2800
 #define HOME_GREEN_Y 1000
 
 #define HOME_YELLOW_X 200
@@ -290,6 +288,54 @@ void set_rotated_poly_abs(poly_t *pol, int16_t a_abs,
 	tmp_x += x;
 	tmp_y += y;
 	oa_poly_set_point(pol, tmp_x, tmp_y, 3);
+}/* set poly*/
+void set_home_yellow_poly_abs(poly_t *pol,
+		      int16_t w, int16_t l, int16_t x, int16_t y)
+
+{
+	double tmp_x, tmp_y;
+
+	/* point 1 */
+	tmp_x = w;
+	tmp_y = l;
+	tmp_x += x;
+	tmp_y += y;
+
+	printf("x1 : %g y1: %g\n",tmp_x,tmp_y);
+	oa_poly_set_point(pol, tmp_x, tmp_y, 0);
+
+	/* point 2 */
+	tmp_x = -w;
+	tmp_y = l;
+	tmp_x += x;
+	tmp_y += y;
+
+	printf("x2 : %g y2: %g\n",tmp_x,tmp_y);
+	oa_poly_set_point(pol, tmp_x, tmp_y, 1);
+
+	/* point 3 */
+	tmp_x = -w;
+	tmp_y = -l;
+	tmp_x += x;
+	tmp_y += y;
+
+	printf("x4 : %g y4: %g\n",tmp_x,tmp_y);
+	oa_poly_set_point(pol, tmp_x, tmp_y, 2);
+
+	/* point 4 */
+	tmp_x = w;
+	tmp_y = -l;
+	tmp_x += x;
+	tmp_y += y;
+	printf("x5 : %g y5: %g\n",tmp_x,tmp_y);
+	oa_poly_set_point(pol, tmp_x, tmp_y, 3);
+	/* point 5 */
+	tmp_x = 650+OBS_CLERANCE/2;
+
+	tmp_y = 1000;
+
+	printf("x3 : %g y3: %g\n",tmp_x,tmp_y);
+	oa_poly_set_point(pol, tmp_x, tmp_y, 4);
 }
 /* set poly*/
 void set_home_green_poly_abs(poly_t *pol,
@@ -303,6 +349,8 @@ void set_home_green_poly_abs(poly_t *pol,
 	tmp_y = l;
 	tmp_x += x;
 	tmp_y += y;
+
+	printf("x1 : %g y1: %g\n",tmp_x,tmp_y);
 	oa_poly_set_point(pol, tmp_x, tmp_y, 0);
 
 	/* point 2 */
@@ -310,17 +358,24 @@ void set_home_green_poly_abs(poly_t *pol,
 	tmp_y = l;
 	tmp_x += x;
 	tmp_y += y;
+
+	printf("x2 : %g y2: %g\n",tmp_x,tmp_y);
 	oa_poly_set_point(pol, tmp_x, tmp_y, 1);
 
 	/* point 2 */
 	tmp_x = 2350-OBS_CLERANCE/2;
+
 	tmp_y = 1000;
+
+	printf("x3 : %g y3: %g\n",tmp_x,tmp_y);
 	oa_poly_set_point(pol, tmp_x, tmp_y, 2);
 	/* point 3 */
 	tmp_x = -w;
 	tmp_y = -l;
 	tmp_x += x;
 	tmp_y += y;
+
+	printf("x4 : %g y4: %g\n",tmp_x,tmp_y);
 	oa_poly_set_point(pol, tmp_x, tmp_y, 3);
 
 	/* point 4 */
@@ -328,6 +383,7 @@ void set_home_green_poly_abs(poly_t *pol,
 	tmp_y = -l;
 	tmp_x += x;
 	tmp_y += y;
+	printf("x5 : %g y5: %g\n",tmp_x,tmp_y);
 	oa_poly_set_point(pol, tmp_x, tmp_y, 4);
 }
 /* set poly*/
@@ -1210,14 +1266,19 @@ retry:
 
 	pol_stairs= oa_new_poly(4);
 	set_poly_abs(pol_stairs,O_STAIRS_WIDTH +OBS_CLERANCE,O_STAIRS_HEIGHT + OBS_CLERANCE/2,STAIRS_X,STAIRS_Y-OBS_CLERANCE/2);
+	if(mainboard.our_color== I2C_COLOR_YELLOW){
+		pol_home_yellow= oa_new_poly(4);
+		set_poly_abs(pol_home_yellow,O_HOME_WIDTH+ OBS_CLERANCE/2 ,O_HOME_HEIGHT + OBS_CLERANCE,HOME_YELLOW_X+OBS_CLERANCE/2,HOME_YELLOW_Y);
 
-	pol_home_yellow= oa_new_poly(4);
-	set_poly_abs(pol_home_yellow,O_HOME_WIDTH+ OBS_CLERANCE/2 ,O_HOME_HEIGHT + OBS_CLERANCE,HOME_YELLOW_X+OBS_CLERANCE/2,HOME_YELLOW_Y);
+		pol_home_green= oa_new_poly(5);
+		set_home_green_poly_abs(pol_home_green,O_HOME_WIDTH+ OBS_CLERANCE/2,O_HOME_HEIGHT + OBS_CLERANCE,HOME_GREEN_X-OBS_CLERANCE/2,HOME_GREEN_Y);
+	}else{
+		pol_home_yellow= oa_new_poly(5);
+		set_home_yellow_poly_abs(pol_home_yellow,O_HOME_WIDTH+ OBS_CLERANCE/2 ,O_HOME_HEIGHT + OBS_CLERANCE,HOME_YELLOW_X+OBS_CLERANCE/2,HOME_YELLOW_Y);
 
-#define O_HOME_WIDTH_GREEN 275
-	pol_home_green= oa_new_poly(5);
-	set_home_green_poly_abs(pol_home_green,O_HOME_WIDTH_GREEN+ OBS_CLERANCE/2,O_HOME_HEIGHT + OBS_CLERANCE,HOME_GREEN_X-OBS_CLERANCE/2,HOME_GREEN_Y);
-
+		pol_home_green= oa_new_poly(4);
+		set_poly_abs(pol_home_green,O_HOME_WIDTH+ OBS_CLERANCE/2,O_HOME_HEIGHT + OBS_CLERANCE,HOME_GREEN_X-OBS_CLERANCE/2,HOME_GREEN_Y);
+	}
 	/* if we are not in the limited area, try to go in it. */
 	ret = go_in_area(&robot_pt);
 
