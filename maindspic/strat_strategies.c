@@ -152,21 +152,20 @@ void strat_change_sequence_base(uint8_t robot){
 		switch(strat_smart[robot].current_strategy){
 				case 1:
 					/** Standard strategy**/
-					strat_update_priorities(10,ZONE_MY_STAND_GROUP_1, ZONE_MY_CLAP_2, ZONE_POPCORNCUP_2, 
-											  ZONE_MY_STAND_GROUP_2, ZONE_MY_CLAP_1, ZONE_MY_STAND_GROUP_4,
-											  ZONE_MY_POPCORNMAC, ZONE_MY_STAND_GROUP_3, ZONE_MY_HOME_POPCORNS, 
-											  ZONE_MY_HOME_SPOTLIGHT);
+					strat_update_priorities(10,ZONE_MY_STAND_GROUP_1, ZONE_MY_CLAP_2,
+ 										 ZONE_POPCORNCUP_2,ZONE_MY_STAND_GROUP_2, ZONE_MY_CLAP_1, ZONE_MY_STAND_GROUP_4,
+										  ZONE_MY_POPCORNMAC, ZONE_MY_STAND_GROUP_3, ZONE_MY_HOME_POPCORNS,
+										  ZONE_MY_HOME_SPOTLIGHT);
 					break;
 
 				case 2:
 					/** if DOWN SECTION FAIL */
-					strat_update_priorities(10,ZONE_POPCORNCUP_1,
+					strat_update_priorities(10,ZONE_MY_STAND_GROUP_1,
 										  ZONE_MY_STAND_GROUP_4, ZONE_MY_POPCORNMAC, ZONE_MY_STAND_GROUP_3,
 										  ZONE_MY_CLAP_2, ZONE_POPCORNCUP_2, ZONE_MY_STAND_GROUP_2, ZONE_MY_CLAP_1,
 										  ZONE_MY_HOME_POPCORNS, ZONE_MY_HOME_SPOTLIGHT);
-					break;						  
-				case 3: 
-					/*If time left is 20 sec, go to home*/
+
+					strat_smart[robot].current_strategy =0;
 					break;
 				default:
 					break;

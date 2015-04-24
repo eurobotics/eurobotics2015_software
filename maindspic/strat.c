@@ -150,7 +150,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_STAND,
 		MY_STAND_2_X-20, MY_STAND_2_Y,         /* XXX: aprox. to be tested */
 		650, 950, 1700, 1950,
-		MY_STAND_2_X-OBS_CLERANCE, LIMIT_BBOX_Y_UP,	
+		MY_STAND_2_X-OBS_CLERANCE, LIMIT_BBOX_Y_UP,
 		0, 0,
 //		0, (9000*1000L),
 		MAIN_ROBOT
@@ -160,7 +160,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_STAND,
 		MY_STAND_1_X, MY_STAND_1_Y,
 		0, 150, 0, 300,
-		MY_STAND_1_X+OBS_CLERANCE, AREA_Y-330, 
+		MY_STAND_1_X+OBS_CLERANCE, AREA_Y-330,
 		0, 0,
 //		0, (9000*1000L),
 		MAIN_ROBOT
@@ -197,8 +197,7 @@ struct strat_infos strat_infos = {
 //		MY_CUP_1_X-ROBOT_SEC_OBS_CLERANCE,	MY_CUP_1_Y-ROBOT_SEC_OBS_CLERANCE,
 		0, 0,
 //		0, (9000*1000L),
-		MAIN_ROBOT
-//		SEC_ROBOT_ROBOT
+		SEC_ROBOT
 	},
 	.zones[ZONE_POPCORNCUP_2] =
 	{
@@ -229,7 +228,6 @@ struct strat_infos strat_infos = {
 		AREA_X-400-ROBOT_SEC_OBS_CLERANCE, MY_CINEMA_UP_Y,
 		0, 0,
 //	 	0, (9000*1000L),
-//		MAIN_ROBOT
 		SEC_ROBOT
 	},
 	.zones[ZONE_MY_CINEMA_DOWN] =
@@ -241,8 +239,7 @@ struct strat_infos strat_infos = {
 		0, 0,
 		0, 0,
 //		0, (9000*1000L),
-		MAIN_ROBOT
-//		SEC_ROBOT
+		SEC_ROBOT
 	},
 	/* stairs */
   	.zones[ZONE_MY_STAIRS] =
@@ -295,7 +292,7 @@ struct strat_infos strat_infos = {
 		MY_CLAP_3_X, MY_CUP_2_Y,
 		0, 0,
 //		0, (9000*1000L),
-		MAIN_ROBOT
+		SEC_ROBOT
 	},
 	/* home */
   	.zones[ZONE_MY_HOME_SPOTLIGHT] =
@@ -504,7 +501,7 @@ void strat_exit(void)
 
     /* stop beacon */
     bt_beacon_set_off();
-	
+
 	strat_infos.match_ends = 1;
 }
 
@@ -548,10 +545,10 @@ uint8_t strat_main(void)
     strat_limit_speed_enable ();
 
 	/* init time for secondary robot */
-	//bt_robot_2nd_start_matchtimer ();
+	bt_robot_2nd_start_matchtimer ();
 
 	/* XXX enable smart_trat of secondary robot */
-	//strat_secondary_robot_enable ();
+	strat_secondary_robot_enable ();
 
     /* play */
     do{
