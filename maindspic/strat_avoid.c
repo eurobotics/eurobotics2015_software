@@ -90,7 +90,7 @@
 
 #define O_HOME_WIDTH 200
 
-#define O_HOME_HEIGHT 200
+#define O_HOME_HEIGHT 222
 
 #define O_STAIRS_WIDTH 533
 #define O_STAIRS_HEIGHT 265
