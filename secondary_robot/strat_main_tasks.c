@@ -125,6 +125,10 @@ uint8_t strat_pickup_cup (int16_t x, int16_t y)
 	uint16_t old_spdd, old_spda;
 	int16_t d=0;
     microseconds us = 0;
+    uint8_t old_debug = strat_infos.debug_step;
+
+    /* XXX debug */
+    strat_infos.debug_step = 1;
 
 	/* set local speed, and disable speed limit */
 	strat_get_speed (&old_spdd, &old_spda);
@@ -151,11 +155,18 @@ uint8_t strat_pickup_cup (int16_t x, int16_t y)
 	if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
 
+    /* XXX debug */
+    state_debug_wait_key_pressed(); 
+
 end:
 	/* close clamp */
 	cup_clamp_set_position (CUP_CLAMP_POS_CLOSE);
 	time_wait_ms(500);
 
+    /* XXX debug */
+    strat_infos.debug_step = old_debug;
+
+	/* end stuff */
 	strat_set_speed(old_spdd, old_spda);
    	strat_limit_speed_enable();
    	return err;
@@ -171,6 +182,10 @@ uint8_t strat_release_cup (int16_t x, int16_t y)
    	uint8_t err = 0;
 	uint16_t old_spdd, old_spda;
 	int16_t d;
+    uint8_t old_debug = strat_infos.debug_step;
+
+    /* XXX debug */
+    strat_infos.debug_step = 1;
 
 	/* set local speed, and disable speed limit */
 	strat_get_speed (&old_spdd, &old_spda);
@@ -191,6 +206,9 @@ uint8_t strat_release_cup (int16_t x, int16_t y)
 	if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
 
+    /* XXX debug */
+    state_debug_wait_key_pressed(); 
+
 	/* open clamp */
 	cup_clamp_set_position (CUP_CLAMP_POS_OPEN);
 	time_wait_ms(500);
@@ -205,6 +223,10 @@ end:
 	/* close clamp */
 	cup_clamp_set_position (CUP_CLAMP_POS_CLOSE);
 
+    /* XXX debug */
+    strat_infos.debug_step = old_debug;
+
+	/* end stuff */
 	strat_set_speed(old_spdd, old_spda);
    	strat_limit_speed_enable();
    	return err;
@@ -227,6 +249,10 @@ uint8_t strat_put_carpets (void)
    	uint8_t err = 0;
 	uint16_t old_spdd, old_spda;
 	int16_t d;
+    uint8_t old_debug = strat_infos.debug_step;
+
+    /* XXX debug */
+    strat_infos.debug_step = 1;
 
 	/* set local speed, and disable speed limit */
 	strat_get_speed (&old_spdd, &old_spda);
@@ -239,6 +265,9 @@ uint8_t strat_put_carpets (void)
 	if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
 
+    /* XXX debug */
+    state_debug_wait_key_pressed(); 
+
 	/* go backwards close to stairs */
 	d = distance_from_robot(position_get_x_s16(&mainboard.pos), STAIRS_EDGE_Y);
 	trajectory_d_rel(&mainboard.traj, -(d-OBS_CLERANCE));
@@ -246,11 +275,17 @@ uint8_t strat_put_carpets (void)
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);	
 
+    /* XXX debug */
+    state_debug_wait_key_pressed(); 
+
 	/* turn to left side */
 	trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(0));
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
+
+    /* XXX debug */
+    state_debug_wait_key_pressed(); 
 
 	/* put carpet */
 	arm_set_mode (COLOR_INVERT(ARM_TYPE_LEFT), ARM_MODE_CARPET);
@@ -263,12 +298,18 @@ uint8_t strat_put_carpets (void)
 	if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
 
+    /* XXX debug */
+    state_debug_wait_key_pressed(); 
+
 	/* go infront of second stairs */
 	d = distance_from_robot(COLOR_X(CARPET_RIGHT_INFRONT_X), position_get_y_s16(&mainboard.pos));
 	trajectory_d_rel(&mainboard.traj, -d);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
     if (!TRAJ_SUCCESS(err))
-	   ERROUT(err);	
+	   ERROUT(err);
+
+    /* XXX debug */
+    state_debug_wait_key_pressed(); 	
 
 	/* put carpet */
 	arm_set_mode (COLOR_INVERT(ARM_TYPE_RIGHT), ARM_MODE_CARPET);
@@ -280,6 +321,10 @@ end:
 	arm_set_mode (ARM_TYPE_LEFT, ARM_MODE_HIDE);
 	arm_set_mode (ARM_TYPE_RIGHT, ARM_MODE_HIDE);
 
+    /* XXX debug */
+    strat_infos.debug_step = old_debug;
+
+	/* end stuff */
 	strat_set_speed(old_spdd, old_spda);
    	strat_limit_speed_enable();
    	return err;
@@ -297,6 +342,10 @@ uint8_t strat_close_clapperboard (int16_t x, int16_t y)
 	uint16_t old_spdd, old_spda;
 	int16_t d, a;
     uint8_t arm;
+    uint8_t old_debug = strat_infos.debug_step;
+
+    /* XXX debug */
+    strat_infos.debug_step = 1;
 
 	/* set local speed, and disable speed limit */
 	strat_get_speed (&old_spdd, &old_spda);
@@ -336,6 +385,9 @@ end:
 	/* close arm */
 	arm_set_mode (ARM_TYPE_LEFT, ARM_MODE_HIDE);
 	arm_set_mode (ARM_TYPE_RIGHT, ARM_MODE_HIDE);
+
+    /* XXX debug */
+    strat_infos.debug_step = old_debug;
 
 	/* end stuff */
 	strat_set_speed(old_spdd, old_spda);
