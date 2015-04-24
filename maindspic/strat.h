@@ -214,7 +214,10 @@
 #define ZONE_MY_HOME_POPCORNS			18
 #define ZONE_MY_HOME_SPOTLIGHT			19
 
-#define ZONES_MAX		    			20
+#define ZONE_BLOCK_UPPER_SIDE    		20
+#define ZONE_FREE_UPPER_SIDE    		21
+
+#define ZONES_MAX		    			22
 
 /*
  * Strat diagram, valid for YELLOW.
@@ -356,6 +359,14 @@ struct strat_infos {
 #define STR_HOMOLOGATION 0
 #define STR_BASE 1
 	uint8_t match_strategy;
+	
+	
+#define UPPER_SIDE_BLOCK 1
+#define UPPER_SIDE_IS_BLOCKED 2
+#define UPPER_SIDE_FREE	   3
+#define UPPER_SIDE_IS_FREE	   4
+	/* message */
+	uint8_t msg;
 
 #if 0
 	/* state of the robot */
@@ -510,22 +521,13 @@ uint8_t strat_secondary_robot_is_enabled (void);
 /* tracking of zones where opp has been working */
 void strat_opp_tracking (void);
 
-
+/* Messages between robots */
+void strat_smart_set_msg (uint8_t msg);
+uint8_t strat_smart_get_msg (void);
 
 /********************************************
  * in strat_strategies.c
  *******************************************/
-
-/* Sets of  strategies for secondary robot*/
-/*void set_strat_sec_1(void);
-void set_strat_sec_2(void);
-void set_strat_sec_3(void);
-void set_strat_sec_homologation(void);
-void set_strat_main_homologation(void);
-void strat_set_next_strategy_homologation(uint8_t robot);
-void set_strat_main_1(void);
-void set_strat_main_2(void);
-void set_next_sec_strategy(void);*/
 
 void strat_set_next_sec_strategy(void);
 void strat_set_next_main_strategy(void);
