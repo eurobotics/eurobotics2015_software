@@ -1358,6 +1358,9 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 			if (!TRAJ_SUCCESS(err))
 			   ERROUT(err);
 
+            /* XXX debug */
+            strat_debug_wait_key_pressed (SEC_ROBOT);    
+
             /* work */
             err = strat_work_on_zone(SEC_ROBOT, zone_num);
 			if (bt_robot_2nd_wait_ack()!=0) {
