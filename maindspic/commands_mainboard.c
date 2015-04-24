@@ -458,7 +458,7 @@ parse_pgm_inst_t cmd_init = {
 struct cmd_start_result
 {
     fixed_string_t arg0;
-    fixed_string_t color;
+    fixed_string_t strategy;
     fixed_string_t debug;
 };
 
@@ -486,6 +486,38 @@ static void cmd_start_parsed(void *parsed_result, void *data)
         gen.log_level = 0;
     }
 
+
+    
+    if (!strcmp_P(res->strategy, PSTR("base")))
+    {
+        /* flags */
+        strat_infos.conf.flags = 0;
+	   strat_infos.match_strategy=STR_BASE;
+	   strat_smart[MAIN_ROBOT].current_strategy=0;
+	   strat_smart[SEC_ROBOT].current_strategy=0;
+        strat_set_next_sec_strategy();
+        strat_set_next_main_strategy();
+    }
+
+    else if (!strcmp_P(res->strategy, PSTR("homologation")))
+    {
+        /* flags */
+        strat_infos.conf.flags = 0;
+	   strat_infos.match_strategy=STR_HOMOLOGATION;
+	   strat_smart[MAIN_ROBOT].current_strategy=0;
+	   strat_smart[SEC_ROBOT].current_strategy=0;
+        strat_set_next_sec_strategy();
+        strat_set_next_main_strategy();
+    }
+    else
+    {
+    	printf_P(PSTR("ERROR: repeat and select a valid strategy! Returning. \r\n"));
+    	return;
+    }
+
+    strat_infos.dump_enabled = 1;
+    strat_dump_conf();
+    
 #ifndef HOST_VERSION
     int8_t c;
 
@@ -517,14 +549,7 @@ retry_on:
         }
     }
 #endif
-
-    if (!strcmp_P(res->color, PSTR("green"))) {
-        mainboard.our_color = I2C_COLOR_GREEN;
-    }
-    else if (!strcmp_P(res->color, PSTR("yellow"))) {
-        mainboard.our_color = I2C_COLOR_YELLOW;
-    }
-
+    
     strat_start();
 
     gen.logs[NB_LOGS] = 0;
@@ -533,8 +558,8 @@ retry_on:
 
 prog_char str_start_arg0[] = "start";
 parse_pgm_token_string_t cmd_start_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_start_result, arg0, str_start_arg0);
-prog_char str_start_color[] = "green#yellow";
-parse_pgm_token_string_t cmd_start_color = TOKEN_STRING_INITIALIZER(struct cmd_start_result, color, str_start_color);
+prog_char str_start_strategy[] = "base#homologation";
+parse_pgm_token_string_t cmd_start_strategy = TOKEN_STRING_INITIALIZER(struct cmd_start_result, strategy, str_start_strategy);
 prog_char str_start_debug[] = "debug#step_debug#match";
 parse_pgm_token_string_t cmd_start_debug = TOKEN_STRING_INITIALIZER(struct cmd_start_result, debug, str_start_debug);
 
@@ -546,7 +571,7 @@ parse_pgm_inst_t cmd_start = {
     .tokens =
     { /* token list, NULL terminated */
         (prog_void *) & cmd_start_arg0,
-        (prog_void *) & cmd_start_color,
+        (prog_void *) & cmd_start_strategy,
         (prog_void *) & cmd_start_debug,
         NULL,
     },
