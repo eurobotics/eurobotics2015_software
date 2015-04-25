@@ -170,13 +170,13 @@ void strat_change_sequence_base(uint8_t robot){
 		strat_smart[robot].current_strategy ++;
 		switch(strat_smart[robot].current_strategy){
 				case 1:
-					strat_update_priorities(6,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, ZONE_MY_CLAP_3, ZONE_MY_CINEMA_DOWN, ZONE_MY_CINEMA_UP, ZONE_MY_STAIRWAY);
+					strat_update_priorities(6,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, ZONE_MY_STAIRWAY, ZONE_BLOCK_UPPER_SIDE, ZONE_MY_CINEMA_DOWN, ZONE_MY_CLAP_3);
 					break;
 				case 2:
-					strat_update_priorities(6,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, ZONE_MY_CINEMA_UP, ZONE_MY_CLAP_3, ZONE_MY_CINEMA_DOWN, ZONE_MY_STAIRWAY);
+					strat_update_priorities(6,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, ZONE_BLOCK_UPPER_SIDE, ZONE_MY_STAIRWAY, ZONE_MY_CINEMA_UP, ZONE_MY_CLAP_3);
 					break;
 				case 3:
-					strat_update_priorities(6,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, ZONE_MY_CINEMA_DOWN, ZONE_MY_CINEMA_UP, ZONE_MY_CLAP_3, ZONE_MY_STAIRWAY);;
+					strat_update_priorities(6,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, ZONE_MY_CINEMA_DOWN, ZONE_MY_CINEMA_UP, ZONE_MY_CLAP_3, ZONE_MY_STAIRWAY);
 					strat_smart[robot].current_strategy=0;
 					break;
 				default:

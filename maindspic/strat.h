@@ -360,22 +360,16 @@ struct strat_infos {
 #define STR_BASE 1
 	uint8_t match_strategy;
 	
-	
-#define UPPER_SIDE_BLOCK 1
-#define UPPER_SIDE_IS_BLOCKED 2
-#define UPPER_SIDE_FREE	   3
-#define UPPER_SIDE_IS_FREE	   4
+
+#define MSG_WAIT_START 0
+#define MSG_START 1
+#define MSG_UPPER_SIDE_IS_BLOCKED 2
+#define MSG_UPPER_SIDE_FREE	   3
+#define MSG_UPPER_SIDE_IS_FREE	   4
 	/* message */
 	uint8_t msg;
 
 #if 0
-	/* state of the robot */
-	uint8_t lightbulbs;
-	uint8_t stands;
-	uint8_t carpets;
-	uint8_t popcornbaskets;
-
-
 	/* opponent zone position */
 	uint8_t opp_current_zone;
 	uint8_t opp2_current_zone;
