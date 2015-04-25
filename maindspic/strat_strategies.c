@@ -107,7 +107,7 @@ void strat_set_next_sec_strategy(void)
 		default:
 			break;
 	}
-	DEBUG(E_USER_STRAT,"R2, NEW sequence #%d", strat_smart[MAIN_ROBOT].current_strategy);
+	DEBUG(E_USER_STRAT,"R2, NEW sequence #%d", strat_smart[SEC_ROBOT].current_strategy);
 }
 
 /* set next MAIN_ROBOT strategy */
