@@ -588,16 +588,19 @@ uint8_t strat_main(void)
     strat_limit_speed_enable ();
 
 #ifndef ONLY_MAIN_ROBOT
+
+#ifndef HOST_VERSION
 	/* init time for secondary robot */
 	bt_robot_2nd_start_matchtimer ();
-
-	/* set robot secondary to wait until start */
-	strat_secondary_robot_enable ();
 #endif
-	strat_smart_set_msg(MSG_WAIT_START);
-	
 	/* XXX enable smart_strat of secondary robot */
 	strat_secondary_robot_enable ();
+
+	/* set robot secondary to wait until start */
+	strat_smart_set_msg(MSG_WAIT_START);
+#endif
+
+
     /* play */
     do{
         err = strat_smart_main_robot();
