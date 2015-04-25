@@ -309,7 +309,7 @@ void bt_goto_and_avoid_forward (int16_t x, int16_t y, int16_t args_checksum)
 		bt_status_set_cmd_ack (0);
 
 		/* set bt_task */
-		strat_bt_task_rqst (BT_GOTO_AVOID, x,y, 0,0,0);
+		strat_bt_task_rqst (BT_GOTO_AVOID_FW, x,y, 0,0,0);
 	}
 	else {
 		/* set NACK */
@@ -327,7 +327,7 @@ void bt_goto_and_avoid_backward (int16_t x, int16_t y, int16_t args_checksum)
 		bt_status_set_cmd_ack (0);
 
 		/* set bt_task */
-		strat_bt_task_rqst (BT_GOTO_AVOID, x,y, 0,0,0);
+		strat_bt_task_rqst (BT_GOTO_AVOID_BW, x,y, 0,0,0);
 	}
 	else {
 		/* set ACK */

@@ -303,7 +303,9 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
         else if (zone_num == ZONE_MY_STAIRWAY || zone_num == ZONE_MY_CLAP_3 || 
                  zone_num == ZONE_MY_CINEMA_UP ||  zone_num == ZONE_MY_CINEMA_DOWN) 
         {
-            /* force go backwards */        
+			DEBUG (E_USER_STRAT, "going backwards");
+            
+			/* force go backwards */        
 			bt_robot_2nd_goto_and_avoid_backward(COLOR_X(strat_infos.zones[zone_num].init_x),
 										strat_infos.zones[zone_num].init_y);
         }

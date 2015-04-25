@@ -31,7 +31,6 @@
 #include <aversive/error.h>
 
 #include <uart.h>
-#include <dac_mc.h>
 #include <pwm_servo.h>
 #include <clock_time.h>
 
@@ -128,7 +127,7 @@ uint8_t strat_pickup_cup (int16_t x, int16_t y)
     uint8_t old_debug = strat_infos.debug_step;
 
     /* XXX debug */
-    strat_infos.debug_step = 1;
+    strat_infos.debug_step = 0;
 
 	/* set local speed, and disable speed limit */
 	strat_get_speed (&old_spdd, &old_spda);
@@ -146,11 +145,17 @@ uint8_t strat_pickup_cup (int16_t x, int16_t y)
 	   ERROUT(err);
 
 	/* wait clamp is opened */
-	while ((uint32_t)(time_get_us2()-us) < 500000L)
+	while ((uint32_t)(time_get_us2()-us) < 500000L);
+
 
 	/* go forward in clamp range */
 	d = distance_from_robot(x, y);
-	trajectory_d_rel(&mainboard.traj, d-ROBOT_CENTER_TO_FRONT-(CUP_DIAMETER/2)+10);
+
+	//if (d > (ROBOT_CENTER_TO_FRONT+(CUP_DIAMETER/2)+10))
+		trajectory_d_rel(&mainboard.traj, d-ROBOT_CENTER_TO_FRONT-(CUP_DIAMETER/2)-10);
+	//else
+	//	trajectory_d_rel(&mainboard.traj, -(d-ROBOT_CENTER_TO_FRONT-(CUP_DIAMETER/2)-10));
+
  	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
@@ -185,7 +190,7 @@ uint8_t strat_release_cup (int16_t x, int16_t y)
     uint8_t old_debug = strat_infos.debug_step;
 
     /* XXX debug */
-    strat_infos.debug_step = 1;
+    strat_infos.debug_step = 0;
 
 	/* set local speed, and disable speed limit */
 	strat_get_speed (&old_spdd, &old_spda);
@@ -252,7 +257,7 @@ uint8_t strat_put_carpets (void)
     uint8_t old_debug = strat_infos.debug_step;
 
     /* XXX debug */
-    strat_infos.debug_step = 1;
+    strat_infos.debug_step = 0;
 
 	/* set local speed, and disable speed limit */
 	strat_get_speed (&old_spdd, &old_spda);
@@ -345,7 +350,7 @@ uint8_t strat_close_clapperboard (int16_t x, int16_t y)
     uint8_t old_debug = strat_infos.debug_step;
 
     /* XXX debug */
-    strat_infos.debug_step = 1;
+    strat_infos.debug_step = 0;
 
 	/* set local speed, and disable speed limit */
 	strat_get_speed (&old_spdd, &old_spda);
@@ -370,13 +375,13 @@ uint8_t strat_close_clapperboard (int16_t x, int16_t y)
 	/* TODO: go forward a bit */
 
 	/* open arm */
-	arm = (x > (AREA_X/2)? ARM_TYPE_RIGHT : ARM_TYPE_LEFT);	
+	arm = (position_get_x_s16(&mainboard.pos) > (AREA_X/2)? ARM_TYPE_RIGHT : ARM_TYPE_LEFT);	
 	arm_set_mode (arm, ARM_MODE_CLAPPER);
 	time_wait_ms(500);
 
 	/* turn 90 degrees */
-	a = (x > (AREA_X/2)? 0 : 180);
-	trajectory_a_abs(&mainboard.traj, 0);
+	a = (position_get_x_s16(&mainboard.pos) > (AREA_X/2)? 0 : 180);
+	trajectory_a_abs(&mainboard.traj, a);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);

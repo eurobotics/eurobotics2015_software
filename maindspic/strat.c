@@ -190,15 +190,23 @@ struct strat_infos strat_infos = {
 	/* popcorn cups */
 	.zones[ZONE_POPCORNCUP_1] =
 	{
+#ifdef ONLY_MAIN_ROBOT
 		ZONE_TYPE_POPCORNCUP,
 		MY_CUP_1_X, MY_CUP_1_Y,
 		760, 1060, 1020, 1320,
 		MY_CUP_1_X,	MY_CUP_1_Y-OBS_CLERANCE-30-80,
-//		MY_CUP_1_X-ROBOT_SEC_OBS_CLERANCE,	MY_CUP_1_Y-ROBOT_SEC_OBS_CLERANCE,
 		0, 0,
 //		0, (9000*1000L),
 		MAIN_ROBOT
-//		SEC_ROBOT_ROBOT
+#else
+		ZONE_TYPE_POPCORNCUP,
+		MY_CUP_1_X, MY_CUP_1_Y,
+		760, 1060, 1020, 1320,
+		MY_CUP_1_X-ROBOT_SEC_OBS_CLERANCE-CUP_DIAMETER,	MY_CUP_1_Y-ROBOT_SEC_OBS_CLERANCE-CUP_DIAMETER,
+		0, 0,
+//		0, (9000*1000L),
+		SEC_ROBOT
+#endif
 	},
 	.zones[ZONE_POPCORNCUP_2] =
 	{
@@ -224,9 +232,9 @@ struct strat_infos strat_infos = {
  	.zones[ZONE_MY_CINEMA_UP] =
 	{
 		ZONE_TYPE_CINEMA,
-		AREA_X-CUP_DIAMETER-10, MY_CINEMA_UP_EDGE_Y+CUP_DIAMETER+10,
+		AREA_X-ROBOT_SEC_OBS_CLERANCE-(CUP_DIAMETER/2), MY_CINEMA_UP_EDGE_Y+ROBOT_SEC_OBS_CLERANCE+(CUP_DIAMETER/2),
 		2600, 3000, 1200, 1600,
-		AREA_X-ROBOT_SEC_OBS_CLERANCE+CUP_DIAMETER, MY_CINEMA_UP_EDGE_Y+ROBOT_SEC_OBS_CLERANCE+CUP_DIAMETER,
+		AREA_X-ROBOT_SEC_OBS_CLERANCE-CUP_DIAMETER, MY_CINEMA_UP_EDGE_Y+ROBOT_SEC_OBS_CLERANCE+CUP_DIAMETER,
 		0, 0,
 //	 	0, (9000*1000L),
 		SEC_ROBOT
@@ -238,20 +246,17 @@ struct strat_infos strat_infos = {
 		MY_CINEMA_DOWN_X, MY_CINEMA_DOWN_Y-150,
 		2600, 3000, 400, 800,
 		0, 0,
-		0, 0,
 //		0, (9000*1000L),
 		MAIN_ROBOT
 #else
 		ZONE_TYPE_CINEMA,
-		AREA_X-CUP_DIAMETER-10, MY_CINEMA_DOWN_EDGE_Y-CUP_DIAMETER-10,
+		AREA_X-ROBOT_SEC_OBS_CLERANCE-(CUP_DIAMETER/2), MY_CINEMA_DOWN_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-(CUP_DIAMETER/2),
 		2600, 3000, 400, 800,
-		AREA_X-ROBOT_SEC_OBS_CLERANCE+CUP_DIAMETER, MY_CINEMA_DOWN_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-CUP_DIAMETER,
-		0, 0,
+		AREA_X-ROBOT_SEC_OBS_CLERANCE-CUP_DIAMETER, MY_CINEMA_DOWN_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-CUP_DIAMETER,
 		0, 0,
 //		0, (9000*1000L),
 		SEC_ROBOT
 #endif
-
 	},
 	/* stairs */
   	.zones[ZONE_MY_STAIRS] =
@@ -556,12 +561,13 @@ uint8_t strat_main(void)
     uint8_t err;
     strat_limit_speed_enable ();
 
+#ifndef ONLY_MAIN_ROBOT
 	/* init time for secondary robot */
-	//bt_robot_2nd_start_matchtimer ();
+	bt_robot_2nd_start_matchtimer ();
 
 	/* XXX enable smart_trat of secondary robot */
-	//strat_secondary_robot_enable ();
-
+	strat_secondary_robot_enable ();
+#endif
     /* play */
     do{
         err = strat_smart_main_robot();

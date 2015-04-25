@@ -1307,13 +1307,15 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 
     else if (!strcmp_P(res->arg1, PSTR("cinema_up"))) {
         zone_num = ZONE_MY_CINEMA_UP;
-		printf_P(PSTR("not yet supported\r\n"));
-		return;
 	}
     else if (!strcmp_P(res->arg1, PSTR("cinema_down"))) {
         zone_num = ZONE_MY_CINEMA_DOWN;
-		printf_P(PSTR("not yet supported\r\n"));
-		return;
+	}
+    else if (!strcmp_P(res->arg1, PSTR("stairs_ways"))) {
+        zone_num = ZONE_MY_STAIRWAY;
+	}
+    else if (!strcmp_P(res->arg1, PSTR("outside"))) {
+        zone_num = ZONE_MY_HOME_OUTSIDE;
 	}
     else if (!strcmp_P(res->arg1, PSTR("platform"))) {
         //zone_num = ZONE_MY_CINEMA_DOWN;
@@ -1322,11 +1324,6 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 	}
     else if (!strcmp_P(res->arg1, PSTR("stairs"))) {
         //zone_num = ZONE_MY_STAIRS;
-		printf_P(PSTR("not yet supported\r\n"));
-		return;
-	}
-    else if (!strcmp_P(res->arg1, PSTR("stairs_ways"))) {
-        //zone_num = ZONE_MY_STAIRWAY;
 		printf_P(PSTR("not yet supported\r\n"));
 		return;
 	}
@@ -1380,7 +1377,7 @@ end:
 
 prog_char str_subtraj1_arg0[] = "subtraj";
 parse_pgm_token_string_t cmd_subtraj1_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg0, str_subtraj1_arg0);
-prog_char str_subtraj1_arg1[] = "begining#home_popcorns#home_spotlight#machine#machine_opp#cinema_up#cinema_down#platform#stairs#stair_ways";
+prog_char str_subtraj1_arg1[] = "begining#home_popcorns#home_spotlight#machine#machine_opp#cinema_up#cinema_down#platform#stairs#stairs_ways#outside";
 parse_pgm_token_string_t cmd_subtraj1_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg1, str_subtraj1_arg1);
 //parse_pgm_token_num_t cmd_subtraj1_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg2, INT32);
 //parse_pgm_token_num_t cmd_subtraj1_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg3, INT32);
@@ -1470,11 +1467,6 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 
 		if (res->arg2 <= 3)
         	zone_num = ZONE_POPCORNCUP_1 + res->arg2 - 1;
-
-		if (res->arg2 == 1) {
-			printf_P(PSTR("not yet supported\r\n"));
-			return;
-		}
 	}
 
 	/* go and work*/
@@ -1503,6 +1495,9 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 		    printf_P(PSTR("goto returned %s\r\n"), get_err(err));
 			if (!TRAJ_SUCCESS(err))
 			   ERROUT(err);
+
+            /* XXX debug */
+            strat_debug_wait_key_pressed (SEC_ROBOT);    
 
             /* work */
             err = strat_work_on_zone(SEC_ROBOT, zone_num);
