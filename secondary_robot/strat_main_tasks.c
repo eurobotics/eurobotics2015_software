@@ -219,7 +219,7 @@ uint8_t strat_release_cup (int16_t x, int16_t y)
 	time_wait_ms(500);
 
 	/* return to init point */
-	trajectory_d_rel(&mainboard.traj, -d);
+	trajectory_d_rel(&mainboard.traj, -(d+CUP_DIAMETER));
  	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);

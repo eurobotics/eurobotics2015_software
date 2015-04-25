@@ -252,7 +252,7 @@ void maindspic_cs_init(void)
 	/* ---- CS angle */
 	/* PID */
 	pid_init(&mainboard.angle.pid);
-	pid_set_gains(&mainboard.angle.pid, 40, 5, 200); //360, 3, 3000
+	pid_set_gains(&mainboard.angle.pid, 100, 0, 400); //40, 5, 200); //360, 3, 3000
 	pid_set_maximums(&mainboard.angle.pid, 0, 2650, 5332);
 	pid_set_out_shift(&mainboard.angle.pid, 6);	
 	pid_set_derivate_filter(&mainboard.angle.pid, 1);
@@ -278,7 +278,7 @@ void maindspic_cs_init(void)
 	/* ---- CS distance */
 	/* PID */
 	pid_init(&mainboard.distance.pid);
-	pid_set_gains(&mainboard.distance.pid, 20, 5, 200); // 360, 3, 3000
+	pid_set_gains(&mainboard.distance.pid, 100, 0, 400); //20, 5, 200); // 360, 3, 3000
 	pid_set_maximums(&mainboard.distance.pid, 0, 2650, 5332);
 	pid_set_out_shift(&mainboard.distance.pid, 6);
 	pid_set_derivate_filter(&mainboard.distance.pid, 1);

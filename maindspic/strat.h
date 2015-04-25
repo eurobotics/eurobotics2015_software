@@ -519,6 +519,9 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num);
 /* debug state machines step to step */
 void state_debug_wait_key_pressed(void);
 
+/* debug strat step to step */
+void strat_debug_wait_key_pressed (uint8_t robot);
+
 /* smart play */
 uint8_t strat_smart_main_robot(void);
 uint8_t strat_smart_secondary_robot(void);
