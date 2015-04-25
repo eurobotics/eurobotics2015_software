@@ -524,7 +524,7 @@ uint8_t __strat_obstacle(uint8_t which)
 
 #define OBSTACLE_SPEED_MIN	20
 #define OBSTACLE_ANGLE		35
-#define OBSTACLE_DIST		800
+#define OBSTACLE_DIST		600
 
 	int16_t x_rel, y_rel;
 	int16_t opp_x, opp_y, opp_d, opp_a;

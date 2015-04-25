@@ -237,6 +237,9 @@ void strat_dump_infos(const char *caller);
 void strat_dump_conf(void);
 void strat_reset_infos(void);
 
+/* debug state machines step to step */
+void state_debug_wait_key_pressed(void);
+
 void strat_preinit(void);
 void strat_init(void);
 void strat_exit(void);

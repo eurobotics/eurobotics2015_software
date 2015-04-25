@@ -187,7 +187,13 @@
 
 #define MY_CLAP_1_X		    320
 #define MY_CLAP_2_X		    920
+
+#ifdef ONLY_MAIN_ROBOT
 #define MY_CLAP_3_X		    (AREA_X-(700-160-80-20)) //2380
+#else
+#define MY_CLAP_3_X		    2380
+#endif
+
 #define MY_CLAP_Y		    0
 
 #define PLATFORM_WIDTH      100
