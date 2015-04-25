@@ -298,15 +298,15 @@ uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
    	uint8_t err = 0;
 	uint16_t old_spdd, old_spda;
 	int16_t d = 0, a = 0;
-    int16_t ret_left, ret_right;
-    uint8_t nb_tries=0;
+//    int16_t ret_left, ret_right;
+//    uint8_t nb_tries=0;
 
 	/* set local speed, and disable speed limit */
 	strat_get_speed (&old_spdd, &old_spda);
    	strat_limit_speed_disable ();
 	strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 
-try_again:
+//try_again:
 	/* get d,a target */
 	if (side_target != I2C_SIDE_ALL)
 		get_stand_da (x, y, side_target, &d, &a);

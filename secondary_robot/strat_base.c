@@ -111,6 +111,8 @@ const char *get_err(uint8_t err)
 
 void strat_hardstop(void) 
 {
+	trajectory_stop(&mainboard.traj);
+#if 0
 	trajectory_hardstop(&mainboard.traj);
 	pid_reset(&mainboard.angle.pid);
 	pid_reset(&mainboard.distance.pid);
@@ -125,6 +127,7 @@ void strat_hardstop(void)
 	pid_reset(&mainboard.distance.pid);
 	bd_reset(&mainboard.angle.bd);
 	bd_reset(&mainboard.distance.bd);
+#endif
 }
 
 /* go to an x,y point without checking for obstacle or blocking. It
