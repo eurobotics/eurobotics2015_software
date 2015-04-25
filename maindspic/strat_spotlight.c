@@ -306,7 +306,7 @@ uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
    	strat_limit_speed_disable ();
 	strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 
-//try_again:
+try_again:
 	/* get d,a target */
 	if (side_target != I2C_SIDE_ALL)
 		get_stand_da (x, y, side_target, &d, &a);
@@ -342,13 +342,28 @@ uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
 	/* wait blades ready */
 	time_wait_ms(500);
 
+
 	/* harvest, go close to stands but without touch */
 	strat_set_speed (harvest_speed, SPEED_ANGLE_SLOW);
 	d -= (ROBOT_CENTER_TO_MOUTH + STANDS_RADIOUS + 10);
 	trajectory_d_rel(&mainboard.traj, d);
-	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-    if (!TRAJ_SUCCESS(err))
-	   ERROUT(err);	
+
+	if (strat_smart[MAIN_ROBOT].current_zone == ZONE_MY_STAND_GROUP_1) 
+	{
+		err = WAIT_COND_OR_TRAJ_END((sensor_get(S_OPPONENT_FRONT_L) || sensor_get(S_OPPONENT_FRONT_R)), TRAJ_FLAGS_NO_NEAR);
+		if (err == 0) {
+			strat_hardstop();
+			time_wait_ms(500);
+			goto try_again;
+		}
+		else if (!TRAJ_SUCCESS(err))
+		   ERROUT(err);	
+	}
+	else {
+		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+		if (!TRAJ_SUCCESS(err))
+			   ERROUT(err);	
+	}
 
 	/* debug */
 	//state_debug_wait_key_pressed();
@@ -457,6 +472,10 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side)
    	uint8_t err = 0;
 	uint16_t old_spdd, old_spda;
 	int16_t d = 0;
+	int16_t x_init,y_init;
+
+	x_init = position_get_x_s16(&mainboard.pos);
+	y_init = position_get_y_s16(&mainboard.pos);
 
 	/* set local speed, and disable speed limit */
 	strat_get_speed (&old_spdd, &old_spda);
@@ -465,7 +484,7 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side)
 
 	/* turn to home */
 	trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(180));
-	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
 
@@ -475,7 +494,7 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side)
     /* go inside to the building position */
 	d = distance_from_robot(x, y);
 	trajectory_d_rel(&mainboard.traj, d);
-	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);	
 
@@ -497,7 +516,7 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side)
 
 	strat_set_speed (SPEED_DIST_VERY_SLOW, SPEED_ANGLE_VERY_SLOW);
 	trajectory_d_rel(&mainboard.traj, -(ROBOT_CENTER_TO_FRONT-ROBOT_CENTER_TO_MOUTH+10));
-	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);	
 #endif
@@ -513,27 +532,32 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side)
 	time_wait_ms(500);
 
 	/* release spotlight left */
-	i2c_slavedspic_mode_ss(I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT, SIDE_LEFT);
+	i2c_slavedspic_mode_ss(I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT, COLOR_INVERT(SIDE_LEFT));
 	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(SIDE_LEFT, STATUS_READY|STATUS_BLOCKED), STANDS_READY_TIMEOUT);
 
 	/* go backwards */
 	strat_set_speed (300, SPEED_ANGLE_VERY_SLOW);
 	trajectory_d_rel(&mainboard.traj, -100);
-	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-    if (!TRAJ_SUCCESS(err))
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+    if (!TRAJ_SUCCESS(err)) {
 	   ERROUT(err);	
+	}
 
 	/* release spotlight right */
-	i2c_slavedspic_mode_ss(I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT, SIDE_RIGHT);
+	i2c_slavedspic_mode_ss(I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT, COLOR_INVERT(SIDE_RIGHT));
 	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(SIDE_RIGHT, STATUS_READY|STATUS_BLOCKED), STANDS_READY_TIMEOUT);
 
+retry:
 	/* go backwards */
 	strat_set_speed (300, SPEED_ANGLE_VERY_SLOW);
-	trajectory_d_rel(&mainboard.traj, -200);
+	//trajectory_d_rel(&mainboard.traj, -200);
+	trajectory_goto_xy_abs (&mainboard.traj, x_init, y_init);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-    if (!TRAJ_SUCCESS(err))
-	   ERROUT(err);	
-
+    if (!TRAJ_SUCCESS(err)) {
+		while (opponent1_is_behind() || opponent2_is_behind());
+	   	goto retry;
+		//ERROUT(err);	
+	}
 
 end:
 	/* end stuff */

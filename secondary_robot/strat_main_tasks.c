@@ -152,7 +152,7 @@ uint8_t strat_pickup_cup (int16_t x, int16_t y)
 	d = distance_from_robot(x, y);
 
 	//if (d > (ROBOT_CENTER_TO_FRONT+(CUP_DIAMETER/2)+10))
-		trajectory_d_rel(&mainboard.traj, d-ROBOT_CENTER_TO_FRONT-(CUP_DIAMETER/2)-10);
+		trajectory_d_rel(&mainboard.traj, d-ROBOT_CENTER_TO_FRONT-(CUP_DIAMETER/2));
 	//else
 	//	trajectory_d_rel(&mainboard.traj, -(d-ROBOT_CENTER_TO_FRONT-(CUP_DIAMETER/2)-10));
 
@@ -216,7 +216,7 @@ uint8_t strat_release_cup (int16_t x, int16_t y)
 
 	/* open clamp */
 	cup_clamp_set_position (CUP_CLAMP_POS_OPEN);
-	time_wait_ms(500);
+	time_wait_ms(2000);
 
 	/* return to init point */
 	trajectory_d_rel(&mainboard.traj, -(d+CUP_DIAMETER));
@@ -248,8 +248,8 @@ uint8_t strat_put_carpets (void)
 #define STAIRS_EDGE_Y			(AREA_Y-580)
 #define STAIRS_EDGE_X			(967)
 #define STAIRS_WIDE_HALF		(50)
-#define CARPET_LEFT_INFRONT_X	(STAIRS_EDGE_X+STAIRS_WIDE_HALF+ROBOT_CENTER_TO_ARM)
-#define CARPET_RIGHT_INFRONT_X	((AREA_X/2)-STAIRS_WIDE_HALF-ROBOT_CENTER_TO_ARM)
+#define CARPET_LEFT_INFRONT_X	(STAIRS_EDGE_X+STAIRS_WIDE_HALF+ROBOT_CENTER_TO_ARM+20)
+#define CARPET_RIGHT_INFRONT_X	((AREA_X/2)-STAIRS_WIDE_HALF-ROBOT_CENTER_TO_ARM-20)
 
    	uint8_t err = 0;
 	uint16_t old_spdd, old_spda;

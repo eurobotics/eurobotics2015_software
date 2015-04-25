@@ -343,7 +343,7 @@ static void cmd_start_parsed(void *parsed_result, void *data)
 	}
 
 
-	strat_start();
+	//strat_start();
 
 	gen.logs[NB_LOGS] = 0;
 	gen.log_level = old_level;

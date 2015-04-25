@@ -231,8 +231,9 @@ uint8_t strat_is_valid_zone(uint8_t robot, int8_t zone_num)
 		return 0;
 	}
 
-	/* discard current zone */
-	if(strat_smart[robot].current_zone == zone_num)
+	/* XXX discard current zone */
+	if(strat_smart[robot].current_zone == zone_num &&
+	   strat_smart[robot].current_zone != ZONE_MY_STAIRWAY)
 	{
 		//DEBUG(E_USER_STRAT,"zone num: %d. current_zone.");
 		return 0;
@@ -454,6 +455,8 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 		case ZONE_MY_STAND_GROUP_1:
 
 			/* Set start to sec robot */
+
+			strat_smart[MAIN_ROBOT].current_zone = ZONE_MY_STAND_GROUP_1;
 			
 			/* TODO: call specific function for stand group 1 */
 			err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_4_X),
@@ -667,8 +670,8 @@ uint8_t strat_wait_sync_main_robot(void)
 
 	/* strat syncro */
 	/* Wait until "is free" from sec robot */
-	if(strat_smart_get_msg() != MSG_UPPER_SIDE_IS_FREE)
-		return 1;
+	//if(strat_smart_get_msg() != MSG_UPPER_SIDE_IS_FREE)
+	//	return 1;
 
     return 0;
 }

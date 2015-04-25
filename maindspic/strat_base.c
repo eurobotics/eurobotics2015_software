@@ -529,7 +529,7 @@ uint8_t __strat_obstacle(uint8_t which)
 
 /* FIXME  */
 #ifndef HOST_VERSION
-#define OBSTACLE_SPEED_MIN		20
+#define OBSTACLE_SPEED_MIN		300 //20
 #else
 #define OBSTACLE_SPEED_MIN		300
 #endif
@@ -540,6 +540,12 @@ uint8_t __strat_obstacle(uint8_t which)
 	int16_t x_rel, y_rel;
 	int16_t opp_x, opp_y, opp_d, opp_a;
 	int8_t ret = -1;
+
+
+	/* XXX HACK	 */
+	if (strat_smart[MAIN_ROBOT].current_zone == ZONE_MY_STAND_GROUP_1)
+		return 0;
+
 
 	/* too slow */
 	if (ABS(mainboard.speed_d) < OBSTACLE_SPEED_MIN)
@@ -644,8 +650,8 @@ uint8_t strat_obstacle(void)
 	else if(__strat_obstacle(OBSTACLE_OPP2))
 		return 1;
 #ifdef ROBOT_2ND
-	else if(__strat_obstacle(OBSTACLE_R2ND))
-		return 1;
+	//else if(__strat_obstacle(OBSTACLE_R2ND))
+	//	return 1;
 #endif
 #endif
 	else
