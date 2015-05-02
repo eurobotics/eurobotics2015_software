@@ -794,8 +794,10 @@ static void cmd_stands_system_parsed(__attribute__((unused)) void *parsed_result
 		command.stands_system.mode = I2C_SLAVEDSPIC_MODE_SS_IDLE;
 	else if (!strcmp_P(res->arg2, PSTR("hide_tower")))
 		command.stands_system.mode = I2C_SLAVEDSPIC_MODE_SS_HIDE_TOWER;
-	else if (!strcmp_P(res->arg2, PSTR("harvest_stand")))
-		command.stands_system.mode = I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND;
+	else if (!strcmp_P(res->arg2, PSTR("harvest_stand_do")))
+		command.stands_system.mode = I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND_DO;
+	else if (!strcmp_P(res->arg2, PSTR("harvest_stand_ready")))
+		command.stands_system.mode = I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND_READY;
 	else if (!strcmp_P(res->arg2, PSTR("build_spotlight")))
 		command.stands_system.mode = I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT;
 	else if (!strcmp_P(res->arg2, PSTR("release_spotlight")))
@@ -811,7 +813,7 @@ prog_char str_stands_system_arg0[] = "ss";
 parse_pgm_token_string_t cmd_stands_system_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_stands_system_result, arg0, str_stands_system_arg0);
 prog_char str_stands_system_arg1[] = "left#right";
 parse_pgm_token_string_t cmd_stands_system_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_stands_system_result, arg1, str_stands_system_arg1);
-prog_char str_stands_system_arg2[] = "idle#hide_tower#harvest_stand#build_spotlight#release_spotlight";
+prog_char str_stands_system_arg2[] = "idle#hide_tower#harvest_stand_do#harvest_stand_ready#build_spotlight#release_spotlight";
 parse_pgm_token_string_t cmd_stands_system_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_stands_system_result, arg2, str_stands_system_arg2);
 parse_pgm_token_num_t cmd_stands_system_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_stands_system_result, arg3, UINT8);
 
