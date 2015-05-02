@@ -437,10 +437,6 @@ uint8_t do_cup_front_catch_and_drop(popcorn_system_t *ps)
 	switch(ps->substate)
 	{
 		case SAVE:
-			if(slavedspic.cup_clamp_front.mode != CUP_CLAMP_FRONT_MODE_OPEN) {
-				STMCH_ERROR("FIRST, OPEN CUP_CLAMP_FRONT!!");
-				return STATUS_BLOCKED;
-			}
 
 		case CATCH_CUP_FRONT:
 			cup_clamp_front_set_mode(&slavedspic.cup_clamp_front, CUP_CLAMP_FRONT_MODE_CUP_LOCKED, 0);
@@ -493,10 +489,25 @@ uint8_t do_cup_front_release(popcorn_system_t *ps)
 	switch(ps->substate)
 	{
 		case SAVE:
-			if(slavedspic.stands_tower_clamps.mode != STANDS_TOWER_CLAMPS_MODE_LOCK) {
-				STMCH_ERROR("FIRST, LOCK STANDS_TOWER_CLAMPS!!");
+			if(slavedspic.stands_tower_clamps.mode == STANDS_TOWER_CLAMPS_MODE_LOCK) {
+				ps->substate = DOWN_CUP_FRONT;
+				break;
+			}
+
+			stands_tower_clamps_set_mode(&slavedspic.stands_tower_clamps, STANDS_TOWER_CLAMPS_MODE_LOCK, 0);
+			ps->substate = WAITING_TOWER_CLAMPS_LOCKED;
+
+		case WAITING_TOWER_CLAMPS_LOCKED:
+			ret = stands_tower_clamps_test_traj_end(&slavedspic.stands_tower_clamps);
+
+			if(ret & END_TRAJ)
+				ps->substate = DOWN_CUP_FRONT;
+			else if(ret & END_BLOCKING) {
+				STMCH_ERROR("tower_clamps BLOCKED!!");
 				return STATUS_BLOCKED;
 			}
+
+			break;
 
 		case DOWN_CUP_FRONT:
 			cup_holder_front_set_mode(&slavedspic.cup_holder_front, CUP_HOLDER_FRONT_MODE_READY, 0);
@@ -551,10 +562,6 @@ uint8_t do_cup_front_hide(popcorn_system_t *ps)
 	switch(ps->substate)
 	{
 		case SAVE:
-			if(ps->cup_front_catched == 1) {
-				STMCH_ERROR("FIRST, RELEASE CUP_FRONT!!");
-				return STATUS_BLOCKED;
-			}
 
 		case HIDE_CUP_FRONT:
 			cup_clamp_front_set_mode(&slavedspic.cup_clamp_front, CUP_CLAMP_FRONT_MODE_CUP_LOCKED, 0);
@@ -604,9 +611,8 @@ uint8_t do_cup_rear_open(popcorn_system_t *ps)
 		case WAITING_CUP_REAR_OPENED_RIGHT:
 			ret = cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_r);
 
-			if(ret & (END_NEAR|END_TRAJ)) {
+			if(ret & (END_NEAR|END_TRAJ))
 				ps->substate = OPEN_LEFT_CUP_REAR;
-			}
 			else if(ret & END_BLOCKING) {
 				STMCH_ERROR("cup_clamp_popcorn_door_r BLOCKED!!");
 				return STATUS_BLOCKED;
@@ -695,10 +701,6 @@ uint8_t do_cup_rear_release(popcorn_system_t *ps)
 	switch(ps->substate)
 	{
 		case SAVE:
-			if(ps->cup_rear_catched == 0) {
-				STMCH_ERROR("THERE ISN'T ANY CUP_REAR CATCHED!!");
-				return STATUS_BLOCKED;
-			}
 
 		case RELEASE_CUP_REAR:
 			cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_l, CUP_CLAMP_MODE_OPEN, 0);
@@ -832,10 +834,6 @@ uint8_t do_machines_end(popcorn_system_t *ps)
 	switch(ps->substate)
 	{
 		case SAVE:
-			if(slavedspic.popcorn_tray.mode == POPCORN_TRAY_MODE_CLOSE) {
-				STMCH_ERROR("THE SYSTEM IS CLOSED!!");
-				return STATUS_BLOCKED;
-			}
 			
 		case CLOSE_RAMPS:
 			popcorn_ramps_set_mode(&slavedspic.popcorn_ramps, POPCORN_RAMPS_MODE_HIDE, 0);
@@ -870,6 +868,7 @@ uint8_t do_machines_end(popcorn_system_t *ps)
 uint8_t do_stock_drop(popcorn_system_t *ps)
 {
 	static microseconds us = 0;
+	uint8_t ret = 0;
 	uint8_t ret_l = 0;
 	uint8_t ret_r = 0;
 
@@ -877,12 +876,8 @@ uint8_t do_stock_drop(popcorn_system_t *ps)
 	{
 		case SAVE:
 			if(slavedspic.cup_clamp_popcorn_door_r.mode == CUP_CLAMP_MODE_HIDE) {
-				STMCH_ERROR("FIRST, TRY TO OPEN CUP_CLAMP_REAR!!");
-				return STATUS_BLOCKED;
-			}
-			else if(ps->cup_rear_catched == 0 && ps->machine_popcorns_catched == 0 && ps->cup_front_popcorns_harvested == 0) {
-				STMCH_ERROR("NO STORED POPCORNS!!");
-				return STATUS_BLOCKED;
+				ps->substate = OPEN_RIGHT_DOOR;
+				break;
 			}
 			
 		case OPEN_DOORS:
@@ -912,10 +907,46 @@ uint8_t do_stock_drop(popcorn_system_t *ps)
 			}
 			break;
 
-		case WAITING_STOCK_DROPPED:
-			if(time_get_us2() - us > 1000000L) {
-				return STATUS_DONE;
+		case OPEN_RIGHT_DOOR:
+			popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_r, POPCORN_DOOR_MODE_OPEN, 0);
+			ps->substate = WAITING_RIGHT_DOOR_OPENED;
+			break;
+
+		case WAITING_RIGHT_DOOR_OPENED:
+			ret = cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_r);
+
+			if(ret & (END_NEAR|END_TRAJ))
+				ps->substate = OPEN_LEFT_DOOR;
+			else if(ret & END_BLOCKING) {
+				STMCH_ERROR("cup_clamp_popcorn_door_r BLOCKED!!");
+				return STATUS_BLOCKED;
 			}
+			break;
+
+		case OPEN_LEFT_DOOR:
+			popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_l, POPCORN_DOOR_MODE_OPEN, 0);
+			ps->substate = WAITING_LEFT_DOOR_OPENED;
+			break;
+
+		case WAITING_LEFT_DOOR_OPENED:
+			ret = cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_l);
+
+			if(ret & END_TRAJ) {
+				ps->cup_rear_catched = 0;
+				ps->cup_front_popcorns_harvested = 0;
+				ps->machine_popcorns_catched = 0;
+				us = time_get_us2();
+				ps->substate = WAITING_STOCK_DROPPED;
+			}
+			else if(ret & END_BLOCKING) {
+				STMCH_ERROR("cup_clamp_popcorn_door_l BLOCKED!!");
+				return STATUS_BLOCKED;
+			}
+			break;
+
+		case WAITING_STOCK_DROPPED:
+			if(time_get_us2() - us > 1000000L)
+				return STATUS_DONE;
 			break;
 
 		default:
@@ -934,11 +965,29 @@ uint8_t do_stock_end(popcorn_system_t *ps)
 	switch(ps->substate)
 	{
 		case SAVE:
-			if(ps->cup_rear_catched == 1) {
-				STMCH_ERROR("FIRST, RELEASE CUP_REAR!!");
+			if(slavedspic.cup_clamp_popcorn_door_r.mode != CUP_CLAMP_MODE_HIDE) {
+				ps->substate = CLOSE_LEFT_CLAMP;
+				break;
+			}
+
+			ps->substate = OPEN_RIGHT_CUP_REAR;
+			
+		case OPEN_RIGHT_CUP_REAR:
+			cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_r, CUP_CLAMP_MODE_OPEN, 0);
+			ps->substate = WAITING_CUP_REAR_OPENED_RIGHT;
+			break;
+
+		case WAITING_CUP_REAR_OPENED_RIGHT:
+			ret = cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_r);
+
+			if(ret & (END_NEAR|END_TRAJ))
+				ps->substate = CLOSE_LEFT_CLAMP;
+			else if(ret & END_BLOCKING) {
+				STMCH_ERROR("cup_clamp_popcorn_door_r BLOCKED!!");
 				return STATUS_BLOCKED;
 			}
-			
+			break;
+
 		case CLOSE_LEFT_CLAMP:
 			cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_l, CUP_CLAMP_MODE_HIDE, 0);
 			ps->substate = WAITING_LEFT_CLAMP_CLOSED;
@@ -1023,7 +1072,10 @@ void popcorn_system_manage(popcorn_system_t *ps)
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_RELEASE:
-			ps->status = do_cup_rear_release(ps);
+			if(slavedspic.cup_clamp_popcorn_door_r.mode == CUP_CLAMP_MODE_HIDE)
+				ps->status = do_cup_rear_open(ps);
+			else
+				ps->status = do_cup_rear_release(ps);
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_PS_MACHINES_READY:
@@ -1160,6 +1212,12 @@ uint8_t do_hide_tower(stands_system_t *ss)
 			break;
 
 		case HIDE_BLADE:
+			if(sensor_get(ss->stand_sensor) && ss->stored_stands < 4) {
+				STMCH_ERROR("There is stand unharvested!!");
+				ss->stored_stands--;
+				return STATUS_BLOCKED;
+			}
+
 			if(ss->stored_stands < 4) {
 				if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT)
 					stands_blade_set_mode(ss->blade, STANDS_BLADE_MODE_HIDE_LEFT, 0);
@@ -1202,14 +1260,14 @@ uint8_t do_hide_tower(stands_system_t *ss)
 	return STATUS_BUSY;
 }
 
-uint8_t do_harvest_stand(stands_system_t *ss)
+uint8_t do_harvest_stand_ready(stands_system_t *ss)
 {
 	uint8_t ret = 0;
 
 	switch(ss->substate)
 	{
 		case SAVE:
-			if(ss->blade->type == STANDS_BLADE_TYPE_LEFT)
+			if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT)
 				ss->blade = &slavedspic.stands_blade_l;
 			else
 				ss->blade = &slavedspic.stands_blade_r;
@@ -1224,7 +1282,7 @@ uint8_t do_harvest_stand(stands_system_t *ss)
 			ret = stands_blade_test_traj_end(ss->blade);
 
 			if(ret & END_TRAJ)
-				ss->substate = PUSH_STAND;
+				return STATUS_DONE;
 			else if(ret & END_BLOCKING) {
 				if(ss->blade->type == STANDS_BLADE_TYPE_LEFT)
 					STMCH_ERROR("stands_blade_l BLOCKED!!");
@@ -1236,23 +1294,38 @@ uint8_t do_harvest_stand(stands_system_t *ss)
 
 			break;
 
-		case PUSH_STAND:
-			if(sensor_get(ss->stand_sensor)) {
-				if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT)
-					stands_blade_set_mode(ss->blade, STANDS_BLADE_MODE_PUSH_STAND_LEFT, 0);
-				else
-					stands_blade_set_mode(ss->blade, STANDS_BLADE_MODE_PUSH_STAND_RIGHT, 0);
+		default:
+			ss->substate = SAVE;
+			return STATUS_ERROR;
+			break;
+	}
 
-				ss->substate = WAITING_STAND_PUSHED;
-			}
+	return STATUS_BUSY;
+}
+
+uint8_t do_harvest_stand_do(stands_system_t *ss)
+{
+	uint8_t ret = 0;
+
+	switch(ss->substate)
+	{
+		case SAVE:
+
+		case PUSH_STAND:
+			if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT)
+				stands_blade_set_mode(ss->blade, STANDS_BLADE_MODE_PUSH_STAND_LEFT, 0);
+			else
+				stands_blade_set_mode(ss->blade, STANDS_BLADE_MODE_PUSH_STAND_RIGHT, 0);
+
+			ss->substate = WAITING_STAND_PUSHED;
 
 			break;
 
 		case WAITING_STAND_PUSHED:
-			if(!sensor_get(ss->stand_sensor)) {
-				ss->substate = READY_BLADE;
-				break;
-			}
+//			if(!sensor_get(ss->stand_sensor)) {
+//				STMCH_ERROR("There isn't stand!!");
+//				return STATUS_BLOCKED;
+//			}
 
 			ret = stands_blade_test_traj_end(ss->blade);
 
@@ -1274,6 +1347,11 @@ uint8_t do_harvest_stand(stands_system_t *ss)
 			break;
 
 		case DESCEND_TOWER:
+			if(!sensor_get(ss->stand_sensor)) {
+				STMCH_ERROR("There isn't stand!!");
+				return STATUS_BLOCKED;
+			}
+
 			if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT)
 				stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, -150);
 			else
@@ -1684,10 +1762,8 @@ uint8_t do_build_spotlight(stands_system_t *ss, stands_system_t *ss_slave)
 	uint8_t status = 0;
 
 	if(ss->spotlight_mode != SM_PRINCIPAL && ss->spotlight_mode != SM_SECONDARY) {
-		if(ss_slave->stored_stands == 0) {
-			STMCH_ERROR("THERE AREN'T STANDS IN SECONDARY TOWER!!");
+		if(ss_slave->stored_stands == 0)
 			return STATUS_DONE;
-		}
 
 		ss->spotlight_mode = SM_PRINCIPAL;
 		ss_slave->spotlight_mode = SM_SECONDARY;
@@ -1714,10 +1790,25 @@ uint8_t do_release_spotlight(stands_system_t *ss)
 
 	switch(ss->substate) {
 		case SAVE:
-			if(slavedspic.cup_holder_front.mode != CUP_HOLDER_FRONT_MODE_HIDE) {
-				STMCH_ERROR("FIRST, HIDE CUP_HOLDER_FRONT!!");
+			if(slavedspic.cup_holder_front.mode == CUP_HOLDER_FRONT_MODE_HIDE) {
+				ss->substate = DESCEND_ELEVATOR;
+				break;
+			}
+
+			cup_holder_front_set_mode(&slavedspic.cup_holder_front, CUP_HOLDER_FRONT_MODE_HIDE, 0);
+			ss->substate = WAITING_CUP_HOLDER_FRONT_HIDDEN;
+
+		case WAITING_CUP_HOLDER_FRONT_HIDDEN:
+			ret = cup_holder_front_test_traj_end(&slavedspic.cup_holder_front);
+
+			if(ret & END_TRAJ)
+				ss->substate = DESCEND_ELEVATOR;
+			else if(ret & END_BLOCKING) {
+				STMCH_ERROR("cup_holder_front BLOCKED!!");
 				return STATUS_BLOCKED;
 			}
+
+			break;
 
 		case DESCEND_ELEVATOR:
 			stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_DOWN, 0);
@@ -1826,9 +1917,18 @@ void stands_system_manage(stands_system_t *ss, stands_system_t *ss_slave)
 			ss->status = do_hide_tower(ss);
 			break;
 
-		case I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND:
+		case I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND_READY:
 			if(ss->stored_stands < 4)
-				ss->status = do_harvest_stand(ss);
+				ss->status = do_harvest_stand_ready(ss);
+			else {
+				ss->status = STATUS_BLOCKED;
+				STMCH_ERROR("THERE IS NO ROOM!!");
+			}
+			break;
+
+		case I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND_DO:
+			if(ss->stored_stands < 4)
+				ss->status = do_harvest_stand_do(ss);
 			else {
 				ss->status = STATUS_BLOCKED;
 				STMCH_ERROR("THERE IS NO ROOM!!");
@@ -1866,7 +1966,7 @@ void stands_system_manage(stands_system_t *ss, stands_system_t *ss_slave)
 
 			ss->substate = SAVE;
 
-			if(ss->mode == I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND)
+			if(ss->mode == I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND_DO)
 				ss->mode = I2C_SLAVEDSPIC_MODE_SS_HIDE_TOWER;
 			else if(ss->mode == I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT && ss->spotlight_mode == SM_PRINCIPAL)
 				ss->mode = I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT;
