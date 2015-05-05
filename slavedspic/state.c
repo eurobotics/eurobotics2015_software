@@ -597,6 +597,7 @@ uint8_t do_cup_front_hide(popcorn_system_t *ps)
 
 uint8_t do_cup_rear_open(popcorn_system_t *ps)
 {
+	static microseconds us = 0;
 	uint8_t ret = 0;
 				
 	switch(ps->substate)
@@ -606,17 +607,21 @@ uint8_t do_cup_rear_open(popcorn_system_t *ps)
 		case OPEN_RIGHT_CUP_REAR:
 			cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_r, CUP_CLAMP_MODE_OPEN, 0);
 			ps->substate = WAITING_CUP_REAR_OPENED_RIGHT;
+			us = time_get_us2();
 			break;
 
 		case WAITING_CUP_REAR_OPENED_RIGHT:
-			ret = cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_r);
-
-			if(ret & (END_NEAR|END_TRAJ))
+			if(time_get_us2() - us > 300000L)
 				ps->substate = OPEN_LEFT_CUP_REAR;
-			else if(ret & END_BLOCKING) {
-				STMCH_ERROR("cup_clamp_popcorn_door_r BLOCKED!!");
-				return STATUS_BLOCKED;
-			}
+
+//			ret = cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_r);
+//
+//			if(ret & (END_NEAR|END_TRAJ))
+//				ps->substate = OPEN_LEFT_CUP_REAR;
+//			else if(ret & END_BLOCKING) {
+//				STMCH_ERROR("cup_clamp_popcorn_door_r BLOCKED!!");
+//				return STATUS_BLOCKED;
+//			}
 			break;
 
 		case OPEN_LEFT_CUP_REAR:
