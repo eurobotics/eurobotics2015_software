@@ -989,6 +989,7 @@ void popcorn_system_manage(popcorn_system_t *ps)
 	if(ps->mode_changed){
 		ps->mode_changed = 0;
 		ps->mode = ps->mode_rqst;
+		ps->substate = SAVE;
 		STMCH_DEBUG("%s mode=%d", __FUNCTION__, ps->mode);
 	}
 	else if(time_get_us2() - us < 5000L) {
@@ -1748,6 +1749,7 @@ void stands_system_manage(stands_system_t *ss, stands_system_t *ss_slave)
 	if(ss->mode_changed){
 		ss->mode_changed = 0;
 		ss->mode = ss->mode_rqst;
+		ss->substate = SAVE;
 		STMCH_DEBUG("%s mode=%d", __FUNCTION__, ss->mode);
 	}
 	else if(time_get_us2() - ss->us_system < 5000L)
