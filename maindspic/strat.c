@@ -29,9 +29,9 @@
 #include <aversive/queue.h>
 #include <aversive/wait.h>
 #include <aversive/error.h>
-#include <clock_time.h>
 
 #ifndef HOST_VERSION_OA_TEST
+#include <clock_time.h>
 #include <uart.h>
 #include <dac_mc.h>
 #include <pwm_servo.h>
@@ -150,7 +150,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_STAND,
 		MY_STAND_2_X-20, MY_STAND_2_Y,         /* XXX: aprox. to be tested */
 		650, 950, 1700, 1950,
-		MY_STAND_2_X-OBS_CLERANCE, LIMIT_BBOX_Y_UP,	
+		MY_STAND_2_X-OBS_CLERANCE, LIMIT_BBOX_Y_UP,
 		0, 0,
 //		0, (9000*1000L),
 		MAIN_ROBOT
@@ -160,7 +160,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_STAND,
 		MY_STAND_1_X, MY_STAND_1_Y,
 		0, 150, 0, 300,
-		MY_STAND_1_X+OBS_CLERANCE, AREA_Y-330, 
+		MY_STAND_1_X+OBS_CLERANCE, AREA_Y-330,
 		0, 0,
 //		0, (9000*1000L),
 		MAIN_ROBOT
@@ -275,7 +275,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_STAIRWAY,
 		CARPET_LEFT_INFRONT_X, STAIRS_EDGE_Y,
 		1000, 1500, 1400, 2000,
-        CARPET_LEFT_INFRONT_X, STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
+          CARPET_LEFT_INFRONT_X, STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
 		0, 0,
 //		0, (9000*1000L),
 		SEC_ROBOT
@@ -350,7 +350,7 @@ struct strat_infos strat_infos = {
 #if 0
 		ZONE_TYPE_STRAT,
 		800, 1200,
-		600, 850, 950, 1250,	 
+		600, 850, 950, 1250,
 		800, 1200,
 		0, 0,
 //		0, (9000*1000L),
@@ -359,7 +359,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_STRAT,
 		0, 0,
 		760, 1060, 1020, 1320,
-        CARPET_LEFT_INFRONT_X, MY_CUP_1_Y, //STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
+          CARPET_LEFT_INFRONT_X, MY_CUP_1_Y, //STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
 		0, 0,
 //		0, (9000*1000L),
 		SEC_ROBOT
@@ -372,7 +372,7 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_STRAT,
 		CARPET_LEFT_INFRONT_X, STAIRS_EDGE_Y,
 		1000, 1500, 1400, 2000,
-        CARPET_LEFT_INFRONT_X, STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
+          CARPET_LEFT_INFRONT_X, STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
 		0, 0,
 //		0, (9000*1000L),
 		SEC_ROBOT
@@ -391,19 +391,13 @@ uint8_t strat_zones_points[ZONES_MAX];/
 /*                  INIT                                     */
 
 /*************************************************************/
-#define BOUNDINBOX_INCLUDES_PLAFORM 0
-#define BOUNDINBOX_WITHOUT_PLATFORM 1
-
-void strat_set_bounding_box(uint8_t which)
+void strat_set_bounding_box(void)
 {
 
     strat_infos.area_bbox.x1 = OBS_CLERANCE;
     strat_infos.area_bbox.x2 = 3000 - OBS_CLERANCE;
 
-	if (which == BOUNDINBOX_INCLUDES_PLAFORM)
-	    strat_infos.area_bbox.y1 = OBS_CLERANCE+100;
-	else
-	    strat_infos.area_bbox.y1 = OBS_CLERANCE-5;
+    strat_infos.area_bbox.y1 = OBS_CLERANCE-5;
 
     strat_infos.area_bbox.y2 = 2000 - OBS_CLERANCE-70;
 
@@ -489,7 +483,7 @@ void strat_dump_infos(const char *caller)
 void strat_reset_infos(void)
 {
     /* bounding box */
-    strat_set_bounding_box(BOUNDINBOX_INCLUDES_PLAFORM);
+    strat_set_bounding_box();
     strat_smart[MAIN_ROBOT].current_zone = ZONES_MAX;
     strat_smart[MAIN_ROBOT].goto_zone = ZONES_MAX;
     strat_smart[MAIN_ROBOT].last_zone = ZONES_MAX;
@@ -554,7 +548,7 @@ void strat_exit(void)
 
     /* stop beacon */
     bt_beacon_set_off();
-	
+
 	strat_infos.match_ends = 1;
 }
 

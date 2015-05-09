@@ -381,7 +381,7 @@ struct strat_infos {
 #define STR_HOMOLOGATION 0
 #define STR_BASE 1
 	uint8_t match_strategy;
-	
+
 
 #define MSG_WAIT_START 0
 #define MSG_START 1
@@ -429,9 +429,7 @@ extern struct strat_smart strat_smart[ROBOT_MAX];
  * in strat.c
  *******************************************/
 
-#define BOUNDINBOX_INCLUDES_PLAFORM 0
-#define BOUNDINBOX_WITHOUT_PLATFORM 1
-void strat_set_bounding_box(uint8_t which);
+void strat_set_bounding_box(void);
 
 const char *get_zone_name(uint8_t zone_num);
 void strat_dump_infos(const char *caller);
@@ -485,15 +483,15 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side);
  */
 uint8_t strat_harvest_popcorn_cup (int16_t x, int16_t y, uint8_t side, uint8_t flags);
 
-/** 
+/**
  *	Harvest popcorns machine
- *	return END_TRAJ if the work is done, err otherwise 
+ *	return END_TRAJ if the work is done, err otherwise
  */
 uint8_t strat_harvest_popcorns_machine (int16_t x, int16_t y);
 
-/** 
+/**
  *	Release popcorns in home area
- *	return END_TRAJ if the work is done, err otherwise 
+ *	return END_TRAJ if the work is done, err otherwise
  */
 uint8_t strat_release_popcorns_in_home (int16_t x, int16_t y, uint8_t flags);
 
@@ -556,9 +554,7 @@ void strat_change_sequence_base(uint8_t robot);
 
 #else /* HOST_VERSION_OA_TEST */
 
-#define BOUNDINBOX_INCLUDES_PLAFORM 0
-#define BOUNDINBOX_WITHOUT_PLATFORM 1
-void strat_set_bounding_box(uint8_t which);
+void strat_set_bounding_box(void);
 
 #endif /* HOST_VERSION_OA_TEST */
 
