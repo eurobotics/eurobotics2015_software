@@ -105,6 +105,8 @@
 #define O_HOME_HEIGHT 222
 #define O_STAIRS_WIDTH 533
 #define O_STAIRS_HEIGHT 265
+#define O_PLATFORM_WIDTH 300
+#define O_PLATFORM_HEIGHT 50
 
 #endif
 
@@ -132,6 +134,9 @@
 
 #define HOME_YELLOW_X 200
 #define HOME_YELLOW_Y 1000
+#define PLATFORM_X 1500
+
+#define PLATFORM_Y 50
 
 
 /* don't care about polygons further than this distance for escape */
@@ -715,7 +720,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 										int16_t opp2_x, int16_t opp2_y,
 										poly_t *pol_opp1, poly_t *pol_opp2,
 										poly_t *pol_robot_2nd,poly_t *pol_home_green,
-										poly_t *pol_home_yellow,poly_t *pol_stairs)
+										poly_t *pol_home_yellow,poly_t *pol_stairs,poly_t *pol_platform)
 {
 
 	uint8_t in_opp1 = 0, in_opp2 = 0, in_robot_2nd = 0;
@@ -726,14 +731,16 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 	double stairs_dx = 0, stairs_dy = 0;
 	double home_green_dx = 0, home_green_dy=0;
 	double home_yellow_dx = 0, home_yellow_dy=0;
+	double platform_dx = 0, platform_dy=0;
 
 
 	double len;
 
-    uint8_t in_home_yellow = 0,in_home_green=0,in_stairs = 0;
+    uint8_t in_home_yellow = 0,in_home_green=0,in_stairs = 0,in_platform;
 
 	point_t dst_pt;
-	point_t intersect_opp1_pt, intersect_opp2_pt,  intersect_robot_2nd_pt, intersect_home_yellow_pt,intersect_home_green_pt,intersect_stairs_pt;
+	point_t intersect_opp1_pt, intersect_opp2_pt,  intersect_robot_2nd_pt,
+	 intersect_home_yellow_pt,intersect_home_green_pt,intersect_stairs_pt,intersect_platform_pt;
 
 
 	/* check if we are in any poly */
@@ -752,6 +759,9 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
  	if(is_in_poly(robot_pt,pol_home_yellow)) {
 		in_home_yellow = 1;
 	}
+	if(is_in_poly(robot_pt,pol_platform)) {
+		in_platform = 1;
+	}
 	if(is_in_poly(robot_pt,pol_stairs)) {
 		in_stairs = 1;
 	}
@@ -765,6 +775,8 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 	NOTICE(E_USER_STRAT, "in_robot_2nd=%d", in_robot_2nd);
 	NOTICE(E_USER_STRAT, "in_stairs=%d", in_stairs);
 	NOTICE(E_USER_STRAT, "in_home_green=%d", in_home_green);
+
+	NOTICE(E_USER_STRAT, "in_platform=%d", in_platform);
 
 	NOTICE(E_USER_STRAT, "in_home_yellow=%d", in_home_yellow);
 
@@ -875,6 +887,24 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 		escape_dx += home_yellow_dx;
 		escape_dy += home_yellow_dy;
 	}
+	if (in_platform) {
+		platform_dx = robot_pt->x - PLATFORM_X;
+		platform_dy = robot_pt->y - PLATFORM_Y;
+		NOTICE(E_USER_STRAT, " robot is near platform: vect=%2.2f,%2.2f",
+		       platform_dx, platform_dy);
+		len = norm(platform_dx, platform_dy);
+		if (len != 0) {
+			platform_dx/= len;
+			platform_dy /= len;
+		}
+		else {
+			platform_dx = 1.0;
+			platform_dy = 0.0;
+		}
+		escape_dx += platform_dx;
+		escape_dy += platform_dy;
+	}
+
 	/* normalize escape vector */
 	len = norm(escape_dx, escape_dy);
 	if (len != 0) {
@@ -946,7 +976,8 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 			is_point_in_poly(pol_robot_2nd, dst_pt.x, dst_pt.y) != 1 &&
 			is_point_in_poly(pol_home_green, dst_pt.x, dst_pt.y) != 1 &&
 			is_point_in_poly(pol_home_yellow, dst_pt.x, dst_pt.y) != 1 &&
-			is_point_in_poly(pol_stairs, dst_pt.x, dst_pt.y) != 1){
+			is_point_in_poly(pol_stairs, dst_pt.x, dst_pt.y) != 1 &&
+			is_point_in_poly(pol_platform, dst_pt.x, dst_pt.y) != 1){
 
             /* check if destination point is in playground */
 				if (!is_in_boundingbox(&dst_pt))
@@ -983,7 +1014,8 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 			is_point_in_poly(pol_robot_2nd, dst_pt.x, dst_pt.y) != 1 &&
 			is_point_in_poly(pol_home_green, dst_pt.x, dst_pt.y) != 1 &&
 			is_point_in_poly(pol_home_yellow, dst_pt.x, dst_pt.y) != 1 &&
-			is_point_in_poly(pol_stairs, dst_pt.x, dst_pt.y) != 1){
+			is_point_in_poly(pol_stairs, dst_pt.x, dst_pt.y) != 1&&
+			is_point_in_poly(pol_platform, dst_pt.x, dst_pt.y) != 1){
 
             /* check if destination point is in playground */
 				if (!is_in_boundingbox(&dst_pt))
@@ -1021,7 +1053,8 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 			    is_point_in_poly(pol_opp2, dst_pt.x, dst_pt.y) != 1 &&
 			is_point_in_poly(pol_home_green, dst_pt.x, dst_pt.y) != 1 &&
 			is_point_in_poly(pol_home_yellow, dst_pt.x, dst_pt.y) != 1 &&
-			is_point_in_poly(pol_stairs, dst_pt.x, dst_pt.y) != 1){
+			is_point_in_poly(pol_stairs, dst_pt.x, dst_pt.y) != 1 &&
+			is_point_in_poly(pol_platform, dst_pt.x, dst_pt.y) != 1){
 
             /* check if destination point is in playground */
 				if (!is_in_boundingbox(&dst_pt))
@@ -1110,6 +1143,40 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 			}
 		}
 	}
+	if (in_platform) {
+		if (is_crossing_poly(*robot_pt, dst_pt, &intersect_home_green_pt,
+					pol_platform) == 1) {
+
+			/* we add 2 cm to be sure we are out of th polygon */
+			dst_pt.x = intersect_platform_pt.x + escape_dx * 20;
+			dst_pt.y = intersect_platform_pt.y + escape_dy * 20;
+
+			NOTICE(E_USER_STRAT, "dst point %"PRId32",%"PRId32,
+				  (int32_t)dst_pt.x, (int32_t)dst_pt.y);
+
+	    /* XXX check that destination point is not in an other poly */
+			if (is_point_in_poly(pol_opp1, dst_pt.x, dst_pt.y) != 1 &&
+			    is_point_in_poly(pol_opp2, dst_pt.x, dst_pt.y) != 1 &&
+			    is_point_in_poly(pol_robot_2nd, dst_pt.x, dst_pt.y) != 1 ){
+
+		  /* check if destination point is in playground */
+				if (!is_in_boundingbox(&dst_pt))
+					return -1;
+
+				NOTICE(E_USER_STRAT, "GOTO %"PRId32",%"PRId32"",
+					  (int32_t)dst_pt.x, (int32_t)dst_pt.y);
+
+				/* XXX comment for virtual scape from poly */
+	#ifndef HOST_VERSION_OA_TEST
+				strat_goto_xy_force(dst_pt.x, dst_pt.y);
+	#endif
+				robot_pt->x = dst_pt.x;
+				robot_pt->y = dst_pt.y;
+
+				return 0;
+			}
+		}
+	}
 	if (in_home_yellow) {
 		if (is_crossing_poly(*robot_pt, dst_pt, &intersect_home_yellow_pt,
 				     pol_home_yellow) == 1) {
@@ -1172,7 +1239,7 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 
 	point_t *p;
 	poly_t *pol_opp1, *pol_opp2, *pol_robot_2nd;
-  	poly_t *pol_stairs,*pol_home_yellow,*pol_home_green;
+  	poly_t *pol_stairs,*pol_home_yellow,*pol_home_green,*pol_platform;
 
 	int8_t ret;
 
@@ -1251,8 +1318,12 @@ retry:
 	pol_robot_2nd = oa_new_poly(4);
 	set_opponent_poly(ROBOT2ND, pol_robot_2nd, &robot_pt, ROBOT_2ND_WIDTH, ROBOT_2ND_LENGTH);
 
+	pol_platform= oa_new_poly(4);
+	set_poly_abs(pol_platform,O_PLATFORM_WIDTH + OBS_CLERANCE,O_PLATFORM_HEIGHT + OBS_CLERANCE/2,PLATFORM_X,PLATFORM_Y+OBS_CLERANCE/2);
+
 	pol_stairs= oa_new_poly(4);
 	set_poly_abs(pol_stairs,O_STAIRS_WIDTH +OBS_CLERANCE,O_STAIRS_HEIGHT + OBS_CLERANCE/2,STAIRS_X,STAIRS_Y-OBS_CLERANCE/2);
+
 	if(mainboard.our_color== I2C_COLOR_YELLOW){
 		pol_home_yellow= oa_new_poly(4);
 		set_poly_abs(pol_home_yellow,O_HOME_WIDTH+ OBS_CLERANCE/2 ,O_HOME_HEIGHT + OBS_CLERANCE,HOME_YELLOW_X+OBS_CLERANCE/2,HOME_YELLOW_Y);
@@ -1299,6 +1370,10 @@ retry:
 		NOTICE(E_USER_STRAT, " dst is in home yellow");
 		return END_ERROR;
 	}
+	if(is_point_in_poly(pol_platform,x ,y)) {
+		NOTICE(E_USER_STRAT, " dst is in platform");
+		return END_ERROR;
+	}
 	if(is_point_in_poly(pol_stairs,x,y)) {
 		NOTICE(E_USER_STRAT, " dst is in stairs");
 		return END_ERROR;
@@ -1314,7 +1389,7 @@ retry:
 				                opp1_x, opp1_y, opp2_x, opp2_y,
 				                pol_opp1, pol_opp2,
 				                pol_robot_2nd,pol_home_green,
-								pol_home_yellow,pol_stairs);
+								pol_home_yellow,pol_stairs,pol_platform);
 
 
     	/* XXX uncomment in order to skip escape from poly */
