@@ -347,6 +347,7 @@ struct strat_infos strat_infos = {
 	/* block upper side */
   	.zones[ZONE_BLOCK_UPPER_SIDE] =
 	{
+#if 0
 		ZONE_TYPE_STRAT,
 		800, 1200,
 		600, 850, 950, 1250,	 
@@ -354,15 +355,24 @@ struct strat_infos strat_infos = {
 		0, 0,
 //		0, (9000*1000L),
 		SEC_ROBOT
+#else
+		ZONE_TYPE_STRAT,
+		0, 0,
+		760, 1060, 1020, 1320,
+        CARPET_LEFT_INFRONT_X, MY_CUP_1_Y, //STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
+		0, 0,
+//		0, (9000*1000L),
+		SEC_ROBOT
+#endif
 	},
 	//FIXME
 	/* free upper side */
   	.zones[ZONE_FREE_UPPER_SIDE] =
 	{
 		ZONE_TYPE_STRAT,
-		MY_STAIRS_X, MY_STAIRS_Y,
+		CARPET_LEFT_INFRONT_X, STAIRS_EDGE_Y,
 		1000, 1500, 1400, 2000,
-        MY_STAIRS_X, 1150,
+        CARPET_LEFT_INFRONT_X, STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
 		0, 0,
 //		0, (9000*1000L),
 		SEC_ROBOT
@@ -588,16 +598,19 @@ uint8_t strat_main(void)
     strat_limit_speed_enable ();
 
 #ifndef ONLY_MAIN_ROBOT
+
+//#ifndef HOST_VERSION
 	/* init time for secondary robot */
 	bt_robot_2nd_start_matchtimer ();
-
-	/* set robot secondary to wait until start */
-	strat_secondary_robot_enable ();
-#endif
-	strat_smart_set_msg(MSG_WAIT_START);
-	
+//#endif
 	/* XXX enable smart_strat of secondary robot */
 	strat_secondary_robot_enable ();
+
+	/* set robot secondary to wait until start */
+	strat_smart_set_msg(MSG_WAIT_START);
+#endif
+
+
     /* play */
     do{
         err = strat_smart_main_robot();
