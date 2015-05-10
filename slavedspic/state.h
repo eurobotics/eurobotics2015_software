@@ -158,8 +158,10 @@ typedef struct {
 #define INIT_WAITING_ELEVATOR_LIFTED	36
 #define WAITING_BLADES_HIDDEN			37
 
-#define OPEN_ALL						41
-#define WAITING_ALL_OPENED				42
+#define OPEN_BLADES_AND_TOWER    		41
+#define WAITING_BLADES_AND_TOWER_OPENED	42
+#define OPEN_STAND_CLAMPS				44
+#define WAITING_STAND_CLAMPS_OPENED		45
 
 	/* status */
 	uint8_t status;
@@ -201,6 +203,6 @@ uint8_t state_get_mode(void);
 void state_machines(void);
 
 /* init state machines */
-void state_init(void);
+void state_init(uint8_t side);
 
 #endif

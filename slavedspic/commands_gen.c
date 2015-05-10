@@ -398,6 +398,8 @@ static void cmd_sensor_parsed(void *parsed_result, __attribute__((unused)) void 
 		if (sensors == sensors_old)
 		continue;
 
+		DEBUG (E_USER_ST_MACH, "Sensors values changed");
+
 		sensors_old = sensors;
 
 		printf_P(PSTR("SENSOR values: "));

@@ -117,7 +117,8 @@ struct i2c_cmd_slavedspic_set_mode {
 	struct i2c_cmd_hdr hdr;
 	
 /* XXX syncronized with slavedispic/actuators.h */
-#define I2C_SLAVEDSPIC_MODE_INIT						0x01
+#define I2C_SLAVEDSPIC_MODE_INIT_LEFT					0x01
+#define I2C_SLAVEDSPIC_MODE_INIT_RIGHT					0x10
 #define I2C_SLAVEDSPIC_MODE_POWER_OFF					0x02
 
 /* simple actuator modes */
