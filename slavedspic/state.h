@@ -171,6 +171,7 @@ typedef struct {
 #define SM_PRINCIPAL		1
 #define SM_SECONDARY		2
 	uint8_t stand_waiting;
+	uint8_t blades_waiting;
 
 	/* blade angle consign */
 	int8_t blade_angle;

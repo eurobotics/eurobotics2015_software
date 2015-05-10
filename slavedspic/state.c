@@ -1177,6 +1177,7 @@ void stands_system_init(stands_system_t *ss, uint8_t stand_sensor, stands_blade_
 	ss->stored_stands = 0;
 	ss->stand_sensor = stand_sensor;
 	ss->stand_waiting = 0;
+	ss->blades_waiting = 0;
 	ss->blade = blade;
 	ss->clamp = clamp;
 	ss->elevator = elevator;
@@ -1585,6 +1586,9 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 
 			if((ret & (END_NEAR|END_TRAJ)) && (ret2 & (END_NEAR|END_TRAJ)) && (ret3 & END_TRAJ)) 
 			{
+				if (ss_slave->blades_waiting)
+					ss_slave->blades_waiting = 0;
+
 				ss->substate = CENTER_STAND;
 			}
 			else if((ret & END_BLOCKING) || (ret2 & END_BLOCKING) || (ret3 & END_BLOCKING)) {
@@ -1650,7 +1654,17 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 			if((ret & END_TRAJ) && (ret2 & END_TRAJ)) 
 			{
 				ss_slave->stand_waiting = 0;
-				ss->substate = DESCEND_TOWER;
+
+				if(	(slavedspic.stands_blade_l.mode != STANDS_BLADE_MODE_HIDE_LEFT &&
+			   		 slavedspic.stands_blade_r.mode != STANDS_BLADE_MODE_HIDE_LEFT) || 
+
+			   		(slavedspic.stands_blade_l.mode != STANDS_BLADE_MODE_HIDE_RIGHT &&
+			   		 slavedspic.stands_blade_r.mode != STANDS_BLADE_MODE_HIDE_RIGHT) ) 
+				{			
+					ss_slave->blades_waiting = 1;
+				}
+				else
+					ss_slave->blades_waiting = 0;
 			}
 			else if((ret & END_BLOCKING) || (ret2 & END_BLOCKING)) {
 				if(!(ret & END_TRAJ))
@@ -1782,15 +1796,7 @@ uint8_t do_build_spotlight_secondary(stands_system_t *ss, stands_system_t *ss_sl
 			break;
 
 		case WAITING_BLADES_HIDDEN:
-			if(!ss->stand_waiting &&
-			   ((ss_slave->elevator->type == STANDS_ELEVATOR_TYPE_LEFT && 
-			   slavedspic.stands_blade_l.mode != STANDS_BLADE_MODE_HIDE_LEFT &&
-			   slavedspic.stands_blade_r.mode != STANDS_BLADE_MODE_HIDE_LEFT) || 
-
-			   (ss_slave->elevator->type == STANDS_ELEVATOR_TYPE_RIGHT && 
-			   slavedspic.stands_blade_l.mode != STANDS_BLADE_MODE_HIDE_RIGHT &&
-			   slavedspic.stands_blade_r.mode != STANDS_BLADE_MODE_HIDE_RIGHT)) )
-			{
+			if(!ss->stand_waiting && !ss->blades_waiting) {
 				ss->substate = DESCEND_ELEVATOR;
 			}			
 			else if (!ss->stored_stands)
@@ -1878,6 +1884,7 @@ uint8_t do_build_spotlight(stands_system_t *ss, stands_system_t *ss_slave)
 		/* set role of each system */
 		ss->spotlight_mode = SM_PRINCIPAL;
 		ss_slave->spotlight_mode = SM_SECONDARY;
+		ss_slave->blades_waiting = 1;
 
 	}
 
