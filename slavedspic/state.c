@@ -83,6 +83,9 @@ static volatile uint8_t prev_state;
 static volatile uint8_t mode_changed = 0;
 uint8_t state_debug = 0;
 
+static uint8_t repeat_harvest = 0;
+static uint8_t repeat_harvest_tries = 0;
+
 /* set status value */
 void state_set_status(uint8_t val)
 {
@@ -1184,6 +1187,7 @@ void stands_system_init(stands_system_t *ss, uint8_t stand_sensor, stands_blade_
 uint8_t do_hide_tower(stands_system_t *ss)
 {
 	uint8_t ret = 0;
+	int8_t blade_offset=0;
 
 	switch(ss->substate)
 	{
@@ -1206,7 +1210,7 @@ uint8_t do_hide_tower(stands_system_t *ss)
 			break;
 
 		case LIFT_ELEVATOR:
-			if(ss->stored_stands < 4)
+			if(ss->stored_stands < 3)
 				stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, 0);
 			else {
 				if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT)
@@ -1223,7 +1227,6 @@ uint8_t do_hide_tower(stands_system_t *ss)
 			ret = stands_elevator_test_traj_end(ss->elevator);
 
 			if(ret & END_TRAJ)
-
                 ss->substate = HIDE_BLADE;
 			else if(ret & END_BLOCKING) {
 				STMCH_ERROR("stands_elevator_%s BLOCKED!!", ss->elevator->type? "r":"l");
@@ -1233,25 +1236,40 @@ uint8_t do_hide_tower(stands_system_t *ss)
 			break;
 
 		case HIDE_BLADE:
-			if(sensor_get(ss->stand_sensor) && ss->stored_stands < 4) {
+			if(sensor_get(ss->stand_sensor) && ss->stored_stands < 3) {
 				STMCH_ERROR("There is stand unharvested!!");
-				ss->stored_stands--;
-				return STATUS_BLOCKED;
+
+				if (repeat_harvest_tries) {
+					if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT)
+						blade_offset = 20;
+					else
+						blade_offset = -20;
+
+					repeat_harvest = 1;
+				}
+				else {
+					blade_offset = 0;
+					repeat_harvest = 0;
+				}
+			}
+			else if (ss->stored_stands < 4){
+				ss->stored_stands++;
+				repeat_harvest = 0;
 			}
 
 			if(ss->stored_stands < 4) {
 				if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT)
 //						stands_blade_set_mode(ss->blade, STANDS_BLADE_MODE_HIDE_LEFT, 0);
-						stands_blade_set_mode(ss->blade, STANDS_BLADE_MODE_PUSH_STAND_LEFT, 0);
+						stands_blade_set_mode(ss->blade, STANDS_BLADE_MODE_PUSH_STAND_LEFT, blade_offset);
 				else
 //						stands_blade_set_mode(ss->blade, STANDS_BLADE_MODE_HIDE_RIGHT, 0);
-						stands_blade_set_mode(ss->blade, STANDS_BLADE_MODE_PUSH_STAND_RIGHT, 0);
+						stands_blade_set_mode(ss->blade, STANDS_BLADE_MODE_PUSH_STAND_RIGHT, blade_offset);
 			}
 			else {
 				if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT)
-					stands_blade_set_mode(ss->blade, STANDS_BLADE_MODE_PUSH_STAND_LEFT, 0);
+					stands_blade_set_mode(ss->blade, STANDS_BLADE_MODE_PUSH_STAND_LEFT, blade_offset);
 				else
-					stands_blade_set_mode(ss->blade, STANDS_BLADE_MODE_PUSH_STAND_RIGHT, 0);
+					stands_blade_set_mode(ss->blade, STANDS_BLADE_MODE_PUSH_STAND_RIGHT, blade_offset);
 			}
 
 			ss->substate = WAITING_BLADE_HIDDEN;
@@ -1261,8 +1279,9 @@ uint8_t do_hide_tower(stands_system_t *ss)
 		case WAITING_BLADE_HIDDEN:
 			ret = stands_blade_test_traj_end(ss->blade);
 
-			if(ret & (END_NEAR|END_TRAJ))
+			if(ret & (END_NEAR|END_TRAJ)) {
 				return STATUS_DONE;
+			}
 			else if(ret & END_BLOCKING) {
 				if(ss->blade->type == STANDS_BLADE_TYPE_LEFT)
 					STMCH_ERROR("stands_blade_l BLOCKED!!");
@@ -1414,7 +1433,7 @@ uint8_t do_harvest_stand_do(stands_system_t *ss)
 
 			if(!sensor_get(ss->stand_sensor)) {
 				STMCH_ERROR("There isn't stand!!");
-				return STATUS_DONE;
+				return STATUS_ERROR;
 			}
 
 			stands_clamp_set_mode(ss->clamp, STANDS_CLAMP_MODE_OPEN, 0);
@@ -1442,7 +1461,6 @@ uint8_t do_harvest_stand_do(stands_system_t *ss)
 			ret = stands_elevator_test_traj_end(ss->elevator);
 
 			if(ret & END_TRAJ) {
-				ss->stored_stands++;
 				return STATUS_DONE;
 			}
 			else if(ret & END_BLOCKING) {
@@ -1467,6 +1485,12 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 	uint8_t ret = 0;
 	uint8_t ret2 = 0;
 	uint8_t ret3 = 0;
+
+	
+	state_debug = 1;
+	DEBUG (E_USER_ST_MACH, "principal substate %d, stands %d", ss->substate, ss->stored_stands);
+	DEBUG (E_USER_ST_MACH, "secondary substate %d, stands %d", ss_slave->substate, ss_slave->stored_stands);
+	state_debug_wait_key_pressed();
 
 	switch(ss->substate) {
 		case SAVE:
@@ -1506,9 +1530,12 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 			break;
 
 		case HIDE_BLADE:
-			if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT && slavedspic.stands_blade_l.mode != STANDS_BLADE_MODE_HIDE_RIGHT &&
-						slavedspic.stands_blade_r.mode != STANDS_BLADE_MODE_HIDE_RIGHT){
-				if(slavedspic.stands_elevator_r.mode == STANDS_ELEVATOR_MODE_UP) {
+			if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT && 
+			   slavedspic.stands_blade_l.mode != STANDS_BLADE_MODE_HIDE_RIGHT &&
+			   slavedspic.stands_blade_r.mode != STANDS_BLADE_MODE_HIDE_RIGHT)
+			{
+				if(slavedspic.stands_elevator_r.mode == STANDS_ELEVATOR_MODE_UP) 
+				{
 					stands_blade_set_mode(&slavedspic.stands_blade_l, STANDS_BLADE_MODE_HIDE_RIGHT, 0);
 					stands_blade_set_mode(&slavedspic.stands_blade_r, STANDS_BLADE_MODE_HIDE_RIGHT, 0);
 					stands_exchanger_set_position(STANDS_EXCHANGER_POSITION_MAX_mm);
@@ -1516,15 +1543,19 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 				else
 					break;
 			}
-			else if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT && (slavedspic.stands_blade_l.mode == STANDS_BLADE_MODE_HIDE_RIGHT ||
-						slavedspic.stands_blade_r.mode == STANDS_BLADE_MODE_HIDE_RIGHT)) {
+			else if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT && 
+				(slavedspic.stands_blade_l.mode == STANDS_BLADE_MODE_HIDE_RIGHT || 
+				 slavedspic.stands_blade_r.mode == STANDS_BLADE_MODE_HIDE_RIGHT) ) 
+			{
 				if(slavedspic.stands_blade_l.mode != STANDS_BLADE_MODE_HIDE_RIGHT)
 					stands_blade_set_mode(&slavedspic.stands_blade_l, STANDS_BLADE_MODE_HIDE_LEFT, 0);
 				else if(slavedspic.stands_blade_r.mode != STANDS_BLADE_MODE_HIDE_RIGHT)
 					stands_blade_set_mode(&slavedspic.stands_blade_r, STANDS_BLADE_MODE_HIDE_LEFT, 0);
 			}
-			else if(ss->elevator->type == STANDS_ELEVATOR_TYPE_RIGHT && slavedspic.stands_blade_l.mode != STANDS_BLADE_MODE_HIDE_LEFT &&
-						slavedspic.stands_blade_r.mode != STANDS_BLADE_MODE_HIDE_LEFT){
+			else if(ss->elevator->type == STANDS_ELEVATOR_TYPE_RIGHT && 
+					slavedspic.stands_blade_l.mode != STANDS_BLADE_MODE_HIDE_LEFT &&
+					slavedspic.stands_blade_r.mode != STANDS_BLADE_MODE_HIDE_LEFT)
+			{
 				if(slavedspic.stands_elevator_l.mode == STANDS_ELEVATOR_MODE_UP) {
 					stands_blade_set_mode(&slavedspic.stands_blade_l, STANDS_BLADE_MODE_HIDE_LEFT, 0);
 					stands_blade_set_mode(&slavedspic.stands_blade_r, STANDS_BLADE_MODE_HIDE_LEFT, 0);
@@ -1533,8 +1564,10 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 				else
 					break;
 			}
-			else if(ss->elevator->type == STANDS_ELEVATOR_TYPE_RIGHT && (slavedspic.stands_blade_l.mode == STANDS_BLADE_MODE_HIDE_LEFT ||
-						slavedspic.stands_blade_r.mode == STANDS_BLADE_MODE_HIDE_LEFT)) {
+			else if(ss->elevator->type == STANDS_ELEVATOR_TYPE_RIGHT && 
+					(slavedspic.stands_blade_l.mode == STANDS_BLADE_MODE_HIDE_LEFT ||
+					 slavedspic.stands_blade_r.mode == STANDS_BLADE_MODE_HIDE_LEFT) ) 
+			{
 				if(slavedspic.stands_blade_l.mode != STANDS_BLADE_MODE_HIDE_LEFT)
 					stands_blade_set_mode(&slavedspic.stands_blade_l, STANDS_BLADE_MODE_HIDE_RIGHT, 0);
 				else if(slavedspic.stands_blade_r.mode != STANDS_BLADE_MODE_HIDE_LEFT)
@@ -1550,8 +1583,10 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 			ret2 = stands_blade_test_traj_end(&slavedspic.stands_blade_r);
 			ret3 = stands_exchanger_test_traj_end();
 
-			if((ret & (END_NEAR|END_TRAJ)) && (ret2 & (END_NEAR|END_TRAJ)) && (ret3 & END_TRAJ))
+			if((ret & (END_NEAR|END_TRAJ)) && (ret2 & (END_NEAR|END_TRAJ)) && (ret3 & END_TRAJ)) 
+			{
 				ss->substate = CENTER_STAND;
+			}
 			else if((ret & END_BLOCKING) || (ret2 & END_BLOCKING) || (ret3 & END_BLOCKING)) {
 				if(!(ret & (END_NEAR|END_TRAJ)))
 					STMCH_ERROR("stands_blade_l BLOCKED!!");
@@ -1565,7 +1600,7 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 			break;
 
 		case CENTER_STAND:
-			if(ss_slave->substate == WAITING_STAND_CENTERED) {
+			if(ss_slave->substate == WAITING_BLADES_HIDDEN) {
 				stands_exchanger_set_position(STANDS_EXCHANGER_POSITION_CENTER_mm);
 				ss->substate = WAITING_STAND_CENTERED;
 			}
@@ -1585,7 +1620,8 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 			break;
 
 		case PUSH_STAND:
-			if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT) {
+			if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT) 
+			{
 				if(ss->blade->mode != STANDS_BLADE_MODE_HIDE_LEFT)
 					stands_blade_set_mode(ss->blade, STANDS_BLADE_MODE_PUSH_STAND_LEFT, 0);
 				else
@@ -1593,7 +1629,8 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 
 				stands_exchanger_set_position(STANDS_EXCHANGER_POSITION_MAX_mm);
 			}
-			else {
+			else 
+			{
 				if(ss->blade->mode != STANDS_BLADE_MODE_HIDE_RIGHT)
 					stands_blade_set_mode(ss->blade, STANDS_BLADE_MODE_PUSH_STAND_RIGHT, 0);
 				else
@@ -1610,7 +1647,8 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 			ret = stands_blade_test_traj_end(&slavedspic.stands_blade_l);
 			ret2 = stands_blade_test_traj_end(&slavedspic.stands_blade_r);
 
-			if((ret & END_TRAJ) && (ret2 & END_TRAJ)) {
+			if((ret & END_TRAJ) && (ret2 & END_TRAJ)) 
+			{
 				ss_slave->stand_waiting = 0;
 				ss->substate = DESCEND_TOWER;
 			}
@@ -1649,6 +1687,7 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 
 		case OPEN_CLAMP:
 			ss->stored_stands++;
+			ss_slave->stored_stands--;
 			stands_clamp_set_mode(ss->clamp, STANDS_CLAMP_MODE_OPEN, 0);
 			ss->us = time_get_us2();
 			ss->substate = WAITING_CLAMP_OPENED;
@@ -1696,6 +1735,11 @@ uint8_t do_build_spotlight_secondary(stands_system_t *ss, stands_system_t *ss_sl
 {
 	uint8_t ret = 0;
 
+	state_debug = 1;
+	DEBUG (E_USER_ST_MACH, "principal substate %d, stands %d", ss_slave->substate, ss_slave->stored_stands);
+	DEBUG (E_USER_ST_MACH, "secondary substate %d, stands %d", ss->substate, ss->stored_stands);
+	state_debug_wait_key_pressed();
+
 	switch(ss->substate) {
 		case SAVE:
 
@@ -1738,8 +1782,19 @@ uint8_t do_build_spotlight_secondary(stands_system_t *ss, stands_system_t *ss_sl
 			break;
 
 		case WAITING_BLADES_HIDDEN:
-			if(!ss->stand_waiting)
+			if(!ss->stand_waiting &&
+			   ((ss_slave->elevator->type == STANDS_ELEVATOR_TYPE_LEFT && 
+			   slavedspic.stands_blade_l.mode != STANDS_BLADE_MODE_HIDE_LEFT &&
+			   slavedspic.stands_blade_r.mode != STANDS_BLADE_MODE_HIDE_LEFT) || 
+
+			   (ss_slave->elevator->type == STANDS_ELEVATOR_TYPE_RIGHT && 
+			   slavedspic.stands_blade_l.mode != STANDS_BLADE_MODE_HIDE_RIGHT &&
+			   slavedspic.stands_blade_r.mode != STANDS_BLADE_MODE_HIDE_RIGHT)) )
+			{
 				ss->substate = DESCEND_ELEVATOR;
+			}			
+			else if (!ss->stored_stands)
+				return STATUS_DONE;
 
 			break;
 
@@ -1775,16 +1830,18 @@ uint8_t do_build_spotlight_secondary(stands_system_t *ss, stands_system_t *ss_sl
 			break;
 
 		case LIFT_ELEVATOR:
-			stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, 100);
-			ss->substate = WAITING_ELEVATOR_LIFTED;
+			if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT)
+				stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, 100);
+			else
+				stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, -100);
 
+			ss->substate = WAITING_ELEVATOR_LIFTED;
 			break;
 
 		case WAITING_ELEVATOR_LIFTED:
 			ret = stands_elevator_test_traj_end(ss->elevator);
 
 			if(ret & END_TRAJ) {
-				ss->stored_stands--;
 				ss->stand_waiting = 1;
 				ss->substate = CLOSE_CLAMPS;
 			}
@@ -1812,10 +1869,16 @@ uint8_t do_build_spotlight(stands_system_t *ss, stands_system_t *ss_slave)
 		if(ss_slave->stored_stands == 0)
 			return STATUS_DONE;
 
+		/* change the mode of the other system */
+		ss_slave->mode_changed = 0;
+		ss_slave->mode = I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT;
+		ss->substate = SAVE;
+		STMCH_DEBUG("%s mode=%d", __FUNCTION__, ss_slave->mode);
+
+		/* set role of each system */
 		ss->spotlight_mode = SM_PRINCIPAL;
 		ss_slave->spotlight_mode = SM_SECONDARY;
-		ss_slave->mode_rqst = I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT;
-		ss_slave->mode_changed = 1;
+
 	}
 
 	if(ss->spotlight_mode == SM_PRINCIPAL)
@@ -1834,9 +1897,9 @@ uint8_t do_release_spotlight(stands_system_t *ss)
 	uint8_t ret = 0;
 	uint8_t ret_sbl = 0;
 	uint8_t ret_sbr = 0;
-	static uint8_t tries_holder = 3;
-	static uint8_t tries_elevator = 3;
-	static uint8_t tries_open = 3;
+	static uint8_t tries_holder = 2;
+	static uint8_t tries_elevator = 2;
+	static uint8_t tries_open = 2;
 
 
 	switch(ss->substate) {
@@ -2002,6 +2065,7 @@ void stands_system_manage(stands_system_t *ss, stands_system_t *ss_slave)
 		ss->mode_changed = 0;
 		ss->mode = ss->mode_rqst;
 		ss->substate = SAVE;
+		ss->spotlight_mode = 0;
 		STMCH_DEBUG("%s mode=%d", __FUNCTION__, ss->mode);
 	}
 	else if((uint32_t)(time_get_us2() - ss->us_system) < 5000L)
@@ -2018,19 +2082,22 @@ void stands_system_manage(stands_system_t *ss, stands_system_t *ss_slave)
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND_READY:
+			repeat_harvest_tries = 2;
 			if(ss->stored_stands < 4)
 				ss->status = do_harvest_stand_ready(ss);
 			else {
-				ss->status = STATUS_BLOCKED;
+				ss->status = STATUS_ERROR;
 				STMCH_ERROR("THERE IS NO ROOM!!");
 			}
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND_DO:
-			if(ss->stored_stands < 4)
+			if(ss->stored_stands < 4) {
+				repeat_harvest = 0;
 				ss->status = do_harvest_stand_do(ss);
+			}
 			else {
-				ss->status = STATUS_BLOCKED;
+				ss->status = STATUS_ERROR;
 				STMCH_ERROR("THERE IS NO ROOM!!");
 			}
 			break;
@@ -2070,6 +2137,12 @@ void stands_system_manage(stands_system_t *ss, stands_system_t *ss_slave)
 
 			if(ss->mode == I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND_DO)
 				ss->mode = I2C_SLAVEDSPIC_MODE_SS_HIDE_TOWER;
+			else if (ss->mode == I2C_SLAVEDSPIC_MODE_SS_HIDE_TOWER && repeat_harvest) {
+				if (repeat_harvest_tries) {
+					repeat_harvest_tries--; 				
+					ss->mode = I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND_DO;
+				}
+			}
 			else if(ss->mode == I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT && ss->spotlight_mode == SM_PRINCIPAL)
 				ss->mode = I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT;
 			else {
@@ -2179,8 +2252,10 @@ void state_init(uint8_t side)
 	/* start positions */
 
 	/* close gadgets */
-	stands_blade_set_mode(&slavedspic.stands_blade_l, STANDS_BLADE_MODE_HIDE_LEFT, 0);
-	stands_blade_set_mode(&slavedspic.stands_blade_r, STANDS_BLADE_MODE_HIDE_RIGHT, 0);
+//	stands_blade_set_mode(&slavedspic.stands_blade_l, STANDS_BLADE_MODE_HIDE_LEFT, 0);
+//	stands_blade_set_mode(&slavedspic.stands_blade_r, STANDS_BLADE_MODE_HIDE_RIGHT, 0);
+	stands_blade_set_mode(&slavedspic.stands_blade_l, STANDS_BLADE_MODE_PUSH_STAND_LEFT, 0);
+	stands_blade_set_mode(&slavedspic.stands_blade_r, STANDS_BLADE_MODE_PUSH_STAND_RIGHT, 0);
 
 	stands_clamp_set_mode(&slavedspic.stands_clamp_l, STANDS_CLAMP_MODE_OPEN, 0);
 	stands_clamp_set_mode(&slavedspic.stands_clamp_r, STANDS_CLAMP_MODE_OPEN, 0);
