@@ -179,11 +179,11 @@ uint8_t ax12_test_traj_end (struct ax12_traj *ax12, uint8_t flags)
 			ret = END_NEAR;
 	}
 	//if (flags & END_TIME)
-	//	if ((time_get_us2() - ax12->time_us)/1000 > ax12->goal_time_ms)
+	//	if ((uint32_t)(time_get_us2() - ax12->time_us)/1000 > ax12->goal_time_ms)
 	//		ret |= END_TIME;
 
 	//if (flags & END_BLOCKING)
-    else if ((time_get_us2() - ax12->time_us)/1000 > (3*ax12->goal_time_ms)) {
+    else if ((uint32_t)(time_get_us2() - ax12->time_us)/1000 > (3*ax12->goal_time_ms)) {
             ax12_user_write_int(&gen.ax12, ax12->id , AA_GOAL_POSITION_L, ax12->pos);                       
 		    ret = END_BLOCKING;
         }
@@ -203,7 +203,7 @@ uint8_t ax12_wait_traj_end (struct ax12_traj *ax12, uint8_t flags)
 
     while (ret == 0) {
         /* check end traj periodicaly (T = 5ms) */
-        if (time_get_us2() - us >= 5000L) {
+        if ((uint32_t)(time_get_us2() - us) >= 5000L) {
             ret = ax12_test_traj_end (ax12, flags);
             us = time_get_us2();
         }

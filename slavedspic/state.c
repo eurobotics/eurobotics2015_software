@@ -59,7 +59,8 @@
 
 
 /* shorter aliases for this file */
-#define INIT					I2C_SLAVEDSPIC_MODE_INIT
+#define INIT_LEFT				I2C_SLAVEDSPIC_MODE_INIT_LEFT
+#define INIT_RIGHT				I2C_SLAVEDSPIC_MODE_INIT_RIGHT
 #define POWER_OFF				I2C_SLAVEDSPIC_MODE_POWER_OFF
 #define STANDS_BLADE			I2C_SLAVEDSPIC_MODE_STANDS_BLADE
 #define STANDS_CLAMP			I2C_SLAVEDSPIC_MODE_STANDS_CLAMP
@@ -161,12 +162,18 @@ void state_debug_wait_key_pressed(void)
 /* init mode */
 static void state_do_init(void)
 {
-	if (!state_check_update(INIT))
+	uint8_t side=0;
+
+	if (state_check_update(INIT_LEFT))
+		side = I2C_SIDE_LEFT;
+ 	else if (state_check_update(INIT_RIGHT))
+		side = I2C_SIDE_RIGHT;
+	else
 		return;
 
 	state_set_status(I2C_SLAVEDSPIC_STATUS_BUSY);
 
-	state_init();
+	state_init(side);
 	STMCH_DEBUG("%s mode=%d", __FUNCTION__, state_get_mode());
 
   	state_set_status(I2C_SLAVEDSPIC_STATUS_READY);
@@ -597,6 +604,7 @@ uint8_t do_cup_front_hide(popcorn_system_t *ps)
 
 uint8_t do_cup_rear_open(popcorn_system_t *ps)
 {
+#define OPEN_LEFT_CUP_REAR_DELAY 50000L
 	static microseconds us = 0;
 	uint8_t ret = 0;
 				
@@ -611,7 +619,7 @@ uint8_t do_cup_rear_open(popcorn_system_t *ps)
 			break;
 
 		case WAITING_CUP_REAR_OPENED_RIGHT:
-			if(time_get_us2() - us > 300000L)
+			//if((uint32_t)(time_get_us2() - us) > LEFT_CUP_REAR_DELAY)
 				ps->substate = OPEN_LEFT_CUP_REAR;
 
 //			ret = cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_r);
@@ -756,7 +764,7 @@ uint8_t do_machines_ready(popcorn_system_t *ps)
 			break;
 
 		case WAITING_TRAY_OPENED:
-			if(time_get_us2() - us > 500000L)
+			if((uint32_t)(time_get_us2() - us) > 500000L)
 				ps->substate = OPEN_RAMPS;
 			break;
 
@@ -817,7 +825,7 @@ uint8_t do_machines_harvest(popcorn_system_t *ps)
 			break;
 
 		case WAITING_POPCORNS_HARVESTED:
-			if(time_get_us2() - us > 1500000L) {
+			if((uint32_t)(time_get_us2() - us) > 1500000L) {
 				ps->machine_popcorns_catched = 1;
 				return STATUS_DONE;
 			}
@@ -950,7 +958,7 @@ uint8_t do_stock_drop(popcorn_system_t *ps)
 			break;
 
 		case WAITING_STOCK_DROPPED:
-			if(time_get_us2() - us > 1000000L)
+			if((uint32_t)(time_get_us2() - us) > 1000000L)
 				return STATUS_DONE;
 			break;
 
@@ -965,7 +973,9 @@ uint8_t do_stock_drop(popcorn_system_t *ps)
 
 uint8_t do_stock_end(popcorn_system_t *ps)
 {
+#define CLOSE_LEFT_CUP_REAR_DELAY 100000L
 	uint8_t ret = 0;
+	static microseconds us = 0;
 
 	switch(ps->substate)
 	{
@@ -996,10 +1006,14 @@ uint8_t do_stock_end(popcorn_system_t *ps)
 		case CLOSE_LEFT_CLAMP:
 			cup_clamp_set_mode(&slavedspic.cup_clamp_popcorn_door_l, CUP_CLAMP_MODE_HIDE, 0);
 			ps->substate = WAITING_LEFT_CLAMP_CLOSED;
-
+			us = time_get_us2();
 			break;
 
 		case WAITING_LEFT_CLAMP_CLOSED:
+			
+			if((uint32_t)(time_get_us2() - us) > CLOSE_LEFT_CUP_REAR_DELAY)
+				ps->substate = CLOSE_RIGHT_CLAMP;
+
 			ret = cup_clamp_popcorn_door_test_traj_end(&slavedspic.cup_clamp_popcorn_door_l);
 
 			if(ret & (END_NEAR|END_TRAJ))
@@ -1046,7 +1060,7 @@ void popcorn_system_manage(popcorn_system_t *ps)
 		ps->substate = SAVE;
 		STMCH_DEBUG("%s mode=%d", __FUNCTION__, ps->mode);
 	}
-	else if(time_get_us2() - us < 5000L) {
+	else if((uint32_t)(time_get_us2() - us) < 5000L) {
 		return;
 	}
 	us = time_get_us2();
@@ -1078,10 +1092,7 @@ void popcorn_system_manage(popcorn_system_t *ps)
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_RELEASE:
-			if(slavedspic.cup_clamp_popcorn_door_r.mode == CUP_CLAMP_MODE_HIDE)
-				ps->status = do_cup_rear_open(ps);
-			else
-				ps->status = do_cup_rear_release(ps);
+			ps->status = do_cup_rear_open(ps);
 			break;
 
 		case I2C_SLAVEDSPIC_MODE_PS_MACHINES_READY:
@@ -1189,7 +1200,7 @@ uint8_t do_hide_tower(stands_system_t *ss)
 		case WAITING_CLAMPS_CLOSED:
 			ret = stands_tower_clamps_test_traj_end(&slavedspic.stands_tower_clamps);
 
-			if((ret & END_TRAJ) && (time_get_us2() - ss->us > 200000L))
+			if((ret & END_TRAJ) && ((uint32_t)(time_get_us2() - ss->us) > 200000L))
 				ss->substate = LIFT_ELEVATOR;
 
 			break;
@@ -1319,6 +1330,8 @@ uint8_t do_harvest_stand_ready(stands_system_t *ss)
 
 uint8_t do_harvest_stand_do(stands_system_t *ss)
 {
+#define STAND_SENSOR_TIME 250000L
+
 	uint8_t ret = 0;
 
 	switch(ss->substate)
@@ -1337,11 +1350,6 @@ uint8_t do_harvest_stand_do(stands_system_t *ss)
 			break;
 
 		case WAITING_STAND_PUSHED:
-//			if(!sensor_get(ss->stand_sensor)) {
-//				STMCH_ERROR("There isn't stand!!");
-//				return STATUS_BLOCKED;
-//			}
-
 			ret = stands_blade_test_traj_end(ss->blade);
 
 			if(ret & END_TRAJ) {
@@ -1349,6 +1357,8 @@ uint8_t do_harvest_stand_do(stands_system_t *ss)
 					ss->substate = DESCEND_TOWER;
 				else
 					ss->substate = OPEN_CLAMP;
+
+				ss->us = time_get_us2();
 			}
 			else if(ret & END_BLOCKING) {
 				if(ss->blade->mode == STANDS_BLADE_TYPE_LEFT)
@@ -1363,9 +1373,14 @@ uint8_t do_harvest_stand_do(stands_system_t *ss)
 			break;
 
 		case DESCEND_TOWER:
+
+			/* wait for sensor ready */
+			if ((uint32_t)(time_get_us2()-ss->us) < STAND_SENSOR_TIME)
+				break;
+
 			if(!sensor_get(ss->stand_sensor)) {
 				STMCH_ERROR("There isn't stand!!");
-				return STATUS_BLOCKED;
+				return STATUS_DONE;
 			}
 
 			if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT)
@@ -1392,6 +1407,16 @@ uint8_t do_harvest_stand_do(stands_system_t *ss)
 			break;
 
 		case OPEN_CLAMP:
+
+			/* wait for sensor ready */
+			if ((uint32_t)(time_get_us2()-ss->us) < STAND_SENSOR_TIME)
+				break;
+
+			if(!sensor_get(ss->stand_sensor)) {
+				STMCH_ERROR("There isn't stand!!");
+				return STATUS_DONE;
+			}
+
 			stands_clamp_set_mode(ss->clamp, STANDS_CLAMP_MODE_OPEN, 0);
 			ss->us = time_get_us2();
 			ss->substate = WAITING_CLAMP_OPENED;
@@ -1400,7 +1425,7 @@ uint8_t do_harvest_stand_do(stands_system_t *ss)
 			break;
 
 		case WAITING_CLAMP_OPENED:
-			if(time_get_us2() - ss->us > 200000L)
+			if((uint32_t)(time_get_us2() - ss->us) > 200000L)
 				ss->substate = DESCEND_ELEVATOR;
 
             return STATUS_STORING;
@@ -1457,7 +1482,7 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 		case WAITING_CLAMPS_CLOSED:
 			ret = stands_tower_clamps_test_traj_end(&slavedspic.stands_tower_clamps);
 
-			if((ret & END_TRAJ) && (time_get_us2() - ss->us > 200000L))
+			if((ret & END_TRAJ) && ((uint32_t)(time_get_us2() - ss->us) > 200000L))
 				ss->substate = LIFT_ELEVATOR;
 
 			break;
@@ -1631,7 +1656,7 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 			break;
 
 		case WAITING_CLAMP_OPENED:
-			if(time_get_us2() - ss->us > 200000L) {
+			if((uint32_t)(time_get_us2() - ss->us) > 200000L) {
 				if(ss_slave->stored_stands == 0)
 					return STATUS_DONE;
 				else
@@ -1685,7 +1710,7 @@ uint8_t do_build_spotlight_secondary(stands_system_t *ss, stands_system_t *ss_sl
 		case WAITING_CLAMPS_CLOSED:
 			ret = stands_tower_clamps_test_traj_end(&slavedspic.stands_tower_clamps);
 
-			if((ret & END_TRAJ) && (time_get_us2() - ss->us > 200000L))
+			if((ret & END_TRAJ) && ((uint32_t)(time_get_us2() - ss->us) > 200000L))
 				ss->substate = INIT_LIFT_ELEVATOR;
 
 			break;
@@ -1744,7 +1769,7 @@ uint8_t do_build_spotlight_secondary(stands_system_t *ss, stands_system_t *ss_sl
 			break;
 
 		case WAITING_CLAMP_OPENED:
-			if(time_get_us2() - ss->us > 500000L)
+			if((uint32_t)(time_get_us2() - ss->us) > 500000L)
 				ss->substate = LIFT_ELEVATOR;
 
 			break;
@@ -1809,11 +1834,15 @@ uint8_t do_release_spotlight(stands_system_t *ss)
 	uint8_t ret = 0;
 	uint8_t ret_sbl = 0;
 	uint8_t ret_sbr = 0;
+	static uint8_t tries_holder = 3;
+	static uint8_t tries_elevator = 3;
+	static uint8_t tries_open = 3;
+
 
 	switch(ss->substate) {
 		case SAVE:
 			if(slavedspic.cup_holder_front.mode == CUP_HOLDER_FRONT_MODE_HIDE) {
-				ss->substate = DESCEND_ELEVATOR;
+				ss->substate = OPEN_BLADES_AND_TOWER;
 				break;
 			}
 
@@ -1824,8 +1853,19 @@ uint8_t do_release_spotlight(stands_system_t *ss)
 			ret = cup_holder_front_test_traj_end(&slavedspic.cup_holder_front);
 
 			if(ret & END_TRAJ)
-				ss->substate = DESCEND_ELEVATOR;
+				ss->substate = OPEN_BLADES_AND_TOWER;
 			else if(ret & END_BLOCKING) {
+
+				/* XXX, try again ????!!!*/
+				if (tries_holder) {
+					tries_holder--;
+					ss->substate = SAVE;
+					break;
+				}
+
+				/* XXX, ignore error */
+				ss->substate = OPEN_BLADES_AND_TOWER;
+
 				STMCH_ERROR("cup_holder_front BLOCKED!!");
 				return STATUS_BLOCKED;
 			}
@@ -1842,15 +1882,27 @@ uint8_t do_release_spotlight(stands_system_t *ss)
 			ret = stands_elevator_test_traj_end(ss->elevator);
 
 			if(ret & END_TRAJ)
-				ss->substate = OPEN_ALL;
+				ss->substate = OPEN_STAND_CLAMPS;
 			else if(ret & END_BLOCKING) {
+
+				/* XXX, try again ????!!!*/
+				if (tries_elevator) {
+					tries_elevator--;
+					ss->substate = SAVE;
+					break;
+				}
+
+				/* XXX, ingnore error */
+				ss->substate = OPEN_STAND_CLAMPS;
+				break;
+
 				STMCH_ERROR("stands_elevator_%c BLOCKED!!", ss->elevator->type? "r":"l");
 				return STATUS_BLOCKED;
 			}
 
 			break;
 
-		case OPEN_ALL:
+		case OPEN_BLADES_AND_TOWER:
 			if(slavedspic.stands_blade_l.mode == STANDS_BLADE_MODE_PUSH_STAND_LEFT ||
 						slavedspic.stands_blade_l.mode == STANDS_BLADE_MODE_PUSH_STAND_RIGHT)
 				stands_blade_set_mode(&slavedspic.stands_blade_l, STANDS_BLADE_MODE_CENTER, 0);
@@ -1864,17 +1916,11 @@ uint8_t do_release_spotlight(stands_system_t *ss)
 			else
 				stands_tower_clamps_set_mode(&slavedspic.stands_tower_clamps, STANDS_TOWER_CLAMPS_MODE_UNLOCK_RIGHT, 0);
 
-			if(ss->clamp->type == STANDS_CLAMP_TYPE_LEFT)
-				stands_clamp_set_mode(ss->clamp, STANDS_CLAMP_MODE_FULL_OPEN, 0);
-			else
-				stands_clamp_set_mode(ss->clamp, STANDS_CLAMP_MODE_FULL_OPEN, 0);
-
-			ss->us = time_get_us2();
-			ss->substate = WAITING_ALL_OPENED;
+			ss->substate = WAITING_BLADES_AND_TOWER_OPENED;
 
 			break;
 
-		case WAITING_ALL_OPENED:
+		case WAITING_BLADES_AND_TOWER_OPENED:
 			ret = stands_tower_clamps_test_traj_end(&slavedspic.stands_tower_clamps);
 
 			if(slavedspic.stands_blade_l.mode == STANDS_BLADE_MODE_PUSH_STAND_LEFT ||
@@ -1892,11 +1938,11 @@ uint8_t do_release_spotlight(stands_system_t *ss)
 				ret_sbr = END_TRAJ;
 	
 
-			if((ret & END_TRAJ) && (ret_sbl & END_TRAJ) && (ret_sbr & END_TRAJ) && (time_get_us2() - ss->us > 300000L)) {
-				ss->stored_stands = 0;
-				return STATUS_DONE;
+			if((ret & END_TRAJ) && (ret_sbl & END_TRAJ) && (ret_sbr & END_TRAJ)) {
+				ss->substate = DESCEND_ELEVATOR;
 			}
 			else if((ret & END_BLOCKING) || (ret_sbl & END_BLOCKING) || (ret_sbr & END_BLOCKING)) {
+
 				if(!(ret & END_TRAJ))
 					STMCH_ERROR("stand_tower_clamps BLOCKED!!");
 				else if(!(ret_sbl & END_TRAJ))
@@ -1904,10 +1950,41 @@ uint8_t do_release_spotlight(stands_system_t *ss)
 				else if(!(ret_sbr & END_TRAJ))
 					STMCH_ERROR("stands_blade_r BLOCKED!!");
 
+				/* XXX, try again ????!!!*/
+				if (tries_open) {
+					tries_open--;
+					ss->substate = SAVE;
+					break;
+				}
+
+				/* XXX, ingnore error */
+				ss->substate = DESCEND_ELEVATOR;
+				break;
+
 				return STATUS_BLOCKED;
 			}
 
 			break;
+
+		case OPEN_STAND_CLAMPS:
+			if(ss->clamp->type == STANDS_CLAMP_TYPE_LEFT)
+				stands_clamp_set_mode(ss->clamp, STANDS_CLAMP_MODE_FULL_OPEN, 0);
+			else
+				stands_clamp_set_mode(ss->clamp, STANDS_CLAMP_MODE_FULL_OPEN, 0);
+
+			ss->us = time_get_us2();
+			ss->substate = WAITING_STAND_CLAMPS_OPENED;
+
+			break;
+
+		case WAITING_STAND_CLAMPS_OPENED:
+
+			if((uint32_t)(time_get_us2() - ss->us) > 300000L) {
+				ss->stored_stands = 0;
+				return STATUS_DONE;
+			}
+			break;
+
 
 		default:
 			ss->substate = SAVE;
@@ -1927,7 +2004,7 @@ void stands_system_manage(stands_system_t *ss, stands_system_t *ss_slave)
 		ss->substate = SAVE;
 		STMCH_DEBUG("%s mode=%d", __FUNCTION__, ss->mode);
 	}
-	else if(time_get_us2() - ss->us_system < 5000L)
+	else if((uint32_t)(time_get_us2() - ss->us_system) < 5000L)
 		return;
 	ss->us_system = time_get_us2();
 
@@ -2082,7 +2159,7 @@ void state_machines(void)
 	state_do_set_infos();
 }
 
-void state_init(void)
+void state_init(uint8_t side)
 {
 	microseconds us = 0;
 
@@ -2091,7 +2168,7 @@ void state_init(void)
 		return;
 	}
 
-	mainboard_command.mode = INIT;
+	mainboard_command.mode = (side==I2C_SIDE_LEFT?INIT_LEFT:INIT_RIGHT);
 
 	/* enable pwm servos */
 	pwm_servo_enable();
@@ -2128,7 +2205,7 @@ void state_init(void)
 	cup_clamp_popcorn_door_wait_end(&slavedspic.cup_clamp_popcorn_door_l);
 
 	cup_clamp_popcorn_door_set_mode(&slavedspic.cup_clamp_popcorn_door_r, CUP_CLAMP_MODE_HIDE, 0);
-	while(time_get_us2() - us < 1000000L);
+	while((uint32_t)(time_get_us2() - us) < 1000000L);
 
 	STMCH_DEBUG ("RAMPS");
 	popcorn_ramps_set_mode(&slavedspic.popcorn_ramps, POPCORN_RAMPS_MODE_HIDE, 0);
@@ -2140,11 +2217,12 @@ void state_init(void)
 	slavedspic.stands_exchanger.on = 1;
 	stands_exchanger_calibrate();
 
-//	if(build_spotlight_side == I2C_SIDE_LEFT)
-//		stands_exchanger_set_position(STANDS_EXCHANGER_POSITION_MIN_mm);
-//	else
-//		stands_exchanger_set_position(STANDS_EXCHANGER_POSITION_MAX_mm);
-//	stands_exchanger_wait_end();
+	if(side == I2C_SIDE_LEFT)
+		stands_exchanger_set_position(STANDS_EXCHANGER_POSITION_MIN_mm);
+	else
+		stands_exchanger_set_position(STANDS_EXCHANGER_POSITION_MAX_mm);
+
+	stands_exchanger_wait_end();
 
 #ifdef ACTUATOR_SYSTEMS
 	/* systems init */

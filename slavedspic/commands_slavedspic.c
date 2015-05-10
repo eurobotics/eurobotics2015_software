@@ -848,10 +848,14 @@ static void cmd_state2_parsed(void *parsed_result,
 	struct cmd_state2_result *res = parsed_result;
 	struct i2c_cmd_slavedspic_set_mode command;
 
-	if (!strcmp(res->arg1, "init")) {
-		command.mode = I2C_SLAVEDSPIC_MODE_INIT;
+	if (!strcmp(res->arg1, "init_left")) {
+		command.mode = I2C_SLAVEDSPIC_MODE_INIT_LEFT;
 		state_set_mode(&command);
 	}	
+	else if (!strcmp(res->arg1, "init_right")) {
+		command.mode = I2C_SLAVEDSPIC_MODE_INIT_RIGHT;
+		state_set_mode(&command);
+	}
 	else if (!strcmp(res->arg1, "power_off")) {
 		command.mode = I2C_SLAVEDSPIC_MODE_POWER_OFF;
 		state_set_mode(&command);
@@ -887,7 +891,7 @@ static void cmd_state2_parsed(void *parsed_result,
 
 prog_char str_state2_arg0[] = "state";
 parse_pgm_token_string_t cmd_state2_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_state2_result, arg0, str_state2_arg0);
-prog_char str_state2_arg1[] = "init#power_off#status";
+prog_char str_state2_arg1[] = "init_left#init_right#power_off#status";
 parse_pgm_token_string_t cmd_state2_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_state2_result, arg1, str_state2_arg1);
 
 prog_char help_state2[] = "set slavedspic mode";
