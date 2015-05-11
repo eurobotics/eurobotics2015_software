@@ -312,9 +312,10 @@ int32_t stands_exchanger_get_position(void)
 /* return 1 if position reached, -1 if blocking and zero if no ends yet */
 int8_t stands_exchanger_check_position_reached(void)
 {
+
 	/* test consign end */
-	if(cs_get_consign(&slavedspic.stands_exchanger.cs) == cs_get_filtered_consign(&slavedspic.stands_exchanger.cs)/* &&
-	   ABS(cs_get_out(&slavedspic.stands_exchanger.cs)) < 300 */){
+	if(cs_get_consign(&slavedspic.stands_exchanger.cs) == cs_get_filtered_consign(&slavedspic.stands_exchanger.cs) && 
+	   ABS(cs_get_error(&slavedspic.stands_exchanger.cs)) < 100) {
 		return END_TRAJ;
 	}
 
@@ -338,9 +339,8 @@ uint8_t stands_exchanger_test_traj_end()
 	ret = stands_exchanger_check_position_reached();
 
 	if (ret) {
-		DEBUG(E_USER_ACTUATORS, "Got %s",  get_err (ret));
+		DEBUG(E_USER_ST_MACH, "Got %s",  get_err (ret));
 	}
-
 	return ret;
 }
 

@@ -1489,6 +1489,8 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 	uint8_t ret2 = 0;
 	uint8_t ret3 = 0;
 
+	static uint8_t stand_waiting_is_cleared = 0;
+
 	
 	//state_debug = 1;
 	//DEBUG (E_USER_ST_MACH, "principal substate %d, stands %d", ss->substate, ss->stored_stands);
@@ -1631,7 +1633,7 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 				if(ss->blade->mode != STANDS_BLADE_MODE_HIDE_LEFT)
 					stands_blade_set_mode(ss->blade, STANDS_BLADE_MODE_PUSH_STAND_LEFT, 0);
 				else
-					stands_blade_set_mode(&slavedspic.stands_blade_l, STANDS_BLADE_MODE_PUSH_STAND_LEFT, 0);
+					stands_blade_set_mode(&slavedspic.stands_blade_r, STANDS_BLADE_MODE_PUSH_STAND_LEFT, 0);
 
 				stands_exchanger_set_position(STANDS_EXCHANGER_POSITION_MAX_mm);
 			}
@@ -1645,22 +1647,59 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 				stands_exchanger_set_position(STANDS_EXCHANGER_POSITION_MIN_mm);
 			}
 
-			ss->substate = WAITING_STAND_PUSHED;
+			DEBUG (E_USER_ST_MACH, "exanger to side");
 
+			ss->substate = WAITING_STAND_PUSHED;
+			//stand_waiting_is_cleared = 0;
 			break;
 
+#if 0
+			ret2 = stands_exchanger_test_traj_end();
+
+			//DEBUG (E_USER_ST_MACH, "test");
+
+			if(ret2 & END_TRAJ)
+			{
+				//DEBUG (E_USER_ST_MACH, "exanger ends");
+				//DEBUG (E_USER_ST_MACH, "type = %d, mode_l = %d, mode_r = %d",
+				//		ss->elevator->type, slavedspic.stands_blade_l.mode, slavedspic.stands_blade_r.mode);
+	
+				if(	(ss->elevator->type == STANDS_ELEVATOR_TYPE_RIGHT &&
+					(slavedspic.stands_blade_l.mode == STANDS_BLADE_MODE_HIDE_LEFT ||
+			   		 slavedspic.stands_blade_r.mode == STANDS_BLADE_MODE_HIDE_LEFT))   ||
+
+					(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT &&
+					(slavedspic.stands_blade_l.mode == STANDS_BLADE_MODE_HIDE_RIGHT ||
+			   		 slavedspic.stands_blade_r.mode == STANDS_BLADE_MODE_HIDE_RIGHT)) )
+
+				{			
+
+					//DEBUG (E_USER_ST_MACH, "stand_waiting = 0");
+					if (!stand_waiting_is_cleared) {	
+						//DEBUG (E_USER_ST_MACH, "stand_waiting = 0");				
+						ss_slave->stand_waiting = 0;
+						//stand_waiting_is_cleared = 1;
+					}
+				}
+			}
+#endif
 		case WAITING_STAND_PUSHED:
 			ret = stands_blade_test_traj_end(&slavedspic.stands_blade_l);
 			ret2 = stands_blade_test_traj_end(&slavedspic.stands_blade_r);
 
 			if((ret & END_TRAJ) && (ret2 & END_TRAJ)) 
 			{
-				ss_slave->stand_waiting = 0;
+				//if (!stand_waiting_is_cleared) {
+					ss_slave->stand_waiting = 0;
+				//	stand_waiting_is_cleared = 1;
+				//}
 
-				if(	(slavedspic.stands_blade_l.mode != STANDS_BLADE_MODE_HIDE_LEFT &&
+				if(	(ss->elevator->type == STANDS_ELEVATOR_TYPE_RIGHT &&
+					 slavedspic.stands_blade_l.mode != STANDS_BLADE_MODE_HIDE_LEFT &&
 			   		 slavedspic.stands_blade_r.mode != STANDS_BLADE_MODE_HIDE_LEFT) || 
 
-			   		(slavedspic.stands_blade_l.mode != STANDS_BLADE_MODE_HIDE_RIGHT &&
+			   		(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT &&
+					 slavedspic.stands_blade_l.mode != STANDS_BLADE_MODE_HIDE_RIGHT &&
 			   		 slavedspic.stands_blade_r.mode != STANDS_BLADE_MODE_HIDE_RIGHT) ) 
 				{			
 					ss_slave->blades_waiting = 1;
@@ -1669,6 +1708,7 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 					ss_slave->blades_waiting = 0;
 
 				ss->substate = DESCEND_TOWER;
+				DEBUG (E_USER_ST_MACH, "descend tower");
 			}
 			else if((ret & END_BLOCKING) || (ret2 & END_BLOCKING)) {
 				if(!(ret & END_TRAJ))
