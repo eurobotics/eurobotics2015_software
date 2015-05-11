@@ -1483,15 +1483,17 @@ uint8_t do_harvest_stand_do(stands_system_t *ss)
 
 uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_slave)
 {
+#define CLAMPS_CLOSED_TIME 200000L
+#define CLAMPS_OPENED_TIME 100000L
 	uint8_t ret = 0;
 	uint8_t ret2 = 0;
 	uint8_t ret3 = 0;
 
 	
-	state_debug = 1;
-	DEBUG (E_USER_ST_MACH, "principal substate %d, stands %d", ss->substate, ss->stored_stands);
-	DEBUG (E_USER_ST_MACH, "secondary substate %d, stands %d", ss_slave->substate, ss_slave->stored_stands);
-	state_debug_wait_key_pressed();
+	//state_debug = 1;
+	//DEBUG (E_USER_ST_MACH, "principal substate %d, stands %d", ss->substate, ss->stored_stands);
+	//DEBUG (E_USER_ST_MACH, "secondary substate %d, stands %d", ss_slave->substate, ss_slave->stored_stands);
+	//state_debug_wait_key_pressed();
 
 	switch(ss->substate) {
 		case SAVE:
@@ -1507,7 +1509,7 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 		case WAITING_CLAMPS_CLOSED:
 			ret = stands_tower_clamps_test_traj_end(&slavedspic.stands_tower_clamps);
 
-			if((ret & END_TRAJ) && ((uint32_t)(time_get_us2() - ss->us) > 200000L))
+			if((ret & END_TRAJ) && ((uint32_t)(time_get_us2() - ss->us) > CLAMPS_CLOSED_TIME))
 				ss->substate = LIFT_ELEVATOR;
 
 			break;
@@ -1665,6 +1667,8 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 				}
 				else
 					ss_slave->blades_waiting = 0;
+
+				ss->substate = DESCEND_TOWER;
 			}
 			else if((ret & END_BLOCKING) || (ret2 & END_BLOCKING)) {
 				if(!(ret & END_TRAJ))
@@ -1709,7 +1713,7 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 			break;
 
 		case WAITING_CLAMP_OPENED:
-			if((uint32_t)(time_get_us2() - ss->us) > 200000L) {
+			if((uint32_t)(time_get_us2() - ss->us) > CLAMPS_OPENED_TIME) {
 				if(ss_slave->stored_stands == 0)
 					return STATUS_DONE;
 				else
@@ -1749,10 +1753,10 @@ uint8_t do_build_spotlight_secondary(stands_system_t *ss, stands_system_t *ss_sl
 {
 	uint8_t ret = 0;
 
-	state_debug = 1;
-	DEBUG (E_USER_ST_MACH, "principal substate %d, stands %d", ss_slave->substate, ss_slave->stored_stands);
-	DEBUG (E_USER_ST_MACH, "secondary substate %d, stands %d", ss->substate, ss->stored_stands);
-	state_debug_wait_key_pressed();
+	//state_debug = 1;
+	//DEBUG (E_USER_ST_MACH, "principal substate %d, stands %d", ss_slave->substate, ss_slave->stored_stands);
+	//DEBUG (E_USER_ST_MACH, "secondary substate %d, stands %d", ss->substate, ss->stored_stands);
+	//state_debug_wait_key_pressed();
 
 	switch(ss->substate) {
 		case SAVE:
@@ -1768,7 +1772,7 @@ uint8_t do_build_spotlight_secondary(stands_system_t *ss, stands_system_t *ss_sl
 		case WAITING_CLAMPS_CLOSED:
 			ret = stands_tower_clamps_test_traj_end(&slavedspic.stands_tower_clamps);
 
-			if((ret & END_TRAJ) && ((uint32_t)(time_get_us2() - ss->us) > 200000L))
+			if((ret & END_TRAJ) && ((uint32_t)(time_get_us2() - ss->us) > CLAMPS_CLOSED_TIME))
 				ss->substate = INIT_LIFT_ELEVATOR;
 
 			break;
@@ -1805,9 +1809,12 @@ uint8_t do_build_spotlight_secondary(stands_system_t *ss, stands_system_t *ss_sl
 			break;
 
 		case DESCEND_ELEVATOR:
-			stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_DOWN, 0);
-			ss->substate = WAITING_ELEVATOR_DESCENDED;
+			if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT)
+				stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_DOWN, -50);
+			else
+				stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_DOWN, 50);
 
+			ss->substate = WAITING_ELEVATOR_DESCENDED;
 			break;
 
 		case WAITING_ELEVATOR_DESCENDED:
@@ -1830,7 +1837,7 @@ uint8_t do_build_spotlight_secondary(stands_system_t *ss, stands_system_t *ss_sl
 			break;
 
 		case WAITING_CLAMP_OPENED:
-			if((uint32_t)(time_get_us2() - ss->us) > 500000L)
+			if((uint32_t)(time_get_us2() - ss->us) > CLAMPS_OPENED_TIME)
 				ss->substate = LIFT_ELEVATOR;
 
 			break;
