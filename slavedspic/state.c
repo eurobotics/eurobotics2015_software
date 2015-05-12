@@ -1484,7 +1484,7 @@ uint8_t do_harvest_stand_do(stands_system_t *ss)
 uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_slave)
 {
 #define CLAMPS_CLOSED_TIME 200000L
-#define CLAMPS_OPENED_TIME 200000L
+#define CLAMPS_OPENED_TIME 100000L
 	uint8_t ret = 0;
 	uint8_t ret2 = 0;
 	uint8_t ret3 = 0;
@@ -1513,7 +1513,11 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 			break;
 
 		case LIFT_ELEVATOR:
-			stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, 0);
+			if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT)
+				stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, 90);
+			else
+				stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, -80);
+
 			ss->substate = WAITING_ELEVATOR_LIFTED;
 
 			break;
@@ -1667,7 +1671,8 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 				else
 					ss_slave->blades_waiting = 0;
 
-				ss->substate = DESCEND_TOWER;
+				//ss->substate = DESCEND_TOWER;
+				ss->substate = OPEN_CLAMP;
 			}
 			else if((ret & END_BLOCKING) || (ret2 & END_BLOCKING)) {
 				if(!(ret & END_TRAJ))
@@ -1679,7 +1684,7 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 			}
 
 			break;
-
+#if 0
 		case DESCEND_TOWER:
 			if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT)
 				stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, -150);
@@ -1701,7 +1706,7 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 			}
 
 			break;
-
+#endif
 		case OPEN_CLAMP:
 			ss->stored_stands++;
 			ss_slave->stored_stands--;
