@@ -339,7 +339,7 @@ uint8_t stands_exchanger_test_traj_end()
 	ret = stands_exchanger_check_position_reached();
 
 	if (ret) {
-		DEBUG(E_USER_ST_MACH, "Got %s",  get_err (ret));
+		DEBUG(E_USER_ACTUATORS, "Got %s",  get_err (ret));
 	}
 	return ret;
 }
