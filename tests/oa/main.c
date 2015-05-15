@@ -37,7 +37,7 @@
 
 /* log function, add a command to configure
  * it dynamically */
-void mylog(struct error * e, ...) 
+void mylog(struct error * e, ...)
 {
 	va_list ap;
 	va_start(ap, e);
@@ -65,7 +65,7 @@ int main(void)
 	int16_t robot_2nd_y;
 	int16_t dst_x;
 	int16_t dst_y;
-   
+
 #ifdef HOST_VERSION
 	if (argc != 12) {
 		printf("bad args (argc = %d)\n", argc);
@@ -82,18 +82,18 @@ int main(void)
 	opp2_x = atoi(argv[8]);
 	opp2_y = atoi(argv[9]);
 	robot_2nd_x = atoi(argv[10]);
-	robot_2nd_y = atoi(argv[11]);	
+	robot_2nd_y = atoi(argv[11]);
 #endif
-   
+
 	/* LOGS */
 	error_register_emerg(mylog);
 	error_register_error(mylog);
 	error_register_warning(mylog);
 	error_register_notice(mylog);
 	error_register_debug(mylog);
-	
+
 	/* set playground boundingbox */
-	strat_set_bounding_box(I2C_COLOR_YELLOW);
+	strat_set_bounding_box();
 
 	/* goto and avoid */
 	DEBUG(E_USER_STRAT, "robot at: %d %d %d", robot_x, robot_y, (int16_t)robot_a_deg);
