@@ -1513,11 +1513,15 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 			break;
 
 		case LIFT_ELEVATOR:
+#undef UP_AND_DOWN
+#ifdef UP_AND_DOWN
+			stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, 0);
+#else
 			if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT)
 				stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, 90);
 			else
 				stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, -80);
-
+#endif
 			ss->substate = WAITING_ELEVATOR_LIFTED;
 
 			break;
@@ -1671,8 +1675,11 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 				else
 					ss_slave->blades_waiting = 0;
 
-				//ss->substate = DESCEND_TOWER;
+#ifdef UP_AND_DOWN
+				ss->substate = DESCEND_TOWER;
+#else
 				ss->substate = OPEN_CLAMP;
+#endif
 			}
 			else if((ret & END_BLOCKING) || (ret2 & END_BLOCKING)) {
 				if(!(ret & END_TRAJ))
@@ -1684,12 +1691,13 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 			}
 
 			break;
-#if 0
+
+#ifdef UP_AND_DOWN
 		case DESCEND_TOWER:
 			if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT)
-				stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, -150);
+				stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, 90);
 			else
-				stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, 150);
+				stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, -80);
 
 			ss->substate = WAITING_TOWER_DESCENDED;
 
