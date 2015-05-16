@@ -96,6 +96,7 @@ void strat_debug_wait_key_pressed (uint8_t robot)
 }
 
 /* debug strat step to step */
+#if 0
 uint8_t strat_debug_is_key_pressed (uint8_t robot)
 {
 	if (!strat_infos.debug_step)
@@ -106,7 +107,7 @@ uint8_t strat_debug_is_key_pressed (uint8_t robot)
 
 	return cmdline_keypressed();
 }
-
+#endif
 
 static uint8_t strat_secondary_robot_on = 0;
 
@@ -677,7 +678,7 @@ uint8_t strat_smart_main_robot(void)
 	int8_t zone_num;
 	uint8_t err;
 	static uint8_t no_more_zones;
-    static microseconds us;
+//    static microseconds us;
 
 
 	/* get new zone */

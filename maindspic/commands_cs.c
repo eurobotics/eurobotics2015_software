@@ -138,11 +138,11 @@ parse_pgm_token_num_t cmd_gain_p = TOKEN_NUM_INITIALIZER(struct cmd_gain_result,
 parse_pgm_token_num_t cmd_gain_i = TOKEN_NUM_INITIALIZER(struct cmd_gain_result, i, INT16);
 parse_pgm_token_num_t cmd_gain_d = TOKEN_NUM_INITIALIZER(struct cmd_gain_result, d, INT16);
 
-prog_char help_gain[] = "Set gain values for PID";
+//prog_char help_gain[] = "Set gain values for PID";
 parse_pgm_inst_t cmd_gain = {
 	.f = cmd_gain_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_gain,
+	//.help_str = help_gain,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_gain_arg0, 
 		(prog_void *)&cmd_csb_name_tok, 
@@ -163,11 +163,11 @@ struct cmd_gain_show_result {
 prog_char str_gain_show_arg[] = "show";
 parse_pgm_token_string_t cmd_gain_show_arg = TOKEN_STRING_INITIALIZER(struct cmd_gain_show_result, show, str_gain_show_arg);
 
-prog_char help_gain_show[] = "Show gain values for PID";
+//prog_char help_gain_show[] = "Show gain values for PID";
 parse_pgm_inst_t cmd_gain_show = {
 	.f = cmd_gain_parsed,  /* function to call */
 	.data = (void *)1,      /* 2nd arg of func */
-	.help_str = help_gain_show,
+	//.help_str = help_gain_show,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_gain_arg0, 
 		(prog_void *)&cmd_csb_name_tok, 
@@ -214,11 +214,11 @@ prog_char str_speed_arg0[] = "speed";
 parse_pgm_token_string_t cmd_speed_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_speed_result, cs.cmdname, str_speed_arg0);
 parse_pgm_token_num_t cmd_speed_s = TOKEN_NUM_INITIALIZER(struct cmd_speed_result, s, UINT16);
 
-prog_char help_speed[] = "Set speed values for ramp filter";
+//prog_char help_speed[] = "Set speed values for ramp filter";
 parse_pgm_inst_t cmd_speed = {
 	.f = cmd_speed_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_speed,
+	//.help_str = help_speed,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_speed_arg0, 
 		(prog_void *)&cmd_csb_name_tok, 
@@ -236,11 +236,11 @@ struct cmd_speed_show_result {
 prog_char str_speed_show_arg[] = "show";
 parse_pgm_token_string_t cmd_speed_show_arg = TOKEN_STRING_INITIALIZER(struct cmd_speed_show_result, show, str_speed_show_arg);
 
-prog_char help_speed_show[] = "Show speed values for ramp filter";
+//prog_char help_speed_show[] = "Show speed values for ramp filter";
 parse_pgm_inst_t cmd_speed_show = {
 	.f = cmd_speed_parsed,  /* function to call */
 	.data = (void *)1,      /* 2nd arg of func */
-	.help_str = help_speed_show,
+	//.help_str = help_speed_show,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_speed_arg0, 
 		(prog_void *)&cmd_csb_name_tok, 
@@ -283,11 +283,11 @@ prog_char str_derivate_filter_arg0[] = "derivate_filter";
 parse_pgm_token_string_t cmd_derivate_filter_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_derivate_filter_result, cs.cmdname, str_derivate_filter_arg0);
 parse_pgm_token_num_t cmd_derivate_filter_size = TOKEN_NUM_INITIALIZER(struct cmd_derivate_filter_result, size, UINT32);
 
-prog_char help_derivate_filter[] = "Set derivate_filter values for PID (in, I, out)";
+//prog_char help_derivate_filter[] = "Set derivate_filter values for PID (in, I, out)";
 parse_pgm_inst_t cmd_derivate_filter = {
 	.f = cmd_derivate_filter_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_derivate_filter,
+	//.help_str = help_derivate_filter,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_derivate_filter_arg0, 
 		(prog_void *)&cmd_csb_name_tok, 
@@ -306,11 +306,11 @@ struct cmd_derivate_filter_show_result {
 prog_char str_derivate_filter_show_arg[] = "show";
 parse_pgm_token_string_t cmd_derivate_filter_show_arg = TOKEN_STRING_INITIALIZER(struct cmd_derivate_filter_show_result, show, str_derivate_filter_show_arg);
 
-prog_char help_derivate_filter_show[] = "Show derivate_filter values for PID";
+//prog_char help_derivate_filter_show[] = "Show derivate_filter values for PID";
 parse_pgm_inst_t cmd_derivate_filter_show = {
 	.f = cmd_derivate_filter_parsed,  /* function to call */
 	.data = (void *)1,      /* 2nd arg of func */
-	.help_str = help_derivate_filter_show,
+	//.help_str = help_derivate_filter_show,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_derivate_filter_arg0, 
 		(prog_void *)&cmd_csb_name_tok, 
@@ -348,11 +348,11 @@ prog_char str_consign_arg0[] = "consign";
 parse_pgm_token_string_t cmd_consign_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_consign_result, cs.cmdname, str_consign_arg0);
 parse_pgm_token_num_t cmd_consign_p = TOKEN_NUM_INITIALIZER(struct cmd_consign_result, p, INT32);
 
-prog_char help_consign[] = "Set consign value";
+//prog_char help_consign[] = "Set consign value";
 parse_pgm_inst_t cmd_consign = {
 	.f = cmd_consign_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_consign,
+	//.help_str = help_consign,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_consign_arg0, 
 		(prog_void *)&cmd_csb_name_tok, 
@@ -402,11 +402,11 @@ parse_pgm_token_num_t cmd_maximum_in = TOKEN_NUM_INITIALIZER(struct cmd_maximum_
 parse_pgm_token_num_t cmd_maximum_i = TOKEN_NUM_INITIALIZER(struct cmd_maximum_result, i, UINT32);
 parse_pgm_token_num_t cmd_maximum_out = TOKEN_NUM_INITIALIZER(struct cmd_maximum_result, out, UINT32);
 
-prog_char help_maximum[] = "Set maximum values for PID (in, I, out)";
+//prog_char help_maximum[] = "Set maximum values for PID (in, I, out)";
 parse_pgm_inst_t cmd_maximum = {
 	.f = cmd_maximum_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_maximum,
+	//.help_str = help_maximum,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_maximum_arg0, 
 		(prog_void *)&cmd_csb_name_tok, 
@@ -427,11 +427,11 @@ struct cmd_maximum_show_result {
 prog_char str_maximum_show_arg[] = "show";
 parse_pgm_token_string_t cmd_maximum_show_arg = TOKEN_STRING_INITIALIZER(struct cmd_maximum_show_result, show, str_maximum_show_arg);
 
-prog_char help_maximum_show[] = "Show maximum values for PID";
+//prog_char help_maximum_show[] = "Show maximum values for PID";
 parse_pgm_inst_t cmd_maximum_show = {
 	.f = cmd_maximum_parsed,  /* function to call */
 	.data = (void *)1,      /* 2nd arg of func */
-	.help_str = help_maximum_show,
+	//.help_str = help_maximum_show,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_maximum_arg0, 
 		(prog_void *)&cmd_csb_name_tok, 
@@ -485,11 +485,11 @@ parse_pgm_token_num_t cmd_quadramp_an = TOKEN_NUM_INITIALIZER(struct cmd_quadram
 parse_pgm_token_num_t cmd_quadramp_sp = TOKEN_NUM_INITIALIZER(struct cmd_quadramp_result, sp, UINT32);
 parse_pgm_token_num_t cmd_quadramp_sn = TOKEN_NUM_INITIALIZER(struct cmd_quadramp_result, sn, UINT32);
 
-prog_char help_quadramp[] = "Set quadramp values (acc+, acc-, speed+, speed-)";
+//prog_char help_quadramp[] = "Set quadramp values (acc+, acc-, speed+, speed-)";
 parse_pgm_inst_t cmd_quadramp = {
 	.f = cmd_quadramp_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_quadramp,
+	//.help_str = help_quadramp,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_quadramp_arg0, 
 		(prog_void *)&cmd_csb_name_tok, 
@@ -512,11 +512,11 @@ struct cmd_quadramp_show_result {
 prog_char str_quadramp_show_arg[] = "show";
 parse_pgm_token_string_t cmd_quadramp_show_arg = TOKEN_STRING_INITIALIZER(struct cmd_quadramp_show_result, show, str_quadramp_show_arg);
 
-prog_char help_quadramp_show[] = "Get quadramp values for control system";
+//prog_char help_quadramp_show[] = "Get quadramp values for control system";
 parse_pgm_inst_t cmd_quadramp_show = {
 	.f = cmd_quadramp_parsed,  /* function to call */
 	.data = (void *)1,      /* 2nd arg of func */
-	.help_str = help_quadramp_show,
+	//.help_str = help_quadramp_show,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_quadramp_arg0, 
 		(prog_void *)&cmd_csb_name_tok, 
@@ -589,11 +589,11 @@ parse_pgm_token_string_t cmd_cs_status_arg0 = TOKEN_STRING_INITIALIZER(struct cm
 prog_char str_cs_status_arg[] = "pid_show#pid_loop_show#show#loop_show#on#off";
 parse_pgm_token_string_t cmd_cs_status_arg = TOKEN_STRING_INITIALIZER(struct cmd_cs_status_result, arg, str_cs_status_arg);
 
-prog_char help_cs_status[] = "Show cs status";
+//prog_char help_cs_status[] = "Show cs status";
 parse_pgm_inst_t cmd_cs_status = {
 	.f = cmd_cs_status_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_cs_status,
+	//.help_str = help_cs_status,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_cs_status_arg0, 
 		(prog_void *)&cmd_csb_name_tok, 
@@ -648,11 +648,11 @@ parse_pgm_token_num_t cmd_blocking_i_k2 = TOKEN_NUM_INITIALIZER(struct cmd_block
 parse_pgm_token_num_t cmd_blocking_i_i = TOKEN_NUM_INITIALIZER(struct cmd_blocking_i_result, i, UINT32);
 parse_pgm_token_num_t cmd_blocking_i_cpt = TOKEN_NUM_INITIALIZER(struct cmd_blocking_i_result, cpt, UINT16);
 
-prog_char help_blocking_i[] = "Set blocking detection values (k1, k2, i, cpt)";
+//prog_char help_blocking_i[] = "Set blocking detection values (k1, k2, i, cpt)";
 parse_pgm_inst_t cmd_blocking_i = {
 	.f = cmd_blocking_i_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_blocking_i,
+	//.help_str = help_blocking_i,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_blocking_i_arg0, 
 		(prog_void *)&cmd_csb_name_tok, 
@@ -674,11 +674,11 @@ struct cmd_blocking_i_show_result {
 prog_char str_blocking_i_show_arg[] = "show";
 parse_pgm_token_string_t cmd_blocking_i_show_arg = TOKEN_STRING_INITIALIZER(struct cmd_blocking_i_show_result, show, str_blocking_i_show_arg);
 
-prog_char help_blocking_i_show[] = "Show blocking detection values";
+//prog_char help_blocking_i_show[] = "Show blocking detection values";
 parse_pgm_inst_t cmd_blocking_i_show = {
 	.f = cmd_blocking_i_parsed,  /* function to call */
 	.data = (void *)1,      /* 2nd arg of func */
-	.help_str = help_blocking_i_show,
+	//.help_str = help_blocking_i_show,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_blocking_i_arg0, 
 		(prog_void *)&cmd_csb_name_tok, 

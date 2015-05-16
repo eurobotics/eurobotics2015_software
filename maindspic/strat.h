@@ -431,7 +431,7 @@ extern struct strat_smart strat_smart[ROBOT_MAX];
 
 void strat_set_bounding_box(void);
 
-const char *get_zone_name(uint8_t zone_num);
+char *get_zone_name(uint8_t zone_num);
 void strat_dump_infos(const char *caller);
 void strat_dump_conf(void);
 void strat_reset_infos(void);
