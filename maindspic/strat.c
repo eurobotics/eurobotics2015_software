@@ -419,7 +419,7 @@ void strat_set_bounding_box(void)
 
 
 /* zone names */
-const char zone_name[ZONES_MAX][14]= {
+char zone_name[ZONES_MAX][14]= {
     [ZONE_MY_STAND_GROUP_1]="STAND GROUP 1\0",
     [ZONE_MY_STAND_GROUP_2]="STAND GROUP 2\0",
     [ZONE_MY_STAND_GROUP_3]="STAND GROUP 3\0",
@@ -444,7 +444,7 @@ const char zone_name[ZONES_MAX][14]= {
 };
 
 /* return string with the zone name */
-const char *get_zone_name(uint8_t zone_num)
+char *get_zone_name(uint8_t zone_num)
 {
     if (zone_num >= ZONES_MAX)
     	return "END_UNKNOWN";

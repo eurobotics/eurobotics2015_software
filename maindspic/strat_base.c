@@ -86,7 +86,7 @@ static volatile uint8_t strat_opp_sensors_enabled = 0;
 
 /* Strings that match the end traj cause */
 /* /!\ keep it sync with stat_base.h */
-const char *err_tab []= {
+char *err_tab []= {
 	"END_TRAJ",
 	"END_BLOCKING",
 	"END_NEAR",

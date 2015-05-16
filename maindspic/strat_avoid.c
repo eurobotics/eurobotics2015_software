@@ -293,7 +293,9 @@ void set_rotated_poly_abs(poly_t *pol, int16_t a_abs,
 	tmp_x += x;
 	tmp_y += y;
 	oa_poly_set_point(pol, tmp_x, tmp_y, 3);
-}/* set poly*/
+}
+
+/* set poly*/
 void set_home_yellow_poly_abs(poly_t *pol,
 		      int16_t w, int16_t l, int16_t x, int16_t y)
 
@@ -617,7 +619,6 @@ uint8_t set_rhombus_pts(point_t *pt,
 #endif
 
 }
-#endif
 
 /* set point of a square */
 uint8_t set_square_pts(point_t *pt,
@@ -642,6 +643,8 @@ uint8_t set_square_pts(point_t *pt,
 	return 4;
 }
 
+
+
 /* set oa poly point */
 void set_poly_pts(poly_t *pol_dest, poly_t *pol_org)
 {
@@ -652,7 +655,7 @@ void set_poly_pts(poly_t *pol_dest, poly_t *pol_org)
 	   oa_poly_set_point(pol_dest, pol_org->pts[i].x, pol_org->pts[i].y, i);
    }
 }
-
+#endif
 
 
 /*
@@ -736,7 +739,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 
 	double len;
 
-    uint8_t in_home_yellow = 0,in_home_green=0,in_stairs = 0,in_platform;
+    uint8_t in_home_yellow = 0,in_home_green=0,in_stairs = 0,in_platform=0;
 
 	point_t dst_pt;
 	point_t intersect_opp1_pt, intersect_opp2_pt,  intersect_robot_2nd_pt,
@@ -1144,7 +1147,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 		}
 	}
 	if (in_platform) {
-		if (is_crossing_poly(*robot_pt, dst_pt, &intersect_home_green_pt,
+		if (is_crossing_poly(*robot_pt, dst_pt, &intersect_platform_pt,
 					pol_platform) == 1) {
 
 			/* we add 2 cm to be sure we are out of th polygon */
