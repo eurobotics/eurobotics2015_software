@@ -87,7 +87,10 @@ uint8_t i2c_slavedspic_get_ps_status(void);
 uint8_t i2c_slavedspic_ps_test_status(uint8_t status_flags);
 
 /* set stands system mode */
-int8_t i2c_slavedspic_mode_ss_harvest(uint8_t side, int8_t blade_angle_deg);
+/* TODO: update harvest fucntion */
+#define i2c_slavedspic_mode_ss_harvest(side,blade_angle_deg)  i2c_slavedspic_mode_ss_harvest_ready(side, blade_angle_deg)
+int8_t i2c_slavedspic_mode_ss_harvest_ready(uint8_t side, int8_t blade_angle_deg);
+int8_t i2c_slavedspic_mode_ss_harvest_do(uint8_t side, int8_t blade_angle_deg);
 
 /* set stands system mode */
 int8_t i2c_slavedspic_mode_ss(uint8_t mode, uint8_t side);

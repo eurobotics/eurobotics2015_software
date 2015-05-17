@@ -202,13 +202,17 @@ extern parse_pgm_inst_t cmd_subtraj2;
 parse_pgm_ctx_t main_ctx[] = {
 
 #ifdef COMPILE_COMMANDS_GEN
+
+#ifdef COMPILE_COMMANDS_GEN_OPTIONALS /*--------------------------------*/
     /* commands_gen.c */
     (parse_pgm_inst_t *) & cmd_reset,
     //	(parse_pgm_inst_t *)&cmd_bootloader,
     (parse_pgm_inst_t *) & cmd_encoders,
+    (parse_pgm_inst_t *) & cmd_scheduler,
     (parse_pgm_inst_t *) & cmd_pwm_servo,
     (parse_pgm_inst_t *) & cmd_pwm_servo_show_range,
     (parse_pgm_inst_t *) & cmd_dac_mc,
+#endif
 
 #ifdef COMPILE_COMMANDS_GEN_OPTIONALS /*--------------------------------*/
     (parse_pgm_inst_t *) & cmd_adc,
@@ -219,7 +223,7 @@ parse_pgm_ctx_t main_ctx[] = {
     (parse_pgm_inst_t *) & cmd_log,
     (parse_pgm_inst_t *) & cmd_log_show,
     (parse_pgm_inst_t *) & cmd_log_type,
-    (parse_pgm_inst_t *) & cmd_scheduler,
+
 
 #endif /* COMPILE_COMMANDS_GEN */
 
@@ -312,8 +316,10 @@ parse_pgm_ctx_t main_ctx[] = {
     /* TODO 2015 */
     (parse_pgm_inst_t *) & cmd_strat_infos,
     (parse_pgm_inst_t *) & cmd_strat_conf,
+#ifdef COMPILE_COMMANDS_TRAJ_OPTIONALS /*-------------------------------------*/
     (parse_pgm_inst_t *) & cmd_strat_conf2,
     (parse_pgm_inst_t *) & cmd_strat_conf3,
+#endif /* COMPILE_COMMANDS_TRAJ_OPTIONALS ------------------------------------*/
     (parse_pgm_inst_t *) & cmd_subtraj1,
     (parse_pgm_inst_t *) & cmd_subtraj2,
 

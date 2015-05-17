@@ -89,24 +89,25 @@ void strat_debug_wait_key_pressed (uint8_t robot)
 	if (!strat_infos.debug_step)
 		return;
 
-	DEBUG(E_USER_STRAT,"%s, press a key", 
+	DEBUG(E_USER_STRAT,"%s, press a key",
 			robot==MAIN_ROBOT? "R1":"R2");
 
 	while(!cmdline_keypressed());
 }
 
 /* debug strat step to step */
+#if 0
 uint8_t strat_debug_is_key_pressed (uint8_t robot)
 {
 	if (!strat_infos.debug_step)
 		return 1;
 
-	DEBUG(E_USER_STRAT,"%s, press a key", 
+	DEBUG(E_USER_STRAT,"%s, press a key",
 			robot==MAIN_ROBOT? "R1":"R2");
 
 	return cmdline_keypressed();
 }
-
+#endif
 
 static uint8_t strat_secondary_robot_on = 0;
 
@@ -197,7 +198,7 @@ int8_t strat_get_new_zone(uint8_t robot)
 			zone_num = i;
 		}
 	}
-	
+
 	/* 2. check if the maximum priority zone is valid */
 	if(zone_num != STRAT_NO_MORE_ZONES)
 	{
@@ -285,8 +286,8 @@ int8_t strat_get_new_zone(uint8_t robot)
 			zone_num = i;
 		}
 	}
-	
-	
+
+
 	/* For secondary robot: check if need to synchronize */
 	if(robot==SEC_ROBOT)
 	{
@@ -302,7 +303,7 @@ int8_t strat_get_new_zone(uint8_t robot)
 			strat_smart_set_msg(MSG_UPPER_SIDE_IS_FREE);
 			strat_infos.zones[ZONE_BLOCK_UPPER_SIDE].flags |= ZONE_AVOID;
 		}
-			
+
 	}
 
 	/* 2. check if the maximun priority zone is free */
@@ -346,12 +347,12 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 									strat_infos.zones[zone_num].init_y);
 		}
 		/* normaly we go with avoid */
-        else if (zone_num == ZONE_MY_STAIRWAY || zone_num == ZONE_MY_CLAP_3 || 
-                 zone_num == ZONE_MY_CINEMA_UP ||  zone_num == ZONE_MY_CINEMA_DOWN) 
+        else if (zone_num == ZONE_MY_STAIRWAY || zone_num == ZONE_MY_CLAP_3 ||
+                 zone_num == ZONE_MY_CINEMA_UP ||  zone_num == ZONE_MY_CINEMA_DOWN)
         {
 			DEBUG (E_USER_STRAT, "going backwards");
-            
-			/* force go backwards */        
+
+			/* force go backwards */
 			bt_robot_2nd_goto_and_avoid_backward(COLOR_X(strat_infos.zones[zone_num].init_x),
 										strat_infos.zones[zone_num].init_y);
         }
@@ -362,13 +363,6 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 
 		return 0;
 	}
-
-	/* set boundinbox */
-	if (zone_num == ZONE_POPCORNCUP_2 || zone_num == ZONE_MY_STAND_GROUP_2 ||
-		zone_num == ZONE_MY_CLAP_1 || zone_num == ZONE_MY_CLAP_2 || zone_num == ZONE_MY_CLAP_3)
-		strat_set_bounding_box(BOUNDINBOX_WITHOUT_PLATFORM );
-	else
-		strat_set_bounding_box(BOUNDINBOX_INCLUDES_PLAFORM );
 
 
 	/* main robot: goto and wait */
@@ -457,7 +451,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 			/* Set start to sec robot */
 
 			strat_smart[MAIN_ROBOT].current_zone = ZONE_MY_STAND_GROUP_1;
-			
+
 			/* TODO: call specific function for stand group 1 */
 			err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_4_X),
 											   MY_STAND_4_Y,
@@ -486,10 +480,10 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 
 			DEBUG(E_USER_STRAT,"R1, sending message START.");
 			strat_smart_set_msg(MSG_START);
-			
+
 			/* POPCORNCUP_3 */
 			err = strat_harvest_popcorn_cup (COLOR_X(strat_infos.zones[ZONE_POPCORNCUP_3].x),
-									   strat_infos.zones[ZONE_POPCORNCUP_3].y, 
+									   strat_infos.zones[ZONE_POPCORNCUP_3].y,
 									   SIDE_FRONT, 0);
 
 			/* XXX debug step use only for subtraj command */
@@ -512,11 +506,11 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 								 			   SIDE_ALL,                        /* storing sides */
 											   COLOR_A_REL(-10),                /* blade angle */
 											   SPEED_DIST_SLOW,                 /* harvest speed */
-											   STANDS_HARVEST_BACK_INIT_POS);		
+											   STANDS_HARVEST_BACK_INIT_POS);
 			break;
 
 		case ZONE_MY_STAND_GROUP_3:
-			
+
 #if 0
 			err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x),
 											   strat_infos.zones[zone_num].y,
@@ -536,7 +530,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 			break;
 
 		case ZONE_MY_STAND_GROUP_4:
-			
+
 			err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x),
 											   strat_infos.zones[zone_num].y,
 											   COLOR_INVERT(SIDE_RIGHT),        /* side target */
@@ -549,7 +543,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 			break;
 
 		case ZONE_MY_HOME_POPCORNS:
-			
+
 			err = strat_release_popcorns_in_home (COLOR_X(strat_infos.zones[zone_num].x),
 													strat_infos.zones[zone_num].y, 0);
 			break;
@@ -563,49 +557,49 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 
 		case ZONE_POPCORNCUP_1:
 			err = strat_harvest_popcorn_cup (COLOR_X(strat_infos.zones[zone_num].x),
-									   strat_infos.zones[zone_num].y, 
+									   strat_infos.zones[zone_num].y,
 									   SIDE_REAR, 0);
 			break;
 
 
 		case ZONE_POPCORNCUP_2:
 			err = strat_harvest_popcorn_cup (COLOR_X(strat_infos.zones[zone_num].x),
-									   strat_infos.zones[zone_num].y, 
+									   strat_infos.zones[zone_num].y,
 									   SIDE_REAR, 0);
 			break;
 
 		case ZONE_POPCORNCUP_3:
 			err = strat_harvest_popcorn_cup (COLOR_X(strat_infos.zones[zone_num].x),
-									   strat_infos.zones[zone_num].y, 
+									   strat_infos.zones[zone_num].y,
 									   SIDE_FRONT, 0);
 			break;
 
 
 		case ZONE_MY_CLAP_1:
 			err = strat_close_clapperboards (COLOR_X(strat_infos.zones[zone_num].x),
-									   strat_infos.zones[zone_num].y, 
+									   strat_infos.zones[zone_num].y,
 									   COLOR_INVERT(SIDE_RIGHT), 0);
 			break;
 
 		case ZONE_MY_CLAP_2:
 			err = strat_close_clapperboards (COLOR_X(strat_infos.zones[zone_num].x),
-									   strat_infos.zones[zone_num].y, 
+									   strat_infos.zones[zone_num].y,
 									   COLOR_INVERT(SIDE_RIGHT), 0);
 			break;
 
 		case ZONE_MY_CLAP_3:
 			err = strat_close_clapperboards (COLOR_X(strat_infos.zones[zone_num].x),
-									   strat_infos.zones[zone_num].y, 
+									   strat_infos.zones[zone_num].y,
 									   COLOR_INVERT(SIDE_LEFT), 0);
 			break;
 
 
 		case ZONE_MY_POPCORNMAC:
-			
+
 			err = strat_harvest_popcorns_machine (COLOR_X(strat_infos.zones[zone_num].x),
 									   strat_infos.zones[zone_num].y);
 			break;
-		
+
 		case ZONE_OPP_POPCORNMAC:
 			err = strat_harvest_popcorns_machine (COLOR_X(strat_infos.zones[zone_num].x),
 									   strat_infos.zones[zone_num].y);
@@ -684,12 +678,12 @@ uint8_t strat_smart_main_robot(void)
 	int8_t zone_num;
 	uint8_t err;
 	static uint8_t no_more_zones;
-    static microseconds us;
+//    static microseconds us;
 
 
 	/* get new zone */
 	zone_num = strat_get_new_zone(MAIN_ROBOT);
-	
+
 	/* if zone is on upper side, send sec robot to free the way */
 	if(zone_num == ZONE_MY_STAND_GROUP_3 || zone_num == ZONE_MY_STAND_GROUP_4 || zone_num == ZONE_MY_POPCORNMAC)
 	{
@@ -697,9 +691,9 @@ uint8_t strat_smart_main_robot(void)
 		{
 			//DEBUG(E_USER_STRAT,"R1, sending message MSG_UPPER_SIDE_FREE.");
 			strat_smart_set_msg(MSG_UPPER_SIDE_FREE);
-			
+
 			/* SYNCHRONIZATION mechanism */
-			if(strat_wait_sync_main_robot()) 
+			if(strat_wait_sync_main_robot())
 			{
 			#if 0
 				if (time_get_us2()-us > 10000000) {
@@ -773,7 +767,7 @@ uint8_t strat_smart_main_robot(void)
 		/* special case */
 		if (zone_num == ZONE_MY_STAND_GROUP_1)
 			return err;
-			
+
 	}
 
 	/* check the zone as DONE */
@@ -800,7 +794,7 @@ uint8_t strat_smart_get_msg (void)
 	IRQ_LOCK(flags);
 	ret=strat_infos.msg;
 	IRQ_UNLOCK(flags);
-	
+
 	return ret;
 }
 
@@ -813,7 +807,7 @@ uint8_t strat_wait_sync_secondary_robot(void)
 	if (strat_infos.debug_step)
 	{
         /* key capture */
-    	int16_t c;	
+    	int16_t c;
         c = cmdline_getchar();
         if ((char)c == 'p')
             strat_smart[MAIN_ROBOT].key_trigger = 1;
@@ -833,10 +827,10 @@ uint8_t strat_wait_sync_secondary_robot(void)
 	/* Block until main robot sets start */
 	if (strat_smart_get_msg()==MSG_WAIT_START)
 		return 1;
-	
+
 	/* Block upper side until "free" message (or timeout) */
-#define ZONE_UPPER_SIDE_BLOCKING_TIMEOUT 30 		
-				
+#define ZONE_UPPER_SIDE_BLOCKING_TIMEOUT 30
+
 	if ((strat_smart_get_msg() == MSG_UPPER_SIDE_IS_BLOCKED) &&
 		(strat_smart[SEC_ROBOT].current_zone == ZONE_BLOCK_UPPER_SIDE) &&
 		(time_get_s() < ZONE_UPPER_SIDE_BLOCKING_TIMEOUT))
@@ -871,7 +865,7 @@ uint8_t strat_smart_secondary_robot(void)
 	static uint8_t state = SYNCHRONIZATION;
 #ifdef DEBUG_STRAT_SECONDARY
 	static uint8_t state_saved = 0xFF;
-	
+
 	/* transitions debug */
 	if (state != state_saved) {
 		state_saved = state;
@@ -884,7 +878,7 @@ uint8_t strat_smart_secondary_robot(void)
 	{
 		case SYNCHRONIZATION:
             /* SYNCHRONIZATION mechanism */
-            if(strat_wait_sync_secondary_robot()) 
+            if(strat_wait_sync_secondary_robot())
             {
             #if 0
                 if (time_get_us2()-us > 10000000) {
@@ -896,7 +890,7 @@ uint8_t strat_smart_secondary_robot(void)
             #endif
 				break;
             }
-			
+
             /* next state */
             state = GET_NEW_ZONE;
 
@@ -1017,13 +1011,13 @@ uint8_t strat_smart_secondary_robot(void)
 			/* update statistics */
 			strat_smart[SEC_ROBOT].last_zone = strat_smart[SEC_ROBOT].current_zone;
 			strat_smart[SEC_ROBOT].current_zone = strat_smart[SEC_ROBOT].goto_zone;
-			
+
 			/* send message after done synchronization */
 			if(strat_smart[SEC_ROBOT].current_zone == ZONE_BLOCK_UPPER_SIDE)
 			{
 				DEBUG(E_USER_STRAT,"R2, in ZONE_BLOCK_UPPER_SIDE.");
 				strat_smart_set_msg(MSG_UPPER_SIDE_IS_BLOCKED);
-				
+
 			}
 			else if(strat_smart[SEC_ROBOT].current_zone == ZONE_FREE_UPPER_SIDE)
 			{
@@ -1032,19 +1026,19 @@ uint8_t strat_smart_secondary_robot(void)
 			}
 
 			/* next state */
-			if((strat_smart[SEC_ROBOT].current_zone == ZONE_BLOCK_UPPER_SIDE) || 
+			if((strat_smart[SEC_ROBOT].current_zone == ZONE_BLOCK_UPPER_SIDE) ||
 				(strat_smart[SEC_ROBOT].current_zone == ZONE_FREE_UPPER_SIDE))
 			{
 				/* update statistics */
 				strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
 				state = SYNCHRONIZATION;
 			}
-			
+
 			else
 			{
 				state = WORK;
 			}
-			
+
 #ifdef DEBUG_STRAT_SECONDARY
 			state_old = state;
 			DEBUG(E_USER_STRAT,"R2, new state is %d", state);

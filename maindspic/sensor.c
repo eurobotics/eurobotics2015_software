@@ -42,6 +42,8 @@
 #ifdef NOT_USED_2015
 #ifndef HOST_VERSION
 
+#if 0
+
 /************ ADC */
 /* config init */
 static void adc_init(void)
@@ -177,6 +179,7 @@ static void do_adc(void *dummy)
 	adc_launch(adc_infos[0].config);
 }
 #endif /* !HOST_VERSION */
+#endif
 
 /* get analog sensor value */
 int16_t sensor_get_adc(uint8_t i)

@@ -179,11 +179,11 @@ uint8_t ax12_test_traj_end (struct ax12_traj *ax12, uint8_t flags)
 			ret = END_NEAR;
 	}
 	//if (flags & END_TIME)
-	//	if ((time_get_us2() - ax12->time_us)/1000 > ax12->goal_time_ms)
+	//	if ((uint32_t)(time_get_us2() - ax12->time_us)/1000 > ax12->goal_time_ms)
 	//		ret |= END_TIME;
 
 	//if (flags & END_BLOCKING)
-    else if ((time_get_us2() - ax12->time_us)/1000 > (3*ax12->goal_time_ms)) {
+    else if ((uint32_t)(time_get_us2() - ax12->time_us)/1000 > (3*ax12->goal_time_ms)) {
             ax12_user_write_int(&gen.ax12, ax12->id , AA_GOAL_POSITION_L, ax12->pos);                       
 		    ret = END_BLOCKING;
         }
@@ -203,7 +203,7 @@ uint8_t ax12_wait_traj_end (struct ax12_traj *ax12, uint8_t flags)
 
     while (ret == 0) {
         /* check end traj periodicaly (T = 5ms) */
-        if (time_get_us2() - us >= 5000L) {
+        if ((uint32_t)(time_get_us2() - us) >= 5000L) {
             ret = ax12_test_traj_end (ax12, flags);
             us = time_get_us2();
         }
@@ -312,9 +312,10 @@ int32_t stands_exchanger_get_position(void)
 /* return 1 if position reached, -1 if blocking and zero if no ends yet */
 int8_t stands_exchanger_check_position_reached(void)
 {
+
 	/* test consign end */
-	if(cs_get_consign(&slavedspic.stands_exchanger.cs) == cs_get_filtered_consign(&slavedspic.stands_exchanger.cs)/* &&
-	   ABS(cs_get_out(&slavedspic.stands_exchanger.cs)) < 300 */){
+	if(cs_get_consign(&slavedspic.stands_exchanger.cs) == cs_get_filtered_consign(&slavedspic.stands_exchanger.cs) && 
+	   ABS(cs_get_error(&slavedspic.stands_exchanger.cs)) < 100) {
 		return END_TRAJ;
 	}
 
@@ -340,7 +341,6 @@ uint8_t stands_exchanger_test_traj_end()
 	if (ret) {
 		DEBUG(E_USER_ACTUATORS, "Got %s",  get_err (ret));
 	}
-
 	return ret;
 }
 

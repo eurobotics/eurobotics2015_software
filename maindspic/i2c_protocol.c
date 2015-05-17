@@ -136,6 +136,8 @@ void i2c_protocol_debug(void)
 #ifdef HOST_VERSION
 	return;
 #else
+#warning i2c_protocol_debug printfs not compiled
+#if 0
 	printf_P(PSTR("I2C protocol debug infos:\r\n"));
 	printf_P(PSTR("  i2c_state=%d\r\n"), i2c_state);
 	printf_P(PSTR("  i2c_errors=%d\r\n"), i2c_errors);
@@ -143,6 +145,7 @@ void i2c_protocol_debug(void)
 	printf_P(PSTR("  command_size=%d\r\n"), command_size);
 	printf_P(PSTR("  command_dest=%d\r\n"), command_dest);
 	printf_P(PSTR("  i2c_status=%x\r\n"), i2c_status());
+#endif
 #endif
 }
 
@@ -584,7 +587,12 @@ int8_t i2c_slavedspic_mode_init(void)
 
 	/* fill cmd structure */
 	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
-	buf.mode = I2C_SLAVEDSPIC_MODE_INIT;
+
+	if (mainboard.our_color==I2C_COLOR_YELLOW)
+		buf.mode = I2C_SLAVEDSPIC_MODE_INIT_LEFT;
+	else
+		buf.mode = I2C_SLAVEDSPIC_MODE_INIT_RIGHT;
+
 
 	/* send command and return */
 	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
@@ -676,7 +684,7 @@ uint8_t i2c_slavedspic_get_ps_status(void)
 
 /* Strings that match the status */
 /* /!\ keep it sync with i2c_commands.h */
-const char *status_tab []= {
+char *status_tab []= {
 	"BLOCKED",
 	"ERROR",
 	"READY",
@@ -750,9 +758,15 @@ int8_t __i2c_slavedspic_mode_ss(uint8_t mode, uint8_t side, int8_t blade_angle_d
 }
 
 /* set stands system mode */
-int8_t i2c_slavedspic_mode_ss_harvest(uint8_t side, int8_t blade_angle_deg)
+int8_t i2c_slavedspic_mode_ss_harvest_ready(uint8_t side, int8_t blade_angle_deg)
 {
-	return __i2c_slavedspic_mode_ss(I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND, side, blade_angle_deg);
+	return __i2c_slavedspic_mode_ss(I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND_READY, side, blade_angle_deg);
+}
+
+/* set stands system mode */
+int8_t i2c_slavedspic_mode_ss_harvest_do(uint8_t side, int8_t blade_angle_deg)
+{
+	return __i2c_slavedspic_mode_ss(I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND_DO, side, blade_angle_deg);
 }
 
 /* set stands system mode */
