@@ -274,7 +274,7 @@ struct strat_infos strat_infos = {
 	{
 		ZONE_TYPE_STAIRWAY,
 		CARPET_LEFT_INFRONT_X, STAIRS_EDGE_Y,
-		1000, 1500, 1400, 2000,
+		910, 1500, 1200, STAIRS_EDGE_Y,
         CARPET_LEFT_INFRONT_X, STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
 		0, 0,
 //		0, (9000*1000L),
@@ -358,7 +358,7 @@ struct strat_infos strat_infos = {
 #else
 		ZONE_TYPE_STRAT,
 		0, 0,
-		760, 1060, 1020, 1320,
+		910, 1300, 1020, 1320,
         CARPET_LEFT_INFRONT_X, MY_CUP_1_Y, //STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
 		0, 0,
 //		0, (9000*1000L),
