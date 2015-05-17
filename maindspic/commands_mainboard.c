@@ -333,12 +333,14 @@ struct cmd_init_result
     fixed_string_t color;
 };
 
+uint8_t beacon_link_ok = 0, robot_link_ok = 0;
+
 /* function called when cmd_init is parsed successfully */
 static void cmd_init_parsed(void *parsed_result, void *data)
 {
     struct cmd_init_result *res = parsed_result;
 	int8_t c;
-	uint8_t beacon_link_ok = 0, robot_link_ok = 0;
+
 
 	/* set main robot color */
     if (!strcmp_P(res->color, PSTR("green"))){
@@ -355,9 +357,9 @@ static void cmd_init_parsed(void *parsed_result, void *data)
 	i2c_slavedspic_mode_init();
 
 #ifndef HOST_VERSION
-	/* reset local wt11 */
-	wt11_reset_mux();
-	time_wait_ms (1000);
+	/* XXX reset local wt11 */
+	//wt11_reset_mux();
+	//time_wait_ms (1000);
 
 	/* beacon */
 beacon_retry:
@@ -369,11 +371,15 @@ beacon_retry:
 	   	printf_P(PSTR("Trying to open beacon link ...\n"));	
 		wt11_open_link_mux(beacon_addr, &beaconboard.link_id);
 
+ask_beacon_ok:
 		printf_P(PSTR("Is beacon link OK? (y/n) \r\n"));	
 		c = cmdline_getchar_wait();
-		if (c != 'y' && c != 'Y')
+		if (c == 'n')
 			goto beacon_retry;
-		beacon_link_ok = 1;
+		else if (c == 'y')
+			beacon_link_ok = 1;
+		else
+			goto ask_beacon_ok;
     }
 	else {
     	printf("Play without beacon\r\n");
@@ -389,11 +395,15 @@ robot_retry:
 	   	printf_P(PSTR("Trying to open robot link ...\n"));	
 		wt11_open_link_mux(robot_2nd_addr, &robot_2nd.link_id);
 
+ask_robot_ok:
 		printf_P(PSTR("Is robot link OK? (y/n) \r\n"));	
 		c = cmdline_getchar_wait();
-		if (c != 'y' && c != 'Y')
+		if (c == 'n')
 			goto robot_retry;
-		robot_link_ok = 1;
+		else if (c == 'y')
+			robot_link_ok = 1;
+		else
+			goto ask_robot_ok;
     }
 	else {
     	printf("Play without secondary robot\r\n");
@@ -467,6 +477,7 @@ static void cmd_start_parsed(void *parsed_result, void *data)
 {
     struct cmd_start_result *res = parsed_result;
     uint8_t old_level = gen.log_level;
+    int8_t c;
 
     gen.logs[NB_LOGS] = E_USER_STRAT;
     if (!strcmp_P(res->debug, PSTR("debug")))
@@ -519,7 +530,7 @@ static void cmd_start_parsed(void *parsed_result, void *data)
     strat_dump_conf();
     
 #ifndef HOST_VERSION
-    int8_t c;
+#ifdef old_version
 
     printf_P(PSTR("Press a key when beacon ready, 'q' for skip \r\n"));
     c = -1;
@@ -536,7 +547,7 @@ retry_on:
         /* start beacon */
 		bt_beacon_set_on();
 
-        printf("is beacon running? (s/n)\n\r");
+        printf("is beacon running? (y/n)\n\r");
         c = -1;
         while (c == -1)
         {
@@ -548,7 +559,28 @@ retry_on:
             goto retry_on;
         }
     }
-#endif
+#else
+	/* turn on beacon and confirm it's working */
+	if (beacon_link_ok)
+	{
+retry_on:
+        /* start beacon */
+		bt_beacon_set_on();
+
+        printf("Is beacon running? (y/n)\n\r");
+        c = -1;
+        while (c == -1)
+        {
+            c = cmdline_getchar();
+        }
+        if (c == 'n')
+        {
+            wait_ms(100);
+            goto retry_on;
+        }
+	}
+#endif /* old_version */
+#endif /* HOST_VERSION */
     
     strat_start();
 

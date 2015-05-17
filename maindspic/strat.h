@@ -345,12 +345,6 @@ typedef struct {
 	#define ZONE_SEC_ROBOT	   	4
 	#define ZONE_AVOID		   	8
 
-#ifndef HOST_VERSION_OA_TEST
-	/* opponent statistics */
-	//microseconds opp_time_zone_us;
-	//microseconds last_time_opp_here; 	/*in us, since beginning of the match*/
-#endif
-
 	/* which robots can perform this action */
 	/* TODO: is useful, remove ? */
 	uint8_t robot;
@@ -469,7 +463,9 @@ uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
  *	Built a spotlight and release
  *	return END_TRAJ if the work is done, err otherwise
  */
-uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side);
+
+#define STANDS_RELEASE_DO_TOWER	1
+uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side, uint8_t flags);
 
 /********************************************
  * in strat_popcorn.c

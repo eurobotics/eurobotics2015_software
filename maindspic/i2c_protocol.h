@@ -100,6 +100,7 @@ uint8_t i2c_slavedspic_get_ss_status(uint8_t side);
 
 /* return 0 if no status matched, or the status received */
 uint8_t i2c_slavedspic_ss_test_status(uint8_t side, uint8_t status_flags);
+uint8_t i2c_slavedspic_ss_wait_status_or_timeout (uint8_t side, uint8_t status_flags, uint16_t timeout);
 
 
 #endif
