@@ -254,6 +254,16 @@ uint8_t strat_is_valid_zone(uint8_t robot, int8_t zone_num)
 		return 0;
 	}
 
+	/* discard one cinema if the other is checked */
+	if((zone_num == ZONE_MY_CINEMA_DOWN) && (strat_infos.zones[ZONE_MY_CINEMA_UP].flags & ZONE_CHECKED)) {
+		strat_infos.zones[ZONE_MY_CINEMA_DOWN].flags |= ZONE_CHECKED;
+		return 0;
+	}
+	if((zone_num == ZONE_MY_CINEMA_UP) && (strat_infos.zones[ZONE_MY_CINEMA_DOWN].flags & ZONE_CHECKED)) {
+		strat_infos.zones[ZONE_MY_CINEMA_UP].flags |= ZONE_CHECKED;
+		return 0;
+	}
+	
 	return 1;
 }
 
@@ -728,7 +738,6 @@ uint8_t strat_smart_main_robot(void)
 
 	/* if no valid zone, change strategy and return */
 	if (zone_num == STRAT_OPP_IS_IN_ZONE) {
-		//DEBUG(E_USER_STRAT,"R1, strat #%d, NO VALID ZONE", strat_smart[MAIN_ROBOT].current_strategy);
 		DEBUG(E_USER_STRAT,"R1, strat #%d, OPPONENT IN ZONE", strat_smart[MAIN_ROBOT].current_strategy);
 		strat_set_next_main_strategy();
 		return END_TRAJ;
@@ -750,8 +759,6 @@ uint8_t strat_smart_main_robot(void)
 	/* goto, if can't reach the zone change the strategy and return */
 	err = strat_goto_zone(MAIN_ROBOT, zone_num);
 	if (!TRAJ_SUCCESS(err)) {
-		trajectory_a_rel(&mainboard.traj, 30);
-		time_wait_ms(1000);
 		DEBUG(E_USER_STRAT,"R1, ERROR, goto returned %s", get_err(err));
 		strat_set_next_main_strategy();
 		return err;
@@ -769,7 +776,7 @@ uint8_t strat_smart_main_robot(void)
 	err = strat_work_on_zone(MAIN_ROBOT, zone_num);
 	if (!TRAJ_SUCCESS(err)) {
 		DEBUG(E_USER_STRAT,"R1, ERROR, work returned %s", get_err(err));
-		/* XXX should doesn't happend, return END_TRAJ */
+		/* XXX should not happen, return END_TRAJ */
 		err = END_TRAJ;
 
 		/* special case */
@@ -965,6 +972,7 @@ uint8_t strat_smart_secondary_robot(void)
 				/* XXX never shoud be reached, infinite loop */
 				DEBUG(E_USER_STRAT,"R2, ERROR, goto returned %s at line %d", get_err(err), __LINE__);
 				//set new strategy
+				strat_set_next_sec_strategy();
 				state = GET_NEW_ZONE;
 				break;
 			}
@@ -996,7 +1004,6 @@ uint8_t strat_smart_secondary_robot(void)
 				/* timeout, retry */
 				state = GET_NEW_ZONE;
 			}
-
 			break;
 
 		case GOTO_WAIT_END:
@@ -1009,6 +1016,7 @@ uint8_t strat_smart_secondary_robot(void)
 				break;
 
 			err = bt_robot_2nd_test_end();
+			
 			if (!TRAJ_SUCCESS(err)) {
 				DEBUG(E_USER_STRAT,"R2, ERROR, goto returned %s", get_err(err));
 				strat_smart[SEC_ROBOT].current_zone = -1; /* TODO: why? */
@@ -1067,7 +1075,7 @@ uint8_t strat_smart_secondary_robot(void)
 
 			err = strat_work_on_zone(SEC_ROBOT, zone_num);
 
-            /* END_TRAJ means "no where to work", check zone and go directly to synchronize XXX*/
+            /* END_TRAJ means "no where to work", check zone and go directly to synchronize*/
             if (TRAJ_SUCCESS(err)) {
 		        /* update statistics */
 		        strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
@@ -1078,7 +1086,7 @@ uint8_t strat_smart_secondary_robot(void)
             }
 			else if (err) {
 				/* XXX never shoud be reached, infinite loop */
-				DEBUG(E_USER_STRAT,"R2, ERROR, work returned %s at line %d", get_err(err), __LINE__);
+				DEBUG(E_USER_STRAT,"R2, ERROR, (case work) work returned %s at line %d", get_err(err), __LINE__);
 				state = GET_NEW_ZONE;
 				break;
 			}
@@ -1124,13 +1132,19 @@ uint8_t strat_smart_secondary_robot(void)
 			err = bt_robot_2nd_test_end();
 
 			if (!TRAJ_SUCCESS(err)) {
+				DEBUG(E_USER_STRAT,"R2, ERROR, work returned %s.", get_err(err));
+				
 				//If there is an error working in the cinemas don't try it again
 				if(strat_smart[SEC_ROBOT].current_zone == ZONE_MY_CINEMA_DOWN
 				|| strat_smart[SEC_ROBOT].current_zone == ZONE_MY_CINEMA_UP){
 					strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
 				}
 
-				DEBUG(E_USER_STRAT,"R2, ERROR, work returned %s", get_err(err));
+				/* timeout. After timeout, change strategy */
+				if (time_get_us2() - us > 5000000L) {
+					DEBUG(E_USER_STRAT,"R2, changing strategy.");
+					strat_set_next_sec_strategy();
+				}
 				state = GET_NEW_ZONE;
 				break;
 			}

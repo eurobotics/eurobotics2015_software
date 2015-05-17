@@ -310,8 +310,20 @@ uint8_t strat_put_carpets (void)
 	d = distance_from_robot(COLOR_X(CARPET_RIGHT_INFRONT_X), position_get_y_s16(&mainboard.pos));
 	trajectory_d_rel(&mainboard.traj, -d);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+	
+	
+    //Case: END_OBSTACLE on last movement for second carpet
+    //Return error only if opponent is in front of our stairs
     if (!TRAJ_SUCCESS(err))
-	   ERROUT(err);
+    {
+       if(err==END_OBSTACLE)
+       {
+       		if(opponents_are_in_area(1648,STAIRS_EDGE_Y,967,1000))
+	   			ERROUT(err);
+       }
+       else
+	   	ERROUT(err);
+	}
 
     /* XXX debug */
     state_debug_wait_key_pressed(); 	
