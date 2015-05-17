@@ -261,11 +261,14 @@ int main(void)
 #endif
 
    /* LOGS */
-   //error_register_emerg(mylog);
-   //error_register_error(mylog);
-   //error_register_warning(mylog);
-   //error_register_notice(mylog);
-   //error_register_debug(mylog);
+#define ROBOT_TESTS
+#ifdef ROBOT_TESTS
+   error_register_emerg(mylog);
+   error_register_error(mylog);
+   error_register_warning(mylog);
+   error_register_notice(mylog);
+   error_register_debug(mylog);
+#endif
 
 #ifndef HOST_VERSION
    /* ENCODERS */
@@ -370,7 +373,6 @@ int main(void)
 #endif
 
    /* log setup */
-//#define ROBOT_TESTS
 #ifdef ROBOT_TESTS
 #warning ROBOT_TEST COMPILATION!!
 	//cmdline_echo_enable ();
