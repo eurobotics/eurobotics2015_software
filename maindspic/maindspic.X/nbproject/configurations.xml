@@ -160,7 +160,6 @@
         <itemPath>../i2c_protocol.c</itemPath>
         <itemPath>../strat.c</itemPath>
         <itemPath>../strat_avoid.c</itemPath>
-        <itemPath>../strat_begin.c</itemPath>
         <itemPath>../strat_main.c</itemPath>
         <itemPath>../wt11.c</itemPath>
         <itemPath>../bt_protocol.c</itemPath>

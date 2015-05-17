@@ -188,11 +188,11 @@ parse_pgm_token_string_t cmd_event_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_ev
 prog_char str_event_arg2[] = "on#off#show";
 parse_pgm_token_string_t cmd_event_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_event_result, arg2, str_event_arg2);
 
-prog_char help_event[] = "Enable/disable events";
+//prog_char help_event[] = "Enable/disable events";
 parse_pgm_inst_t cmd_event = {
     .f = cmd_event_parsed, /* function to call */
     .data = NULL, /* 2nd arg of func */
-    .help_str = help_event,
+    //.help_str = help_event,
     .tokens =
     { /* token list, NULL terminated */
         (prog_void *) & cmd_event_arg0,
@@ -285,11 +285,11 @@ parse_pgm_token_string_t cmd_opponent_arg0 = TOKEN_STRING_INITIALIZER(struct cmd
 prog_char str_opponent_arg1[] = "show";
 parse_pgm_token_string_t cmd_opponent_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_opponent_result, arg1, str_opponent_arg1);
 
-prog_char help_opponent[] = "Show (x,y) opponent";
+//prog_char help_opponent[] = "Show (x,y) opponent";
 parse_pgm_inst_t cmd_opponent = {
     .f = cmd_opponent_parsed, /* function to call */
     .data = NULL, /* 2nd arg of func */
-    .help_str = help_opponent,
+    //.help_str = help_opponent,
     .tokens =
     { /* token list, NULL terminated */
         (prog_void *) & cmd_opponent_arg0,
@@ -304,11 +304,11 @@ parse_pgm_token_string_t cmd_opponent_arg1_set = TOKEN_STRING_INITIALIZER(struct
 parse_pgm_token_num_t cmd_opponent_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_opponent_result, arg2, INT32);
 parse_pgm_token_num_t cmd_opponent_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_opponent_result, arg3, INT32);
 
-prog_char help_opponent_set[] = "Set (x,y) opponent";
+//prog_char help_opponent_set[] = "Set (x,y) opponent";
 parse_pgm_inst_t cmd_opponent_set = {
     .f = cmd_opponent_parsed, /* function to call */
     .data = (void*) 1, /* 2nd arg of func */
-    .help_str = help_opponent_set,
+    //.help_str = help_opponent_set,
     .tokens =
     { /* token list, NULL terminated */
         (prog_void *) & cmd_opponent_arg0,
@@ -428,7 +428,7 @@ robot_retry:
 		bt_robot_2nd_wait_end();
 	}
 
-	printf ("Done\n\r");
+	//printf ("Done\n\r");
 }
 
 prog_char str_init_arg0[] = "init";
@@ -436,11 +436,11 @@ parse_pgm_token_string_t cmd_init_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_ini
 prog_char str_init_color[] = "green#yellow";
 parse_pgm_token_string_t cmd_init_color = TOKEN_STRING_INITIALIZER(struct cmd_init_result, color, str_init_color);
 
-prog_char help_init[] = "Init the robots";
+//prog_char help_init[] = "Init the robots";
 parse_pgm_inst_t cmd_init = {
     .f = cmd_init_parsed, /* function to call */
     .data = NULL, /* 2nd arg of func */
-    .help_str = help_init,
+    //.help_str = help_init,
     .tokens =
     { /* token list, NULL terminated */
         (prog_void *) & cmd_init_arg0,
@@ -563,11 +563,11 @@ parse_pgm_token_string_t cmd_start_strategy = TOKEN_STRING_INITIALIZER(struct cm
 prog_char str_start_debug[] = "debug#step_debug#match";
 parse_pgm_token_string_t cmd_start_debug = TOKEN_STRING_INITIALIZER(struct cmd_start_result, debug, str_start_debug);
 
-prog_char help_start[] = "Start the robot";
+//prog_char help_start[] = "Start the robot";
 parse_pgm_inst_t cmd_start = {
     .f = cmd_start_parsed, /* function to call */
     .data = NULL, /* 2nd arg of func */
-    .help_str = help_start,
+    //.help_str = help_start,
     .tokens =
     { /* token list, NULL terminated */
         (prog_void *) & cmd_start_arg0,
@@ -598,7 +598,7 @@ static void cmd_color_parsed(void *parsed_result, void *data)
     else if (!strcmp_P(res->color, PSTR("green"))) {
         mainboard.our_color = I2C_COLOR_GREEN;
     }
-    printf_P(PSTR("Done\r\n"));
+    //printf_P(PSTR("Done\r\n"));
 }
 
 prog_char str_color_arg0[] = "color";
@@ -606,11 +606,11 @@ parse_pgm_token_string_t cmd_color_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_co
 prog_char str_color_color[] = "yellow#green";
 parse_pgm_token_string_t cmd_color_color = TOKEN_STRING_INITIALIZER(struct cmd_color_result, color, str_color_color);
 
-prog_char help_color[] = "Set our color";
+//prog_char help_color[] = "Set our color";
 parse_pgm_inst_t cmd_color = {
     .f = cmd_color_parsed, /* function to call */
     .data = NULL, /* 2nd arg of func */
-    .help_str = help_color,
+    //.help_str = help_color,
     .tokens =
     { /* token list, NULL terminated */
         (prog_void *) & cmd_color_arg0,
@@ -719,11 +719,11 @@ parse_pgm_token_string_t cmd_beacon_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_b
 prog_char str_beacon_arg1[] = "raw#open#close#on#watchdog_on#off#color#status";
 parse_pgm_token_string_t cmd_beacon_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_beacon_result, arg1, str_beacon_arg1);
 
-prog_char help_beacon[] = "beacon commads";
+//prog_char help_beacon[] = "beacon commads";
 parse_pgm_inst_t cmd_beacon = {
     .f = cmd_beacon_parsed, /* function to call */
     .data = NULL, /* 2nd arg of func */
-    .help_str = help_beacon,
+    //.help_str = help_beacon,
     .tokens =
     { /* token list, NULL terminated */
         (prog_void *) & cmd_beacon_arg0,
@@ -869,11 +869,11 @@ parse_pgm_token_string_t cmd_robot_2nd_arg0 = TOKEN_STRING_INITIALIZER(struct cm
 prog_char str_robot_2nd_arg1[] = "raw#open#close#color#autopos#status#show#init_position";
 parse_pgm_token_string_t cmd_robot_2nd_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_robot_2nd_result, arg1, str_robot_2nd_arg1);
 
-prog_char help_robot_2nd[] = "robot_2nd commads";
+//prog_char help_robot_2nd[] = "robot_2nd commads";
 parse_pgm_inst_t cmd_robot_2nd = {
     .f = cmd_robot_2nd_parsed, /* function to call */
     .data = NULL, /* 2nd arg of func */
-    .help_str = help_robot_2nd,
+    //.help_str = help_robot_2nd,
     .tokens =
     { /* token list, NULL terminated */
         (prog_void *) & cmd_robot_2nd_arg0,
@@ -980,11 +980,11 @@ parse_pgm_token_string_t cmd_robot_2nd_goto_arg1_a = TOKEN_STRING_INITIALIZER(st
 parse_pgm_token_num_t cmd_robot_2nd_goto_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_robot_2nd_goto_result, arg2, INT32);
 
 /* 1 params */
-prog_char help_robot_2nd_goto1[] = "Change orientation of the mainboard";
+//prog_char help_robot_2nd_goto1[] = "Change orientation of the mainboard";
 parse_pgm_inst_t cmd_robot_2nd_goto1 = {
     .f = cmd_robot_2nd_goto_parsed, /* function to call */
     .data = NULL, /* 2nd arg of func */
-    .help_str = help_robot_2nd_goto1,
+    //.help_str = help_robot_2nd_goto1,
     .tokens =
     { /* token list, NULL terminated */
 		(prog_void *) & cmd_robot_2nd_goto_arga,
@@ -1000,11 +1000,11 @@ parse_pgm_token_string_t cmd_robot_2nd_goto_arg1_b = TOKEN_STRING_INITIALIZER(st
 parse_pgm_token_num_t cmd_robot_2nd_goto_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_robot_2nd_goto_result, arg3, INT32);
 
 /* 2 params */
-prog_char help_robot_2nd_goto2[] = "Go to a (x,y) or (d,a) position";
+//prog_char help_robot_2nd_goto2[] = "Go to a (x,y) or (d,a) position";
 parse_pgm_inst_t cmd_robot_2nd_goto2 = {
     .f = cmd_robot_2nd_goto_parsed, /* function to call */
     .data = NULL, /* 2nd arg of func */
-    .help_str = help_robot_2nd_goto2,
+    //.help_str = help_robot_2nd_goto2,
     .tokens =
     { /* token list, NULL terminated */
 		(prog_void *) & cmd_robot_2nd_goto_arga,
@@ -1079,11 +1079,11 @@ prog_char str_robot_2nd_bt_task_arg1[] = "carpet#stairs";
 parse_pgm_token_string_t cmd_robot_2nd_bt_task_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_robot_2nd_bt_task_result, arg1, str_robot_2nd_bt_task_arg1);
 
 /* 1 params */
-prog_char help_robot_2nd_bt_task[] = "robot_2nd tasks";
+//prog_char help_robot_2nd_bt_task[] = "robot_2nd tasks";
 parse_pgm_inst_t cmd_robot_2nd_bt_task = {
     .f = cmd_robot_2nd_bt_task_parsed, /* function to call */
     .data = NULL, /* 2nd arg of func */
-    .help_str = help_robot_2nd_bt_task,
+    //.help_str = help_robot_2nd_bt_task,
     .tokens =
     { /* token list, NULL terminated */
 		(prog_void *) & cmd_robot_2nd_bt_task_arga,
@@ -1100,11 +1100,11 @@ parse_pgm_token_num_t cmd_robot_2nd_bt_task2_arg2 = TOKEN_NUM_INITIALIZER(struct
 parse_pgm_token_num_t cmd_robot_2nd_bt_task2_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_robot_2nd_bt_task_result, arg3, INT32);
 
 /* 3 params */
-prog_char help_robot_2nd_bt_task2[] = "robot_2nd tasks: x y";
+//prog_char help_robot_2nd_bt_task2[] = "robot_2nd tasks: x y";
 parse_pgm_inst_t cmd_robot_2nd_bt_task2 = {
     .f = cmd_robot_2nd_bt_task_parsed, /* function to call */
     .data = NULL, /* 2nd arg of func */
-    .help_str = help_robot_2nd_bt_task2,
+    //.help_str = help_robot_2nd_bt_task2,
     .tokens =
     { /* token list, NULL terminated */
 		(prog_void *) & cmd_robot_2nd_bt_task_arga,
@@ -1207,7 +1207,7 @@ static void cmd_slavedspic_parsed(void *parsed_result, void *data)
     }
 
 
-    printf("done \r\n");
+    //printf("done \r\n");
     return;
 }
 
@@ -1216,11 +1216,11 @@ parse_pgm_token_string_t cmd_slavedspic_arg0 = TOKEN_STRING_INITIALIZER(struct c
 prog_char str_slavedspic_arg1[] = "raw#init#led#poweroff";
 parse_pgm_token_string_t cmd_slavedspic_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_slavedspic_result, arg1, str_slavedspic_arg1);
 
-prog_char help_slavedspic[] = "control slavedspic";
+//prog_char help_slavedspic[] = "control slavedspic";
 parse_pgm_inst_t cmd_slavedspic = {
     .f = cmd_slavedspic_parsed, /* function to call */
     .data = NULL, /* 2nd arg of func */
-    .help_str = help_slavedspic,
+    //.help_str = help_slavedspic,
     .tokens =
     { /* token list, NULL terminated */
         (prog_void *) & cmd_slavedspic_arg0,
@@ -1310,11 +1310,11 @@ parse_pgm_token_string_t cmd_sensor_robot_arg0 = TOKEN_STRING_INITIALIZER(struct
 prog_char str_sensor_robot_arg1[] = "robot";
 parse_pgm_token_string_t cmd_sensor_robot_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_sensor_robot_result, arg1, str_sensor_robot_arg1);
 
-prog_char help_sensor_robot[] = "Show robot sensors";
+//prog_char help_sensor_robot[] = "Show robot sensors";
 parse_pgm_inst_t cmd_sensor_robot = {
     .f = cmd_sensor_robot_parsed, /* function to call */
     .data = NULL, /* 2nd arg of func */
-    .help_str = help_sensor_robot,
+    //.help_str = help_sensor_robot,
     .tokens =
     { /* token list, NULL terminated */
         (prog_void *) & cmd_sensor_robot_arg0,
@@ -1538,11 +1538,11 @@ static void cmd_interact_parsed(void * parsed_result, void * data)
 prog_char str_interact_arg0[] = "interact";
 parse_pgm_token_string_t cmd_interact_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_interact_result, arg0, str_interact_arg0);
 
-prog_char help_interact[] = "Interactive mode";
+//prog_char help_interact[] = "Interactive mode";
 parse_pgm_inst_t cmd_interact = {
     .f = cmd_interact_parsed, /* function to call */
     .data = NULL, /* 2nd arg of func */
-    .help_str = help_interact,
+    //.help_str = help_interact,
     .tokens =
     { /* token list, NULL terminated */
         (prog_void *) & cmd_interact_arg0,
@@ -1588,11 +1588,11 @@ parse_pgm_token_string_t cmd_rs_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_rs_re
 prog_char str_rs_arg1[] = "show";
 parse_pgm_token_string_t cmd_rs_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_rs_result, arg1, str_rs_arg1);
 
-prog_char help_rs[] = "Show rs (robot system) values";
+//prog_char help_rs[] = "Show rs (robot system) values";
 parse_pgm_inst_t cmd_rs = {
     .f = cmd_rs_parsed, /* function to call */
     .data = NULL, /* 2nd arg of func */
-    .help_str = help_rs,
+    //.help_str = help_rs,
     .tokens =
     { /* token list, NULL terminated */
         (prog_void *) & cmd_rs_arg0,
@@ -1656,11 +1656,11 @@ parse_pgm_token_num_t cmd_clitoid_d_inter_mm =
         TOKEN_NUM_INITIALIZER(struct cmd_clitoid_result,
                               d_inter_mm, FLOAT);
 
-prog_char help_clitoid[] = "do a clitoid (alpha, beta, R, Vd, Amax, d_inter)";
+//prog_char help_clitoid[] = "do a clitoid (alpha, beta, R, Vd, Amax, d_inter)";
 parse_pgm_inst_t cmd_clitoid = {
     .f = cmd_clitoid_parsed, /* function to call */
     .data = NULL, /* 2nd arg of func */
-    .help_str = help_clitoid,
+    //.help_str = help_clitoid,
     .tokens =
     { /* token list, NULL terminated */
         (prog_void *) & cmd_clitoid_arg0,
@@ -1706,11 +1706,11 @@ parse_pgm_token_string_t cmd_time_monitor_arg0 = TOKEN_STRING_INITIALIZER(struct
 prog_char str_time_monitor_arg1[] = "show#reset";
 parse_pgm_token_string_t cmd_time_monitor_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_time_monitor_result, arg1, str_time_monitor_arg1);
 
-prog_char help_time_monitor[] = "Show since how long we are running";
+//prog_char help_time_monitor[] = "Show since how long we are running";
 parse_pgm_inst_t cmd_time_monitor = {
     .f = cmd_time_monitor_parsed, /* function to call */
     .data = NULL, /* 2nd arg of func */
-    .help_str = help_time_monitor,
+    //.help_str = help_time_monitor,
     .tokens =
     { /* token list, NULL terminated */
         (prog_void *) & cmd_time_monitor_arg0,
@@ -1740,11 +1740,11 @@ prog_char str_sleep_arg0[] = "sleep";
 parse_pgm_token_string_t cmd_sleep_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_sleep_result, arg0, str_sleep_arg0);
 parse_pgm_token_num_t cmd_sleep_ms = TOKEN_NUM_INITIALIZER(struct cmd_sleep_result, ms, UINT32);
 
-prog_char help_sleep[] = "Sleep during some miliseconds";
+//prog_char help_sleep[] = "Sleep during some miliseconds";
 parse_pgm_inst_t cmd_sleep = {
     .f = cmd_sleep_parsed, /* function to call */
     .data = NULL, /* 2nd arg of func */
-    .help_str = help_sleep,
+    //.help_str = help_sleep,
     .tokens =
     { /* token list, NULL terminated */
         (prog_void *) & cmd_sleep_arg0,
@@ -1808,11 +1808,11 @@ parse_pgm_token_string_t cmd_popcorn_system_arg0 = TOKEN_STRING_INITIALIZER(stru
 prog_char str_popcorn_system_arg1[] = "idle#front_ready#front_catch#front_release#front_hide#rear_open#rear_catch#rear_release#machines_ready#machines_harvest#machines_end#dump#dump_end";
 parse_pgm_token_string_t cmd_popcorn_system_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_popcorn_system_result, arg1, str_popcorn_system_arg1);
 
-prog_char help_popcorn_system[] = "set popcorn_system mode: ps mode";
+//prog_char help_popcorn_system[] = "set popcorn_system mode: ps mode";
 parse_pgm_inst_t cmd_popcorn_system = {
 	.f = cmd_popcorn_system_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_popcorn_system,
+	//.help_str = help_popcorn_system,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_popcorn_system_arg0,
 		(prog_void *)&cmd_popcorn_system_arg1,
@@ -1851,23 +1851,31 @@ static void cmd_stands_system_parsed(__attribute__((unused)) void *parsed_result
 		mode = I2C_SLAVEDSPIC_MODE_SS_IDLE;
 	else if (!strcmp_P(res->arg2, PSTR("hide")))
 		mode = I2C_SLAVEDSPIC_MODE_SS_HIDE_TOWER;
+    else if (!strcmp_P(res->arg2, PSTR("ready")))
+		mode = I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND_READY;
 	else if (!strcmp_P(res->arg2, PSTR("harvest")))
-		mode = I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND;
+		mode = I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND_DO;
 	else if (!strcmp_P(res->arg2, PSTR("build")))
 		mode = I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT;
 	else if (!strcmp_P(res->arg2, PSTR("release")))
 		mode = I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT;
 
 	if (side != I2C_SIDE_ALL) {
-		if (!strcmp_P(res->arg2, PSTR("harvest")))
-			i2c_slavedspic_mode_ss_harvest(side, res->arg3);
+		if (!strcmp_P(res->arg2, PSTR("ready")))
+			i2c_slavedspic_mode_ss_harvest_ready(side, res->arg3);
+        else if (!strcmp_P(res->arg2, PSTR("harvest")))
+			i2c_slavedspic_mode_ss_harvest_do(side, res->arg3);
 		else
 			i2c_slavedspic_mode_ss(mode, side);
 	}
 	else {
-		if (!strcmp_P(res->arg2, PSTR("harvest"))) {
-			i2c_slavedspic_mode_ss_harvest(I2C_SIDE_LEFT, res->arg3);
-			i2c_slavedspic_mode_ss_harvest(I2C_SIDE_RIGHT, res->arg3);
+		if (!strcmp_P(res->arg2, PSTR("ready"))) {
+			i2c_slavedspic_mode_ss_harvest_ready(I2C_SIDE_LEFT, res->arg3);
+			i2c_slavedspic_mode_ss_harvest_ready(I2C_SIDE_RIGHT, res->arg3);
+		}
+        else if (!strcmp_P(res->arg2, PSTR("harvest"))) {
+			i2c_slavedspic_mode_ss_harvest_do(I2C_SIDE_LEFT, res->arg3);
+			i2c_slavedspic_mode_ss_harvest_do(I2C_SIDE_RIGHT, res->arg3);
 		}
 		else {
 			i2c_slavedspic_mode_ss(mode, I2C_SIDE_LEFT);
@@ -1880,15 +1888,15 @@ prog_char str_stands_system_arg0[] = "ss";
 parse_pgm_token_string_t cmd_stands_system_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_stands_system_result, arg0, str_stands_system_arg0);
 prog_char str_stands_system_arg1[] = "left#right#all";
 parse_pgm_token_string_t cmd_stands_system_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_stands_system_result, arg1, str_stands_system_arg1);
-prog_char str_stands_system_arg2[] = "idle#hide#harvest#build#release";
+prog_char str_stands_system_arg2[] = "idle#hide#ready#harvest#build#release";
 parse_pgm_token_string_t cmd_stands_system_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_stands_system_result, arg2, str_stands_system_arg2);
 parse_pgm_token_num_t cmd_stands_system_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_stands_system_result, arg3, UINT8);
 
-prog_char help_stands_system[] = "set stands_system mode: ss mode blade angle side";
+//prog_char help_stands_system[] = "set stands_system mode: ss mode blade angle side";
 parse_pgm_inst_t cmd_stands_system = {
 	.f = cmd_stands_system_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_stands_system,
+	//.help_str = help_stands_system,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_stands_system_arg0,
 		(prog_void *)&cmd_stands_system_arg2,
