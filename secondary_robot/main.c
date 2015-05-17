@@ -370,12 +370,22 @@ int main(void)
 #endif
 
    /* log setup */
-    //gen.logs[0] = E_USER_STRAT;
+//#define ROBOT_TESTS
+#ifdef ROBOT_TESTS
+#warning ROBOT_TEST COMPILATION!!
+	//cmdline_echo_enable ();
+    gen.logs[0] = E_USER_STRAT;
+	gen.logs[1] = E_USER_CS;
     //gen.logs[1] = E_USER_BEACON;
     //gen.logs[2] = E_USER_I2C_PROTO;
     //gen.logs[3] = E_OA;
     //gen.logs[2] = E_USER_BT_PROTO;
+    gen.log_level = 5;
+
+	//beacon_start();
+#else
     gen.log_level = 0;
+#endif
 
    /* reset strat infos */
    strat_reset_infos();
@@ -407,8 +417,10 @@ int main(void)
 #endif
 
   	/* start */
+#ifndef ROBOT_TESTS
 #ifndef HOST_VERSION
 	beacon_start();
+#endif
 #endif
    /* process commands, never returns */
    //cmdline_interact(NULL);
