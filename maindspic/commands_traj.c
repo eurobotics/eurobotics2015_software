@@ -1114,33 +1114,30 @@ static void cmd_strat_conf_parsed(void *parsed_result, void *data)
 
     if (!strcmp_P(res->arg1, PSTR("base")))
     {
-        /* flags */
-        strat_infos.conf.flags = 0;
 	   strat_infos.match_strategy=STR_BASE;
-	   strat_smart[MAIN_ROBOT].current_strategy=0;
-	   strat_smart[SEC_ROBOT].current_strategy=0;
-        strat_set_next_sec_strategy();
-        strat_set_next_main_strategy();
     }
-
+    if (!strcmp_P(res->arg1, PSTR("qualification")))
+    {
+	   strat_infos.match_strategy=STR_QUALIFICATION;
+    }
     if (!strcmp_P(res->arg1, PSTR("homologation")))
     {
-        /* flags */
-        strat_infos.conf.flags = 0;
 	   strat_infos.match_strategy=STR_HOMOLOGATION;
-	   strat_smart[MAIN_ROBOT].current_strategy=0;
-	   strat_smart[SEC_ROBOT].current_strategy=0;
-        strat_set_next_sec_strategy();
-        strat_set_next_main_strategy();
-    }
 
-    strat_infos.dump_enabled = 1;
-    strat_dump_conf();
+    }
+	/* flags */
+	strat_infos.conf.flags = 0;
+	strat_smart[MAIN_ROBOT].current_strategy=0;
+	strat_smart[SEC_ROBOT].current_strategy=0;
+	strat_set_next_sec_strategy();
+	strat_set_next_main_strategy();
+	strat_infos.dump_enabled = 1;
+	strat_dump_conf();
 }
 
 prog_char str_strat_conf_arg0[] = "strat_conf";
 parse_pgm_token_string_t cmd_strat_conf_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_strat_conf_result, arg0, str_strat_conf_arg0);
-prog_char str_strat_conf_arg1[] = "show#base#homologation";
+prog_char str_strat_conf_arg1[] = "show#base#homologation#qualification";
 parse_pgm_token_string_t cmd_strat_conf_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_strat_conf_result, arg1, str_strat_conf_arg1);
 
 prog_char help_strat_conf[] = "configure specific strat for a match";
@@ -1356,7 +1353,7 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 			   ERROUT(err);
 
             /* XXX debug */
-            strat_debug_wait_key_pressed (SEC_ROBOT);    
+            strat_debug_wait_key_pressed (SEC_ROBOT);
 
             /* work */
             err = strat_work_on_zone(SEC_ROBOT, zone_num);
@@ -1497,7 +1494,7 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 			   ERROUT(err);
 
             /* XXX debug */
-            strat_debug_wait_key_pressed (SEC_ROBOT);    
+            strat_debug_wait_key_pressed (SEC_ROBOT);
 
             /* work */
             err = strat_work_on_zone(SEC_ROBOT, zone_num);

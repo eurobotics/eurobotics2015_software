@@ -750,6 +750,8 @@ uint8_t strat_smart_main_robot(void)
 	/* goto, if can't reach the zone change the strategy and return */
 	err = strat_goto_zone(MAIN_ROBOT, zone_num);
 	if (!TRAJ_SUCCESS(err)) {
+		trajectory_a_rel(&mainboard.traj, 30);
+		time_wait_ms(1000);
 		DEBUG(E_USER_STRAT,"R1, ERROR, goto returned %s", get_err(err));
 		strat_set_next_main_strategy();
 		return err;
