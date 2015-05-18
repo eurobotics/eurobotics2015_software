@@ -187,7 +187,7 @@ void get_stand_da (int16_t x, int16_t y, uint8_t side, int16_t *d, int16_t *a)
 #define L 90.0
 	double d1, a1, a2;
 
-	abs_xy_to_rel_da((double)x, (double) y, &d1, &a1);
+	abs_xy_to_rel_da((double)x, (double)y, &d1, &a1);
 	a2 = asin(L/d1);
 	
 	//DEBUG (E_USER_STRAT, "d1=%f, a1=%f, a2=%f", d1, a1, a2);
@@ -197,7 +197,7 @@ void get_stand_da (int16_t x, int16_t y, uint8_t side, int16_t *d, int16_t *a)
 	else
 		*a = (int16_t)DEG(a1 + a2);
 
-	*d =  (int16_t)sqrt((L*L) + (d1*d1));
+	*d =  (int16_t)sqrt((d1*d1)-(L*L));
 }
 
 /** 
@@ -228,7 +228,12 @@ try_again:
 	//state_debug_wait_key_pressed();
 
 	/* turn to stand */
-	trajectory_a_rel(&mainboard.traj, a);
+	if (flags & STANDS_HARVEST_XY_IS_ROBOT_POSITION) {
+		trajectory_turnto_xy(&mainboard.traj, x, y);
+	}	
+	else {
+		trajectory_a_rel(&mainboard.traj, a);
+	}
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
@@ -260,7 +265,13 @@ try_again:
 
 	/* harvest, go close to stands but without touch */
 	strat_set_speed (harvest_speed, SPEED_ANGLE_SLOW);
-	d -= (ROBOT_CENTER_TO_MOUTH + STANDS_RADIOUS + 10);
+
+	if (flags & STANDS_HARVEST_XY_IS_ROBOT_POSITION) {
+		d = distance_from_robot(x, y);
+	}
+	else { 
+		d -= (ROBOT_CENTER_TO_MOUTH + STANDS_RADIOUS + 10);
+	}
 	trajectory_d_rel(&mainboard.traj, d);
 
 	if (strat_smart[MAIN_ROBOT].current_zone == ZONE_MY_STAND_GROUP_1) 
@@ -310,8 +321,8 @@ try_again:
 		i2c_slavedspic_ss_wait_status_or_timeout (side, STATUS_STORING, STANDS_STORING_TIMEOUT);
 	}
 
-	/* wait storing */
-	//time_wait_ms(700);
+	/* XXX wait storing */
+	//time_wait_ms(200);
 
 	/* XXX return to init position */
 	if (flags & STANDS_HARVEST_BACK_INIT_POS) {
@@ -382,8 +393,8 @@ try_again:
 
 end:
 	/* wait sensor reinforcement */
-	if(!TRAJ_SUCCESS(err))
-		time_wait_ms(2500);
+	//if(!TRAJ_SUCCESS(err))
+	//	time_wait_ms(2500);
 
 	/* end stuff */
 	strat_set_speed(old_spdd, old_spda);	
@@ -397,6 +408,8 @@ end:
  */
 uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side, uint8_t flags)
 {
+#define SPEED_DIST_RELEASE_STANDS	300
+#define TOWER_BUILDINT_TIMEOUT		20000
    	uint8_t err = 0;
 	uint16_t old_spdd, old_spda;
 	int16_t d = 0;
@@ -427,16 +440,16 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side, ui
 	   ERROUT(err);	
 
 	/* built the spotlight */
-	if (flags & STAND_RELEASE_DO_TOWER) 
+	if (flags & STANDS_RELEASE_DO_TOWER)
 	{
-		i2c_slavedspic_mode_ss(I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT, side);
-		i2c_slavedspic_ss_wait_status_or_timeout (side, STATUS_STORING, 20000);
+		i2c_slavedspic_mode_ss(I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT, COLOR_INVERT(SIDE_LEFT));
+		i2c_slavedspic_ss_wait_status_or_timeout (side, STATUS_READY, TOWER_BUILDINT_TIMEOUT);
 
 		/* release spotlight */
-		i2c_slavedspic_mode_ss(I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT, COLOR_INVERT(side));
+		i2c_slavedspic_mode_ss(I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT, COLOR_INVERT(SIDE_LEFT));
 
-		strat_set_speed (SPEED_DIST_VERY_SLOW, SPEED_ANGLE_VERY_SLOW);
-		trajectory_d_rel(&mainboard.traj, -(ROBOT_CENTER_TO_FRONT-ROBOT_CENTER_TO_MOUTH+10));
+		strat_set_speed (SPEED_DIST_RELEASE_STANDS, SPEED_ANGLE_VERY_SLOW);
+		trajectory_d_rel(&mainboard.traj, -(2.5*STANDS_RADIOUS));
 		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 		if (!TRAJ_SUCCESS(err))
 		   ERROUT(err);	
@@ -444,36 +457,43 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side, ui
 	else 
 	{
 		/* open blades */
-		i2c_slavedspic_mode_blades(SIDE_RIGHT, I2C_STANDS_BLADE_MODE_CENTER);
+		//i2c_slavedspic_mode_blades(SIDE_RIGHT, I2C_STANDS_BLADE_MODE_CENTER);
 		//WAIT_COND_OR_TIMEOUT(i2c_slavedspic_get_status() == STATUS_READY, STANDS_READY_TIMEOUT);    
-		time_wait_ms(500);
+		//time_wait_ms(500);
 
-		i2c_slavedspic_mode_blades(SIDE_LEFT, I2C_STANDS_BLADE_MODE_CENTER);
+		//i2c_slavedspic_mode_blades(SIDE_LEFT, I2C_STANDS_BLADE_MODE_CENTER);
 		//WAIT_COND_OR_TIMEOUT(i2c_slavedspic_get_status() == STATUS_READY, STANDS_READY_TIMEOUT);    
-		time_wait_ms(500);
+		//time_wait_ms(500);
 
 		/* release spotlight left */
 		i2c_slavedspic_mode_ss(I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT, COLOR_INVERT(SIDE_LEFT));
-		WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(SIDE_LEFT, STATUS_READY|STATUS_BLOCKED), STANDS_READY_TIMEOUT);
+		i2c_slavedspic_ss_wait_status_or_timeout (side, STATUS_READY, STANDS_READY_TIMEOUT);
 
 		/* go backwards */
-		strat_set_speed (300, SPEED_ANGLE_VERY_SLOW);
-		trajectory_d_rel(&mainboard.traj, -100);
+		strat_set_speed (SPEED_DIST_RELEASE_STANDS, SPEED_ANGLE_VERY_SLOW);
+		trajectory_d_rel(&mainboard.traj, -(2.5*STANDS_RADIOUS));
 		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-		if (!TRAJ_SUCCESS(err)) {
+		if (!TRAJ_SUCCESS(err))
 		   ERROUT(err);	
-		}
 
 		/* release spotlight right */
 		i2c_slavedspic_mode_ss(I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT, COLOR_INVERT(SIDE_RIGHT));
-		WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(SIDE_RIGHT, STATUS_READY|STATUS_BLOCKED), STANDS_READY_TIMEOUT);
+		i2c_slavedspic_ss_wait_status_or_timeout (side, STATUS_READY, STANDS_READY_TIMEOUT);
+	}
+
+
+	/* XXX if TIME_OVER mode, simply exit and block */
+	if (flags & STANDS_RELEASE_TIME_OVER) {
+		//strat_exit();
+		while(1);
 	}
 
 retry:
 	/* go backwards */
-	strat_set_speed (300, SPEED_ANGLE_VERY_SLOW);
-	//trajectory_d_rel(&mainboard.traj, -200);
-	trajectory_goto_xy_abs (&mainboard.traj, x_init, y_init);
+	strat_set_speed (SPEED_DIST_RELEASE_STANDS, SPEED_ANGLE_VERY_SLOW);
+	d = distance_from_robot(x_init, y_init);
+	trajectory_d_rel(&mainboard.traj, -d);
+//	trajectory_goto_xy_abs (&mainboard.traj, x_init, y_init);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
     if (!TRAJ_SUCCESS(err)) {
 		while (opponent1_is_behind() || opponent2_is_behind());

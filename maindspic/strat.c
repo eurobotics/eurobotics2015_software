@@ -147,12 +147,23 @@ struct strat_infos strat_infos = {
 	},
     .zones[ZONE_MY_STAND_GROUP_3] =
 	{
+#if 0
+		/* only one stand */
 		ZONE_TYPE_STAND,
 		MY_STAND_2_X-20, MY_STAND_2_Y,         /* XXX: aprox. to be tested */
 		650, 950, 1700, 1950,
 		MY_STAND_2_X-OBS_CLERANCE, LIMIT_BBOX_Y_UP,
 		0, 0,
 		MAIN_ROBOT
+#else
+		/* two stands */
+		ZONE_TYPE_STAND,
+		738, AREA_Y-227,         /* XXX: aprox. to be tested */
+		650, 950, 1700, 1950,
+		450, AREA_Y-432,
+		0, 0,
+		MAIN_ROBOT
+#endif
 	},
     .zones[ZONE_MY_STAND_GROUP_4] =
 	{
@@ -354,6 +365,17 @@ struct strat_infos strat_infos = {
         CARPET_LEFT_INFRONT_X, STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
 		0, 0,
 		SEC_ROBOT
+	},
+	/* platform */
+  	.zones[ZONE_MY_PLATFORM] =
+	{
+		ZONE_TYPE_PLATFORM,
+		1060, 160,
+		/* boundinbox: x_down, x_up,  y_down,  y_up, */
+		900, 1200, 0, 450,
+        1060, 330,
+		0, 0,
+		MAIN_ROBOT
 	},
 };
 

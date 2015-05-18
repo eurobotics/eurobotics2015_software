@@ -325,6 +325,43 @@ end:
    	return err;
 }
 
+#if 0
+#define TIME_TO_RELEASE_2_TOWERS
+			if (slavedispic.stands_system[COLOR_INVERT(LEFT)].stored_stands >= 4) 
+			{
+				if (time_get_s() > 90-TIME_TO_RELEASE_2_TOWERS)
+					flags = STANDS_RELEASE_TIME_OVER;
+				else
+					flags = 0;
 
+				err = strat_buit_and_release_spotlight (COLOR_X(strat_infos.zones[zone_num].x),
+														strat_infos.zones[zone_num].y,
+														COLOR_INVERT(SIDE_LEFT), flags);
+			}
+			else {
+
+				if (time_get_s() > 90-TIME_TO_BUILDING_TOWER)
+					flags = STANDS_RELEASE_DO_TOWER | STANDS_RELEASE_TIME_OVER;
+				else
+					flags = STANDS_RELEASE_DO_TOWER;
+
+				err = strat_buit_and_release_spotlight (COLOR_X(strat_infos.zones[zone_num].x),
+														strat_infos.zones[zone_num].y,
+														COLOR_INVERT(SIDE_LEFT), flags);
+			}
+
+			if (slavedispic.stands_system[COLOR_INVERT(LEFT)].stored_stands < 4 ||
+				(strat.conf.flags & CONF_FLAG_DO_TOWER)) 
+			{
+				err = strat_buit_and_release_spotlight (COLOR_X(strat_infos.zones[zone_num].x),
+														strat_infos.zones[zone_num].y,
+														COLOR_INVERT(SIDE_LEFT), STAND_RELEASE_DO_TOWER);
+			}
+			else {
+				err = strat_buit_and_release_spotlight (COLOR_X(strat_infos.zones[zone_num].x),
+														strat_infos.zones[zone_num].y,
+														COLOR_INVERT(SIDE_LEFT), 0);
+			}
+#endif
 
 
