@@ -71,7 +71,8 @@
 		goto end;		 \
 	} while(0)
 
-#define STRAT_TIMEOUT 16
+#define STRAT_TIMEOUT 15
+#define STRAT_TIMEOUT_2 16
 void strat_clean_priorities(uint8_t robot){
 
 	uint8_t priority,i;
@@ -238,13 +239,31 @@ void strat_change_sequence_qualification(uint8_t robot){
 											  ZONE_MY_POPCORNMAC, ZONE_MY_STAND_GROUP_3, ZONE_POPCORNCUP_2,
 											  ZONE_MY_STAND_GROUP_2, ZONE_MY_CLAP_1, ZONE_MY_CLAP_2, ZONE_MY_HOME_POPCORNS,
 											  ZONE_MY_HOME_SPOTLIGHT);
+					strat_smart[robot].current_strategy ++;
+					break;
+				case 3:
+					// Opponent is blocking our HOME
+					// TODO: release popcorn at cinema
+					strat_clean_priorities(MAIN_ROBOT);
+					strat_update_priorities(10,ZONE_MY_STAND_GROUP_1,  ZONE_MY_STAND_GROUP_4,
+											  ZONE_MY_POPCORNMAC, ZONE_MY_STAND_GROUP_3, ZONE_POPCORNCUP_2,
+											  ZONE_MY_STAND_GROUP_2, ZONE_MY_CLAP_1, ZONE_MY_CLAP_2, ZONE_MY_PLATFORM,
+											  ZONE_MY_HOME_POPCORNS);
 					strat_smart[robot].current_strategy = 0;
 					break;
 
+
+				/* Timeout strategy (end of the match): release points */
+				// TODO: release popcorn at cinema
 				case STRAT_TIMEOUT:
 					strat_clean_priorities(MAIN_ROBOT);
-					strat_update_priorities(2,ZONE_MY_HOME_POPCORNS,
-										  ZONE_MY_HOME_SPOTLIGHT);
+					strat_update_priorities(2,ZONE_MY_HOME_POPCORNS, ZONE_MY_HOME_SPOTLIGHT);
+					strat_smart[robot].current_strategy = STRAT_TIMEOUT_2;
+					break;
+				case STRAT_TIMEOUT_2:
+					strat_clean_priorities(MAIN_ROBOT);
+					strat_update_priorities(2,ZONE_MY_PLATFORM, ZONE_MY_HOME_POPCORNS);
+					strat_smart[robot].current_strategy = STRAT_TIMEOUT;
 					break;
 
 				default:
@@ -282,8 +301,16 @@ void strat_change_sequence_qualification(uint8_t robot){
 					strat_clean_priorities(SEC_ROBOT);
 					strat_update_priorities(5,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, 
 											  ZONE_MY_CINEMA_UP, ZONE_MY_STAIRWAY, ZONE_MY_CLAP_3 );
-					strat_smart[robot].current_strategy=2;
+					strat_smart[robot].current_strategy++;
 					break;
+				case 4:
+					// Opponent blocking cinema down
+					strat_clean_priorities(SEC_ROBOT);
+					strat_update_priorities(5,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, 
+											  ZONE_MY_CINEMA_DOWN, ZONE_MY_STAIRWAY, ZONE_MY_CLAP_3 );
+					strat_smart[robot].current_strategy=1;
+					break;
+					
 				case STRAT_TIMEOUT:
 					strat_clean_priorities(SEC_ROBOT);
 					strat_update_priorities(2, ZONE_MY_STAIRWAY, ZONE_MY_CLAP_3);

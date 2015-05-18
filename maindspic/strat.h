@@ -154,6 +154,9 @@
 #define OPP_POPCORNMAC_X	    2550
 #define OPP_POPCORNMAC_Y	    2000-35
 
+#define MY_PLATFORM_X		    1150
+#define MY_PLATFORM_Y		    150
+
 #define MY_CUP_1_X			    910
 #define MY_CUP_1_Y			    2000-830
 #define MY_CUP_2_X			    250
