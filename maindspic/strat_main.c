@@ -512,14 +512,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 		case ZONE_MY_STAND_GROUP_3:
 
 #if 0
-			err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x),
-											   strat_infos.zones[zone_num].y,
-											   COLOR_INVERT(SIDE_LEFT),         /* side target */
-								 			   SIDE_ALL,                        /* storing sides */
-											   COLOR_A_REL(-20),                /* blade angle */
-											   SPEED_DIST_VERY_SLOW,            /* harvest speed */
-											   STANDS_HARVEST_BACK_INIT_POS);	/* flags */
-#endif
+			/* only one stand */
 			err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_3_X),
 											   MY_STAND_3_Y,
 											   COLOR_INVERT(SIDE_LEFT),         /* side target */
@@ -527,6 +520,17 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 											   COLOR_A_REL(0),                /* blade angle */
 											   SPEED_DIST_SLOW,            /* harvest speed */
 											   STANDS_HARVEST_BACK_INIT_POS);	/* flags */
+#else
+			/* two stands */
+			err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x),
+											   strat_infos.zones[zone_num].y,
+											   SIDE_ALL,         				/* side target */
+								 			   SIDE_ALL,        				/* storing sides */
+											   COLOR_A_REL(0),                	/* blade angle */
+											   SPEED_DIST_SLOW,            		/* harvest speed */
+											   STANDS_HARVEST_BACK_INIT_POS | 	/* flags */
+											   STANDS_HARVEST_XY_IS_ROBOT_POSITION); 
+#endif
 			break;
 
 		case ZONE_MY_STAND_GROUP_4:
@@ -546,13 +550,36 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 
 			err = strat_release_popcorns_in_home (COLOR_X(strat_infos.zones[zone_num].x),
 													strat_infos.zones[zone_num].y, 0);
+			/* XXX, don't care about err */			
+			err = END_TRAJ;
 			break;
 
 		case ZONE_MY_HOME_SPOTLIGHT:
+			if (slavedspic.stands_system[COLOR_INVERT(SIDE_LEFT)].stored_stands < 4 ||
+				(strat_infos.conf.flags & CONF_FLAG_DO_TOWER))
+			{
+				err = strat_buit_and_release_spotlight (COLOR_X(strat_infos.zones[zone_num].x),
+														strat_infos.zones[zone_num].y,
+														COLOR_INVERT(SIDE_LEFT), STANDS_RELEASE_DO_TOWER);
+			}
+			else {
+				err = strat_buit_and_release_spotlight (COLOR_X(strat_infos.zones[zone_num].x),
+														strat_infos.zones[zone_num].y,
+														COLOR_INVERT(SIDE_LEFT), 0);
+			}
+			
+			/* XXX, don't care about err */			
+			err = END_TRAJ;
+			break;
 
+		case ZONE_MY_PLATFORM:
+#if 0
 			err = strat_buit_and_release_spotlight (COLOR_X(strat_infos.zones[zone_num].x),
 													strat_infos.zones[zone_num].y,
-													COLOR_INVERT(SIDE_LEFT));
+													COLOR_INVERT(SIDE_LEFT), STAND_RELEASE_DO_TOWER);
+#endif
+			/* XXX, don't care about err */			
+			err = END_TRAJ;
 			break;
 
 		case ZONE_POPCORNCUP_1:

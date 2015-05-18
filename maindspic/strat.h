@@ -199,6 +199,7 @@
 #define PLATFORM_WIDTH      100
 
 
+
 /* XXX keep synchronized with secondary robot */
 #define STAIRS_EDGE_Y			(AREA_Y-580)
 #define STAIRS_EDGE_X			(967)
@@ -288,7 +289,7 @@ struct conf {
 /* depends on flags the robot
  * will do different things */
 	uint8_t flags;
-#define CONF_FLAG_XXX   1
+#define CONF_FLAG_DO_TOWER   1
 };
 
 
@@ -452,8 +453,9 @@ uint8_t strat_harvest_stands_and_cup_inline (void);
  *	Harvest orphan stands
  *	return END_TRAJ if the work is done, err otherwise
  */
-#define STANDS_HARVEST_BACK_INIT_POS 1
-#define STANDS_HARVEST_CALIB_X       2
+#define STANDS_HARVEST_BACK_INIT_POS 		1
+#define STANDS_HARVEST_CALIB_X       		2
+#define STANDS_HARVEST_XY_IS_ROBOT_POSITION	4
 
 uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
 									 uint8_t side, uint8_t blade_angle,
@@ -464,7 +466,8 @@ uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
  *	return END_TRAJ if the work is done, err otherwise
  */
 
-#define STANDS_RELEASE_DO_TOWER	1
+#define STANDS_RELEASE_DO_TOWER		1
+#define STANDS_RELEASE_TIME_OVER	2
 uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side, uint8_t flags);
 
 /********************************************

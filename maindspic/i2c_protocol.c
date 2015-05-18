@@ -589,9 +589,9 @@ int8_t i2c_slavedspic_mode_init(void)
 	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
 
 	if (mainboard.our_color==I2C_COLOR_YELLOW)
-		buf.mode = I2C_SLAVEDSPIC_MODE_INIT_LEFT;
-	else
 		buf.mode = I2C_SLAVEDSPIC_MODE_INIT_RIGHT;
+	else
+		buf.mode = I2C_SLAVEDSPIC_MODE_INIT_LEFT;
 
 
 	/* send command and return */
