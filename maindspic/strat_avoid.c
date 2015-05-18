@@ -510,19 +510,11 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 	   get_opponent1_xy(&x, &y);
 	   name = opp1;
 
-       if (y < 500) {
-         w = ROBOT_2ND_WIDTH;
-         l = ROBOT_2ND_LENGTH;
-       }
 	}
 	else if(type == OPP2) {
 	   get_opponent2_xy(&x, &y);
 	   name = opp2;
 
-       if (y < 500) {
-         w = ROBOT_2ND_WIDTH;
-         l = ROBOT_2ND_LENGTH;
-       }
 	}
 	else if(type == ROBOT2ND) {
 		 get_robot_2nd_xy(&x, &y);
@@ -550,112 +542,21 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 #endif
 	else
 	   ERROR(E_USER_STRAT, "ERROR at %s", __FUNCTION__);
-
 	DEBUG(E_USER_STRAT, "%s at: %d %d", name, x, y);
 
 	/* place poly even if invalid, because it's -1000 */
-  if(type == ROBOT2ND)
-    set_rotated_poly_abs(pol, a_abs, w, l, x, y);
-  else
-  	set_rotated_poly(pol, robot_pt, w, l, x, y);
-}
-
-/* set point of a rhombus, used for slot polys */
-#if 0
-uint8_t set_rhombus_pts(point_t *pt,
-               		int16_t w, int16_t l,
-			      		int16_t x, int16_t y)
-{
-#ifdef SET_RHOMBUS_PTS_OLD_VERSION
-	uint8_t i, j;
-
-	/* loop for rhrombus points */
-	for(i=0, j=0; i<4; i++) {
-
-		/* add point of rhombus */
-		if(i==0) {
-			pt[j].x = x + w;
-			pt[j].y = y;
-		}
-		else if(i==1) {
-			pt[j].x = x;
-			pt[j].y = y + l;
-		}
-		else if(i==2) {
-			pt[j].x = x - w;
-			pt[j].y = y;
-		}
-		else if(i==3) {
-			pt[j].x = x;
-			pt[j].y = y - l;
-		}
-
-		/* next point */
-		j++;
+  if(type == ROBOT2ND){
+		//DEBUG(E_USER_STRAT, "x1:%d, y1: %d, w1: %d,l1: %d",x,y, w,l );
+ 	set_rotated_poly_abs(pol, a_abs, w, l, x, y);
 	}
 
-	/* return number of points */
-	return j;
-
-
-#else
-
-	/* points of rhombus */
-
-	pt[0].x = x + w;
-	pt[0].y = y;
-
-	pt[1].x = x;
-	pt[1].y = y + l;
-
-	pt[2].x = x - w;
-	pt[2].y = y;
-
-	pt[3].x = x;
-	pt[3].y = y - l;
-
-	return 4;
-
-#endif
+  else{
+		//DEBUG(E_USER_STRAT, "x2:%d, y2: %d, w2: %d,l2: %d",x,y, w,l );
+		set_rotated_poly(pol, robot_pt, w, l, x, y);
+	}
 
 }
 
-/* set point of a square */
-uint8_t set_square_pts(point_t *pt,
-               		int16_t w, int16_t l,
-			      		int16_t x, int16_t y)
-{
-
-	/* points of rhombus */
-
-	pt[0].x = x + w;
-	pt[0].y = y + l;
-
-	pt[1].x = x - w;
-	pt[1].y = y + l;
-
-	pt[2].x = x - w;
-	pt[2].y = y - l;
-
-	pt[3].x = x + w;
-	pt[3].y = y - l;
-
-	return 4;
-}
-
-
-
-/* set oa poly point */
-void set_poly_pts(poly_t *pol_dest, poly_t *pol_org)
-{
-	uint8_t i;
-
-	/* loop for all point */
-	for(i=0; i < pol_org->l; i++) {
-	   oa_poly_set_point(pol_dest, pol_org->pts[i].x, pol_org->pts[i].y, i);
-   }
-}
-#endif
 
 
 /*
@@ -1410,6 +1311,7 @@ retry:
 
 			if (len >= 0)
 			  break;
+
 		}
 
 		/* len < 0, try reduce opponent to get a valid path */
