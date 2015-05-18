@@ -202,7 +202,9 @@ int8_t strat_get_new_zone(uint8_t robot)
 	if(zone_num != STRAT_NO_MORE_ZONES)
 	{
 		if (!strat_is_valid_zone(robot, zone_num))
+		{
 			zone_num = STRAT_NO_VALID_ZONE;
+		}
 	}
 
 	/* XXX: here we have the zone with the maximum priority, and then
@@ -303,8 +305,9 @@ int8_t strat_get_new_zone(uint8_t robot)
 		if (strat_smart[SEC_ROBOT].current_zone==ZONE_BLOCK_UPPER_SIDE)
 		{
 			//Free upper zone if it was still blocking
-			zone_num = ZONE_FREE_UPPER_SIDE;
-			DEBUG(E_USER_STRAT,"R2, going to ZONE_FREE_UPPER_SIDE.");
+			//zone_num = ZONE_FREE_UPPER_SIDE;
+			zone_num = ZONE_MY_STAIRWAY;
+			DEBUG(E_USER_STRAT,"R2, going to ZONE_MY_STAIRWAY.");
 		}
 		else if(strat_smart_get_msg()==MSG_UPPER_SIDE_FREE)
 		{
@@ -571,6 +574,13 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 													COLOR_INVERT(SIDE_LEFT));
 			break;
 
+		case ZONE_MY_PLATFORM:
+
+			err = strat_buit_and_release_spotlight (COLOR_X(strat_infos.zones[zone_num].x),
+													strat_infos.zones[zone_num].y,
+													COLOR_INVERT(SIDE_LEFT));
+			break;
+
 		case ZONE_POPCORNCUP_1:
 			err = strat_harvest_popcorn_cup (COLOR_X(strat_infos.zones[zone_num].x),
 									   strat_infos.zones[zone_num].y,
@@ -631,7 +641,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 													strat_infos.zones[zone_num].y, POPCORN_ONLY_CUP);
 			break;
 
-		/* not yet or don't know how to work in the zones */
+
 		case ZONE_MY_STAIRS:
 		case ZONE_MY_STAIRWAY:
 
@@ -784,6 +794,10 @@ uint8_t strat_smart_main_robot(void)
 			return err;
 
 	}
+	
+	if (TRAJ_SUCCESS(err) && zone_num == ZONE_MY_PLATFORM) 
+		strat_infos.zones[ZONE_MY_HOME_SPOTLIGHT].flags |= ZONE_CHECKED;
+				
 
 	/* check the zone as DONE */
 	strat_infos.zones[zone_num].flags |= ZONE_CHECKED;

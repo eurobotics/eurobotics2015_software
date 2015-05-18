@@ -377,6 +377,17 @@ struct strat_infos strat_infos = {
 //		0, (9000*1000L),
 		SEC_ROBOT
 	},
+	/* platform */
+  	.zones[ZONE_MY_PLATFORM] =
+	{
+		ZONE_TYPE_PLATFORM,
+		MY_PLATFORM_X, MY_PLATFORM_Y,
+		MY_PLATFORM_X-ROBOT_WIDTH/2-30, MY_PLATFORM_X+ROBOT_WIDTH/2+30, 0, MY_PLATFORM_Y+ROBOT_WIDTH,
+		MY_PLATFORM_X, 400,
+		0, 0,
+//		0, (9000*1000L),
+		MAIN_ROBOT
+	},
 };
 
 struct strat_smart strat_smart[ROBOT_MAX];
@@ -446,7 +457,7 @@ const char zone_name[ZONES_MAX][14]= {
     [ZONE_MY_STAIRWAY]="STAIRWAY\0",
     [ZONE_MY_HOME_OUTSIDE]="H.OUTSIDE\0",
     [ZONE_BLOCK_UPPER_SIDE]="BLOCK\0",
-    [ZONE_FREE_UPPER_SIDE]="FREE\0",
+    [ZONE_MY_PLATFORM]="PLAT\0",
 };
 
 /* return string with the zone name */

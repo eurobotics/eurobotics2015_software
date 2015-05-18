@@ -1315,14 +1315,10 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
         zone_num = ZONE_MY_HOME_OUTSIDE;
 	}
     else if (!strcmp_P(res->arg1, PSTR("platform"))) {
-        //zone_num = ZONE_MY_CINEMA_DOWN;
-		printf_P(PSTR("not yet supported\r\n"));
-		return;
+        zone_num = ZONE_MY_PLATFORM;
 	}
     else if (!strcmp_P(res->arg1, PSTR("stairs"))) {
-        //zone_num = ZONE_MY_STAIRS;
-		printf_P(PSTR("not yet supported\r\n"));
-		return;
+        zone_num = ZONE_MY_STAIRS;
 	}
 
 
