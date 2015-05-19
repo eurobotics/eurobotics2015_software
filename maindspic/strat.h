@@ -224,26 +224,27 @@
 #define ZONE_POPCORNCUP_3				8
 
 #define ZONE_MY_CINEMA_UP				9
-#define ZONE_MY_CINEMA_DOWN				10
+#define ZONE_MY_CINEMA_DOWN_SEC			10
+#define ZONE_MY_CINEMA_DOWN_MAIN		11
 
-#define ZONE_MY_STAIRS					11
-#define ZONE_MY_STAIRWAY				12
+#define ZONE_MY_STAIRS					12
+#define ZONE_MY_STAIRWAY				13
 
-#define ZONE_MY_CLAP_1					13
-#define ZONE_MY_CLAP_2					14
-#define ZONE_MY_CLAP_3					15
+#define ZONE_MY_CLAP_1					14
+#define ZONE_MY_CLAP_2					15
+#define ZONE_MY_CLAP_3					16
 
-#define ZONE_MY_PLATFORM				16
+#define ZONE_MY_PLATFORM				17
 
-#define ZONE_MY_HOME_OUTSIDE			17
-#define ZONE_MY_HOME_POPCORNS			18
-#define ZONE_MY_HOME_SPOTLIGHT			19
+#define ZONE_MY_HOME_OUTSIDE			18
+#define ZONE_MY_HOME_POPCORNS			19
+#define ZONE_MY_HOME_SPOTLIGHT			20
 
-#define ZONE_BLOCK_UPPER_SIDE    		20
-#define ZONE_FREE_UPPER_SIDE    		21
-#define ZONE_CUP_NEAR_STAIRS			22
+#define ZONE_BLOCK_UPPER_SIDE    		21
+#define ZONE_FREE_UPPER_SIDE    		22
+#define ZONE_CUP_NEAR_STAIRS			23
 
-#define ZONES_MAX		    			23
+#define ZONES_MAX		    			24
 
 /*
  * Strat diagram, valid for YELLOW.
@@ -359,6 +360,7 @@ typedef struct {
 	uint8_t robot;
 	#define MAIN_ROBOT  0
 	#define SEC_ROBOT   1
+	#define BOTH_ROBOTS 2
 	#define ROBOT_MAX 	2
 
 } strat_zones_t;
