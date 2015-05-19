@@ -442,6 +442,10 @@ uint8_t strat_main(void);
 /********************************************
  * in strat_spotlight.c
  *******************************************/
+
+#define TOWER_BUILDING_TIME	(MATCH_TIME-20)
+#define STAND_RELEASE_TIME	(MATCH_TIME-10)
+
 /**
  *	Harvest several the 2 stands and the central cup in a path line
  *	return END_TRAJ if the work is done, err otherwise
@@ -470,17 +474,24 @@ uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
 #define STANDS_RELEASE_TIME_OVER	2
 uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side, uint8_t flags);
 
+/* decides if we need build a tower */
+uint8_t strat_need_build_a_tower (void);
+
 /********************************************
  * in strat_popcorn.c
  *******************************************/
-
-#define POPCORN_ONLY_CUP 1
 
 /**
  *	Harvest popcorn cups
  *	return END_TRAJ if the work is done, err otherwise
  */
+
+#define POPCORN_CUP_HARVEST_DO_NOT_RELEASE	1
+
 uint8_t strat_harvest_popcorn_cup (int16_t x, int16_t y, uint8_t side, uint8_t flags);
+
+/* release front cup */
+void strat_release_popcorn_cup_front (void);
 
 /**
  *	Harvest popcorns machine
@@ -492,6 +503,9 @@ uint8_t strat_harvest_popcorns_machine (int16_t x, int16_t y);
  *	Release popcorns in home area
  *	return END_TRAJ if the work is done, err otherwise
  */
+
+#define POPCORNS_RELEASE_ONLY_CUP	1
+
 uint8_t strat_release_popcorns_in_home (int16_t x, int16_t y, uint8_t flags);
 
 

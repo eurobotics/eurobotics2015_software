@@ -816,8 +816,8 @@ uint8_t robots_are_near(void)
 	opp2_there = get_opponent2_da(&opp2_d, &opp2_a);
 #endif
 #ifdef ROBOT_2ND
-	int16_t robot_2nd_d, robot_2nd_a;
-	r2nd_there = get_robot_2nd_da(&robot_2nd_d, &robot_2nd_a);
+	//int16_t robot_2nd_d, robot_2nd_a;
+	//r2nd_there = get_robot_2nd_da(&robot_2nd_d, &robot_2nd_a);
 #endif
 	
 	if((opp_there == -1) && (opp2_there == -1) && (r2nd_there == -1))
@@ -832,8 +832,8 @@ uint8_t robots_are_near(void)
 #endif
 
 #ifdef ROBOT_2ND
-	if (robot_2nd_d < 500)
-		return 1;
+	//if (robot_2nd_d < 500)
+	//	return 1;
 #endif
 
 	return 0;
