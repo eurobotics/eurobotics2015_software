@@ -155,13 +155,13 @@ uint8_t strat_is_valid_zone(uint8_t robot, int8_t zone_num)
 	}
 
 	/* discard robot zone */
-	if(strat_infos.zones[zone_num].robot != robot)  {
+	if((strat_infos.zones[zone_num].robot != robot) && (strat_infos.zones[zone_num].robot != BOTH_ROBOTS)) {
 		return 0;
 	}
 
 	/* discard checked zone */
 	if(strat_infos.zones[zone_num].flags & ZONE_CHECKED) {
-		return 0;
+			return 0;
 	}
 
 	/* discard avoid zone */
@@ -170,13 +170,15 @@ uint8_t strat_is_valid_zone(uint8_t robot, int8_t zone_num)
 	}
 
 	/* discard one cinema if the other is checked */
-	if((zone_num == ZONE_MY_CINEMA_DOWN) && (strat_infos.zones[ZONE_MY_CINEMA_UP].flags & ZONE_CHECKED)) {
-		strat_infos.zones[ZONE_MY_CINEMA_DOWN].flags |= ZONE_CHECKED;
-		return 0;
-	}
-	if((zone_num == ZONE_MY_CINEMA_UP) && (strat_infos.zones[ZONE_MY_CINEMA_DOWN].flags & ZONE_CHECKED)) {
-		strat_infos.zones[ZONE_MY_CINEMA_UP].flags |= ZONE_CHECKED;
-		return 0;
+	/* Only for sec robot. Main robot may also go to cinema. */
+	if(robot == SEC_ROBOT)
+	{
+		if((zone_num == ZONE_MY_CINEMA_DOWN_SEC) && (strat_infos.zones[ZONE_MY_CINEMA_UP].flags & ZONE_CHECKED)) {
+			return 0;
+		}
+		if((zone_num == ZONE_MY_CINEMA_UP) && (strat_infos.zones[ZONE_MY_CINEMA_DOWN_SEC].flags & ZONE_CHECKED)) {
+			return 0;
+		}
 	}
 	
 	return 1;
@@ -259,7 +261,7 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 	}
 
 	/* XXX secondary robot: goto and return */
-	if(strat_infos.zones[zone_num].robot==SEC_ROBOT) {
+	if(robot==SEC_ROBOT) {
 
 
 		/* specific zones */
@@ -269,7 +271,7 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 		}
 		/* normaly we go with avoid */
         else if (zone_num == ZONE_MY_STAIRWAY || zone_num == ZONE_MY_CLAP_3 ||
-                 zone_num == ZONE_MY_CINEMA_UP ||  zone_num == ZONE_MY_CINEMA_DOWN)
+                 zone_num == ZONE_MY_CINEMA_UP ||  zone_num == ZONE_MY_CINEMA_DOWN_SEC)
         {
 			DEBUG (E_USER_STRAT, "going backwards");
 
@@ -343,9 +345,12 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 											   strat_infos.zones[zone_num].y);
 				break;
 
-			case ZONE_MY_CINEMA_DOWN:
+			case ZONE_MY_CINEMA_DOWN_SEC:
 				bt_robot_2nd_bt_task_bring_cup_cinema(COLOR_X(strat_infos.zones[zone_num].x),
 											   strat_infos.zones[zone_num].y);
+				/* go outside of cinema to let it free for main robot */
+				bt_robot_2nd_goto_and_avoid(COLOR_X(MY_CLAP_3_X),
+											ROBOT_SEC_OBS_CLERANCE+PLATFORM_WIDTH);
 				break;
 
 			case ZONE_MY_CINEMA_UP:
@@ -552,7 +557,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 														strat_infos.zones[zone_num].y, POPCORN_ONLY_CUP);
 				break;
 
-			case ZONE_MY_CINEMA_DOWN:
+			case ZONE_MY_CINEMA_DOWN_MAIN:
 				err = strat_release_popcorns_in_home (COLOR_X(strat_infos.zones[zone_num].x),
 														strat_infos.zones[zone_num].y, POPCORN_ONLY_CUP);
 				break;
@@ -644,53 +649,49 @@ uint8_t strat_smart_main_robot(void)
 	/* get new zone */
 	zone_num = strat_get_new_zone(MAIN_ROBOT);
 
-	/* if zone is on upper side, send sec robot to free the way */
+	/* zone is on upper side */
 	if(zone_num == ZONE_MY_STAND_GROUP_3 || zone_num == ZONE_MY_STAND_GROUP_4 || zone_num == ZONE_MY_POPCORNMAC)
 	{
+		// Free
 		if((strat_smart_get_msg() == MSG_UPPER_SIDE_IS_BLOCKED) || (strat_smart_get_msg() == MSG_UPPER_SIDE_FREE))
 		{
 			DEBUG(E_USER_STRAT,"R1, sending message MSG_UPPER_SIDE_FREE.");
 			strat_smart_set_msg(MSG_UPPER_SIDE_FREE);
-
-			// SYNCHRONIZATION mechanism 
+			
+			// Wait until free
 			if(strat_wait_sync_main_robot(MSG_UPPER_SIDE_IS_FREE))
-			{
-			#if 0
-				if (time_get_us2()-us > 10000000) {
-					DEBUG(E_USER_STRAT,"R1, WAITING sync");
-					if (strat_infos.debug_step)
-						DEBUG(E_USER_STRAT,"R1, press key 'p' for continue");
-					us = time_get_us2();
-				}
-			#endif
 				return END_TRAJ;
-			}
 		}
 		
-		
-		/* if robot has no cup in the back, tell sec robot to release cup near stairs and wait until main robot can take it */
-		if(!(strat_infos.zones[ZONE_POPCORNCUP_2].flags & ZONE_CHECKED) && !(strat_infos.zones[ZONE_CUP_NEAR_STAIRS].flags & ZONE_CHECKED))
+		// Cup near stairs
+		// if main robot has no cup in the back, tell sec robot to release cup near stairs and wait until main robot can take it 
+		if(!(strat_infos.zones[ZONE_POPCORNCUP_2].flags & ZONE_CHECKED))
 		{
+			// First time, send message
 			if((strat_smart_get_msg() != MSG_CUP_RELEASED) && (strat_smart_get_msg() != MSG_RELEASE_CUP_IMPOSSIBLE))
 			{
-				//DEBUG (E_USER_STRAT, "*** message is: %d ",strat_smart_get_msg());
+				strat_infos.zones[ZONE_CUP_NEAR_STAIRS].flags &= (~ZONE_AVOID);
 				strat_smart_set_msg(MSG_RELEASE_CUP_NEAR_STAIRS);
+			}
 			
-			}
-			/* SYNCHRONIZATION mechanism */
+			// Wait for response
 			if(strat_wait_sync_main_robot(MSG_CUP_RELEASED))
-			{
 				return END_TRAJ;
-			}
+			
+			// Sec robot responded
 			else
 			{
-			    DEBUG (E_USER_STRAT, "R1, going to ZONE_CUP_NEAR_STAIRS. msg: ",strat_smart_get_msg());
-				#define STRAT_WITH_CUP_NEAR_STAIRS 17
-				/* wait until sec robot is gone */
-				time_wait_ms(3000);
-				strat_smart[MAIN_ROBOT].current_strategy = STRAT_WITH_CUP_NEAR_STAIRS;
-				strat_change_sequence_qualification(MAIN_ROBOT);
-				zone_num = strat_get_new_zone(MAIN_ROBOT);
+				// If cup has been released, first go and take it
+				if(strat_smart_get_msg() == MSG_CUP_RELEASED)
+				{
+					DEBUG (E_USER_STRAT, "R1, going to ZONE_CUP_NEAR_STAIRS. msg: ",strat_smart_get_msg());
+					#define STRAT_WITH_CUP_NEAR_STAIRS 17
+					/* wait until sec robot is gone */
+					time_wait_ms(3000);
+					strat_smart[MAIN_ROBOT].current_strategy = STRAT_WITH_CUP_NEAR_STAIRS;
+					strat_change_sequence_qualification(MAIN_ROBOT);
+					zone_num = strat_get_new_zone(MAIN_ROBOT);
+				}
 			}
 		}
 	}
@@ -893,10 +894,13 @@ uint8_t strat_smart_secondary_robot(void)
 			if(strat_smart_get_msg()!=MSG_RELEASE_CUP_NEAR_STAIRS)
 				zone_num = strat_get_new_zone(SEC_ROBOT);
 				
+			// Received message to release cup near stairs
 			else
 			{
 				DEBUG(E_USER_STRAT,"R2, RECEIVED MSG_RELEASE_CUP_NEAR_STAIRS.");
-				if (strat_is_valid_zone(SEC_ROBOT, ZONE_CUP_NEAR_STAIRS) && (strat_infos.match_strategy == STR_QUALIFICATION))
+				if (strat_is_valid_zone(SEC_ROBOT, ZONE_CUP_NEAR_STAIRS) && (strat_infos.match_strategy == STR_QUALIFICATION)
+					&& (strat_infos.zones[ZONE_POPCORNCUP_1].flags & ZONE_CHECKED) 
+					&& !(strat_infos.zones[ZONE_MY_CINEMA_UP].flags & ZONE_CHECKED))
 				{
 					DEBUG(E_USER_STRAT,"R2, GOING TO RELEASE CUP NEAR STAIRS.");
 					
@@ -909,6 +913,7 @@ uint8_t strat_smart_secondary_robot(void)
 				{
 					DEBUG(E_USER_STRAT,"R2, RELEASE CUP NEAR STAIRS IMPOSSIBLE.");
 					strat_smart_set_msg(MSG_RELEASE_CUP_IMPOSSIBLE);
+					strat_infos.zones[ZONE_CUP_NEAR_STAIRS].flags |= ZONE_AVOID;
 				}
 			}
 
@@ -1128,7 +1133,7 @@ uint8_t strat_smart_secondary_robot(void)
 				DEBUG(E_USER_STRAT,"R2, ERROR, work returned %s.", get_err(err));
 				
 				//If there is an error working in the cinemas don't try it again
-				if(strat_smart[SEC_ROBOT].current_zone == ZONE_MY_CINEMA_DOWN
+				if(strat_smart[SEC_ROBOT].current_zone == ZONE_MY_CINEMA_DOWN_SEC
 				|| strat_smart[SEC_ROBOT].current_zone == ZONE_MY_CINEMA_UP){
 					strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
 				}

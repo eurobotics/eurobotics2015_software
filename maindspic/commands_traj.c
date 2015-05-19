@@ -1306,7 +1306,7 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
         zone_num = ZONE_MY_CINEMA_UP;
 	}
     else if (!strcmp_P(res->arg1, PSTR("cinema_down"))) {
-        zone_num = ZONE_MY_CINEMA_DOWN;
+        zone_num = ZONE_MY_CINEMA_DOWN_SEC;
 	}
     else if (!strcmp_P(res->arg1, PSTR("stairs_ways"))) {
         zone_num = ZONE_MY_STAIRWAY;
@@ -1325,7 +1325,8 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 	/* go and work */
     if (zone_num < ZONES_MAX)
 	{
-		if (strat_infos.zones[zone_num].robot==MAIN_ROBOT) {
+		if (strat_infos.zones[zone_num].robot==MAIN_ROBOT) 
+		{
             /* goto */
             err = strat_goto_zone(MAIN_ROBOT, zone_num);
 		    printf_P(PSTR("goto returned %s\r\n"), get_err(err));

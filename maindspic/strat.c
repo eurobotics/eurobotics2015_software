@@ -239,7 +239,7 @@ struct strat_infos strat_infos = {
 //	 	0, (9000*1000L),
 		SEC_ROBOT
 	},
-	.zones[ZONE_MY_CINEMA_DOWN] =
+	.zones[ZONE_MY_CINEMA_DOWN_SEC] =
 	{
 #ifdef ONLY_MAIN_ROBOT
 		ZONE_TYPE_CINEMA,
@@ -257,6 +257,15 @@ struct strat_infos strat_infos = {
 //		0, (9000*1000L),
 		SEC_ROBOT
 #endif
+	},
+	.zones[ZONE_MY_CINEMA_DOWN_MAIN] =
+	{
+		ZONE_TYPE_CINEMA,
+		MY_CINEMA_DOWN_X, MY_CINEMA_DOWN_Y-150,
+		2600, 3000, 400, 800,
+		0, 0,
+//		0, (9000*1000L),
+		MAIN_ROBOT
 	},
 	/* stairs */
   	.zones[ZONE_MY_STAIRS] =
@@ -459,7 +468,8 @@ const char zone_name[ZONES_MAX][14]= {
     [ZONE_POPCORNCUP_2]="CUP 2\0",
     [ZONE_POPCORNCUP_3]="CUP 3\0",
     [ZONE_MY_CINEMA_UP]="CINEMA UP\0",
-    [ZONE_MY_CINEMA_DOWN]="CINEMA DOWN\0",
+    [ZONE_MY_CINEMA_DOWN_SEC]="CIN DOWN SEC\0",
+    [ZONE_MY_CINEMA_DOWN_MAIN]="CIN DOWN MAIN\0",
     [ZONE_MY_STAIRS]="STAIRS\0",
     [ZONE_MY_HOME_SPOTLIGHT]="H.SPOTLIGHT\0",
     [ZONE_MY_HOME_POPCORNS]="H.POPCORNS\0",
@@ -634,7 +644,10 @@ uint8_t strat_main(void)
 	strat_smart_set_msg(MSG_WAIT_START);
 #endif
 
-
+	/* Zones we want to avoid */
+	strat_infos.zones[ZONE_CUP_NEAR_STAIRS].flags |= (ZONE_AVOID);
+									
+	
     /* play */
     do{
         err = strat_smart_main_robot();
