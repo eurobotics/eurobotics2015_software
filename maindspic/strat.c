@@ -388,6 +388,18 @@ struct strat_infos strat_infos = {
 //		0, (9000*1000L),
 		MAIN_ROBOT
 	},
+	/* ZONE_RELEASE_CUP_NEAR_STAIRS */
+  	.zones[ZONE_CUP_NEAR_STAIRS] =
+	{
+		ZONE_TYPE_CINEMA,
+		700, 1275,
+		500, 960, 1025, 1525,
+		700, 1275, 
+		0, 0,
+//		0, (9000*1000L),
+		//this value is changed to MAIN_ROBOT after sec robot is finished
+		SEC_ROBOT
+	},
 };
 
 struct strat_smart strat_smart[ROBOT_MAX];
@@ -458,6 +470,7 @@ const char zone_name[ZONES_MAX][14]= {
     [ZONE_MY_HOME_OUTSIDE]="H.OUTSIDE\0",
     [ZONE_BLOCK_UPPER_SIDE]="BLOCK\0",
     [ZONE_MY_PLATFORM]="PLAT\0",
+    [ZONE_CUP_NEAR_STAIRS]="CUP STAIRS\0",
 };
 
 /* return string with the zone name */

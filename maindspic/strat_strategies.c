@@ -73,6 +73,7 @@
 
 #define STRAT_TIMEOUT 15
 #define STRAT_TIMEOUT_2 16
+#define STRAT_WITH_CUP_NEAR_STAIRS 17
 void strat_clean_priorities(uint8_t robot){
 
 	uint8_t priority,i;
@@ -227,34 +228,41 @@ void strat_change_sequence_qualification(uint8_t robot){
 					strat_update_priorities(10,ZONE_MY_STAND_GROUP_1,  ZONE_POPCORNCUP_2,
 												 ZONE_MY_STAND_GROUP_2, ZONE_MY_CLAP_1,  ZONE_MY_STAND_GROUP_4,
 												 ZONE_MY_POPCORNMAC, ZONE_MY_STAND_GROUP_3, ZONE_MY_HOME_POPCORNS,
-												 ZONE_MY_HOME_SPOTLIGHT,ZONE_MY_CLAP_2);
+												 ZONE_MY_HOME_SPOTLIGHT, ZONE_MY_CLAP_2);
 
 					strat_smart[robot].current_strategy ++;
 					break;
 				case 2:
 					// Opponent in down zone at the beginning so we do not go down. XXX strange case XXX
-					// TODO: receive cup from tirantes.
 					strat_clean_priorities(MAIN_ROBOT);
-					strat_update_priorities(10,ZONE_MY_STAND_GROUP_1,  ZONE_MY_STAND_GROUP_4,
-											  ZONE_MY_POPCORNMAC, ZONE_MY_STAND_GROUP_3, ZONE_POPCORNCUP_2,
-											  ZONE_MY_STAND_GROUP_2, ZONE_MY_CLAP_1, ZONE_MY_CLAP_2, ZONE_MY_HOME_POPCORNS,
-											  ZONE_MY_HOME_SPOTLIGHT);
+					strat_update_priorities(11,ZONE_MY_STAND_GROUP_1,  ZONE_MY_STAND_GROUP_4,
+											  ZONE_MY_POPCORNMAC, ZONE_MY_STAND_GROUP_3, ZONE_MY_STAND_GROUP_2, 
+											  ZONE_MY_HOME_POPCORNS, ZONE_MY_HOME_SPOTLIGHT, ZONE_MY_CLAP_1, 
+											  ZONE_MY_CLAP_2, ZONE_POPCORNCUP_2, ZONE_MY_CINEMA_DOWN);
 					strat_smart[robot].current_strategy ++;
 					break;
+					
+				case STRAT_WITH_CUP_NEAR_STAIRS:
+					strat_clean_priorities(MAIN_ROBOT);
+					strat_update_priorities(12,ZONE_MY_STAND_GROUP_1,  ZONE_CUP_NEAR_STAIRS, ZONE_MY_STAND_GROUP_4,
+											  ZONE_MY_POPCORNMAC, ZONE_MY_STAND_GROUP_3, ZONE_MY_STAND_GROUP_2, 
+											  ZONE_MY_HOME_POPCORNS, ZONE_MY_HOME_SPOTLIGHT, ZONE_MY_CLAP_1, 
+											  ZONE_MY_CLAP_2, ZONE_POPCORNCUP_2, ZONE_MY_CINEMA_DOWN);
+					strat_smart[robot].current_strategy ++;
+					break;
+					
 				case 3:
 					// Opponent is blocking our HOME
-					// TODO: release popcorn at cinema
 					strat_clean_priorities(MAIN_ROBOT);
-					strat_update_priorities(10,ZONE_MY_STAND_GROUP_1,  ZONE_MY_STAND_GROUP_4,
-											  ZONE_MY_POPCORNMAC, ZONE_MY_STAND_GROUP_3, ZONE_POPCORNCUP_2,
-											  ZONE_MY_STAND_GROUP_2, ZONE_MY_CLAP_1, ZONE_MY_CLAP_2, ZONE_MY_PLATFORM,
+					strat_update_priorities(10,ZONE_MY_STAND_GROUP_1,  ZONE_MY_STAND_GROUP_4,ZONE_MY_POPCORNMAC, 
+											  ZONE_MY_STAND_GROUP_3, ZONE_POPCORNCUP_2, ZONE_MY_STAND_GROUP_2, 
+											  ZONE_MY_CLAP_1, ZONE_MY_CLAP_2, ZONE_MY_PLATFORM,
 											  ZONE_MY_HOME_POPCORNS);
 					strat_smart[robot].current_strategy = 0;
 					break;
 
 
 				/* Timeout strategy (end of the match): release points */
-				// TODO: release popcorn at cinema
 				case STRAT_TIMEOUT:
 					strat_clean_priorities(MAIN_ROBOT);
 					strat_update_priorities(2,ZONE_MY_HOME_POPCORNS, ZONE_MY_HOME_SPOTLIGHT);
@@ -279,6 +287,12 @@ void strat_change_sequence_qualification(uint8_t robot){
 				case 0:
 					strat_clean_priorities(SEC_ROBOT);
 					strat_update_priorities(6,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, ZONE_BLOCK_UPPER_SIDE,
+											  ZONE_MY_STAIRWAY, ZONE_MY_CLAP_3, ZONE_MY_CINEMA_DOWN);
+					strat_smart[robot].current_strategy ++;
+					break;
+				case STRAT_WITH_CUP_NEAR_STAIRS:
+					strat_clean_priorities(SEC_ROBOT);
+					strat_update_priorities(6,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, ZONE_CUP_NEAR_STAIRS, 
 											  ZONE_MY_STAIRWAY, ZONE_MY_CLAP_3, ZONE_MY_CINEMA_DOWN);
 					strat_smart[robot].current_strategy ++;
 					break;
@@ -325,8 +339,18 @@ void strat_strategy_time(){
 
 	if(time_get_s()> 70 && strat_infos.match_strategy == STR_BASE){
 		strat_smart[MAIN_ROBOT].current_strategy = STRAT_TIMEOUT;
+		strat_smart[SEC_ROBOT].current_strategy = STRAT_TIMEOUT;
 		strat_clean_priorities(MAIN_ROBOT);
+		strat_clean_priorities(SEC_ROBOT);
 		strat_change_sequence_base(MAIN_ROBOT);
+		strat_change_sequence_base(SEC_ROBOT);
 	}
-
+	if(time_get_s()> 70 && strat_infos.match_strategy == STR_QUALIFICATION){
+		strat_smart[MAIN_ROBOT].current_strategy = STRAT_TIMEOUT;
+		strat_smart[SEC_ROBOT].current_strategy = STRAT_TIMEOUT;
+		strat_clean_priorities(MAIN_ROBOT);
+		strat_clean_priorities(SEC_ROBOT);
+		strat_change_sequence_qualification(MAIN_ROBOT);
+		strat_change_sequence_qualification(SEC_ROBOT);
+	}
 }
