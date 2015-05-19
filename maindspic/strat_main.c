@@ -585,16 +585,15 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 
 
 		case ZONE_POPCORNCUP_2:
-
-			/* release front cup */
+			/* release front cup  */
 			strat_release_popcorn_cup_front ();
 
-			/* harvest on the rear cup */
+			/* harvest on the rear cup  */
 			err = strat_harvest_popcorn_cup (COLOR_X(strat_infos.zones[zone_num].x),
 									   strat_infos.zones[zone_num].y,
 									   SIDE_REAR, 0);
 
-			/* XXX, open a bit the rear tray, popcorns should fall into rear cup */
+			/* XXX, open a bit the rear tray, popcorns should fall into rear cup  */
 			i2c_slavedspic_mode_tray(I2C_POPCORN_TRAY_MODE_CLOSE, -100);
 			break;
 
