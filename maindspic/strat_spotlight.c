@@ -270,7 +270,7 @@ try_again:
 		d = distance_from_robot(x, y);
 	}
 	else { 
-		d -= (ROBOT_CENTER_TO_MOUTH + STANDS_RADIOUS + 10);
+		d -= (ROBOT_CENTER_TO_MOUTH + STANDS_RADIOUS);
 	}
 	trajectory_d_rel(&mainboard.traj, d);
 
@@ -294,27 +294,19 @@ try_again:
 	/* debug */
 	//state_debug_wait_key_pressed();
 
-
+harvest_stand:
 	/* harvest stands */
 	if (side == I2C_SIDE_ALL) {
-//		i2c_slavedspic_mode_blades(SIDE_RIGHT, I2C_STANDS_BLADE_MODE_PUSH_STAND_RIGHT);
-//		i2c_slavedspic_wait_ready();
-//		i2c_slavedspic_mode_blades(SIDE_LEFT, I2C_STANDS_BLADE_MODE_PUSH_STAND_LEFT);
-
+		/* do harvest */
 		i2c_slavedspic_mode_ss_harvest_do(I2C_SIDE_LEFT, blade_angle);
 		i2c_slavedspic_mode_ss_harvest_do(I2C_SIDE_RIGHT, blade_angle);
 
 		/* wait storing */
 		i2c_slavedspic_ss_wait_status_or_timeout (I2C_SIDE_LEFT, STATUS_STORING, STANDS_STORING_TIMEOUT);
 		i2c_slavedspic_ss_wait_status_or_timeout (I2C_SIDE_RIGHT, STATUS_STORING, STANDS_STORING_TIMEOUT);
-
-		
 	}
 	else {
-//		i2c_slavedspic_mode_blades(side, 
-//								   side == I2C_SIDE_LEFT? I2C_STANDS_BLADE_MODE_PUSH_STAND_LEFT:
-//									 					  I2C_STANDS_BLADE_MODE_PUSH_STAND_RIGHT);
-
+		/* do harvest */
 		i2c_slavedspic_mode_ss_harvest_do(side, blade_angle);
 		
 		/* wait storing */
@@ -363,15 +355,60 @@ try_again:
 		}
 		else if (calib_tries) 
 		{
+			DEBUG (E_USER_STRAT, "WARNING: calib fails, try again");
 			calib_tries --;
+
+			/* store a possible stand in mouth */
+			if (side == I2C_SIDE_ALL) {
+				i2c_slavedspic_mode_ss_harvest_do(I2C_SIDE_LEFT, blade_angle);
+				i2c_slavedspic_mode_ss_harvest_do(I2C_SIDE_RIGHT, blade_angle);
+
+				/* wait storing */
+				i2c_slavedspic_ss_wait_status_or_timeout (I2C_SIDE_LEFT, STATUS_STORING, STANDS_STORING_TIMEOUT);
+				i2c_slavedspic_ss_wait_status_or_timeout (I2C_SIDE_RIGHT, STATUS_STORING, STANDS_STORING_TIMEOUT);
+			}
+			else {
+				i2c_slavedspic_mode_ss_harvest_do(side, blade_angle);
+		
+				/* wait storing */
+				i2c_slavedspic_ss_wait_status_or_timeout (side, STATUS_STORING, STANDS_STORING_TIMEOUT);
+			}
 
 			/* go backwards */
 			trajectory_d_rel(&mainboard.traj, -(2*STANDS_RADIOUS));
 		    err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 
+			/* turn infront of wall */
+			trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(180));
+			err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+
+			/* prepare for harvesting */
+			if (side == I2C_SIDE_ALL) {
+				/* wait ready and harvest */
+				i2c_slavedspic_ss_wait_status_or_timeout (I2C_SIDE_LEFT, STATUS_READY, STANDS_READY_TIMEOUT);
+				i2c_slavedspic_mode_ss_harvest_ready(I2C_SIDE_LEFT, blade_angle);
+
+				i2c_slavedspic_ss_wait_status_or_timeout (I2C_SIDE_RIGHT, STATUS_READY, STANDS_READY_TIMEOUT);
+				i2c_slavedspic_mode_ss_harvest_ready(I2C_SIDE_RIGHT, blade_angle);
+
+				/* wait blades ready */
+				i2c_slavedspic_ss_wait_status_or_timeout (I2C_SIDE_RIGHT, STATUS_READY, STANDS_READY_TIMEOUT);
+			}
+			else {
+				/* wait ready */
+				i2c_slavedspic_ss_wait_status_or_timeout (side, STATUS_READY, STANDS_READY_TIMEOUT);
+				i2c_slavedspic_mode_ss_harvest_ready(side, blade_angle);
+		
+				/* wait blades ready */
+				i2c_slavedspic_ss_wait_status_or_timeout (side, STATUS_READY, STANDS_READY_TIMEOUT);
+			}
+
+			/* go forward */
+			trajectory_d_rel(&mainboard.traj, STANDS_RADIOUS);
+		    err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+
 			/* try to harvest a stand very close to wall */
-			x = COLOR_X(STANDS_RADIOUS);
-			goto try_again;
+			goto harvest_stand;
 		}
 
 
@@ -449,7 +486,7 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side, ui
 		i2c_slavedspic_mode_ss(I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT, COLOR_INVERT(SIDE_LEFT));
 
 		strat_set_speed (SPEED_DIST_RELEASE_STANDS, SPEED_ANGLE_VERY_SLOW);
-		trajectory_d_rel(&mainboard.traj, -(2.5*STANDS_RADIOUS));
+		trajectory_d_rel(&mainboard.traj, -(2*STANDS_RADIOUS));
 		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 		if (!TRAJ_SUCCESS(err))
 		   ERROUT(err);	
@@ -471,7 +508,7 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side, ui
 
 		/* go backwards */
 		strat_set_speed (SPEED_DIST_RELEASE_STANDS, SPEED_ANGLE_VERY_SLOW);
-		trajectory_d_rel(&mainboard.traj, -(2.5*STANDS_RADIOUS));
+		trajectory_d_rel(&mainboard.traj, -(2*STANDS_RADIOUS));
 		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 		if (!TRAJ_SUCCESS(err))
 		   ERROUT(err);	
@@ -506,6 +543,15 @@ end:
 	strat_set_speed(old_spdd, old_spda);	
    	strat_limit_speed_enable();
    	return err;
+}
+
+/* decides if we need build a tower */
+uint8_t strat_need_build_a_tower (void)
+{
+	if (strat_infos.conf.flags & CONF_FLAG_DO_TOWER)
+		return STANDS_RELEASE_DO_TOWER;
+	else
+		return 0;
 }
 
 

@@ -366,9 +366,18 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 
 
 	/* main robot: goto and wait */
-	err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
-									strat_infos.zones[zone_num].init_y,
-									TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+	if (strat_smart[robot].current_zone == ZONE_MY_HOME_POPCORNS){
+
+		/* we are at init position */
+		err = END_TRAJ;
+	}
+	else {
+		
+		/* by default go with avoidance */
+		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
+										strat_infos.zones[zone_num].init_y,
+										TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+	}
 
 	/* update strat_infos */
 	strat_smart[robot].last_zone = strat_smart[robot].current_zone;
@@ -449,7 +458,6 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 		case ZONE_MY_STAND_GROUP_1:
 
 			/* Set start to sec robot */
-
 			strat_smart[MAIN_ROBOT].current_zone = ZONE_MY_STAND_GROUP_1;
 
 			/* TODO: call specific function for stand group 1 */
@@ -460,8 +468,9 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 											   0,
 											   SPEED_DIST_SLOW, /* harvest speed */
 											   0);				/* flags */
-		    if (!TRAJ_SUCCESS(err))
-			   ERROUT(err);
+			/* continue with the next stand */		    
+			//if (!TRAJ_SUCCESS(err))
+			//   ERROUT(err);
 
 
 			/* XXX debug step use only for subtraj command */
@@ -474,8 +483,10 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 											   0,
 											   SPEED_DIST_SLOW, /* harvest speed */
 											   0);				/* flags */
-		    if (!TRAJ_SUCCESS(err))
-			   ERROUT(err);
+
+			/* continue with the next stand */	
+		    //if (!TRAJ_SUCCESS(err))
+			//   ERROUT(err);
 
 
 			DEBUG(E_USER_STRAT,"R1, sending message START.");
@@ -484,7 +495,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 			/* POPCORNCUP_3 */
 			err = strat_harvest_popcorn_cup (COLOR_X(strat_infos.zones[ZONE_POPCORNCUP_3].x),
 									   strat_infos.zones[ZONE_POPCORNCUP_3].y,
-									   SIDE_FRONT, 0);
+									   SIDE_FRONT, POPCORN_CUP_HARVEST_DO_NOT_RELEASE);
 
 			/* XXX debug step use only for subtraj command */
 			//strat_debug_wait_key_pressed (MAIN_ROBOT);
@@ -550,26 +561,12 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 
 			err = strat_release_popcorns_in_home (COLOR_X(strat_infos.zones[zone_num].x),
 													strat_infos.zones[zone_num].y, 0);
-			/* XXX, don't care about err */			
-			err = END_TRAJ;
 			break;
 
 		case ZONE_MY_HOME_SPOTLIGHT:
-			if (slavedspic.stands_system[COLOR_INVERT(SIDE_LEFT)].stored_stands < 4 ||
-				(strat_infos.conf.flags & CONF_FLAG_DO_TOWER))
-			{
-				err = strat_buit_and_release_spotlight (COLOR_X(strat_infos.zones[zone_num].x),
-														strat_infos.zones[zone_num].y,
-														COLOR_INVERT(SIDE_LEFT), STANDS_RELEASE_DO_TOWER);
-			}
-			else {
-				err = strat_buit_and_release_spotlight (COLOR_X(strat_infos.zones[zone_num].x),
-														strat_infos.zones[zone_num].y,
-														COLOR_INVERT(SIDE_LEFT), 0);
-			}
-			
-			/* XXX, don't care about err */			
-			err = END_TRAJ;
+			err = strat_buit_and_release_spotlight (COLOR_X(strat_infos.zones[zone_num].x),
+													strat_infos.zones[zone_num].y,
+													COLOR_INVERT(SIDE_LEFT), strat_need_build_a_tower());			
 			break;
 
 		case ZONE_MY_PLATFORM:
@@ -578,8 +575,6 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 													strat_infos.zones[zone_num].y,
 													COLOR_INVERT(SIDE_LEFT), STAND_RELEASE_DO_TOWER);
 #endif
-			/* XXX, don't care about err */			
-			err = END_TRAJ;
 			break;
 
 		case ZONE_POPCORNCUP_1:
@@ -590,9 +585,17 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 
 
 		case ZONE_POPCORNCUP_2:
+
+			/* release front cup */
+			strat_release_popcorn_cup_front ();
+
+			/* harvest on the rear cup */
 			err = strat_harvest_popcorn_cup (COLOR_X(strat_infos.zones[zone_num].x),
 									   strat_infos.zones[zone_num].y,
 									   SIDE_REAR, 0);
+
+			/* XXX, open a bit the rear tray, popcorns should fall into rear cup */
+			i2c_slavedspic_mode_tray(I2C_POPCORN_TRAY_MODE_CLOSE, -100);
 			break;
 
 		case ZONE_POPCORNCUP_3:
@@ -634,12 +637,12 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 
 		case ZONE_MY_CINEMA_UP:
 			err = strat_release_popcorns_in_home (COLOR_X(strat_infos.zones[zone_num].x),
-													strat_infos.zones[zone_num].y, POPCORN_ONLY_CUP);
+													strat_infos.zones[zone_num].y, POPCORNS_RELEASE_ONLY_CUP);
 			break;
 
 		case ZONE_MY_CINEMA_DOWN:
 			err = strat_release_popcorns_in_home (COLOR_X(strat_infos.zones[zone_num].x),
-													strat_infos.zones[zone_num].y, POPCORN_ONLY_CUP);
+													strat_infos.zones[zone_num].y, POPCORNS_RELEASE_ONLY_CUP);
 			break;
 
 		/* not yet or don't know how to work in the zones */
@@ -791,7 +794,7 @@ uint8_t strat_smart_main_robot(void)
 		/* XXX should doesn't happend, return END_TRAJ */
 		err = END_TRAJ;
 
-		/* special case */
+		/* special case, XXX WHY???????????????????? */
 		if (zone_num == ZONE_MY_STAND_GROUP_1)
 			return err;
 

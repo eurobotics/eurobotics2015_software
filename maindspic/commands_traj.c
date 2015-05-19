@@ -1124,7 +1124,7 @@ static void cmd_strat_conf_parsed(void *parsed_result, void *data)
         strat_set_next_main_strategy();
     }
 
-    if (!strcmp_P(res->arg1, PSTR("homologation")))
+    else if (!strcmp_P(res->arg1, PSTR("homologation")))
     {
         /* flags */
         strat_infos.conf.flags = 0;
@@ -1135,13 +1135,16 @@ static void cmd_strat_conf_parsed(void *parsed_result, void *data)
         strat_set_next_main_strategy();
     }
 
+    else if (!strcmp_P(res->arg1, PSTR("do_tower")))
+		strat_infos.conf.flags |= CONF_FLAG_DO_TOWER;
+
     strat_infos.dump_enabled = 1;
     strat_dump_conf();
 }
 
 prog_char str_strat_conf_arg0[] = "strat_conf";
 parse_pgm_token_string_t cmd_strat_conf_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_strat_conf_result, arg0, str_strat_conf_arg0);
-prog_char str_strat_conf_arg1[] = "show#base#homologation";
+prog_char str_strat_conf_arg1[] = "show#base#homologation#do_tower";
 parse_pgm_token_string_t cmd_strat_conf_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_strat_conf_result, arg1, str_strat_conf_arg1);
 
 //prog_char help_strat_conf[] = "configure specific strat for a match";
@@ -1300,6 +1303,11 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
    	else if (!strcmp_P(res->arg1, PSTR("home_spotlight")))
         zone_num = ZONE_MY_HOME_SPOTLIGHT;
 
+   	else if (!strcmp_P(res->arg1, PSTR("home_timeout"))) {
+        zone_num = ZONE_MY_HOME_SPOTLIGHT;
+		time_set(STAND_RELEASE_TIME, 0);
+	}
+
    	else if (!strcmp_P(res->arg1, PSTR("home_popcorns")))
         zone_num = ZONE_MY_HOME_POPCORNS;
 
@@ -1381,7 +1389,7 @@ end:
 
 prog_char str_subtraj1_arg0[] = "subtraj";
 parse_pgm_token_string_t cmd_subtraj1_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg0, str_subtraj1_arg0);
-prog_char str_subtraj1_arg1[] = "begining#home_popcorns#home_spotlight#machine#machine_opp#cinema_up#cinema_down#platform#stairs#stairs_ways#outside";
+prog_char str_subtraj1_arg1[] = "begining#home_popcorns#home_spotlight#home_timeout#machine#machine_opp#cinema_up#cinema_down#platform#stairs#stairs_ways#outside";
 parse_pgm_token_string_t cmd_subtraj1_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg1, str_subtraj1_arg1);
 //parse_pgm_token_num_t cmd_subtraj1_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg2, INT32);
 //parse_pgm_token_num_t cmd_subtraj1_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg3, INT32);

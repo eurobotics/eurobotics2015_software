@@ -1185,6 +1185,8 @@ void stands_system_init(stands_system_t *ss, uint8_t stand_sensor, stands_blade_
 	ss->us = 0;
 }
 
+#define STAND_SENSOR_TIME 350000L
+
 uint8_t do_hide_tower(stands_system_t *ss)
 {
 	uint8_t ret = 0;
@@ -1357,8 +1359,6 @@ uint8_t do_harvest_stand_ready(stands_system_t *ss)
 
 uint8_t do_harvest_stand_do(stands_system_t *ss)
 {
-#define STAND_SENSOR_TIME 350000L
-
 	uint8_t ret = 0;
 
 	switch(ss->substate)
