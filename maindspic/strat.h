@@ -241,8 +241,9 @@
 
 #define ZONE_BLOCK_UPPER_SIDE    		20
 #define ZONE_FREE_UPPER_SIDE    		21
+#define ZONE_CUP_NEAR_STAIRS			22
 
-#define ZONES_MAX		    			22
+#define ZONES_MAX		    			23
 
 /*
  * Strat diagram, valid for YELLOW.
@@ -355,11 +356,9 @@ typedef struct {
 #endif
 
 	/* which robots can perform this action */
-	/* TODO: is useful, remove ? */
 	uint8_t robot;
 	#define MAIN_ROBOT  0
 	#define SEC_ROBOT   1
-	#define BOTH_ROBOTS 2
 	#define ROBOT_MAX 	2
 
 } strat_zones_t;
@@ -392,6 +391,9 @@ struct strat_infos {
 #define MSG_UPPER_SIDE_IS_BLOCKED 2
 #define MSG_UPPER_SIDE_FREE	   3
 #define MSG_UPPER_SIDE_IS_FREE	   4
+#define MSG_RELEASE_CUP_NEAR_STAIRS	   5
+#define MSG_CUP_RELEASED	   6
+#define MSG_RELEASE_CUP_IMPOSSIBLE	  7
 	/* message */
 	uint8_t msg;
 
@@ -547,6 +549,7 @@ void strat_opp_tracking (void);
 /* Messages between robots */
 void strat_smart_set_msg (uint8_t msg);
 uint8_t strat_smart_get_msg (void);
+uint8_t strat_wait_sync_main_robot(uint8_t msg);
 
 /********************************************
  * in strat_strategies.c
