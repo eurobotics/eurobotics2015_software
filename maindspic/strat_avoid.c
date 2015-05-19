@@ -332,7 +332,12 @@ void set_home_yellow_poly_abs(poly_t *pol,
 	tmp_y += y;
 	oa_poly_set_point(pol, tmp_x, tmp_y, 3);
 	/* point 5 */
-	tmp_x = 650+OBS_CLERANCE/2;
+
+#ifdef IM_SECONDARY_ROBOT
+		tmp_x = 650+OBS_CLERANCE;
+#else
+		tmp_x = 650+OBS_CLERANCE/2;
+#endif
 	tmp_y = 1000;
 
 	oa_poly_set_point(pol, tmp_x, tmp_y, 4);
@@ -361,7 +366,12 @@ void set_home_green_poly_abs(poly_t *pol,
 	oa_poly_set_point(pol, tmp_x, tmp_y, 1);
 
 	/* point 2 */
-	tmp_x = 2350-OBS_CLERANCE/2;
+#ifdef IM_SECONDARY_ROBOT
+		tmp_x = 2350-OBS_CLERANCE;
+#else
+		tmp_x = 2350-OBS_CLERANCE/2;
+#endif
+
 	tmp_y = 1000;
 
 	oa_poly_set_point(pol, tmp_x, tmp_y, 2);
@@ -1233,11 +1243,20 @@ retry:
 		set_poly_abs(pol_home_yellow,O_HOME_WIDTH+ OBS_CLERANCE/2 ,O_HOME_HEIGHT + OBS_CLERANCE,HOME_YELLOW_X+OBS_CLERANCE/2,HOME_YELLOW_Y);
 
 		pol_home_green= oa_new_poly(5);
+#ifdef IM_SECONDARY_ROBOT
+		set_home_green_poly_abs(pol_home_green,O_HOME_WIDTH+ OBS_CLERANCE/2+71,O_HOME_HEIGHT + OBS_CLERANCE,HOME_GREEN_X-OBS_CLERANCE/2-35,HOME_GREEN_Y);
+#else
 		set_home_green_poly_abs(pol_home_green,O_HOME_WIDTH+ OBS_CLERANCE/2,O_HOME_HEIGHT + OBS_CLERANCE,HOME_GREEN_X-OBS_CLERANCE/2,HOME_GREEN_Y);
+#endif
 	}else{
 		pol_home_yellow= oa_new_poly(5);
+#ifdef IM_SECONDARY_ROBOT
+		set_home_yellow_poly_abs(pol_home_yellow,O_HOME_WIDTH+ OBS_CLERANCE/2 +71,O_HOME_HEIGHT + OBS_CLERANCE,HOME_YELLOW_X+OBS_CLERANCE/2+35,HOME_YELLOW_Y);
+#else
 		set_home_yellow_poly_abs(pol_home_yellow,O_HOME_WIDTH+ OBS_CLERANCE/2 ,O_HOME_HEIGHT + OBS_CLERANCE,HOME_YELLOW_X+OBS_CLERANCE/2,HOME_YELLOW_Y);
 
+
+#endif
 		pol_home_green= oa_new_poly(4);
 		set_poly_abs(pol_home_green,O_HOME_WIDTH+ OBS_CLERANCE/2,O_HOME_HEIGHT + OBS_CLERANCE,HOME_GREEN_X-OBS_CLERANCE/2,HOME_GREEN_Y);
 	}
