@@ -121,7 +121,7 @@ uint8_t strat_close_clapperboards (int16_t x, int16_t y, uint8_t side, uint8_t f
 end:
 	/* end stuff and close sticks */
 #ifndef HOST_VERSION
-	pwm_servo_set(&gen.pwm_servo_oc1, 10);
+	pwm_servo_set(&gen.pwm_servo_oc1, 20);
 	pwm_servo_set(&gen.pwm_servo_oc2, 0);
 #endif
 	strat_set_speed(old_spdd, old_spda);
