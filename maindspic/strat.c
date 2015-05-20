@@ -242,7 +242,7 @@ struct strat_infos strat_infos = {
 		0, 0,
 		SEC_ROBOT
 	},
-	.zones[ZONE_MY_CINEMA_DOWN] =
+	.zones[ZONE_MY_CINEMA_DOWN_SEC] =
 	{
 #ifdef ONLY_MAIN_ROBOT
 		ZONE_TYPE_CINEMA,
@@ -260,6 +260,15 @@ struct strat_infos strat_infos = {
 		SEC_ROBOT
 #endif
 	},
+	.zones[ZONE_MY_CINEMA_DOWN_MAIN] =
+	{
+		ZONE_TYPE_CINEMA,
+		MY_CINEMA_DOWN_X, MY_CINEMA_DOWN_Y-150,
+		2600, 3000, 400, 800,
+		0, 0,
+//		0, (9000*1000L),
+		MAIN_ROBOT
+	},
 	/* stairs */
   	.zones[ZONE_MY_STAIRS] =
 	{
@@ -275,7 +284,7 @@ struct strat_infos strat_infos = {
 	{
 		ZONE_TYPE_STAIRWAY,
 		CARPET_LEFT_INFRONT_X, STAIRS_EDGE_Y,
-		1000, 1500, 1400, 2000,
+		910, 1500, 1200, STAIRS_EDGE_Y,
         CARPET_LEFT_INFRONT_X, STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
 		0, 0,
 		SEC_ROBOT
@@ -350,7 +359,7 @@ struct strat_infos strat_infos = {
 #else
 		ZONE_TYPE_STRAT,
 		WORK_NULL, WORK_NULL,
-		760, 1060, 1020, 1320,
+		910, 1300, 1020, 1320,
         CARPET_LEFT_INFRONT_X, MY_CUP_1_Y, //STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
 		0, 0,
 		SEC_ROBOT
@@ -376,6 +385,20 @@ struct strat_infos strat_infos = {
         1060, 330,
 		0, 0,
 		MAIN_ROBOT
+	},
+		MAIN_ROBOT
+	},
+	/* ZONE_RELEASE_CUP_NEAR_STAIRS */
+  	.zones[ZONE_CUP_NEAR_STAIRS] =
+	{
+		ZONE_TYPE_CINEMA,
+		700, 1275,
+		500, 960, 1025, 1525,
+		700, 1275, 
+		0, 0,
+//		0, (9000*1000L),
+		//this value is changed to MAIN_ROBOT after sec robot is finished
+		SEC_ROBOT
 	},
 };
 
@@ -426,7 +449,8 @@ char zone_name[ZONES_MAX][14]= {
     [ZONE_POPCORNCUP_2]="CUP 2\0",
     [ZONE_POPCORNCUP_3]="CUP 3\0",
     [ZONE_MY_CINEMA_UP]="CINEMA UP\0",
-    [ZONE_MY_CINEMA_DOWN]="CINEMA DOWN\0",
+    [ZONE_MY_CINEMA_DOWN_SEC]="CIN DOWN SEC\0",
+    [ZONE_MY_CINEMA_DOWN_MAIN]="CIN DOWN MAIN\0",
     [ZONE_MY_STAIRS]="STAIRS\0",
     [ZONE_MY_HOME_SPOTLIGHT]="H.SPOTLIGHT\0",
     [ZONE_MY_HOME_POPCORNS]="H.POPCORNS\0",
@@ -436,7 +460,8 @@ char zone_name[ZONES_MAX][14]= {
     [ZONE_MY_STAIRWAY]="STAIRWAY\0",
     [ZONE_MY_HOME_OUTSIDE]="H.OUTSIDE\0",
     [ZONE_BLOCK_UPPER_SIDE]="BLOCK\0",
-    [ZONE_FREE_UPPER_SIDE]="FREE\0",
+    [ZONE_MY_PLATFORM]="PLAT\0",
+    [ZONE_CUP_NEAR_STAIRS]="CUP STAIRS\0",
 };
 
 /* return string with the zone name */
@@ -600,7 +625,10 @@ uint8_t strat_main(void)
 	strat_smart_set_msg(MSG_WAIT_START);
 #endif
 
-
+	/* Zones we want to avoid */
+	strat_infos.zones[ZONE_CUP_NEAR_STAIRS].flags |= (ZONE_AVOID);
+									
+	
     /* play */
     do{
         err = strat_smart_main_robot();

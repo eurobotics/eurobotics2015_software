@@ -154,6 +154,9 @@
 #define OPP_POPCORNMAC_X	    2550
 #define OPP_POPCORNMAC_Y	    2000-35
 
+#define MY_PLATFORM_X		    1150
+#define MY_PLATFORM_Y		    150
+
 #define MY_CUP_1_X			    910
 #define MY_CUP_1_Y			    2000-830
 #define MY_CUP_2_X			    250
@@ -222,25 +225,27 @@
 #define ZONE_POPCORNCUP_3				8
 
 #define ZONE_MY_CINEMA_UP				9
-#define ZONE_MY_CINEMA_DOWN				10
+#define ZONE_MY_CINEMA_DOWN_SEC			10
+#define ZONE_MY_CINEMA_DOWN_MAIN		11
 
-#define ZONE_MY_STAIRS					11
-#define ZONE_MY_STAIRWAY				12
+#define ZONE_MY_STAIRS					12
+#define ZONE_MY_STAIRWAY				13
 
-#define ZONE_MY_CLAP_1					13
-#define ZONE_MY_CLAP_2					14
-#define ZONE_MY_CLAP_3					15
+#define ZONE_MY_CLAP_1					14
+#define ZONE_MY_CLAP_2					15
+#define ZONE_MY_CLAP_3					16
 
-#define ZONE_MY_PLATFORM				16
+#define ZONE_MY_PLATFORM				17
 
-#define ZONE_MY_HOME_OUTSIDE			17
-#define ZONE_MY_HOME_POPCORNS			18
-#define ZONE_MY_HOME_SPOTLIGHT			19
+#define ZONE_MY_HOME_OUTSIDE			18
+#define ZONE_MY_HOME_POPCORNS			19
+#define ZONE_MY_HOME_SPOTLIGHT			20
 
-#define ZONE_BLOCK_UPPER_SIDE    		20
-#define ZONE_FREE_UPPER_SIDE    		21
+#define ZONE_BLOCK_UPPER_SIDE    		21
+#define ZONE_FREE_UPPER_SIDE    		22
+#define ZONE_CUP_NEAR_STAIRS			23
 
-#define ZONES_MAX		    			22
+#define ZONES_MAX		    			24
 
 /*
  * Strat diagram, valid for YELLOW.
@@ -348,7 +353,6 @@ typedef struct {
 	#define ZONE_AVOID		   	8
 
 	/* which robots can perform this action */
-	/* TODO: is useful, remove ? */
 	uint8_t robot;
 	#define MAIN_ROBOT  0
 	#define SEC_ROBOT   1
@@ -376,6 +380,7 @@ struct strat_infos {
 
 #define STR_HOMOLOGATION 0
 #define STR_BASE 1
+#define STR_QUALIFICATION 2
 	uint8_t match_strategy;
 
 
@@ -384,6 +389,9 @@ struct strat_infos {
 #define MSG_UPPER_SIDE_IS_BLOCKED 2
 #define MSG_UPPER_SIDE_FREE	   3
 #define MSG_UPPER_SIDE_IS_FREE	   4
+#define MSG_RELEASE_CUP_NEAR_STAIRS	   5
+#define MSG_CUP_RELEASED	   6
+#define MSG_RELEASE_CUP_IMPOSSIBLE	  7
 	/* message */
 	uint8_t msg;
 
@@ -564,6 +572,7 @@ void strat_opp_tracking (void);
 /* Messages between robots */
 void strat_smart_set_msg (uint8_t msg);
 uint8_t strat_smart_get_msg (void);
+uint8_t strat_wait_sync_main_robot(uint8_t msg);
 
 /********************************************
  * in strat_strategies.c
