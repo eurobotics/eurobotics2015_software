@@ -473,53 +473,82 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 			/* Set start to sec robot */
 			strat_smart[MAIN_ROBOT].current_zone = ZONE_MY_STAND_GROUP_1;
 
-			/* TODO: call specific function for stand group 1 */
-			err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_4_X),
-											   MY_STAND_4_Y,
-											   COLOR_INVERT(SIDE_RIGHT),
-								 			   COLOR_INVERT(SIDE_RIGHT),
-											   0,
-											   SPEED_DIST_SLOW, /* harvest speed */
-											   0);				/* flags */
-			/* continue with the next stand */		    
-			//if (!TRAJ_SUCCESS(err))
-			//   ERROUT(err);
+            /* fast harvesting of stand 4, 5 and cup 3 */
+            if (strat_infos.conf.flags & DO_STAND_FAST_GROUP_1) {
+                err = strat_harvest_stands_and_cup_inline();
+                strat_infos.conf.flags &= ~(DO_STAND_FAST_GROUP_1);
+            }
+    
+
+            /* stand 4 */
+			if (!(strat_infos.done_flags & DONE_STAND_4)) {
+			    err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_4_X),
+											       MY_STAND_4_Y,
+											       COLOR_INVERT(SIDE_RIGHT),
+								     			   COLOR_INVERT(SIDE_RIGHT),
+											       0,
+											       SPEED_DIST_SLOW, /* harvest speed */
+											       0);				/* flags */
+			    /* continue with the next stand */		    
+			    //if (!TRAJ_SUCCESS(err))
+			    //   ERROUT(err);
+
+                /* mark stand as harvested */
+                strat_infos.done_flags |= DONE_STAND_4;
+            }
 
 
 			/* XXX debug step use only for subtraj command */
 			//strat_debug_wait_key_pressed (MAIN_ROBOT);
 
-			err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_5_X),
-											   MY_STAND_5_Y,
-											   COLOR_INVERT(SIDE_LEFT),
-								 			   COLOR_INVERT(SIDE_LEFT),
-											   0,
-											   SPEED_DIST_SLOW, /* harvest speed */
-											   0);				/* flags */
+            /* stand 5 */
+			if (!(strat_infos.done_flags & DONE_STAND_5)) {
+			    err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_5_X),
+											       MY_STAND_5_Y,
+											       COLOR_INVERT(SIDE_LEFT),
+								     			   COLOR_INVERT(SIDE_LEFT),
+											       0,
+											       SPEED_DIST_SLOW, /* harvest speed */
+											       0);				/* flags */
 
-			/* continue with the next stand */	
-		    //if (!TRAJ_SUCCESS(err))
-			//   ERROUT(err);
+			    /* continue with the next stand */	
+		        //if (!TRAJ_SUCCESS(err))
+			    //   ERROUT(err);
 
+                /* mark stand as harvested */
+                strat_infos.done_flags |= DONE_STAND_5;
+
+            }
 
 			DEBUG(E_USER_STRAT,"R1, sending message START.");
 			strat_smart_set_msg(MSG_START);
 
-			/* POPCORNCUP_3 */
-			err = strat_harvest_popcorn_cup (COLOR_X(strat_infos.zones[ZONE_POPCORNCUP_3].x),
-									   strat_infos.zones[ZONE_POPCORNCUP_3].y,
-									   SIDE_FRONT, POPCORN_CUP_HARVEST_DO_NOT_RELEASE);
-
 			/* XXX debug step use only for subtraj command */
 			//strat_debug_wait_key_pressed (MAIN_ROBOT);
 
-			err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_6_X),
-											   MY_STAND_6_Y,
-											   COLOR_INVERT(SIDE_LEFT),
-								 			   COLOR_INVERT(SIDE_LEFT),
-											   0,
-											   SPEED_DIST_SLOW, /* harvest speed */
-											   0);				/* flags */
+			/* POPCORNCUP_3 */
+			if (!(strat_infos.done_flags & DONE_CUP_3)) {
+			    err = strat_harvest_popcorn_cup (COLOR_X(strat_infos.zones[ZONE_POPCORNCUP_3].x),
+									       strat_infos.zones[ZONE_POPCORNCUP_3].y,
+									       SIDE_FRONT, POPCORN_CUP_HARVEST_DO_NOT_RELEASE);
+
+                /* mark cup as harvested */
+                strat_infos.done_flags |= DONE_CUP_3;
+
+            }
+
+
+		    /* XXX debug step use only for subtraj command */
+		    //strat_debug_wait_key_pressed (MAIN_ROBOT);
+
+            /* stand 6 */
+		    err = strat_harvest_orphan_stands (COLOR_X(MY_STAND_6_X),
+										       MY_STAND_6_Y,
+										       COLOR_INVERT(SIDE_LEFT),
+							     			   COLOR_INVERT(SIDE_LEFT),
+										       0,
+										       SPEED_DIST_SLOW, /* harvest speed */
+										       0);				/* flags */
 			break;
 
 

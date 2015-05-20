@@ -129,6 +129,10 @@ end:
  */
 uint8_t strat_harvest_stands_and_cup_inline (void)
 {
+#define STAND_4_HARVEST_POS_X   MY_STAND_4_X
+#define STAND_5_HARVEST_POS_X   MY_STAND_5_X
+#define CUP_3_HARVEST_DISTANCE  (d-ROBOT_CENTER_CUP_FRONT-10)
+
    	uint8_t err = 0;
 	uint16_t old_spdd, old_spda;
 	int16_t d = 0;
@@ -136,8 +140,22 @@ uint8_t strat_harvest_stands_and_cup_inline (void)
 	/* set local speed, and disable speed limit */
 	strat_get_speed (&old_spdd, &old_spda);
    	strat_limit_speed_disable ();
-	strat_set_speed (SPEED_DIST_FAST,SPEED_ANGLE_FAST);
-   
+
+    /* set specific MAXIMUN speed and acceleration for DISTANCE */
+	quadramp_set_1st_order_vars(&mainboard.distance.qr, SPEED_DIST_VERY_FAST, SPEED_DIST_VERY_FAST); 	/* set speed */
+	quadramp_set_2nd_order_vars(&mainboard.distance.qr, ACC_DIST, ACC_DIST); 	                        /* set accel */
+
+    /* set specific MAXIMUN speed and acceleration for ANGLE */
+    quadramp_set_1st_order_vars(&mainboard.angle.qr, SPEED_ANGLE_VERY_FAST, SPEED_ANGLE_VERY_FAST); 	/* set speed */
+	quadramp_set_2nd_order_vars(&mainboard.angle.qr, ACC_ANGLE, ACC_ANGLE); 		                    /* set accel */
+
+    /* set new traj speeds */
+	strat_set_speed (SPEED_DIST_VERY_FAST,SPEED_ANGLE_FAST);
+
+    /* enable obstacle sensors */
+    strat_opp_sensor_enable();
+  
+ 
 	/* TODO enable opponent sensors */
 
 	/* turn to central cup */
@@ -148,33 +166,86 @@ uint8_t strat_harvest_stands_and_cup_inline (void)
         goto intr;
 	*/
 
-	/* prepare for harvesting */
-	i2c_slavedspic_mode_ss_harvest(I2C_SIDE_LEFT, 0);
-	i2c_slavedspic_mode_ss_harvest(I2C_SIDE_RIGHT, 0);
-	i2c_slavedspic_mode_ps(I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_READY);
-
 	/* go close to central cup */
 	d = distance_from_robot(COLOR_X(MY_CUP_3_X), MY_CUP_3_Y);
 	trajectory_d_rel(&mainboard.traj, d-ROBOT_CENTER_TO_FRONT);
-	err = wait_traj_end(TRAJ_FLAGS_STD);
-    if (!TRAJ_SUCCESS(err))
-	   ERROUT(err);
 
-	/* if traj succesfull, pick up cup */
-	i2c_slavedspic_mode_ps(I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_CATCH_AND_DROP);
-	time_wait_ms(500);
-	i2c_slavedspic_mode_ps(I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_RELEASE);	
+	/* prepare for harvesting stands and cup */
+	i2c_slavedspic_mode_ss_harvest_ready(I2C_SIDE_LEFT, 0);
+	i2c_slavedspic_mode_ss_harvest_ready(I2C_SIDE_RIGHT, 0);
+	i2c_slavedspic_mode_ps(I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_READY);
 
-	/* NOTE for strat: at this point the 2 first stands and the cup must be checked
-	   as done, never mind if we cached or not */
+    
+    /* harvest stand 4 */
+    err = WAIT_COND_OR_TRAJ_END (x_is_more_than(STAND_4_HARVEST_POS_X), TRAJ_FLAGS_NO_NEAR);
+
+    if (!err)
+    	i2c_slavedspic_mode_ss_harvest_ready(COLOR_INVERT(I2C_SIDE_RIGHT), 0);
+    else 
+        ERROUT(err);
+
+    /* mark stand as harvested */
+    strat_infos.done_flags |= DONE_STAND_4;
+                
+    /* TODO: set lower speed */
+
+    /* harvest stand 5 */
+    err = WAIT_COND_OR_TRAJ_END (x_is_more_than(STAND_5_HARVEST_POS_X), TRAJ_FLAGS_NO_NEAR);
+
+    if (!err)
+    	i2c_slavedspic_mode_ss_harvest_ready(COLOR_INVERT(I2C_SIDE_LEFT), 0);
+    else
+        ERROUT(err);
+
+
+    /* mark stand as harvested */
+    strat_infos.done_flags |= DONE_STAND_5;
+
+    /* harvest cup 3 */
+    err = WAIT_COND_OR_TRAJ_END (distance_from_robot(COLOR_X(MY_CUP_3_X), MY_CUP_3_Y) < CUP_3_HARVEST_DISTANCE, TRAJ_FLAGS_NO_NEAR);
+
+    if (!err)
+    	i2c_slavedspic_mode_ps(I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_CATCH_AND_DROP);
+    else
+        ERROUT(err);
+
+    /* mark cup as harvested */
+    strat_infos.done_flags |= DONE_CUP_3;
+
+    /* wait trajectory end */
+    err = wait_traj_end(TRAJ_FLAGS_STD);
+    if (!TRAJ_SUCCESS(err)) 
+        ERROUT(err);
 
 end:
-	/* end stuff */
-	i2c_slavedspic_mode_ps(I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_HIDE);
-	trajectory_d_rel(&mainboard.traj, -80);
-	wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-	/* ignore error */
+    /* in any case, if trajectory fails */
+    if (!TRAJ_SUCCESS(err))
+    {
+        /* stop */
+        strat_hardstop();
+        
+        /* go backwards and wait a bit */
+      	trajectory_d_rel(&mainboard.traj, -OBS_CLERANCE);
+        wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 
+        /* XXX, wait before continue, obstacle should go away */
+        time_wait_ms (5000);
+    }
+
+  	/* end stuff */
+
+    /* disable obstacle sensors */
+    strat_opp_sensor_disable();
+
+    /* restore MAXIMUN speed and acceleration for DISTANCE */
+	quadramp_set_1st_order_vars(&mainboard.distance.qr, SPEED_DIST_VERY_FAST, SPEED_DIST_VERY_FAST); 	/* set speed */
+	quadramp_set_2nd_order_vars(&mainboard.distance.qr, ACC_DIST, ACC_DIST); 	                        /* set accel */
+
+    /* restore MAXIMUN speed and acceleration for ANGLE */
+    quadramp_set_1st_order_vars(&mainboard.angle.qr, SPEED_ANGLE_VERY_FAST, SPEED_ANGLE_VERY_FAST); 	/* set speed */
+	quadramp_set_2nd_order_vars(&mainboard.angle.qr, ACC_ANGLE, ACC_ANGLE); 		                    /* set accel */
+    
+    /* restore traj speeds */
 	strat_set_speed(old_spdd, old_spda);	
    	strat_limit_speed_enable();
    	return err;

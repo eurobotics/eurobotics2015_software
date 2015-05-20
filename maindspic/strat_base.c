@@ -556,7 +556,7 @@ uint8_t __strat_obstacle(uint8_t which)
 		return 0;
 
 	/* opponent sensors obstacle */
-#if 0
+#if 1
 	if (strat_opp_sensors_enabled)
 	{
 		/* opponent is in front of us */
