@@ -484,6 +484,9 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side, ui
 /* decides if we need build a tower */
 uint8_t strat_need_build_a_tower (void);
 
+/* escape from upper zone */
+uint8_t strat_escape_form_upper_zone_to_xy_abs (uint8_t flags);
+
 /********************************************
  * in strat_popcorn.c
  *******************************************/
