@@ -129,9 +129,11 @@ end:
  */
 uint8_t strat_harvest_stands_and_cup_inline (void)
 {
-#define STAND_4_HARVEST_POS_X   MY_STAND_4_X
-#define STAND_5_HARVEST_POS_X   MY_STAND_5_X
-#define CUP_3_HARVEST_DISTANCE  (d-ROBOT_CENTER_CUP_FRONT-10)
+#define STAND_4_HARVEST_POS_X   (800-10)
+#define STAND_5_HARVEST_POS_X   (1150-10)
+
+#define __ROBOT_CENTER_CUP_FRONT  212
+#define CUP_3_HARVEST_DISTANCE  (__ROBOT_CENTER_CUP_FRONT+10)
 
    	uint8_t err = 0;
 	uint16_t old_spdd, old_spda;
@@ -180,7 +182,7 @@ uint8_t strat_harvest_stands_and_cup_inline (void)
     err = WAIT_COND_OR_TRAJ_END (x_is_more_than(STAND_4_HARVEST_POS_X), TRAJ_FLAGS_NO_NEAR);
 
     if (!err)
-    	i2c_slavedspic_mode_ss_harvest_ready(COLOR_INVERT(I2C_SIDE_RIGHT), 0);
+    	i2c_slavedspic_mode_ss_harvest_do(COLOR_INVERT(I2C_SIDE_RIGHT), 0);
     else 
         ERROUT(err);
 
@@ -190,10 +192,13 @@ uint8_t strat_harvest_stands_and_cup_inline (void)
     /* TODO: set lower speed */
 
     /* harvest stand 5 */
+
+    /* disable obstacle sensors */
+    strat_opp_sensor_disable();
     err = WAIT_COND_OR_TRAJ_END (x_is_more_than(STAND_5_HARVEST_POS_X), TRAJ_FLAGS_NO_NEAR);
 
     if (!err)
-    	i2c_slavedspic_mode_ss_harvest_ready(COLOR_INVERT(I2C_SIDE_LEFT), 0);
+    	i2c_slavedspic_mode_ss_harvest_do(COLOR_INVERT(I2C_SIDE_LEFT), 0);
     else
         ERROUT(err);
 
@@ -202,10 +207,22 @@ uint8_t strat_harvest_stands_and_cup_inline (void)
     strat_infos.done_flags |= DONE_STAND_5;
 
     /* harvest cup 3 */
+
+	/* check sensor before continue */
+	if ((sensor_get(S_OPPONENT_FRONT_L) || sensor_get(S_OPPONENT_FRONT_R))) {
+		strat_hardstop ();
+		ERROUT(END_OBSTACLE);
+	}
+
+	/* XXX enable obstacle sensors */
+    strat_opp_sensor_enable();
+
     err = WAIT_COND_OR_TRAJ_END (distance_from_robot(COLOR_X(MY_CUP_3_X), MY_CUP_3_Y) < CUP_3_HARVEST_DISTANCE, TRAJ_FLAGS_NO_NEAR);
 
-    if (!err)
+    if (!err) {
     	i2c_slavedspic_mode_ps(I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_CATCH_AND_DROP);
+		i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY, 3000);
+	}
     else
         ERROUT(err);
 
@@ -231,6 +248,13 @@ end:
         /* XXX, wait before continue, obstacle should go away */
         time_wait_ms (5000);
     }
+	else {
+
+        /* go backwards and wait a bit */
+		//time_wait_ms (500);
+      	trajectory_d_rel(&mainboard.traj, -OBS_CLERANCE);
+        wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+	}
 
   	/* end stuff */
 
@@ -627,10 +651,14 @@ uint8_t strat_need_build_a_tower (void)
 
 
 /* escape from upper zone */
-uint8_t strat_escape_form_upper_zone_to_xy_abs (uint8_t flags)
+uint8_t strat_escape_form_upper_zone (uint8_t flags)
 {
-#define MIDDLE_LINE 600
-#define BOTTOM_LINE 1200
+#define X_UP 	950
+#define X_DOWN	0
+#define Y_UP 	AREA_Y
+#define Y_DOWN 	1200
+
+#define MIDDLE_LINE 650
 
    	uint8_t err = 0;
 	uint16_t old_spdd, old_spda;
@@ -649,12 +677,11 @@ uint8_t strat_escape_form_upper_zone_to_xy_abs (uint8_t flags)
     /* try to escape with avoid to the center of field */
     do {
         /* XXX */
-        clerance_minimum_enabled ();
+        clerance_minimum_enable ();
 
         /* if OPP near stair, escape thru cinema side */
-        /* TODO: opp is in area */
-        if ((opp1_y_is_more_than(BOTTOM_LINE) && opp1_x_is_more_than(MIDDLE_LINE)) ||
-            (opp2_y_is_more_than(BOTTOM_LINE) && opp2_x_is_more_than(MIDDLE_LINE)) )
+        if ((opponent1_is_in_area(X_UP, Y_UP, X_DOWN, Y_DOWN) && opp1_x_is_more_than(MIDDLE_LINE)) ||
+            (opponent2_is_in_area(X_UP, Y_UP, X_DOWN, Y_DOWN) && opp2_x_is_more_than(MIDDLE_LINE)) )
         {
 	        err = goto_and_avoid_forward (COLOR_X(400),
 						                  400,
@@ -662,16 +689,18 @@ uint8_t strat_escape_form_upper_zone_to_xy_abs (uint8_t flags)
 
         }
         /* else, if OPP near to cinemas, escape thru stairs side */
-        else if ((opp1_y_is_more_than(BOTTOM_LINE) /*&& !opp1_x_is_more_than(MIDDLE_LINE)*/) ||
-                 (opp2_y_is_more_than(BOTTOM_LINE) /*&& !opp2_x_is_more_than(MIDDLE_LINE)*/) )
+        else if ((opponent1_is_in_area(X_UP, Y_UP, X_DOWN, Y_DOWN) /*&& !opp1_x_is_more_than(MIDDLE_LINE)*/) ||
+                 (opponent2_is_in_area(X_UP, Y_UP, X_DOWN, Y_DOWN) /*&& !opp2_x_is_more_than(MIDDLE_LINE)*/) )
         {
 	        err = goto_and_avoid_forward (COLOR_X(AREA_Y/2),
 						                  AREA_Y/2 + 100,
 						                  TRAJ_FLAGS_NO_NEAR, TRAJ_FLAGS_NO_NEAR);
         }
 
+		if (!TRAJ_SUCCESS(err))
+			time_wait_ms (2000);
 
-    } while (err & END_ERROR);
+    } while (!TRAJ_SUCCESS(err));
 
 #if 0
     /* if not successed */
@@ -700,7 +729,7 @@ uint8_t strat_escape_form_upper_zone_to_xy_abs (uint8_t flags)
 #endif
 
 
-end:
+//end:
 	/* end stuff */
     clerance_minimum_disable ();
 	strat_set_speed(old_spdd, old_spda);	

@@ -376,14 +376,23 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
         strat_smart[robot].current_zone == ZONE_MY_STAND_GROUP_4)
     {
 
-        /* by default go with avoidance */
+        /* first trie */
 		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
 										strat_infos.zones[zone_num].init_y,
 										TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+        /* if not sucessed */
+        if (!TRAJ_SUCCESS(err)) {
+			time_wait_ms (5000);
 
-        /* escape if not sucessed */
-        if (!TRAJ_SUCCESS(err))
-            err = strat_escape_form_upper_zone_to_xy_abs (uint8_t flags);
+			/* second trie */
+			err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
+								strat_infos.zones[zone_num].init_y,
+								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+
+			/* escape if not sucessed */
+			if (!TRAJ_SUCCESS(err))
+            	err = strat_escape_form_upper_zone (0);
+		}
 
 		/* we are at init position */
 		err = END_TRAJ;
