@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Revision : $Id: strat_avoid.c,v 1.4 2009/05/27 20:04:07 zer0 Exp $
+ *  Revision : $Id$
  *
  */
 
@@ -186,6 +186,20 @@ double norm(double x, double y)
 }
 #endif
 
+static int16_t obs_clerance = OBS_CLERANCE;
+
+uint8_t  clerance_minimum_enabled = 0;
+
+void clerance_minimum_enable (void)
+{
+    clerance_minimum_enabled = 1;
+}
+
+void clerance_minimum_disable (void)
+{
+    clerance_minimum_enabled = 0;
+}
+
 /* rotate point */
 #ifdef HOST_VERSION_OA_TEST
 #warning HOST_VERSION_OA_TEST compilation
@@ -332,7 +346,7 @@ void set_home_yellow_poly_abs(poly_t *pol,
 	tmp_y += y;
 	oa_poly_set_point(pol, tmp_x, tmp_y, 3);
 	/* point 5 */
-	tmp_x = 650+OBS_CLERANCE/2;
+	tmp_x = 650+obs_clerance/2;
 	tmp_y = 1000;
 
 	oa_poly_set_point(pol, tmp_x, tmp_y, 4);
@@ -361,7 +375,7 @@ void set_home_green_poly_abs(poly_t *pol,
 	oa_poly_set_point(pol, tmp_x, tmp_y, 1);
 
 	/* point 2 */
-	tmp_x = 2350-OBS_CLERANCE/2;
+	tmp_x = 2350-obs_clerance/2;
 	tmp_y = 1000;
 
 	oa_poly_set_point(pol, tmp_x, tmp_y, 2);
@@ -1249,6 +1263,7 @@ int8_t goto_and_avoid(int16_t x, int16_t y,
 	int16_t opp1_w, opp1_l;
 	int16_t opp2_w, opp2_l;
 
+
 #ifndef HOST_VERSION_OA_TEST
 	int16_t opp1_x, opp1_y;
 	int16_t opp2_x, opp2_y;
@@ -1291,10 +1306,37 @@ retry:
 
 #endif
 
+#ifndef IM_SECONDARY_ROBOT
 	opp1_w = O_WIDTH;
-	opp1_l = O_LENGTH;
+
+    /* XXX */
+    if (clerance_minimum_enabled)
+	    opp1_l = O_WIDTH;
+    else
+    	opp1_l = O_LENGTH;
+
 	opp2_w = O_WIDTH;
-	opp2_l = O_LENGTH;
+
+    /* XXX */
+    if (clerance_minimum_enabled)
+    	opp2_l = O_WIDTH;
+    else
+	    opp2_l = O_LENGTH;
+
+    /* XXX */
+    if (clerance_minimum_enabled)
+        obs_clerance = OBS_CLERANCE_SIDE;
+    else
+        obs_clerance = OBS_CLERANCE;
+#else
+	opp1_w = O_WIDTH;
+   	opp1_l = O_LENGTH;
+
+	opp2_w = O_WIDTH;
+    opp2_l = O_LENGTH;
+
+    obs_clerance = OBS_CLERANCE;
+#endif
 
 	/* robot info */
 #ifndef HOST_VERSION_OA_TEST
@@ -1322,23 +1364,23 @@ retry:
 	set_opponent_poly(ROBOT2ND, pol_robot_2nd, &robot_pt, ROBOT_2ND_WIDTH, ROBOT_2ND_LENGTH);
 
 	pol_platform= oa_new_poly(4);
-	set_poly_abs(pol_platform,O_PLATFORM_WIDTH + OBS_CLERANCE,O_PLATFORM_HEIGHT + OBS_CLERANCE/2,PLATFORM_X,PLATFORM_Y+OBS_CLERANCE/2);
+	set_poly_abs(pol_platform,O_PLATFORM_WIDTH + obs_clerance,O_PLATFORM_HEIGHT + obs_clerance/2,PLATFORM_X,PLATFORM_Y+obs_clerance/2);
 
 	pol_stairs= oa_new_poly(4);
-	set_poly_abs(pol_stairs,O_STAIRS_WIDTH +OBS_CLERANCE,O_STAIRS_HEIGHT + OBS_CLERANCE/2,STAIRS_X,STAIRS_Y-OBS_CLERANCE/2);
+	set_poly_abs(pol_stairs,O_STAIRS_WIDTH +obs_clerance,O_STAIRS_HEIGHT + obs_clerance/2,STAIRS_X,STAIRS_Y-obs_clerance/2);
 
 	if(mainboard.our_color== I2C_COLOR_YELLOW){
 		pol_home_yellow= oa_new_poly(4);
-		set_poly_abs(pol_home_yellow,O_HOME_WIDTH+ OBS_CLERANCE/2 ,O_HOME_HEIGHT + OBS_CLERANCE,HOME_YELLOW_X+OBS_CLERANCE/2,HOME_YELLOW_Y);
+		set_poly_abs(pol_home_yellow,O_HOME_WIDTH+ obs_clerance/2 ,O_HOME_HEIGHT + obs_clerance,HOME_YELLOW_X+obs_clerance/2,HOME_YELLOW_Y);
 
 		pol_home_green= oa_new_poly(5);
-		set_home_green_poly_abs(pol_home_green,O_HOME_WIDTH+ OBS_CLERANCE/2,O_HOME_HEIGHT + OBS_CLERANCE,HOME_GREEN_X-OBS_CLERANCE/2,HOME_GREEN_Y);
+		set_home_green_poly_abs(pol_home_green,O_HOME_WIDTH+ obs_clerance/2,O_HOME_HEIGHT + obs_clerance,HOME_GREEN_X-obs_clerance/2,HOME_GREEN_Y);
 	}else{
 		pol_home_yellow= oa_new_poly(5);
-		set_home_yellow_poly_abs(pol_home_yellow,O_HOME_WIDTH+ OBS_CLERANCE/2 ,O_HOME_HEIGHT + OBS_CLERANCE,HOME_YELLOW_X+OBS_CLERANCE/2,HOME_YELLOW_Y);
+		set_home_yellow_poly_abs(pol_home_yellow,O_HOME_WIDTH+ obs_clerance/2 ,O_HOME_HEIGHT + obs_clerance,HOME_YELLOW_X+obs_clerance/2,HOME_YELLOW_Y);
 
 		pol_home_green= oa_new_poly(4);
-		set_poly_abs(pol_home_green,O_HOME_WIDTH+ OBS_CLERANCE/2,O_HOME_HEIGHT + OBS_CLERANCE,HOME_GREEN_X-OBS_CLERANCE/2,HOME_GREEN_Y);
+		set_poly_abs(pol_home_green,O_HOME_WIDTH+ obs_clerance/2,O_HOME_HEIGHT + obs_clerance,HOME_GREEN_X-obs_clerance/2,HOME_GREEN_Y);
 	}
 	/* if we are not in the limited area, try to go in it. */
 	ret = go_in_area(&robot_pt);
@@ -1416,6 +1458,7 @@ retry:
 		if (distance_between(robot_pt.x, robot_pt.y, opp1_x, opp1_y) < REDUCE_POLY_THRES ) {
 			if (opp1_w == 0)
 				opp1_l /= 2;
+
 			opp1_w /= 2;
 
 			NOTICE(E_USER_STRAT, "reducing opponent 1 %d %d", opp1_w, opp1_l);

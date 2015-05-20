@@ -135,6 +135,8 @@
 
 /* XXX obstacle clerance */
 #define OBS_CLERANCE            (235.+10.)
+#define OBS_CLERANCE_BACKWARDS  (205.+10.)
+#define OBS_CLERANCE_SIDE       (117.+10.)
 
 /* XXX keep synchronized with secondary_robot/main.h */
 #define ROBOT_SEC_LENGTH      	    163.
@@ -321,6 +323,7 @@ struct beaconboard
 
 #ifdef TWO_OPPONENTS
 	int16_t opponent2_x;
+
 	int16_t opponent2_y;
 	int16_t opponent2_a;
 	int16_t opponent2_d;

@@ -626,5 +626,86 @@ uint8_t strat_need_build_a_tower (void)
 }
 
 
+/* escape from upper zone */
+uint8_t strat_escape_form_upper_zone_to_xy_abs (uint8_t flags)
+{
+#define MIDDLE_LINE 600
+#define BOTTOM_LINE 1200
+
+   	uint8_t err = 0;
+	uint16_t old_spdd, old_spda;
+	int16_t x_init,y_init;
+
+	/* set local speed, and disable speed limit */
+	strat_get_speed (&old_spdd, &old_spda);
+    strat_limit_speed_disable ();
+	strat_set_speed (SPEED_DIST_VERY_SLOW, SPEED_ANGLE_VERY_SLOW);
+
+    /* save init position */
+    x_init = position_get_x_s16(&mainboard.pos);
+	y_init = position_get_y_s16(&mainboard.pos);
+
+
+    /* try to escape with avoid to the center of field */
+    do {
+        /* XXX */
+        clerance_minimum_enabled ();
+
+        /* if OPP near stair, escape thru cinema side */
+        /* TODO: opp is in area */
+        if ((opp1_y_is_more_than(BOTTOM_LINE) && opp1_x_is_more_than(MIDDLE_LINE)) ||
+            (opp2_y_is_more_than(BOTTOM_LINE) && opp2_x_is_more_than(MIDDLE_LINE)) )
+        {
+	        err = goto_and_avoid_forward (COLOR_X(400),
+						                  400,
+						                  TRAJ_FLAGS_NO_NEAR, TRAJ_FLAGS_NO_NEAR);
+
+        }
+        /* else, if OPP near to cinemas, escape thru stairs side */
+        else if ((opp1_y_is_more_than(BOTTOM_LINE) /*&& !opp1_x_is_more_than(MIDDLE_LINE)*/) ||
+                 (opp2_y_is_more_than(BOTTOM_LINE) /*&& !opp2_x_is_more_than(MIDDLE_LINE)*/) )
+        {
+	        err = goto_and_avoid_forward (COLOR_X(AREA_Y/2),
+						                  AREA_Y/2 + 100,
+						                  TRAJ_FLAGS_NO_NEAR, TRAJ_FLAGS_NO_NEAR);
+        }
+
+
+    } while (err & END_ERROR);
+
+#if 0
+    /* if not successed */
+    if (err & END_ERROR) 
+    {
+	    strat_set_speed (SPEED_DIST_VERY_SLOW, SPEED_ANGLE_VERY_SLOW);
+
+        /* depending on opponent position */
+
+        /* if near stair, escape thru cinema side */
+        if ((opp1_y_is_more_than(BOTTOM_LINE) && opp1_x_is_more_than(MIDDLE_LINE)) ||
+            (opp2_y_is_more_than(BOTTOM_LINE) && opp2_x_is_more_than(MIDDLE_LINE)) )
+        {
+            trajectory_goto_xy_abs (&mainboard.traj, x_init, y_init);
+            err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);   
+
+        }
+        /* else, if near to cinemas, escape thru stairs side */
+        else if ((opp1_y_is_more_than(BOTTOM_LINE) && !opp1_x_is_more_than(MIDDLE_LINE)) ||
+            (opp2_y_is_more_than(BOTTOM_LINE) && !opp2_x_is_more_than(MIDDLE_LINE)) )
+        }
+
+
+        }
+    }
+#endif
+
+
+end:
+	/* end stuff */
+    clerance_minimum_disable ();
+	strat_set_speed(old_spdd, old_spda);	
+   	strat_limit_speed_enable();
+   	return err;
+}
 
 

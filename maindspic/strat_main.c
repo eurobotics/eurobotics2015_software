@@ -371,6 +371,24 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 		/* we are at init position */
 		err = END_TRAJ;
 	}
+	if (strat_smart[robot].current_zone == ZONE_MY_STAND_GROUP_3 ||
+        strat_smart[robot].current_zone == ZONE_MY_POPCORNMAC ||
+        strat_smart[robot].current_zone == ZONE_MY_STAND_GROUP_4)
+    {
+
+        /* by default go with avoidance */
+		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
+										strat_infos.zones[zone_num].init_y,
+										TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+
+        /* escape if not sucessed */
+        if (!TRAJ_SUCCESS(err))
+            err = strat_escape_form_upper_zone_to_xy_abs (uint8_t flags);
+
+		/* we are at init position */
+		err = END_TRAJ;
+	}
+
 	else {
 
         /* action previous to goto */
@@ -868,6 +886,7 @@ uint8_t strat_smart_get_msg (void)
 
 	return ret;
 }
+
 
 
 
