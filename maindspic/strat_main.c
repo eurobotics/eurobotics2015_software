@@ -372,11 +372,24 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 		err = END_TRAJ;
 	}
 	else {
+
+        /* action previous to goto */
+        if (zone_num == ZONE_POPCORNCUP_2) {
+            /* prepare clamp */
+            i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_OPEN);
+        }
+
 		
 		/* by default go with avoidance */
 		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
 										strat_infos.zones[zone_num].init_y,
 										TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+
+        /* action after to goto */
+        if (zone_num == ZONE_POPCORNCUP_2 && !TRAJ_SUCCESS(err)) {
+            /* close clamp */
+            i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_STOCK_END);
+        }
 	}
 
 	/* update strat_infos */
@@ -886,6 +899,7 @@ uint8_t strat_smart_secondary_robot(void)
 	#define WORK_WAIT_END	7
 
 	static microseconds us = 0;
+
 	uint8_t received_ack;
 	uint8_t err=0;
 
