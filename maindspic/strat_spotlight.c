@@ -384,6 +384,8 @@ try_again:
 		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 		if (!TRAJ_SUCCESS(err))
 			   ERROUT(err);	
+
+		/* TODO: avance a bit for to be sure we harvest it */
 	}
 
 	/* debug */
@@ -616,6 +618,12 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side, ui
 
 	/* XXX if TIME_OVER mode, simply exit and block */
 	if (flags & STANDS_RELEASE_TIME_OVER) {
+
+		/* go backwards */
+		strat_set_speed (SPEED_DIST_RELEASE_STANDS, SPEED_ANGLE_VERY_SLOW);
+		trajectory_d_rel(&mainboard.traj, -(2*STANDS_RADIOUS));
+		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+
 		//strat_exit();
 		while(1);
 	}

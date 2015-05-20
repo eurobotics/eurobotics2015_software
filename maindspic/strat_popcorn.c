@@ -90,6 +90,18 @@ uint8_t strat_harvest_popcorn_cup (int16_t x, int16_t y, uint8_t side, uint8_t f
    	strat_limit_speed_disable ();
 	strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 
+
+	/* check opp */
+    if (side == SIDE_FRONT) 
+	{
+		/* check sensor before continue */
+		if ((sensor_get(S_OPPONENT_FRONT_L) || sensor_get(S_OPPONENT_FRONT_R))) {
+			ERROUT(END_OBSTACLE);
+		}	
+
+        strat_opp_sensor_enable();
+	}
+
     /* prepare cup clamp */
     side == SIDE_FRONT? i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_READY):
                         i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_OPEN);
@@ -121,8 +133,6 @@ uint8_t strat_harvest_popcorn_cup (int16_t x, int16_t y, uint8_t side, uint8_t f
 
     /* enable obstacle sensors in front case */
     if (side == SIDE_FRONT) {
-        strat_opp_sensor_enable();
-
 	    trajectory_d_rel(&mainboard.traj, d);
 	    err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
     }
@@ -357,7 +367,7 @@ retry1:
 			spotlight_timeout = STAND_RELEASE_TIME;
 
 		/* if timeout, release stands */
-		if(time_get_s() < spotlight_timeout) 
+		if(time_get_s() >= spotlight_timeout) 
 			goto release_stands;
 
 retry2:
@@ -378,7 +388,7 @@ retry2:
 			while ((opponent1_is_infront() || opponent2_is_infront()) &&
 				   (time_get_s() < spotlight_timeout));
 
-			if(time_get_s() < spotlight_timeout) 
+			if(time_get_s() >= spotlight_timeout) 
 			{
 				/* go backwards, get space */
 				trajectory_goto_xy_abs (&mainboard.traj, COLOR_X(310), position_get_y_s16(&mainboard.pos));
@@ -388,7 +398,7 @@ retry2:
 	
 release_stands:
 				/* XXX release stands because time is going over, NEVER RETURNS */
-				err = strat_buit_and_release_spotlight (COLOR_X(555), 
+				err = strat_buit_and_release_spotlight (COLOR_X(410), 
 														position_get_y_s16(&mainboard.pos),
 														COLOR_INVERT(SIDE_LEFT), 
 														STANDS_RELEASE_TIME_OVER | strat_need_build_a_tower());

@@ -1307,8 +1307,8 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
         zone_num = ZONE_MY_HOME_SPOTLIGHT;
 
    	else if (!strcmp_P(res->arg1, PSTR("home_timeout"))) {
-        zone_num = ZONE_MY_HOME_SPOTLIGHT;
-		time_set(STAND_RELEASE_TIME, 0);
+        zone_num = ZONE_MY_HOME_POPCORNS;
+		time_set(STAND_RELEASE_TIME-1, 0);
 	}
 
    	else if (!strcmp_P(res->arg1, PSTR("home_popcorns")))

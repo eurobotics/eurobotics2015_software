@@ -371,9 +371,9 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 		/* we are at init position */
 		err = END_TRAJ;
 	}
-	if (strat_smart[robot].current_zone == ZONE_MY_STAND_GROUP_3 ||
-        strat_smart[robot].current_zone == ZONE_MY_POPCORNMAC ||
-        strat_smart[robot].current_zone == ZONE_MY_STAND_GROUP_4)
+	else if (strat_smart[robot].current_zone == ZONE_MY_STAND_GROUP_3 ||
+        	 strat_smart[robot].current_zone == ZONE_MY_POPCORNMAC ||
+        	 strat_smart[robot].current_zone == ZONE_MY_STAND_GROUP_4)
     {
 
         /* first trie */
@@ -397,14 +397,10 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 		/* we are at init position */
 		err = END_TRAJ;
 	}
-
-	else {
-
-        /* action previous to goto */
-        if (zone_num == ZONE_POPCORNCUP_2) {
-            /* prepare clamp */
-            i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_OPEN);
-        }
+	else if (zone_num == ZONE_POPCORNCUP_2)
+	{
+        /* prepare clamp */
+        i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_OPEN);
 
 		
 		/* by default go with avoidance */
@@ -412,11 +408,18 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 										strat_infos.zones[zone_num].init_y,
 										TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 
-        /* action after to goto */
-        if (zone_num == ZONE_POPCORNCUP_2 && !TRAJ_SUCCESS(err)) {
-            /* close clamp */
+        /* close clamp if traj not successed */
+        if (!TRAJ_SUCCESS(err)) {
             i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_STOCK_END);
         }
+	}
+
+	else 
+	{
+		/* by default go with avoidance */
+		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
+										strat_infos.zones[zone_num].init_y,
+										TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 	}
 
 	/* update strat_infos */
@@ -586,7 +589,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 								 			   SIDE_ALL,                        /* storing sides */
 											   COLOR_A_REL(-10),                /* blade angle */
 											   SPEED_DIST_SLOW,                 /* harvest speed */
-											   STANDS_HARVEST_BACK_INIT_POS);
+											   0);
 			break;
 
 		case ZONE_MY_STAND_GROUP_3:
@@ -655,15 +658,18 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 
 		case ZONE_POPCORNCUP_2:
 			/* release front cup  */
-			strat_release_popcorn_cup_front ();
+			i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_RELEASE);
 
 			/* harvest on the rear cup  */
 			err = strat_harvest_popcorn_cup (COLOR_X(strat_infos.zones[zone_num].x),
 									   strat_infos.zones[zone_num].y,
 									   SIDE_REAR, 0);
 
+
 			/* XXX, open a bit the rear tray, popcorns should fall into rear cup  */
+			i2c_slavedspic_wait_ready();
 			i2c_slavedspic_mode_tray(I2C_POPCORN_TRAY_MODE_CLOSE, -100);
+
 			break;
 
 		case ZONE_POPCORNCUP_3:
@@ -677,6 +683,10 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 			err = strat_close_clapperboards (COLOR_X(strat_infos.zones[zone_num].x),
 									   strat_infos.zones[zone_num].y,
 									   COLOR_INVERT(SIDE_RIGHT), 0);
+
+			/* hide front clamp */
+			i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_HIDE);
+
 			break;
 
 		case ZONE_MY_CLAP_2:
