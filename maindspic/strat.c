@@ -293,9 +293,9 @@ struct strat_infos strat_infos = {
     .zones[ZONE_MY_CLAP_2] =
 	{
 		ZONE_TYPE_CLAP,
-		MY_CLAP_2_X, MY_CLAP_Y,
+		MY_CLAP_2_X-80, MY_CLAP_Y,
 		780, 1080, 0, 300,
-		MY_CLAP_2_X, MY_CUP_2_Y,
+		MY_CLAP_2_X-80, MY_CUP_2_Y,
 		0, 0,
 		MAIN_ROBOT
 	},
