@@ -118,10 +118,33 @@ uint8_t strat_harvest_popcorn_cup (int16_t x, int16_t y, uint8_t side, uint8_t f
     side == SIDE_FRONT? (d = d-ROBOT_CENTER_CUP_FRONT-10) :
                         (d = -(d-ROBOT_CENTER_CUP_REAR-20));
 
-	trajectory_d_rel(&mainboard.traj, d);
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-    if (!TRAJ_SUCCESS(err))
-	   ERROUT(err);
+
+    /* enable obstacle sensors in front case */
+    if (side == SIDE_FRONT) {
+        strat_opp_sensor_enable();
+
+	    trajectory_d_rel(&mainboard.traj, d);
+	    err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+    }
+    else
+	    trajectory_d_rel(&mainboard.traj, d);
+	    err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+
+
+    if (!TRAJ_SUCCESS(err)) 
+    {
+        /* abort */
+        if (side == SIDE_FRONT) 
+        {
+            /* go backwards, get space */
+         	trajectory_d_rel(&mainboard.traj, -OBS_CLERANCE);
+	        wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+
+            /* hide clamp */
+            i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_HIDE);
+        }
+        ERROUT(err);
+    }
 
 
 	/* XXX debug step use only for subtraj command */
@@ -156,6 +179,9 @@ uint8_t strat_harvest_popcorn_cup (int16_t x, int16_t y, uint8_t side, uint8_t f
 	}
 
 end:
+    /* enable obstacle sensors */
+    strat_opp_sensor_disable();
+
 	/* end stuff */
 	strat_set_speed(old_spdd, old_spda);
    	strat_limit_speed_enable();

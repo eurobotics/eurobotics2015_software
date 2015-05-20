@@ -289,7 +289,8 @@ struct conf {
 /* depends on flags the robot
  * will do different things */
 	uint8_t flags;
-#define CONF_FLAG_DO_TOWER   1
+#define CONF_FLAG_DO_TOWER      1
+#define DO_STAND_FAST_GROUP_1   2
 };
 
 
@@ -385,6 +386,12 @@ struct strat_infos {
 #define MSG_UPPER_SIDE_IS_FREE	   4
 	/* message */
 	uint8_t msg;
+
+    /* done notifications  */
+#define DONE_STAND_4    1
+#define DONE_STAND_5    2
+#define DONE_CUP_3      4
+    uint8_t done_flags;
 
 #if 0
 	/* opponent zone position */
