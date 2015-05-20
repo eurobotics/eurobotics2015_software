@@ -364,15 +364,15 @@ static void cmd_init_parsed(void *parsed_result, void *data)
 	/* beacon */
 beacon_retry:
    	printf_P(PSTR("TURN ON and OFF the beacon\r\n"));
-   	printf_P(PSTR("Press a key when beacon ready, 'q' for skip \r\n"));	
+   	printf_P(PSTR("Press a key when beacon ready, 'q' for skip \r\n"));
 	c = cmdline_getchar_wait();
 
     if (c != 'q') {
-	   	printf_P(PSTR("Trying to open beacon link ...\n"));	
+	   	printf_P(PSTR("Trying to open beacon link ...\n"));
 		wt11_open_link_mux(beacon_addr, &beaconboard.link_id);
 
 ask_beacon_ok:
-		printf_P(PSTR("Is beacon link OK? (y/n) \r\n"));	
+		printf_P(PSTR("Is beacon link OK? (y/n) \r\n"));
 		c = cmdline_getchar_wait();
 		if (c == 'n')
 			goto beacon_retry;
@@ -388,15 +388,15 @@ ask_beacon_ok:
 	/* secondary robot */
 robot_retry:
    	printf_P(PSTR("TURN ON and OFF the secondary robot\r\n"));
-   	printf_P(PSTR("Press a key when robot ready, 'q' for skip \r\n"));	
+   	printf_P(PSTR("Press a key when robot ready, 'q' for skip \r\n"));
 	c = cmdline_getchar_wait();
 
     if (c != 'q') {
-	   	printf_P(PSTR("Trying to open robot link ...\n"));	
+	   	printf_P(PSTR("Trying to open robot link ...\n"));
 		wt11_open_link_mux(robot_2nd_addr, &robot_2nd.link_id);
 
 ask_robot_ok:
-		printf_P(PSTR("Is robot link OK? (y/n) \r\n"));	
+		printf_P(PSTR("Is robot link OK? (y/n) \r\n"));
 		c = cmdline_getchar_wait();
 		if (c == 'n')
 			goto robot_retry;
@@ -497,28 +497,19 @@ static void cmd_start_parsed(void *parsed_result, void *data)
         gen.log_level = 0;
     }
 
-
-    
-    if (!strcmp_P(res->strategy, PSTR("base")))
+	if (!strcmp_P(res->strategy, PSTR("qualification")))
     {
-        /* flags */
-        strat_infos.conf.flags = 0;
+	   strat_infos.match_strategy=STR_QUALIFICATION;
+    }
+
+    else if (!strcmp_P(res->strategy, PSTR("base")))
+    {
 	   strat_infos.match_strategy=STR_BASE;
-	   strat_smart[MAIN_ROBOT].current_strategy=0;
-	   strat_smart[SEC_ROBOT].current_strategy=0;
-        strat_set_next_sec_strategy();
-        strat_set_next_main_strategy();
     }
 
     else if (!strcmp_P(res->strategy, PSTR("homologation")))
     {
-        /* flags */
-        strat_infos.conf.flags = 0;
 	   strat_infos.match_strategy=STR_HOMOLOGATION;
-	   strat_smart[MAIN_ROBOT].current_strategy=0;
-	   strat_smart[SEC_ROBOT].current_strategy=0;
-        strat_set_next_sec_strategy();
-        strat_set_next_main_strategy();
     }
     else
     {
@@ -526,9 +517,15 @@ static void cmd_start_parsed(void *parsed_result, void *data)
     	return;
     }
 
+	/* flags */
+	strat_infos.conf.flags = 0;
+	strat_smart[MAIN_ROBOT].current_strategy=0;
+	strat_smart[SEC_ROBOT].current_strategy=0;
+	strat_set_next_sec_strategy();
+	strat_set_next_main_strategy();
     strat_infos.dump_enabled = 1;
     strat_dump_conf();
-    
+
 #ifndef HOST_VERSION
 #ifdef old_version
 
@@ -581,7 +578,7 @@ retry_on:
 	}
 #endif /* old_version */
 #endif /* HOST_VERSION */
-    
+
     strat_start();
 
     gen.logs[NB_LOGS] = 0;
@@ -590,7 +587,7 @@ retry_on:
 
 prog_char str_start_arg0[] = "start";
 parse_pgm_token_string_t cmd_start_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_start_result, arg0, str_start_arg0);
-prog_char str_start_strategy[] = "base#homologation";
+prog_char str_start_strategy[] = "base#homologation#qualification";
 parse_pgm_token_string_t cmd_start_strategy = TOKEN_STRING_INITIALIZER(struct cmd_start_result, strategy, str_start_strategy);
 prog_char str_start_debug[] = "debug#step_debug#match";
 parse_pgm_token_string_t cmd_start_debug = TOKEN_STRING_INITIALIZER(struct cmd_start_result, debug, str_start_debug);
