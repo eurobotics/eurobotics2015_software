@@ -1126,17 +1126,18 @@ static void cmd_strat_conf_parsed(void *parsed_result, void *data)
 	   strat_infos.match_strategy=STR_HOMOLOGATION;
 
     }
+    else if (!strcmp_P(res->arg1, PSTR("do_tower")))
+		strat_infos.conf.flags |= CONF_FLAG_DO_TOWER;
+
+    else if (!strcmp_P(res->arg1, PSTR("do_fast_g1")))
+		strat_infos.conf.flags |= DO_STAND_FAST_GROUP_1;
+
 	/* flags */
 	strat_infos.conf.flags = 0;
 	strat_smart[MAIN_ROBOT].current_strategy=0;
 	strat_smart[SEC_ROBOT].current_strategy=0;
 	strat_set_next_sec_strategy();
 	strat_set_next_main_strategy();
-    else if (!strcmp_P(res->arg1, PSTR("do_tower")))
-		strat_infos.conf.flags |= CONF_FLAG_DO_TOWER;
-
-    else if (!strcmp_P(res->arg1, PSTR("do_fast_g1")))
-		strat_infos.conf.flags |= DO_STAND_FAST_GROUP_1;
 
 	strat_infos.dump_enabled = 1;
 	strat_dump_conf();
@@ -1340,7 +1341,7 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 	/* go and work */
     if (zone_num < ZONES_MAX)
 	{
-		if (strat_infos.zones[zone_num].robot==MAIN_ROBOT) 
+		if (strat_infos.zones[zone_num].robot==MAIN_ROBOT)
 		{
             /* goto */
             err = strat_goto_zone(MAIN_ROBOT, zone_num);
