@@ -96,8 +96,8 @@ uint8_t strat_harvest_popcorn_cup (int16_t x, int16_t y, uint8_t side, uint8_t f
 
     /* wait ready */
     side == SIDE_FRONT?
-    WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), POPCORN_FRONT_READY_TIMEOUT):
-    WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), POPCORN_REAR_READY_TIMEOUT);
+    i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY, POPCORN_FRONT_READY_TIMEOUT):
+    i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY, POPCORN_REAR_READY_TIMEOUT);
 
 
     /* turn to cup */
@@ -110,19 +110,41 @@ uint8_t strat_harvest_popcorn_cup (int16_t x, int16_t y, uint8_t side, uint8_t f
 
     /* wait ready */
     side == SIDE_FRONT?
-    WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), POPCORN_FRONT_READY_TIMEOUT):
-    WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), POPCORN_REAR_READY_TIMEOUT);
-
+    i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY, POPCORN_FRONT_READY_TIMEOUT):
+    i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY, POPCORN_REAR_READY_TIMEOUT);
 
     /* go in clamp range */
     d = distance_from_robot(x, y);
     side == SIDE_FRONT? (d = d-ROBOT_CENTER_CUP_FRONT-10) :
                         (d = -(d-ROBOT_CENTER_CUP_REAR-20));
 
-	trajectory_d_rel(&mainboard.traj, d);
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-    if (!TRAJ_SUCCESS(err))
-	   ERROUT(err);
+
+    /* enable obstacle sensors in front case */
+    if (side == SIDE_FRONT) {
+        strat_opp_sensor_enable();
+
+	    trajectory_d_rel(&mainboard.traj, d);
+	    err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+    }
+    else
+	    trajectory_d_rel(&mainboard.traj, d);
+	    err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+
+
+    if (!TRAJ_SUCCESS(err)) 
+    {
+        /* abort */
+        if (side == SIDE_FRONT) 
+        {
+            /* go backwards, get space */
+         	trajectory_d_rel(&mainboard.traj, -OBS_CLERANCE);
+	        wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+
+            /* hide clamp */
+            i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_HIDE);
+        }
+        ERROUT(err);
+    }
 
 
 	/* XXX debug step use only for subtraj command */
@@ -135,32 +157,48 @@ uint8_t strat_harvest_popcorn_cup (int16_t x, int16_t y, uint8_t side, uint8_t f
 
     /* wait ready */
     side == SIDE_FRONT?
-    WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), POPCORN_FRONT_READY_TIMEOUT):
-    WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), POPCORN_REAR_READY_TIMEOUT);
+    i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY, POPCORN_FRONT_READY_TIMEOUT):
+    i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY, POPCORN_REAR_READY_TIMEOUT);
 
-	/* release fornt cap and hide system */
-	if (side == SIDE_FRONT) {
+	/* release front cap and hide system */
+	if (side == SIDE_FRONT && !(flags & POPCORN_CUP_HARVEST_DO_NOT_RELEASE)) {
 		time_wait_ms(1500);
 		i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_RELEASE);
-    	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), 1000);
+    	i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY, 1000);
 
 		trajectory_d_rel(&mainboard.traj, -d);
 		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-    	if (!TRAJ_SUCCESS(err))
-	   	ERROUT(err);
+    	//if (!TRAJ_SUCCESS(err))
+	   	//ERROUT(err);
+
+		/* XXX, at this point the work is done */
+		err = END_TRAJ;
 
 		i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_HIDE);		
-    	//WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), 1000);
+    	//i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY, 1000);
 	}
 
-
 end:
+    /* enable obstacle sensors */
+    strat_opp_sensor_disable();
+
 	/* end stuff */
 	strat_set_speed(old_spdd, old_spda);
    	strat_limit_speed_enable();
    	return err;
 }
 
+/* release front cup */
+void strat_release_popcorn_cup_front (void)
+{
+	/* release */
+	i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_RELEASE);
+	i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY, 1000);
+
+	/* hide */
+	i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_HIDE);		
+	//i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY, 1000);
+}
 
 /** 
  *	Harvest popcorns machine
@@ -186,7 +224,7 @@ uint8_t strat_harvest_popcorns_machine (int16_t x, int16_t y)
 
 	/* open system */
 	i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_MACHINES_READY);		
-	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), 1000);
+	i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY, 1000);
 
 
 	/* go to close to machine and  calibrate position on the wall */
@@ -205,26 +243,37 @@ uint8_t strat_harvest_popcorns_machine (int16_t x, int16_t y)
 
 	/* harvest */
 	i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_MACHINES_HARVEST);		
-	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), 1000);
+	i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY, 1000);
 
 	/* wait popcorn inside */
 	time_wait_ms(2000);
 
-	/* XXX check OPP */
-	while (opponent1_is_infront() || opponent2_is_infront());
+	/* XXX check OPP, wait free space or timeout */
+	//while (opponent1_is_infront() || opponent2_is_infront());
+	WAIT_COND_OR_TIMEOUT((!sensor_get(S_OPPONENT_FRONT_L) && !sensor_get(S_OPPONENT_FRONT_R)), 5000);
 
     /* return to init position */
     d = ABS(d-position_get_y_s16(&mainboard.pos));
-    strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
-    trajectory_d_rel(&mainboard.traj, d);
-    err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-    if (!TRAJ_SUCCESS(err))
-       ERROUT(err);	
+
+	if (robots_are_near())
+    	strat_set_speed (SPEED_DIST_VERY_SLOW, SPEED_ANGLE_VERY_SLOW);
+	else    	
+		strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
+
+	/* XXX, is possible we push slowly to opponent */
+	trajectory_d_rel(&mainboard.traj, d);
+    err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+    //err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+    //if (!TRAJ_SUCCESS(err))
+    //  ERROUT(err);	
+	
+	/* XXX, at this point the machines are done */
+	err = END_TRAJ;
 
 end:
-	/* close system */
+	/* close system, TODO before ??? */
 	i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_MACHINES_END);		
-	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY), 2000);
+	i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY, 2000);
 
 	/* end stuff */
 	strat_set_speed(old_spdd, old_spda);	
@@ -244,7 +293,9 @@ uint8_t strat_release_popcorns_in_home (int16_t x, int16_t y, uint8_t flags)
 	uint16_t old_spdd, old_spda;
 	int16_t d = 0;
 	int16_t x_init, y_init;
+	uint8_t spotlight_timeout;
 
+	/* save init position */
 	x_init = position_get_x_s16(&mainboard.pos);
 	y_init = position_get_y_s16(&mainboard.pos);
 
@@ -253,8 +304,7 @@ uint8_t strat_release_popcorns_in_home (int16_t x, int16_t y, uint8_t flags)
    	strat_limit_speed_disable ();
 	strat_set_speed (SPEED_DIST_SLOW,SPEED_ANGLE_SLOW);
 
-	/* turn to home */
-	//trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(0));
+	/* turn to target point */
 	trajectory_turnto_xy_behind(&mainboard.traj, x, y);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
     if (!TRAJ_SUCCESS(err))
@@ -271,60 +321,91 @@ uint8_t strat_release_popcorns_in_home (int16_t x, int16_t y, uint8_t flags)
 	   ERROUT(err);	
 
 	/* open rear cup */
-	i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_RELEASE);		
-   	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY|STATUS_BLOCKED), 1000);
+	i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_RELEASE);
+   	i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY|STATUS_BLOCKED, 1000);
 
-	if (!(flags & POPCORN_ONLY_CUP))
+	if (flags & POPCORNS_RELEASE_ONLY_CUP)
 	{
+		/* release in cinema */
+retry1:
+		/* return to init position */
+		trajectory_goto_xy_abs (&mainboard.traj, x_init, y_init);
+		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+
+		/* XXX, case can't reach init position, TODO: better interpretation */
+		if (!TRAJ_SUCCESS(err)) 
+		{
+			while(opponent1_is_infront() || opponent2_is_infront());
+			goto retry1;
+		}
+	}
+	else {
+		
+		/* release in home */
 
 		/* open popcorn doors */
 		i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_STOCK_DROP);		
-	   	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY|STATUS_BLOCKED), 1000);
+	   	i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY|STATUS_BLOCKED, 1000);
 
 		/* wait for popcorn dump */
 		time_wait_ms(1500);
 
+		/* calculate spotlight timeout */
+		if (strat_need_build_a_tower())
+			spotlight_timeout = TOWER_BUILDING_TIME;
+		else
+			spotlight_timeout = STAND_RELEASE_TIME;
+
+		/* if timeout, release stands */
+		if(time_get_s() < spotlight_timeout) 
+			goto release_stands;
+
 retry2:
-		/* return to init position and close gadgets in the path */
-		//trajectory_d_rel(&mainboard.traj, d);
-		//time_wait_ms(500);
-		//i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_STOCK_END);
-		//err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-		//if (!TRAJ_SUCCESS(err))
-		//   ERROUT(err);	
+		/* return home entrance and close gadgets in the path */	
+		trajectory_goto_xy_abs (&mainboard.traj, COLOR_X(530), y_init);
 
-		trajectory_goto_xy_abs (&mainboard.traj, x_init, y_init);
-		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-		if (!TRAJ_SUCCESS(err)) {
-		   while (opponent1_is_infront() || opponent2_is_infront());
-		   goto retry2;
-		   //ERROUT(err);	
-		}
+		/* when enough space, close gatgets */
+		err = WAIT_COND_OR_TIMEOUT(x_is_more_than(370), 1000);
+		if (err)
+			i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_STOCK_END);
 
-		i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_STOCK_END);
-	   	WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(STATUS_READY|STATUS_BLOCKED), 1000);
-	}
-	else {
+		/* wait traj end */
+		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 
-retry:
-		/* go far cup */
-		//trajectory_d_rel(&mainboard.traj, d);
-		trajectory_goto_xy_abs (&mainboard.traj, x_init, y_init);
-		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-		if (!TRAJ_SUCCESS(err)) {
-		   while (opponent1_is_infront() || opponent2_is_infront());
-		   goto retry;
-		   //ERROUT(err);	
+		/* XXX, case can't reach home outside because of BLOCKING */
+		if (!TRAJ_SUCCESS(err)) 
+		{
+			while ((opponent1_is_infront() || opponent2_is_infront()) &&
+				   (time_get_s() < spotlight_timeout));
+
+			if(time_get_s() < spotlight_timeout) 
+			{
+				/* go backwards, get space */
+				trajectory_goto_xy_abs (&mainboard.traj, COLOR_X(310), position_get_y_s16(&mainboard.pos));
+				err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+				//if (!TRAJ_SUCCESS(err))
+				//   ERROUT(err);	
+	
+release_stands:
+				/* XXX release stands because time is going over, NEVER RETURNS */
+				err = strat_buit_and_release_spotlight (COLOR_X(555), 
+														position_get_y_s16(&mainboard.pos),
+														COLOR_INVERT(SIDE_LEFT), 
+														STANDS_RELEASE_TIME_OVER | strat_need_build_a_tower());
+			}
+			else
+				goto retry2;
 		}
 	}
 
 end:
+	/* be sure, gatgets are closed */
+	i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_STOCK_END);
+
 	/* end stuff */
 	strat_set_speed(old_spdd, old_spda);	
    	strat_limit_speed_enable();
    	return err;
 }
-
-
 
 

@@ -82,8 +82,9 @@
 #ifdef CALIBRATION
 
 /* default acc */
-#define ACC_DIST  5.
-#define ACC_ANGLE 5.
+#define ACC_DIST_POS  	5
+#define ACC_DIST_NEG  	4
+#define ACC_ANGLE 		5
 
 /* default speeds */
 #define SPEED_DIST_FAST 			1000.
@@ -96,8 +97,9 @@
 #else
 
 /* default acc */
-#define ACC_DIST  5 //40.
-#define ACC_ANGLE 5 //90.
+#define ACC_DIST_POS  	5	//40
+#define ACC_DIST_NEG  	5
+#define ACC_ANGLE 		10	//90
 
 /* default speeds */
 
