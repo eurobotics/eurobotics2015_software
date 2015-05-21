@@ -117,8 +117,6 @@ struct strat_infos strat_infos = {
         .flags = 0,
     },
 
-#define INIT_NULL 0
-#define WORK_NULL 0
 
 	/* stands */
     .zones[ZONE_MY_STAND_GROUP_1] =

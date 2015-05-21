@@ -313,6 +313,7 @@ typedef struct {
 	#define ZONE_TYPE_MAX			11
 
     /* target point */
+#define WORK_NULL 0
 	int16_t x;
 	int16_t y;
 
@@ -323,6 +324,7 @@ typedef struct {
 	int16_t y_up;
 
 	/* init point */
+#define INIT_NULL 0
 	int16_t init_x;
 	int16_t init_y;
 
