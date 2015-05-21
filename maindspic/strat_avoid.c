@@ -1285,22 +1285,27 @@ retry:
 		set_poly_abs(pol_home_yellow,O_HOME_WIDTH+ obs_clerance/2 ,O_HOME_HEIGHT + obs_clerance,HOME_YELLOW_X+obs_clerance/2,HOME_YELLOW_Y);
 
 		pol_home_green= oa_new_poly(5);
+
 #ifdef IM_SECONDARY_ROBOT
 		set_home_green_poly_abs(pol_home_green,O_HOME_WIDTH+ OBS_CLERANCE/2+71,O_HOME_HEIGHT + OBS_CLERANCE,HOME_GREEN_X-OBS_CLERANCE/2-35,HOME_GREEN_Y);
 #else
+ 		set_home_green_poly_abs(pol_home_green,O_HOME_WIDTH+ OBS_CLERANCE/2,O_HOME_HEIGHT + OBS_CLERANCE,HOME_GREEN_X-OBS_CLERANCE/2,HOME_GREEN_Y);
 #endif
-	}else{
-		pol_home_yellow= oa_new_poly(5);
+ 	}else{
+ 		pol_home_yellow= oa_new_poly(5);
 #ifdef IM_SECONDARY_ROBOT
 		set_home_yellow_poly_abs(pol_home_yellow,O_HOME_WIDTH+ OBS_CLERANCE/2 +71,O_HOME_HEIGHT + OBS_CLERANCE,HOME_YELLOW_X+OBS_CLERANCE/2+35,HOME_YELLOW_Y);
 #else
+ 		set_home_yellow_poly_abs(pol_home_yellow,O_HOME_WIDTH+ OBS_CLERANCE/2 ,O_HOME_HEIGHT + OBS_CLERANCE,HOME_YELLOW_X+OBS_CLERANCE/2,HOME_YELLOW_Y);
 
 
 #endif
 		pol_home_green= oa_new_poly(4);
 		set_poly_abs(pol_home_green,O_HOME_WIDTH+ obs_clerance/2,O_HOME_HEIGHT + obs_clerance,HOME_GREEN_X-obs_clerance/2,HOME_GREEN_Y);
 	}
-	/* if we are not in the limited area, try to go in it. */
+
+
+/* if we are not in the limited area, try to go in it. */
 	ret = go_in_area(&robot_pt);
 
 	/* check that destination is in playground */
