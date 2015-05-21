@@ -659,6 +659,7 @@ int8_t i2c_slavedspic_mode_tray(uint8_t mode, int8_t offset)
 	/* fill cmd structure */
 	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
 	buf.mode = I2C_SLAVEDSPIC_MODE_POPCORN_TRAY;
+	buf.popcorn_tray.mode = mode;
 	buf.popcorn_tray.offset = offset;
 	
 	/* send command and return */
