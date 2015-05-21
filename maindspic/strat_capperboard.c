@@ -82,7 +82,11 @@ uint8_t strat_close_clapperboards (int16_t x, int16_t y, uint8_t side, uint8_t f
 
 	/* set local speed, and disable speed limit */
 	strat_get_speed (&old_spdd, &old_spda);
-   	strat_limit_speed_disable ();
+
+    /* XXX */
+    if (strat_smart[MAIN_ROBOT].current_zone != ZONE_MY_CLAP_1)
+   	    strat_limit_speed_disable ();
+
 	strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 
 

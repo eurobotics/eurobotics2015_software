@@ -439,7 +439,15 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
             }
         }
 	}
+	else if (zone_num == ZONE_MY_CLAP_1 && strat_smart[robot].current_zone == ZONE_MY_STAND_GROUP_2)
+	{
+        /* TODO: go without avoid */
+        trajectory_goto_xy_abs (&mainboard.traj,
+                                COLOR_X(strat_infos.zones[zone_num].init_x),
+								strat_infos.zones[zone_num].init_y));
 
+        err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+    }
 	else 
 	{
 		/* by default go with avoidance */
