@@ -377,7 +377,7 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
         	 strat_smart[robot].current_zone == ZONE_MY_STAND_GROUP_4)
     {
 
-        /* first trie */
+        /* first try */
 		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
 										strat_infos.zones[zone_num].init_y,
 										TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
@@ -385,33 +385,53 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
         if (!TRAJ_SUCCESS(err)) {
 			time_wait_ms (5000);
 
-			/* second trie */
+			/* second try */
 			err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
 								strat_infos.zones[zone_num].init_y,
 								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 
-			/* escape if not sucessed */
+			/* XXX, escape if not sucessed */
+            /* XXX, returns only when we are out upper zone */
 			if (!TRAJ_SUCCESS(err))
             	err = strat_escape_form_upper_zone (0);
-		}
 
-		/* we are at init position */
-		err = END_TRAJ;
+
+            /* go init position */
+            err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
+								            strat_infos.zones[zone_num].init_y,
+								            TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+
+		}
 	}
 	else if (zone_num == ZONE_POPCORNCUP_2)
 	{
-        /* prepare clamp */
-        i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_OPEN);
+#define X_UP    870
+#define X_DOWN  0
+#define Y_UP    750    
+#define Y_DOWN  0
+
+        /* TODO TEST: if opp is not in down area, skip goto, work directly */
+        if (!opponent1_is_in_area(X_UP, Y_UP, X_DOWN, Y_DOWN) &&
+            !opponent2_is_in_area(X_UP, Y_UP, X_DOWN, Y_DOWN) )
+        {
+            err = END_TRAJ;
+        }
+        else 
+        { 
+            /* prepare clamp */
+            i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_OPEN);
 
 		
-		/* by default go with avoidance */
-		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
-										strat_infos.zones[zone_num].init_y,
-										TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+		    /* by default go with avoidance */
+		    err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
+										    strat_infos.zones[zone_num].init_y,
+										    TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 
-        /* close clamp if traj not successed */
-        if (!TRAJ_SUCCESS(err)) {
-            i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_STOCK_END);
+            /* close clamp if traj not successed */
+            if (!TRAJ_SUCCESS(err)) {
+                i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_STOCK_END);
+
+            }
         }
 	}
 
