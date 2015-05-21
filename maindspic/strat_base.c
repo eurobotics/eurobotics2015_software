@@ -540,6 +540,7 @@ uint8_t __strat_obstacle(uint8_t which)
 	int16_t x_rel, y_rel;
 	int16_t opp_x, opp_y, opp_d, opp_a, __opp1_x, __opp2_x;
 	int8_t ret = -1;
+    uint8_t flags;
     static int16_t opp_d_old = 3000;
 
 
@@ -625,8 +626,8 @@ uint8_t __strat_obstacle(uint8_t which)
     IRQ_UNLOCK(flags);
 
     if (opp_d <= 230 && opp_d_old > 500 &&
-        (__opp1_x == I2C_OPPONENT_NOT_THERE && __opp2_x != I2C_OPPONENT_NOT_THERE) || 
-        (__opp1_x != I2C_OPPONENT_NOT_THERE && __opp2_x == I2C_OPPONENT_NOT_THERE))
+        ((__opp1_x == I2C_OPPONENT_NOT_THERE && __opp2_x != I2C_OPPONENT_NOT_THERE) ||
+        (__opp1_x != I2C_OPPONENT_NOT_THERE && __opp2_x == I2C_OPPONENT_NOT_THERE)))
         //!sensor_get(S_OPPONENT_FRONT_R) && !sensor_get(S_OPPONENT_FRONT_L) &&
         //!sensor_get(S_OPPONENT_REAR_R) && !sensor_get(S_OPPONENT_REAR_L) ) 
     {

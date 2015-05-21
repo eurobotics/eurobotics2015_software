@@ -444,7 +444,7 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
         /* TODO: go without avoid */
         trajectory_goto_xy_abs (&mainboard.traj,
                                 COLOR_X(strat_infos.zones[zone_num].init_x),
-								strat_infos.zones[zone_num].init_y));
+								strat_infos.zones[zone_num].init_y);
 
         err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
     }

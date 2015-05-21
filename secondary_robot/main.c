@@ -261,7 +261,7 @@ int main(void)
 #endif
 
    /* LOGS */
-#define ROBOT_TESTS
+//#define ROBOT_TESTS
 #ifdef ROBOT_TESTS
    error_register_emerg(mylog);
    error_register_error(mylog);
@@ -316,12 +316,13 @@ int main(void)
 
    arm_set_mode (ARM_TYPE_LEFT, ARM_MODE_HIDE);
    arm_set_mode (ARM_TYPE_RIGHT, ARM_MODE_HIDE);
-   cup_clamp_set_position (CUP_CLAMP_POS_CLOSE);
+   cup_front_clamp_set_position (CUP_FRONT_CLAMP_POS_CLOSE);
+   cup_rear_clamp_set_position (CUP_REAR_CLAMP_POS_CLOSE);
 
    //pwm_servo_set(&gen.pwm_servo_oc1, 500);
    //pwm_servo_set(&gen.pwm_servo_oc2, 500);
    //pwm_servo_set(&gen.pwm_servo_oc3, 500);
-   pwm_servo_set(&gen.pwm_servo_oc4, 500);
+   //pwm_servo_set(&gen.pwm_servo_oc4, 500);
 
    /* MAIN TIMER */
    main_timer_init();

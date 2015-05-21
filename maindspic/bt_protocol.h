@@ -74,7 +74,7 @@ void bt_beacon_req_status(void);
  ***********************************************************/
 
 /* send command, and return after received ack */
-void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1);
+void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1, int16_t arg2);
 
 /* send command, and return after received ack */
 uint8_t bt_robot_2nd_cmd (uint8_t cmd_id, int16_t arg0, int16_t arg1);
@@ -113,10 +113,10 @@ uint8_t bt_robot_2nd_is_ack_received (void);
 /* return 1 if ret is received */
 uint8_t bt_robot_2nd_is_ret_received (void);
 
-void bt_robot_2nd_bt_task_pick_cup (int16_t x, int16_t y);
+void bt_robot_2nd_bt_task_pick_cup (int16_t x, int16_t y, uint8_t side);
 void bt_robot_2nd_bt_task_carpet(void);
 void bt_robot_2nd_bt_task_stairs(void);
-void bt_robot_2nd_bt_task_bring_cup_cinema(int16_t x, int16_t y);
+void bt_robot_2nd_bt_task_bring_cup_cinema(int16_t x, int16_t y, uint8_t side);
 void bt_robot_2nd_bt_task_clapperboard(int16_t x, int16_t y);
 
 void bt_robot_2nd_autopos (void);

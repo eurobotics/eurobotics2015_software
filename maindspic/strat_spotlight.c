@@ -69,8 +69,7 @@
 		goto end;		 \
 	} while(0)
 
-#define ROBOT_CENTER_TO_MOUTH	105
-#define STANDS_RADIOUS			30
+
 #define STANDS_READY_TIMEOUT    5000
 #define STANDS_STORING_TIMEOUT	700
 

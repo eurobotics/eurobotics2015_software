@@ -68,8 +68,8 @@ void arm_set_mode (uint8_t type, uint8_t mode);
 void cup_front_clamp_set_position (uint16_t pos);
 
 /* set cup rear clamp position */
-#define CUP_REAR_CLAMP_POS_OPEN		700 //650
-#define CUP_REAR_CLAMP_POS_CLOSE		350
+#define CUP_REAR_CLAMP_POS_OPEN			500
+#define CUP_REAR_CLAMP_POS_CLOSE		500
 
 void cup_rear_clamp_set_position (uint16_t pos);
 

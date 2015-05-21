@@ -198,6 +198,9 @@
 
 #define PLATFORM_WIDTH      100
 
+#define ROBOT_CENTER_TO_MOUTH	105
+#define STANDS_RADIOUS			30
+
 
 
 /* XXX keep synchronized with secondary robot */
