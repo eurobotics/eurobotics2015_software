@@ -220,7 +220,7 @@ uint8_t strat_release_cup (int16_t x, int16_t y)
 
 	/* return to init point */
     
-    /* TODO: wait if opponent behind/front */
+    /* TODO: wait if opponent behind/front?? */
     
     
 	trajectory_d_rel(&mainboard.traj, -(d+CUP_DIAMETER));
@@ -362,6 +362,7 @@ uint8_t strat_close_clapperboard (int16_t x, int16_t y)
 	int16_t d, a;
     uint8_t arm;
     uint8_t old_debug = strat_infos.debug_step;
+    uint8_t calib_tries = 2;
 
     /* XXX debug */
     strat_infos.debug_step = 0;
@@ -385,8 +386,50 @@ uint8_t strat_close_clapperboard (int16_t x, int16_t y)
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);	
 
+#if 1
+
 	/* TODO: calib y */
-	/* TODO: go forward a bit */
+	/* calibrate position on the wall */
+	strat_set_speed(SPEED_DIST_VERY_SLOW, SPEED_ANGLE_SLOW);
+	time_wait_ms(200);
+
+calib:
+	err = strat_calib(300, TRAJ_FLAGS_SMALL_DIST);
+
+#define CALIB_D_OK 30
+	if (position_get_x_s16 (&mainboard.pos) < CALIB_D_OK)
+	{
+		strat_reset_pos(DO_NOT_SET_POS,
+                        ROBOT_CENTER_TO_BACK,
+						COLOR_A_ABS(90));
+
+	    /* go forward a bit */
+	    trajectory_d_rel(&mainboard.traj, OBS_CLERANCE);
+	    err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+        if (!TRAJ_SUCCESS(err))
+	       ERROUT(err);	
+	}
+	else if (calib_tries) 
+    { 
+        calib_tries--;
+    
+        /* turn 90 degrees, in order to clean space */
+        a = (position_get_x_s16(&mainboard.pos) > (AREA_X/2)? 0 : 180);
+        trajectory_a_abs(&mainboard.traj, a);
+        err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+        if (!TRAJ_SUCCESS(err))
+           ERROUT(err);
+
+        /* turn to clapperboard behind */
+        trajectory_a_abs(&mainboard.traj, 90);
+        err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+        if (!TRAJ_SUCCESS(err))
+           ERROUT(err);
+
+        goto calib;
+    }
+
+#endif
 
 	/* open arm */
 	arm = (position_get_x_s16(&mainboard.pos) > (AREA_X/2)? ARM_TYPE_RIGHT : ARM_TYPE_LEFT);	

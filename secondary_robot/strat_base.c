@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Revision : $Id: strat_base.c,v 1.7 2009/05/27 20:04:07 zer0 Exp $
+ *  Revision : $Id$
  *
  */
 
@@ -242,7 +242,8 @@ uint8_t strat_calib(int16_t dist, uint8_t flags)
 	int32_t d = pid_get_gain_D(&mainboard.angle.pid);
 	uint8_t err;
 
-	pid_set_gains(&mainboard.angle.pid, 150, 0, 2000);
+    //TODO: test constants. cs values = 90, 0 , 400
+	pid_set_gains(&mainboard.angle.pid, 30, 0, 200);
 	trajectory_d_rel(&mainboard.traj, dist);
 	err = wait_traj_end(flags);
 	pid_set_gains(&mainboard.angle.pid, p, i, d);
