@@ -529,7 +529,7 @@ uint8_t __strat_obstacle(uint8_t which)
 
 /* FIXME  */
 #ifndef HOST_VERSION
-#define OBSTACLE_SPEED_MIN		300 //20
+#define OBSTACLE_SPEED_MIN		100 //20
 #else
 #define OBSTACLE_SPEED_MIN		300
 #endif
@@ -542,12 +542,7 @@ uint8_t __strat_obstacle(uint8_t which)
 	int8_t ret = -1;
 
 
-	/* XXX HACK	 */
-	if (strat_smart[MAIN_ROBOT].current_zone == ZONE_MY_STAND_GROUP_1)
-		return 0;
-
-
-	/* too slow */
+	/* XXX, possible BUG, too slow */
 	if (ABS(mainboard.speed_d) < OBSTACLE_SPEED_MIN)
 		return 0;
 
@@ -615,6 +610,22 @@ uint8_t __strat_obstacle(uint8_t which)
 	/* opponent too far */
 	if (opp_d > OBSTACLE_DIST)
 		return 0;
+
+    /** XXX
+     *  BUGFIX: big beacon (2 closer beacons in the distance).
+     * 
+     *  If distance is is saturated to the minimun 
+     *  and no sensor detection discard distance 
+     */
+#if 0
+    if (opp_d <= 230 &&
+        !sensor_get(S_OPPONENT_FRONT_R) && !sensor_get(S_OPPONENT_FRONT_L) &&
+        !sensor_get(S_OPPONENT_REAR_R) && !sensor_get(S_OPPONENT_REAR_L) ) 
+    {
+        return 0;
+    }
+#endif
+    
 
 	/* XXX opponent is in front of us */
 	if (mainboard.speed_d > OBSTACLE_SPEED_MIN &&
