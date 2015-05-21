@@ -1115,33 +1115,37 @@ static void cmd_strat_conf_parsed(void *parsed_result, void *data)
 
     if (!strcmp_P(res->arg1, PSTR("base")))
     {
-        /* flags */
-        strat_infos.conf.flags = 0;
 	   strat_infos.match_strategy=STR_BASE;
-	   strat_smart[MAIN_ROBOT].current_strategy=0;
-	   strat_smart[SEC_ROBOT].current_strategy=0;
-        strat_set_next_sec_strategy();
-        strat_set_next_main_strategy();
     }
-
+    if (!strcmp_P(res->arg1, PSTR("qualification")))
+    {
+	   strat_infos.match_strategy=STR_QUALIFICATION;
+    }
     if (!strcmp_P(res->arg1, PSTR("homologation")))
     {
-        /* flags */
-        strat_infos.conf.flags = 0;
 	   strat_infos.match_strategy=STR_HOMOLOGATION;
-	   strat_smart[MAIN_ROBOT].current_strategy=0;
-	   strat_smart[SEC_ROBOT].current_strategy=0;
-        strat_set_next_sec_strategy();
-        strat_set_next_main_strategy();
-    }
 
-    strat_infos.dump_enabled = 1;
-    strat_dump_conf();
+    }
+    else if (!strcmp_P(res->arg1, PSTR("do_tower")))
+		strat_infos.conf.flags |= CONF_FLAG_DO_TOWER;
+
+    else if (!strcmp_P(res->arg1, PSTR("do_fast_g1")))
+		strat_infos.conf.flags |= DO_STAND_FAST_GROUP_1;
+
+	/* flags */
+	strat_infos.conf.flags = 0;
+	strat_smart[MAIN_ROBOT].current_strategy=0;
+	strat_smart[SEC_ROBOT].current_strategy=0;
+	strat_set_next_sec_strategy();
+	strat_set_next_main_strategy();
+
+	strat_infos.dump_enabled = 1;
+	strat_dump_conf();
 }
 
 prog_char str_strat_conf_arg0[] = "strat_conf";
 parse_pgm_token_string_t cmd_strat_conf_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_strat_conf_result, arg0, str_strat_conf_arg0);
-prog_char str_strat_conf_arg1[] = "show#base#homologation";
+prog_char str_strat_conf_arg1[] = "show#base#homologation#qualification#do_tower#do_fast_g1";
 parse_pgm_token_string_t cmd_strat_conf_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_strat_conf_result, arg1, str_strat_conf_arg1);
 
 //prog_char help_strat_conf[] = "configure specific strat for a match";
@@ -1300,6 +1304,11 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
    	else if (!strcmp_P(res->arg1, PSTR("home_spotlight")))
         zone_num = ZONE_MY_HOME_SPOTLIGHT;
 
+   	else if (!strcmp_P(res->arg1, PSTR("home_timeout"))) {
+        zone_num = ZONE_MY_HOME_SPOTLIGHT;
+		time_set(STAND_RELEASE_TIME, 0);
+	}
+
    	else if (!strcmp_P(res->arg1, PSTR("home_popcorns")))
         zone_num = ZONE_MY_HOME_POPCORNS;
 
@@ -1313,7 +1322,7 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
         zone_num = ZONE_MY_CINEMA_UP;
 	}
     else if (!strcmp_P(res->arg1, PSTR("cinema_down"))) {
-        zone_num = ZONE_MY_CINEMA_DOWN;
+        zone_num = ZONE_MY_CINEMA_DOWN_SEC;
 	}
     else if (!strcmp_P(res->arg1, PSTR("stairs_ways"))) {
         zone_num = ZONE_MY_STAIRWAY;
@@ -1322,21 +1331,18 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
         zone_num = ZONE_MY_HOME_OUTSIDE;
 	}
     else if (!strcmp_P(res->arg1, PSTR("platform"))) {
-        //zone_num = ZONE_MY_CINEMA_DOWN;
-		printf_P(PSTR("not yet supported\r\n"));
-		return;
+        zone_num = ZONE_MY_PLATFORM;
 	}
     else if (!strcmp_P(res->arg1, PSTR("stairs"))) {
-        //zone_num = ZONE_MY_STAIRS;
-		printf_P(PSTR("not yet supported\r\n"));
-		return;
+        zone_num = ZONE_MY_STAIRS;
 	}
 
 
 	/* go and work */
     if (zone_num < ZONES_MAX)
 	{
-		if (strat_infos.zones[zone_num].robot==MAIN_ROBOT) {
+		if (strat_infos.zones[zone_num].robot==MAIN_ROBOT)
+		{
             /* goto */
             err = strat_goto_zone(MAIN_ROBOT, zone_num);
 		    printf_P(PSTR("goto returned %s\r\n"), get_err(err));
@@ -1360,7 +1366,7 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
 			   ERROUT(err);
 
             /* XXX debug */
-            strat_debug_wait_key_pressed (SEC_ROBOT);    
+            strat_debug_wait_key_pressed (SEC_ROBOT);
 
             /* work */
             err = strat_work_on_zone(SEC_ROBOT, zone_num);
@@ -1381,7 +1387,7 @@ end:
 
 prog_char str_subtraj1_arg0[] = "subtraj";
 parse_pgm_token_string_t cmd_subtraj1_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg0, str_subtraj1_arg0);
-prog_char str_subtraj1_arg1[] = "begining#home_popcorns#home_spotlight#machine#machine_opp#cinema_up#cinema_down#platform#stairs#stairs_ways#outside";
+prog_char str_subtraj1_arg1[] = "begining#home_popcorns#home_spotlight#home_timeout#machine#machine_opp#cinema_up#cinema_down#platform#stairs#stairs_ways#outside";
 parse_pgm_token_string_t cmd_subtraj1_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg1, str_subtraj1_arg1);
 //parse_pgm_token_num_t cmd_subtraj1_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg2, INT32);
 //parse_pgm_token_num_t cmd_subtraj1_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg3, INT32);
@@ -1501,7 +1507,7 @@ static void cmd_subtraj2_parsed(void *parsed_result, void *data)
 			   ERROUT(err);
 
             /* XXX debug */
-            strat_debug_wait_key_pressed (SEC_ROBOT);    
+            strat_debug_wait_key_pressed (SEC_ROBOT);
 
             /* work */
             err = strat_work_on_zone(SEC_ROBOT, zone_num);

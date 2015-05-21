@@ -589,9 +589,9 @@ int8_t i2c_slavedspic_mode_init(void)
 	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
 
 	if (mainboard.our_color==I2C_COLOR_YELLOW)
-		buf.mode = I2C_SLAVEDSPIC_MODE_INIT_LEFT;
-	else
 		buf.mode = I2C_SLAVEDSPIC_MODE_INIT_RIGHT;
+	else
+		buf.mode = I2C_SLAVEDSPIC_MODE_INIT_LEFT;
 
 
 	/* send command and return */
@@ -647,6 +647,19 @@ int8_t i2c_slavedspic_mode_blades(uint8_t side, uint8_t mode)
 	buf.stands_blade.type = side;
 	buf.stands_blade.mode = mode;
 	buf.stands_blade.offset = 0;
+	
+	/* send command and return */
+	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
+}
+
+int8_t i2c_slavedspic_mode_tray(uint8_t mode, int8_t offset)
+{
+	struct i2c_cmd_slavedspic_set_mode buf;
+
+	/* fill cmd structure */
+	buf.hdr.cmd = I2C_CMD_SLAVEDSPIC_SET_MODE;
+	buf.mode = I2C_SLAVEDSPIC_MODE_POPCORN_TRAY;
+	buf.popcorn_tray.offset = offset;
 	
 	/* send command and return */
 	return i2c_send_command(I2C_SLAVEDSPIC_ADDR, (uint8_t*)&buf, sizeof(buf));
@@ -713,7 +726,11 @@ uint8_t i2c_slavedspic_ps_test_status(uint8_t status_flags)
     uint8_t status;
     
     status = i2c_slavedspic_get_ps_status();
+
+	if (status & status_flags)
+		ret = status;
     
+#if 0
     if ((status & I2C_SLAVEDSPIC_STATUS_READY) && (status_flags & I2C_SLAVEDSPIC_STATUS_READY))
         ret |= status;
 
@@ -734,11 +751,15 @@ uint8_t i2c_slavedspic_ps_test_status(uint8_t status_flags)
 
     if ((status & I2C_SLAVEDSPIC_STATUS_ERROR) && (status_flags & I2C_SLAVEDSPIC_STATUS_ERROR))
         ret |= status;
-
+#endif
     if (ret)
         DEBUG (E_USER_STRAT, "popcorn system got status %s", get_status(ret));
 
     return ret;
+}
+
+uint8_t i2c_slavedspic_ps_wait_status_or_timeout (uint8_t status_flags, uint16_t timeout) {
+	return WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ps_test_status(status_flags), timeout);
 }
 
 /* set stands system mode */
@@ -796,35 +817,50 @@ uint8_t i2c_slavedspic_ss_test_status(uint8_t side, uint8_t status_flags)
 {
     uint8_t ret = 0;
     uint8_t status;
-    
-    status = i2c_slavedspic_get_ss_status(side);
-    
-    if ((status & I2C_SLAVEDSPIC_STATUS_READY) && (status_flags & I2C_SLAVEDSPIC_STATUS_READY))
-        ret |= status;
+	
+	//status = slavedspic.stands_system[side].status;
 
-    if ((status & I2C_SLAVEDSPIC_STATUS_BUSY) && (status_flags & I2C_SLAVEDSPIC_STATUS_BUSY))
-        ret |= status;
+	//if (status & status_flags)
+	//	ret = status;
+	//else 
+	//{
+		status = i2c_slavedspic_get_ss_status(side);
 
-    if ((status & I2C_SLAVEDSPIC_STATUS_BLOCKED) && (status_flags & I2C_SLAVEDSPIC_STATUS_BLOCKED))
-        ret |= status;
+		if (status & status_flags)
+			ret = status;
+#if 0
+		if ((status & I2C_SLAVEDSPIC_STATUS_READY) && (status_flags & I2C_SLAVEDSPIC_STATUS_READY))
+		    ret |= status;
 
-    if ((status & I2C_SLAVEDSPIC_STATUS_DONE) && (status_flags & I2C_SLAVEDSPIC_STATUS_DONE))
-        ret |= status;
+		if ((status & I2C_SLAVEDSPIC_STATUS_BUSY) && (status_flags & I2C_SLAVEDSPIC_STATUS_BUSY))
+		    ret |= status;
 
-    if ((status & I2C_SLAVEDSPIC_STATUS_WAITING) && (status_flags & I2C_SLAVEDSPIC_STATUS_WAITING))
-        ret |= status;
+		if ((status & I2C_SLAVEDSPIC_STATUS_BLOCKED) && (status_flags & I2C_SLAVEDSPIC_STATUS_BLOCKED))
+		    ret |= status;
 
-    if ((status & I2C_SLAVEDSPIC_STATUS_STORING) && (status_flags & I2C_SLAVEDSPIC_STATUS_STORING))
-        ret |= status;
+		if ((status & I2C_SLAVEDSPIC_STATUS_DONE) && (status_flags & I2C_SLAVEDSPIC_STATUS_DONE))
+		    ret |= status;
 
-    if ((status & I2C_SLAVEDSPIC_STATUS_ERROR) && (status_flags & I2C_SLAVEDSPIC_STATUS_ERROR))
-        ret |= status;
+		if ((status & I2C_SLAVEDSPIC_STATUS_WAITING) && (status_flags & I2C_SLAVEDSPIC_STATUS_WAITING))
+		    ret |= status;
+
+		if ((status & I2C_SLAVEDSPIC_STATUS_STORING) && (status_flags & I2C_SLAVEDSPIC_STATUS_STORING))
+		    ret |= status;
+
+		if ((status & I2C_SLAVEDSPIC_STATUS_ERROR) && (status_flags & I2C_SLAVEDSPIC_STATUS_ERROR))
+		    ret |= status;
+#endif
+//	}
 
     if (ret)
         DEBUG (E_USER_STRAT, "stands system %s got status %s", 
                side == I2C_SIDE_LEFT? "LEFT":"RIGHT", get_status(ret));
 
     return ret;
+}
+
+uint8_t i2c_slavedspic_ss_wait_status_or_timeout (uint8_t side, uint8_t status_flags, uint16_t timeout) {
+	return WAIT_COND_OR_TIMEOUT(i2c_slavedspic_ss_test_status(side, status_flags), timeout);
 }
 
 /*******************************************************************************

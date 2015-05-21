@@ -1185,6 +1185,8 @@ void stands_system_init(stands_system_t *ss, uint8_t stand_sensor, stands_blade_
 	ss->us = 0;
 }
 
+#define STAND_SENSOR_TIME 350000L
+
 uint8_t do_hide_tower(stands_system_t *ss)
 {
 	uint8_t ret = 0;
@@ -1227,8 +1229,10 @@ uint8_t do_hide_tower(stands_system_t *ss)
 		case WAITING_ELEVATOR_LIFTED:
 			ret = stands_elevator_test_traj_end(ss->elevator);
 
-			if(ret & END_TRAJ)
+			if(ret & END_TRAJ) {
+				ss->us = time_get_us2();
                 ss->substate = HIDE_BLADE;
+			}
 			else if(ret & END_BLOCKING) {
 				STMCH_ERROR("stands_elevator_%s BLOCKED!!", ss->elevator->type? "r":"l");
 				return STATUS_BLOCKED;
@@ -1237,6 +1241,11 @@ uint8_t do_hide_tower(stands_system_t *ss)
 			break;
 
 		case HIDE_BLADE:
+			
+			/* wait for sensor ready */
+			if ((uint32_t)(time_get_us2()-ss->us) < STAND_SENSOR_TIME)
+				break;
+
 			if(sensor_get(ss->stand_sensor) && ss->stored_stands < 3) {
 				STMCH_ERROR("There is stand unharvested!!");
 
@@ -1350,8 +1359,6 @@ uint8_t do_harvest_stand_ready(stands_system_t *ss)
 
 uint8_t do_harvest_stand_do(stands_system_t *ss)
 {
-#define STAND_SENSOR_TIME 250000L
-
 	uint8_t ret = 0;
 
 	switch(ss->substate)
@@ -1389,7 +1396,7 @@ uint8_t do_harvest_stand_do(stands_system_t *ss)
 				return STATUS_BLOCKED;
 			}
 
-            return STATUS_STORING;
+            //return STATUS_STORING;
 			break;
 
 		case DESCEND_TOWER:
@@ -1403,11 +1410,18 @@ uint8_t do_harvest_stand_do(stands_system_t *ss)
 				return STATUS_DONE;
 			}
 
+			/* FIXME */
+#if 0
 			if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT)
 				stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, -150);
 			else
 				stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, 150);
-
+#else
+			if(ss->elevator->type == STANDS_ELEVATOR_TYPE_LEFT)
+				stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, 90);
+			else
+				stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, -80);
+#endif
 			ss->substate = WAITING_TOWER_DESCENDED;
 
             return STATUS_STORING;
@@ -1432,6 +1446,7 @@ uint8_t do_harvest_stand_do(stands_system_t *ss)
 			if ((uint32_t)(time_get_us2()-ss->us) < STAND_SENSOR_TIME)
 				break;
 
+			/* FIXME */
 			if(!sensor_get(ss->stand_sensor)) {
 				STMCH_ERROR("There isn't stand!!");
 				return STATUS_ERROR;
@@ -1513,7 +1528,7 @@ uint8_t do_build_spotlight_principal(stands_system_t *ss, stands_system_t *ss_sl
 			break;
 
 		case LIFT_ELEVATOR:
-#undef UP_AND_DOWN
+#define UP_AND_DOWN
 #ifdef UP_AND_DOWN
 			stands_elevator_set_mode(ss->elevator, STANDS_ELEVATOR_MODE_UP, 0);
 #else

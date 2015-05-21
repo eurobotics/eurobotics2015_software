@@ -586,17 +586,17 @@ struct cmd_log_result {
 };
 
 /* keep it sync with string choice */
-static const prog_char uart_log[] = "uart";
-static const prog_char rs_log[] = "rs";
-static const prog_char traj_log[] = "traj";
-//static const prog_char i2c_log[] = "i2c";
-static const prog_char oa_log[] = "oa";
-static const prog_char strat_log[] = "strat";
-static const prog_char i2cproto_log[] = "i2cproto";
-static const prog_char sensor_log[] = "sensor";
-static const prog_char block_log[] = "bd";
-static const prog_char cs_log[] = "cs";
-static const prog_char btproto_log[] = "btproto";
+static  prog_char uart_log[] = "uart";
+static  prog_char rs_log[] = "rs";
+static  prog_char traj_log[] = "traj";
+//static  prog_char i2c_log[] = "i2c";
+static  prog_char oa_log[] = "oa";
+static  prog_char strat_log[] = "strat";
+static  prog_char i2cproto_log[] = "i2cproto";
+static  prog_char sensor_log[] = "sensor";
+static  prog_char block_log[] = "bd";
+static  prog_char cs_log[] = "cs";
+static  prog_char btproto_log[] = "btproto";
 
 struct log_name_and_num {
 	const prog_char * name;
@@ -618,7 +618,7 @@ static const struct log_name_and_num log_name_and_num[] = {
 };
 
 static uint8_t
-log_name2num(const char * s)
+log_name2num( char * s)
 {
 	uint8_t i;
 	

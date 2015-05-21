@@ -74,6 +74,7 @@ uint8_t i2c_slavedspic_get_status(void);
 /****** SIMPLE ACTUATORS */
 
 int8_t i2c_slavedspic_mode_blades(uint8_t side, uint8_t mode);
+int8_t i2c_slavedspic_mode_tray(uint8_t mode, int8_t offset);
 
 /****** MULTIPLE ACTUATORS */
 
@@ -85,6 +86,7 @@ uint8_t i2c_slavedspic_get_ps_status(void);
 
 /* return 0 if no status matched, or the status received */
 uint8_t i2c_slavedspic_ps_test_status(uint8_t status_flags);
+uint8_t i2c_slavedspic_ps_wait_status_or_timeout (uint8_t status_flags, uint16_t timeout);
 
 /* set stands system mode */
 /* TODO: update harvest fucntion */
@@ -100,6 +102,7 @@ uint8_t i2c_slavedspic_get_ss_status(uint8_t side);
 
 /* return 0 if no status matched, or the status received */
 uint8_t i2c_slavedspic_ss_test_status(uint8_t side, uint8_t status_flags);
+uint8_t i2c_slavedspic_ss_wait_status_or_timeout (uint8_t side, uint8_t status_flags, uint16_t timeout);
 
 
 #endif
