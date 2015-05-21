@@ -154,6 +154,9 @@
 #define OPP_POPCORNMAC_X	    2550
 #define OPP_POPCORNMAC_Y	    2000-35
 
+#define MY_PLATFORM_X		    1150
+#define MY_PLATFORM_Y		    150
+
 #define MY_CUP_1_X			    910
 #define MY_CUP_1_Y			    2000-830
 #define MY_CUP_2_X			    250
@@ -199,6 +202,7 @@
 #define PLATFORM_WIDTH      100
 
 
+
 /* XXX keep synchronized with secondary robot */
 #define STAIRS_EDGE_Y			(AREA_Y-580)
 #define STAIRS_EDGE_X			(967)
@@ -221,25 +225,27 @@
 #define ZONE_POPCORNCUP_3				8
 
 #define ZONE_MY_CINEMA_UP				9
-#define ZONE_MY_CINEMA_DOWN				10
+#define ZONE_MY_CINEMA_DOWN_SEC			10
+#define ZONE_MY_CINEMA_DOWN_MAIN		11
 
-#define ZONE_MY_STAIRS					11
-#define ZONE_MY_STAIRWAY				12
+#define ZONE_MY_STAIRS					12
+#define ZONE_MY_STAIRWAY				13
 
-#define ZONE_MY_CLAP_1					13
-#define ZONE_MY_CLAP_2					14
-#define ZONE_MY_CLAP_3					15
+#define ZONE_MY_CLAP_1					14
+#define ZONE_MY_CLAP_2					15
+#define ZONE_MY_CLAP_3					16
 
-#define ZONE_MY_PLATFORM				16
+#define ZONE_MY_PLATFORM				17
 
-#define ZONE_MY_HOME_OUTSIDE			17
-#define ZONE_MY_HOME_POPCORNS			18
-#define ZONE_MY_HOME_SPOTLIGHT			19
+#define ZONE_MY_HOME_OUTSIDE			18
+#define ZONE_MY_HOME_POPCORNS			19
+#define ZONE_MY_HOME_SPOTLIGHT			20
 
-#define ZONE_BLOCK_UPPER_SIDE    		20
-#define ZONE_FREE_UPPER_SIDE    		21
+#define ZONE_BLOCK_UPPER_SIDE    		21
+#define ZONE_FREE_UPPER_SIDE    		22
+#define ZONE_CUP_NEAR_STAIRS			23
 
-#define ZONES_MAX		    			22
+#define ZONES_MAX		    			24
 
 /*
  * Strat diagram, valid for YELLOW.
@@ -288,7 +294,8 @@ struct conf {
 /* depends on flags the robot
  * will do different things */
 	uint8_t flags;
-#define CONF_FLAG_XXX   1
+#define CONF_FLAG_DO_TOWER      1
+#define DO_STAND_FAST_GROUP_1   2
 };
 
 
@@ -345,14 +352,7 @@ typedef struct {
 	#define ZONE_SEC_ROBOT	   	4
 	#define ZONE_AVOID		   	8
 
-#ifndef HOST_VERSION_OA_TEST
-	/* opponent statistics */
-	//microseconds opp_time_zone_us;
-	//microseconds last_time_opp_here; 	/*in us, since beginning of the match*/
-#endif
-
 	/* which robots can perform this action */
-	/* TODO: is useful, remove ? */
 	uint8_t robot;
 	#define MAIN_ROBOT  0
 	#define SEC_ROBOT   1
@@ -380,6 +380,7 @@ struct strat_infos {
 
 #define STR_HOMOLOGATION 0
 #define STR_BASE 1
+#define STR_QUALIFICATION 2
 	uint8_t match_strategy;
 
 
@@ -388,8 +389,17 @@ struct strat_infos {
 #define MSG_UPPER_SIDE_IS_BLOCKED 2
 #define MSG_UPPER_SIDE_FREE	   3
 #define MSG_UPPER_SIDE_IS_FREE	   4
+#define MSG_RELEASE_CUP_NEAR_STAIRS	   5
+#define MSG_CUP_RELEASED	   6
+#define MSG_RELEASE_CUP_IMPOSSIBLE	  7
 	/* message */
 	uint8_t msg;
+
+    /* done notifications  */
+#define DONE_STAND_4    1
+#define DONE_STAND_5    2
+#define DONE_CUP_3      4
+    uint8_t done_flags;
 
 #if 0
 	/* opponent zone position */
@@ -447,6 +457,10 @@ uint8_t strat_main(void);
 /********************************************
  * in strat_spotlight.c
  *******************************************/
+
+#define TOWER_BUILDING_TIME	(MATCH_TIME-20)
+#define STAND_RELEASE_TIME	(MATCH_TIME-10)
+
 /**
  *	Harvest several the 2 stands and the central cup in a path line
  *	return END_TRAJ if the work is done, err otherwise
@@ -458,8 +472,9 @@ uint8_t strat_harvest_stands_and_cup_inline (void);
  *	Harvest orphan stands
  *	return END_TRAJ if the work is done, err otherwise
  */
-#define STANDS_HARVEST_BACK_INIT_POS 1
-#define STANDS_HARVEST_CALIB_X       2
+#define STANDS_HARVEST_BACK_INIT_POS 		1
+#define STANDS_HARVEST_CALIB_X       		2
+#define STANDS_HARVEST_XY_IS_ROBOT_POSITION	4
 
 uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
 									 uint8_t side, uint8_t blade_angle,
@@ -469,19 +484,32 @@ uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
  *	Built a spotlight and release
  *	return END_TRAJ if the work is done, err otherwise
  */
-uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side);
+
+#define STANDS_RELEASE_DO_TOWER		1
+#define STANDS_RELEASE_TIME_OVER	2
+uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side, uint8_t flags);
+
+/* decides if we need build a tower */
+uint8_t strat_need_build_a_tower (void);
+
+/* escape from upper zone */
+uint8_t strat_escape_form_upper_zone(uint8_t flags);
 
 /********************************************
  * in strat_popcorn.c
  *******************************************/
 
-#define POPCORN_ONLY_CUP 1
-
 /**
  *	Harvest popcorn cups
  *	return END_TRAJ if the work is done, err otherwise
  */
+
+#define POPCORN_CUP_HARVEST_DO_NOT_RELEASE	1
+
 uint8_t strat_harvest_popcorn_cup (int16_t x, int16_t y, uint8_t side, uint8_t flags);
+
+/* release front cup */
+void strat_release_popcorn_cup_front (void);
 
 /**
  *	Harvest popcorns machine
@@ -493,6 +521,9 @@ uint8_t strat_harvest_popcorns_machine (int16_t x, int16_t y);
  *	Release popcorns in home area
  *	return END_TRAJ if the work is done, err otherwise
  */
+
+#define POPCORNS_RELEASE_ONLY_CUP	1
+
 uint8_t strat_release_popcorns_in_home (int16_t x, int16_t y, uint8_t flags);
 
 
@@ -541,6 +572,7 @@ void strat_opp_tracking (void);
 /* Messages between robots */
 void strat_smart_set_msg (uint8_t msg);
 uint8_t strat_smart_get_msg (void);
+uint8_t strat_wait_sync_main_robot(uint8_t msg);void strat_strategy_time(void);
 
 /********************************************
  * in strat_strategies.c
@@ -550,6 +582,8 @@ void strat_set_next_sec_strategy(void);
 void strat_set_next_main_strategy(void);
 void strat_change_sequence_homologation(uint8_t robot);
 void strat_change_sequence_base(uint8_t robot);
+void strat_change_sequence_qualification(uint8_t robot);
+
 
 
 #else /* HOST_VERSION_OA_TEST */
