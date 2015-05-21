@@ -20,6 +20,7 @@
  *  Javier Baliñas Santos <javier@arc-robots.org>
  */
 
+
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
@@ -285,7 +286,7 @@ struct slavedspic
 {
 	/* infos */
 	uint8_t status;
-   
+
 	/* systems */
 	struct {
 		uint8_t mode;
