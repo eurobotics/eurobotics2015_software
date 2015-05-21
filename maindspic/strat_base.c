@@ -538,8 +538,9 @@ uint8_t __strat_obstacle(uint8_t which)
 #define OBSTACLE_DIST		600
 
 	int16_t x_rel, y_rel;
-	int16_t opp_x, opp_y, opp_d, opp_a;
+	int16_t opp_x, opp_y, opp_d, opp_a, __opp1_x, __opp2_x;
 	int8_t ret = -1;
+    static int16_t opp_d_old = 3000;
 
 
 	/* XXX, possible BUG, too slow */
@@ -614,15 +615,25 @@ uint8_t __strat_obstacle(uint8_t which)
     /** XXX
      *  BUGFIX: big beacon (2 closer beacons in the distance).
      * 
-     *  If distance is is saturated to the minimun 
-     *  and no sensor detection discard distance 
+     *  Case of distance saturated to the minimun 
+     *  and previous measure is greater than 500mm and only one oppponent
      */
-#if 0
-    if (opp_d <= 230 &&
-        !sensor_get(S_OPPONENT_FRONT_R) && !sensor_get(S_OPPONENT_FRONT_L) &&
-        !sensor_get(S_OPPONENT_REAR_R) && !sensor_get(S_OPPONENT_REAR_L) ) 
+#if 1
+    IRQ_LOCK (flags);
+    __opp1_x = beaconboard.opponent1_x;
+    __opp2_x = beaconboard.opponent2_x;
+    IRQ_UNLOCK(flags);
+
+    if (opp_d <= 230 && opp_d_old > 500 &&
+        (__opp1_x == I2C_OPPONENT_NOT_THERE && __opp2_x != I2C_OPPONENT_NOT_THERE) || 
+        (__opp1_x != I2C_OPPONENT_NOT_THERE && __opp2_x == I2C_OPPONENT_NOT_THERE))
+        //!sensor_get(S_OPPONENT_FRONT_R) && !sensor_get(S_OPPONENT_FRONT_L) &&
+        //!sensor_get(S_OPPONENT_REAR_R) && !sensor_get(S_OPPONENT_REAR_L) ) 
     {
         return 0;
+    }
+    else {
+        opp_d_old = opp_d;
     }
 #endif
     
