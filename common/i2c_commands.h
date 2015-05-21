@@ -44,6 +44,11 @@
 #define I2C_SIDE_RIGHT  1
 #define I2C_SIDE_ALL    2
 
+/* XXX keep synchronized with bt_commands.h */
+#define BT_SIDE_FRONT 0
+#define BT_SIDE_REAR  1
+#define BT_SIDE_ALL   2
+
 
 
 struct i2c_cmd_hdr {

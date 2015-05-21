@@ -307,7 +307,7 @@ error_checksum:
 
 
 /* send command, and return after received ack */
-void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
+void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1, int16_t arg2)
 {
     uint8_t flags;
 	//DEBUG (E_USER_BT_PROTO, "TX cmd: id %d arg0 %d arg1 %d", cmd_id, arg0, arg1);
@@ -469,43 +469,43 @@ uint8_t bt_robot_2nd_wait_ack (void)
 
 /* set color */
 inline void bt_robot_2nd_set_color (void) {
-	bt_robot_2nd_cmd_no_wait_ack (BT_SET_COLOR, 0, 0);
+	bt_robot_2nd_cmd_no_wait_ack (BT_SET_COLOR, 0, 0, 0);
 }
 
 /* auto set possition */
 inline void bt_robot_2nd_autopos (void) {
-	bt_robot_2nd_cmd_no_wait_ack (BT_AUTOPOS, 0, 0);
+	bt_robot_2nd_cmd_no_wait_ack (BT_AUTOPOS, 0, 0, 0);
 }
 
 /* start macth timer */
 inline void bt_robot_2nd_start_matchtimer (void) {
-	bt_robot_2nd_cmd_no_wait_ack (BT_MATCHTIMER, 0, 0);
+	bt_robot_2nd_cmd_no_wait_ack (BT_MATCHTIMER, 0, 0, 0);
 }
 
 
 /* goto xy_abs */
 inline void bt_robot_2nd_goto_xy_abs (int16_t x, int16_t y) {
-	bt_robot_2nd_cmd_no_wait_ack (BT_GOTO_XY_ABS, x, y);
+	bt_robot_2nd_cmd_no_wait_ack (BT_GOTO_XY_ABS, x, y, 0);
 }
 /* goto xy_rel */
 inline void bt_robot_2nd_goto_xy_rel (int16_t x, int16_t y) {
-	bt_robot_2nd_cmd_no_wait_ack (BT_GOTO_XY_REL, x, y);
+	bt_robot_2nd_cmd_no_wait_ack (BT_GOTO_XY_REL, x, y, 0);
 }
 inline void bt_robot_2nd_goto_forward_xy_abs (int16_t x, int16_t y) {
-	bt_robot_2nd_cmd_no_wait_ack (BT_GOTO_FW_XY_ABS, x, y);
+	bt_robot_2nd_cmd_no_wait_ack (BT_GOTO_FW_XY_ABS, x, y, 0);
 }
 inline void bt_robot_2nd_goto_backward_xy_abs (int16_t x, int16_t y) {
-	bt_robot_2nd_cmd_no_wait_ack (BT_GOTO_BW_XY_ABS, x, y);
+	bt_robot_2nd_cmd_no_wait_ack (BT_GOTO_BW_XY_ABS, x, y, 0);
 }
 
 inline void bt_robot_2nd_goto_and_avoid (int16_t x, int16_t y) {
-	bt_robot_2nd_cmd_no_wait_ack (BT_GOTO_AVOID, x, y);
+	bt_robot_2nd_cmd_no_wait_ack (BT_GOTO_AVOID, x, y, 0);
 }
 inline void bt_robot_2nd_goto_and_avoid_forward (int16_t x, int16_t y) {
-	bt_robot_2nd_cmd_no_wait_ack (BT_GOTO_AVOID_FW, x, y);
+	bt_robot_2nd_cmd_no_wait_ack (BT_GOTO_AVOID_FW, x, y, 0);
 }
 inline void bt_robot_2nd_goto_and_avoid_backward(int16_t x, int16_t y) {
-	bt_robot_2nd_cmd_no_wait_ack (BT_GOTO_AVOID_BW, x, y);
+	bt_robot_2nd_cmd_no_wait_ack (BT_GOTO_AVOID_BW, x, y, 0);
 }
 
 /* bt_tasks */
@@ -513,16 +513,16 @@ inline void bt_robot_2nd_bt_task_pick_cup (int16_t x, int16_t y, uint8_t side) {
  bt_robot_2nd_cmd_no_wait_ack(BT_PICK_CUP, x, y, side);
 }
 inline void bt_robot_2nd_bt_task_carpet(void) {
- bt_robot_2nd_cmd_no_wait_ack(BT_CARPET,0,0);
+ bt_robot_2nd_cmd_no_wait_ack(BT_CARPET,0,0, 0);
 }
 inline void bt_robot_2nd_bt_task_stairs(void) {
- bt_robot_2nd_cmd_no_wait_ack(BT_STAIRS,0,0);
+ bt_robot_2nd_cmd_no_wait_ack(BT_STAIRS,0,0, 0);
 }
 inline void bt_robot_2nd_bt_task_bring_cup_cinema(int16_t x, int16_t y, uint8_t side) {
  bt_robot_2nd_cmd_no_wait_ack(BT_BRING_CUP_CINEMA, x, y, side);
 }
 inline void bt_robot_2nd_bt_task_clapperboard(int16_t x, int16_t y) {
- bt_robot_2nd_cmd_no_wait_ack(BT_CLAPPERBOARD, x, y);
+ bt_robot_2nd_cmd_no_wait_ack(BT_CLAPPERBOARD, x, y, 0);
 }
 
 /* request opponent position */

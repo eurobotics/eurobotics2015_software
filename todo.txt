@@ -1,0 +1,34 @@
+TODO MAIN ROBOT:
+
+x escape form upper zone: increase clerance
+x goto zone: enable sensors
+- Review of escapes of work on zone functions.
+x release stands: change xy to stand xy possition.
+x name conf flags.
+x goto clap after stand group 2
+x goto work directly to cup 2 when no opp in the path
+x FIXME: calib x on stand group 3.
+x test pickup cup 3 (the middle one) with opp (due to HACK BUG, see below).
+x BUG FIXED: goto home init after scape from upper zone.
+x FIXME: rear tray i2c mode.
+x FIXME: when 2 beacons are very close is measured as a beacon at 230mm --> improved and commented
+x FIXME: BUG duea a HACK on obstacle detection when zone == STAND_GROUP_1
+x FIXME: crash with RCA in Germany Cup --> Decremented SPEED_MIN in obstacle detection
+- FIXME: special case, XXX WHY????????????????????
+- mmm pero.... el grande no debería dejar donde no ha dejado el pequeño?? De dos vasos en un cine sólo cuenta el más lleno.
+- Uncomment log mesagges of avoid
+- Check: Esto es un bug que encontre que no se si esta arreglado en la ultima version. Revisalo porfa. Lo correcto es lo de la linea 1150 (intersect_platform_pt).
+- release stands: add MANAGE_BLOCKING feature (for platform case).
+x secondary: pickup/release cup 2 sides
+
+TODO SECONDARY ROBOT:
+
+- Review of goto and work on zone functions.
+x Release cup improvements: go a bit forward before open the clamp (work point changed).
+x Pickup cup improvements: 2 sides
+x Release cup improvements: 2 sides
+x Put carpets: go directly in front of stairways (discarted), mark a done carpet.
+x Close clapper: do a calib with wall before close the clapper (safest method).
+- Add sensors for obstacle detection???
+- Esto lo habeis pensado bien. No deberíamos esperar? Puede que hayamos dejado una alfombra y solo falte dejar la segunda.
+x Actuators: 2 clamps
