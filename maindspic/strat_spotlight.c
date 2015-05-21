@@ -568,6 +568,7 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side, ui
 
     /* go to the building position */
 	d = distance_from_robot(x, y);
+    d -= (ROBOT_CENTER_TO_MOUTH + STANDS_RADIOUS);
 	trajectory_d_rel(&mainboard.traj, d);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
     if (!TRAJ_SUCCESS(err))
