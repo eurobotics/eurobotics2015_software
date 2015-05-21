@@ -1068,9 +1068,13 @@ static void cmd_robot_2nd_bt_task_parsed(void * parsed_result, void * data)
     struct cmd_robot_2nd_bt_task_result * res = parsed_result;
     uint8_t err = END_ERROR;
 
-    if (!strcmp_P(res->arg1, PSTR("pick_cup")))
+    if (!strcmp_P(res->arg1, PSTR("pick_cup_front")))
     {
-       bt_robot_2nd_bt_task_pick_cup(res->arg2, res->arg3);
+       bt_robot_2nd_bt_task_pick_cup(res->arg2, res->arg3, BT_SIDE_FRONT);
+    }
+    else if (!strcmp_P(res->arg1, PSTR("pick_cup_rear")))
+    {
+       bt_robot_2nd_bt_task_pick_cup(res->arg2, res->arg3, BT_SIDE_REAR);
     }
 
     else if (!strcmp_P(res->arg1, PSTR("carpet")))
@@ -1083,9 +1087,13 @@ static void cmd_robot_2nd_bt_task_parsed(void * parsed_result, void * data)
         bt_robot_2nd_bt_task_stairs();
     }
 
-    else if (!strcmp_P(res->arg1, PSTR("bring_cup")))
+    else if (!strcmp_P(res->arg1, PSTR("bring_cup_front")))
     {
-        bt_robot_2nd_bt_task_bring_cup_cinema(res->arg2, res->arg3);
+        bt_robot_2nd_bt_task_bring_cup_cinema(res->arg2, res->arg3, BT_SIDE_FRONT);
+	}
+    else if (!strcmp_P(res->arg1, PSTR("bring_cup_rear")))
+    {
+        bt_robot_2nd_bt_task_bring_cup_cinema(res->arg2, res->arg3, BT_SIDE_REAR);
 	}
 
     else if (!strcmp_P(res->arg1, PSTR("clap")))
@@ -1126,7 +1134,7 @@ parse_pgm_inst_t cmd_robot_2nd_bt_task = {
 };
 
 
-prog_char str_robot_2nd_bt_task2_arg1[] = "pick_cup#bring_cup#clap";
+prog_char str_robot_2nd_bt_task2_arg1[] = "pick_cup_front#pick_cup_rear#bring_cup_front#bring_cup_rear#clap";
 parse_pgm_token_string_t cmd_robot_2nd_bt_task2_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_robot_2nd_bt_task_result, arg1, str_robot_2nd_bt_task2_arg1);
 parse_pgm_token_num_t cmd_robot_2nd_bt_task2_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_robot_2nd_bt_task_result, arg2, INT32);
 parse_pgm_token_num_t cmd_robot_2nd_bt_task2_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_robot_2nd_bt_task_result, arg3, INT32);

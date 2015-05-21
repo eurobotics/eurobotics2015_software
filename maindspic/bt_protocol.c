@@ -336,7 +336,7 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 	else if (cmd_id == BT_GOTO_XY_REL)
 		bt_send_ascii_cmd (robot_2nd.link_id, "bt_goto xy_rel %d %d %d", arg0, arg1, (arg0 + arg1));
 	else if (cmd_id == BT_PICK_CUP)
-		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task pick_cup %d %d %d", arg0, arg1, (arg0 + arg1));
+		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task pick_cup %d %d %d", arg0, arg1, arg2, (arg0 + arg1 + arg2));
 
 	else if (cmd_id == BT_CARPET)
 		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task carpet");
@@ -345,7 +345,7 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1)
 		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task stairs");
 
 	else if (cmd_id == BT_BRING_CUP_CINEMA)
-		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task bring_cup %d %d %d", arg0, arg1, (arg0 + arg1));
+		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task bring_cup %d %d %d", arg0, arg1, arg2, (arg0 + arg1 + arg2));
 
 	else if (cmd_id == BT_CLAPPERBOARD){
 		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task clap %d %d %d", arg0, arg1, (arg0 + arg1));
@@ -509,8 +509,8 @@ inline void bt_robot_2nd_goto_and_avoid_backward(int16_t x, int16_t y) {
 }
 
 /* bt_tasks */
-inline void bt_robot_2nd_bt_task_pick_cup (int16_t x, int16_t y) {
- bt_robot_2nd_cmd_no_wait_ack(BT_PICK_CUP, x, y);
+inline void bt_robot_2nd_bt_task_pick_cup (int16_t x, int16_t y, uint8_t side) {
+ bt_robot_2nd_cmd_no_wait_ack(BT_PICK_CUP, x, y, side);
 }
 inline void bt_robot_2nd_bt_task_carpet(void) {
  bt_robot_2nd_cmd_no_wait_ack(BT_CARPET,0,0);
@@ -518,8 +518,8 @@ inline void bt_robot_2nd_bt_task_carpet(void) {
 inline void bt_robot_2nd_bt_task_stairs(void) {
  bt_robot_2nd_cmd_no_wait_ack(BT_STAIRS,0,0);
 }
-inline void bt_robot_2nd_bt_task_bring_cup_cinema(int16_t x, int16_t y) {
- bt_robot_2nd_cmd_no_wait_ack(BT_BRING_CUP_CINEMA, x, y);
+inline void bt_robot_2nd_bt_task_bring_cup_cinema(int16_t x, int16_t y, uint8_t side) {
+ bt_robot_2nd_cmd_no_wait_ack(BT_BRING_CUP_CINEMA, x, y, side);
 }
 inline void bt_robot_2nd_bt_task_clapperboard(int16_t x, int16_t y) {
  bt_robot_2nd_cmd_no_wait_ack(BT_CLAPPERBOARD, x, y);

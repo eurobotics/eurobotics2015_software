@@ -495,7 +495,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 		{
 			case ZONE_POPCORNCUP_1:
 				bt_robot_2nd_bt_task_pick_cup (COLOR_X(strat_infos.zones[zone_num].x),
-											   strat_infos.zones[zone_num].y);
+											   strat_infos.zones[zone_num].y, BT_SIDE_FRONT);
 				break;
 
 			case ZONE_MY_CLAP_3:
@@ -505,12 +505,12 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 
 			case ZONE_MY_CINEMA_DOWN:
 				bt_robot_2nd_bt_task_bring_cup_cinema(COLOR_X(strat_infos.zones[zone_num].x),
-											   strat_infos.zones[zone_num].y);
+											   strat_infos.zones[zone_num].y, BT_SIDE_FRONT);
 				break;
 
 			case ZONE_MY_CINEMA_UP:
 				bt_robot_2nd_bt_task_bring_cup_cinema(COLOR_X(strat_infos.zones[zone_num].x),
-											   strat_infos.zones[zone_num].y);
+											   strat_infos.zones[zone_num].y, BT_SIDE_FRONT);
 				break;
 
 			case ZONE_MY_STAIRWAY:
