@@ -398,7 +398,7 @@ retry2:
 	
 release_stands:
 				/* XXX release stands because time is going over, NEVER RETURNS */
-				err = strat_buit_and_release_spotlight (COLOR_X(410), 
+				err = strat_buit_and_release_spotlight (COLOR_X(555), 
 														position_get_y_s16(&mainboard.pos),
 														COLOR_INVERT(SIDE_LEFT), 
 														STANDS_RELEASE_TIME_OVER | strat_need_build_a_tower());
