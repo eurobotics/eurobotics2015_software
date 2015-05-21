@@ -386,15 +386,13 @@ struct strat_infos strat_infos = {
 		0, 0,
 		MAIN_ROBOT
 	},
-		MAIN_ROBOT
-	},
 	/* ZONE_RELEASE_CUP_NEAR_STAIRS */
   	.zones[ZONE_CUP_NEAR_STAIRS] =
 	{
 		ZONE_TYPE_CINEMA,
 		700, 1275,
 		500, 960, 1025, 1525,
-		700, 1275, 
+		700, 1275,
 		0, 0,
 //		0, (9000*1000L),
 		//this value is changed to MAIN_ROBOT after sec robot is finished
@@ -627,8 +625,8 @@ uint8_t strat_main(void)
 
 	/* Zones we want to avoid */
 	strat_infos.zones[ZONE_CUP_NEAR_STAIRS].flags |= (ZONE_AVOID);
-									
-	
+
+
     /* play */
     do{
         err = strat_smart_main_robot();
