@@ -331,9 +331,9 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 	/* update strat_infos */
 	strat_smart[robot].goto_zone = zone_num;
 
-	/* TODO return if -1000  xy */
-	if (strat_infos.zones[zone_num].init_x == 0 &&
-		strat_infos.zones[zone_num].init_y == 0) {
+	/* return if NULL  xy */
+	if (strat_infos.zones[zone_num].init_x == INIT_NULL &&
+		strat_infos.zones[zone_num].init_y == INIT_NULL) {
 		WARNING (E_USER_STRAT, "WARNING, No where to GO (xy is NULL)");
 		ERROUT(END_TRAJ);
 	}
@@ -366,7 +366,12 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 	}
 
 
-	/* main robot: goto and wait */
+	/* XXX main robot: goto and wait */
+
+    /* TODO TEST: enable obstacle sensors */
+    strat_opp_sensor_enable();
+    
+
 	if (strat_smart[robot].current_zone == ZONE_MY_HOME_POPCORNS){
 
 		/* we are at init position */
@@ -453,6 +458,8 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 		strat_smart[robot].current_zone=zone_num;
 
 end:
+    /* TODO: disable obstacle sensors */
+    strat_opp_sensor_disable();    
 	return err;
 }
 
