@@ -2,8 +2,8 @@
 
 # COMPILE CODE AND START THE SIMULATION WITH TERMINAL FOR BOTH ROBOTS #
 
-MAIN_ROBOT_DIR=/home/spolki/euroboticssoftware/maindspic
-SECONDARY_ROBOT_DIR=/home/spolki/euroboticssoftware/secondary_robot
+MAIN_ROBOT_DIR=/home/spolki/eurobotics2015_software/maindspic
+SECONDARY_ROBOT_DIR=/home/spolki/eurobotics2015_software/secondary_robot
 
 if [ "$1" == "" ]
 then
