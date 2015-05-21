@@ -572,7 +572,7 @@ void strat_opp_tracking (void);
 /* Messages between robots */
 void strat_smart_set_msg (uint8_t msg);
 uint8_t strat_smart_get_msg (void);
-uint8_t strat_wait_sync_main_robot(uint8_t msg);
+uint8_t strat_wait_sync_main_robot(uint8_t msg);void strat_strategy_time(void);
 
 /********************************************
  * in strat_strategies.c
@@ -582,6 +582,8 @@ void strat_set_next_sec_strategy(void);
 void strat_set_next_main_strategy(void);
 void strat_change_sequence_homologation(uint8_t robot);
 void strat_change_sequence_base(uint8_t robot);
+void strat_change_sequence_qualification(uint8_t robot);
+
 
 
 #else /* HOST_VERSION_OA_TEST */
