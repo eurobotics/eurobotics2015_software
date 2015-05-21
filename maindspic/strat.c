@@ -117,6 +117,9 @@ struct strat_infos strat_infos = {
         .flags = 0,
     },
 
+#define INIT_NULL 0
+#define WORK_NULL 0
+
 	/* stands */
     .zones[ZONE_MY_STAND_GROUP_1] =
 	{
@@ -127,11 +130,9 @@ struct strat_infos strat_infos = {
 		/* boundinbox: x_down, x_up,  y_down,  y_up, */
 		700, 1400, 150, 700,
 		/* init_x, init_y */
-	  	0, 0,
+	  	INIT_NULL, INIT_NULL,
 		/* priority, flags */
 		0, 0,
-		/* statistics: opp_time_zone_us, last_time_opp_here */
-//		0, (9000*1000L),
 		/* robot in charge */
 		MAIN_ROBOT
 	},
@@ -140,20 +141,29 @@ struct strat_infos strat_infos = {
 		ZONE_TYPE_STAND,
 		MY_STAND_7_X, MY_STAND_7_Y,
 		0, 100, 0, 300,
-		0, 0, //MY_CUP_2_X+OBS_CLERANCE, MY_CUP_2_Y,
+		INIT_NULL, INIT_NULL, //MY_CUP_2_X+OBS_CLERANCE, MY_CUP_2_Y,
 		0, 0,
-//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
     .zones[ZONE_MY_STAND_GROUP_3] =
 	{
+#if 0
+		/* only one stand */
 		ZONE_TYPE_STAND,
 		MY_STAND_2_X-20, MY_STAND_2_Y,         /* XXX: aprox. to be tested */
 		650, 950, 1700, 1950,
 		MY_STAND_2_X-OBS_CLERANCE, LIMIT_BBOX_Y_UP,
 		0, 0,
-//		0, (9000*1000L),
 		MAIN_ROBOT
+#else
+		/* two stands */
+		ZONE_TYPE_STAND,
+		738, AREA_Y-227,         /* XXX: aprox. to be tested */
+		650, 950, 1700, 1950,
+		450, AREA_Y-432,
+		0, 0,
+		MAIN_ROBOT
+#endif
 	},
     .zones[ZONE_MY_STAND_GROUP_4] =
 	{
@@ -162,7 +172,6 @@ struct strat_infos strat_infos = {
 		0, 150, 0, 300,
 		MY_STAND_1_X+OBS_CLERANCE, AREA_Y-330,
 		0, 0,
-//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
 	/* popcorn machines */
@@ -173,7 +182,6 @@ struct strat_infos strat_infos = {
 		150, 750, 1700, 2000,
 		MY_POPCORNMAC_X, AREA_Y-330,
 		0, 0,
-//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
 	/* XXX AVOID for the moment */
@@ -184,7 +192,6 @@ struct strat_infos strat_infos = {
 		2250, 2850, 1700, 2000,
 		OPP_POPCORNMAC_X, AREA_Y-330,
 		0, ZONE_AVOID,
-//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
 	/* popcorn cups */
@@ -196,7 +203,6 @@ struct strat_infos strat_infos = {
 		760, 1060, 1020, 1320,
 		MY_CUP_1_X,	MY_CUP_1_Y-OBS_CLERANCE-30-80,
 		0, 0,
-//		0, (9000*1000L),
 		MAIN_ROBOT
 #else
 		ZONE_TYPE_POPCORNCUP,
@@ -204,7 +210,6 @@ struct strat_infos strat_infos = {
 		760, 1060, 1020, 1320,
 		MY_CUP_1_X-ROBOT_SEC_OBS_CLERANCE-CUP_DIAMETER,	MY_CUP_1_Y-ROBOT_SEC_OBS_CLERANCE-CUP_DIAMETER,
 		0, 0,
-//		0, (9000*1000L),
 		SEC_ROBOT
 #endif
 	},
@@ -212,10 +217,10 @@ struct strat_infos strat_infos = {
 	{
 		ZONE_TYPE_POPCORNCUP,
 		MY_CUP_2_X, MY_CUP_2_Y,
+		/* boundinbox: x_down, x_up,  y_down,  y_up, */
 		100, 400, 100, 400,
 		MY_CUP_2_X+OBS_CLERANCE+30+80, MY_CUP_2_Y,
 		0, 0,
-//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
 	.zones[ZONE_POPCORNCUP_3] =
@@ -225,7 +230,6 @@ struct strat_infos strat_infos = {
 		1350, 1650, 200, 500,
 		MY_CUP_3_X-OBS_CLERANCE-50, MY_CUP_3_Y,
 		0, 0,
-//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
 	/* cinemas */
@@ -236,17 +240,16 @@ struct strat_infos strat_infos = {
 		2600, 3000, 1200, 1600,
 		AREA_X-ROBOT_SEC_OBS_CLERANCE-CUP_DIAMETER, MY_CINEMA_UP_EDGE_Y+ROBOT_SEC_OBS_CLERANCE+CUP_DIAMETER,
 		0, 0,
-//	 	0, (9000*1000L),
 		SEC_ROBOT
 	},
-	.zones[ZONE_MY_CINEMA_DOWN] =
+	.zones[ZONE_MY_CINEMA_DOWN_SEC] =
 	{
 #ifdef ONLY_MAIN_ROBOT
 		ZONE_TYPE_CINEMA,
 		MY_CINEMA_DOWN_X, MY_CINEMA_DOWN_Y-150,
 		2600, 3000, 400, 800,
+		INIT_NULL, INIT_NULL,
 		0, 0,
-//		0, (9000*1000L),
 		MAIN_ROBOT
 #else
 		ZONE_TYPE_CINEMA,
@@ -254,9 +257,17 @@ struct strat_infos strat_infos = {
 		2600, 3000, 400, 800,
 		AREA_X-ROBOT_SEC_OBS_CLERANCE-CUP_DIAMETER, MY_CINEMA_DOWN_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-CUP_DIAMETER,
 		0, 0,
-//		0, (9000*1000L),
 		SEC_ROBOT
 #endif
+	},
+	.zones[ZONE_MY_CINEMA_DOWN_MAIN] =
+	{
+		ZONE_TYPE_CINEMA,
+		MY_CINEMA_DOWN_X, MY_CINEMA_DOWN_Y-150,
+		2600, 3000, 400, 800,
+		0, 0,
+//		0, (9000*1000L),
+		MAIN_ROBOT
 	},
 	/* stairs */
   	.zones[ZONE_MY_STAIRS] =
@@ -266,7 +277,6 @@ struct strat_infos strat_infos = {
 		1000, 1500, 1400, 2000,
 		MY_STAIRS_X, 1150,
 		0, ZONE_AVOID,
-//		0, (9000*1000L),
 		SEC_ROBOT
 	},
 	/* stair ways (carpets) */
@@ -274,10 +284,9 @@ struct strat_infos strat_infos = {
 	{
 		ZONE_TYPE_STAIRWAY,
 		CARPET_LEFT_INFRONT_X, STAIRS_EDGE_Y,
-		1000, 1500, 1400, 2000,
-          CARPET_LEFT_INFRONT_X, STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
+		910, 1500, 1200, STAIRS_EDGE_Y,
+        CARPET_LEFT_INFRONT_X, STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
 		0, 0,
-//		0, (9000*1000L),
 		SEC_ROBOT
 	},
 	/* clapper boards */
@@ -288,17 +297,15 @@ struct strat_infos strat_infos = {
 		180, 480, 0, 300,
 		MY_CLAP_1_X, MY_CUP_2_Y,
 		0, 0,
-//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
     .zones[ZONE_MY_CLAP_2] =
 	{
 		ZONE_TYPE_CLAP,
-		MY_CLAP_2_X, MY_CLAP_Y,
+		MY_CLAP_2_X-80, MY_CLAP_Y,
 		780, 1080, 0, 300,
-		MY_CLAP_2_X, MY_CUP_2_Y,
+		MY_CLAP_2_X-80, MY_CUP_2_Y,
 		0, 0,
-//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
     .zones[ZONE_MY_CLAP_3] =
@@ -308,7 +315,6 @@ struct strat_infos strat_infos = {
 		2230, 2530, 0, 300,
 		MY_CLAP_3_X, ROBOT_SEC_OBS_CLERANCE+PLATFORM_WIDTH+10,
 		0, 0,
-//		0, (9000*1000L),
 		SEC_ROBOT
 	},
 	/* home */
@@ -319,7 +325,6 @@ struct strat_infos strat_infos = {
 		90, 650, 800, 1200,
 		670, MY_HOME_SPOTLIGHT_Y,
 		0, 0,
-//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
   	.zones[ZONE_MY_HOME_POPCORNS] =
@@ -329,21 +334,18 @@ struct strat_infos strat_infos = {
 		90, 650, 800, 1200,
 		670, MY_HOME_POPCORNS_Y,
 		0, 0,
-//		0, (9000*1000L),
 		MAIN_ROBOT
 	},
 	/* home */
   	.zones[ZONE_MY_HOME_OUTSIDE] =
 	{
 		ZONE_TYPE_STRAT,
-		0, 0,
+		WORK_NULL, WORK_NULL,
 		90, 650, 800, 1200,	 /* not matter xy init is 0 */
 		402+ROBOT_SEC_OBS_CLERANCE, 800+(ROBOT_SEC_WIDTH/2),
 		0, 0,
-//		0, (9000*1000L),
 		SEC_ROBOT
 	},
-	//FIXME
 	/* block upper side */
   	.zones[ZONE_BLOCK_UPPER_SIDE] =
 	{
@@ -353,38 +355,53 @@ struct strat_infos strat_infos = {
 		600, 850, 950, 1250,
 		800, 1200,
 		0, 0,
-//		0, (9000*1000L),
 		SEC_ROBOT
 #else
 		ZONE_TYPE_STRAT,
+		WORK_NULL, WORK_NULL,
+		910, 1300, 1020, 1320,
+        CARPET_LEFT_INFRONT_X, MY_CUP_1_Y, //STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
 		0, 0,
-		760, 1060, 1020, 1320,
-          CARPET_LEFT_INFRONT_X, MY_CUP_1_Y, //STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
-		0, 0,
-//		0, (9000*1000L),
 		SEC_ROBOT
 #endif
 	},
-	//FIXME
 	/* free upper side */
   	.zones[ZONE_FREE_UPPER_SIDE] =
 	{
 		ZONE_TYPE_STRAT,
 		CARPET_LEFT_INFRONT_X, STAIRS_EDGE_Y,
 		1000, 1500, 1400, 2000,
-          CARPET_LEFT_INFRONT_X, STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
+        CARPET_LEFT_INFRONT_X, STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
+		0, 0,
+		SEC_ROBOT
+	},
+	/* platform */
+  	.zones[ZONE_MY_PLATFORM] =
+	{
+		ZONE_TYPE_PLATFORM,
+		1060, 160,
+		/* boundinbox: x_down, x_up,  y_down,  y_up, */
+		900, 1200, 0, 450,
+        1060, 330,
+		0, 0,
+		MAIN_ROBOT
+	},
+	/* ZONE_RELEASE_CUP_NEAR_STAIRS */
+  	.zones[ZONE_CUP_NEAR_STAIRS] =
+	{
+		ZONE_TYPE_CINEMA,
+		700, 1275,
+		500, 960, 1025, 1525,
+		700, 1275,
 		0, 0,
 //		0, (9000*1000L),
+		//this value is changed to MAIN_ROBOT after sec robot is finished
 		SEC_ROBOT
 	},
 };
 
 struct strat_smart strat_smart[ROBOT_MAX];
 
-/* points we get from each zone */
-/* TODO: implement a function to access to array. XXX Range must be assserted
-uint8_t strat_zones_points[ZONES_MAX];/
-*/
 
 /*************************************************************/
 
@@ -430,7 +447,8 @@ char zone_name[ZONES_MAX][14]= {
     [ZONE_POPCORNCUP_2]="CUP 2\0",
     [ZONE_POPCORNCUP_3]="CUP 3\0",
     [ZONE_MY_CINEMA_UP]="CINEMA UP\0",
-    [ZONE_MY_CINEMA_DOWN]="CINEMA DOWN\0",
+    [ZONE_MY_CINEMA_DOWN_SEC]="CIN DOWN SEC\0",
+    [ZONE_MY_CINEMA_DOWN_MAIN]="CIN DOWN MAIN\0",
     [ZONE_MY_STAIRS]="STAIRS\0",
     [ZONE_MY_HOME_SPOTLIGHT]="H.SPOTLIGHT\0",
     [ZONE_MY_HOME_POPCORNS]="H.POPCORNS\0",
@@ -440,7 +458,8 @@ char zone_name[ZONES_MAX][14]= {
     [ZONE_MY_STAIRWAY]="STAIRWAY\0",
     [ZONE_MY_HOME_OUTSIDE]="H.OUTSIDE\0",
     [ZONE_BLOCK_UPPER_SIDE]="BLOCK\0",
-    [ZONE_FREE_UPPER_SIDE]="FREE\0",
+    [ZONE_MY_PLATFORM]="PLAT\0",
+    [ZONE_CUP_NEAR_STAIRS]="CUP STAIRS\0",
 };
 
 /* return string with the zone name */
@@ -603,6 +622,9 @@ uint8_t strat_main(void)
 	/* set robot secondary to wait until start */
 	strat_smart_set_msg(MSG_WAIT_START);
 #endif
+
+	/* Zones we want to avoid */
+	strat_infos.zones[ZONE_CUP_NEAR_STAIRS].flags |= (ZONE_AVOID);
 
 
     /* play */

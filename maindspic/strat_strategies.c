@@ -71,7 +71,18 @@
 		goto end;		 \
 	} while(0)
 
+#define STRAT_TIMEOUT 15
+#define STRAT_TIMEOUT_2 16
+#define STRAT_WITH_CUP_NEAR_STAIRS 17
+void strat_clean_priorities(uint8_t robot){
 
+	uint8_t priority,i;
+	for(i=0,priority=0;  i < ZONES_MAX;  i++){
+		if(strat_infos.zones[i].robot == robot){
+			strat_infos.zones[i].prio = priority;
+		}
+	}
+}
 /* Add here the main strategy, the intelligence of robot */
 
 void strat_update_priorities(int num_args, ...)
@@ -79,11 +90,9 @@ void strat_update_priorities(int num_args, ...)
 	va_list arg_list;
 	int num_zone,i;
 	uint8_t priority;
-
 	va_start(arg_list, num_args);
 	DEBUG(E_USER_STRAT,"num_args %d",num_args);
 	for(i=0,priority=200;  i < num_args;  i++,priority-=10)
-	//for (num_zone = num_args, priority=10; num_zone != 0; )
 	{
 		num_zone = va_arg(arg_list, int);
 		strat_infos.zones[(uint8_t) num_zone].prio = priority;
@@ -104,6 +113,8 @@ void strat_set_next_sec_strategy(void)
 		case STR_BASE:
 			strat_change_sequence_base(SEC_ROBOT);
 			break;
+		case STR_QUALIFICATION:
+			strat_change_sequence_qualification(SEC_ROBOT);
 		default:
 			break;
 	}
@@ -120,6 +131,9 @@ void strat_set_next_main_strategy(void)
 		case STR_BASE:
 			strat_change_sequence_base(MAIN_ROBOT);
 			break;
+		case STR_QUALIFICATION:
+			strat_change_sequence_qualification(MAIN_ROBOT);
+
 		default:
 			break;
 	}
@@ -130,15 +144,15 @@ void strat_change_sequence_homologation(uint8_t robot){
 	if(robot == MAIN_ROBOT){
 		switch(strat_smart[robot].current_strategy){
 				default:
-					strat_update_priorities(6,ZONE_MY_STAND_GROUP_1, ZONE_MY_CLAP_2,ZONE_POPCORNCUP_2,ZONE_MY_STAND_GROUP_2,
-											ZONE_MY_CLAP_1,ZONE_MY_HOME_SPOTLIGHT);
+					strat_update_priorities(6,ZONE_MY_STAND_GROUP_1, ZONE_MY_CLAP_2,ZONE_POPCORNCUP_2,
+											  ZONE_MY_STAND_GROUP_2, ZONE_MY_CLAP_1,ZONE_MY_HOME_SPOTLIGHT);
 					break;
 			}
 	}
 	else{
 		switch(strat_smart[robot].current_strategy){
 				default:
-					strat_update_priorities(3,ZONE_MY_HOME_OUTSIDE,ZONE_POPCORNCUP_1,ZONE_MY_CLAP_3);
+					strat_update_priorities(4,ZONE_MY_HOME_OUTSIDE,ZONE_POPCORNCUP_1, ZONE_MY_STAIRWAY, ZONE_MY_CLAP_3);
 					break;
 			}
 	}
@@ -147,50 +161,206 @@ void strat_change_sequence_homologation(uint8_t robot){
 void strat_change_sequence_base(uint8_t robot){
 	if(robot == MAIN_ROBOT){
 
-		strat_smart[robot].current_strategy ++;
 		switch(strat_smart[robot].current_strategy){
-				case 1:
-					strat_update_priorities(10,ZONE_MY_STAND_GROUP_1, ZONE_MY_CLAP_2, ZONE_POPCORNCUP_2, 
-											  ZONE_MY_STAND_GROUP_2, ZONE_MY_CLAP_1, ZONE_MY_STAND_GROUP_4,
-											  ZONE_MY_POPCORNMAC, ZONE_MY_STAND_GROUP_3, ZONE_MY_HOME_POPCORNS, 
+				case 0:
+					strat_clean_priorities(MAIN_ROBOT);
+					strat_update_priorities(10,ZONE_MY_STAND_GROUP_1,  ZONE_POPCORNCUP_2,
+											  ZONE_MY_STAND_GROUP_2, ZONE_MY_CLAP_1, ZONE_MY_CLAP_2, ZONE_MY_STAND_GROUP_4,
+											  ZONE_MY_POPCORNMAC, ZONE_MY_STAND_GROUP_3, ZONE_MY_HOME_POPCORNS,
 											  ZONE_MY_HOME_SPOTLIGHT);
 					break;
-#if 0
-				case 1:
-					strat_update_priorities(13,ZONE_MY_STAND_GROUP_1, ZONE_MY_CLAP_2, ZONE_POPCORNCUP_2, 
-											  ZONE_MY_STAND_GROUP_2, ZONE_MY_CLAP_1, ZONE_MY_STAND_GROUP_4,
-											  ZONE_MY_POPCORNMAC, ZONE_MY_STAND_GROUP_3, ZONE_MY_HOME_POPCORNS, 
-											  ZONE_MY_HOME_SPOTLIGHT, ZONE_POPCORNCUP_1, ZONE_MY_CLAP_3,
-											  ZONE_MY_CINEMA_DOWN);
+				case STRAT_TIMEOUT:
+					strat_clean_priorities(MAIN_ROBOT);
+					strat_update_priorities(2,ZONE_MY_HOME_POPCORNS, ZONE_MY_HOME_SPOTLIGHT);
 					break;
-
-				case 2:
-					strat_update_priorities(9,ZONE_MY_STAND_GROUP_1,ZONE_MY_CLAP_2,ZONE_POPCORNCUP_2,ZONE_MY_STAND_GROUP_2,ZONE_MY_CLAP_1,ZONE_MY_STAND_GROUP_3,
-											ZONE_MY_POPCORNMAC,ZONE_MY_STAND_GROUP_4,ZONE_MY_HOME);
-#endif
 
 				default:
 					break;
-			}
+		}
+
+
 	}
 	else{
-		strat_smart[robot].current_strategy ++;
+
+		strat_clean_priorities(SEC_ROBOT);
 		switch(strat_smart[robot].current_strategy){
+				case 0:
+					strat_clean_priorities(SEC_ROBOT);
+					strat_update_priorities(6,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, ZONE_BLOCK_UPPER_SIDE,
+											  ZONE_MY_STAIRWAY, ZONE_MY_CLAP_3, ZONE_MY_CINEMA_DOWN_SEC);
+					strat_smart[robot].current_strategy ++;
+					break;
 				case 1:
-					strat_update_priorities(6,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, ZONE_BLOCK_UPPER_SIDE, 
-											  ZONE_MY_STAIRWAY, ZONE_MY_CLAP_3, ZONE_MY_CINEMA_DOWN);
-					break;
-#if 0
-				case 2:
-					strat_update_priorities(6,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, ZONE_BLOCK_UPPER_SIDE, ZONE_MY_STAIRWAY, ZONE_MY_CINEMA_UP, ZONE_MY_CLAP_3);
-					break;
-				case 3:
-					strat_update_priorities(6,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, ZONE_MY_CINEMA_DOWN, ZONE_MY_CINEMA_UP, ZONE_MY_CLAP_3, ZONE_MY_STAIRWAY);
+					strat_clean_priorities(SEC_ROBOT);
+					strat_update_priorities(6,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, ZONE_BLOCK_UPPER_SIDE,
+											  ZONE_MY_STAIRWAY,ZONE_MY_CINEMA_UP, ZONE_MY_CLAP_3 );
 					strat_smart[robot].current_strategy=0;
 					break;
-#endif
+				case STRAT_TIMEOUT:
+					strat_clean_priorities(SEC_ROBOT);
+					strat_update_priorities(3, ZONE_MY_HOME_OUTSIDE, ZONE_MY_STAIRWAY, ZONE_MY_CLAP_3);
+					break;
+
 				default:
 					break;
 			}
 	}
+}
+void strat_change_sequence_qualification(uint8_t robot){
+	if(robot == MAIN_ROBOT){
+
+		switch(strat_smart[robot].current_strategy){
+				case 0:
+					// Base strategy. No opponent interaction.
+					strat_clean_priorities(MAIN_ROBOT);
+					strat_update_priorities(10,ZONE_MY_STAND_GROUP_1,  ZONE_POPCORNCUP_2,
+											  ZONE_MY_STAND_GROUP_2, ZONE_MY_CLAP_1, ZONE_MY_CLAP_2, ZONE_MY_STAND_GROUP_4,
+											  ZONE_MY_POPCORNMAC, ZONE_MY_STAND_GROUP_3, ZONE_MY_HOME_POPCORNS,
+											  ZONE_MY_HOME_SPOTLIGHT);
+
+					strat_smart[robot].current_strategy ++;
+					break;
+				case 1:
+					// Opponent near opp_clapper3 when we are in down zone -> we do clap2 at the very end.
+					strat_clean_priorities(MAIN_ROBOT);
+					strat_update_priorities(10,ZONE_MY_STAND_GROUP_1,  ZONE_POPCORNCUP_2,
+												 ZONE_MY_STAND_GROUP_2, ZONE_MY_CLAP_1,  ZONE_MY_STAND_GROUP_4,
+												 ZONE_MY_POPCORNMAC, ZONE_MY_STAND_GROUP_3, ZONE_MY_HOME_POPCORNS,
+												 ZONE_MY_HOME_SPOTLIGHT, ZONE_MY_CLAP_2);
+
+					strat_smart[robot].current_strategy ++;
+					break;
+				case 2:
+					// Opponent in down zone at the beginning so we go up. 
+					strat_clean_priorities(MAIN_ROBOT);
+					strat_update_priorities(10,ZONE_MY_STAND_GROUP_1,  ZONE_MY_STAND_GROUP_4,
+											  ZONE_MY_POPCORNMAC, ZONE_MY_STAND_GROUP_3, ZONE_POPCORNCUP_2, 
+											  ZONE_MY_STAND_GROUP_2, ZONE_MY_HOME_POPCORNS, ZONE_MY_HOME_SPOTLIGHT, 
+											  ZONE_MY_CLAP_1, ZONE_MY_CLAP_2);
+											  
+					strat_smart[robot].current_strategy ++;
+					break;
+					
+				case STRAT_WITH_CUP_NEAR_STAIRS:
+					// To go to upper zone we first TRY to get the cup from sec robot
+					// You only get to this case from direct instruction in code and then it continues normally in the sequences loop
+					strat_clean_priorities(MAIN_ROBOT);
+					strat_update_priorities(11,ZONE_MY_STAND_GROUP_1,  ZONE_CUP_NEAR_STAIRS, ZONE_MY_STAND_GROUP_4,
+											  ZONE_MY_POPCORNMAC, ZONE_MY_STAND_GROUP_3, ZONE_POPCORNCUP_2, 
+											  ZONE_MY_STAND_GROUP_2, ZONE_MY_HOME_POPCORNS, ZONE_MY_HOME_SPOTLIGHT, 
+											  ZONE_MY_CLAP_1, ZONE_MY_CLAP_2);
+											  
+					strat_smart[robot].current_strategy ++;
+					break;
+					
+				case 3:
+					// Opponent is blocking our HOME
+					strat_clean_priorities(MAIN_ROBOT);
+					strat_update_priorities(11,ZONE_MY_STAND_GROUP_1,  ZONE_MY_STAND_GROUP_4,ZONE_MY_POPCORNMAC, 
+											  ZONE_MY_STAND_GROUP_3, ZONE_POPCORNCUP_2, ZONE_MY_STAND_GROUP_2, 
+											  ZONE_MY_CLAP_1, ZONE_MY_CLAP_2, ZONE_MY_PLATFORM,
+											  ZONE_MY_CINEMA_DOWN_MAIN, ZONE_MY_HOME_POPCORNS);
+					strat_smart[robot].current_strategy = 0;
+					break;
+
+
+				/* Timeout strategy (end of the match): release points */
+				case STRAT_TIMEOUT:
+					strat_clean_priorities(MAIN_ROBOT);
+					strat_update_priorities(2,ZONE_MY_HOME_POPCORNS, ZONE_MY_HOME_SPOTLIGHT);
+					strat_smart[robot].current_strategy = STRAT_TIMEOUT_2;
+					break;
+				case STRAT_TIMEOUT_2:
+					strat_clean_priorities(MAIN_ROBOT);
+					strat_update_priorities(3,ZONE_MY_PLATFORM, ZONE_MY_CINEMA_DOWN_MAIN,ZONE_MY_HOME_POPCORNS);
+					strat_smart[robot].current_strategy = STRAT_TIMEOUT;
+					break;
+
+				default:
+					break;
+		}
+
+
+	}
+	else{
+
+		strat_clean_priorities(SEC_ROBOT);
+		switch(strat_smart[robot].current_strategy){
+				case 0:
+					strat_clean_priorities(SEC_ROBOT);
+					strat_update_priorities(6,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, ZONE_BLOCK_UPPER_SIDE,
+											  ZONE_MY_STAIRWAY, ZONE_MY_CLAP_3, ZONE_MY_CINEMA_DOWN_SEC);
+					strat_smart[robot].current_strategy ++;
+					break;
+				case STRAT_WITH_CUP_NEAR_STAIRS:
+					strat_clean_priorities(SEC_ROBOT);
+					strat_update_priorities(6,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, ZONE_CUP_NEAR_STAIRS, 
+											  ZONE_MY_STAIRWAY, ZONE_MY_CLAP_3, ZONE_MY_CINEMA_DOWN_SEC);
+					strat_smart[robot].current_strategy ++;
+					break;
+				case 1:
+					// Opponent blocking "block upper side"
+					strat_clean_priorities(SEC_ROBOT);
+					strat_update_priorities(5,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, 
+											  ZONE_MY_STAIRWAY, ZONE_MY_CLAP_3, ZONE_MY_CINEMA_DOWN_SEC);
+					strat_smart[robot].current_strategy ++;
+					break;
+				case 2:
+					// Opponent blocking stairways
+					strat_clean_priorities(SEC_ROBOT);
+					strat_update_priorities(5,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, 
+											  ZONE_MY_CLAP_3, ZONE_MY_CINEMA_DOWN_SEC, ZONE_MY_STAIRWAY);
+					strat_smart[robot].current_strategy++;
+					break;
+				case 3:
+					// Opponent blocking clap 3
+					strat_clean_priorities(SEC_ROBOT);
+					strat_update_priorities(5,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, 
+											  ZONE_MY_CINEMA_UP, ZONE_MY_STAIRWAY, ZONE_MY_CLAP_3 );
+					strat_smart[robot].current_strategy++;
+					break;
+				case 4:
+					// Opponent blocking cinema down
+					strat_clean_priorities(SEC_ROBOT);
+					strat_update_priorities(5,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, 
+											  ZONE_MY_CINEMA_DOWN_SEC, ZONE_MY_STAIRWAY, ZONE_MY_CLAP_3 );
+					strat_smart[robot].current_strategy=1;
+					break;
+					
+				case STRAT_TIMEOUT:
+					strat_clean_priorities(SEC_ROBOT);
+					strat_update_priorities(3, ZONE_MY_HOME_OUTSIDE, ZONE_MY_STAIRWAY, ZONE_MY_CLAP_3);
+					break;
+
+				default:
+					break;
+			}
+	}
+}
+void strat_strategy_time(){
+
+	static uint8_t already_timeout=0;
+	if(already_timeout)
+		return;
+		
+	// Last seconds. Strategy base
+	if(time_get_s()> 70 && strat_infos.match_strategy == STR_BASE){
+		strat_smart[MAIN_ROBOT].current_strategy = STRAT_TIMEOUT;
+		strat_smart[SEC_ROBOT].current_strategy = STRAT_TIMEOUT;
+		strat_clean_priorities(MAIN_ROBOT);
+		strat_clean_priorities(SEC_ROBOT);
+		strat_change_sequence_base(MAIN_ROBOT);
+		strat_change_sequence_base(SEC_ROBOT);
+	}
+	
+	// Last seconds. Strategy qualification
+	if(time_get_s()> 70 && strat_infos.match_strategy == STR_QUALIFICATION){
+		strat_smart[MAIN_ROBOT].current_strategy = STRAT_TIMEOUT;
+		strat_smart[SEC_ROBOT].current_strategy = STRAT_TIMEOUT;
+		strat_clean_priorities(MAIN_ROBOT);
+		strat_clean_priorities(SEC_ROBOT);
+		strat_change_sequence_qualification(MAIN_ROBOT);
+		strat_change_sequence_qualification(SEC_ROBOT);
+	}
+	already_timeout=1;
 }
