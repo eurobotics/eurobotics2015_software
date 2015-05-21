@@ -71,6 +71,7 @@
 	} while(0)
 
 
+
 /* Add here the main strategy, the intelligence of robot */
 
 /* debug step to step */
