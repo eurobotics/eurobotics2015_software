@@ -290,13 +290,13 @@ void strat_auto_position (void);
  *	Pickup a popcorn cup
  *	return END_TRAJ if the work is done, err otherwise
  */
-uint8_t strat_pickup_cup (int16_t x, int16_t y);
+uint8_t strat_pickup_cup (int16_t x, int16_t y, uint8_t side);
 
 /**
  *	Release a popcorn cup
  *	return END_TRAJ if the work is done, err otherwise
  */
-uint8_t strat_release_cup (int16_t x, int16_t y);
+uint8_t strat_release_cup (int16_t x, int16_t y, uint8_t side);
 
 /**
  *	Put carpets on stairs

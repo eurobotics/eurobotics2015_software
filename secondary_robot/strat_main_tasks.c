@@ -117,7 +117,7 @@ void strat_auto_position (void)
  *	Pickup a popcorn cup
  *	return END_TRAJ if the work is done, err otherwise
  */
-uint8_t strat_pickup_cup (int16_t x, int16_t y)
+uint8_t strat_pickup_cup (int16_t x, int16_t y, uint8_t side)
 {
 #define CUP_DIAMETER	94
    	uint8_t err = 0;
@@ -135,11 +135,14 @@ uint8_t strat_pickup_cup (int16_t x, int16_t y)
 	strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 
 	/* open clamp */
-	cup_clamp_set_position (CUP_CLAMP_POS_OPEN);
+	side == BT_SIDE_FRONT? cup_front_clamp_set_position (CUP_FRONT_CLAMP_POS_OPEN):
+						   cup_rear_clamp_set_position (CUP_REAR_CLAMP_POS_OPEN);
 	us = time_get_us2();
 
 	/* turn to cup */
-	trajectory_turnto_xy(&mainboard.traj, x, y);
+	side == BT_SIDE_FRONT? trajectory_turnto_xy(&mainboard.traj, x, y):
+						   trajectory_turnto_xy_behind(&mainboard.traj, x, y);
+
  	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
@@ -151,10 +154,8 @@ uint8_t strat_pickup_cup (int16_t x, int16_t y)
 	/* go forward in clamp range */
 	d = distance_from_robot(x, y);
 
-	//if (d > (ROBOT_CENTER_TO_FRONT+(CUP_DIAMETER/2)+10))
-		trajectory_d_rel(&mainboard.traj, d-ROBOT_CENTER_TO_FRONT-(CUP_DIAMETER/2));
-	//else
-	//	trajectory_d_rel(&mainboard.traj, -(d-ROBOT_CENTER_TO_FRONT-(CUP_DIAMETER/2)-10));
+	side == BT_SIDE_FRONT?	trajectory_d_rel(&mainboard.traj, +(d-ROBOT_CENTER_TO_FRONT-(CUP_DIAMETER/2))):
+							trajectory_d_rel(&mainboard.traj, -(d-ROBOT_CENTER_TO_BACK-(CUP_DIAMETER/2)));
 
  	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
@@ -165,7 +166,8 @@ uint8_t strat_pickup_cup (int16_t x, int16_t y)
 
 end:
 	/* close clamp */
-	cup_clamp_set_position (CUP_CLAMP_POS_CLOSE);
+	side == BT_SIDE_FRONT? cup_front_clamp_set_position (CUP_FRONT_CLAMP_POS_CLOSE):
+						   cup_rear_clamp_set_position (CUP_REAR_CLAMP_POS_CLOSE);
 	time_wait_ms(500);
 
     /* XXX debug */
@@ -218,9 +220,9 @@ uint8_t strat_release_cup (int16_t x, int16_t y, uint8_t side)
     /* XXX debug */
     state_debug_wait_key_pressed(); 
 
-	/* TODO: open clamp */
-	side == BT_SIDE_FRONT? cup_clamp_set_position (CUP_CLAMP_POS_OPEN):
-                           cup_clamp_set_position (CUP_CLAMP_POS_OPEN);
+	/* open clamp */
+	side == BT_SIDE_FRONT? cup_front_clamp_set_position (CUP_FRONT_CLAMP_POS_OPEN):
+                           cup_rear_clamp_set_position (CUP_REAR_CLAMP_POS_OPEN);
 	time_wait_ms(2000);
 
     /* TODO: wait if opponent behind/front?? */
@@ -234,9 +236,9 @@ uint8_t strat_release_cup (int16_t x, int16_t y, uint8_t side)
 	   ERROUT(err);
 
 end:
-	/* TODO: close clamp */
-	side == BT_SIDE_FRONT? cup_clamp_set_position (CUP_CLAMP_POS_CLOSE):
-                           cup_clamp_set_position (CUP_CLAMP_POS_CLOSE);
+	/* close clamp */
+	side == BT_SIDE_FRONT? cup_front_clamp_set_position (CUP_FRONT_CLAMP_POS_CLOSE):
+                           cup_rear_clamp_set_position (CUP_REAR_CLAMP_POS_CLOSE);
 
     /* XXX debug */
     strat_infos.debug_step = old_debug;
@@ -418,6 +420,13 @@ calib:
 	else if (calib_tries) 
     { 
         calib_tries--;
+
+	    /* go backwards a bit */
+	    trajectory_d_rel(&mainboard.traj, -(OBS_CLERANCE-CALIB_D_OK));
+	    err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+        if (!TRAJ_SUCCESS(err))
+	       ERROUT(err);	
+
     
         /* turn 90 degrees, in order to clean space */
         a = (position_get_x_s16(&mainboard.pos) > (AREA_X/2)? 0 : 180);

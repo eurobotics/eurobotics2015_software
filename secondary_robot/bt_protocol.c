@@ -336,16 +336,16 @@ void bt_goto_and_avoid_backward (int16_t x, int16_t y, int16_t args_checksum)
 	}
 }
 
-void bt_task_pick_cup(int16_t x, int16_t y, int16_t args_checksum)
+void bt_task_pick_cup(int16_t x, int16_t y, uint8_t side, int16_t args_checksum)
 {
 	/* check args checksum */
-	if ((x+y) == args_checksum) {
+	if ((x+y+side) == args_checksum) {
 
 		/* set ACK */
 		bt_status_set_cmd_ack (0);
 
 		/* set bt_task */
-		strat_bt_task_rqst (BT_TASK_PICK_CUP, x,y, 0,0,0);
+		strat_bt_task_rqst (BT_TASK_PICK_CUP, x,y, side,0,0);
 	}
 	else {
 		/* set ACK */
@@ -372,16 +372,16 @@ void bt_task_stairs(void)
 	strat_bt_task_rqst (BT_TASK_STAIRS, 0,0,0,0,0);
 }
 
-void bt_task_bring_cup(int16_t x, int16_t y, int16_t args_checksum)
+void bt_task_bring_cup(int16_t x, int16_t y, uint8_t side, int16_t args_checksum)
 {
 	/* check args checksum */
-	if ((x+y) == args_checksum) {
+	if ((x+y+side) == args_checksum) {
 
 		/* set ACK */
 		bt_status_set_cmd_ack (0);
 
 		/* set bt_task */
-		strat_bt_task_rqst (BT_TASK_BRING_CUP, x,y, 0,0,0);
+		strat_bt_task_rqst (BT_TASK_BRING_CUP, x,y, side,0,0);
 	}
 	else {
 		/* set ACK */

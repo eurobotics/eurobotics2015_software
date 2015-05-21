@@ -50,10 +50,10 @@ void bt_goto_and_avoid (int16_t x, int16_t y, int16_t args_checksum);
 void bt_goto_and_avoid_forward (int16_t x, int16_t y, int16_t args_checksum);
 void bt_goto_and_avoid_backward (int16_t x, int16_t y, int16_t args_checksum);
 
-void bt_task_pick_cup(int16_t x, int16_t y, int16_t args_checksum);
+void bt_task_pick_cup(int16_t x, int16_t y, uint8_t side, int16_t args_checksum);
 void bt_task_carpet(void);
 void bt_task_stairs(void);
-void bt_task_bring_cup(int16_t x, int16_t y, int16_t args_checksum);
+void bt_task_bring_cup(int16_t x, int16_t y, uint8_t side, int16_t args_checksum);
 void bt_task_clap(int16_t x, int16_t y, int16_t args_checksum);
 
 #endif /* __BT_PROTOCOL_H__ */

@@ -61,11 +61,18 @@ int32_t encoders_get_beacon_speed(void * dummy);
 
 void arm_set_mode (uint8_t type, uint8_t mode);
 
-/* set cup clamp position */
-#define CUP_CLAMP_POS_OPEN		700 //650
-#define CUP_CLAMP_POS_CLOSE		350
+/* set cup front clamp position */
+#define CUP_FRONT_CLAMP_POS_OPEN		700 //650
+#define CUP_FRONT_CLAMP_POS_CLOSE		350
 
-void cup_clamp_set_position (uint16_t pos);
+void cup_front_clamp_set_position (uint16_t pos);
+
+/* set cup rear clamp position */
+#define CUP_REAR_CLAMP_POS_OPEN		700 //650
+#define CUP_REAR_CLAMP_POS_CLOSE		350
+
+void cup_rear_clamp_set_position (uint16_t pos);
+
 
 /* TODO: set auxiliary mode */
 #define AUX_WHEELS_POS_HIDDEN		500

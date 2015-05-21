@@ -123,11 +123,19 @@ void arm_set_mode (uint8_t type, uint8_t mode)
 #endif
 }
 
-/* set cup clamp position */
-void cup_clamp_set_position (uint16_t pos)
+/* set cup front clamp position */
+void cup_front_clamp_set_position (uint16_t pos)
 {
 #ifndef HOST_VERSION
 	pwm_servo_set(&gen.pwm_servo_oc2, pos);
+#endif
+}
+
+/* set cup rear clamp position */
+void cup_rear_clamp_set_position (uint16_t pos)
+{
+#ifndef HOST_VERSION
+	pwm_servo_set(&gen.pwm_servo_oc4, pos);
 #endif
 }
 

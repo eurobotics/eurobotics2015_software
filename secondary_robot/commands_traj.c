@@ -1027,6 +1027,7 @@ struct cmd_bt_task_result {
  	int32_t arg2;
  	int32_t arg3;
  	int32_t arg4;
+ 	int32_t arg5;
 };
 
 /* function called when cmd_bt_task is parsed successfully */
@@ -1036,7 +1037,7 @@ static void cmd_bt_task_parsed(void *parsed_result, void *data)
 
 	/* set task flag */
 	if (strcmp_P(res->arg1, PSTR("pick_cup")) == 0) {
-		bt_task_pick_cup(res->arg2, res->arg3, res->arg4);
+		bt_task_pick_cup(res->arg2, res->arg3, res->arg4, res->arg5);
 	}
 	else if (strcmp_P(res->arg1, PSTR("carpet")) == 0) {
 		bt_task_carpet();
@@ -1045,7 +1046,7 @@ static void cmd_bt_task_parsed(void *parsed_result, void *data)
 		bt_task_stairs();
 	}
 	else if (strcmp_P(res->arg1, PSTR("bring_cup")) == 0) {
-		bt_task_bring_cup(res->arg2, res->arg3, res->arg4);
+		bt_task_bring_cup(res->arg2, res->arg3, res->arg4, res->arg5);
 	}
 	else if (strcmp_P(res->arg1, PSTR("clap")) == 0) {
 		bt_task_clap(res->arg2, res->arg3, res->arg4);
@@ -1080,7 +1081,7 @@ parse_pgm_inst_t cmd_bt_task = {
 	},
 };
 
-prog_char str_bt_task2_arg1[] = "pick_cup#bring_cup#clap";
+prog_char str_bt_task2_arg1[] = "clap";
 parse_pgm_token_string_t cmd_bt_task2_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task_result, arg1, str_bt_task2_arg1);
 parse_pgm_token_num_t cmd_bt_task2_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task_result, arg2, INT32);
 parse_pgm_token_num_t cmd_bt_task2_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task_result, arg3, INT32);
@@ -1097,6 +1098,26 @@ parse_pgm_inst_t cmd_bt_task2 = {
  		(prog_void *)&cmd_bt_task2_arg2,
  		(prog_void *)&cmd_bt_task2_arg3,
  		(prog_void *)&cmd_bt_task2_arg4,
+		NULL,
+	},
+};
+
+prog_char str_bt_task3_arg1[] = "pick_cup#bring_cup";
+parse_pgm_token_string_t cmd_bt_task3_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_bt_task_result, arg1, str_bt_task3_arg1);
+parse_pgm_token_num_t cmd_bt_task3_arg5 = TOKEN_NUM_INITIALIZER(struct cmd_bt_task_result, arg5, INT32);
+
+prog_char help_bt_task3[] = "bt_task: x y side checksum";
+parse_pgm_inst_t cmd_bt_task3 = {
+	.f = cmd_bt_task_parsed,  /* function to call */
+	.data = NULL,      /* 2nd arg of func */
+	.help_str = help_bt_task3,
+	.tokens = {        /* token list, NULL terminated */
+		(prog_void *)&cmd_bt_task_arg0,
+		(prog_void *)&cmd_bt_task3_arg1,
+ 		(prog_void *)&cmd_bt_task2_arg2,
+ 		(prog_void *)&cmd_bt_task2_arg3,
+ 		(prog_void *)&cmd_bt_task2_arg4,
+ 		(prog_void *)&cmd_bt_task3_arg5,
 		NULL,
 	},
 };

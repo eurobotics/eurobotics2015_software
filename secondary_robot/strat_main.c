@@ -160,7 +160,7 @@ void strat_bt_task_scheduler (void)
 				break;
 
 			case  BT_TASK_PICK_CUP:
-				ret = strat_pickup_cup (mainboard.bt_task_args[0], mainboard.bt_task_args[1]);
+				ret = strat_pickup_cup (mainboard.bt_task_args[0], mainboard.bt_task_args[1], mainboard.bt_task_args[2]);
 				break;
 
 			case  BT_TASK_CARPET:
@@ -172,7 +172,7 @@ void strat_bt_task_scheduler (void)
 				break;
 
 			case  BT_TASK_BRING_CUP:
-				ret = strat_release_cup (mainboard.bt_task_args[0], mainboard.bt_task_args[1]);
+				ret = strat_release_cup (mainboard.bt_task_args[0], mainboard.bt_task_args[1], mainboard.bt_task_args[2]);
 				break;
 
 			case  BT_TASK_CLAP:
