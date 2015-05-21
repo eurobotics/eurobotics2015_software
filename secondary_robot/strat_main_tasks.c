@@ -219,6 +219,10 @@ uint8_t strat_release_cup (int16_t x, int16_t y)
 	time_wait_ms(2000);
 
 	/* return to init point */
+    
+    /* TODO: wait if opponent behind/front */
+    
+    
 	trajectory_d_rel(&mainboard.traj, -(d+CUP_DIAMETER));
  	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
@@ -255,6 +259,7 @@ uint8_t strat_put_carpets (void)
 	uint16_t old_spdd, old_spda;
 	int16_t d;
     uint8_t old_debug = strat_infos.debug_step;
+    static uint8_t first_carpet_done = 0;
 
     /* XXX debug */
     strat_infos.debug_step = 0;
@@ -283,19 +288,28 @@ uint8_t strat_put_carpets (void)
     /* XXX debug */
     state_debug_wait_key_pressed(); 
 
-	/* turn to left side */
-	trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(0));
-	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-	if (!TRAJ_SUCCESS(err))
-	   ERROUT(err);
+    /************* first carpet */
+    if (!first_carpet_done) {
 
-    /* XXX debug */
-    state_debug_wait_key_pressed(); 
+	    /* turn to left side */
+	    trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(0));
+	    err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+	    if (!TRAJ_SUCCESS(err))
+	       ERROUT(err);
 
-	/* put carpet */
-	arm_set_mode (COLOR_INVERT(ARM_TYPE_LEFT), ARM_MODE_CARPET);
-	time_wait_ms(500);
-	arm_set_mode (COLOR_INVERT(ARM_TYPE_LEFT), ARM_MODE_HIDE);
+        /* XXX debug */
+        state_debug_wait_key_pressed(); 
+
+	    /* put carpet */
+        arm_set_mode (COLOR_INVERT(ARM_TYPE_LEFT), ARM_MODE_CARPET);
+        time_wait_ms(500);
+        arm_set_mode (COLOR_INVERT(ARM_TYPE_LEFT), ARM_MODE_HIDE);
+
+        /* mark first carpet as done */
+        first_carpet_done = 1;
+    }
+
+    /************** second carpet */
 
 	/* turn to right side */
 	trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(180));
