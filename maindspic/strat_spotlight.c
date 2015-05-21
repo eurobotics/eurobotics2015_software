@@ -73,55 +73,7 @@
 #define STANDS_RADIOUS			30
 #define STANDS_READY_TIMEOUT    5000
 #define STANDS_STORING_TIMEOUT	700
-/**
- * 	TODO
-	pickup_cup_rear (x,y)
-	pickup_cup_front (x, y, release_after_harvesting)
-	release_cup_front ()
 
-	pickup_stands_close_to_wall (x, y, left_blade_angle, right_blade_angle, left_num, right_num, do_calib)
-	pickup_stands_and_cup_inpath (x, y, left_blade_angle, right_blade_angle, left_num, right_num, do_cup)
-	pickup_stand_generic (x, y, column_side)
-
-	pickup_popcorn_machine_and_calib_y ()
-
-	close_capperboard_on_the_path (x, y, direction, side, hide_stick)
-	close_clapperboard_turning (x, y, stick_type, hide_stick)
-	close_clapperboard_infront (x, y, hide_stick)
-
-	release_rear_cup_and_stored_popcorns (x, y)
-	built_and_release_spotlight (x, y)
- */
-
-/* template, return END_TRAJ if the work is done, err otherwise */
-#if 0
-uint8_t strat_ (int16_t x, int16_t y, uint8_t foo)
-{
-//#define DEBUG_STRAT_
-#ifdef DEBUG_STRAT_
-#define wait_press_key() state_debug_wait_key_pressed();
-	strat_infos.debug_step = 1;
-#else
-#define wait_press_key()
-#endif
-
-   	uint8_t err = 0;
-	uint16_t old_spdd, old_spda;
-
-	/* save speed */
-	strat_get_speed (&old_spdd, &old_spda);
-   	strat_limit_speed_disable ();
-	strat_set_speed (SPEED_DIST_SLOW,SPEED_ANGLE_FAST);
-   
-
-
-end:
-	/* end stuff */
-	strat_set_speed(old_spdd, old_spda);	
-   	strat_limit_speed_enable();
-   	return err;
-}
-#endif
 
 /** 
  *	Harvest several the 2 stands and the central cup in a path line 
@@ -307,6 +259,11 @@ uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
 	uint16_t old_spdd, old_spda;
 	int16_t d = 0, a = 0;
 	uint8_t calib_tries = 2;
+	int16_t x_init, y_init;
+
+	/* save init position */
+	x_init = position_get_x_s16(&mainboard.pos);
+	y_init = position_get_y_s16(&mainboard.pos);
 
 	/* set local speed, and disable speed limit */
 	strat_get_speed (&old_spdd, &old_spda);
@@ -439,7 +396,7 @@ harvest_stand:
 		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 		time_wait_ms(200);
 
-		d = position_get_x_s16(&mainboard.pos);
+		//d = position_get_x_s16(&mainboard.pos);
 
 		err = strat_calib(400, TRAJ_FLAGS_SMALL_DIST);
 
@@ -517,7 +474,8 @@ harvest_stand:
 			else
 				strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 
-            d = ABS(d-position_get_x_s16(&mainboard.pos));
+            //d = ABS(d-position_get_x_s16(&mainboard.pos));
+            d = distance_from_robot (x_init, y_init);
 		    trajectory_d_rel(&mainboard.traj, -d);
 		    err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 		    if (!TRAJ_SUCCESS(err))
