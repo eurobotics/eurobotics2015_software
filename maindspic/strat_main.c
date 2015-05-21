@@ -181,7 +181,7 @@ uint8_t strat_is_valid_zone(uint8_t robot, int8_t zone_num)
 			return 0;
 		}
 	}
-	
+
 	return 1;
 }
 
@@ -239,7 +239,7 @@ int8_t strat_get_new_zone(uint8_t robot)
 		if (strat_is_opp_in_zone(zone_num))
 			zone_num = STRAT_OPP_IS_IN_ZONE;
 	}
-	
+
 	return zone_num;
 }
 
@@ -330,7 +330,7 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
             i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_REAR_OPEN);
         }
 
-		
+
 		/* by default go with avoidance */
 		err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
 										strat_infos.zones[zone_num].init_y,
@@ -439,7 +439,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
                 err = strat_harvest_stands_and_cup_inline();
                 strat_infos.conf.flags &= ~(DO_STAND_FAST_GROUP_1);
             }
-    
+
 
             /* stand 4 */
 			if (!(strat_infos.done_flags & DONE_STAND_4)) {
@@ -450,7 +450,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 											       0,
 											       SPEED_DIST_SLOW, /* harvest speed */
 											       0);				/* flags */
-			    /* continue with the next stand */		    
+			    /* continue with the next stand */
 			    //if (!TRAJ_SUCCESS(err))
 			    //   ERROUT(err);
 
@@ -472,7 +472,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 											       SPEED_DIST_SLOW, /* harvest speed */
 											       0);				/* flags */
 
-			    /* continue with the next stand */	
+			    /* continue with the next stand */
 		        //if (!TRAJ_SUCCESS(err))
 			    //   ERROUT(err);
 
@@ -515,13 +515,6 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 
 
 			case ZONE_MY_STAND_GROUP_2:
-				err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x),
-												   strat_infos.zones[zone_num].y,
-												   COLOR_INVERT(SIDE_LEFT),         /* side target */
-									 			   SIDE_ALL,                        /* storing sides */
-												   COLOR_A_REL(-10),                /* blade angle */
-												   SPEED_DIST_SLOW,                 /* harvest speed */
-		case ZONE_MY_STAND_GROUP_2:
 			err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x),
 											   strat_infos.zones[zone_num].y,
 											   COLOR_INVERT(SIDE_LEFT),         /* side target */
@@ -558,22 +551,13 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 											   COLOR_A_REL(0),                	/* blade angle */
 											   SPEED_DIST_SLOW,            		/* harvest speed */
 											   STANDS_HARVEST_BACK_INIT_POS | 	/* flags */
-											   STANDS_HARVEST_XY_IS_ROBOT_POSITION); 
+											   STANDS_HARVEST_XY_IS_ROBOT_POSITION);
 #endif
 				break;
 			break;
 
-			case ZONE_MY_STAND_GROUP_4:
 		case ZONE_MY_STAND_GROUP_4:
 
-				err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x),
-												   strat_infos.zones[zone_num].y,
-												   COLOR_INVERT(SIDE_RIGHT),        /* side target */
-									 			   COLOR_INVERT(SIDE_RIGHT),        /* storing sides */
-												   0,                               /* blade angle */
-												   SPEED_DIST_SLOW,                 /* harvest speed */
-												   STANDS_HARVEST_BACK_INIT_POS |
-						                           STANDS_HARVEST_CALIB_X);	        /* flags */
 			err = strat_harvest_orphan_stands (COLOR_X(strat_infos.zones[zone_num].x),
 											   strat_infos.zones[zone_num].y,
 											   COLOR_INVERT(SIDE_RIGHT),        /* side target */
@@ -594,7 +578,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 		case ZONE_MY_HOME_SPOTLIGHT:
 			err = strat_buit_and_release_spotlight (COLOR_X(strat_infos.zones[zone_num].x),
 													strat_infos.zones[zone_num].y,
-													COLOR_INVERT(SIDE_LEFT), strat_need_build_a_tower());			
+													COLOR_INVERT(SIDE_LEFT), strat_need_build_a_tower());
 			break;
 
 		case ZONE_MY_PLATFORM:
@@ -664,12 +648,12 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 
 			case ZONE_MY_CINEMA_UP:
 				err = strat_release_popcorns_in_home (COLOR_X(strat_infos.zones[zone_num].x),
-														strat_infos.zones[zone_num].y, POPCORN_ONLY_CUP);
+														strat_infos.zones[zone_num].y, POPCORNS_RELEASE_ONLY_CUP);
 				break;
 
 			case ZONE_MY_CINEMA_DOWN_MAIN:
 				err = strat_release_popcorns_in_home (COLOR_X(strat_infos.zones[zone_num].x),
-														strat_infos.zones[zone_num].y, POPCORN_ONLY_CUP);
+														strat_infos.zones[zone_num].y, POPCORNS_RELEASE_ONLY_CUP);
 				break;
 
 
@@ -692,7 +676,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 										   strat_infos.zones[zone_num].y,
 										   SIDE_REAR, 0);
 				break;
-				
+
 
 			default:
 				ERROR (E_USER_STRAT, "R1, ERROR zone %d not supported", zone_num);
@@ -772,9 +756,9 @@ uint8_t strat_smart_main_robot(void)
 			if(strat_wait_sync_main_robot(MSG_UPPER_SIDE_IS_FREE))
 				return END_TRAJ;
 		}
-		
+
 		// Cup near stairs
-		// if main robot has no cup in the back, tell sec robot to release cup near stairs and wait until main robot can take it 
+		// if main robot has no cup in the back, tell sec robot to release cup near stairs and wait until main robot can take it
 		if(!(strat_infos.zones[ZONE_POPCORNCUP_2].flags & ZONE_CHECKED))
 		{
 			// First time, send message
@@ -783,11 +767,11 @@ uint8_t strat_smart_main_robot(void)
 				strat_infos.zones[ZONE_CUP_NEAR_STAIRS].flags &= (~ZONE_AVOID);
 				strat_smart_set_msg(MSG_RELEASE_CUP_NEAR_STAIRS);
 			}
-			
+
 			// Wait for response
 			if(strat_wait_sync_main_robot(MSG_CUP_RELEASED))
 				return END_TRAJ;
-			
+
 			// Sec robot responded
 			else
 			{
@@ -859,15 +843,15 @@ uint8_t strat_smart_main_robot(void)
 		/* XXX should not happen, return END_TRAJ */
 		err = END_TRAJ;
 
-		/* special case, XXX WHY???????????????????? */
+		/* special case, XXX WHY????????????????????
 		if (zone_num == ZONE_MY_STAND_GROUP_1)
-			return err;
+			return err;*/
 
 	}
-	
-	if (TRAJ_SUCCESS(err) && zone_num == ZONE_MY_PLATFORM) 
+
+	if (TRAJ_SUCCESS(err) && zone_num == ZONE_MY_PLATFORM)
 		strat_infos.zones[ZONE_MY_HOME_SPOTLIGHT].flags |= ZONE_CHECKED;
-				
+
 
 	/* check the zone as DONE */
 	strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
@@ -1005,17 +989,17 @@ uint8_t strat_smart_secondary_robot(void)
 		case GET_NEW_ZONE:
 			if(strat_smart_get_msg()!=MSG_RELEASE_CUP_NEAR_STAIRS)
 				zone_num = strat_get_new_zone(SEC_ROBOT);
-				
+
 			// Received message to release cup near stairs
 			else
 			{
 				DEBUG(E_USER_STRAT,"R2, RECEIVED MSG_RELEASE_CUP_NEAR_STAIRS.");
 				if (strat_is_valid_zone(SEC_ROBOT, ZONE_CUP_NEAR_STAIRS) && (strat_infos.match_strategy == STR_QUALIFICATION)
-					&& (strat_infos.zones[ZONE_POPCORNCUP_1].flags & ZONE_CHECKED) 
+					&& (strat_infos.zones[ZONE_POPCORNCUP_1].flags & ZONE_CHECKED)
 					&& !(strat_infos.zones[ZONE_MY_CINEMA_UP].flags & ZONE_CHECKED))
 				{
 					DEBUG(E_USER_STRAT,"R2, GOING TO RELEASE CUP NEAR STAIRS.");
-					
+
 					#define STRAT_WITH_CUP_NEAR_STAIRS 17
 					strat_smart[SEC_ROBOT].current_strategy = STRAT_WITH_CUP_NEAR_STAIRS;
 					strat_change_sequence_qualification(SEC_ROBOT);
@@ -1126,7 +1110,7 @@ uint8_t strat_smart_secondary_robot(void)
 				break;
 
 			err = bt_robot_2nd_test_end();
-			
+
 			if (!TRAJ_SUCCESS(err)) {
 				DEBUG(E_USER_STRAT,"R2, ERROR, goto returned %s", get_err(err));
 				strat_smart[SEC_ROBOT].current_zone = -1; /* TODO: why? */
@@ -1243,7 +1227,7 @@ uint8_t strat_smart_secondary_robot(void)
 
 			if (!TRAJ_SUCCESS(err)) {
 				DEBUG(E_USER_STRAT,"R2, ERROR, work returned %s.", get_err(err));
-				
+
 				//If there is an error working in the cinemas don't try it again
 				if(strat_smart[SEC_ROBOT].current_zone == ZONE_MY_CINEMA_DOWN_SEC
 				|| strat_smart[SEC_ROBOT].current_zone == ZONE_MY_CINEMA_UP){
@@ -1264,9 +1248,9 @@ uint8_t strat_smart_secondary_robot(void)
 				strat_smart_set_msg(MSG_CUP_RELEASED);
 				strat_infos.zones[ZONE_CUP_NEAR_STAIRS].robot=MAIN_ROBOT;
 			}
-				
+
 			/* update statistics */
-			if(zone_num != ZONE_CUP_NEAR_STAIRS)	
+			if(zone_num != ZONE_CUP_NEAR_STAIRS)
 				strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
 
             /* next state */
