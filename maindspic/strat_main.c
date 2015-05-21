@@ -540,9 +540,9 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 			strat_smart[MAIN_ROBOT].current_zone = ZONE_MY_STAND_GROUP_1;
 
             /* fast harvesting of stand 4, 5 and cup 3 */
-            if (strat_infos.conf.flags & DO_STAND_FAST_GROUP_1) {
+            if (strat_infos.conf.flags & CONF_FLAG_DO_STAND_FAST_GROUP_1) {
                 err = strat_harvest_stands_and_cup_inline();
-                strat_infos.conf.flags &= ~(DO_STAND_FAST_GROUP_1);
+                strat_infos.conf.flags &= ~(CONF_FLAG_DO_STAND_FAST_GROUP_1);
             }
     
 

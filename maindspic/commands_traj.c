@@ -1139,7 +1139,7 @@ static void cmd_strat_conf_parsed(void *parsed_result, void *data)
 		strat_infos.conf.flags |= CONF_FLAG_DO_TOWER;
 
     else if (!strcmp_P(res->arg1, PSTR("do_fast_g1")))
-		strat_infos.conf.flags |= DO_STAND_FAST_GROUP_1;
+		strat_infos.conf.flags |= CONF_FLAG_DO_STAND_FAST_GROUP_1;
 
     strat_infos.dump_enabled = 1;
     strat_dump_conf();
