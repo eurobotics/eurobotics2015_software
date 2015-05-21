@@ -289,8 +289,8 @@ struct conf {
 /* depends on flags the robot
  * will do different things */
 	uint8_t flags;
-#define CONF_FLAG_DO_TOWER      1
-#define DO_STAND_FAST_GROUP_1   2
+#define CONF_FLAG_DO_TOWER                  1
+#define CONF_FLAG_DO_STAND_FAST_GROUP_1     2
 };
 
 
