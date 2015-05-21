@@ -9,6 +9,9 @@
 #define __BT_COMMANDS_H__
 
 
+#define BT_SIDE_FRONT 0
+#define BT_SIDE_REAR  1
+#define BT_SIDE_ALL   2
 
 
 struct bt_cmd_hdr {

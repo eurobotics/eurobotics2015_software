@@ -181,7 +181,7 @@ end:
  *	Release a popcorn cup
  *	return END_TRAJ if the work is done, err otherwise
  */
-uint8_t strat_release_cup (int16_t x, int16_t y)
+uint8_t strat_release_cup (int16_t x, int16_t y, uint8_t side)
 {
 #define CUP_DIAMETER	94
    	uint8_t err = 0;
@@ -198,14 +198,18 @@ uint8_t strat_release_cup (int16_t x, int16_t y)
 	strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 
 	/* turn to release point */
-	trajectory_turnto_xy(&mainboard.traj, x, y);
+	side == BT_SIDE_FRONT? trajectory_turnto_xy(&mainboard.traj, x, y):
+                           trajectory_turnto_xy_behind(&mainboard.traj, x, y);
+
  	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
 
-	/* go forward to point */
+	/* go to point */
 	d = distance_from_robot(x, y);
-	d -= (ROBOT_CENTER_TO_FRONT-(CUP_DIAMETER/2));
+	d -= (side == BT_SIDE_FRONT? (ROBOT_CENTER_TO_FRONT-(CUP_DIAMETER/2)):
+                                 (ROBOT_CENTER_TO_BACK-(CUP_DIAMETER/2)));
+
 	trajectory_d_rel(&mainboard.traj, d);
  	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
@@ -214,23 +218,25 @@ uint8_t strat_release_cup (int16_t x, int16_t y)
     /* XXX debug */
     state_debug_wait_key_pressed(); 
 
-	/* open clamp */
-	cup_clamp_set_position (CUP_CLAMP_POS_OPEN);
+	/* TODO: open clamp */
+	side == BT_SIDE_FRONT? cup_clamp_set_position (CUP_CLAMP_POS_OPEN):
+                           cup_clamp_set_position (CUP_CLAMP_POS_OPEN);
 	time_wait_ms(2000);
 
-	/* return to init point */
-    
     /* TODO: wait if opponent behind/front?? */
-    
-    
-	trajectory_d_rel(&mainboard.traj, -(d+CUP_DIAMETER));
+
+	/* return to init point */ 
+	side == BT_SIDE_FRONT?  trajectory_d_rel(&mainboard.traj, -(d+CUP_DIAMETER)):
+                            trajectory_d_rel(&mainboard.traj, +(d+CUP_DIAMETER));
+
  	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
 
 end:
-	/* close clamp */
-	cup_clamp_set_position (CUP_CLAMP_POS_CLOSE);
+	/* TODO: close clamp */
+	side == BT_SIDE_FRONT? cup_clamp_set_position (CUP_CLAMP_POS_CLOSE):
+                           cup_clamp_set_position (CUP_CLAMP_POS_CLOSE);
 
     /* XXX debug */
     strat_infos.debug_step = old_debug;
