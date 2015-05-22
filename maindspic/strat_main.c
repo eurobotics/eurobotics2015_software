@@ -190,22 +190,22 @@ uint8_t strat_is_valid_zone(uint8_t robot, int8_t zone_num)
 /* return 1 if opponent is in a zone area, 0 if not */
 uint8_t strat_is_opp_in_zone (uint8_t zone_num)
 {
-	int16_t opp1_x, opp1_y, opp2_x, opp2_y;
+	//int16_t opp1_x, opp1_y, opp2_x, opp2_y;
 	uint8_t ret = 0;
 
-	get_opponent1_xy(&opp1_x, &opp1_y);
-	get_opponent2_xy(&opp2_x, &opp2_y);
+	//get_opponent1_xy(&opp1_x, &opp1_y);
+	//get_opponent2_xy(&opp2_x, &opp2_y);
 
-	DEBUG (E_USER_STRAT, "area x_up=%d, x_down=%d, y_up=%d, y_down=%d", 
-							COLOR_X(strat_infos.zones[zone_num].x_up), COLOR_X(strat_infos.zones[zone_num].x_down),
- 							strat_infos.zones[zone_num].y_up, strat_infos.zones[zone_num].y_down);
+	//DEBUG (E_USER_STRAT, "area x_up=%d, x_down=%d, y_up=%d, y_down=%d", 
+	//						COLOR_X(strat_infos.zones[zone_num].x_up), COLOR_X(strat_infos.zones[zone_num].x_down),
+ 	//						strat_infos.zones[zone_num].y_up, strat_infos.zones[zone_num].y_down);
 
 	/* check if opponent is in zone area */
 	ret = opponents_are_in_area(COLOR_X(strat_infos.zones[zone_num].x_up), 	strat_infos.zones[zone_num].y_up,
 							 	 COLOR_X(strat_infos.zones[zone_num].x_down),	strat_infos.zones[zone_num].y_down);
 
 
-	DEBUG (E_USER_STRAT, "ret = %d", ret);
+	//DEBUG (E_USER_STRAT, "ret = %d", ret);
 
 	return ret;
 }
@@ -249,7 +249,7 @@ int8_t strat_get_new_zone(uint8_t robot)
 		}
 	}
 
-	DEBUG (E_USER_STRAT, "zone candidate is %s", get_zone_name(zone_num));
+	//DEBUG (E_USER_STRAT, "zone candidate is %s", get_zone_name(zone_num));
 
 	/* 2. check if the maximun priority zone is free */
 	if(zone_num != STRAT_NO_MORE_ZONES)
@@ -641,11 +641,10 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 			break;
 
 		case ZONE_MY_PLATFORM:
-#if 0
+
 			err = strat_buit_and_release_spotlight (COLOR_X(strat_infos.zones[zone_num].x),
 													strat_infos.zones[zone_num].y,
-													COLOR_INVERT(SIDE_LEFT), STAND_RELEASE_DO_TOWER);
-#endif
+													COLOR_INVERT(SIDE_LEFT), strat_need_build_a_tower());
 				break;
 
 		case ZONE_POPCORNCUP_1:

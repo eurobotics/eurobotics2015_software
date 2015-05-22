@@ -850,6 +850,9 @@ uint8_t opponents_are_in_area(int16_t x_up, int16_t y_up,int16_t x_down, int16_t
 	/* get robot coordenates */
 	opp1_there = get_opponent1_xy(&opp_x, &opp_y);
 	opp2_there = get_opponent2_xy(&opp2_x, &opp2_y);
+
+	//DEBUG (E_USER_STRAT, "opp1 x=%d, y=%d / opp2 x=%d, y=%d", opp_x, opp_y, opp2_x, opp2_y);
+
 	
 	/* return if no robots */
 	if(opp1_there == -1 && opp2_there == -1)

@@ -379,10 +379,10 @@ struct strat_infos strat_infos = {
   	.zones[ZONE_MY_PLATFORM] =
 	{
 		ZONE_TYPE_PLATFORM,
-		1060, 160,
+		1050, 135,
 		/* boundinbox: x_down, x_up,  y_down,  y_up, */
-		900, 1200, 0, 450,
-        1060, 450,
+		750, 1300, 0, 500,
+        1050, 350,
 		0, 0,
 		MAIN_ROBOT
 	},
