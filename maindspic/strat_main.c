@@ -416,8 +416,7 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 #define Y_DOWN  0
 
         /* TODO TEST: if opp is not in down area, skip goto, work directly */
-        if (!opponent1_is_in_area(X_UP, Y_UP, X_DOWN, Y_DOWN) &&
-            !opponent2_is_in_area(X_UP, Y_UP, X_DOWN, Y_DOWN) )
+        if (!opponents_are_in_area(COLOR_X(X_UP), Y_UP, COLOR_X(X_DOWN), Y_DOWN) )
         {
             err = END_TRAJ;
         }

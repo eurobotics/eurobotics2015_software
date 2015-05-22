@@ -20,6 +20,9 @@ x FIXME: crash with RCA in Germany Cup --> Decremented SPEED_MIN in obstacle det
 - Check: Esto es un bug que encontre que no se si esta arreglado en la ultima version. Revisalo porfa. Lo correcto es lo de la linea 1150 (intersect_platform_pt).
 - release stands: add MANAGE_BLOCKING feature (for platform case).
 x secondary: pickup/release cup 2 sides
+- harvest cup 3: go backwards more.
+- harvest cup: flag no return.
+- escape from upper zone: get space after !sucess
 
 TODO SECONDARY ROBOT:
 
