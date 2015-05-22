@@ -499,6 +499,8 @@ void strat_start(void)
 	}
 #endif
 
+	printf_P(PSTR("GOO!!!\r\n"));
+
 	/* reset infos, set traj speeds, set events ...*/
 	strat_init();
 	
@@ -553,7 +555,7 @@ uint8_t __strat_obstacle(uint8_t which)
 		return 0;
 
 	/* opponent sensors obstacle */
-#if 1
+#if 0
 	if (strat_opp_sensors_enabled)
 	{
 		/* opponent is in front of us */
@@ -619,7 +621,7 @@ uint8_t __strat_obstacle(uint8_t which)
      *  Case of distance saturated to the minimun 
      *  and previous measure is greater than 500mm and only one oppponent
      */
-#if 1
+#if 0
     IRQ_LOCK (flags);
     __opp1_x = beaconboard.opponent1_x;
     __opp2_x = beaconboard.opponent2_x;

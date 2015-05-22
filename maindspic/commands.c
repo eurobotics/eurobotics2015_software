@@ -273,8 +273,9 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *) & cmd_robot_2nd_bt_task2,
     (parse_pgm_inst_t *) & cmd_slavedspic,
 
-#ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
+
     (parse_pgm_inst_t *) & cmd_sensor_robot,
+#ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
     (parse_pgm_inst_t *) & cmd_interact,
     (parse_pgm_inst_t *) & cmd_rs,
 #ifdef TRAJECTORY_MANAGER_V3
