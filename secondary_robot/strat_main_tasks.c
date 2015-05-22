@@ -212,7 +212,9 @@ uint8_t strat_release_cup (int16_t x, int16_t y, uint8_t side)
 	d -= (side == BT_SIDE_FRONT? (ROBOT_CENTER_TO_FRONT-(CUP_DIAMETER/2)):
                                  (ROBOT_CENTER_TO_BACK-(CUP_DIAMETER/2)));
 
-	trajectory_d_rel(&mainboard.traj, d);
+	side == BT_SIDE_FRONT? trajectory_d_rel(&mainboard.traj, d):
+						   trajectory_d_rel(&mainboard.traj, -d);
+
  	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
@@ -340,8 +342,13 @@ uint8_t strat_put_carpets (void)
     {
        if(err==END_OBSTACLE)
        {
-       		if(opponents_are_in_area(1648,STAIRS_EDGE_Y,967,1000))
+       		if(opponents_are_in_area(COLOR_X(1648),STAIRS_EDGE_Y, COLOR_X(967),1000))
 	   			ERROUT(err);
+
+			/* go infront of second stairs */
+			d = distance_from_robot(COLOR_X(CARPET_RIGHT_INFRONT_X), position_get_y_s16(&mainboard.pos));
+			trajectory_d_rel(&mainboard.traj, -d);
+			err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
        }
        else
 	   	ERROUT(err);
@@ -406,7 +413,7 @@ uint8_t strat_close_clapperboard (int16_t x, int16_t y)
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);	
 
-#if 1
+#if 0
 
 	/* TODO: calib y */
 	/* calibrate position on the wall */
@@ -414,18 +421,29 @@ uint8_t strat_close_clapperboard (int16_t x, int16_t y)
 	time_wait_ms(200);
 
 calib:
-	err = strat_calib(300, TRAJ_FLAGS_SMALL_DIST);
+
+	/* go to blocking */
+	//err = strat_calib(-100, TRAJ_FLAGS_SMALL_DIST);
+	trajectory_d_rel(&mainboard.traj, -100);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+    //if (!TRAJ_SUCCESS(err))
+	//   ERROUT(err);	
+
+	printf ("diff = %d", ABS(position_get_y_s16(&mainboard.pos)-(int16_t)ROBOT_CENTER_TO_BACK));
 
 #define CALIB_D_OK 30
-	if (position_get_x_s16 (&mainboard.pos) < CALIB_D_OK)
+	if (0) //ABS(position_get_y_s16(&mainboard.pos)-ROBOT_CENTER_TO_BACK) < CALIB_D_OK)
 	{
 		strat_reset_pos(DO_NOT_SET_POS,
                         ROBOT_CENTER_TO_BACK,
-						COLOR_A_ABS(90));
+						90);
 
 	    /* go forward a bit */
 	    trajectory_d_rel(&mainboard.traj, OBS_CLERANCE);
-	    err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+	    err = wait_traj_end((END_TRAJ|END_INTR));
+
+		printf ("1 err %s", get_err(err));
+
         if (!TRAJ_SUCCESS(err))
 	       ERROUT(err);	
 	}
@@ -455,6 +473,13 @@ calib:
 
         goto calib;
     }
+	else {
+	    /* go backwards a bit */
+	    trajectory_d_rel(&mainboard.traj, -(OBS_CLERANCE-CALIB_D_OK));
+	    err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+        if (!TRAJ_SUCCESS(err))
+	       ERROUT(err);	
+	}
 
 #endif
 
@@ -467,6 +492,9 @@ calib:
 	a = (position_get_x_s16(&mainboard.pos) > (AREA_X/2)? 0 : 180);
 	trajectory_a_abs(&mainboard.traj, a);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+
+	printf ("2 err %s", get_err(err));
+
 	if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
 

@@ -336,7 +336,7 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1, i
 	else if (cmd_id == BT_GOTO_XY_REL)
 		bt_send_ascii_cmd (robot_2nd.link_id, "bt_goto xy_rel %d %d %d", arg0, arg1, (arg0 + arg1));
 	else if (cmd_id == BT_PICK_CUP)
-		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task pick_cup %d %d %d", arg0, arg1, arg2, (arg0 + arg1 + arg2));
+		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task pick_cup %d %d %d %d", arg0, arg1, arg2, (arg0 + arg1 + arg2));
 
 	else if (cmd_id == BT_CARPET)
 		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task carpet");
@@ -345,7 +345,7 @@ void bt_robot_2nd_cmd_no_wait_ack (uint8_t cmd_id, int16_t arg0, int16_t arg1, i
 		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task stairs");
 
 	else if (cmd_id == BT_BRING_CUP_CINEMA)
-		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task bring_cup %d %d %d", arg0, arg1, arg2, (arg0 + arg1 + arg2));
+		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task bring_cup %d %d %d %d", arg0, arg1, arg2, (arg0 + arg1 + arg2));
 
 	else if (cmd_id == BT_CLAPPERBOARD){
 		bt_send_ascii_cmd (robot_2nd.link_id, "bt_task clap %d %d %d", arg0, arg1, (arg0 + arg1));

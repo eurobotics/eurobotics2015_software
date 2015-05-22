@@ -243,7 +243,7 @@ uint8_t strat_calib(int16_t dist, uint8_t flags)
 	uint8_t err;
 
     //TODO: test constants. cs values = 90, 0 , 400
-	pid_set_gains(&mainboard.angle.pid, 30, 0, 200);
+	pid_set_gains(&mainboard.angle.pid, 20, 0, 100);
 	trajectory_d_rel(&mainboard.traj, dist);
 	err = wait_traj_end(flags);
 	pid_set_gains(&mainboard.angle.pid, p, i, d);
@@ -527,8 +527,8 @@ uint8_t __strat_obstacle(uint8_t which)
 #define OBSTACLE_R2ND	2
 
 #define OBSTACLE_SPEED_MIN	200 //20
-#define OBSTACLE_ANGLE		35
-#define OBSTACLE_DIST		600
+#define OBSTACLE_ANGLE		20 //35
+#define OBSTACLE_DIST		300 //600
 
 	int16_t x_rel, y_rel;
 	int16_t opp_x, opp_y, opp_d, opp_a;
