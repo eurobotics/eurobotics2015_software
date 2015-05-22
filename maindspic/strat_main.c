@@ -449,7 +449,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 
 			case ZONE_CUP_NEAR_STAIRS:
 				bt_robot_2nd_bt_task_bring_cup_cinema(COLOR_X(strat_infos.zones[zone_num].x),
-											   strat_infos.zones[zone_num].y);
+											   strat_infos.zones[zone_num].y, BT_SIDE_FRONT);
 				break;
 
 			default:
@@ -548,7 +548,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 										       0,
 										       SPEED_DIST_SLOW, /* harvest speed */
 										       0);				/* flags */
-				break;
+
 			break;
 
 
@@ -584,7 +584,6 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 											   STANDS_HARVEST_BACK_INIT_POS | 	/* flags */
 											   STANDS_HARVEST_XY_IS_ROBOT_POSITION);
 #endif
-				break;
 			break;
 
 		case ZONE_MY_STAND_GROUP_4:

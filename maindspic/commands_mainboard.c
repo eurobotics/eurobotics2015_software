@@ -78,6 +78,7 @@
 #include "strat_base.h"
 #include "strat_avoid.h"
 #include "strat_utils.h"
+#include "wt11.h"
 
 
 #ifdef HOST_VERSION
@@ -298,7 +299,7 @@ parse_pgm_inst_t cmd_opponent = {
     },
 };
 
-
+#ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
 prog_char str_opponent_arg1_set[] = "set";
 parse_pgm_token_string_t cmd_opponent_arg1_set = TOKEN_STRING_INITIALIZER(struct cmd_opponent_result, arg1, str_opponent_arg1_set);
 parse_pgm_token_num_t cmd_opponent_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_opponent_result, arg2, INT32);
@@ -318,7 +319,7 @@ parse_pgm_inst_t cmd_opponent_set = {
         NULL,
     },
 };
-
+#endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
 
 /**********************************************************/
 /* Init match */
@@ -1267,6 +1268,7 @@ parse_pgm_inst_t cmd_slavedspic = {
 };
 
 
+#ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
 /**********************************************************/
 /* Robot sensors test */
 
@@ -1361,7 +1363,7 @@ parse_pgm_inst_t cmd_sensor_robot = {
 };
 
 
-#ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
+
 
 
 /**********************************************************/
@@ -1793,6 +1795,7 @@ parse_pgm_inst_t cmd_sleep = {
 
 #endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
 
+#ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
 
 /**********************************************************/
 /* popcorn_system */
@@ -1942,3 +1945,5 @@ parse_pgm_inst_t cmd_stands_system = {
 		NULL,
 	},
 };
+#endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
+

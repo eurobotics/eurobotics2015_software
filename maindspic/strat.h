@@ -577,7 +577,8 @@ void strat_opp_tracking (void);
 /* Messages between robots */
 void strat_smart_set_msg (uint8_t msg);
 uint8_t strat_smart_get_msg (void);
-uint8_t strat_wait_sync_main_robot(uint8_t msg);void strat_strategy_time(void);
+uint8_t strat_wait_sync_main_robot(uint8_t msg);
+void strat_strategy_time(void);
 
 /********************************************
  * in strat_strategies.c
