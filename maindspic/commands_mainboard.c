@@ -519,7 +519,6 @@ static void cmd_start_parsed(void *parsed_result, void *data)
     }
 
 	/* flags */
-	strat_infos.conf.flags = 0;
 	strat_smart[MAIN_ROBOT].current_strategy=0;
 	strat_smart[SEC_ROBOT].current_strategy=0;
 	strat_set_next_sec_strategy();
@@ -1268,7 +1267,7 @@ parse_pgm_inst_t cmd_slavedspic = {
 };
 
 
-#ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
+//#ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
 /**********************************************************/
 /* Robot sensors test */
 
@@ -1363,6 +1362,7 @@ parse_pgm_inst_t cmd_sensor_robot = {
 };
 
 
+#ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
 
 
 
