@@ -255,6 +255,7 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 	/* update strat_infos */
 	strat_smart[robot].goto_zone = zone_num;
 
+
 	/* return if NULL  xy */
 	if (strat_infos.zones[zone_num].init_x == INIT_NULL &&
 		strat_infos.zones[zone_num].init_y == INIT_NULL) {
@@ -291,6 +292,12 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 
 
 	/* XXX main robot: goto and wait */
+#if 0
+	DEBUG (E_USER_STRAT, "R1 num zone %s", get_zone_name(zone_num));
+	DEBUG(E_USER_STRAT, "R1 last zone %s", get_zone_name(strat_smart[robot].last_zone));
+	DEBUG(E_USER_STRAT, "R1 current zone %s", get_zone_name(strat_smart[robot].current_zone));
+	DEBUG(E_USER_STRAT, "R1 goto zone %s", get_zone_name(strat_smart[robot].goto_zone));
+#endif
 
     /* TODO TEST: enable obstacle sensors */
     strat_opp_sensor_enable();
@@ -311,7 +318,7 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 										strat_infos.zones[zone_num].init_y,
 										TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
         /* if not sucessed */
-        if (!TRAJ_SUCCESS(err)) {
+        if (!TRAJ_SUCCESS(err) && (strat_infos.conf.flags & CONF_FLAG_DO_ESCAPE_UPPER_ZONE)) {
 			time_wait_ms (5000);
 
 			/* second try */
@@ -379,6 +386,7 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 										TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 	}
 
+end:
 	/* update strat_infos */
 	strat_smart[robot].last_zone = strat_smart[robot].current_zone;
 	strat_smart[robot].goto_zone = -1;
@@ -388,7 +396,7 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 	else
 		strat_smart[robot].current_zone=zone_num;
 
-end:
+
     /* TODO: disable obstacle sensors */
     strat_opp_sensor_disable();    
 	return err;
@@ -430,8 +438,8 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 				bt_robot_2nd_bt_task_bring_cup_cinema(COLOR_X(strat_infos.zones[zone_num].x),
 											   strat_infos.zones[zone_num].y, BT_SIDE_FRONT);
 				/* go outside of cinema to let it free for main robot */
-				bt_robot_2nd_goto_and_avoid(COLOR_X(MY_CLAP_3_X),
-											ROBOT_SEC_OBS_CLERANCE+PLATFORM_WIDTH);
+				//bt_robot_2nd_goto_and_avoid(COLOR_X(MY_CLAP_3_X),
+				//							ROBOT_SEC_OBS_CLERANCE+PLATFORM_WIDTH);
 				break;
 
 			case ZONE_MY_CINEMA_UP:

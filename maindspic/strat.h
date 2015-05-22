@@ -299,6 +299,7 @@ struct conf {
 	uint8_t flags;
 #define CONF_FLAG_DO_TOWER                  1
 #define CONF_FLAG_DO_STAND_FAST_GROUP_1     2
+#define CONF_FLAG_DO_ESCAPE_UPPER_ZONE		4
 };
 
 
