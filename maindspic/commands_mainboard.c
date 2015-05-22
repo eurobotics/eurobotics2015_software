@@ -275,7 +275,7 @@ static void cmd_opponent_parsed(void *parsed_result, void *data)
             //		beacon_opponent_pulling();
             //	}
 
-            wait_ms(200);
+            wait_ms(100);
 
         }
         while (!cmdline_keypressed());
@@ -335,6 +335,11 @@ struct cmd_init_result
 };
 
 uint8_t beacon_link_ok = 0, robot_link_ok = 0;
+
+uint8_t robot_link_is_ok (void)
+{
+	return (robot_link_ok == 1);
+}
 
 /* function called when cmd_init is parsed successfully */
 static void cmd_init_parsed(void *parsed_result, void *data)

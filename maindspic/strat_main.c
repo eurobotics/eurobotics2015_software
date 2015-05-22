@@ -190,9 +190,24 @@ uint8_t strat_is_valid_zone(uint8_t robot, int8_t zone_num)
 /* return 1 if opponent is in a zone area, 0 if not */
 uint8_t strat_is_opp_in_zone (uint8_t zone_num)
 {
+	int16_t opp1_x, opp1_y, opp2_x, opp2_y;
+	uint8_t ret = 0;
+
+	get_opponent1_xy(&opp1_x, &opp1_y);
+	get_opponent2_xy(&opp2_x, &opp2_y);
+
+	DEBUG (E_USER_STRAT, "area x_up=%d, x_down=%d, y_up=%d, y_down=%d", 
+							COLOR_X(strat_infos.zones[zone_num].x_up), COLOR_X(strat_infos.zones[zone_num].x_down),
+ 							strat_infos.zones[zone_num].y_up, strat_infos.zones[zone_num].y_down);
+
 	/* check if opponent is in zone area */
-	return opponents_are_in_area(COLOR_X(strat_infos.zones[zone_num].x_up), 	strat_infos.zones[zone_num].y_up,
+	ret = opponents_are_in_area(COLOR_X(strat_infos.zones[zone_num].x_up), 	strat_infos.zones[zone_num].y_up,
 							 	 COLOR_X(strat_infos.zones[zone_num].x_down),	strat_infos.zones[zone_num].y_down);
+
+
+	DEBUG (E_USER_STRAT, "ret = %d", ret);
+
+	return ret;
 }
 
 /* return new work zone, STRAT_NO_MORE_ZONES or STRAT_OPP_IS_IN_ZONE */
@@ -234,12 +249,19 @@ int8_t strat_get_new_zone(uint8_t robot)
 		}
 	}
 
+	DEBUG (E_USER_STRAT, "zone candidate is %s", get_zone_name(zone_num));
+
 	/* 2. check if the maximun priority zone is free */
 	if(zone_num != STRAT_NO_MORE_ZONES)
 	{
-		if (strat_is_opp_in_zone(zone_num))
+		if (strat_is_opp_in_zone(zone_num)) {
+			DEBUG (E_USER_STRAT, "WARNING opp is in zone candidate");
 			zone_num = STRAT_OPP_IS_IN_ZONE;
+		}
 	}
+
+	if (robot == MAIN_ROBOT)
+		strat_debug_wait_key_pressed (MAIN_ROBOT);
 
 	return zone_num;
 }

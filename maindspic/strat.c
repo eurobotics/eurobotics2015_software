@@ -603,6 +603,7 @@ void strat_event(void *dummy) {
         goto end;         \
     } while(0)
 
+uint8_t robot_link_is_ok (void);
 
 /* Strat main loop */
 uint8_t strat_main(void)
@@ -610,22 +611,20 @@ uint8_t strat_main(void)
     uint8_t err;
     strat_limit_speed_enable ();
 
-#ifndef ONLY_MAIN_ROBOT
+	if (robot_link_is_ok())
+	{
+		/* init time for secondary robot */
+		bt_robot_2nd_start_matchtimer ();
 
-//#ifndef HOST_VERSION
-	/* init time for secondary robot */
-	bt_robot_2nd_start_matchtimer ();
-//#endif
-	/* XXX enable smart_strat of secondary robot */
-	strat_secondary_robot_enable ();
+		/* XXX enable smart_strat of secondary robot */
+		strat_secondary_robot_enable ();
 
-	/* set robot secondary to wait until start */
-	strat_smart_set_msg(MSG_WAIT_START);
-#endif
+		/* set robot secondary to wait until start */
+		strat_smart_set_msg(MSG_WAIT_START);
+	}
 
 	/* Zones we want to avoid */
 	strat_infos.zones[ZONE_CUP_NEAR_STAIRS].flags |= (ZONE_AVOID);
-
 
     /* play */
     do{
