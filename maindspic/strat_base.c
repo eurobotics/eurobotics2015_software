@@ -403,7 +403,7 @@ void strat_limit_speed(void)
      * ... depending on the distance to the opponent and if it's in front, 
 	 * behind or on the left/right 
      */
-	if (opp_d < 500) {
+	if (opp_d < 550) {
     	/* opp in front */
 		if ((speed_d > LIMIT_SPEED_SPEED_MIN) && 
 			(opp_a > (360-LIMIT_SPEED_OPP_ANGLE_HALF) || opp_a < LIMIT_SPEED_OPP_ANGLE_HALF)) {
@@ -537,7 +537,7 @@ uint8_t __strat_obstacle(uint8_t which)
 #endif
 
 #define OBSTACLE_ANGLE		35
-#define OBSTACLE_DIST		600
+#define OBSTACLE_DIST		650
 
 	int16_t x_rel, y_rel;
 	int16_t opp_x, opp_y, opp_d, opp_a, __opp1_x, __opp2_x;
@@ -555,7 +555,7 @@ uint8_t __strat_obstacle(uint8_t which)
 		return 0;
 
 	/* opponent sensors obstacle */
-#if 0
+#if 1
 	if (strat_opp_sensors_enabled)
 	{
 		/* opponent is in front of us */

@@ -544,7 +544,6 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 
             }
 
-
 		    /* XXX debug step use only for subtraj command */
 		    //strat_debug_wait_key_pressed (MAIN_ROBOT);
 
