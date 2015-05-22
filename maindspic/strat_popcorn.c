@@ -136,10 +136,10 @@ uint8_t strat_harvest_popcorn_cup (int16_t x, int16_t y, uint8_t side, uint8_t f
 	    trajectory_d_rel(&mainboard.traj, d);
 	    err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
     }
-    else
+    else {
 	    trajectory_d_rel(&mainboard.traj, d);
 	    err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-
+	}
 
     if (!TRAJ_SUCCESS(err)) 
     {
@@ -171,22 +171,28 @@ uint8_t strat_harvest_popcorn_cup (int16_t x, int16_t y, uint8_t side, uint8_t f
     i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY, POPCORN_REAR_READY_TIMEOUT);
 
 	/* release front cap and hide system */
-	if (side == SIDE_FRONT && !(flags & POPCORN_CUP_HARVEST_DO_NOT_RELEASE)) {
-		time_wait_ms(1500);
-		i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_RELEASE);
-    	i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY, 1000);
+	if (side == SIDE_FRONT) {
 
-		trajectory_d_rel(&mainboard.traj, -d);
+		if (!(flags & POPCORN_CUP_HARVEST_DO_NOT_RELEASE)) {
+			time_wait_ms(1500);
+			i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_RELEASE);
+			i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY, 1000);
+		}
+
+		trajectory_d_rel(&mainboard.traj, -(OBS_CLERANCE+50));
 		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
     	//if (!TRAJ_SUCCESS(err))
 	   	//ERROUT(err);
 
-		/* XXX, at this point the work is done */
-		err = END_TRAJ;
-
-		i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_HIDE);		
-    	//i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY, 1000);
+		if (!(flags & POPCORN_CUP_HARVEST_DO_NOT_RELEASE)) {
+			i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_CUP_FRONT_HIDE);		
+			//i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY, 1000);
+		}
 	}
+
+	/* XXX, at this point the work is done */
+	err = END_TRAJ;
+
 
 end:
     /* enable obstacle sensors */

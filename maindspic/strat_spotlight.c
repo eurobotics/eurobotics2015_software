@@ -646,8 +646,8 @@ uint8_t strat_escape_form_upper_zone (uint8_t flags)
         clerance_minimum_enable ();
 
         /* if OPP near stair, escape thru cinema side */
-        if ((opponent1_is_in_area(X_UP, Y_UP, X_DOWN, Y_DOWN) && opp1_x_is_more_than(MIDDLE_LINE)) ||
-            (opponent2_is_in_area(X_UP, Y_UP, X_DOWN, Y_DOWN) && opp2_x_is_more_than(MIDDLE_LINE)) )
+        if ((opponent1_is_in_area(COLOR_X(X_UP), Y_UP, COLOR_X(X_DOWN), Y_DOWN) && opp1_x_is_more_than(MIDDLE_LINE)) ||
+            (opponent2_is_in_area(COLOR_X(X_UP), Y_UP, COLOR_X(X_DOWN), Y_DOWN) && opp2_x_is_more_than(MIDDLE_LINE)) )
         {
 	        err = goto_and_avoid_forward (COLOR_X(400),
 						                  400,
@@ -655,16 +655,18 @@ uint8_t strat_escape_form_upper_zone (uint8_t flags)
 
         }
         /* else, if OPP near to cinemas, escape thru stairs side */
-        else if ((opponent1_is_in_area(X_UP, Y_UP, X_DOWN, Y_DOWN) /*&& !opp1_x_is_more_than(MIDDLE_LINE)*/) ||
-                 (opponent2_is_in_area(X_UP, Y_UP, X_DOWN, Y_DOWN) /*&& !opp2_x_is_more_than(MIDDLE_LINE)*/) )
+        else if ((opponent1_is_in_area(COLOR_X(X_UP), Y_UP, COLOR_X(X_DOWN), Y_DOWN) /*&& !opp1_x_is_more_than(MIDDLE_LINE)*/) ||
+                 (opponent2_is_in_area(COLOR_X(X_UP), Y_UP, COLOR_X(X_DOWN), Y_DOWN) /*&& !opp2_x_is_more_than(MIDDLE_LINE)*/) )
         {
 	        err = goto_and_avoid_forward (COLOR_X(AREA_Y/2),
 						                  AREA_Y/2 + 100,
 						                  TRAJ_FLAGS_NO_NEAR, TRAJ_FLAGS_NO_NEAR);
         }
 
-		if (!TRAJ_SUCCESS(err))
+		if (!TRAJ_SUCCESS(err)) {
 			time_wait_ms (2000);
+			/* TODO: get space */
+		}
 
     } while (!TRAJ_SUCCESS(err));
 
