@@ -386,7 +386,7 @@ retry2:
 			i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_STOCK_END);
 
 		/* wait traj end */
-		err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 
 		/* XXX, case can't reach home outside because of BLOCKING */
 		if (!TRAJ_SUCCESS(err)) 

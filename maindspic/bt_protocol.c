@@ -194,10 +194,6 @@ void bt_beacon_status_parser (int16_t c)
 	uint8_t sync_header[] = BT_BEACON_SYNC_HEADER;
     uint8_t flags = 0;
 
-	static uint8_t opp1_not_there_counter = 0;
-	static uint8_t opp2_not_there_counter = 0;
-#define OPPONENT_NOT_THERE_VALID_COUNTS	20 /* 120*6 = 720ms */
-
 	c &= 0x00FF;
 
 	switch(state)

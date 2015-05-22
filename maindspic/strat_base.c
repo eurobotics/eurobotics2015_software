@@ -540,10 +540,10 @@ uint8_t __strat_obstacle(uint8_t which)
 #define OBSTACLE_DIST		650
 
 	int16_t x_rel, y_rel;
-	int16_t opp_x, opp_y, opp_d, opp_a, __opp1_x, __opp2_x;
+	int16_t opp_x, opp_y, opp_d, opp_a; // __opp1_x, __opp2_x;
 	int8_t ret = -1;
-    uint8_t flags;
-    static int16_t opp_d_old = 3000;
+//    uint8_t flags;
+//    static int16_t opp_d_old = 3000;
 
 
 	/* XXX, possible BUG, too slow */
