@@ -433,8 +433,6 @@ struct strat_smart
 extern struct strat_infos strat_infos;
 extern struct strat_smart strat_smart[ROBOT_MAX];
 
-
-
 #ifndef HOST_VERSION_OA_TEST
 
 /*************************************************************

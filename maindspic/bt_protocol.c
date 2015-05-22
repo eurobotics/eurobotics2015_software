@@ -194,6 +194,10 @@ void bt_beacon_status_parser (int16_t c)
 	uint8_t sync_header[] = BT_BEACON_SYNC_HEADER;
     uint8_t flags = 0;
 
+	static uint8_t opp1_not_there_counter = 0;
+	static uint8_t opp2_not_there_counter = 0;
+#define OPPONENT_NOT_THERE_VALID_COUNTS	20 /* 120*6 = 720ms */
+
 	c &= 0x00FF;
 
 	switch(state)
@@ -232,21 +236,44 @@ void bt_beacon_status_parser (int16_t c)
 			a = ans.opponent1_a;
 			d = ans.opponent1_d;
 
-			IRQ_LOCK(flags);
-			beaconboard.opponent1_x = (int16_t)x;
-			beaconboard.opponent1_y = (int16_t)y;
-			beaconboard.opponent1_a = (int16_t)a;
-			beaconboard.opponent1_d = (int16_t)d;       
-			IRQ_UNLOCK(flags);
+#if 0
+			if (x == I2C_OPPONENT_NOT_THERE && 
+				opp1_not_there_counter < OPPONENT_NOT_THERE_VALID_COUNTS)
+			{
+				opp1_not_there_counter++;
+			} 
+			else
+			{
+
+				opp1_not_there_counter = 0;
+#endif
+				IRQ_LOCK(flags);
+				beaconboard.opponent1_x = (int16_t)x;
+				beaconboard.opponent1_y = (int16_t)y;
+				beaconboard.opponent1_a = (int16_t)a;
+				beaconboard.opponent1_d = (int16_t)d;       
+				IRQ_UNLOCK(flags);
+//			}
 #else
 			abs_xy_to_rel_da(x, y, &d, &a);
 
-			IRQ_LOCK(flags);
-			beaconboard.opponent1_x = (int16_t)x;
-			beaconboard.opponent1_y = (int16_t)y;
-			beaconboard.opponent1_a = (int16_t)(DEG(a) < 0? DEG(a)+360: DEG(a));
-			beaconboard.opponent1_d = (int16_t)d;
-			IRQ_UNLOCK(flags);
+#if 0
+			if (x == I2C_OPPONENT_NOT_THERE && 
+				opp1_not_there_counter < OPPONENT_NOT_THERE_VALID_COUNTS)
+			{
+				opp1_not_there_counter++;
+			} 
+			else
+			{
+				opp1_not_there_counter = 0;
+#endif
+				IRQ_LOCK(flags);
+				beaconboard.opponent1_x = (int16_t)x;
+				beaconboard.opponent1_y = (int16_t)y;
+				beaconboard.opponent1_a = (int16_t)(DEG(a) < 0? DEG(a)+360: DEG(a));
+				beaconboard.opponent1_d = (int16_t)d;
+				IRQ_UNLOCK(flags);
+//			}
 #endif	/* !BEACON_OFFSET */
 
 #ifdef TWO_OPPONENTS
@@ -256,21 +283,43 @@ void bt_beacon_status_parser (int16_t c)
 			a = ans.opponent2_a;
 			d = ans.opponent2_d;
 
-			IRQ_LOCK(flags);
-			beaconboard.opponent2_x = (int16_t)x;
-			beaconboard.opponent2_y = (int16_t)y;
-			beaconboard.opponent2_a = (int16_t)a;
-			beaconboard.opponent2_d = (int16_t)d;       
-			IRQ_UNLOCK(flags);
+#if 0
+			if (x == I2C_OPPONENT_NOT_THERE && 
+				opp2_not_there_counter < OPPONENT_NOT_THERE_VALID_COUNTS)
+			{
+				opp2_not_there_counter++;
+			} 
+			else
+			{
+				opp2_not_there_counter = 0;
+#endif
+				IRQ_LOCK(flags);
+				beaconboard.opponent2_x = (int16_t)x;
+				beaconboard.opponent2_y = (int16_t)y;
+				beaconboard.opponent2_a = (int16_t)a;
+				beaconboard.opponent2_d = (int16_t)d;       
+				IRQ_UNLOCK(flags);
+//			}
 #else
 			abs_xy_to_rel_da(x, y, &d, &a);
 
-			IRQ_LOCK(flags);
-			beaconboard.opponent2_x = (int16_t)x;
-			beaconboard.opponent2_y = (int16_t)y;
-			beaconboard.opponent2_a = (int16_t)(DEG(a) < 0? DEG(a)+360: DEG(a));
-			beaconboard.opponent2_d = (int16_t)d;
-			IRQ_UNLOCK(flags);
+#if 0
+			if (x == I2C_OPPONENT_NOT_THERE && 
+				opp2_not_there_counter < OPPONENT_NOT_THERE_VALID_COUNTS)
+			{
+				opp2_not_there_counter++;
+			} 
+			else
+			{
+				opp2_not_there_counter = 0;
+#endif
+				IRQ_LOCK(flags);
+				beaconboard.opponent2_x = (int16_t)x;
+				beaconboard.opponent2_y = (int16_t)y;
+				beaconboard.opponent2_a = (int16_t)(DEG(a) < 0? DEG(a)+360: DEG(a));
+				beaconboard.opponent2_d = (int16_t)d;
+				IRQ_UNLOCK(flags);
+//			}
 #endif	/* !BEACON_OFFSET */
 #endif	/* TWO_OPPONENTS */
 
