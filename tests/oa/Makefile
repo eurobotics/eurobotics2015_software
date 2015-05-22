@@ -6,13 +6,12 @@ AVERSIVE_DIR = ../../libs/aversive4dspic
 
 SRC  = $(TARGET).c
 
-ASRC = 
+ASRC =
 
-CFLAGS += -Wall -DHOST_VERSION_OA_TEST -DIM_SECONDARY_ROBOT
- 
+CFLAGS += -Wall -DHOST_VERSION_OA_TEST
+
 
 ########################################
 
 -include .aversive_conf
 include $(AVERSIVE_DIR)/mk/aversive_project.mk
-

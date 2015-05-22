@@ -21,7 +21,7 @@
 
 /*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
- *  Javier Baliñas Santos <javier@arc-robots.org>
+ *  Javier Baliï¿½as Santos <javier@arc-robots.org>
  *
  *  Code ported to family of microcontrollers dsPIC from
  *  strat_avoid.c,v 1.4 2009/05/27 20:04:07 zer0 Exp.
@@ -346,7 +346,12 @@ void set_home_yellow_poly_abs(poly_t *pol,
 	tmp_y += y;
 	oa_poly_set_point(pol, tmp_x, tmp_y, 3);
 	/* point 5 */
-	tmp_x = 650+obs_clerance/2;
+
+#ifdef IM_SECONDARY_ROBOT
+		tmp_x = 650+OBS_CLERANCE;
+#else
+		tmp_x = 650+OBS_CLERANCE/2;
+#endif
 	tmp_y = 1000;
 
 	oa_poly_set_point(pol, tmp_x, tmp_y, 4);
@@ -375,7 +380,12 @@ void set_home_green_poly_abs(poly_t *pol,
 	oa_poly_set_point(pol, tmp_x, tmp_y, 1);
 
 	/* point 2 */
-	tmp_x = 2350-obs_clerance/2;
+#ifdef IM_SECONDARY_ROBOT
+		tmp_x = 2350-OBS_CLERANCE;
+#else
+		tmp_x = 2350-OBS_CLERANCE/2;
+#endif
+
 	tmp_y = 1000;
 
 	oa_poly_set_point(pol, tmp_x, tmp_y, 2);
@@ -524,19 +534,11 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 	   get_opponent1_xy(&x, &y);
 	   name = opp1;
 
-       if (y < 500) {
-         w = ROBOT_2ND_WIDTH;
-         l = ROBOT_2ND_LENGTH;
-       }
 	}
 	else if(type == OPP2) {
 	   get_opponent2_xy(&x, &y);
 	   name = opp2;
 
-       if (y < 500) {
-         w = ROBOT_2ND_WIDTH;
-         l = ROBOT_2ND_LENGTH;
-       }
 	}
 	else if(type == ROBOT2ND) {
 		 get_robot_2nd_xy(&x, &y);
@@ -564,112 +566,21 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 #endif
 	else
 	   ERROR(E_USER_STRAT, "ERROR at %s", __FUNCTION__);
-
 	DEBUG(E_USER_STRAT, "%s at: %d %d", name, x, y);
 
 	/* place poly even if invalid, because it's -1000 */
-  if(type == ROBOT2ND)
-    set_rotated_poly_abs(pol, a_abs, w, l, x, y);
-  else
-  	set_rotated_poly(pol, robot_pt, w, l, x, y);
-}
-
-/* set point of a rhombus, used for slot polys */
-#if 0
-uint8_t set_rhombus_pts(point_t *pt,
-               		int16_t w, int16_t l,
-			      		int16_t x, int16_t y)
-{
-#ifdef SET_RHOMBUS_PTS_OLD_VERSION
-	uint8_t i, j;
-
-	/* loop for rhrombus points */
-	for(i=0, j=0; i<4; i++) {
-
-		/* add point of rhombus */
-		if(i==0) {
-			pt[j].x = x + w;
-			pt[j].y = y;
-		}
-		else if(i==1) {
-			pt[j].x = x;
-			pt[j].y = y + l;
-		}
-		else if(i==2) {
-			pt[j].x = x - w;
-			pt[j].y = y;
-		}
-		else if(i==3) {
-			pt[j].x = x;
-			pt[j].y = y - l;
-		}
-
-		/* next point */
-		j++;
+  if(type == ROBOT2ND){
+		//DEBUG(E_USER_STRAT, "x1:%d, y1: %d, w1: %d,l1: %d",x,y, w,l );
+ 	set_rotated_poly_abs(pol, a_abs, w, l, x, y);
 	}
 
-	/* return number of points */
-	return j;
-
-
-#else
-
-	/* points of rhombus */
-
-	pt[0].x = x + w;
-	pt[0].y = y;
-
-	pt[1].x = x;
-	pt[1].y = y + l;
-
-	pt[2].x = x - w;
-	pt[2].y = y;
-
-	pt[3].x = x;
-	pt[3].y = y - l;
-
-	return 4;
-
-#endif
+  else{
+		//DEBUG(E_USER_STRAT, "x2:%d, y2: %d, w2: %d,l2: %d",x,y, w,l );
+		set_rotated_poly(pol, robot_pt, w, l, x, y);
+	}
 
 }
 
-/* set point of a square */
-uint8_t set_square_pts(point_t *pt,
-               		int16_t w, int16_t l,
-			      		int16_t x, int16_t y)
-{
-
-	/* points of rhombus */
-
-	pt[0].x = x + w;
-	pt[0].y = y + l;
-
-	pt[1].x = x - w;
-	pt[1].y = y + l;
-
-	pt[2].x = x - w;
-	pt[2].y = y - l;
-
-	pt[3].x = x + w;
-	pt[3].y = y - l;
-
-	return 4;
-}
-
-
-
-/* set oa poly point */
-void set_poly_pts(poly_t *pol_dest, poly_t *pol_org)
-{
-	uint8_t i;
-
-	/* loop for all point */
-	for(i=0; i < pol_org->l; i++) {
-	   oa_poly_set_point(pol_dest, pol_org->pts[i].x, pol_org->pts[i].y, i);
-   }
-}
-#endif
 
 
 /*
@@ -930,32 +841,32 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 	}
 	else {
       if (pol_opp1 != NULL) {
-			/* rotate 90° */
+			/* rotate 90ï¿½ */
 			escape_dx = opp1_dy;
 			escape_dy = opp1_dx;
 		}
       else if (pol_opp2 != NULL) {
-			/* rotate 90° */
+			/* rotate 90ï¿½ */
 			escape_dx = opp2_dy;
 			escape_dy = opp2_dx;
 		}
 		else if (pol_robot_2nd != NULL) {
-			/* rotate 90° */
+			/* rotate 90ï¿½ */
 			escape_dx = robot_2nd_dy;
 			escape_dy = robot_2nd_dx;
 		}
 		else if (pol_stairs != NULL) {
-			/* rotate 90° */
+			/* rotate 90ï¿½ */
 			escape_dx = stairs_dy;
 			escape_dy = stairs_dx;
 		}
 		else if (pol_home_green != NULL) {
-			/* rotate 90° */
+			/* rotate 90ï¿½ */
 			escape_dx = home_green_dy;
 			escape_dy = home_green_dx;
 		}
 		else if (pol_home_yellow != NULL) {
-			/* rotate 90° */
+			/* rotate 90ï¿½ */
 			escape_dx = home_yellow_dy;
 			escape_dy = home_yellow_dx;
 		}
@@ -1062,7 +973,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 			dst_pt.x = intersect_robot_2nd_pt.x + escape_dx * 20;
 			dst_pt.y = intersect_robot_2nd_pt.y + escape_dy * 20;
 
-			NOTICE(E_USER_STRAT, "dst point %"PRId32",%"PRId32,
+			/*NOTICE(E_USER_STRAT, "dst point %"PRId32",%"PRId32,
 			       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
          /* XXX check that destination point is not in an other poly */
@@ -1077,7 +988,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 				if (!is_in_boundingbox(&dst_pt))
 					return -1;
 
-				NOTICE(E_USER_STRAT, "GOTO %"PRId32",%"PRId32"",
+				/*NOTICE(E_USER_STRAT, "GOTO %"PRId32",%"PRId32"",
 				       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
 				/* XXX comment for virtual scape from poly */
@@ -1100,7 +1011,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 			dst_pt.x = intersect_stairs_pt.x + escape_dx * 20;
 			dst_pt.y = intersect_stairs_pt.y + escape_dy * 20;
 
-			NOTICE(E_USER_STRAT, "dst point %"PRId32",%"PRId32,
+			/*NOTICE(E_USER_STRAT, "dst point %"PRId32",%"PRId32,
 			       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
          /* XXX check that destination point is not in an other poly */
@@ -1112,7 +1023,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 				if (!is_in_boundingbox(&dst_pt))
 					return -1;
 
-				NOTICE(E_USER_STRAT, "GOTO %"PRId32",%"PRId32"",
+				/*NOTICE(E_USER_STRAT, "GOTO %"PRId32",%"PRId32"",
 				       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
 				/* XXX comment for virtual scape from poly */
@@ -1343,7 +1254,7 @@ retry:
 	robot_pt.x = position_get_x_s16(&mainboard.pos);
 	robot_pt.y = position_get_y_s16(&mainboard.pos);
 
-	DEBUG (E_USER_STRAT, "robot xy %d, %d", robot_pt.x, robot_pt.y);
+	//DEBUG (E_USER_STRAT, "robot xy %d, %d", robot_pt.x, robot_pt.y);
 
 #else
 #warning HOST_VERSION_OA_TEST compilation
@@ -1374,15 +1285,27 @@ retry:
 		set_poly_abs(pol_home_yellow,O_HOME_WIDTH+ obs_clerance/2 ,O_HOME_HEIGHT + obs_clerance,HOME_YELLOW_X+obs_clerance/2,HOME_YELLOW_Y);
 
 		pol_home_green= oa_new_poly(5);
-		set_home_green_poly_abs(pol_home_green,O_HOME_WIDTH+ obs_clerance/2,O_HOME_HEIGHT + obs_clerance,HOME_GREEN_X-obs_clerance/2,HOME_GREEN_Y);
-	}else{
-		pol_home_yellow= oa_new_poly(5);
-		set_home_yellow_poly_abs(pol_home_yellow,O_HOME_WIDTH+ obs_clerance/2 ,O_HOME_HEIGHT + obs_clerance,HOME_YELLOW_X+obs_clerance/2,HOME_YELLOW_Y);
 
+#ifdef IM_SECONDARY_ROBOT
+		set_home_green_poly_abs(pol_home_green,O_HOME_WIDTH+ OBS_CLERANCE/2+71,O_HOME_HEIGHT + OBS_CLERANCE,HOME_GREEN_X-OBS_CLERANCE/2-35,HOME_GREEN_Y);
+#else
+ 		set_home_green_poly_abs(pol_home_green,O_HOME_WIDTH+ OBS_CLERANCE/2,O_HOME_HEIGHT + OBS_CLERANCE,HOME_GREEN_X-OBS_CLERANCE/2,HOME_GREEN_Y);
+#endif
+ 	}else{
+ 		pol_home_yellow= oa_new_poly(5);
+#ifdef IM_SECONDARY_ROBOT
+		set_home_yellow_poly_abs(pol_home_yellow,O_HOME_WIDTH+ OBS_CLERANCE/2 +71,O_HOME_HEIGHT + OBS_CLERANCE,HOME_YELLOW_X+OBS_CLERANCE/2+35,HOME_YELLOW_Y);
+#else
+ 		set_home_yellow_poly_abs(pol_home_yellow,O_HOME_WIDTH+ OBS_CLERANCE/2 ,O_HOME_HEIGHT + OBS_CLERANCE,HOME_YELLOW_X+OBS_CLERANCE/2,HOME_YELLOW_Y);
+
+
+#endif
 		pol_home_green= oa_new_poly(4);
 		set_poly_abs(pol_home_green,O_HOME_WIDTH+ obs_clerance/2,O_HOME_HEIGHT + obs_clerance,HOME_GREEN_X-obs_clerance/2,HOME_GREEN_Y);
 	}
-	/* if we are not in the limited area, try to go in it. */
+
+
+/* if we are not in the limited area, try to go in it. */
 	ret = go_in_area(&robot_pt);
 
 	/* check that destination is in playground */
@@ -1452,6 +1375,7 @@ retry:
 
 			if (len >= 0)
 			  break;
+
 		}
 
 		/* len < 0, try reduce opponent to get a valid path */
@@ -1461,7 +1385,7 @@ retry:
 
 			opp1_w /= 2;
 
-			NOTICE(E_USER_STRAT, "reducing opponent 1 %d %d", opp1_w, opp1_l);
+			//NOTICE(E_USER_STRAT, "reducing opponent 1 %d %d", opp1_w, opp1_l);
 			set_opponent_poly(OPP1, pol_opp1, &robot_pt, opp1_w, opp1_l);
 		}
 
@@ -1470,7 +1394,7 @@ retry:
 				opp2_l /= 2;
 			opp2_w /= 2;
 
-			NOTICE(E_USER_STRAT, "reducing opponent 2 %d %d", opp2_w, opp2_l);
+			//NOTICE(E_USER_STRAT, "reducing opponent 2 %d %d", opp2_w, opp2_l);
 			set_opponent_poly(OPP2, pol_opp2, &robot_pt, opp2_w, opp2_l);
 		}
 
@@ -1497,14 +1421,14 @@ retry:
 		    && distance_between(robot_pt.x, robot_pt.y, opp2_x, opp2_y) >= REDUCE_POLY_THRES)
       	{
 
-			NOTICE(E_USER_STRAT, "oa_process() returned %d", len);
+		//	NOTICE(E_USER_STRAT, "oa_process() returned %d", len);
 			return END_ERROR;
 		}
 	}
 
 	if(!(opp1_w && opp1_l && opp2_w && opp2_l)) {
 
-			NOTICE(E_USER_STRAT, "oa_process() returned %d", len);
+		//	NOTICE(E_USER_STRAT, "oa_process() returned %d", len);
 			return END_ERROR;
 	}
 
@@ -1528,7 +1452,7 @@ retry:
 			trajectory_goto_backward_xy_abs(&mainboard.traj, p->x, p->y);
 		}
 		else {
-			DEBUG(E_USER_STRAT, "With avoidance %d: x=%"PRId32" y=%"PRId32" forward", i, (int32_t)p->x, (int32_t)p->y);
+			//DEBUG(E_USER_STRAT, "With avoidance %d: x=%"PRId32" y=%"PRId32" forward", i, (int32_t)p->x, (int32_t)p->y);
 			trajectory_goto_xy_abs(&mainboard.traj, p->x, p->y);
 		}
 
@@ -1545,8 +1469,8 @@ retry:
 		}
 		else if (ret == END_OBSTACLE) {
 			/* brake and wait the speed to be slow */
-			DEBUG(E_USER_STRAT, "Retry avoidance %s(%d,%d)",
-			      __FUNCTION__, x, y);
+			//DEBUG(E_USER_STRAT, "Retry avoidance %s(%d,%d)",
+			      //__FUNCTION__, x, y);
 			goto *p_retry;
 		}
 		/* else if it is not END_TRAJ or END_NEAR, return */
@@ -1556,7 +1480,7 @@ retry:
 
 #endif /* HOST_VERSION_OA_TEST */
 
-		DEBUG(E_USER_STRAT, "With avoidance %d: x=%"PRId32" y=%"PRId32"", i, (int32_t)p->x, (int32_t)p->y);
+		//DEBUG(E_USER_STRAT, "With avoidance %d: x=%"PRId32" y=%"PRId32"", i, (int32_t)p->x, (int32_t)p->y);
 
 		/* next point */
 		p++;
