@@ -403,7 +403,7 @@ parse_pgm_inst_t cmd_adc = {
 
 #endif /* COMPILE_COMMANDS_GEN_OPTIONALS --------------------------------*/
 
-
+#ifdef COMPILE_COMMANDS_GEN_OPTIONALS /*--------------------------------*/
 /**********************************************************/
 /* Sensors tests */
 
@@ -572,6 +572,7 @@ parse_pgm_inst_t cmd_wt11 = {
 		NULL,
 	},
 };
+#endif /* COMPILE_COMMANDS_GEN_OPTIONALS --------------------------------*/
 
 
 /**********************************************************/

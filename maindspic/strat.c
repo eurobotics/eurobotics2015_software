@@ -382,7 +382,7 @@ struct strat_infos strat_infos = {
 		1060, 160,
 		/* boundinbox: x_down, x_up,  y_down,  y_up, */
 		900, 1200, 0, 450,
-        1060, 330,
+        1060, 450,
 		0, 0,
 		MAIN_ROBOT
 	},

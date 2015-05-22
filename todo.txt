@@ -23,6 +23,7 @@ x secondary: pickup/release cup 2 sides
 - harvest cup 3: go backwards more.
 - harvest cup: flag no return.
 - escape from upper zone: get space after !sucess
+- BUG: end obstacle pequeño
 
 TODO SECONDARY ROBOT:
 

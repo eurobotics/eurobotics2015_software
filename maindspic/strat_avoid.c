@@ -570,12 +570,12 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 
 	/* place poly even if invalid, because it's -1000 */
   if(type == ROBOT2ND){
-		//DEBUG(E_USER_STRAT, "x1:%d, y1: %d, w1: %d,l1: %d",x,y, w,l );
+		DEBUG(E_USER_STRAT, "x1:%d, y1: %d, w1: %d,l1: %d",x,y, w,l );
  	set_rotated_poly_abs(pol, a_abs, w, l, x, y);
 	}
 
   else{
-		//DEBUG(E_USER_STRAT, "x2:%d, y2: %d, w2: %d,l2: %d",x,y, w,l );
+		DEBUG(E_USER_STRAT, "x2:%d, y2: %d, w2: %d,l2: %d",x,y, w,l );
 		set_rotated_poly(pol, robot_pt, w, l, x, y);
 	}
 
@@ -973,7 +973,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 			dst_pt.x = intersect_robot_2nd_pt.x + escape_dx * 20;
 			dst_pt.y = intersect_robot_2nd_pt.y + escape_dy * 20;
 
-			/*NOTICE(E_USER_STRAT, "dst point %"PRId32",%"PRId32,
+			NOTICE(E_USER_STRAT, "dst point %"PRId32",%"PRId32,
 			       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
          /* XXX check that destination point is not in an other poly */
@@ -988,7 +988,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 				if (!is_in_boundingbox(&dst_pt))
 					return -1;
 
-				/*NOTICE(E_USER_STRAT, "GOTO %"PRId32",%"PRId32"",
+				NOTICE(E_USER_STRAT, "GOTO %"PRId32",%"PRId32"",
 				       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
 				/* XXX comment for virtual scape from poly */
@@ -1011,7 +1011,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 			dst_pt.x = intersect_stairs_pt.x + escape_dx * 20;
 			dst_pt.y = intersect_stairs_pt.y + escape_dy * 20;
 
-			/*NOTICE(E_USER_STRAT, "dst point %"PRId32",%"PRId32,
+			NOTICE(E_USER_STRAT, "dst point %"PRId32",%"PRId32,
 			       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
          /* XXX check that destination point is not in an other poly */
@@ -1023,7 +1023,7 @@ static int8_t escape_from_poly(point_t *robot_pt, int16_t robot_2nd_x, int16_t r
 				if (!is_in_boundingbox(&dst_pt))
 					return -1;
 
-				/*NOTICE(E_USER_STRAT, "GOTO %"PRId32",%"PRId32"",
+				NOTICE(E_USER_STRAT, "GOTO %"PRId32",%"PRId32"",
 				       (int32_t)dst_pt.x, (int32_t)dst_pt.y);
 
 				/* XXX comment for virtual scape from poly */
@@ -1254,7 +1254,7 @@ retry:
 	robot_pt.x = position_get_x_s16(&mainboard.pos);
 	robot_pt.y = position_get_y_s16(&mainboard.pos);
 
-	//DEBUG (E_USER_STRAT, "robot xy %d, %d", robot_pt.x, robot_pt.y);
+	DEBUG (E_USER_STRAT, "robot xy %d, %d", robot_pt.x, robot_pt.y);
 
 #else
 #warning HOST_VERSION_OA_TEST compilation
@@ -1385,7 +1385,7 @@ retry:
 
 			opp1_w /= 2;
 
-			//NOTICE(E_USER_STRAT, "reducing opponent 1 %d %d", opp1_w, opp1_l);
+			NOTICE(E_USER_STRAT, "reducing opponent 1 %d %d", opp1_w, opp1_l);
 			set_opponent_poly(OPP1, pol_opp1, &robot_pt, opp1_w, opp1_l);
 		}
 
@@ -1394,7 +1394,7 @@ retry:
 				opp2_l /= 2;
 			opp2_w /= 2;
 
-			//NOTICE(E_USER_STRAT, "reducing opponent 2 %d %d", opp2_w, opp2_l);
+			NOTICE(E_USER_STRAT, "reducing opponent 2 %d %d", opp2_w, opp2_l);
 			set_opponent_poly(OPP2, pol_opp2, &robot_pt, opp2_w, opp2_l);
 		}
 
@@ -1421,14 +1421,14 @@ retry:
 		    && distance_between(robot_pt.x, robot_pt.y, opp2_x, opp2_y) >= REDUCE_POLY_THRES)
       	{
 
-		//	NOTICE(E_USER_STRAT, "oa_process() returned %d", len);
+            NOTICE(E_USER_STRAT, "oa_process() returned %d", len);
 			return END_ERROR;
 		}
 	}
 
 	if(!(opp1_w && opp1_l && opp2_w && opp2_l)) {
 
-		//	NOTICE(E_USER_STRAT, "oa_process() returned %d", len);
+            NOTICE(E_USER_STRAT, "oa_process() returned %d", len);
 			return END_ERROR;
 	}
 
@@ -1452,7 +1452,7 @@ retry:
 			trajectory_goto_backward_xy_abs(&mainboard.traj, p->x, p->y);
 		}
 		else {
-			//DEBUG(E_USER_STRAT, "With avoidance %d: x=%"PRId32" y=%"PRId32" forward", i, (int32_t)p->x, (int32_t)p->y);
+			DEBUG(E_USER_STRAT, "With avoidance %d: x=%"PRId32" y=%"PRId32" forward", i, (int32_t)p->x, (int32_t)p->y);
 			trajectory_goto_xy_abs(&mainboard.traj, p->x, p->y);
 		}
 
@@ -1469,8 +1469,8 @@ retry:
 		}
 		else if (ret == END_OBSTACLE) {
 			/* brake and wait the speed to be slow */
-			//DEBUG(E_USER_STRAT, "Retry avoidance %s(%d,%d)",
-			      //__FUNCTION__, x, y);
+			DEBUG(E_USER_STRAT, "Retry avoidance %s(%d,%d)",
+			      __FUNCTION__, x, y);
 			goto *p_retry;
 		}
 		/* else if it is not END_TRAJ or END_NEAR, return */
@@ -1480,7 +1480,7 @@ retry:
 
 #endif /* HOST_VERSION_OA_TEST */
 
-		//DEBUG(E_USER_STRAT, "With avoidance %d: x=%"PRId32" y=%"PRId32"", i, (int32_t)p->x, (int32_t)p->y);
+		DEBUG(E_USER_STRAT, "With avoidance %d: x=%"PRId32" y=%"PRId32"", i, (int32_t)p->x, (int32_t)p->y);
 
 		/* next point */
 		p++;

@@ -337,11 +337,8 @@ void strat_change_sequence_qualification(uint8_t robot){
 			}
 	}
 }
-void strat_strategy_time(){
-
-	static uint8_t already_timeout=0;
-	if(already_timeout)
-		return;
+void strat_strategy_time()
+{
 		
 	// Last seconds. Strategy base
 	if(time_get_s()> 70 && strat_infos.match_strategy == STR_BASE){
@@ -362,5 +359,4 @@ void strat_strategy_time(){
 		strat_change_sequence_qualification(MAIN_ROBOT);
 		strat_change_sequence_qualification(SEC_ROBOT);
 	}
-	already_timeout=1;
 }

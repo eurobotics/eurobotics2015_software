@@ -34,7 +34,7 @@
 
 #ifndef HOST_VERSION
 
-#define COMPILE_COMMANDS_GEN
+//#define COMPILE_COMMANDS_GEN
 //#define COMPILE_COMMANDS_GEN_OPTIONALS
 //#define COMPILE_COMMANDS_CS
 #define COMPILE_COMMANDS_MAINBOARD
@@ -130,6 +130,7 @@ extern parse_pgm_inst_t cmd_robot_2nd_bt_task2;
 extern parse_pgm_inst_t cmd_slavedspic;
 
 #ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
+extern parse_pgm_inst_t cmd_sensor_robot;
 extern parse_pgm_inst_t cmd_interact;
 extern parse_pgm_inst_t cmd_rs;
 #ifdef TRAJECTORY_MANAGER_V3
@@ -139,9 +140,12 @@ extern parse_pgm_inst_t cmd_time_monitor;
 extern parse_pgm_inst_t cmd_sleep;
 #endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
 
-extern parse_pgm_inst_t cmd_sensor_robot;
+#ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
+
 extern parse_pgm_inst_t cmd_popcorn_system;
 extern parse_pgm_inst_t cmd_stands_system;
+#endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
+
 
 #endif /* COMPILE_COMMANDS_MAINBOARD */
 
@@ -218,8 +222,11 @@ parse_pgm_ctx_t main_ctx[] = {
     (parse_pgm_inst_t *) & cmd_adc,
 #endif /* COMPILE_COMMANDS_GEN_OPTIONALS --------------------------------*/
 
+#ifdef COMPILE_COMMANDS_GEN_OPTIONALS /*--------------------------------*/
     (parse_pgm_inst_t *) & cmd_sensor,
     (parse_pgm_inst_t *) & cmd_wt11,
+#endif /* COMPILE_COMMANDS_GEN_OPTIONALS --------------------------------*/
+
     (parse_pgm_inst_t *) & cmd_log,
     (parse_pgm_inst_t *) & cmd_log_show,
     (parse_pgm_inst_t *) & cmd_log_type,
@@ -252,7 +259,9 @@ parse_pgm_ctx_t main_ctx[] = {
     /* commands_mainboard.c */
     (parse_pgm_inst_t *) & cmd_event,
     (parse_pgm_inst_t *) & cmd_opponent,
+#ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
     (parse_pgm_inst_t *) & cmd_opponent_set,
+#endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
     (parse_pgm_inst_t *) & cmd_init,
     (parse_pgm_inst_t *) & cmd_start,
     (parse_pgm_inst_t *) & cmd_color,
@@ -265,6 +274,7 @@ parse_pgm_ctx_t main_ctx[] = {
     (parse_pgm_inst_t *) & cmd_slavedspic,
 
 #ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
+    (parse_pgm_inst_t *) & cmd_sensor_robot,
     (parse_pgm_inst_t *) & cmd_interact,
     (parse_pgm_inst_t *) & cmd_rs,
 #ifdef TRAJECTORY_MANAGER_V3
@@ -275,9 +285,10 @@ parse_pgm_ctx_t main_ctx[] = {
     (parse_pgm_inst_t *) & cmd_sleep,
 #endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
  
-    (parse_pgm_inst_t *) & cmd_sensor_robot,
+#ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
     (parse_pgm_inst_t *) & cmd_popcorn_system,
     (parse_pgm_inst_t *) & cmd_stands_system,
+#endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
 
 #endif /* COMPILE_COMMANDS_MAINBOARD */
 
