@@ -317,15 +317,24 @@ uint8_t strat_put_carpets (void)
 
         /* mark first carpet as done */
         first_carpet_done = 1;
+
     }
 
     /************** second carpet */
+
+	/* turn to right side */
+	trajectory_a_rel(&mainboard.traj, COLOR_A_REL(180));
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+	if (!TRAJ_SUCCESS(err))
+	   ERROUT(err);
 
 	/* turn to right side */
 	trajectory_a_abs(&mainboard.traj, COLOR_A_ABS(180));
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
 	if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
+
+
 
     /* XXX debug */
     state_debug_wait_key_pressed(); 
@@ -423,33 +432,34 @@ uint8_t strat_close_clapperboard (int16_t x, int16_t y)
 calib:
 
 	/* go to blocking */
-	//err = strat_calib(-100, TRAJ_FLAGS_SMALL_DIST);
-	trajectory_d_rel(&mainboard.traj, -100);
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-    //if (!TRAJ_SUCCESS(err))
-	//   ERROUT(err);	
+	err = strat_calib(-100, TRAJ_FLAGS_SMALL_DIST);
+
+	time_wait_ms(200);
+	bd_reset(&mainboard.distance.bd);
 
 	printf ("diff = %d", ABS(position_get_y_s16(&mainboard.pos)-(int16_t)ROBOT_CENTER_TO_BACK));
 
 #define CALIB_D_OK 30
-	if (0) //ABS(position_get_y_s16(&mainboard.pos)-ROBOT_CENTER_TO_BACK) < CALIB_D_OK)
+	if (ABS(position_get_y_s16(&mainboard.pos)-ROBOT_CENTER_TO_BACK) < CALIB_D_OK)
 	{
 		strat_reset_pos(DO_NOT_SET_POS,
                         ROBOT_CENTER_TO_BACK,
 						90);
 
+		bd_reset(&mainboard.distance.bd);
+
 	    /* go forward a bit */
 	    trajectory_d_rel(&mainboard.traj, OBS_CLERANCE);
-	    err = wait_traj_end((END_TRAJ|END_INTR));
-
-		printf ("1 err %s", get_err(err));
-
+	    err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
         if (!TRAJ_SUCCESS(err))
-	       ERROUT(err);	
+	       ERROUT(err);
+
 	}
 	else if (calib_tries) 
     { 
         calib_tries--;
+
+		bd_reset(&mainboard.distance.bd);
 
 	    /* go backwards a bit */
 	    trajectory_d_rel(&mainboard.traj, -(OBS_CLERANCE-CALIB_D_OK));

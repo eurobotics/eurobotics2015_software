@@ -116,6 +116,7 @@
 
 /* XXX obstacle clerance */
 #define OBS_CLERANCE            (149.+10.)
+#define CLEAN_CLERANCE			(240)
 
 /* Some calculus:
  * it is a 5000 imps -> 20000 because we see 1/4 period
