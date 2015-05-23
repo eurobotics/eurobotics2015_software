@@ -258,7 +258,7 @@ int8_t strat_get_new_zone(uint8_t robot)
 		}
 	}
 
-	DEBUG (E_USER_STRAT, "zone candidate is %s", get_zone_name(zone_num));
+	//DEBUG (E_USER_STRAT, "zone candidate is %s", get_zone_name(zone_num));
 
 	/* 2. check if the maximun priority zone is free */
 	if(zone_num != STRAT_NO_MORE_ZONES)
@@ -350,16 +350,16 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 										TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
         /* if not sucessed */
         if (!TRAJ_SUCCESS(err) && (strat_infos.conf.flags & CONF_FLAG_DO_ESCAPE_UPPER_ZONE)) {
-			time_wait_ms (5000);
+			//time_wait_ms (5000);
 
 			/* second try */
-			err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
-								strat_infos.zones[zone_num].init_y,
-								TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
+			//err = goto_and_avoid (COLOR_X(strat_infos.zones[zone_num].init_x),
+			//					strat_infos.zones[zone_num].init_y,
+			//					TRAJ_FLAGS_STD, TRAJ_FLAGS_NO_NEAR);
 
 			/* XXX, escape if not sucessed */
             /* XXX, returns only when we are out upper zone */
-			if (!TRAJ_SUCCESS(err))
+			//if (!TRAJ_SUCCESS(err))
             	err = strat_escape_form_upper_zone (0);
 
 
@@ -619,7 +619,7 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 								 			   SIDE_ALL,        				/* storing sides */
 											   COLOR_A_REL(0),                	/* blade angle */
 											   SPEED_DIST_SLOW,            		/* harvest speed */
-											   STANDS_HARVEST_BACK_INIT_POS | 	/* flags */
+											   STANDS_HARVEST_STAND_GROUP_3 | 	/* flags */
 											   STANDS_HARVEST_XY_IS_ROBOT_POSITION);
 #endif
 			break;
