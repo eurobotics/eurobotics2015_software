@@ -47,17 +47,21 @@ int32_t encoders_get_beacon_speed(void * dummy);
 #define ARM_MODE_HIDE		0
 #define ARM_MODE_CARPET		1
 #define ARM_MODE_CLAPPER	2
-#define ARM_MODE_MAX		3
+#define ARM_MODE_CLEAN		3
+#define ARM_MODE_MAX		4
 
 /* left arm positions */
 #define ARM_LEFT_POS_HIDE		530
 #define ARM_LEFT_POS_CARPET		820
 #define ARM_LEFT_POS_CLAPPER	820
+#define ARM_LEFT_POS_CLEAN		1250
+
 
 /* right arm positions */
 #define ARM_RIGHT_POS_HIDE		700 //730
 #define ARM_RIGHT_POS_CARPET	400
 #define ARM_RIGHT_POS_CLAPPER	400
+#define ARM_RIGHT_POS_CLEAN		-10
 
 void arm_set_mode (uint8_t type, uint8_t mode);
 
@@ -68,8 +72,8 @@ void arm_set_mode (uint8_t type, uint8_t mode);
 void cup_front_clamp_set_position (uint16_t pos);
 
 /* set cup rear clamp position */
-#define CUP_REAR_CLAMP_POS_OPEN			500
-#define CUP_REAR_CLAMP_POS_CLOSE		500
+#define CUP_REAR_CLAMP_POS_OPEN			350
+#define CUP_REAR_CLAMP_POS_CLOSE		700
 
 void cup_rear_clamp_set_position (uint16_t pos);
 
