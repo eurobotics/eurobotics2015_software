@@ -479,6 +479,7 @@ uint8_t strat_harvest_stands_and_cup_inline (void);
 #define STANDS_HARVEST_BACK_INIT_POS 		1
 #define STANDS_HARVEST_CALIB_X       		2
 #define STANDS_HARVEST_XY_IS_ROBOT_POSITION	4
+#define STANDS_HARVEST_STAND_GROUP_3		8
 
 uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
 									 uint8_t side, uint8_t blade_angle,

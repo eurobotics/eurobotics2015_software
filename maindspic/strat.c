@@ -157,7 +157,7 @@ struct strat_infos strat_infos = {
 		/* two stands */
 		ZONE_TYPE_STAND,
 		738, AREA_Y-227,         /* XXX: aprox. to be tested */
-		0, 910, 1600, 2000,
+		0, 910+200, 1600, 2000,
 		450, AREA_Y-432,
 		0, 0,
 		MAIN_ROBOT
@@ -167,7 +167,7 @@ struct strat_infos strat_infos = {
 	{
 		ZONE_TYPE_STAND,
 		MY_STAND_1_X, MY_STAND_1_Y,
-		0, 910, 1600, 2000,
+		0, 910+200, 1600, 2000,
 		MY_STAND_1_X+OBS_CLERANCE, AREA_Y-330,
 		0, 0,
 		MAIN_ROBOT
@@ -177,7 +177,7 @@ struct strat_infos strat_infos = {
 	{
 		ZONE_TYPE_POPCORNMAC,
 		MY_POPCORNMAC_X, MY_POPCORNMAC_Y,
-		0, 910, 1600, 2000,
+		0, 910+200, 1600, 2000,
 		MY_POPCORNMAC_X, AREA_Y-330,
 		0, 0,
 		MAIN_ROBOT
