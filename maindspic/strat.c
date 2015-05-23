@@ -350,7 +350,7 @@ struct strat_infos strat_infos = {
 #else
 		ZONE_TYPE_STRAT,
 		WORK_NULL, WORK_NULL,
-		910, 1300, 1020, 1320,
+		910, 1500, 1020, STAIRS_EDGE_Y,
         CARPET_LEFT_INFRONT_X, MY_CUP_1_Y, //STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
 		0, 0,
 		SEC_ROBOT
@@ -370,7 +370,7 @@ struct strat_infos strat_infos = {
   	.zones[ZONE_MY_PLATFORM] =
 	{
 		ZONE_TYPE_PLATFORM,
-		1050, 135,
+		1050, 135-10+7, //1035
 		/* boundinbox: x_down, x_up,  y_down,  y_up, */
 		750, 1300, 0, 500,
         1050, 350,

@@ -257,7 +257,7 @@ uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
    	uint8_t err = 0;
 	uint16_t old_spdd, old_spda;
 	int16_t d = 0, a = 0;
-	uint8_t calib_tries = 2;
+	uint8_t calib_tries = 3;
 	int16_t x_init, y_init;
 
 	/* save init position */

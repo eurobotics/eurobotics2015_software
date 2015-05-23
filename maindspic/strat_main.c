@@ -243,6 +243,7 @@ int8_t strat_get_new_zone(uint8_t robot)
 	/* For secondary robot: check if need to synchronize */
 	if(robot==SEC_ROBOT)
 	{
+#if 0
 		if (strat_smart[SEC_ROBOT].current_zone==ZONE_BLOCK_UPPER_SIDE)
 		{
 			//Free upper zone if it was still blocking
@@ -250,6 +251,7 @@ int8_t strat_get_new_zone(uint8_t robot)
 			zone_num = ZONE_MY_STAIRWAY;
 			DEBUG(E_USER_STRAT,"R2, going to ZONE_MY_STAIRWAY.");
 		}
+#endif
 		if(strat_smart_get_msg()==MSG_UPPER_SIDE_FREE)
 		{
 			DEBUG(E_USER_STRAT,"R2, ZONE_FREE_UPPER_SIDE is FREE.");
@@ -263,9 +265,14 @@ int8_t strat_get_new_zone(uint8_t robot)
 	/* 2. check if the maximun priority zone is free */
 	if(zone_num != STRAT_NO_MORE_ZONES)
 	{
-		if (strat_is_opp_in_zone(zone_num)) {
+		if (strat_is_opp_in_zone(zone_num)) 
+		{
 			DEBUG (E_USER_STRAT, "WARNING opp is in zone candidate");
-			zone_num = STRAT_OPP_IS_IN_ZONE;
+
+			if (zone_num == ZONE_BLOCK_UPPER_SIDE)
+				strat_smart_set_msg (MSG_UPPER_SIDE_IS_BLOCKED);
+			else
+				zone_num = STRAT_OPP_IS_IN_ZONE;
 		}
 	}
 
@@ -821,44 +828,48 @@ uint8_t strat_smart_main_robot(void)
 	if(zone_num == ZONE_MY_STAND_GROUP_3 || zone_num == ZONE_MY_STAND_GROUP_4 || zone_num == ZONE_MY_POPCORNMAC)
 	{
 		// Free
-		if((strat_smart_get_msg() == MSG_UPPER_SIDE_IS_BLOCKED) || (strat_smart_get_msg() == MSG_UPPER_SIDE_FREE))
+		if(strat_smart_get_msg() == MSG_UPPER_SIDE_IS_BLOCKED)
 		{
 			DEBUG(E_USER_STRAT,"R1, sending message MSG_UPPER_SIDE_FREE.");
 			strat_smart_set_msg(MSG_UPPER_SIDE_FREE);
-
-			// Wait until free
-			if(strat_wait_sync_main_robot(MSG_UPPER_SIDE_IS_FREE))
-				return END_TRAJ;
 		}
 
-		// Cup near stairs
-		// if main robot has no cup in the back, tell sec robot to release cup near stairs and wait until main robot can take it
-		if(!(strat_infos.zones[ZONE_POPCORNCUP_2].flags & ZONE_CHECKED))
+		// Wait until free
+		if(strat_wait_sync_main_robot(MSG_UPPER_SIDE_IS_FREE))
+			return END_TRAJ;
+
+
+		if (strat_infos.conf.flags & CONF_FLAG_DO_CUP_EXCHANGE)
 		{
-			// First time, send message
-			if((strat_smart_get_msg() != MSG_CUP_RELEASED) && (strat_smart_get_msg() != MSG_RELEASE_CUP_IMPOSSIBLE))
+			// Cup near stairs
+			// if main robot has no cup in the back, tell sec robot to release cup near stairs and wait until main robot can take it
+			if(!(strat_infos.zones[ZONE_POPCORNCUP_2].flags & ZONE_CHECKED))
 			{
-				strat_infos.zones[ZONE_CUP_NEAR_STAIRS].flags &= (~ZONE_AVOID);
-				strat_smart_set_msg(MSG_RELEASE_CUP_NEAR_STAIRS);
-			}
-
-			// Wait for response
-			if(strat_wait_sync_main_robot(MSG_CUP_RELEASED))
-				return END_TRAJ;
-
-			// Sec robot responded
-			else
-			{
-				// If cup has been released, first go and take it
-				if(strat_smart_get_msg() == MSG_CUP_RELEASED)
+				// First time, send message
+				if((strat_smart_get_msg() != MSG_CUP_RELEASED) && (strat_smart_get_msg() != MSG_RELEASE_CUP_IMPOSSIBLE))
 				{
-					DEBUG (E_USER_STRAT, "R1, going to ZONE_CUP_NEAR_STAIRS. msg: ",strat_smart_get_msg());
-					#define STRAT_WITH_CUP_NEAR_STAIRS 17
-					/* wait until sec robot is gone */
-					time_wait_ms(3000);
-					strat_smart[MAIN_ROBOT].current_strategy = STRAT_WITH_CUP_NEAR_STAIRS;
-					strat_change_sequence_qualification(MAIN_ROBOT);
-					zone_num = strat_get_new_zone(MAIN_ROBOT);
+					strat_infos.zones[ZONE_CUP_NEAR_STAIRS].flags &= (~ZONE_AVOID);
+					strat_smart_set_msg(MSG_RELEASE_CUP_NEAR_STAIRS);
+				}
+
+				// Wait for response
+				if(strat_wait_sync_main_robot(MSG_CUP_RELEASED))
+					return END_TRAJ;
+
+				// Sec robot responded
+				else
+				{
+					// If cup has been released, first go and take it
+					if(strat_smart_get_msg() == MSG_CUP_RELEASED)
+					{
+						DEBUG (E_USER_STRAT, "R1, going to ZONE_CUP_NEAR_STAIRS. msg: ",strat_smart_get_msg());
+						#define STRAT_WITH_CUP_NEAR_STAIRS 17
+						/* wait until sec robot is gone */
+						time_wait_ms(3000);
+						strat_smart[MAIN_ROBOT].current_strategy = STRAT_WITH_CUP_NEAR_STAIRS;
+						strat_change_sequence_qualification(MAIN_ROBOT);
+						zone_num = strat_get_new_zone(MAIN_ROBOT);
+					}
 				}
 			}
 		}
@@ -987,10 +998,11 @@ uint8_t strat_wait_sync_secondary_robot(void)
 	/* Block upper side until "free" message (or timeout) */
 #define ZONE_UPPER_SIDE_BLOCKING_TIMEOUT 30
 
-	if ((strat_smart_get_msg() == MSG_UPPER_SIDE_IS_BLOCKED) &&
-		(strat_smart[SEC_ROBOT].current_zone == ZONE_BLOCK_UPPER_SIDE) &&
-		(time_get_s() < ZONE_UPPER_SIDE_BLOCKING_TIMEOUT))
+	if ( (strat_smart[SEC_ROBOT].current_zone == ZONE_BLOCK_UPPER_SIDE ||
+		  strat_smart[SEC_ROBOT].goto_zone == ZONE_BLOCK_UPPER_SIDE) &&
+		 (time_get_s() < ZONE_UPPER_SIDE_BLOCKING_TIMEOUT))
 	{
+		strat_infos.zones[ZONE_BLOCK_UPPER_SIDE].flags |= ZONE_AVOID;
 		return 1;
 	}
 
@@ -1164,11 +1176,11 @@ uint8_t strat_smart_secondary_robot(void)
 			}
 			else if (received_ack !=1 && received_ack != 0) {
 				/* NACK, retry */
-				state = GET_NEW_ZONE;
+				state = SYNCHRONIZATION;
 			}
 			else if (time_get_us2() - us > 1000000L) {
 				/* timeout, retry */
-				state = GET_NEW_ZONE;
+				state = SYNCHRONIZATION;
 			}
 			break;
 
@@ -1187,7 +1199,7 @@ uint8_t strat_smart_secondary_robot(void)
 				DEBUG(E_USER_STRAT,"R2, ERROR, goto returned %s", get_err(err));
 				strat_smart[SEC_ROBOT].current_zone = -1; /* TODO: why? */
 				strat_set_next_sec_strategy();
-				state = GET_NEW_ZONE;
+				state = SYNCHRONIZATION;
 				break;
 			}
 

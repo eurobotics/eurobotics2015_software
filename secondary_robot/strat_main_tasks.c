@@ -259,7 +259,7 @@ uint8_t strat_put_carpets (void)
 {
 
 /* XXX keep synchronized with main robot */
-#define STAIRS_EDGE_Y			(AREA_Y-580)
+#define STAIRS_EDGE_Y			(AREA_Y-600) //(AREA_Y-580)
 #define STAIRS_EDGE_X			(967)
 #define STAIRS_WIDE_HALF		(50)
 #define CARPET_LEFT_INFRONT_X	(STAIRS_EDGE_X+STAIRS_WIDE_HALF+ROBOT_CENTER_TO_ARM+20)
