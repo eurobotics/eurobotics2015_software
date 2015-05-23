@@ -1275,7 +1275,7 @@ retry:
 	set_opponent_poly(ROBOT2ND, pol_robot_2nd, &robot_pt, ROBOT_2ND_WIDTH, ROBOT_2ND_LENGTH);
 
 	pol_platform= oa_new_poly(4);
-	set_poly_abs(pol_platform,O_PLATFORM_WIDTH + obs_clerance,O_PLATFORM_HEIGHT + obs_clerance/2,PLATFORM_X,PLATFORM_Y+obs_clerance/2);
+	set_poly_abs(pol_platform,O_PLATFORM_WIDTH + obs_clerance/2,O_PLATFORM_HEIGHT + obs_clerance/2,PLATFORM_X,PLATFORM_Y+obs_clerance/2);
 
 	pol_stairs= oa_new_poly(4);
 	set_poly_abs(pol_stairs,O_STAIRS_WIDTH +obs_clerance,O_STAIRS_HEIGHT + obs_clerance/2,STAIRS_X,STAIRS_Y-obs_clerance/2);

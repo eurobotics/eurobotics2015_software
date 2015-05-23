@@ -1328,8 +1328,11 @@ static void cmd_subtraj1_parsed(void *parsed_result, void *data)
     else if (!strcmp_P(res->arg1, PSTR("cinema_up"))) {
         zone_num = ZONE_MY_CINEMA_UP;
 	}
-    else if (!strcmp_P(res->arg1, PSTR("cinema_down"))) {
+    else if (!strcmp_P(res->arg1, PSTR("cinema_down_sec"))) {
         zone_num = ZONE_MY_CINEMA_DOWN_SEC;
+	}
+    else if (!strcmp_P(res->arg1, PSTR("cinema_down_main"))) {
+        zone_num = ZONE_MY_CINEMA_DOWN_MAIN;
 	}
     else if (!strcmp_P(res->arg1, PSTR("stairs_ways"))) {
         zone_num = ZONE_MY_STAIRWAY;
@@ -1394,7 +1397,7 @@ end:
 
 prog_char str_subtraj1_arg0[] = "subtraj";
 parse_pgm_token_string_t cmd_subtraj1_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg0, str_subtraj1_arg0);
-prog_char str_subtraj1_arg1[] = "begining#home_popcorns#home_spotlight#home_timeout#machine#machine_opp#cinema_up#cinema_down#platform#stairs#stairs_ways#outside";
+prog_char str_subtraj1_arg1[] = "begining#home_popcorns#home_spotlight#home_timeout#machine#machine_opp#cinema_up#cinema_down_sec#cinema_down_main#platform#stairs#stairs_ways#outside";
 parse_pgm_token_string_t cmd_subtraj1_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_subtraj1_result, arg1, str_subtraj1_arg1);
 //parse_pgm_token_num_t cmd_subtraj1_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg2, INT32);
 //parse_pgm_token_num_t cmd_subtraj1_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_subtraj1_result, arg3, INT32);

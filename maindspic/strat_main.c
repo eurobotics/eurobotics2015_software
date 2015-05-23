@@ -145,6 +145,8 @@ uint8_t strat_is_valid_zone(uint8_t robot, int8_t zone_num)
 
 	/* discard priority 0 */
 	if((strat_infos.zones[zone_num].prio == 0) && (zone_num != ZONE_CUP_NEAR_STAIRS)) {
+		/*if (robot == MAIN_ROBOT)
+			DEBUG(E_USER_STRAT,"Not valid zone, prio=0 in zone: %s",get_zone_name(zone_num));*/
 		return 0;
 	}
 
@@ -152,22 +154,29 @@ uint8_t strat_is_valid_zone(uint8_t robot, int8_t zone_num)
 	if(strat_smart[robot].current_zone == zone_num &&
 	   strat_smart[robot].current_zone != ZONE_MY_STAIRWAY)
 	{
-		//DEBUG(E_USER_STRAT,"Not valid zone, zone num: %d. current_zone.", zone_num);
+		/*if (robot == MAIN_ROBOT)
+			DEBUG(E_USER_STRAT,"Not valid zone, zone num: %s is current_zone",get_zone_name(zone_num));*/
 		return 0;
 	}
 
 	/* discard robot zone */
-	if((strat_infos.zones[zone_num].robot != robot) && (strat_infos.zones[zone_num].robot != BOTH_ROBOTS)) {
+	if(strat_infos.zones[zone_num].robot != robot) {
+		/*if (robot == MAIN_ROBOT)
+			DEBUG(E_USER_STRAT,"Not valid zone, not valid robot in zone: %s",get_zone_name(zone_num));*/
 		return 0;
 	}
 
 	/* discard checked zone */
 	if(strat_infos.zones[zone_num].flags & ZONE_CHECKED) {
+		/*if (robot == MAIN_ROBOT)
+			DEBUG(E_USER_STRAT,"Not valid zone, zone num: %s. is checked.", get_zone_name(zone_num));*/
 			return 0;
 	}
 
 	/* discard avoid zone */
 	if(strat_infos.zones[zone_num].flags & ZONE_AVOID) {
+		/*if (robot == MAIN_ROBOT)
+			DEBUG(E_USER_STRAT,"Not valid zone, zone num: %s. is avoid.", get_zone_name(zone_num));*/
 		return 0;
 	}
 
@@ -249,7 +258,7 @@ int8_t strat_get_new_zone(uint8_t robot)
 		}
 	}
 
-	//DEBUG (E_USER_STRAT, "zone candidate is %s", get_zone_name(zone_num));
+	DEBUG (E_USER_STRAT, "zone candidate is %s", get_zone_name(zone_num));
 
 	/* 2. check if the maximun priority zone is free */
 	if(zone_num != STRAT_NO_MORE_ZONES)
