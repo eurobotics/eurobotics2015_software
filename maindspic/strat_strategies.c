@@ -271,14 +271,14 @@ void strat_change_sequence_qualification(uint8_t robot){
 				case 0:
 					strat_clean_priorities(SEC_ROBOT);
 					strat_update_priorities(6,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, ZONE_BLOCK_UPPER_SIDE,
-											  ZONE_MY_STAIRWAY, ZONE_MY_CLAP_3, ZONE_MY_CINEMA_UP);
+											  ZONE_MY_STAIRWAY, ZONE_MY_CINEMA_UP, ZONE_MY_CLAP_3);
 					strat_smart[robot].current_strategy ++;
 					break;
 
 				case STRAT_WITH_CUP_NEAR_STAIRS:
 					strat_clean_priorities(SEC_ROBOT);
 					strat_update_priorities(6,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, ZONE_CUP_NEAR_STAIRS,
-											  ZONE_MY_STAIRWAY, ZONE_MY_CLAP_3, ZONE_MY_CINEMA_UP);
+											  ZONE_MY_STAIRWAY, ZONE_MY_CINEMA_UP, ZONE_MY_CLAP_3);
 					strat_smart[robot].current_strategy ++;
 					break;
 
@@ -286,7 +286,7 @@ void strat_change_sequence_qualification(uint8_t robot){
 					// Opponent blocking "block upper side"
 					strat_clean_priorities(SEC_ROBOT);
 					strat_update_priorities(5,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1,
-											  ZONE_MY_STAIRWAY, ZONE_MY_CLAP_3, ZONE_MY_CINEMA_UP);
+											  ZONE_MY_STAIRWAY, ZONE_MY_CINEMA_UP, ZONE_MY_CLAP_3);
 					strat_smart[robot].current_strategy ++;
 					break;
 				case 2:
