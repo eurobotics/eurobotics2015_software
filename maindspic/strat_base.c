@@ -613,33 +613,7 @@ uint8_t __strat_obstacle(uint8_t which)
 
 	/* opponent too far */
 	if (opp_d > OBSTACLE_DIST)
-		return 0;
-
-    /** XXX
-     *  BUGFIX: big beacon (2 closer beacons in the distance).
-     * 
-     *  Case of distance saturated to the minimun 
-     *  and previous measure is greater than 500mm and only one oppponent
-     */
-#if 0
-    IRQ_LOCK (flags);
-    __opp1_x = beaconboard.opponent1_x;
-    __opp2_x = beaconboard.opponent2_x;
-    IRQ_UNLOCK(flags);
-
-    if (opp_d <= 230 && opp_d_old > 500 &&
-        ((__opp1_x == I2C_OPPONENT_NOT_THERE && __opp2_x != I2C_OPPONENT_NOT_THERE) ||
-        (__opp1_x != I2C_OPPONENT_NOT_THERE && __opp2_x == I2C_OPPONENT_NOT_THERE)))
-        //!sensor_get(S_OPPONENT_FRONT_R) && !sensor_get(S_OPPONENT_FRONT_L) &&
-        //!sensor_get(S_OPPONENT_REAR_R) && !sensor_get(S_OPPONENT_REAR_L) ) 
-    {
-        return 0;
-    }
-    else {
-        opp_d_old = opp_d;
-    }
-#endif
-    
+		return 0;  
 
 	/* XXX opponent is in front of us */
 	if (mainboard.speed_d > OBSTACLE_SPEED_MIN &&

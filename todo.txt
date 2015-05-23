@@ -18,21 +18,25 @@ x FIXME: special case, XXX WHY????????????????????
 x Uncomment log mesagges of avoid
 x Check: Esto es un bug que encontre que no se si esta arreglado en la ultima version. Revisalo porfa. Lo correcto es lo de la linea 1150 (intersect_platform_pt).
 x secondary: pickup/release cup 2 sides
-- El grande siempre deja en el cine de abajo, mandar mensaje antes al pequeño. El pequeño esta por decidir, de momento arriba para estorbar. 
-- Review of escapes of work on zone functions.
+x El grande siempre deja en el cine de abajo, mandar mensaje antes al pequeño. El pequeño esta por decidir, de momento arriba para estorbar. 
 x harvest cup 3: go backwards more.
-- escape from upper zone: get space after !sucess
-- BUG: end obstacle pequeño
-- release stands: add MANAGE_BLOCKING feature (for platform case).
+x escape from upper zone: get space after !sucess
+x release stands: add MANAGE_BLOCKING feature (for platform case).
+
+- BUG: end obstacle pequeño (no me acuerdo de que era esto)
+- Review of escapes of work on zone functions.
+- big beacon test, also solved swizeland beacon?
+- platform test
+- release stands, prevent popocorn in mouth
 
 TODO SECONDARY ROBOT:
-
 
 x Release cup improvements: go a bit forward before open the clamp (work point changed).
 x Pickup cup improvements: 2 sides
 x Release cup improvements: 2 sides
 x Put carpets: go directly in front of stairways (discarted), mark a done carpet.
 x Actuators: 2 clamps
+
 - Review of goto and work on zone functions.
 - Close clapper: do a calib with wall before close the clapper (safest method).
 - Add sensors for obstacle detection???

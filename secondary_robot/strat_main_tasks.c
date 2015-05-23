@@ -398,7 +398,7 @@ uint8_t strat_close_clapperboard (int16_t x, int16_t y)
 	int16_t d, a;
     uint8_t arm;
     uint8_t old_debug = strat_infos.debug_step;
-    uint8_t calib_tries = 2;
+//    uint8_t calib_tries = 2;
 
     /* XXX debug */
     strat_infos.debug_step = 0;
@@ -415,12 +415,82 @@ uint8_t strat_close_clapperboard (int16_t x, int16_t y)
 	if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);
 
+#if 1
+	/* go to clean distance */
+	d = distance_from_robot(position_get_x_s16(&mainboard.pos), 0);
+	trajectory_d_rel(&mainboard.traj, -(d-CLEAN_CLERANCE-30));
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+    if (!TRAJ_SUCCESS(err))
+	   ERROUT(err);	
+
+	/* arm down */
+	arm = (position_get_x_s16(&mainboard.pos) > (AREA_X/2)? ARM_TYPE_RIGHT : ARM_TYPE_LEFT);	
+	arm_set_mode (arm, ARM_MODE_CLEAN);
+	time_wait_ms(500);
+
+	/* turn 180 degrees and back, for clean */
+	a = (position_get_x_s16(&mainboard.pos) > (AREA_X/2)? -180 : 180);
+	trajectory_a_rel(&mainboard.traj, a);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+
+	trajectory_a_rel(&mainboard.traj, -a);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+
+	/* turn to clapperboard behind */
+	trajectory_a_abs(&mainboard.traj, 90);
+	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+	if (!TRAJ_SUCCESS(err))
+	   ERROUT(err);
+#endif
+
 	/* go backwards to near wall */
 	d = distance_from_robot(position_get_x_s16(&mainboard.pos), 0);
 	trajectory_d_rel(&mainboard.traj, -(d-OBS_CLERANCE));
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
     if (!TRAJ_SUCCESS(err))
 	   ERROUT(err);	
+
+	/* open arm */
+	arm = (position_get_x_s16(&mainboard.pos) > (AREA_X/2)? ARM_TYPE_RIGHT : ARM_TYPE_LEFT);	
+	arm_set_mode (arm, ARM_MODE_CLAPPER);
+	time_wait_ms(500);
+
+	/* turn 90 degrees */
+	a = (position_get_x_s16(&mainboard.pos) > (AREA_X/2)? 0 : 180);
+	trajectory_a_abs(&mainboard.traj, a);
+	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+
+	if (!TRAJ_SUCCESS(err))
+	   ERROUT(err);
+
+end:
+	/* close arm */
+	arm_set_mode (ARM_TYPE_LEFT, ARM_MODE_HIDE);
+	arm_set_mode (ARM_TYPE_RIGHT, ARM_MODE_HIDE);
+
+    /* XXX debug */
+    strat_infos.debug_step = old_debug;
+
+	/* end stuff */
+	strat_set_speed(old_spdd, old_spda);
+   	strat_limit_speed_enable();
+   	return err;
+}
+
+/* TODO */
+uint8_t climb_stairs(void)
+{
+	uint8_t err=0;
+    printf_P(PSTR("climb_stairs\r\n"));
+
+	/* TODO */
+	strat_bt_task_wait_ms(3000);
+	err = END_TRAJ;
+
+end:
+    return err;
+}
+
 
 #if 0
 
@@ -492,52 +562,6 @@ calib:
 	}
 
 #endif
-
-	/* open arm */
-	arm = (position_get_x_s16(&mainboard.pos) > (AREA_X/2)? ARM_TYPE_RIGHT : ARM_TYPE_LEFT);	
-	arm_set_mode (arm, ARM_MODE_CLAPPER);
-	time_wait_ms(500);
-
-	/* turn 90 degrees */
-	a = (position_get_x_s16(&mainboard.pos) > (AREA_X/2)? 0 : 180);
-	trajectory_a_abs(&mainboard.traj, a);
-	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
-
-	printf ("2 err %s", get_err(err));
-
-	if (!TRAJ_SUCCESS(err))
-	   ERROUT(err);
-
-end:
-	/* close arm */
-	arm_set_mode (ARM_TYPE_LEFT, ARM_MODE_HIDE);
-	arm_set_mode (ARM_TYPE_RIGHT, ARM_MODE_HIDE);
-
-    /* XXX debug */
-    strat_infos.debug_step = old_debug;
-
-	/* end stuff */
-	strat_set_speed(old_spdd, old_spda);
-   	strat_limit_speed_enable();
-   	return err;
-}
-
-/* TODO */
-uint8_t climb_stairs(void)
-{
-	uint8_t err=0;
-    printf_P(PSTR("climb_stairs\r\n"));
-
-	/* TODO */
-	strat_bt_task_wait_ms(3000);
-	err = END_TRAJ;
-
-end:
-    return err;
-}
-
-
-
 
 
 
