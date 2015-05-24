@@ -243,20 +243,21 @@ int8_t strat_get_new_zone(uint8_t robot)
 	/* For secondary robot: check if need to synchronize */
 	if(robot==SEC_ROBOT)
 	{
-#if 0
-		if (strat_smart[SEC_ROBOT].current_zone==ZONE_BLOCK_UPPER_SIDE)
+
+		/*if (strat_smart[SEC_ROBOT].current_zone==ZONE_BLOCK_UPPER_SIDE)
 		{
 			//Free upper zone if it was still blocking
 			//zone_num = ZONE_FREE_UPPER_SIDE;
 			zone_num = ZONE_MY_STAIRWAY;
 			DEBUG(E_USER_STRAT,"R2, going to ZONE_MY_STAIRWAY.");
-		}
-#endif
+		}*/
+
 		if(strat_smart_get_msg()==MSG_UPPER_SIDE_FREE)
 		{
 			DEBUG(E_USER_STRAT,"R2, ZONE_FREE_UPPER_SIDE is FREE.");
 			strat_smart_set_msg(MSG_UPPER_SIDE_IS_FREE);
 			strat_infos.zones[ZONE_BLOCK_UPPER_SIDE].flags |= ZONE_AVOID;
+			zone_num = ZONE_MY_STAIRWAY;
 		}
 	}
 
@@ -268,10 +269,7 @@ int8_t strat_get_new_zone(uint8_t robot)
 		if (strat_is_opp_in_zone(zone_num)) 
 		{
 			DEBUG (E_USER_STRAT, "WARNING opp is in zone candidate");
-
-			if (zone_num == ZONE_BLOCK_UPPER_SIDE)
-				strat_smart_set_msg (MSG_UPPER_SIDE_IS_BLOCKED);
-			else
+			//if (zone_num != ZONE_BLOCK_UPPER_SIDE)
 				zone_num = STRAT_OPP_IS_IN_ZONE;
 		}
 	}
@@ -346,9 +344,9 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 		/* we are at init position */
 		err = END_TRAJ;
 	}
-	else if (strat_smart[robot].current_zone == ZONE_MY_STAND_GROUP_3 ||
+	else if (strat_smart[robot].current_zone == ZONE_MY_STAND_GROUP_3) /* ||
         	 strat_smart[robot].current_zone == ZONE_MY_POPCORNMAC ||
-        	 strat_smart[robot].current_zone == ZONE_MY_STAND_GROUP_4)
+        	 strat_smart[robot].current_zone == ZONE_MY_STAND_GROUP_4)*/
     {
 
         /* first try */
@@ -475,9 +473,6 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 			case ZONE_MY_CINEMA_DOWN_SEC:
 				bt_robot_2nd_bt_task_bring_cup_cinema(COLOR_X(strat_infos.zones[zone_num].x),
 											   strat_infos.zones[zone_num].y, BT_SIDE_FRONT);
-				/* go outside of cinema to let it free for main robot */
-				//bt_robot_2nd_goto_and_avoid(COLOR_X(MY_CLAP_3_X),
-				//							ROBOT_SEC_OBS_CLERANCE+PLATFORM_WIDTH);
 				break;
 
 			case ZONE_MY_CINEMA_UP:
@@ -520,6 +515,10 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 
             /* fast harvesting of stand 4, 5 and cup 3 */
             if (strat_infos.conf.flags & CONF_FLAG_DO_STAND_FAST_GROUP_1) {
+
+				DEBUG(E_USER_STRAT,"R1, sending message START.");
+				strat_smart_set_msg(MSG_START);
+
                 err = strat_harvest_stands_and_cup_inline();
                 strat_infos.conf.flags &= ~(CONF_FLAG_DO_STAND_FAST_GROUP_1);
             }
@@ -541,6 +540,11 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
                 /* mark stand as harvested */
                 strat_infos.done_flags |= DONE_STAND_4;
             }
+
+			if (!(strat_infos.conf.flags & CONF_FLAG_DO_STAND_FAST_GROUP_1)) {
+				DEBUG(E_USER_STRAT,"R1, sending message START.");
+				strat_smart_set_msg(MSG_START);
+			}
 
 
 			/* XXX debug step use only for subtraj command */
@@ -565,8 +569,6 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 
             }
 
-			DEBUG(E_USER_STRAT,"R1, sending message START.");
-			strat_smart_set_msg(MSG_START);
 
 			/* XXX debug step use only for subtraj command */
 			//strat_debug_wait_key_pressed (MAIN_ROBOT);
@@ -827,16 +829,6 @@ uint8_t strat_smart_main_robot(void)
 	/* zone is on upper side */
 	if(zone_num == ZONE_MY_STAND_GROUP_3 || zone_num == ZONE_MY_STAND_GROUP_4 || zone_num == ZONE_MY_POPCORNMAC)
 	{
-		// Free
-		if(strat_smart_get_msg() == MSG_UPPER_SIDE_IS_BLOCKED)
-		{
-			DEBUG(E_USER_STRAT,"R1, sending message MSG_UPPER_SIDE_FREE.");
-			strat_smart_set_msg(MSG_UPPER_SIDE_FREE);
-		}
-
-		// Wait until free
-		if(strat_wait_sync_main_robot(MSG_UPPER_SIDE_IS_FREE))
-			return END_TRAJ;
 
 
 		if (strat_infos.conf.flags & CONF_FLAG_DO_CUP_EXCHANGE)
@@ -915,6 +907,24 @@ uint8_t strat_smart_main_robot(void)
 
 	/* XXX debug step use only for subtraj command */
 	//strat_debug_wait_key_pressed (MAIN_ROBOT);
+
+
+	DEBUG(E_USER_STRAT,"R1,  message: %d", strat_smart_get_msg());
+    strat_debug_wait_key_pressed (MAIN_ROBOT);
+
+	// Free
+	if(zone_num == ZONE_MY_STAND_GROUP_4)
+	{
+		if((strat_smart_get_msg() == MSG_UPPER_SIDE_IS_BLOCKED) || (strat_smart_get_msg() == MSG_UPPER_SIDE_FREE))
+		{
+			DEBUG(E_USER_STRAT,"R1, sending message MSG_UPPER_SIDE_FREE.");
+			strat_smart_set_msg(MSG_UPPER_SIDE_FREE);
+
+			// Wait until free
+			//if(strat_wait_sync_main_robot(MSG_UPPER_SIDE_IS_FREE))
+			//	return END_TRAJ;
+		}
+	}
 
 	/* work on zone */
 	DEBUG(E_USER_STRAT,"R1, strat #%d: work on zone %s (%d, %d)",
@@ -998,13 +1008,13 @@ uint8_t strat_wait_sync_secondary_robot(void)
 	/* Block upper side until "free" message (or timeout) */
 #define ZONE_UPPER_SIDE_BLOCKING_TIMEOUT 30
 
-	if ( (strat_smart[SEC_ROBOT].current_zone == ZONE_BLOCK_UPPER_SIDE ||
-		  strat_smart[SEC_ROBOT].goto_zone == ZONE_BLOCK_UPPER_SIDE) &&
-		 (time_get_s() < ZONE_UPPER_SIDE_BLOCKING_TIMEOUT))
+	if ((strat_smart_get_msg() == MSG_UPPER_SIDE_IS_BLOCKED) &&
+		(strat_smart[SEC_ROBOT].current_zone == ZONE_BLOCK_UPPER_SIDE) &&
+		(time_get_s() < ZONE_UPPER_SIDE_BLOCKING_TIMEOUT))
 	{
-		strat_infos.zones[ZONE_BLOCK_UPPER_SIDE].flags |= ZONE_AVOID;
 		return 1;
 	}
+
 
     return 0;
 }
@@ -1208,21 +1218,23 @@ uint8_t strat_smart_secondary_robot(void)
 			strat_smart[SEC_ROBOT].current_zone = strat_smart[SEC_ROBOT].goto_zone;
 
 			/* send message after done synchronization */
-			if(strat_smart[SEC_ROBOT].current_zone == ZONE_BLOCK_UPPER_SIDE)
+			if((strat_smart[SEC_ROBOT].current_zone == ZONE_BLOCK_UPPER_SIDE) &&
+                (strat_smart[SEC_ROBOT].last_zone != ZONE_BLOCK_UPPER_SIDE))
 			{
 				DEBUG(E_USER_STRAT,"R2, in ZONE_BLOCK_UPPER_SIDE.");
 				strat_smart_set_msg(MSG_UPPER_SIDE_IS_BLOCKED);
 
 			}
+#if 0
 			else if(strat_smart[SEC_ROBOT].current_zone == ZONE_FREE_UPPER_SIDE)
 			{
 				DEBUG(E_USER_STRAT,"R2, in ZONE_FREE_UPPER_SIDE.");
 				strat_smart_set_msg(MSG_UPPER_SIDE_IS_FREE);
 			}
+#endif
 
 			/* next state */
-			if((strat_smart[SEC_ROBOT].current_zone == ZONE_BLOCK_UPPER_SIDE) ||
-				(strat_smart[SEC_ROBOT].current_zone == ZONE_FREE_UPPER_SIDE))
+			if(strat_smart[SEC_ROBOT].current_zone == ZONE_BLOCK_UPPER_SIDE)
 			{
 				/* update statistics */
 				strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
@@ -1327,15 +1339,19 @@ uint8_t strat_smart_secondary_robot(void)
 				break;
 			}
 
+#if 0
 			if(zone_num == ZONE_CUP_NEAR_STAIRS)
 			{
 				strat_smart_set_msg(MSG_CUP_RELEASED);
 				strat_infos.zones[ZONE_CUP_NEAR_STAIRS].robot=MAIN_ROBOT;
 			}
+#endif
 
 			/* update statistics */
+#if 0
 			if(zone_num != ZONE_CUP_NEAR_STAIRS)
-				strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
+#endif
+			strat_infos.zones[zone_num].flags |= ZONE_CHECKED;
 
             /* next state */
             state = SYNCHRONIZATION;
