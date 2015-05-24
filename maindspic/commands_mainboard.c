@@ -509,9 +509,16 @@ static void cmd_start_parsed(void *parsed_result, void *data)
 		strat_infos.conf.flags = 0;	
 		strat_infos.conf.flags |= CONF_FLAG_DO_TOWER;	
 		strat_infos.conf.flags |= CONF_FLAG_DO_ESCAPE_UPPER_ZONE;	
-		//strat_infos.conf.flags |= CONF_FLAG_DO_STAND_FAST_GROUP_1;	
+		
     }
-
+    else if (!strcmp_P(res->strategy, PSTR("finals")))
+    {
+		strat_infos.match_strategy=STR_QUALIFICATION;
+		strat_infos.conf.flags = 0;
+		strat_infos.conf.flags |= CONF_FLAG_DO_TOWER;	
+		strat_infos.conf.flags |= CONF_FLAG_DO_ESCAPE_UPPER_ZONE;	
+		strat_infos.conf.flags |= CONF_FLAG_DO_STAND_FAST_GROUP_1;
+    }
     else if (!strcmp_P(res->strategy, PSTR("base")))
     {
 	   strat_infos.match_strategy=STR_BASE;
@@ -596,7 +603,7 @@ retry_on:
 
 prog_char str_start_arg0[] = "start";
 parse_pgm_token_string_t cmd_start_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_start_result, arg0, str_start_arg0);
-prog_char str_start_strategy[] = "base#homologation#qualification";
+prog_char str_start_strategy[] = "base#homologation#qualification#finals";
 parse_pgm_token_string_t cmd_start_strategy = TOKEN_STRING_INITIALIZER(struct cmd_start_result, strategy, str_start_strategy);
 prog_char str_start_debug[] = "debug#step_debug#match";
 parse_pgm_token_string_t cmd_start_debug = TOKEN_STRING_INITIALIZER(struct cmd_start_result, debug, str_start_debug);
