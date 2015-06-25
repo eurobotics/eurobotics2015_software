@@ -571,7 +571,8 @@ void set_opponent_poly(uint8_t type, poly_t *pol, const point_t *robot_pt, int16
 	/* place poly even if invalid, because it's -1000 */
   if(type == ROBOT2ND){
 		DEBUG(E_USER_STRAT, "x1:%d, y1: %d, w1: %d,l1: %d",x,y, w,l );
- 	set_rotated_poly_abs(pol, a_abs, w, l, x, y);
+ 	//set_rotated_poly_abs(pol, a_abs, w, l, x, y);
+	set_rotated_poly_abs(pol, 90, w, l, x, y);
 	}
 
   else{

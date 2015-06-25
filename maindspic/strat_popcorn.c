@@ -225,6 +225,14 @@ uint8_t strat_harvest_popcorns_machine (int16_t x, int16_t y)
    	uint8_t err = 0;
 	uint16_t old_spdd, old_spda;
 	int16_t d = 0;
+	int16_t x_init, y_init;
+	int16_t x_init2, y_init2;
+
+	/* save init position */
+	x_init2 = position_get_x_s16(&mainboard.pos);
+	y_init2 = position_get_y_s16(&mainboard.pos);
+
+	
 
 	/* set local speed, and disable speed limit */
 	strat_get_speed (&old_spdd, &old_spda);
@@ -261,11 +269,17 @@ uint8_t strat_harvest_popcorns_machine (int16_t x, int16_t y)
 	i2c_slavedspic_mode_ps (I2C_SLAVEDSPIC_MODE_PS_MACHINES_HARVEST);		
 	i2c_slavedspic_ps_wait_status_or_timeout(STATUS_READY, 1000);
 
+	/* save init position */
+	x_init = position_get_x_s16(&mainboard.pos);
+	y_init = position_get_y_s16(&mainboard.pos);
+
+retrya:
+
 	/* wait popcorn inside */
 	time_wait_ms(2000);
 
 	/* XXX check OPP, wait free space or timeout */
-	//while (opponent1_is_infront() || opponent2_is_infront());
+	while (opponent1_is_infront() || opponent2_is_infront() || sensor_get(S_OPPONENT_FRONT_L) || sensor_get(S_OPPONENT_FRONT_R) || robots_are_near());
 	WAIT_COND_OR_TIMEOUT((!sensor_get(S_OPPONENT_FRONT_L) && !sensor_get(S_OPPONENT_FRONT_R)), 5000);
 
     /* return to init position */
@@ -277,11 +291,21 @@ uint8_t strat_harvest_popcorns_machine (int16_t x, int16_t y)
 		strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 
 	/* XXX, is possible we push slowly to opponent */
-	trajectory_d_rel(&mainboard.traj, d);
-    err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+//	trajectory_d_rel(&mainboard.traj, d);
+ //   err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+
+
+		trajectory_goto_xy_abs(&mainboard.traj, x_init2, y_init2);
+	    err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+		
     //err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-    //if (!TRAJ_SUCCESS(err))
+    if (!TRAJ_SUCCESS(err)) {
+
+		trajectory_goto_xy_abs(&mainboard.traj, x_init, y_init);
+	    err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+		goto retrya;
     //  ERROUT(err);	
+	}
 	
 	/* XXX, at this point the machines are done */
 	err = END_TRAJ;

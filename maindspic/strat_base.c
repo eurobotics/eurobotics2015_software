@@ -83,6 +83,7 @@ static volatile uint8_t strat_limit_speed_enabled = 1;
 
 /* opponent front/rear sensors for obstacle detection */
 static volatile uint8_t strat_opp_sensors_enabled = 0;
+static volatile uint8_t strat_opp_sensor_middle_enabled = 0;
 
 /* Strings that match the end traj cause */
 /* /!\ keep it sync with stat_base.h */
@@ -521,6 +522,17 @@ void strat_opp_sensor_disable(void)
 	strat_opp_sensors_enabled = 0;
 }
 
+void strat_opp_sensor_middle_enable(void)
+{
+	strat_opp_sensor_middle_enabled = 1;
+}
+
+void strat_opp_sensor_middle_disable(void)
+{
+	strat_opp_sensor_middle_enabled = 0;
+}
+
+
 
 /* return true if we have to brake due to an obstacle */
 uint8_t __strat_obstacle(uint8_t which)
@@ -545,6 +557,9 @@ uint8_t __strat_obstacle(uint8_t which)
 //    uint8_t flags;
 //    static int16_t opp_d_old = 3000;
 
+	uint16_t old_spdd, old_spda;
+
+
 
 	/* XXX, possible BUG, too slow */
 	if (ABS(mainboard.speed_d) < OBSTACLE_SPEED_MIN)
@@ -556,12 +571,83 @@ uint8_t __strat_obstacle(uint8_t which)
 
 	/* opponent sensors obstacle */
 #if 1
+
+	if (strat_opp_sensor_middle_enabled)
+	{
+		/* opponent is in front of us */
+		if (mainboard.speed_d > OBSTACLE_SPEED_MIN && sensor_get(S_OPPONENT_FRONT_MIDDLE)) {
+			DEBUG(E_USER_STRAT, "opponent front (SENSOR_MID = %d)",
+				 sensor_get(S_OPPONENT_FRONT_MIDDLE));
+
+			/* stop */
+			strat_hardstop();
+
+			/* set local speed, and disable speed limit */
+			strat_get_speed (&old_spdd, &old_spda);
+			strat_limit_speed_disable ();
+			strat_set_speed (SPEED_DIST_VERY_SLOW, SPEED_ANGLE_VERY_SLOW);
+
+			/* go in beacon range */
+			trajectory_d_rel(&mainboard.traj, -OBS_CLERANCE);
+			wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+			
+			/* restore */
+			strat_set_speed (old_spdd, old_spda);
+
+			/* TODO: if no opponent from beacon, simulate it */
+
+			sensor_obstacle_disable();
+			return 1;
+		}
+		/* opponent is behind us */
+		if (mainboard.speed_d < -OBSTACLE_SPEED_MIN && sensor_get(S_OPPONENT_REAR_MIDDLE)) {
+			DEBUG(E_USER_STRAT, "opponent behind (SENSOR_MID = %d)",
+				 sensor_get(S_OPPONENT_REAR_MIDDLE));
+
+			/* TODO: if no opponent from beacon, simulate it */
+
+			/* stop */
+			strat_hardstop();
+
+			/* set local speed, and disable speed limit */
+			strat_get_speed (&old_spdd, &old_spda);
+			strat_limit_speed_disable ();
+			strat_set_speed (SPEED_DIST_VERY_SLOW, SPEED_ANGLE_VERY_SLOW);
+
+			/* go in beacon range */
+			trajectory_d_rel(&mainboard.traj, OBS_CLERANCE);
+			wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+			
+			/* restore */
+			strat_set_speed (old_spdd, old_spda);
+
+			sensor_obstacle_disable();
+			return 1;
+		}
+	}
+
+
 	if (strat_opp_sensors_enabled)
 	{
 		/* opponent is in front of us */
 		if (mainboard.speed_d > OBSTACLE_SPEED_MIN && (sensor_get(S_OPPONENT_FRONT_R) || sensor_get(S_OPPONENT_FRONT_L))) {
 			DEBUG(E_USER_STRAT, "opponent front (SENSOR_L = %d, SENSOR_R=%d)",
 				 sensor_get(S_OPPONENT_FRONT_L), sensor_get(S_OPPONENT_FRONT_R));
+
+			/* stop */
+			strat_hardstop();
+
+			/* set local speed, and disable speed limit */
+			strat_get_speed (&old_spdd, &old_spda);
+			strat_limit_speed_disable ();
+			strat_set_speed (SPEED_DIST_VERY_SLOW, SPEED_ANGLE_VERY_SLOW);
+
+			/* go in beacon range */
+			trajectory_d_rel(&mainboard.traj, -OBS_CLERANCE);
+			wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+			
+			/* restore */
+			strat_set_speed (old_spdd, old_spda);
 
 			/* TODO: if no opponent from beacon, simulate it */
 
@@ -574,6 +660,21 @@ uint8_t __strat_obstacle(uint8_t which)
 				 sensor_get(S_OPPONENT_REAR_L), sensor_get(S_OPPONENT_REAR_R));
 
 			/* TODO: if no opponent from beacon, simulate it */
+
+			/* stop */
+			strat_hardstop();
+
+			/* set local speed, and disable speed limit */
+			strat_get_speed (&old_spdd, &old_spda);
+			strat_limit_speed_disable ();
+			strat_set_speed (SPEED_DIST_VERY_SLOW, SPEED_ANGLE_VERY_SLOW);
+
+			/* go in beacon range */
+			trajectory_d_rel(&mainboard.traj, OBS_CLERANCE);
+			wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
+			
+			/* restore */
+			strat_set_speed (old_spdd, old_spda);
 
 			sensor_obstacle_disable();
 			return 1;

@@ -318,6 +318,14 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 			bt_robot_2nd_goto_and_avoid_backward(COLOR_X(strat_infos.zones[zone_num].init_x),
 										strat_infos.zones[zone_num].init_y);
         }
+        else if (zone_num == ZONE_CUP_MIDDLE)
+        {
+
+			/* force go backwards */
+			bt_robot_2nd_goto_and_avoid_forward(COLOR_X(strat_infos.zones[zone_num].init_x),
+										strat_infos.zones[zone_num].init_y);
+        }
+
 		else {
 			bt_robot_2nd_goto_and_avoid(COLOR_X(strat_infos.zones[zone_num].init_x),
 										strat_infos.zones[zone_num].init_y);
@@ -337,6 +345,7 @@ uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num)
 
     /* TODO TEST: enable obstacle sensors */
     strat_opp_sensor_enable();
+	//strat_opp_sensor_middle_enable();
     
 
 	if (strat_smart[robot].current_zone == ZONE_MY_HOME_POPCORNS){
@@ -435,6 +444,7 @@ end:
 
     /* TODO: disable obstacle sensors */
     strat_opp_sensor_disable();    
+	strat_opp_sensor_middle_disable();
 	return err;
 }
 
@@ -574,6 +584,11 @@ uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num)
 			//strat_debug_wait_key_pressed (MAIN_ROBOT);
 
 				/* POPCORNCUP_3 */
+
+			
+            /* XXX HACK: mark cup as harvested */
+            //strat_infos.done_flags |= DONE_CUP_3;
+
 			if (!(strat_infos.done_flags & DONE_CUP_3)) {
 			    err = strat_harvest_popcorn_cup (COLOR_X(strat_infos.zones[ZONE_POPCORNCUP_3].x),
 									       strat_infos.zones[ZONE_POPCORNCUP_3].y,
@@ -826,9 +841,27 @@ uint8_t strat_smart_main_robot(void)
 	/* get new zone */
 	zone_num = strat_get_new_zone(MAIN_ROBOT);
 
+
+	// Free
+	if(zone_num == ZONE_MY_HOME_POPCORNS || zone_num == ZONE_MY_PLATFORM || zone_num == ZONE_MY_CINEMA_DOWN_MAIN)
+	{
+		if((strat_smart_get_msg() == MSG_UPPER_SIDE_IS_BLOCKED) || (strat_smart_get_msg() == MSG_UPPER_SIDE_FREE))
+		{
+			DEBUG(E_USER_STRAT,"R1, sending message MSG_UPPER_SIDE_FREE.");
+			strat_smart_set_msg(MSG_UPPER_SIDE_FREE);
+
+			// Wait until free
+			//if(strat_wait_sync_main_robot(MSG_UPPER_SIDE_IS_FREE))
+			//	return END_TRAJ;
+		}
+	}
+
+
 	/* zone is on upper side */
 	if(zone_num == ZONE_MY_STAND_GROUP_3 || zone_num == ZONE_MY_STAND_GROUP_4 || zone_num == ZONE_MY_POPCORNMAC)
 	{
+
+
 
 
 		if (strat_infos.conf.flags & CONF_FLAG_DO_CUP_EXCHANGE)
@@ -912,19 +945,6 @@ uint8_t strat_smart_main_robot(void)
 	DEBUG(E_USER_STRAT,"R1,  message: %d", strat_smart_get_msg());
     strat_debug_wait_key_pressed (MAIN_ROBOT);
 
-	// Free
-	if(zone_num == ZONE_MY_STAND_GROUP_4)
-	{
-		if((strat_smart_get_msg() == MSG_UPPER_SIDE_IS_BLOCKED) || (strat_smart_get_msg() == MSG_UPPER_SIDE_FREE))
-		{
-			DEBUG(E_USER_STRAT,"R1, sending message MSG_UPPER_SIDE_FREE.");
-			strat_smart_set_msg(MSG_UPPER_SIDE_FREE);
-
-			// Wait until free
-			//if(strat_wait_sync_main_robot(MSG_UPPER_SIDE_IS_FREE))
-			//	return END_TRAJ;
-		}
-	}
 
 	/* work on zone */
 	DEBUG(E_USER_STRAT,"R1, strat #%d: work on zone %s (%d, %d)",

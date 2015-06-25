@@ -353,7 +353,8 @@ struct strat_infos strat_infos = {
 		910, 1500, 1020, STAIRS_EDGE_Y,
 //      CARPET_LEFT_INFRONT_X, MY_CUP_1_Y, //STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
 //		760, 1060, 1020, 1320,
-		400 + 2*OBS_CLERANCE + ROBOT_SEC_OBS_CLERANCE, MY_CUP_1_Y,
+//		400 + 2*OBS_CLERANCE + ROBOT_SEC_OBS_CLERANCE, MY_CUP_1_Y,
+		1000, 1200,
 //		MY_CUP_1_X, MY_CUP_1_Y,
 		0, 0,
 		SEC_ROBOT
@@ -392,6 +393,19 @@ struct strat_infos strat_infos = {
 		//this value is changed to MAIN_ROBOT after sec robot is finished
 		SEC_ROBOT
 	},
+
+  	.zones[ZONE_CUP_MIDDLE] =
+	{
+		ZONE_TYPE_STRAT,
+		WORK_NULL, WORK_NULL,
+		910, 1700, 1200, STAIRS_EDGE_Y,
+		AREA_X/2-ROBOT_SEC_WIDTH/2-20, STAIRS_EDGE_Y-ROBOT_SEC_OBS_CLERANCE-10,
+		0, 0,
+//		0, (9000*1000L),
+		//this value is changed to MAIN_ROBOT after sec robot is finished
+		SEC_ROBOT
+	},
+
 };
 
 struct strat_smart strat_smart[ROBOT_MAX];
@@ -454,6 +468,7 @@ char zone_name[ZONES_MAX][14]= {
     [ZONE_BLOCK_UPPER_SIDE]="BLOCK\0",
     [ZONE_MY_PLATFORM]="PLAT\0",
     [ZONE_CUP_NEAR_STAIRS]="CUP STAIRS\0",
+    [ZONE_CUP_MIDDLE]="CUP MID\0",
 };
 
 /* return string with the zone name */

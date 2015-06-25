@@ -93,10 +93,12 @@
 /* opponent sensors */
 #define S_OPPONENT_FRONT_R		S_GP0_0
 #define S_OPPONENT_REAR_R		S_GP0_1
+#define S_OPPONENT_REAR_MIDDLE	S_GP0_2
 
 #define S_OPPONENT_FRONT_L		S_GP0_3
 #define S_OPPONENT_REAR_L		S_GP0_4
 
+#define S_OPPONENT_FRONT_MIDDLE	S_GP0_6
 #define S_CUP_REAR				S_GP0_7
 
 

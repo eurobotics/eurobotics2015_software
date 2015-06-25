@@ -291,6 +291,8 @@ try_again:
 
 	/* prepare for harvesting */
 	if (side == I2C_SIDE_ALL) {
+
+retry_ready_both:
         /* wait ready and harvest */
 		i2c_slavedspic_ss_wait_status_or_timeout (I2C_SIDE_LEFT, STATUS_READY, STANDS_READY_TIMEOUT);
 		i2c_slavedspic_mode_ss_harvest_ready(I2C_SIDE_LEFT, blade_angle);
@@ -300,15 +302,25 @@ try_again:
 
 		/* wait blades ready */
 		i2c_slavedspic_ss_wait_status_or_timeout (I2C_SIDE_RIGHT, STATUS_READY, STANDS_READY_TIMEOUT);
+		if (i2c_slavedspic_ss_test_status(I2C_SIDE_RIGHT, STATUS_ERROR|STATUS_BLOCKED))
+			goto retry_ready_both;
+
+		i2c_slavedspic_ss_wait_status_or_timeout (I2C_SIDE_RIGHT, STATUS_READY, STANDS_READY_TIMEOUT);
+		if (i2c_slavedspic_ss_test_status(I2C_SIDE_RIGHT, STATUS_ERROR|STATUS_BLOCKED))
+			goto retry_ready_both;
 
 	}
 	else {
+retry_ready_one:
         /* wait ready */
 		i2c_slavedspic_ss_wait_status_or_timeout (side, STATUS_READY, STANDS_READY_TIMEOUT);
 		i2c_slavedspic_mode_ss_harvest_ready(side, blade_angle);
 		
 		/* wait blades ready */
 		i2c_slavedspic_ss_wait_status_or_timeout (side, STATUS_READY, STANDS_READY_TIMEOUT);
+
+		if (i2c_slavedspic_ss_test_status(side, STATUS_ERROR|STATUS_BLOCKED))
+			goto retry_ready_one;
 	}
 
 	/* wait blades ready */
@@ -417,8 +429,11 @@ harvest_stand:
 
 		err = strat_calib(400, TRAJ_FLAGS_SMALL_DIST);
 
-#define CALIB_A_OK 6
-		if ((ABS(position_get_a_deg_s16 (&mainboard.pos))-COLOR_A_ABS(180)) < CALIB_A_OK)
+		DEBUG (E_USER_STRAT, "CALIB: a = %d, diff = %d", position_get_a_deg_s16 (&mainboard.pos),
+				ABS(position_get_a_deg_s16 (&mainboard.pos)-COLOR_A_ABS(180)));
+
+#define CALIB_A_OK 10
+		if ((ABS(position_get_a_deg_s16 (&mainboard.pos)-COLOR_A_ABS(180))) < CALIB_A_OK)
 		{
 			strat_reset_pos(COLOR_X(ROBOT_CENTER_TO_FRONT),
 							DO_NOT_SET_POS,
@@ -584,7 +599,7 @@ uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side, ui
 	if (flags & STANDS_RELEASE_DO_TOWER)
 	{
 		/* avoid possible popcorn in mouth */
-		if (strat_smart[MAIN_ROBOT].current_zone != ZONE_MY_PLATFORM) 
+		if (strat_smart[MAIN_ROBOT].current_zone == ZONE_MY_HOME_SPOTLIGHT) 
 		{		
 			strat_set_speed (SPEED_DIST_RELEASE_STANDS, SPEED_ANGLE_VERY_SLOW);
 			trajectory_d_rel(&mainboard.traj, -(2.5*STANDS_RADIOUS));
@@ -713,12 +728,21 @@ uint8_t strat_escape_form_upper_zone (uint8_t flags)
 
    	uint8_t err = 0;
 	uint16_t old_spdd, old_spda;
+	int16_t x_init, y_init;
+
+	/* save init position */
+	x_init = position_get_x_s16(&mainboard.pos);
+	y_init = position_get_y_s16(&mainboard.pos);
+
+    strat_opp_sensor_enable();
+	//strat_opp_sensor_middle_enable();
 
 	/* set local speed, and disable speed limit */
 	strat_get_speed (&old_spdd, &old_spda);
     strat_limit_speed_disable ();
 	strat_set_speed (SPEED_DIST_VERY_SLOW, SPEED_ANGLE_VERY_SLOW);
 
+try:
 	trajectory_a_abs(&mainboard.traj, -90);
 	err = wait_traj_end(TRAJ_FLAGS_SMALL_DIST);
 	if (!TRAJ_SUCCESS(err))
@@ -731,9 +755,12 @@ uint8_t strat_escape_form_upper_zone (uint8_t flags)
 	strat_set_speed (SPEED_DIST_SLOW, SPEED_ANGLE_SLOW);
 	trajectory_goto_xy_abs(&mainboard.traj, position_get_x_s16(&mainboard.pos), 1000);
 	err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-	if (!TRAJ_SUCCESS(err))
-	   ERROUT(err);
-	
+	if (!TRAJ_SUCCESS(err)) 
+	{
+		trajectory_goto_xy_abs(&mainboard.traj, x_init, y_init);
+		err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
+		goto try;
+	}
 
 
 #if 0
@@ -769,6 +796,10 @@ uint8_t strat_escape_form_upper_zone (uint8_t flags)
 #endif
 
 end:
+
+    strat_opp_sensor_disable();
+	strat_opp_sensor_middle_disable();
+
 	/* end stuff */
 	strat_set_speed(old_spdd, old_spda);	
    	strat_limit_speed_enable();

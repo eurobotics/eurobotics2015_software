@@ -247,8 +247,8 @@
 #define ZONE_BLOCK_UPPER_SIDE    		21
 #define ZONE_FREE_UPPER_SIDE    		22
 #define ZONE_CUP_NEAR_STAIRS			23
-
-#define ZONES_MAX		    			24
+#define ZONE_CUP_MIDDLE				24
+#define ZONES_MAX		    			25
 
 /*
  * Strat diagram, valid for YELLOW.
