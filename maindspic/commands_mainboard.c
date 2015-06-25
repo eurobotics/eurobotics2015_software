@@ -508,7 +508,7 @@ static void cmd_start_parsed(void *parsed_result, void *data)
 		strat_infos.match_strategy=STR_QUALIFICATION;
 		strat_infos.conf.flags = 0;	
 		strat_infos.conf.flags |= CONF_FLAG_DO_TOWER;	
-		strat_infos.conf.flags |= CONF_FLAG_DO_ESCAPE_UPPER_ZONE;	
+		//strat_infos.conf.flags |= CONF_FLAG_DO_ESCAPE_UPPER_ZONE;	
 		
     }
     else if (!strcmp_P(res->strategy, PSTR("finals")))
@@ -516,7 +516,7 @@ static void cmd_start_parsed(void *parsed_result, void *data)
 		strat_infos.match_strategy=STR_QUALIFICATION;
 		strat_infos.conf.flags = 0;
 		strat_infos.conf.flags |= CONF_FLAG_DO_TOWER;	
-		strat_infos.conf.flags |= CONF_FLAG_DO_ESCAPE_UPPER_ZONE;	
+		//strat_infos.conf.flags |= CONF_FLAG_DO_ESCAPE_UPPER_ZONE;	
 		strat_infos.conf.flags |= CONF_FLAG_DO_STAND_FAST_GROUP_1;
     }
     else if (!strcmp_P(res->strategy, PSTR("base")))

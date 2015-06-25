@@ -270,7 +270,7 @@ void strat_change_sequence_qualification(uint8_t robot){
 		switch(strat_smart[robot].current_strategy){
 				case 0:
 					strat_clean_priorities(SEC_ROBOT);
-					strat_update_priorities(6,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1, ZONE_BLOCK_UPPER_SIDE,
+					strat_update_priorities(7,ZONE_MY_HOME_OUTSIDE, ZONE_POPCORNCUP_1,ZONE_CUP_MIDDLE, ZONE_BLOCK_UPPER_SIDE,
 											  ZONE_MY_STAIRWAY, ZONE_MY_CINEMA_UP, ZONE_MY_CLAP_3);
 					strat_smart[robot].current_strategy ++;
 					break;
