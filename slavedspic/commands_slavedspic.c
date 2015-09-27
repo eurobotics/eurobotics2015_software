@@ -784,6 +784,7 @@ static void cmd_stands_system_parsed(__attribute__((unused)) void *parsed_result
 {
 	struct cmd_stands_system_result *res = (struct cmd_stands_system_result *) parsed_result;
 	struct i2c_cmd_slavedspic_set_mode command;
+	uint8_t i;
 
 	if (!strcmp_P(res->arg1, PSTR("left")))
 		command.stands_system.side = I2C_SIDE_LEFT;
@@ -803,7 +804,103 @@ static void cmd_stands_system_parsed(__attribute__((unused)) void *parsed_result
 	else if (!strcmp_P(res->arg2, PSTR("release_spotlight")))
 		command.stands_system.mode = I2C_SLAVEDSPIC_MODE_SS_RELEASE_SPOTLIGHT;
 
-	command.stands_system.blade_angle = res->arg3;
+	else if (!strcmp_P(res->arg2, PSTR("demo")))
+	{
+		/* init opposite side, where the tower will be build */
+		printf ("\n\rInicializando sistemas y actuadores...\r\n");
+		command.stands_system.side = (command.stands_system.side==I2C_SIDE_LEFT?
+									 I2C_SIDE_RIGHT : I2C_SIDE_LEFT);
+		command.mode = I2C_SLAVEDSPIC_MODE_INIT_LEFT;
+
+		/* request init mode */
+		state_set_mode(&command);
+		
+		/* run state machine */
+		do {
+			state_machines();
+		} while (slavedspic.status != I2C_SLAVEDSPIC_STATUS_READY);
+
+		printf ("DONE\n\r");
+
+		/* wait key press */
+		printf ("Pulsar una tecla para continuar\n\r");
+		while(!cmdline_keypressed());
+
+
+		/* stand harvesting */
+		printf ("Recolectando stands...\n\r");
+		do {
+			for (i=0; i<I2C_SIDE_ALL; i++)
+			{
+				/* set side */
+				command.stands_system.side = i;
+		
+				/* continue if not ready */
+				if (slavedspic.ss[i].status != STATUS_READY)
+					continue;
+	 
+				/* set new mode depending on current one */
+				if (slavedspic.ss[i].mode == I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND_DO)
+					command.stands_system.mode = I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND_READY;
+				
+				else if (slavedspic.ss[i].mode == I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND_READY) 
+				{					
+					/* continue if no sensor detected */			
+					if (!sensor_get (slavedspic.ss[i].stand_sensor))
+						continue;					
+					
+					/* set new mode */
+					command.stands_system.mode = I2C_SLAVEDSPIC_MODE_SS_HARVEST_STAND_DO;
+				}
+
+				/* set blade angle, only for stand ready mode */
+				command.stands_system.blade_angle = 0;
+
+				/* request new mode */
+				state_set_mode(&command);
+			}
+
+			/* run state machines */
+			state_machines();
+
+		} while (slavedspic.ss[I2C_SIDE_LEFT].stored_stands < 4 &&
+				 slavedspic.ss[I2C_SIDE_RIGHT].stored_stands < 4);
+
+		printf ("DONE\n\r");
+
+
+		/* wait key press */
+		printf ("Pulsar una tecla para continuar\n\r");
+		while(!cmdline_keypressed());
+
+
+		/* tower building */
+		printf ("Construcción de una torre\n\r");
+		if (!strcmp_P(res->arg1, PSTR("left")))
+			command.stands_system.side = I2C_SIDE_LEFT;
+		else if (!strcmp_P(res->arg1, PSTR("right")))
+			command.stands_system.side = I2C_SIDE_RIGHT;
+
+		command.stands_system.blade_angle = 0;
+		command.stands_system.mode = I2C_SLAVEDSPIC_MODE_SS_BUILD_SPOTLIGHT;
+
+		/* request new mode */
+		state_set_mode(&command);
+		
+		/* run state machines */
+		do {
+			state_machines();
+		} while (slavedspic.status != I2C_SLAVEDSPIC_STATUS_READY);
+
+		printf ("DONE\n\r");
+
+		/* at this point we should have a 8 tower level built */
+		return;
+
+	}
+
+//	command.stands_system.blade_angle = res->arg3;
+	command.stands_system.blade_angle = 0;
 
 	command.mode = I2C_SLAVEDSPIC_MODE_STANDS_SYSTEM;
 	state_set_mode(&command);
@@ -813,7 +910,7 @@ prog_char str_stands_system_arg0[] = "ss";
 parse_pgm_token_string_t cmd_stands_system_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_stands_system_result, arg0, str_stands_system_arg0);
 prog_char str_stands_system_arg1[] = "left#right";
 parse_pgm_token_string_t cmd_stands_system_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_stands_system_result, arg1, str_stands_system_arg1);
-prog_char str_stands_system_arg2[] = "idle#hide_tower#harvest_stand_do#harvest_stand_ready#build_spotlight#release_spotlight";
+prog_char str_stands_system_arg2[] = "idle#hide_tower#harvest_stand_do#harvest_stand_ready#build_spotlight#release_spotlight#demo";
 parse_pgm_token_string_t cmd_stands_system_arg2 = TOKEN_STRING_INITIALIZER(struct cmd_stands_system_result, arg2, str_stands_system_arg2);
 parse_pgm_token_num_t cmd_stands_system_arg3 = TOKEN_NUM_INITIALIZER(struct cmd_stands_system_result, arg3, UINT8);
 
@@ -826,7 +923,7 @@ parse_pgm_inst_t cmd_stands_system = {
 		(prog_void *)&cmd_stands_system_arg0, 
 		(prog_void *)&cmd_stands_system_arg1,
 		(prog_void *)&cmd_stands_system_arg2,
-		(prog_void *)&cmd_stands_system_arg3,
+//		(prog_void *)&cmd_stands_system_arg3,
 		NULL,
 	},
 };
