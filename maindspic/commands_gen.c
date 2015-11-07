@@ -131,6 +131,9 @@ parse_pgm_inst_t cmd_reset = {
 //	},
 //};
 
+#endif /* COMPILE_COMMANDS_GEN_OPTIONALS --------------------------------*/
+
+
 /**********************************************************/
 /* Encoders tests */
 
@@ -183,6 +186,8 @@ parse_pgm_inst_t cmd_encoders = {
 		NULL,
 	},
 };
+
+#ifdef COMPILE_COMMANDS_GEN_OPTIONALS /*--------------------------------*/
 
 /**********************************************************/
 /* Scheduler show */
@@ -572,7 +577,6 @@ parse_pgm_inst_t cmd_wt11 = {
 		NULL,
 	},
 };
-#endif /* COMPILE_COMMANDS_GEN_OPTIONALS --------------------------------*/
 
 
 /**********************************************************/
@@ -784,4 +788,5 @@ parse_pgm_inst_t cmd_log_type = {
 	},
 };
 
+#endif /* COMPILE_COMMANDS_GEN_OPTIONALS --------------------------------*/
 

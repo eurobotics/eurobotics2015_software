@@ -314,12 +314,13 @@ int8_t stands_exchanger_check_position_reached(void)
 {
 
 	/* test consign end */
-	if(cs_get_consign(&slavedspic.stands_exchanger.cs) == cs_get_filtered_consign(&slavedspic.stands_exchanger.cs) && 
-	   ABS(cs_get_error(&slavedspic.stands_exchanger.cs)) < 100) {
+	if(cs_get_consign(&slavedspic.stands_exchanger.cs) == cs_get_filtered_consign(&slavedspic.stands_exchanger.cs) /*&& 
+	   ABS(cs_get_error(&slavedspic.stands_exchanger.cs)) < 100*/) {
 		return END_TRAJ;
 	}
 
 	/* test blocking */
+#if 0
 	if(bd_get(&slavedspic.stands_exchanger.bd)) {
 		stands_exchanger_hard_stop();
 		pid_reset(&slavedspic.stands_exchanger.pid);
@@ -327,7 +328,7 @@ int8_t stands_exchanger_check_position_reached(void)
 		slavedspic.stands_exchanger.blocking = 1;
 		return END_BLOCKING;
 	}
-
+#endif
 	return 0;
 }
 

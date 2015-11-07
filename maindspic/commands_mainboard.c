@@ -777,6 +777,7 @@ parse_pgm_inst_t cmd_beacon = {
     },
 };
 
+#ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
 
 /**********************************************************/
 /* robot 2nd */
@@ -1169,6 +1170,9 @@ parse_pgm_inst_t cmd_robot_2nd_bt_task2 = {
     },
 };
 
+#endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
+
+
 /**********************************************************/
 /* slavedspic */
 
@@ -1283,7 +1287,6 @@ parse_pgm_inst_t cmd_slavedspic = {
 };
 
 
-#ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
 /**********************************************************/
 /* Robot sensors test */
 
@@ -1378,6 +1381,7 @@ parse_pgm_inst_t cmd_sensor_robot = {
 };
 
 
+#ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
 
 /**********************************************************/
 /* Interact */
@@ -1808,7 +1812,7 @@ parse_pgm_inst_t cmd_sleep = {
 
 #endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
 
-#ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
+//#ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
 
 /**********************************************************/
 /* popcorn_system */
@@ -1893,6 +1897,9 @@ static void cmd_stands_system_parsed(__attribute__((unused)) void *parsed_result
 	uint8_t mode = I2C_SLAVEDSPIC_MODE_SS_IDLE;
 	uint8_t side = I2C_SIDE_LEFT;
 
+	/* XXX */
+	res->arg3 = 0;
+
 	if (!strcmp_P(res->arg1, PSTR("left")))
 		side = I2C_SIDE_LEFT;
 	else if (!strcmp_P(res->arg1, PSTR("right")))
@@ -1953,10 +1960,10 @@ parse_pgm_inst_t cmd_stands_system = {
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_stands_system_arg0,
 		(prog_void *)&cmd_stands_system_arg2,
-		(prog_void *)&cmd_stands_system_arg3,
+		//(prog_void *)&cmd_stands_system_arg3,
 		(prog_void *)&cmd_stands_system_arg1,
 		NULL,
 	},
 };
-#endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
+//#endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
 
