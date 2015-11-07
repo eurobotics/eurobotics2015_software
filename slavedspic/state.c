@@ -2334,6 +2334,10 @@ void state_init(uint8_t side)
 	slavedspic.stands_exchanger.on = 1;
 	stands_exchanger_calibrate();
 
+	/* XXX HACK */
+	//slavedspic.flags &= ~DO_BD;
+
+
 	if(side == I2C_SIDE_LEFT)
 		stands_exchanger_set_position(STANDS_EXCHANGER_POSITION_MIN_mm);
 	else
