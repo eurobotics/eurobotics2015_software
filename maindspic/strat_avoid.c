@@ -1281,7 +1281,9 @@ retry:
 	pol_stairs= oa_new_poly(4);
 	set_poly_abs(pol_stairs,O_STAIRS_WIDTH +obs_clerance,O_STAIRS_HEIGHT + obs_clerance/2,STAIRS_X,STAIRS_Y-obs_clerance/2);
 
+#ifndef HOST_VERSION_OA_TEST
 	if(mainboard.our_color== I2C_COLOR_YELLOW){
+#endif
 		pol_home_yellow= oa_new_poly(4);
 		set_poly_abs(pol_home_yellow,O_HOME_WIDTH+ obs_clerance/2 ,O_HOME_HEIGHT + obs_clerance,HOME_YELLOW_X+obs_clerance/2,HOME_YELLOW_Y);
 
@@ -1292,6 +1294,8 @@ retry:
 #else
  		set_home_green_poly_abs(pol_home_green,O_HOME_WIDTH+ OBS_CLERANCE/2,O_HOME_HEIGHT + OBS_CLERANCE,HOME_GREEN_X-OBS_CLERANCE/2,HOME_GREEN_Y);
 #endif
+
+#ifndef HOST_VERSION_OA_TEST
  	}else{
  		pol_home_yellow= oa_new_poly(5);
 #ifdef IM_SECONDARY_ROBOT
@@ -1304,6 +1308,7 @@ retry:
 		pol_home_green= oa_new_poly(4);
 		set_poly_abs(pol_home_green,O_HOME_WIDTH+ obs_clerance/2,O_HOME_HEIGHT + obs_clerance,HOME_GREEN_X-obs_clerance/2,HOME_GREEN_Y);
 	}
+#endif
 
 
 /* if we are not in the limited area, try to go in it. */

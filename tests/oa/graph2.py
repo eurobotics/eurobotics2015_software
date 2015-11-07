@@ -184,6 +184,7 @@ def graph(filename, stx, sty, sta, enx, eny, op1x, op1y, op2x, op2y, robot_2nd_x
 # args are: startx, starty, starta, endx, endy, opp1x, opp1y, opp2x, opp2y, robot_2nd_x, robot_2nd_y
 #graph("single.png", 250, 250, 0, 2000, 1600, -1500, 0, -1500, 0)
 
+"""
 def random_target_xy():
    x = random.choice([1117, 1883, 2360])
    if x >= 1117 or x < 2360:
@@ -214,3 +215,11 @@ graph("h_green1.png",2500, 500, 0, 2500, 1500, -1500, 0, -1500, 0, -1500, 0)
 
 print("h_green.png",1500, 500, 0, 2500, 1500, -1500, 0, -1500, 0, -1500, 0)
 graph("h_green.png",1500, 500, 0, 2500, 1500, -1500, 0, -1500, 0, -1500, 0)
+"""
+
+# go in playground area
+# args are:        startx, starty, starta, endx, endy, opp1x, opp1y, opp2x, opp2y, robot_2nd_x, robot_2nd_y
+print("example.png")
+graph("example.png", 400, 1600, 0, 2500, 300 ,1500, 1000, 1500, 1000, 1500, 1500)
+
+
