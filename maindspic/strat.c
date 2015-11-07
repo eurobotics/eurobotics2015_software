@@ -85,6 +85,7 @@
 
 /* XXX obstacle clerance */
 #define OBS_CLERANCE            (235.+10.)
+#define OBS_CLERANCE_SIDE       (117.+20.)
 
 #else
 
@@ -111,13 +112,14 @@
 #define LIMIT_BBOX_X_UP			3000 - OBS_CLERANCE
 #define LIMIT_BBOX_X_DOWN		OBS_CLERANCE
 
+
 struct strat_infos strat_infos = {
     /* conf */
     .conf = {
         .flags = 0,
     },
 
-
+#ifndef HOST_VERSION_OA_TEST
 	/* stands */
     .zones[ZONE_MY_STAND_GROUP_1] =
 	{
@@ -405,10 +407,12 @@ struct strat_infos strat_infos = {
 		//this value is changed to MAIN_ROBOT after sec robot is finished
 		SEC_ROBOT
 	},
+#endif /* !HOST_VERSION_OA_TEST */
 
 };
 
 struct strat_smart strat_smart[ROBOT_MAX];
+
 
 
 /*************************************************************/
