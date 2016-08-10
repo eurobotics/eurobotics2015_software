@@ -93,15 +93,15 @@
 #define ACC_DIST  75
 #define ACC_ANGLE 75
 #else
-#define ACC_DIST  40
+#define ACC_DIST  70 //40
 #define ACC_ANGLE 60
 #endif
 
 /* default speeds */
 #if 1
-#define SPEED_DIST_FAST 		3000
+#define SPEED_DIST_FAST 		5000 //3000
 #define SPEED_ANGLE_FAST 		3000
-#define SPEED_DIST_VERY_FAST 	3000
+#define SPEED_DIST_VERY_FAST 	5000 //3000
 #define SPEED_ANGLE_VERY_FAST 	3000
 
 #else
