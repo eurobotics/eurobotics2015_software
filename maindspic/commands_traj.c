@@ -833,8 +833,8 @@ static void cmd_goto_parsed(void * parsed_result, void * data)
         t2 = time_get_us2();
         if (t2 - t1 > 20000)
         {
-            dump_cs_debug("angle", &mainboard.angle.cs);
-            dump_cs_debug("distance", &mainboard.distance.cs);
+            //dump_cs_debug("angle", &mainboard.angle.cs);
+            //dump_cs_debug("distance", &mainboard.distance.cs);
             t1 = t2;
         }
     }

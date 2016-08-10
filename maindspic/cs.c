@@ -69,6 +69,7 @@ static void do_cs(void *dummy)
 {
 	static uint16_t cpt = 0;
 	static int32_t old_a = 0, old_d = 0;
+	static microseconds t1 = 0;
 
 #ifdef HOST_VERSION
 	robotsim_update();
@@ -107,6 +108,25 @@ static void do_cs(void *dummy)
 
 		if (mainboard.distance.on)
 			cs_manage(&mainboard.distance.cs);
+
+		if (cs_get_consign(&mainboard.distance.cs) != cs_get_filtered_consign(&mainboard.distance.cs)) 
+		{
+			t1 = time_get_us2();
+        	dump_cs_debug("distance", &mainboard.distance.cs);
+		}
+		else if (t1 != 0 && ((uint32_t)(time_get_us2() - t1)) < 1000000L)
+		{
+        	dump_cs_debug("distance", &mainboard.distance.cs);
+		}
+		else
+			t1 = 0;
+/*
+		if (cs_get_consign(&mainboard.angle.cs) != cs_get_filtered_consign(&mainboard.angle.cs)
+			|| abs(cs_get_error(&mainboard.angle.cs)) > 150 ) 
+		{
+			dump_cs_debug("angle", &mainboard.angle.cs);
+		}
+*/
 	}
 
 	/* position calculus */
