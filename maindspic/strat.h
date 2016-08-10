@@ -90,28 +90,24 @@
 /* default acc */
 #undef VERY_GOOD_CONDITIONS_OR_SPECIAL_CASES
 #ifdef VERY_GOOD_CONDITIONS_OR_SPECIAL_CASES
-#define ACC_DIST  75
-#define ACC_ANGLE 75
+#define ACC_DIST  70
+#define ACC_ANGLE 60
 #else
-#define ACC_DIST  70 //40
+#define ACC_DIST  40
 #define ACC_ANGLE 60
 #endif
 
 /* default speeds */
-#if 1
-#define SPEED_DIST_FAST 		5000 //3000
-#define SPEED_ANGLE_FAST 		3000
-#define SPEED_DIST_VERY_FAST 	5000 //3000
-#define SPEED_ANGLE_VERY_FAST 	3000
-
-#else
-
-//#define SPEED_DIST_VERY_FAST 	4500 /* XXX very clean wheels */
-//#define SPEED_ANGLE_VERY_FAST 4500
-#define SPEED_DIST_VERY_FAST 	4000
-#define SPEED_ANGLE_VERY_FAST 	4000
+#ifdef VERY_GOOD_CONDITIONS_OR_SPECIAL_CASES
+#define SPEED_DIST_VERY_FAST 	5000
 #define SPEED_DIST_FAST 		4000
-#define SPEED_ANGLE_FAST 		4000
+#define SPEED_ANGLE_VERY_FAST 	3000
+#define SPEED_ANGLE_FAST 		3000
+#else
+#define SPEED_DIST_VERY_FAST 	4000
+#define SPEED_DIST_FAST 		3000
+#define SPEED_ANGLE_VERY_FAST 	3000
+#define SPEED_ANGLE_FAST 		3000
 #endif
 
 //Do not change
