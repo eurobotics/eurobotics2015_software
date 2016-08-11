@@ -1,13 +1,11 @@
 #! /usr/bin/env python
 
-import os,sys,termios,atexit
+import os,sys, re, math, termios,atexit
 #import serial
 from select import select
 import cmd
-#import pylab
 from  matplotlib import pylab
 from math import *
-from subprocess import call
 
 import popen2
 from subprocess import Popen, PIPE
@@ -15,12 +13,15 @@ from fcntl import fcntl, F_GETFL, F_SETFL
 from os import O_NONBLOCK, read
 
 import struct
-import numpy
+
 import shlex
 import time
 import math
 import warnings
 warnings.filterwarnings("ignore","tempnam",RuntimeWarning, __name__)
+
+import numpy as np
+import matplotlib.pyplot as plt
 
 import logging
 log = logging.getLogger("EuroboticsShell")
@@ -203,15 +204,60 @@ class Interp(cmd.Cmd):
         self.p.stdin.write("goto d_rel 1000\n")
         time.sleep(0.2)
 
+        TS = 5
+        i = 0
+        t = np.zeros(0)
+        cons = f_cons = err = feedback = out = np.zeros(0)
+        v_cons = v_feedback = np.zeros(1) 
+        a_cons = a_feedback = a_cons = a_feedback = np.zeros(2)
+
         while True:
           line = self.p.stdout.readline()
-          if line != '':
-            #the real code does filtering here
+
+          m = re.match("returned", line)
+          if m:
+            # end of data
             print line.rstrip()
-          else:
+            plt.figure(1)
+            plt.plot(t,v_cons, t, v_feedback)
+            
+            plt.figure(2)
+            plt.plot(t,f_cons, t, feedback)
+            
+            plt.show()
             break
 
-        print "done"
+          m = re.match("(-?\+?\d+).(-?\+?\d+): \((-?\+?\d+),(-?\+?\d+),(-?\+?\d+)\) (\w+) cons= (-?\+?\d+) fcons= (-?\+?\d+) err= (-?\+?\d+) in= (-?\+?\d+) out= (-?\+?\d+)", line)
+          if m:
+            #print m.groups()
+            t = np.append(t, i*TS)
+            cons = np.append(cons,     int(m.groups()[6]))
+            f_cons = np.append(f_cons,   int(m.groups()[7]))
+            err = np.append(err,      int(m.groups()[8]))
+            feedback = np.append(feedback, int(m.groups()[9]))
+            out = np.append(out,      int(m.groups()[10]))
+            
+            if i>0:
+                v_cons = np.append(v_cons, f_cons[i] - f_cons[i-1])
+                v_feedback = np.append(v_feedback, feedback[i] - feedback[i-1])
+
+            if i>1:
+                a_cons = np.append(a_cons, v_cons[i] - v_cons[i-1])
+                a_feedback = np.append(a_feedback, v_feedback[i] - v_feedback[i-1])
+
+            i += 1
+
+          else:
+            # print unknow strigs
+            print line.rstrip()
+
+#    def do_match(self, args):
+#        m = re.match("(\w+).(\w+): \((\w+),(\w+),(\w+)\) (\w+) cons= (-?\+?\d+) fcons= (-?\+?\d+) err= (-?\+?\d+) in= (-?\+?\d+) out= (-?\+?\d+)", "7.300: (1199,479,0) distance cons= +835261 fcons= +835261 err= -00054 in= +835315 out= +00060")
+#        if m:
+#            print m.groups()
+#        else:
+#            print "not match"
+
 
     def do_position_show(self, args):
         time.sleep(0.1)
