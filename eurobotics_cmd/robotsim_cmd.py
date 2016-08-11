@@ -59,9 +59,9 @@ class Interp(cmd.Cmd):
     def __init__(self):
         cmd.Cmd.__init__(self)
 
-        o, i = popen2.popen2("python ../maindspic/display.py")
-        o.close()
-        i.close()
+#        o, i = popen2.popen2("python ../maindspic/display.py")
+#        o.close()
+#        i.close()
 
         o, i = popen2.popen2("../secondary_robot/main H=1")
         o.close()
@@ -71,8 +71,8 @@ class Interp(cmd.Cmd):
                   stdin = PIPE, stdout = PIPE, stderr = PIPE, shell = False)
 
         # set the O_NONBLOCK flag of p.stdout file descriptor:
-        #flags = fcntl(self.p.stdout, F_GETFL) # get current p.stdout flags
-        #fcntl(self.p.stdout, F_SETFL, flags | O_NONBLOCK)
+        flags = fcntl(self.p.stdout, F_GETFL)
+        fcntl(self.p.stdout, F_SETFL, flags | O_NONBLOCK)
 
         self.escape  = "\x01" # C-a
         self.quitraw = "\x02" # C-b
@@ -121,67 +121,69 @@ class Interp(cmd.Cmd):
 #            log.error("No log to stop")
 
 
-#    def do_raw(self, args):
-#        "Switch to RAW mode"
-#        stdin = os.open("/dev/stdin",os.O_RDONLY)
-#        stdout = os.open("/dev/stdout",os.O_WRONLY)
+    def do_raw(self, args):
+        "Switch to RAW mode"
+        stdin = os.open("/dev/stdin",os.O_RDONLY)
+        stdout = os.open("/dev/stdout",os.O_WRONLY)
 
-#        stdin_termios = termios.tcgetattr(stdin)
-#        raw_termios = stdin_termios[:]
+        stdin_termios = termios.tcgetattr(stdin)
+        raw_termios = stdin_termios[:]
 
-#        try:
-#            log.info("Switching to RAW mode")
+        try:
+            #log.info("Switching to RAW mode")
 
-#            # iflag
-#            raw_termios[0] &= ~(termios.IGNBRK | termios.BRKINT |
-#                                termios.PARMRK | termios.ISTRIP |
-#                                termios.INLCR | termios.IGNCR |
-#                                termios.ICRNL | termios.IXON)
-#            # oflag
-#            raw_termios[1] &= ~termios.OPOST;
-#            # cflag
-#            raw_termios[2] &= ~(termios.CSIZE | termios.PARENB);
-#            raw_termios[2] |= termios.CS8;
-#            # lflag
-#            raw_termios[3] &= ~(termios.ECHO | termios.ECHONL |
-#                                termios.ICANON | termios.ISIG |
-#                                termios.IEXTEN);
+            # iflag
+            raw_termios[0] &= ~(termios.IGNBRK | termios.BRKINT |
+                                termios.PARMRK | termios.ISTRIP |
+                                termios.INLCR | termios.IGNCR |
+                                termios.ICRNL | termios.IXON)
+            # oflag
+            raw_termios[1] &= ~termios.OPOST;
+            # cflag
+            raw_termios[2] &= ~(termios.CSIZE | termios.PARENB);
+            raw_termios[2] |= termios.CS8;
+            # lflag
+            raw_termios[3] &= ~(termios.ECHO | termios.ECHONL |
+                                termios.ICANON | termios.ISIG |
+                                termios.IEXTEN);
 
-#            termios.tcsetattr(stdin, termios.TCSADRAIN, raw_termios)
+            termios.tcsetattr(stdin, termios.TCSADRAIN, raw_termios)
 
-#            mode = "normal"
-#            while True:
-#                ins,outs,errs=select([stdin,self.robot_out],[],[])
-#                for x in ins:
-#                    if x == stdin:
-#                        c = os.read(stdin,1)
-#                        if mode  == "escape":
-#                            mode =="normal"
-#                            if c == self.escape:
-#                                self.fout.write(self.escape)
-#                            elif c == self.quitraw:
-#                                return
-#                            else:
-#                                self.fout.write(self.escape)
-#                                self.fout.write(c)
-#                        else:
-#                            if c == self.escape:
-#                                mode = "escape"
-#                            else:
-#                                self.fout.write(c)
-#                    elif x == self.robot_out:
-#                        os.write(stdout,self.fin.readline())
-#        finally:
-#            termios.tcsetattr(stdin, termios.TCSADRAIN, stdin_termios)
-#            log.info("Back to normal mode")
+            mode = "normal"
+            while True:
+                ins,outs,errs=select([stdin,self.p.stdout],[],[])
+                for x in ins:
+                    if x == stdin:
+                        c = os.read(stdin,1)
+                        if mode  == "escape":
+                            mode =="normal"
+                            if c == self.escape:
+                                self.p.stdin.write(self.escape)
+                            elif c == self.quitraw:
+                                return
+                            else:
+                                self.p.stdin.write(self.escape)
+                                self.p.stdin.write(c)
+                        else:
+                            if c == self.escape:
+                                mode = "escape"
+                            else:
+                                self.p.stdin.write(c)
+                    elif x == self.p.stdout:
+						c = self.p.stdout.read()						
+						if c:						
+							os.write(stdout,c)
+        finally:
+            termios.tcsetattr(stdin, termios.TCSADRAIN, stdin_termios)
+            #log.info("Back to normal mode")
 
-#    def do_centrifugal(self, args):
-#        try:
-#            sa, sd, aa, ad = [int(x) for x in shlex.shlex(args)]
-#        except:
-#            print "args: speed_a, speed_d, acc_a, acc_d"
-#            return
-#        print sa, sd, aa, ad
+    def do_centrifugal(self, args):
+        try:
+            sa, sd, aa, ad 
+        except:
+            print "args: speed_a, speed_d, acc_a, acc_d"
+            return
+        print sa, sd, aa, ad
 #        time.sleep(10)
 #        self.fout.write("traj_speed angle %d\n"%(sa))
 #        time.sleep(0.1)
@@ -198,10 +200,32 @@ class Interp(cmd.Cmd):
 #        time.sleep(1)
 #        print self.fin.read()
 
-    def do_test(self, args):
-        time.sleep(0.1)
+    def do_cs_tune(self, args):
+        try:
+            name, cons, gain_p, gain_i, gain_d = [x for x in shlex.shlex(args)]
+        except:
+            print "args: consigne, gain_p, gain_i, gain_d"
+            return
+
+        cons = int(cons)
+        gain_p = int(gain_p)
+        gain_i = int(gain_i)
+        gain_d = int(gain_d)
+        print name, cons, gain_p, gain_i, gain_d
+
         self.p.stdin.write("log type cs on\n")
-        self.p.stdin.write("goto d_rel 1000\n")
+        self.p.stdin.write("position set 1500 1000 0\n")
+
+        if name == "distance":  
+            self.p.stdin.write("gain distance %d %d %d\n"%(gain_p, gain_i, gain_d))        
+            self.p.stdin.write("goto d_rel %d\n"%(cons))
+        elif name == "angle":  
+            self.p.stdin.write("gain angle %d %d %d\n"%(gain_p, gain_i, gain_d))          
+            self.p.stdin.write("goto a_rel %d\n"%(cons))
+        else:
+            print "unknow cs name"
+            return
+
         time.sleep(0.2)
 
         TS = 5
@@ -212,30 +236,60 @@ class Interp(cmd.Cmd):
         a_cons = a_feedback = a_cons = a_feedback = np.zeros(2)
 
         while True:
+          time.sleep(0.01)
           line = self.p.stdout.readline()
 
           m = re.match("returned", line)
           if m:
-            # end of data
+            # end of data, plot it
             print line.rstrip()
+
             plt.figure(1)
-            plt.plot(t,v_cons, t, v_feedback)
-            
+            plt.subplot(311)
+            plt.plot(t,v_cons, label="consigna")
+            plt.plot(t,v_feedback, label="feedback")
+            plt.ylabel('v(imp/Ts)')
+            plt.grid(True)
+
+            plt.subplot(312)
+            plt.plot(t,a_cons, label="consigna")
+            plt.plot(t,a_feedback, label="feedback")
+            plt.ylabel('a(imp/Ts^2)')
+            plt.grid(True)
+
+            plt.subplot(313)
+            plt.plot(t,out)
+            plt.xlabel('t(s)')
+            plt.ylabel('pwm(counts)')
+            plt.grid(True)
+
             plt.figure(2)
-            plt.plot(t,f_cons, t, feedback)
+            plt.subplot(211)
+            plt.plot(t,f_cons, label="consigna")
+            plt.plot(t,feedback, label="feedback")
+            plt.ylabel('d(imp)')
+            plt.grid(True)
             
+            plt.subplot(212)
+            plt.plot(t,err)
+            plt.xlabel('t(s)')
+            plt.ylabel('error(imps)')
+            plt.grid(True)
+
             plt.show()
             break
 
-          m = re.match("(-?\+?\d+).(-?\+?\d+): \((-?\+?\d+),(-?\+?\d+),(-?\+?\d+)\) (\w+) cons= (-?\+?\d+) fcons= (-?\+?\d+) err= (-?\+?\d+) in= (-?\+?\d+) out= (-?\+?\d+)", line)
+          m = re.match("(-?\+?\d+).(-?\+?\d+): \((-?\+?\d+),(-?\+?\d+),(-?\+?\d+)\) "
+                       "(\w+) cons= (-?\+?\d+) fcons= (-?\+?\d+) err= (-?\+?\d+) "
+                       "in= (-?\+?\d+) out= (-?\+?\d+)", line)
           if m:
             #print m.groups()
             t = np.append(t, i*TS)
-            cons = np.append(cons,     int(m.groups()[6]))
-            f_cons = np.append(f_cons,   int(m.groups()[7]))
-            err = np.append(err,      int(m.groups()[8]))
+            cons = np.append(cons, int(m.groups()[6]))
+            f_cons = np.append(f_cons, int(m.groups()[7]))
+            err = np.append(err, int(m.groups()[8]))
             feedback = np.append(feedback, int(m.groups()[9]))
-            out = np.append(out,      int(m.groups()[10]))
+            out = np.append(out, int(m.groups()[10]))
             
             if i>0:
                 v_cons = np.append(v_cons, f_cons[i] - f_cons[i-1])
