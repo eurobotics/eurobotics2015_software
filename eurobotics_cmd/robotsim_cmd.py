@@ -199,8 +199,6 @@ class Interp(cmd.Cmd):
         #time.sleep(10)
         self.p.stdin.write("position set 1500 1000 0\n")
         time.sleep(5)
-        self.p.stdin.write("position reset 0 0 0\n")
-        time.sleep(0.1)
         self.p.stdin.write("traj_speed angle %d\n"%(sa))
         time.sleep(0.1)
         self.p.stdin.write("traj_speed distance %d\n"%(sd))
@@ -217,21 +215,26 @@ class Interp(cmd.Cmd):
         time.sleep(1)
         print self.p.stdout.read()
 
-    def do_cs_tune(self, args):
+    def do_tune(self, args):
         try:
-            name, cons, gain_p, gain_i, gain_d = [x for x in shlex.shlex(args)]
+            name, tlog, cons, gain_p, gain_i, gain_d = [x for x in shlex.shlex(args)]
         except:
-            print "args: consigne, gain_p, gain_i, gain_d"
+            print "args: cs_name, time_ms, consigne, gain_p, gain_i, gain_d"
             return
 
+        tlog = float(tlog)/1000.0
         cons = int(cons)
         gain_p = int(gain_p)
         gain_i = int(gain_i)
         gain_d = int(gain_d)
         print name, cons, gain_p, gain_i, gain_d
 
-        self.p.stdin.write("log type cs on\n")
         self.p.stdin.write("position set 1500 1000 0\n")
+        time.sleep(1)
+
+        # cs log on
+        self.p.stdin.write("log type cs on\n")
+        time.sleep(0.1)
 
         if name == "distance":  
             self.p.stdin.write("gain distance %d %d %d\n"%(gain_p, gain_i, gain_d))        
@@ -243,9 +246,11 @@ class Interp(cmd.Cmd):
             print "unknow cs name"
             return
 
-        time.sleep(0.2)
+        # time print
+        time.sleep(0.01)
+        t1 = time.time()
 
-        TS = 5
+        TS = 10
         i = 0
         t = np.zeros(0)
         cons = f_cons = err = feedback = out = np.zeros(0)
@@ -253,76 +258,117 @@ class Interp(cmd.Cmd):
         a_cons = a_feedback = a_cons = a_feedback = np.zeros(2)
 
         while True:
-          time.sleep(0.01)
-          line = self.p.stdout.readline()
 
+          # cs log off
+          t2 = time.time()
+          if tlog and (t2 - t1) >= tlog:
+            tlog = 0
+            self.p.stdin.write("\n")
+            self.p.stdin.write("log type cs off\n")
+            #print (t2 - t1)
+
+          # read log data
+          time.sleep(TS/1000.0)
+          line = self.p.stdout.readline()
+          m = re.match("(-?\+?\d+).(-?\+?\d+): \((-?\+?\d+),(-?\+?\d+),(-?\+?\d+)\) "
+                       "%s cons= (-?\+?\d+) fcons= (-?\+?\d+) err= (-?\+?\d+) "
+                       "in= (-?\+?\d+) out= (-?\+?\d+)"%(name), line)
+
+          # data logging
+          if m:
+            #print line
+            #print m.groups()
+            t = np.append(t, i*TS)
+            cons = np.append(cons, int(m.groups()[5]))
+            f_cons = np.append(f_cons, int(m.groups()[6]))
+            err = np.append(err, int(m.groups()[7]))
+            feedback = np.append(feedback, int(m.groups()[8]))
+            out = np.append(out, int(m.groups()[9]))
+            
+            if i>0:
+                v_cons = np.append(v_cons, (f_cons[i] - f_cons[i-1])*5/TS)
+                v_feedback = np.append(v_feedback, (feedback[i] - feedback[i-1])*5/TS)
+
+            if i>1:
+                a_cons = np.append(a_cons, (v_cons[i] - v_cons[i-1])*5/TS)
+                a_feedback = np.append(a_feedback, (v_feedback[i] - v_feedback[i-1])*5/TS)
+
+            i += 1
+            continue
+
+          # trajectory end
           m = re.match("returned", line)
           if m:
-            # end of data, plot it
             print line.rstrip()
-            self.p.stdin.write("log type cs off\n")
 
             plt.figure(1)
             plt.subplot(311)
             plt.plot(t,v_cons, label="consigna")
             plt.plot(t,v_feedback, label="feedback")
-            plt.ylabel('v(imp/Ts)')
+            plt.ylabel('v (pulsos/Ts)')
             plt.grid(True)
+            plt.legend()
+            plt.title('%s kp=%s, ki=%d, kd=%d'%(name, gain_p, gain_i, gain_d))
 
             plt.subplot(312)
             plt.plot(t,a_cons, label="consigna")
             plt.plot(t,a_feedback, label="feedback")
-            plt.ylabel('a(imp/Ts^2)')
+            plt.ylabel('a (pulsos/Ts^2)')
             plt.grid(True)
+            plt.legend()
 
             plt.subplot(313)
             plt.plot(t,out)
-            plt.xlabel('t(s)')
-            plt.ylabel('pwm(counts)')
+            plt.xlabel('t (ms)')
+            plt.ylabel('u (cuentas)')
             plt.grid(True)
+            plt.legend()
 
             plt.figure(2)
             plt.subplot(211)
-            plt.plot(t,f_cons, label="consigna")
-            plt.plot(t,feedback, label="feedback")
-            plt.ylabel('d(imp)')
+            plt.plot(t,f_cons-feedback[0], label="consigna")
+            plt.plot(t,feedback-feedback[0], label="feedback")
+            plt.ylabel('posicion (pulsos)')
             plt.grid(True)
-            
+            plt.legend()
+            plt.title('%s kp=%s, ki=%d, kd=%d'%(name, gain_p, gain_i, gain_d))
+
             plt.subplot(212)
             plt.plot(t,err)
-            plt.xlabel('t(s)')
-            plt.ylabel('error(imps)')
+            plt.xlabel('t (ms)')
+            plt.ylabel('error (pulsos)')
             plt.grid(True)
+            plt.legend()
 
             plt.show()
             break
 
-          m = re.match("(-?\+?\d+).(-?\+?\d+): \((-?\+?\d+),(-?\+?\d+),(-?\+?\d+)\) "
-                       "(\w+) cons= (-?\+?\d+) fcons= (-?\+?\d+) err= (-?\+?\d+) "
-                       "in= (-?\+?\d+) out= (-?\+?\d+)", line)
-          if m:
-            #print m.groups()
-            t = np.append(t, i*TS)
-            cons = np.append(cons, int(m.groups()[6]))
-            f_cons = np.append(f_cons, int(m.groups()[7]))
-            err = np.append(err, int(m.groups()[8]))
-            feedback = np.append(feedback, int(m.groups()[9]))
-            out = np.append(out, int(m.groups()[10]))
-            
-            if i>0:
-                v_cons = np.append(v_cons, f_cons[i] - f_cons[i-1])
-                v_feedback = np.append(v_feedback, feedback[i] - feedback[i-1])
+        # print unknow strigs
+        print line.rstrip()
 
-            if i>1:
-                a_cons = np.append(a_cons, v_cons[i] - v_cons[i-1])
-                a_feedback = np.append(a_feedback, v_feedback[i] - v_feedback[i-1])
+    def do_traj_acc(self, args):
+        try:
+            name, acc = [x for x in shlex.shlex(args)]
+        except:
+            print "args: cs_name acc"
+            return
 
-            i += 1
+        acc = int(acc)
+        self.p.stdin.write("quadramp %s %d %d 0 0\n"%(name, acc, acc))       
+        time.sleep(1)
+        print self.p.stdout.read()
 
-          else:
-            # print unknow strigs
-            print line.rstrip()
+    def do_traj_speed(self, args):
+        try:
+            name, speed = [x for x in shlex.shlex(args)]
+        except:
+            print "args: cs_name speed"
+            return
 
+        speed = int(speed)
+        self.p.stdin.write("traj_speed %s %d\n"%(name, speed))       
+        time.sleep(1)
+        print self.p.stdout.read()
 
 if __name__ == "__main__":
     try:

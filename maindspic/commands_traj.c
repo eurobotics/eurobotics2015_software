@@ -827,23 +827,26 @@ static void cmd_goto_parsed(void * parsed_result, void * data)
         trajectory_d_a_rel(&mainboard.traj, res->arg2, res->arg3);
     }
 
-    //t1 = time_get_us2();
-    while ((err = test_traj_end(TRAJ_FLAGS_NO_NEAR)) == 0);
-    //{
-        //t2 = time_get_us2();
-        //if (t2 - t1 > 20000)
-        //{
-            //dump_cs_debug("angle", &mainboard.angle.cs);
-            //dump_cs_debug("distance", &mainboard.distance.cs);
-            //t1 = t2;
-        //}
-    //}
 
-    if (err != END_TRAJ && err != END_NEAR)
-        strat_hardstop();
+	t1 = time_get_us2();
+	while ((err = test_traj_end(TRAJ_FLAGS_NO_NEAR)) == 0 || !cmdline_keypressed())
+	{
+	    t2 = time_get_us2();
+	    if (t2 - t1 >= 10000)
+	    {
+	        dump_cs_debug("angle", &mainboard.angle.cs);
+	        dump_cs_debug("distance", &mainboard.distance.cs);
+	        t1 = t2;
+	    }
 
-	time_wait_ms (2000);
-    printf_P(PSTR("returned %s\r\n"), get_err(err));
+		if (err!=0 && err != END_TRAJ && err != END_NEAR) {
+			strat_hardstop();
+			break;
+		}
+    }
+
+	printf_P(PSTR("returned %s\r\n"), get_err(err));
+
 }
 
 prog_char str_goto_arg0[] = "goto";

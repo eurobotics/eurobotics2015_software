@@ -69,7 +69,6 @@ static void do_cs(void *dummy)
 {
 	static uint16_t cpt = 0;
 	static int32_t old_a = 0, old_d = 0;
-	static microseconds t1 = 0;
 
 #ifdef HOST_VERSION
 	robotsim_update();
@@ -109,7 +108,8 @@ static void do_cs(void *dummy)
 		if (mainboard.distance.on)
 			cs_manage(&mainboard.distance.cs);
 
-		if (cs_get_consign(&mainboard.distance.cs) != cs_get_filtered_consign(&mainboard.distance.cs)) 
+#if 0
+		if (cs_get_consign(&mainboard.distance.cs) != cs_get_filtered_consign(&mainboard.distance.cs) || ) 
 		{
 			t1 = time_get_us2();
         	dump_cs_debug("distance", &mainboard.distance.cs);
@@ -118,15 +118,7 @@ static void do_cs(void *dummy)
 		{
         	dump_cs_debug("distance", &mainboard.distance.cs);
 		}
-		//else
-		//	t1 = 0;
-/*
-		if (cs_get_consign(&mainboard.angle.cs) != cs_get_filtered_consign(&mainboard.angle.cs)
-			|| abs(cs_get_error(&mainboard.angle.cs)) > 150 ) 
-		{
-			dump_cs_debug("angle", &mainboard.angle.cs);
-		}
-*/
+#endif
 	}
 
 	/* position calculus */
@@ -261,8 +253,13 @@ void maindspic_cs_init(void)
 	/* ---- CS angle */
 	/* PID */
 	pid_init(&mainboard.angle.pid);
-//	pid_set_gains(&mainboard.angle.pid, 350, 0, 4000); // real
-	pid_set_gains(&mainboard.angle.pid, 40, 0, 1200); // robotsim tunning
+#ifndef HOST_VERSION
+	pid_set_gains(&mainboard.angle.pid, 350, 0, 4000); // real
+#else
+//	pid_set_gains(&mainboard.angle.pid, 40, 0, 1200); // robotsim tunning
+//	pid_set_gains(&mainboard.angle.pid, 300, 0, 3500); // robotsim tunning
+	pid_set_gains(&mainboard.angle.pid, 60, 0, 2800); // robotsim tunning
+#endif
 	pid_set_maximums(&mainboard.angle.pid, 0, 30000, 65500);
 	pid_set_out_shift(&mainboard.angle.pid, 6);	
 	pid_set_derivate_filter(&mainboard.angle.pid, 1);
@@ -288,8 +285,13 @@ void maindspic_cs_init(void)
 	/* ---- CS distance */
 	/* PID */
 	pid_init(&mainboard.distance.pid);
-//	pid_set_gains(&mainboard.distance.pid, 250, 0, 2800); // real
-	pid_set_gains(&mainboard.distance.pid, 40, 0, 1200); // robotsim tunning
+#ifndef HOST_VERSION
+	pid_set_gains(&mainboard.distance.pid, 250, 0, 2800); // real
+#else
+//	pid_set_gains(&mainboard.distance.pid, 40, 0, 1200); // robotsim tunning
+//	pid_set_gains(&mainboard.distance.pid, 300, 0, 3500); // robotsim tunning
+	pid_set_gains(&mainboard.distance.pid, 60, 0, 2800); // robotsim tunning
+#endif
 	pid_set_maximums(&mainboard.distance.pid, 0, 30000, 65500);
 	pid_set_out_shift(&mainboard.distance.pid, 6);
 	pid_set_derivate_filter(&mainboard.distance.pid, 1);
