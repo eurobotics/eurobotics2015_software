@@ -67,17 +67,6 @@ hcenter_line.pos = [(-AREA_X/2, 0., 0.3), (AREA_X/2, 0., 0.3)]
 vcenter_line = curve()
 vcenter_line.pos = [(0., -AREA_Y/2, 0.3), (0., AREA_Y/2, 0.3)]
 
-
-yellowarea = [ (0.0, 0.0, -0.5), (400.0,444.0 , 0.5) ]
-yellowareasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , yellowarea)
-yellowarea_box = box(pos=(-AREA_X/2+200,-AREA_Y/2+1000,0), size=yellowareasize, color=(0.988, 0.741, 0.122))
-
-
-
-greenarea = [ (0.0, 0.0, -0.5), (400.0,444.0 , 0.5) ]
-greenareasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , greenarea)
-greenarea_box = box(pos=(AREA_X/2-200,-AREA_Y/2+1000,0), size=greenareasize, color=(0.31, 0.659, 0.2))
-
 wallx = [ (0.0, 0.0, -0.5), (AREA_X+44, 22, WALL_HEIGHT) ]
 wallxsize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , wallx)
 wallx1_box = box(pos=(0,-AREA_Y/2-11, WALL_HEIGHT/2), size=wallxsize, color=(0.78, 0.09, 0.071))
@@ -146,7 +135,6 @@ set_opp_nb = 1
 def toggle_obj_disp():
     global area_objects
     if area_objects == []:
-    
 
 		set_home_areas()
 		step_func(1,STEP_1_HEIGHT,YELLOW)
@@ -249,6 +237,17 @@ def set_home_areas():
 	area_objects.append(c)
 	c = sphere(pos=(-AREA_X/2+70/2,-AREA_Y/2+1000,22+35), radius=35,color=(0,1,0))
 	area_objects.append(c)
+
+	yellowarea = [ (0.0, 0.0, -0.5), (400.0,444.0 , 0.5) ]
+	yellowareasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , yellowarea)
+	c = box(pos=(-AREA_X/2+200,-AREA_Y/2+1000,0), size=yellowareasize, color=(0.988, 0.741, 0.122))
+	area_objects.append(c)
+
+	greenarea = [ (0.0, 0.0, -0.5), (400.0,444.0 , 0.5) ]
+	greenareasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , greenarea)
+	c = box(pos=(AREA_X/2-200,-AREA_Y/2+1000,0), size=greenareasize, color=(0.31, 0.659, 0.2))
+	area_objects.append(c)
+
 	
 def platform():
 	global area_objects 
@@ -257,15 +256,16 @@ def platform():
 	c = box(pos=(0,-AREA_Y/2+100/2, 0), size=base_size,color =(0.78, 0.09, 0.071))
 	area_objects.append(c)
 
-
 	green_area = [ (0.0, 0.0, -0.5), (800.0, 200.0, 0.5) ]
 	green_area_size = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , green_area)
-	green_area_box = box(pos=(0,-AREA_Y/2+200/2, 0), size=green_area_size, color=(0.9, 0.0, 0.0))
+	c = box(pos=(0,-AREA_Y/2+200/2, 0), size=green_area_size, color=(0.9, 0.0, 0.0))
+	area_objects.append(c)
 
 	c = sphere(pos=(250,-AREA_Y/2+100/2,22+35), radius=35,color=(0,1,0))
 	area_objects.append(c)
 	c = sphere(pos=(-250,-AREA_Y/2+100/2,22+35), radius=35,color=(0,1,0))
 	area_objects.append(c)
+
 def clap(x,y,clap_color,offset):
 	global area_objects 
 	clap = [ (0.0, 0.0, -0.5), (160.0, 30.0, CLAP_HEIGHT) ]
@@ -284,9 +284,10 @@ def cinema(x,y,cinema_color):
 	cinemaarea = [ (0.0, 0.0, -0.5), (400.0,378.0,0.5) ]
 	cinemaareasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , cinemaarea)
 	if cinema_color == YELLOW:
-		cinemaarea_box = box(pos=(x,y), size=cinemaareasize, color=(0.988, 0.741, 0.122))
+		c = box(pos=(x,y), size=cinemaareasize, color=(0.988, 0.741, 0.122))
 	else:
-		cinemaarea_box = box(pos=(x,y), size=cinemaareasize, color=(0.31, 0.659, 0.2))
+		c = box(pos=(x,y), size=cinemaareasize, color=(0.31, 0.659, 0.2))
+	area_objects.append(c)
 
 def step_func(step_nr,height,step_color):
 	global area_objects 
@@ -298,7 +299,6 @@ def step_func(step_nr,height,step_color):
 	else:
 		green_step=266.5*2
 		c = box(pos=(-266.5+green_step,+AREA_Y/2-(580.0-70*(step_nr-1))/2,height/2), size=step_size,color =(0.31, 0.659, 0.2))
-
 	area_objects.append(c)
 
 def stand_green(x,y):
@@ -641,6 +641,7 @@ while True:
             #    fw.write("b")
             elif k == "c":
                 robot_trail_list = []
+                robot2_trail_list = []
             elif k == "x":
                 save_pos = []
             elif k == "g":
