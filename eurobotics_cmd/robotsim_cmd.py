@@ -47,10 +47,10 @@ EUROBOTICS_PATH=os.path.dirname(sys.argv[0])
 #        return self.ser.fileno()
 #    def read(self, *args):
 #        res = self.ser.read(*args)
-#        self.fout.write(res)
+#        self.p.stdin.write(res)
 #        return res
 #    def write(self, s):
-#        self.fout.write(s)
+#        self.p.stdin.write(s)
 #        self.ser.write(s)
 
 class Interp(cmd.Cmd):
@@ -59,14 +59,24 @@ class Interp(cmd.Cmd):
     def __init__(self):
         cmd.Cmd.__init__(self)
 
+        # run robotsim display
 #        o, i = popen2.popen2("python ../maindspic/display.py")
 #        o.close()
 #        i.close()
 
-        o, i = popen2.popen2("../secondary_robot/main H=1")
-        o.close()
-        i.close()
+        self.d = Popen(['python', '../maindspic/display.py'],
+                  stdin = PIPE, stdout = PIPE, stderr = PIPE, shell = False)
 
+        # run secondary_robot
+#        o, i = popen2.popen2("../secondary_robot/main H=1")
+#        o.close()
+#        i.close()
+
+        self.s = Popen(['../secondary_robot/main', 'H=1'],
+                  stdin = PIPE, stdout = PIPE, stderr = PIPE, shell = False)
+
+
+        # run main_robot
         self.p = Popen(['../maindspic/main', 'H=1'],
                   stdin = PIPE, stdout = PIPE, stderr = PIPE, shell = False)
 
@@ -81,6 +91,9 @@ class Interp(cmd.Cmd):
         self.default_out_log_file = "/tmp/eurobotics.out.log"
 
     def do_quit(self, args):
+        self.p.kill()
+        self.s.kill()
+        self.d.kill()
         return True
 
 #    def do_log(self, args):
@@ -131,7 +144,6 @@ class Interp(cmd.Cmd):
 
         try:
             #log.info("Switching to RAW mode")
-
             # iflag
             raw_termios[0] &= ~(termios.IGNBRK | termios.BRKINT |
                                 termios.PARMRK | termios.ISTRIP |
@@ -179,26 +191,31 @@ class Interp(cmd.Cmd):
 
     def do_centrifugal(self, args):
         try:
-            sa, sd, aa, ad 
+            sa, sd, aa, ad = [int(x) for x in shlex.shlex(args)]
         except:
             print "args: speed_a, speed_d, acc_a, acc_d"
             return
         print sa, sd, aa, ad
-#        time.sleep(10)
-#        self.fout.write("traj_speed angle %d\n"%(sa))
-#        time.sleep(0.1)
-#        self.fout.write("traj_speed distance %d\n"%(sd))
-#        time.sleep(0.1)
-#        self.fout.write("traj_acc angle %d\n"%(aa))
-#        time.sleep(0.1)
-#        self.fout.write("traj_acc distance %d\n"%(ad))
-#        time.sleep(0.1)
-#        self.fout.write("goto da_rel 800 180\n")
-#        time.sleep(3)
-##        self.fout.flushInput()
-#        self.fout.write("position show\n")
-#        time.sleep(1)
-#        print self.fin.read()
+        #time.sleep(10)
+        self.p.stdin.write("position set 1500 1000 0\n")
+        time.sleep(5)
+        self.p.stdin.write("position reset 0 0 0\n")
+        time.sleep(0.1)
+        self.p.stdin.write("traj_speed angle %d\n"%(sa))
+        time.sleep(0.1)
+        self.p.stdin.write("traj_speed distance %d\n"%(sd))
+        time.sleep(0.1)
+        #self.p.stdin.write("traj_acc angle %d\n"%(aa))
+        self.p.stdin.write("quadramp angle %d %d %d %d\n"%(aa,aa,sa,sa))
+        time.sleep(0.1)
+        #self.p.stdin.write("traj_acc distance %d\n"%(ad))
+        self.p.stdin.write("quadramp distance %d %d %d %d\n"%(ad,ad,sd,sd))
+        time.sleep(0.1)
+        self.p.stdin.write("goto da_rel 800 180\n")
+        time.sleep(3)
+        self.p.stdin.write("position show\n")
+        time.sleep(1)
+        print self.p.stdout.read()
 
     def do_cs_tune(self, args):
         try:
@@ -243,6 +260,7 @@ class Interp(cmd.Cmd):
           if m:
             # end of data, plot it
             print line.rstrip()
+            self.p.stdin.write("log type cs off\n")
 
             plt.figure(1)
             plt.subplot(311)
@@ -305,29 +323,6 @@ class Interp(cmd.Cmd):
             # print unknow strigs
             print line.rstrip()
 
-#    def do_match(self, args):
-#        m = re.match("(\w+).(\w+): \((\w+),(\w+),(\w+)\) (\w+) cons= (-?\+?\d+) fcons= (-?\+?\d+) err= (-?\+?\d+) in= (-?\+?\d+) out= (-?\+?\d+)", "7.300: (1199,479,0) distance cons= +835261 fcons= +835261 err= -00054 in= +835315 out= +00060")
-#        if m:
-#            print m.groups()
-#        else:
-#            print "not match"
-
-
-    def do_position_show(self, args):
-        time.sleep(0.1)
-        self.fin.flush()
-        time.sleep(0.1)
-        #self.fout.write("position show\n")
-        #time.sleep(1)
-        #print self.fin.readline()
-
-#    def do_tota(self, args):
-#        print args
-#        time.sleep(1)
-#        self.fout.write("position set 0 0 0\n")
-#        time.sleep(1)
-#        self.fout.write("pwm s3(3C) 250\n")
-
 
 if __name__ == "__main__":
     try:
@@ -348,9 +343,9 @@ if __name__ == "__main__":
             interp.cmdloop()
         except KeyboardInterrupt:
             print
-        except Exception,e:
-            l = str(e).strip()
-            if l:
-                log.exception("%s" % l.splitlines()[-1])
-            continue
+#        except Exception,e:
+#            l = str(e).strip()
+#            if l:
+#                log.exception("%s" % l.splitlines()[-1])
+#            continue
         break
