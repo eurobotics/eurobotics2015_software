@@ -8,7 +8,8 @@ x_scale_inter = linspace(x_scale(1), x_scale(2), 100);
 x_inter = linspace(x(1),x(end),100);
 
 %% Fit a polynomial
-p = polyfit(x_scale,y,6);
+N = 6
+p = polyfit(x_scale,y,N);
 y_fit = polyval(p,x_scale);
 
 %% Results
@@ -16,17 +17,23 @@ y_fit = polyval(p,x_scale);
 % compare curves
 close all
 figure
-plot(x,y,'ro')
+subplot(2,1,1), plot(x,y,'ro')
 hold on
 plot(x,y_fit)
 grid on
-legend('Calibration samples', 'Polynomial fit');
+legend('Calibration samples', ['Polynomial fit N=', num2str(N)]);
+ylabel('distance (cm)')
+xlabel('pulse measure (counts*10^5/counts)')
 
 % error
 error = y-y_fit;
-figure
-plot(x, error);
-legend('error (cm)')
+%figure
+subplot(2,1,2), plot(x, error)
+grid on
+legend('fit error (cm)')
+ylabel('distance (cm)')
+xlabel('pulse measure (counts*10^5/counts)')
+
 
 %% Table
 % Note: array index = (array_size-1) - (medida-x_eval_min)/x_eval_delta
@@ -47,24 +54,45 @@ y_inc = y_int(2:end)-y_int(1:end-1);
 % info table
 table = [x_eval; y_int; [0 y_inc]];
 
-% plot y increment per x
-figure, stem(table(2,:), table(3,:))
-
 % plot y = f(x)
 figure
+subplot(2,1,1)
 plot(x,y,'ro')
 hold on
 plot(x_eval,y_eval)
 grid on
+ylabel('distance (cm)')
+xlabel('pulse measure (counts*10^5/counts)')
+legend('Calibration samples','Lookup table samples')
 
+title([num2str(length(x_eval)), ' samples, pulse measures range = [', ...
+         num2str(x_eval_ini),':', ...
+         num2str(x_eval_delta),':', ...
+         num2str(x_eval_end),']',...
+         ', distance range = [',num2str(y_int(1)),',',num2str(y_int(end)),']'])
+
+% plot y increment per x
+%figure
+subplot(2,1,2)
+stem(table(2,:), table(3,:))
+grid on
+ylabel('distance resolution d[i]-d[i-1] (cm)')
+xlabel('distance samples d[i] (cm)')
+legend('Lookup table distance resolution')
+
+title([num2str(length(x_eval)), ' samples, pulse measures range = [', ...
+         num2str(x_eval_ini),':', ...
+         num2str(x_eval_delta),':', ...
+         num2str(x_eval_end),']',...
+         ', distance range = [',num2str(y_int(1)),',',num2str(y_int(end)),']'])
 
 %% Inverse fit
 p_inv = polyfit((y-mean(y))./std(y), x, 6);
 y_eval = [30:5:350];
 x_eval = polyval(p_inv, (y_eval-mean(y_eval))./std(y_eval));
 
-figure
-plot(x_eval,y_eval)
-legend('Pulse(us) = f(dist(cm))')
+% figure
+% plot(x_eval,y_eval)
+% legend('Pulse(us) = f(dist(cm))')
 
 
