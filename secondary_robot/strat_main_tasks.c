@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Balias Santos <javier@arc-robots.org> and Silvia Santano and Miguel Ortiz
+ *  Javier Balias Santos <javier@arc-robots.org> and Silvia Santano
  */
 
 #include <stdio.h>

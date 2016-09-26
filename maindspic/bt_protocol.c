@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Bali�as Santos <javier@arc-robots.org>
+ *  Javier Baliñas Santos <javier@arc-robots.org>
  */
 
 #include <stdio.h>

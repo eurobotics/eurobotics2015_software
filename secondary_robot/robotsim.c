@@ -19,6 +19,13 @@
  *
  */
 
+/*  
+ *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
+ *  Javier Baliñas Santos <javier@arc-robots.org>
+ *
+ *  Aversive for dsPIC implelentation
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
