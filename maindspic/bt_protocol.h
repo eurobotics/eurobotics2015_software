@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Bali\F1as Santos <javier@arc-robots.org>
+ *  Javier Baliñas Santos <javier@arc-robots.org>
  */
 
 #ifndef __BT_PROTOCOL_H__

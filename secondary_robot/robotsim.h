@@ -19,6 +19,13 @@
  *
  */
 
+/*  
+ *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
+ *  Javier Baliñas Santos <javier@arc-robots.org>
+ *
+ *  Aversive for dsPIC implelentation
+ */
+
 extern uint8_t robotsim_blocking;
 
 int8_t robotsim_i2c(uint8_t addr, uint8_t *buf, uint8_t size);
