@@ -37,7 +37,7 @@
 #include "main.h"
 #include "sensor.h"
 #include "strat.h"
-#include "../maindspic/strat_utils.h"
+#include "strat_utils.h"
 
 
 #ifndef HOST_VERSION
@@ -328,7 +328,7 @@ static void do_boolean_sensors(void *dummy)
 #endif /* !HOST_VERSION */
 
 /* virtual obstacle */
-#define DISABLE_CPT_MAX 200 /* XXX T_SENSORS = 10ms */
+#define DISABLE_CPT_MAX 100 /* XXX T_SENSORS = 10ms */
 static uint16_t disable = 0; 	/* used to disable obstacle detection 
 			   				 		           * during some time */
 

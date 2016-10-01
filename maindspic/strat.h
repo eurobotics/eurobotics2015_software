@@ -1,6 +1,6 @@
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2012)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -17,123 +17,18 @@
  *
  *  Revision : $Id$
  *
- *  Javier Bali�as Santos <javier@arc-robots.org> and Silvia Santano
+ *  Javier Bali�as Santos <javier@arc-robots.org> and Silvia Santano
  */
 
 #ifndef _STRAT_H_
 #define _STRAT_H_
 
-#include <clock_time.h>
+#ifndef HOST_VERSION_OA_TEST
+ #include <clock_time.h>
+#endif
+
 /* compilation flavours */
 //#define HOMOLOGATION
-
-/* area */
-#define AREA_X 3000
-#define AREA_Y 2000
-
-/* INITIAL PRIORITIES */
-#define PRIO_BASKET_AFTER_ONE_TREE 				40
-#define PRIO_HEART_AFTER_PUZZLE 				90
-#define PRIO_TREE_1 							ZONE_PRIO_50
-#define PRIO_TREE_2 							ZONE_PRIO_50
-#define PRIO_TREE_3 							ZONE_PRIO_40
-#define PRIO_TREE_4 							ZONE_PRIO_40
-#define PRIO_FIRE_1 							ZONE_PRIO_30
-#define PRIO_FIRE_2 							ZONE_PRIO_10
-#define PRIO_FIRE_3 							ZONE_PRIO_30
-#define PRIO_FIRE_4 							ZONE_PRIO_30
-#define PRIO_FIRE_5								ZONE_PRIO_30
-#define PRIO_FIRE_6								ZONE_PRIO_30
-#define PRIO_TORCH_1 							ZONE_PRIO_30
-#define PRIO_TORCH_2 							ZONE_PRIO_0
-#define PRIO_TORCH_3							ZONE_PRIO_30
-#define PRIO_TORCH_4 							ZONE_PRIO_0
-#define PRIO_M_TORCH_1 							ZONE_PRIO_0
-#define PRIO_M_TORCH_2 							ZONE_PRIO_0
-#define PRIO_BASKET_1 							ZONE_PRIO_0
-#define PRIO_BASKET_2							ZONE_PRIO_0
-#define PRIO_MAMOOTH_1 							ZONE_PRIO_0 	//ZONE_PRIO_80
-#define PRIO_MAMOOTH_2							ZONE_PRIO_0	 //ZONE_PRIO_80
-#define PRIO_FRESCO								ZONE_PRIO_0	 //ZONE_PRIO_80
-#define PRIO_HEART_1							ZONE_PRIO_0
-#define PRIO_HEART_2_UP							ZONE_PRIO_0
-#define PRIO_HEART_2_LEFT						ZONE_PRIO_0
-#define PRIO_HEART_2_DOWN						ZONE_PRIO_0
-#define PRIO_HEART_2_RIGHT						ZONE_PRIO_0
-#define PRIO_HEART_3							ZONE_PRIO_0
-
-/* position of the elements */
-#define TREE_1_X			0
-#define TREE_1_Y			1300
-#define TREE_2_X			700
-#define TREE_2_Y			2000
-#define TREE_3_X			2300
-#define TREE_3_Y			2000
-#define TREE_4_X			3000
-#define TREE_4_Y			1300
-
-#define HEART_1_X		    140
-#define HEART_1_Y		    1860
-#define HEART_2_X		    1500
-#define HEART_2_Y   		1050
-#define HEART_2_UP_X		    1500
-#define HEART_2_UP_Y		    1350
-#define HEART_2_LEFT_X		    1200
-#define HEART_2_LEFT_Y		    1050
-#define HEART_2_DOWN_X		    1500
-#define HEART_2_DOWN_Y		    750
-#define HEART_2_RIGHT_X		    1800
-#define HEART_2_RIGHT_Y		    1050
-#define HEART_3_X		    2860
-#define HEART_3_Y		    1860
-
-#define FIRE_1_X			400
-#define FIRE_1_Y			1100
-#define FIRE_2_X			900
-#define FIRE_2_Y			600
-#define FIRE_3_X			900
-#define FIRE_3_Y			1600
-#define FIRE_4_X			2100
-#define FIRE_4_Y			600
-#define FIRE_5_X			2100
-#define FIRE_5_Y			1600
-#define FIRE_6_X			2600
-#define FIRE_6_Y			1100
-
-#define TORCH_1_X			0
-#define TORCH_1_Y			800
-#define TORCH_2_X			1300
-#define TORCH_2_Y			2000
-#define TORCH_3_X			1700
-#define TORCH_3_Y			2000
-#define TORCH_4_X			3000
-#define TORCH_4_Y			800
-
-#define M_TORCH_1_X	        900
-#define M_TORCH_1_Y	        1100
-#define M_TORCH_2_X	        2100
-#define M_TORCH_2_Y	        1100
-
-#define BASKET_1_X		    750
-#define BASKET_1_Y		    150
-#define BASKET_2_X		    2250
-#define BASKET_2_Y		    150
-
-#define MAMOOTH_1_X		    700
-#define MAMOOTH_1_Y		    0
-#define MAMOOTH_2_X		    2300
-#define MAMOOTH_2_Y		    0  
-
-#define FRESCO_X			1500
-#define FRESCO_Y			0
-
-//#define HOME_RED_X		    2800
-//#define HOME_RED_Y		    300
-
-//#define HOME_YELLOW_X		200
-//#define HOME_YELLOW_Y		300
-
-#define HEART_2_RAD	150
 
 /* convert coords according to our color */
 #define COLOR_Y(y)     (y)
@@ -145,8 +40,6 @@
 #define COLOR_SIGN(x)  ((mainboard.our_color==I2C_COLOR_YELLOW)? (x) : (-x))
 #define COLOR_INVERT(x)((mainboard.our_color==I2C_COLOR_YELLOW)? (x) : (!x))
 
-#define COLOR_I(x)	  ((mainboard.our_color==I2C_COLOR_YELLOW)? (x) :  ((NB_SLOT_X-1)-x))
-
 #define START_X 200
 #define START_Y COLOR_Y(200)
 #define START_A COLOR_A(45)
@@ -154,11 +47,11 @@
 #define CENTER_X 1500
 #define CENTER_Y 1000
 
-#define SIDE_REAR		I2C_SIDE_REAR
-#define SIDE_FRONT 	    I2C_SIDE_FRONT 
-#define SIDE_MAX		I2C_SIDE_MAX
-
-#define OPPOSITE_SIDE(side) ((side==I2C_SIDE_FRONT)? (I2C_SIDE_REAR) : (I2C_SIDE_FRONT))	
+#define SIDE_LEFT		I2C_SIDE_LEFT
+#define SIDE_RIGHT 	    I2C_SIDE_RIGHT
+#define SIDE_FRONT      SIDE_LEFT
+#define SIDE_REAR       SIDE_RIGHT
+#define SIDE_ALL		I2C_SIDE_ALL
 
 #define GO_FORWARD	    0
 #define GO_BACKWARD	    1
@@ -179,10 +72,12 @@
 #ifdef CALIBRATION
 
 /* default acc */
-#define ACC_DIST  1.
-#define ACC_ANGLE 1.
+#define ACC_DIST  10
+#define ACC_ANGLE 10
 
 /* default speeds */
+#define SPEED_DIST_VERY_FAST 	1000.
+#define SPEED_ANGLE_VERY_FAST 	1000.
 #define SPEED_DIST_FAST 		1000.
 #define SPEED_ANGLE_FAST 		1000.
 #define SPEED_DIST_SLOW 		1000.
@@ -193,71 +88,205 @@
 #else
 
 /* default acc */
-#define ACC_DIST  20. //35.
-#define ACC_ANGLE 20.
+#undef VERY_GOOD_CONDITIONS_OR_SPECIAL_CASES
+#ifdef VERY_GOOD_CONDITIONS_OR_SPECIAL_CASES
+#define ACC_DIST  70
+#define ACC_ANGLE 60
+#else
+#define ACC_DIST  40
+#define ACC_ANGLE 60
+#endif
 
 /* default speeds */
-#ifdef HOMOLOGATION
-#define SPEED_DIST_FAST 		2000.
-#define SPEED_ANGLE_FAST 		2000.
+#ifdef VERY_GOOD_CONDITIONS_OR_SPECIAL_CASES
+#define SPEED_DIST_VERY_FAST 	5000
+#define SPEED_DIST_FAST 		4000
+#define SPEED_ANGLE_VERY_FAST 	3000
+#define SPEED_ANGLE_FAST 		3000
 #else
-
-#define SPEED_DIST_FAST 		3000.
-#define SPEED_ANGLE_FAST 		3000.
+#define SPEED_DIST_VERY_FAST 	4000
+#define SPEED_DIST_FAST 		3000
+#define SPEED_ANGLE_VERY_FAST 	3000
+#define SPEED_ANGLE_FAST 		3000
 #endif
 
 //Do not change
-#define SPEED_DIST_SLOW 		2000.
-#define SPEED_ANGLE_SLOW 		2000.
-#define SPEED_DIST_VERY_SLOW 	500.
-#define SPEED_ANGLE_VERY_SLOW   500.
+#define SPEED_DIST_SLOW 		2000
+#define SPEED_ANGLE_SLOW 		2000
+#define SPEED_DIST_VERY_SLOW 	500
+#define SPEED_ANGLE_VERY_SLOW   500
+
+#ifdef HOST_VERSION
+#define ACC_DIST  72
+#define ACC_ANGLE 72
+#define SPEED_DIST_VERY_FAST 	5000
+#define SPEED_DIST_FAST 		4000
+#define SPEED_ANGLE_VERY_FAST 	5000
+#define SPEED_ANGLE_FAST 		4000
+#endif
+
 
 #endif
 
+/* play area */
+#define AREA_X 3000
+#define AREA_Y 2000
+
+#define LIMIT_BBOX_Y_UP			(2000 - OBS_CLERANCE-70)
+#define LIMIT_BBOX_Y_DOWN		OBS_CLERANCE+100
+#define LIMIT_BBOX_X_UP			3000 - OBS_CLERANCE
+#define LIMIT_BBOX_X_DOWN		OBS_CLERANCE
+
+/* coordinates of the elements */
+#define MY_STAND_1_X			90
+#define MY_STAND_1_Y			2000-200
+#define MY_STAND_2_X			850
+#define MY_STAND_2_Y			2000-100
+#define MY_STAND_3_X			850
+#define MY_STAND_3_Y			2000-200
+#define MY_STAND_4_X			870
+#define MY_STAND_4_Y			2000-1355
+#define MY_STAND_5_X			1300
+#define MY_STAND_5_Y			2000-1400
+#define MY_STAND_6_X			1100
+#define MY_STAND_6_Y			2000-1770
+#define MY_STAND_7_X			90
+#define MY_STAND_7_Y			2000-1850
+#define MY_STAND_8_X			90
+#define MY_STAND_8_Y			2000-1750
+
+#define MY_POPCORNMAC_X		    450
+#define MY_POPCORNMAC_Y		    2000-35
+#define OPP_POPCORNMAC_X	    2550
+#define OPP_POPCORNMAC_Y	    2000-35
+
+#define MY_PLATFORM_X		    1150
+#define MY_PLATFORM_Y		    150
+
+#define MY_CUP_1_X			    910
+#define MY_CUP_1_Y			    2000-830
+#define MY_CUP_2_X			    250
+#define MY_CUP_2_Y			    250
+#define MY_CUP_3_X				1500
+#define MY_CUP_3_Y				2000-1650
+#define CUP_DIAMETER            94
+
+#define MY_CINEMA_UP_X		2800
+#define MY_CINEMA_UP_Y		1400
+#define MY_CINEMA_DOWN_X	2800
+#define MY_CINEMA_DOWN_Y	600
+
+#define MY_CINEMA_UP_EDGE_Y     (1200+22)
+#define MY_CINEMA_DOWN_EDGE_Y   (800-22)
+
+
+#define OPP_CINEMA_UP_X		200
+#define OPP_CINEMA_UP_Y		1400
+#define OPP_CINEMA_DOWN_X	200
+#define OPP_CINEMA_DOWN_Y	600
+
+#define MY_STAIRS_X		    1250
+#define MY_STAIRS_Y		    1400
+
+#define MY_HOME_SPOTLIGHT_X	400
+#define MY_HOME_SPOTLIGHT_Y	1000
+
+#define MY_HOME_POPCORNS_X	270
+#define MY_HOME_POPCORNS_Y	1000
+
+#define MY_CLAP_1_X		    320
+#define MY_CLAP_2_X		    920
+
+#ifdef ONLY_MAIN_ROBOT
+#define MY_CLAP_3_X		    (AREA_X-(700-160-80-20)) //2380
+#else
+#define MY_CLAP_3_X		    2380
+#endif
+
+#define MY_CLAP_Y		    0
+
+#define PLATFORM_WIDTH      100
+
+#define ROBOT_CENTER_TO_MOUTH	105
+#define STANDS_RADIOUS			30
+
+
+
+/* XXX keep synchronized with secondary robot */
+#define STAIRS_EDGE_Y			(AREA_Y-600)	//(AREA_Y-580)
+#define STAIRS_EDGE_X			(967)
+#define STAIRS_WIDE_HALF		(50)
+#define CARPET_LEFT_INFRONT_X	(STAIRS_EDGE_X+STAIRS_WIDE_HALF+ROBOT_SEC_CENTER_TO_ARM+20)
+#define CARPET_RIGHT_INFRONT_X	((AREA_X/2)-STAIRS_WIDE_HALF-ROBOT_SEC_CENTER_TO_ARM-20)
+
+
 /* zones */
-#define ZONE_TREE_1				0
-#define ZONE_TREE_2       		1
-#define ZONE_TREE_3				2
-#define ZONE_TREE_4				3
-#define ZONE_HEART_1			4
-#define ZONE_HEART_2_LEFT 		5
-#define ZONE_HEART_3  			6
-#define ZONE_HEART_2_UP			7
-#define ZONE_HEART_2_DOWN		8
-#define ZONE_HEART_2_RIGHT		9
-#define ZONE_FIRE_1   	    	10
-#define ZONE_FIRE_2	        	11
-#define ZONE_FIRE_3	        	12
-#define ZONE_FIRE_4	        	13
-#define ZONE_FIRE_5				14
-#define ZONE_FIRE_6				15
-#define ZONE_TORCH_1   			16
-#define ZONE_TORCH_2			17
-#define ZONE_TORCH_3			18
-#define ZONE_TORCH_4        	19
-#define ZONE_M_TORCH_1 			20
-#define ZONE_M_TORCH_2 			21
-#define ZONE_BASKET_1    		22
-#define ZONE_BASKET_2       	23
-#define ZONE_MAMOOTH_1      	24
-#define ZONE_MAMOOTH_2      	25
-#define ZONE_FRESCO      		26
-//#define ZONE_HOME_RED       	27
-//#define ZONE_HOME_YELLOW    	28
-#define ZONES_MAX		    	27
+#define ZONE_MY_STAND_GROUP_1			0
+#define ZONE_MY_STAND_GROUP_2			1
+#define ZONE_MY_STAND_GROUP_3			2
+#define ZONE_MY_STAND_GROUP_4			3
 
-/* max number of each elements */
-#define TREE_NB_MAX     4
-#define FIRE_NB_MAX     6
-#define HEART_NB_MAX    3
-#define TORCH_NB_MAX    4
-#define MTORCH_NB_MAX   2
-#define MAMOOTH_NB_MAX  2
-#define BASKET_NB_MAX   2
+#define ZONE_MY_POPCORNMAC				4
+#define ZONE_OPP_POPCORNMAC				5
 
+#define ZONE_POPCORNCUP_1				6
+#define ZONE_POPCORNCUP_2				7
+#define ZONE_POPCORNCUP_3				8
 
-/************************************************************* 
- * Strat data structures 
+#define ZONE_MY_CINEMA_UP				9
+#define ZONE_MY_CINEMA_DOWN_SEC			10
+#define ZONE_MY_CINEMA_DOWN_MAIN		11
+
+#define ZONE_MY_STAIRS					12
+#define ZONE_MY_STAIRWAY				13
+
+#define ZONE_MY_CLAP_1					14
+#define ZONE_MY_CLAP_2					15
+#define ZONE_MY_CLAP_3					16
+
+#define ZONE_MY_PLATFORM				17
+
+#define ZONE_MY_HOME_OUTSIDE			18
+#define ZONE_MY_HOME_POPCORNS			19
+#define ZONE_MY_HOME_SPOTLIGHT			20
+
+#define ZONE_BLOCK_UPPER_SIDE    		21
+#define ZONE_FREE_UPPER_SIDE    		22
+#define ZONE_CUP_NEAR_STAIRS			23
+#define ZONE_CUP_MIDDLE				24
+#define ZONES_MAX		    			25
+
+/*
+ * Strat diagram, valid for YELLOW.
+ *
+ * s1: orphan stand 1
+ * G1: stand group 1
+ * c1: popcorn cup 1
+ *
+ *           popcorn                         opp popcorn
+ *        G4 machines  G3                    machines
+ * 2000 +-!---|----|---!+--------+--------+----|----|-----+
+ *      | s1          s2|        |        |               |
+ *      |             s3|        |        |               |
+ *      |------·        |========|========|        ·------|
+ * opp  |      |        |========|========|        |      | cinema_up
+ * cinema_up   |        ·========·========·        |      |
+ *      |------+--·    c1                       ·--+------|
+ *      | home     |                           | opp home |
+ *   y  | yellow   |                           | green    |
+ *      |------+--·   s4                        ·--+------|
+ * opp  |      |       · G1··s5                    |      | cinema_down
+ * cinema_down |         ·                         |      |
+ *      |------·       s6        c3                ·------|
+ *    G2··s8 c2          ·---------------·                |
+ *      | s7             | +-----------+ |                |
+ *   0  +----|---|---|---+-+-----------+-+---|---|---|----+
+ *      0  clap1    clap2        x             clap3      3000
+ *
+ */
+
+/*************************************************************
+ * Strat data structures
  ************************************************************/
 
 /* boulding box */
@@ -274,28 +303,35 @@ struct conf {
 /* depends on flags the robot
  * will do different things */
 	uint8_t flags;
-#define CONF_FLAG_XXX   1
+#define CONF_FLAG_DO_TOWER                  1
+#define CONF_FLAG_DO_STAND_FAST_GROUP_1     2
+#define CONF_FLAG_DO_ESCAPE_UPPER_ZONE		4
+#define CONF_FLAG_DO_CUP_EXCHANGE			8
 };
 
 
 /* strat structure */
 typedef struct {
+
 	/* type */
 	uint16_t type;
-	#define ZONE_TYPE_TREE			0
-	#define ZONE_TYPE_FIRE			1
-	#define ZONE_TYPE_HEART			2
-	#define ZONE_TYPE_TORCH			3
-	#define ZONE_TYPE_M_TORCH		4
-	#define ZONE_TYPE_FRESCO		5
-	#define ZONE_TYPE_MAMOOTH		6
-	#define ZONE_TYPE_BASKET		7
-	#define ZONE_TYPE_HOME			8
-	#define ZONE_TYPE_MAX			9
+	#define ZONE_TYPE_STAND			0
+	#define ZONE_TYPE_LIGHTBULB		1
+	#define ZONE_TYPE_POPCORNMAC	2
+	#define ZONE_TYPE_POPCORNCUP	3
+	#define ZONE_TYPE_HOME			4
+	#define ZONE_TYPE_CINEMA		5
+	#define ZONE_TYPE_STAIRS		6
+	#define ZONE_TYPE_STAIRWAY		7
+	#define ZONE_TYPE_CLAP			8
+	#define ZONE_TYPE_PLATFORM		9
+	#define ZONE_TYPE_STRAT			10
+	#define ZONE_TYPE_MAX			11
 
-	/* target point */
+    /* target point */
+#define WORK_NULL 0
 	int16_t x;
-	int16_t y;	
+	int16_t y;
 
 	/* boundinbox */
 	int16_t x_down;
@@ -304,12 +340,13 @@ typedef struct {
 	int16_t y_up;
 
 	/* init point */
+#define INIT_NULL 0
 	int16_t init_x;
 	int16_t init_y;
 
 	/* priority */
 	uint8_t prio;
-	#define ZONE_PRIO_0			 0
+	#define ZONE_PRIO_0		0
 	#define ZONE_PRIO_10		10
 	#define ZONE_PRIO_20		20
 	#define ZONE_PRIO_30		30
@@ -327,24 +364,25 @@ typedef struct {
 	#define ZONE_CHECKED_OPP	2
 	#define ZONE_SEC_ROBOT	   	4
 	#define ZONE_AVOID		   	8
-  
-  
-	/* opponent statistics */
-	microseconds opp_time_zone_us;
-	microseconds last_time_opp_here; 	/*in us, since beginning of the match*/
-	
+
 	/* which robots can perform this action */
 	uint8_t robot;
 	#define MAIN_ROBOT  0
 	#define SEC_ROBOT   1
 	#define BOTH_ROBOTS 2
-	
+	#define ROBOT_MAX 	2
+
 } strat_zones_t;
 
-/* information about strat stuff */
+/* information about general strat stuff */
 struct strat_infos {
+
+	/* debug */
 	uint8_t dump_enabled;
 	uint8_t debug_step;
+	uint8_t match_ends;
+
+	/* bounding box area */
 	struct bbox area_bbox;
 
     /* strat configuration */
@@ -352,46 +390,69 @@ struct strat_infos {
 
 	/* points areas */
 	strat_zones_t zones[ZONES_MAX];
-	
-	/* our zone position */
-	uint8_t current_zone;
-	uint8_t goto_zone;
-	uint8_t last_zone;
 
-	/* state of the robot */
-	uint8_t harvested_trees;     /* One unity per harvested tree */
-	uint8_t fires_inside; 		 /* One unity per fire inside */
+#define STR_HOMOLOGATION 0
+#define STR_BASE 1
+#define STR_QUALIFICATION 2
+	uint8_t match_strategy;
 
+
+#define MSG_WAIT_START 0
+#define MSG_START 1
+#define MSG_UPPER_SIDE_IS_BLOCKED 2
+#define MSG_UPPER_SIDE_FREE	   3
+#define MSG_UPPER_SIDE_IS_FREE	   4
+#define MSG_RELEASE_CUP_NEAR_STAIRS	   5
+#define MSG_CUP_RELEASED	   6
+#define MSG_RELEASE_CUP_IMPOSSIBLE	  7
+	/* message */
+	uint8_t msg;
+
+    /* done notifications  */
+#define DONE_STAND_4    1
+#define DONE_STAND_5    2
+#define DONE_CUP_3      4
+    uint8_t done_flags;
+
+#if 0
 	/* opponent zone position */
 	uint8_t opp_current_zone;
 	uint8_t opp2_current_zone;
 
 	/* opponent statistics */
 	uint8_t opp_score;
-	uint8_t opp_harvested_trees;
+#endif
+};
 
-    uint8_t tree_harvesting_interrumped;
+/* strat specific for each robot */
+struct strat_smart
+{
+	/* our zone position */
+	uint8_t current_zone;
+	uint8_t goto_zone;
+	uint8_t last_zone;
+
+	/* strategy */
+	uint8_t current_strategy;
+	uint8_t key_trigger;
 };
 
 extern struct strat_infos strat_infos;
-
-/* get zone struct index */
-extern char numzone2name[ZONES_MAX + 1][3];
-
-/* points we get from each zone */
-extern uint8_t strat_zones_points[ZONES_MAX];
+extern struct strat_smart strat_smart[ROBOT_MAX];
 
 #ifndef HOST_VERSION_OA_TEST
 
-/************************************************************* 
+/*************************************************************
  * Functions headers of strat files
  ************************************************************/
 
 /********************************************
- * in strat.c 
+ * in strat.c
  *******************************************/
-void strat_set_bounding_box(uint8_t type);
 
+void strat_set_bounding_box(void);
+
+char *get_zone_name(uint8_t zone_num);
 void strat_dump_infos(const char *caller);
 void strat_dump_conf(void);
 void strat_reset_infos(void);
@@ -400,98 +461,147 @@ void strat_preinit(void);
 void strat_init(void);
 void strat_exit(void);
 
-uint8_t strat_main(void);
-uint8_t strat_begin(void);
-uint8_t strat_begin_alcabot (void);
-
+/* Strat main loop and events */
 void strat_event(void *dummy);
-void strat_event_enable(void);
-void strat_event_disable(void);
+uint8_t strat_main(void);
 
 /********************************************
- * in strat_fruits.c 
+ * in strat_spotlight.c
  *******************************************/
 
-/* harvest fruits from trees */
-uint8_t strat_harvest_fruits(int16_t x, int16_t y, uint8_t clean_before);
-uint8_t strat_leave_fruits(void);
-uint8_t strat_leave_fruits_clean(void);
+#define TOWER_BUILDING_TIME	(MATCH_TIME-20)
+#define STAND_RELEASE_TIME	(MATCH_TIME-10)
+
+/**
+ *	Harvest several the 2 stands and the central cup in a path line
+ *	return END_TRAJ if the work is done, err otherwise
+ */
+uint8_t strat_harvest_stands_and_cup_inline (void);
+
+
+/**
+ *	Harvest orphan stands
+ *	return END_TRAJ if the work is done, err otherwise
+ */
+#define STANDS_HARVEST_BACK_INIT_POS 		1
+#define STANDS_HARVEST_CALIB_X       		2
+#define STANDS_HARVEST_XY_IS_ROBOT_POSITION	4
+#define STANDS_HARVEST_STAND_GROUP_3		8
+
+uint8_t strat_harvest_orphan_stands (int16_t x, int16_t y, uint8_t side_target,
+									 uint8_t side, uint8_t blade_angle,
+									 uint16_t harvest_speed, uint8_t flags);
+
+/**
+ *	Built a spotlight and release
+ *	return END_TRAJ if the work is done, err otherwise
+ */
+
+#define STANDS_RELEASE_DO_TOWER		1
+#define STANDS_RELEASE_TIME_OVER	2
+uint8_t strat_buit_and_release_spotlight (int16_t x, int16_t y, uint8_t side, uint8_t flags);
+
+/* decides if we need build a tower */
+uint8_t strat_need_build_a_tower (void);
+
+/* escape from upper zone */
+uint8_t strat_escape_form_upper_zone(uint8_t flags);
 
 /********************************************
- * in strat_fire.c 
+ * in strat_popcorn.c
  *******************************************/
-/* goto orphan fire */
-uint8_t strat_goto_orphan_fire (uint8_t zone_num) ;
 
-/* harvest orphan fires  */
-uint8_t strat_harvest_orphan_fire (uint8_t zone_num);
+/**
+ *	Harvest popcorn cups
+ *	return END_TRAJ if the work is done, err otherwise
+ */
 
-/* goto torch */
-uint8_t strat_goto_torch (uint8_t zone_num);
+#define POPCORN_CUP_HARVEST_DO_NOT_RELEASE	1
 
-/* harvest torch  */
-uint8_t strat_harvest_torch (uint8_t zone_num);
+uint8_t strat_harvest_popcorn_cup (int16_t x, int16_t y, uint8_t side, uint8_t flags);
 
-/* goto mobile torch */
-uint8_t strat_goto_mobile_torch (uint8_t zone_num);
+/* release front cup */
+void strat_release_popcorn_cup_front (void);
 
-/* pickup mobile torch, top fire */
-uint8_t strat_pickup_mobile_torch_top (uint8_t zone_num);
+/**
+ *	Harvest popcorns machine
+ *	return END_TRAJ if the work is done, err otherwise
+ */
+uint8_t strat_harvest_popcorns_machine (int16_t x, int16_t y);
 
-/* pickup mobile torch, middle fire */
-uint8_t strat_pickup_mobile_torch_mid (uint8_t zone_num);
+/**
+ *	Release popcorns in home area
+ *	return END_TRAJ if the work is done, err otherwise
+ */
 
-/* pickup mobile torch, bottom fire */
-uint8_t strat_pickup_mobile_torch_bot (uint8_t zone_num);
+#define POPCORNS_RELEASE_ONLY_CUP	1
 
-/* goto heart of fire */
-uint8_t strat_goto_heart_fire (uint8_t zone_num);
-
-/* dump stored fires on heart of fire making a puzzle */
-uint8_t strat_make_puzzle_on_heart (uint8_t zone_num);
+uint8_t strat_release_popcorns_in_home (int16_t x, int16_t y, uint8_t flags);
 
 
 /********************************************
- * in strat_main.c 
+ * in strat_clapperboard.c
  *******************************************/
 
-uint8_t strat_main_loop(void);
+/**
+ *	Close clapper board
+ *	return END_TRAJ if the work is done, err otherwise
+ */
+uint8_t strat_close_clapperboards (int16_t x, int16_t y, uint8_t side, uint8_t flags);
+
+/********************************************
+ * in strat_main.c
+ *******************************************/
 
 /* return new work zone, -1 if any zone is found */
-int8_t strat_get_new_zone(void);
+int8_t strat_get_new_zone(uint8_t robot);
 
 /* return END_TRAJ if zone is reached */
-uint8_t strat_goto_zone(uint8_t zone_num);
+uint8_t strat_goto_zone(uint8_t robot, uint8_t zone_num);
 
 /* return END_TRAJ if the work is done */
-uint8_t strat_work_on_zone(uint8_t zone_num);
+uint8_t strat_work_on_zone(uint8_t robot, uint8_t zone_num);
 
 /* debug state machines step to step */
 void state_debug_wait_key_pressed(void);
 
+/* debug strat step to step */
+void strat_debug_wait_key_pressed (uint8_t robot);
+
 /* smart play */
-//#define DEBUG_STRAT_SMART
-uint8_t strat_smart(void);
-void recalculate_priorities(void);
+uint8_t strat_smart_main_robot(void);
+uint8_t strat_smart_secondary_robot(void);
+
+/* enable/disable smart_strat of secondary_robot */
+void strat_secondary_robot_enable (void);
+void strat_secondary_robot_disable (void);
+uint8_t strat_secondary_robot_is_enabled (void);
+
 
 /* tracking of zones where opp has been working */
 void strat_opp_tracking (void);
 
-/* homologation */
-void strat_homologation(void);
+/* Messages between robots */
+void strat_smart_set_msg (uint8_t msg);
+uint8_t strat_smart_get_msg (void);
+uint8_t strat_wait_sync_main_robot(uint8_t msg);
+void strat_strategy_time(void);
+
+/********************************************
+ * in strat_strategies.c
+ *******************************************/
+
+void strat_set_next_sec_strategy(void);
+void strat_set_next_main_strategy(void);
+void strat_change_sequence_homologation(uint8_t robot);
+void strat_change_sequence_base(uint8_t robot);
+void strat_change_sequence_qualification(uint8_t robot);
 
 
-uint8_t goto_basket_path_down(void);
-uint8_t goto_basket_path_up(void);
-uint8_t goto_basket_best_path(uint8_t protect_zone_num);
-uint8_t strat_wipe_out(void);
-void strat_initial_move(void);
-uint8_t strat_leave_fruits_from_fresco(void);
-uint8_t strat_leave_fruits_from_home_red(void);
 
 #else /* HOST_VERSION_OA_TEST */
 
-void strat_set_bounding_box(uint8_t type);
+void strat_set_bounding_box(void);
 
 #endif /* HOST_VERSION_OA_TEST */
 

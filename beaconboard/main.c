@@ -224,8 +224,8 @@ int main(void)
 #endif
 
 	/* hello */
-	printf_P(PSTR("\r\n"));
-	printf_P(PSTR("Don't turn it on, take it a part!!\r\n"));
+	//printf_P(PSTR("\r\n"));
+	//printf_P(PSTR("Don't turn it on, take it a part!!\r\n"));
 	
 	/* command line, never returns */
 	cmdline_interact();

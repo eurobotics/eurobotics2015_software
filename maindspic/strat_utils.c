@@ -45,7 +45,6 @@
 #include <quadramp.h>
 #include <control_system_manager.h>
 #include <trajectory_manager.h>
-#include <trajectory_manager_utils.h>
 #include <vect_base.h>
 #include <lines.h>
 #include <polygon.h>
@@ -60,7 +59,7 @@
 #include "../common/i2c_commands.h"
 
 #include "main.h"
-#include "../maindspic/strat_utils.h"
+#include "strat_utils.h"
 #include "strat.h"
 #include "strat_base.h"
 #include "sensor.h"
@@ -240,7 +239,7 @@ uint8_t robot_is_in_area(int16_t margin)
 
 
 /* return 1 or 0 depending on which side of a line (y=cste) is the
- * robot. works in red or green color. */
+ * robot. works in yellow or green color. */
 uint8_t y_is_more_than(int16_t y)
 {
 	int16_t posy;
@@ -256,7 +255,7 @@ uint8_t y_is_more_than(int16_t y)
 
 
 /* return 1 or 0 depending on which side of a line (x=cste) is the
- * robot. works in red or green color. */
+ * robot. works in yellow or green color. */
 
 uint8_t x_is_more_than(int16_t x)
 {
@@ -448,10 +447,10 @@ uint8_t get_color(void)
 /* get the color of the opponent robot */
 uint8_t get_opponent_color(void)
 {
-	if (mainboard.our_color == I2C_COLOR_RED)
+	if (mainboard.our_color == I2C_COLOR_GREEN)
 		return I2C_COLOR_YELLOW;
 	else
-		return I2C_COLOR_RED;
+		return I2C_COLOR_GREEN;
 }
 
 
@@ -817,8 +816,8 @@ uint8_t robots_are_near(void)
 	opp2_there = get_opponent2_da(&opp2_d, &opp2_a);
 #endif
 #ifdef ROBOT_2ND
-	int16_t robot_2nd_d, robot_2nd_a;
-	r2nd_there = get_robot_2nd_da(&robot_2nd_d, &robot_2nd_a);
+	//int16_t robot_2nd_d, robot_2nd_a;
+	//r2nd_there = get_robot_2nd_da(&robot_2nd_d, &robot_2nd_a);
 #endif
 	
 	if((opp_there == -1) && (opp2_there == -1) && (r2nd_there == -1))
@@ -833,8 +832,8 @@ uint8_t robots_are_near(void)
 #endif
 
 #ifdef ROBOT_2ND
-	if (robot_2nd_d < 500)
-		return 1;
+	//if (robot_2nd_d < 500)
+	//	return 1;
 #endif
 
 	return 0;
@@ -851,13 +850,16 @@ uint8_t opponents_are_in_area(int16_t x_up, int16_t y_up,int16_t x_down, int16_t
 	/* get robot coordenates */
 	opp1_there = get_opponent1_xy(&opp_x, &opp_y);
 	opp2_there = get_opponent2_xy(&opp2_x, &opp2_y);
+
+	//DEBUG (E_USER_STRAT, "opp1 x=%d, y=%d / opp2 x=%d, y=%d", opp_x, opp_y, opp2_x, opp2_y);
+
 	
 	/* return if no robots */
 	if(opp1_there == -1 && opp2_there == -1)
 		return 0;
 
 	/* Opponent 1 */
-	if (mainboard.our_color == I2C_COLOR_RED) {
+	if (mainboard.our_color == I2C_COLOR_GREEN) {
 		if ((opp_x > x_up && opp_x < x_down)
 			&& (opp_y < y_up && opp_y > y_down) )
 			return 1;
@@ -869,7 +871,7 @@ uint8_t opponents_are_in_area(int16_t x_up, int16_t y_up,int16_t x_down, int16_t
 	}
 	
 	/* Opponent 2 */
-	if (mainboard.our_color == I2C_COLOR_RED) {
+	if (mainboard.our_color == I2C_COLOR_GREEN) {
 		if ((opp2_x > x_up && opp2_x < x_down)
 			&& (opp2_y < y_up && opp2_y > y_down) )
 			return 1;

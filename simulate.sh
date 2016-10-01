@@ -2,19 +2,29 @@
 
 # COMPILE CODE AND START THE SIMULATION WITH TERMINAL FOR BOTH ROBOTS #
 
-if [ "$1" == "" ] 
+MAIN_ROBOT_DIR=/home/spolki/eurobotics2015_software/maindspic
+SECONDARY_ROBOT_DIR=/home/spolki/eurobotics2015_software/secondary_robot
+
+if [ "$1" == "" ]
 then
 echo "Please select the code you want to compile: main/sec"
 exit
 fi
 
-if [ "$1" == "sec" ] 
+if [ "$1" == "sec" ]
 then
-cd ~/eurobotics2015_software/secondary_robot/
+cd $SECONDARY_ROBOT_DIR
 else
-cd ~/eurobotics2015_software/maindspic/
+cd $MAIN_ROBOT_DIR
 fi
-make H=1
-python ~/eurobotics2015_software/maindspic/display.py &
 
-gnome-terminal --title="SECONDARY ROBOT" --tab -e "bash -c ~/eurobotics2015_software/maindspic/main H=1" gnome-terminal --title="MAIN ROBOT" --tab -e "bash -c ~/eurobotics2015_software/secondary_robot/main H=1" 
+if [ "$2" == "clean" ]
+then
+make H=1 clean
+make H=1 mrproper
+fi
+
+#make H=1 -s
+colormake H=1 -s
+python $MAIN_ROBOT_DIR/display.py &
+gnome-terminal --title="Secondary Robot" --tab -e "bash -c $MAIN_ROBOT_DIR/main H=1" gnome-terminal --title="Main Robot" --tab -e "bash -c $SECONDARY_ROBOT_DIR/main H=1" 

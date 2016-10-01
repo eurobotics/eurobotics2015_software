@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Revision : $Id: commands_cs.c,v 1.1 2009/03/29 18:44:54 zer0 Exp $
+ *  Revision : $Id$
  *
  *  Olivier MATZ <zer0@droids-corp.org>
  */
@@ -447,7 +447,7 @@ static void cmd_quadramp_parsed(void *parsed_result, void *show)
 		quadramp_set_2nd_order_vars(&csb->qr, res->ap, res->an);
 	}
 
-	printf_P(PSTR("quadramp %s %2.2f %2.2f %2.2f %2.2f\r\n"),
+	printf_P(PSTR("quadramp %s %ld %ld %ld %ld\r\n"),
 		 res->cs.csname,
 		 csb->qr.var_2nd_ord_pos,
 		 csb->qr.var_2nd_ord_neg,

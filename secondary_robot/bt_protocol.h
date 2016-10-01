@@ -1,6 +1,6 @@
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Bali�as Santos <javier@arc-robots.org> and Silvia Santano
+ *  Javier Baliñas Santos <javier@arc-robots.org> and Silvia Santano
  */
 
 #ifndef __BT_PROTOCOL_H__
@@ -37,44 +37,23 @@ void bt_send_status (void);
 
 /******************* BT PROTOCOL COMMANDS *************************************/
 
-
+void bt_strat_exit (void);
+void bt_strat_init (void);
 void bt_auto_position (void);
-
 void bt_set_color (uint8_t color);
 
 void bt_trajectory_goto_xy_abs (int16_t x, int16_t y, int16_t args_checksum);
-
 void bt_trajectory_goto_backward_xy_abs (int16_t x, int16_t y, int16_t args_checksum);
-
+void bt_trajectory_goto_xy_rel(int16_t x, int16_t y, int16_t args_checksum);
 void bt_trajectory_goto_forward_xy_abs (int16_t x, int16_t y, int16_t args_checksum);
-
 void bt_goto_and_avoid (int16_t x, int16_t y, int16_t args_checksum);
-
 void bt_goto_and_avoid_forward (int16_t x, int16_t y, int16_t args_checksum);
-
 void bt_goto_and_avoid_backward (int16_t x, int16_t y, int16_t args_checksum);
 
-void bt_fresco(void);
-
-void bt_mamooth(int16_t balls_mamooth_1, int16_t balls_mamooth_2, int16_t args_checksum);
-
-void bt_patrol_fresco_mamooth(int16_t balls_mamooth_1, int16_t balls_mamooth_2, int16_t args_checksum);
-
-void bt_net(void);
-
-void bt_patrol(int16_t x1, int16_t y1,int16_t x2, int16_t y2, int16_t args_checksum);
-
-void bt_protect_h(uint8_t heart);
-
-void bt_strat_exit (void);
-
-void bt_strat_init (void);
-
-/* TODO bt_trajectory_XXXX and bt_goto_avoid_XXXX functions */
-
-
+void bt_task_pick_cup(int16_t x, int16_t y, uint8_t side, int16_t args_checksum);
+void bt_task_carpet(void);
+void bt_task_stairs(void);
+void bt_task_bring_cup(int16_t x, int16_t y, uint8_t side, int16_t args_checksum);
+void bt_task_clap(int16_t x, int16_t y, int16_t args_checksum);
 
 #endif /* __BT_PROTOCOL_H__ */
-
-
-

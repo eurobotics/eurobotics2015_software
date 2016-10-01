@@ -15,8 +15,15 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Revision : $Id: main.c,v 1.9.4.5 2007-06-01 09:37:22 zer0 Exp $
+ *  Revision : $Id$
  *
+ */
+
+/*  
+ *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
+ *  Javier Baliñas Santos <javier@arc-robots.org>
+ *
+ *  Aversive for dsPIC implelentation
  */
 
 #include <stdio.h>
@@ -44,7 +51,6 @@
 #include <blocking_detection_manager.h>
 #include <robot_system.h>
 #include <position_manager.h>
-#include <trajectory_manager_utils.h>
 
 #include <parse.h>
 #include <rdline.h>
@@ -417,9 +423,9 @@ void robotsim_pwm(void *arg, int32_t val)
 {
 	//	printf("%p, %d\n", arg, val);
 	if (arg == LEFT_MOTOR)
-		l_pwm = (val * (1.25));
+		l_pwm = (val / (15.0));
 	else if (arg == RIGHT_MOTOR)
-		r_pwm = (val * (1.25));
+		r_pwm = (val / (15.0));
 }
 
 int32_t robotsim_encoder_get(void *arg)

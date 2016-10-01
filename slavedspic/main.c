@@ -131,22 +131,20 @@ void io_pins_init(void)
 	/* sensors */
 	AD1PCFGL = 0xFF;	// all analog pins are digital
 
-	/* used as GPO (EV E2040)*/
-	//XXX _TRISB11 = 0;		// SENSOR1
-	//XXX _TRISB10 = 0;		// SENSOR2
+	_TRISB11 	= 1;		// SENSOR1
+	_TRISB10 	= 1;		// SENSOR2
 	_TRISC8 	= 1;		// SENSOR3
 	_TRISA8 	= 1;		// SENSOR4
 	_TRISC3 	= 1;		// SENSOR5
 	_TRISB4 	= 1;		// SENSOR6
-#ifndef EUROBOT_2012_BOARD
-	_TRISC2 	= 1;		// SENSOR7
-#endif
+	//_TRISC2 	= 1;		// SENSOR7 XXX not 5V tolerant MCU destruction
+
 
 
 	/* dc motors */
 	_TRISB12 = 0;	// SLAVE_MOT_2_INA
 	_TRISB13 = 0;	// SLAVE_MOT_2_INB
-	_LATB12  = 0;	// initialy breaked
+	_LATB12  = 0;	// initialy braked
 	_LATB13  = 0;
 
 	_TRISC6 = 0;	// SLAVE_MOT_1_INA
@@ -170,26 +168,9 @@ void io_pins_init(void)
 	_LATA7   = 0;	// initialy breaked
 	
 	/* servos  */
-
-	/* XXX vacum motors */
-	_TRISC1	= 0;
-	_LATC1 = 1;
-	_TRISB3 = 0;
-	_LATB3 = 1;
-
-	/* XXX electro valvules */
-	_TRISB11 = 0;		// SENSOR1
-	_LATB11 = 0;
-	_TRISB10 = 0;		// SENSOR2
-	_LATB10 = 0;
-
-	/* servos  */
-	// XXX _RP17R = 0b10010; // OC1 -> RP17(RC1) -> SLAVE_SERVO_PWM_1
-	// XXX _RP3R  = 0b10100; // OC3 -> RP3(RB3)  -> SLAVE_SERVO_PWM_3
+	_RP17R = 0b10010; // OC1 -> RP17(RC1) -> SLAVE_SERVO_PWM_1
+	_RP3R  = 0b10100; // OC3 -> RP3(RB3)  -> SLAVE_SERVO_PWM_3
 	_RP16R = 0b10011; // OC2 -> RP16(RC0) -> SLAVE_SERVO_PWM_2
-#ifdef EUROBOT_2012_BOARD
-	_RP18R = 0b10101; // OC4 -> RP18(RC2) -> SLAVE_SENSOR_7
-#endif
 		
 	/* encoders */
 	_QEA1R 	= 21;	// QEA1 <- RP21 <- SLAVE_ENC_CHA
@@ -207,17 +188,10 @@ void io_pins_init(void)
   	_RP7R 	= 3;	// U1TX -> RP7 -> SLAVE_UART_TX
 	_TRISB7	= 0;	// U1TX is output
 
-#ifndef EUROBOT_2011_BOARD	
 	_U2RXR 	= 9;	// U2RX <- RP9 <- SERVOS_AX12_UART
   	_RP9R 	= 5;	// U2TX -> RP9 -> SERVOS_AX12_UART
 	_TRISB9	= 0;	// U2TX is output
  	_ODCB9 	= 1;	// For half-duplex mode RP9 is open collector
-#else
-	_U2RXR 	= 9;	// U2RX <- RP4 <- SERVOS_AX12_UART
-  	_RP4R 	= 5;	// U2TX -> RP4 -> SERVOS_AX12_UART
-	_TRISB4	= 0;	// U2TX is output
- 	_ODCB4 	= 1;	// For half-duplex mode RP4 is open collector
-#endif
 }
 
 int main(void)
@@ -276,24 +250,22 @@ int main(void)
 
 	/* DO FLAGS */
 	/* note: cs is enabled after calibration */
-	slavedspic.flags = DO_ENCODERS | DO_POWER | DO_BD;
+	slavedspic.flags = DO_ENCODERS | DO_POWER | DO_BD | DO_CS;
 
 
 	/* DAC_MC */
-	dac_mc_channel_init(&gen.dac_mc_left, 1, CHANNEL_L,
-							  DAC_MC_MODE_SIGNED | DAC_MC_MODE_SIGN_INVERTED, &LATA, 10, NULL, 0);
-	dac_mc_set(&gen.dac_mc_left, 0);
+	//dac_mc_channel_init(&gen.dac_mc_left, 1, CHANNEL_L,
+	//						  DAC_MC_MODE_SIGNED | DAC_MC_MODE_SIGN_INVERTED, &LATA, 10, NULL, 0);
+	//dac_mc_set(&gen.dac_mc_left, 0);
 
 	/* servos */
-	//pwm_servo_init(&gen.pwm_servo_oc1, 1, 600, 2400);
-	pwm_servo_init(&gen.pwm_servo_oc2, 2, 600, 2400); /* net 1800 - 100 / off/on*/
-	//pwm_servo_init(&gen.pwm_servo_oc3, 3, 600, 2400);
-	//pwm_servo_init(&gen.pwm_servo_oc4, 4, 600, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc1, 1, 600, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc2, 2, 600, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc3, 3, 600, 2400);
 	pwm_servo_enable();
-	//pwm_servo_set(&gen.pwm_servo_oc1, 1000);
-	pwm_servo_set(&gen.pwm_servo_oc2, 1000);
-	//pwm_servo_set(&gen.pwm_servo_oc3, 1000);
-	//pwm_servo_set(&gen.pwm_servo_oc4, 1000);
+	pwm_servo_set(&gen.pwm_servo_oc1, 700);
+	pwm_servo_set(&gen.pwm_servo_oc2, 310);
+	pwm_servo_set(&gen.pwm_servo_oc3, 0);
 
 	/* SCHEDULER */
 	scheduler_init();
@@ -313,6 +285,7 @@ int main(void)
 	scheduler_add_periodical_event_priority(do_sensors, NULL, 
 						10000L / SCHEDULER_UNIT, 
 						SENSOR_PRIO);
+
 	/* TIME */
 	time_init(TIME_PRIO);
 
@@ -321,7 +294,7 @@ int main(void)
 
 	/* LOGS */
  	gen.logs[0] = E_USER_ST_MACH;
-	gen.logs[1] = E_USER_ACTUATORS;
+	//gen.logs[1] = E_USER_ACTUATORS;
 	//gen.logs[2] = E_USER_CS;
 	gen.log_level = 5;
 

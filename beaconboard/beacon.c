@@ -65,8 +65,8 @@
 #define AREA_Y 2100
 
 /* convert coords according to our color */
-#define COLOR_X(x)     ((beaconboard.our_color==I2C_COLOR_RED)? (x) : (AREA_X-(x)))
-#define COLOR_Y(y)     ((beaconboard.our_color==I2C_COLOR_RED)? (y) : (AREA_Y-(y)))
+#define COLOR_X(x)     ((beaconboard.our_color==I2C_COLOR_GREEN)? (x) : (AREA_X-(x)))
+#define COLOR_Y(y)     ((beaconboard.our_color==I2C_COLOR_GREEN)? (y) : (AREA_Y-(y)))
 
 /* fixed beacon coordenates */
 #ifdef BEACON_MODE_EXTERNAL
@@ -132,7 +132,7 @@ void beacon_init(void)
 #endif
 
     /* default values */
-    beaconboard.our_color = I2C_COLOR_RED;
+    beaconboard.our_color = I2C_COLOR_GREEN;
 
 
     /* HARDWARE INIT */
@@ -651,6 +651,7 @@ void sensor_calc(uint8_t sensor)
     beacon_angle_dist_to_x_y(local_angle, local_dist, &result_x, &result_y);
 
     /* error if point is out off playground */
+#if 0
 #define PLAYGROUND_MARGIN 120
     if(result_x < PLAYGROUND_MARGIN || result_x > (3000-PLAYGROUND_MARGIN)) {
         BEACON_NOTICE("discard xy (%ld %ld), x is out of playground", result_x, result_y);
@@ -659,6 +660,24 @@ void sensor_calc(uint8_t sensor)
     if(result_y < PLAYGROUND_MARGIN || result_y > (2000-PLAYGROUND_MARGIN)) {
         BEACON_NOTICE("discard xy (%ld %ld), y is out of playground", result_x, result_y);
         goto error;
+    }
+#endif
+
+	/* saturation to the field limits */
+    if(result_x < 0) {
+		result_x = 0;
+    }
+
+    if(result_x > 3000) {
+		result_x = 3000;
+    }
+
+    if(result_y < 0) {
+		result_y = 0;
+    }
+
+    if(result_y > 2000) {
+		result_y = 2000;
     }
 
 

@@ -30,6 +30,11 @@
 #ifndef _STRAT_UTILS_H_
 #define _STRAT_UTILS_H_
 
+#define M_2PI (2*M_PI)
+
+#define DEG(x) ((x) * (180.0 / M_PI))
+#define RAD(x) ((x) * (M_PI / 180.0))
+
 struct xy_point {
 	int16_t x;
 	int16_t y;
@@ -84,12 +89,12 @@ uint8_t robot_is_in_area(int16_t margin);
 
 
 /* return 1 or 0 depending on which side of a line (y=cste) is the
- * robot. works in red or green color. */
+ * robot. works in yellow or green color. */
 uint8_t y_is_more_than(int16_t y);
 
 
 /* return 1 or 0 depending on which side of a line (x=cste) is the
- * robot. works in red or green color. */
+ * robot. works in yellow or green color. */
 uint8_t x_is_more_than(int16_t x);
 
 /* return 1 if x > x_opp or opponent not there */

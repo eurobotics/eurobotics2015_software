@@ -161,6 +161,7 @@ int cmdline_interact(void)
 	const char *history, *buffer;
 	int8_t ret, same = 0;
 	int16_t c;
+	static microseconds t1, t2 = 0;
 	
 	rdline_init(&gen.rdl, write_char, valid_buffer, complete_buffer);
 	sprintf(gen.prompt, "main > ");	

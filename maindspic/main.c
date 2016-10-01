@@ -1,6 +1,6 @@
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -47,7 +47,6 @@
 #include <quadramp.h>
 #include <control_system_manager.h>
 #include <trajectory_manager.h>
-#include <trajectory_manager_utils.h>
 #include <vect_base.h>
 #include <lines.h>
 #include <polygon.h>
@@ -93,19 +92,19 @@ static void main_timer_interrupt(void)
 {
 	/* scheduler tasks */
 	sei();
-	scheduler_interrupt();	
+	scheduler_interrupt();
 }
 
 /* main timer */
 void main_timer_init(void)
 {
 	/* use timer 1 */
-	T1CON = 0;              
-	IFS0bits.T1IF = 0;      
-	IEC0bits.T1IE = 1;      
-	TMR1 = 0x0000;  	
+	T1CON = 0;
+	IFS0bits.T1IF = 0;
+	IEC0bits.T1IE = 1;
+	TMR1 = 0x0000;
 	PR1 = SCHEDULER_UNIT * (unsigned long)((double)FCY / 1000000.0);
-	T1CONbits.TON = 1;  
+	T1CONbits.TON = 1;
 }
 
 /* timer 1 interrupt */
@@ -128,14 +127,14 @@ void io_pins_init(void)
 
 	/* analog inputs */
 	/* by default all analog pins are digital */
-	AD1PCFGL = 0xFF;	
+	AD1PCFGL = 0xFF;
 
 	/* leds */
 	_TRISA4 = 0;	/* MAIN_LED1 */
 	_TRISA8 = 0;	/* MAIN_LED2 */
 	_TRISC2 = 0;	/* MAIN_LED3 */
 	_TRISC8 = 0;	/* MAIN_LED4 */
-	
+
 	/* brushless motors */
 	_TRISA10 = 0; 	/* L_MOT_REV	*/
 	_TRISA7  = 0;	/* L_MOT_BREAK	*/
@@ -150,22 +149,22 @@ void io_pins_init(void)
 	_RP23R = 0b10011; /* OC2 -> RP23(RC7) -> MAIN_SERVO_PWM_2 */
 	_TRISC6 = 0;
 	_TRISC7	= 0;
-	
-	/* encoders */	
-	_QEA1R 	= 21;	/* QEA1 <- RP21(RC5) <- R_ENC_CHA */
-	_TRISC5 = 1;	
-	_QEB1R 	= 20;	/* QEB1 <- RP20(RC4) <- R_ENC_CHB */
+
+	/* encoders */
+	_QEA1R 	= 20;	/* QEA1 <- RP21(RC5) <- R_ENC_CHA */
+	_TRISC5 = 1;
+	_QEB1R 	= 21;	/* QEB1 <- RP20(RC4) <- R_ENC_CHB */
 	_TRISC4	= 1;
 
 	_QEA2R 	= 19;	/* QEA2 <- RP19(RC3) <- L_ENC_CHA */
-	_TRISC3 = 1;	
+	_TRISC3 = 1;
 	_QEB2R 	= 4;	/* QEB2 <- RP4(RB4)  <- L_ENC_CHB */
-	_TRISB4	= 1;	
-	
+	_TRISB4	= 1;
+
 	/* lasers */
 	AD1PCFGL &= ~(_BV(7));	/* AN7 <- MAIN_LASER_1 */
 	AD1PCFGL &= ~(_BV(6));	/* AN6 <- MAIN_LASER_2 */
-			
+
 	/* i2c */
 	/* XXX open collector */
 	_ODCB6 = 1;
@@ -177,7 +176,7 @@ void io_pins_init(void)
 	_TRISB8 	= 1;	/* U1RX is input	*/
   	_RP7R 	= 3;	/* U1TX -> RP7(RB7) -> MAIN_UART_TX	*/
 	_TRISB7	= 0;	/* U1TX is output	*/
-	
+
 	/* UART2 swap between BEACON and SLAVEDSPIC */
 	set_uart_mux(BEACON_CHANNEL);
 
@@ -197,7 +196,7 @@ void io_pins_init(void)
 
 
 int main(void)
-{	
+{
 	/* disable interrupts */
 	cli();
 
@@ -209,7 +208,7 @@ int main(void)
 
 	/* brake motors */
 	BRAKE_ON();
-	
+
 	/* oscillator */
 	oscillator_init();
 
@@ -229,7 +228,7 @@ int main(void)
 	/* init flags */
   	mainboard.flags = DO_ENCODERS  | DO_RS |
 		DO_POS | DO_POWER | DO_BD | DO_CS;
-	
+
 	/* bt protocol */
 	beaconboard.link_id = 0xFF;
 	robot_2nd.link_id = 0xFF;
@@ -249,7 +248,7 @@ int main(void)
 	/* UART */
 	uart_init();
 	uart_register_rx_event(CMDLINE_UART, emergency);
-#endif 
+#endif
 
 	/* LOGS */
 	error_register_emerg(mylog);
@@ -272,15 +271,21 @@ int main(void)
 	dac_mc_channel_init(&gen.dac_mc_right, 1, CHANNEL_R,
 											DAC_MC_MODE_SIGNED|DAC_MC_MODE_SIGN_INVERTED,
 										 	&LATB, 10, NULL, 0);
-	
+
 
 	dac_mc_channel_init(&gen.dac_mc_left, 1, CHANNEL_L,
 											DAC_MC_MODE_SIGNED,
 										 	&LATA, 10, NULL, 0);
-	
+
 	dac_mc_set(&gen.dac_mc_right, 0);
 	dac_mc_set(&gen.dac_mc_left, 0);
 
+	/* servos */
+	pwm_servo_init(&gen.pwm_servo_oc1, 1, 600, 2400);
+	pwm_servo_init(&gen.pwm_servo_oc2, 2, 600, 2400);
+	pwm_servo_enable();
+	pwm_servo_set(&gen.pwm_servo_oc1, 70);
+	pwm_servo_set(&gen.pwm_servo_oc2, 0);
 
 	/* MAIN TIMER */
 	main_timer_init();
@@ -295,7 +300,7 @@ int main(void)
 
 	/* EVENTS OR INIT MODULES THAT INCLUDE EVENTS */
 #ifndef HOST_VERSION
-	scheduler_add_periodical_event_priority(do_led_blink, NULL, 
+	scheduler_add_periodical_event_priority(do_led_blink, NULL,
 						EVENT_PERIOD_LED / SCHEDULER_UNIT, EVENT_PRIORITY_LED);
 #endif
 
@@ -312,10 +317,6 @@ int main(void)
 	/* i2c slaves polling (gpios and slavedspic) */
 	scheduler_add_periodical_event_priority(i2c_poll_slaves, NULL,
 						EVENT_PERIOD_I2C_POLL / SCHEDULER_UNIT, EVENT_PRIORITY_I2C_POLL);
-
-	/* beacon commnads and polling */
-	//scheduler_add_periodical_event_priority(beacon_protocol, NULL,
-	//				EVENT_PERIOD_BEACON_PULL / SCHEDULER_UNIT, EVENT_PRIORITY_BEACON_POLL);
 #endif
 	/* beacon and robot 2nd commnads and polling */
 	scheduler_add_periodical_event_priority(bt_protocol, NULL,
@@ -333,7 +334,7 @@ int main(void)
  	gen.logs[2] = E_USER_WT11;
  	//gen.logs[4] = E_USER_BT_PROTO;
  	gen.log_level = 5;
-	
+
 	/* reset strat infos */
 	strat_reset_infos();
 
@@ -342,7 +343,7 @@ int main(void)
 
 	/* wait to init of slavedspic */
 	wait_ms(2000);
-	
+
 	/* say hello */
 	printf("\r\n");
 	printf("Don't turn it on, take it a part!!\r\n");
@@ -350,32 +351,21 @@ int main(void)
 #ifdef HOST_VERSION
 	mainboard.our_color = I2C_COLOR_YELLOW;
 	strat_reset_pos(COLOR_X(200), 500, COLOR_A_ABS(0));
-	//strat_event_enable();
 #endif
 
 	/* program WT-11 */
 #if 0
 	time_wait_ms (1000);
-	printf ("+++\n\r");	  
+	printf ("+++\n\r");
 	time_wait_ms (1000);
-	printf ("SET BT NAME Grosnik\n\r");	
+	printf ("SET BT NAME Grosnik\n\r");
 	time_wait_ms (1000);
 	printf ("SET BT AUTH * gomaespuminos\n\r");
 	time_wait_ms (1000);
 #endif
-  
+
 	/* process commands, never returns */
 	cmdline_interact();
 
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-

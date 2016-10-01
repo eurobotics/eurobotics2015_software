@@ -20,7 +20,13 @@
  *  Olivier MATZ <zer0@droids-corp.org> 
  */
 
-/*   *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011) *  Javier Baliñas Santos <javier@arc-robots.org> * *  Code ported to family of microcontrollers dsPIC from *  commands_gen.c,v 1.4 2009/05/27 20:04:07 zer0 Exp  */
+/*  
+ *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2011)
+ *  Javier Baliñas Santos <javier@arc-robots.org>
+ *
+ *  Code ported to family of microcontrollers dsPIC from
+ *  commands_gen.c,v 1.4 2009/05/27 20:04:07 zer0 Exp 
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -184,6 +190,8 @@ parse_pgm_inst_t cmd_scheduler = {
 /**********************************************************/
 /* pwm_mc tests */
 
+void pwm_mc_set_or_disable(void *pwm, int32_t value);
+
 /* this structure is filled when cmd_pwm is parsed successfully */
 struct cmd_pwm_mc_result {
 	fixed_string_t arg0;
@@ -197,13 +205,15 @@ static void cmd_pwm_mc_parsed(void * parsed_result, __attribute__((unused)) void
 	void * pwm_mc_ptr = NULL;
 	struct cmd_pwm_mc_result * res = parsed_result;
 
-	if (!strcmp_P(res->arg1, PSTR("mod1_ch2")))
-		pwm_mc_ptr = &gen.pwm_mc_mod1_ch2;
-	else if (!strcmp_P(res->arg1, PSTR("mod2_ch1")))
+	//if (!strcmp_P(res->arg1, PSTR("mod1_ch2")))
+	//	pwm_mc_ptr = &gen.pwm_mc_mod1_ch2;
+	//else if (!strcmp_P(res->arg1, PSTR("mod2_ch1")))
 		pwm_mc_ptr = &gen.pwm_mc_mod2_ch1;
 
-	if (pwm_mc_ptr)
-		pwm_mc_set(pwm_mc_ptr, res->arg2);
+	//if (pwm_mc_ptr) {
+			pwm_mc_set_or_disable(pwm_mc_ptr, res->arg2);
+	//		pwm_mc_set(pwm_mc_ptr, res->arg2);
+	//}
 
 	printf_P(PSTR("done\r\n"));
 }
@@ -221,7 +231,7 @@ parse_pgm_inst_t cmd_pwm_mc = {
 	.help_str = help_pwm_mc,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_pwm_mc_arg0, 
-		(prog_void *)&cmd_pwm_mc_arg1, 
+//		(prog_void *)&cmd_pwm_mc_arg1, 
 		(prog_void *)&cmd_pwm_mc_arg2, 
 		NULL,
 	},
@@ -317,6 +327,7 @@ parse_pgm_inst_t cmd_pwm_servo_show_range = {
 	},
 };
 
+#if 0
 /**********************************************************/
 /* DAC MC tests */
 
@@ -359,7 +370,7 @@ parse_pgm_inst_t cmd_dac_mc = {
 		NULL,
 	},
 };
-
+#endif
 
 
 /**********************************************************/
@@ -376,17 +387,27 @@ static void cmd_sensor_parsed(void *parsed_result, __attribute__((unused)) void 
 {
 	struct cmd_sensor_result *res = parsed_result;
 	uint8_t i, loop = 0;
+	uint16_t sensors, sensors_old = 0;
 
 	if (!strcmp_P(res->arg1, PSTR("loop_show")))
 		loop = 1;
 	
 	do {
+		sensors = sensor_get_all();
+		
+		if (sensors == sensors_old)
+		continue;
+
+		DEBUG (E_USER_ST_MACH, "Sensors values changed");
+
+		sensors_old = sensors;
+
 		printf_P(PSTR("SENSOR values: "));
 		for (i=0; i<SENSOR_MAX; i++) {
-			printf_P(PSTR("%d "), !!sensor_get(i));
+			printf_P(PSTR("%d "), sensor_get(i));
 		}
 		printf_P(PSTR("\r\n"));
-		wait_ms(100);
+		//wait_ms(100);
 	} while (loop && !cmdline_keypressed());
 }
 
@@ -466,6 +487,8 @@ static const prog_char i2cproto_log[] = "i2cproto";
 static const prog_char sensor_log[] = "sensor";
 static const prog_char state_log[] = "state";
 static const prog_char ax12_log[] = "ax12";
+static const prog_char cs_log[] = "cs";
+static const prog_char bd_log[] = "bd";
 
 struct log_name_and_num {
 	const prog_char * name;
@@ -479,6 +502,8 @@ static const struct log_name_and_num log_name_and_num[] = {
 	{ sensor_log, E_USER_SENSOR },
 	{ state_log, E_USER_ST_MACH },
 	{ ax12_log, E_USER_AX12 },
+	{ cs_log, E_USER_CS },
+	{ bd_log, E_BLOCKING_DETECTION_MANAGER },
 };
 
 static uint8_t
@@ -627,7 +652,7 @@ static void cmd_log_type_parsed(void * parsed_result, __attribute__((unused)) vo
 prog_char str_log_arg1_type[] = "type";
 parse_pgm_token_string_t cmd_log_arg1_type = TOKEN_STRING_INITIALIZER(struct cmd_log_type_result, arg1, str_log_arg1_type);
 /* keep it sync with log_name_and_num above */
-prog_char str_log_arg2_type[] = "uart#i2c#i2cproto#sensor#state#ax12";
+prog_char str_log_arg2_type[] = "uart#i2c#i2cproto#sensor#state#ax12#cs#bd";
 parse_pgm_token_string_t cmd_log_arg2_type = TOKEN_STRING_INITIALIZER(struct cmd_log_type_result, arg2, str_log_arg2_type);
 prog_char str_log_arg3[] = "on#off";
 parse_pgm_token_string_t cmd_log_arg3 = TOKEN_STRING_INITIALIZER(struct cmd_log_type_result, arg3, str_log_arg3);

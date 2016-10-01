@@ -35,11 +35,55 @@ int32_t encoders_update_beacon_speed(void * number);
 /* read actual beacon speed */
 int32_t encoders_get_beacon_speed(void * dummy);
 
-uint8_t blade_hide (void);
 
-uint8_t blade_push_fire (void);
+/* set arm mode */
 
-void shoot_net (void);
+/* arm side */
+#define ARM_TYPE_LEFT	0
+#define ARM_TYPE_RIGHT	1
+#define ARM_TYPE_MAX	2
+
+/* arm modes */
+#define ARM_MODE_HIDE		0
+#define ARM_MODE_CARPET		1
+#define ARM_MODE_CLAPPER	2
+#define ARM_MODE_CLEAN		3
+#define ARM_MODE_MAX		4
+
+/* left arm positions */
+#define ARM_LEFT_POS_HIDE		530
+#define ARM_LEFT_POS_CARPET		820
+#define ARM_LEFT_POS_CLAPPER	820
+#define ARM_LEFT_POS_CLEAN		1250
+
+
+/* right arm positions */
+#define ARM_RIGHT_POS_HIDE		700 //730
+#define ARM_RIGHT_POS_CARPET	400
+#define ARM_RIGHT_POS_CLAPPER	400
+#define ARM_RIGHT_POS_CLEAN		-10
+
+void arm_set_mode (uint8_t type, uint8_t mode);
+
+/* set cup front clamp position */
+#define CUP_FRONT_CLAMP_POS_OPEN		700 //650
+#define CUP_FRONT_CLAMP_POS_CLOSE		350
+
+void cup_front_clamp_set_position (uint16_t pos);
+
+/* set cup rear clamp position */
+#define CUP_REAR_CLAMP_POS_OPEN			350
+#define CUP_REAR_CLAMP_POS_CLOSE		700
+
+void cup_rear_clamp_set_position (uint16_t pos);
+
+
+/* TODO: set auxiliary mode */
+#define AUX_WHEELS_POS_HIDDEN		500
+#define AUX_WHEELS_POS_ROLLER		500
+#define AUX_WHEELS_POS_CLIMB_STAIRS	500
+
+void aux_wheels_set_position (uint16_t pos);
 
 
 #endif

@@ -1,1 +1,1 @@
-/media/datos/Datos/Proyectos/ARC_Eurobotics/eurobotics/eurobot/eurobot2014/software/maindspic/display.py
+../maindspic/display.py

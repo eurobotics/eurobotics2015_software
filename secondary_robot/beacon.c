@@ -50,24 +50,18 @@
 #include "main.h"
 #include "beacon.h"
 #include "beacon_calib.h"
-#include "../maindspic/strat_utils.h"
+#include "strat_utils.h"
 
 /* functional modes of beacon */
 #undef BEACON_MODE_EXTERNAL
-
-
-/* some conversions and constants */
-#define DEG(x) (((double)(x)) * (180.0 / M_PI))
-#define RAD(x) (((double)(x)) * (M_PI / 180.0))
-#define M_2PI (2*M_PI)
 
 /* field area */
 #define AREA_X 3000
 #define AREA_Y 2100
 
 /* convert coords according to our color */
-#define COLOR_X(x)     ((beaconboard.our_color==I2C_COLOR_RED)? (x) : (AREA_X-(x)))
-#define COLOR_Y(y)     ((beaconboard.our_color==I2C_COLOR_RED)? (y) : (AREA_Y-(y)))
+#define COLOR_X(x)     ((beaconboard.our_color==I2C_COLOR_GREEN)? (x) : (AREA_X-(x)))
+#define COLOR_Y(y)     ((beaconboard.our_color==I2C_COLOR_GREEN)? (y) : (AREA_Y-(y)))
 
 /* fixed beacon coordenates */
 #ifdef BEACON_MODE_EXTERNAL
@@ -443,11 +437,21 @@ void beacon_angle_dist_to_x_y(int32_t angle, int32_t dist, int32_t *x, int32_t *
     int32_t local_robot_angle = 0;
 
 #ifndef BEACON_MODE_EXTERNAL
+#ifndef IM_SECONDARY_ROBOT
     IRQ_LOCK(flags);
     local_x           = beacon.robot_x;
     local_y           = beacon.robot_y;
     local_robot_angle = beacon.robot_a;
     IRQ_UNLOCK(flags);
+#else
+    IRQ_LOCK(flags);
+	local_x = position_get_x_s16(&mainboard.pos);
+	local_y = position_get_y_s16(&mainboard.pos);
+	local_robot_angle = position_get_a_deg_s16(&mainboard.pos);
+    IRQ_UNLOCK(flags);
+#endif
+
+	
 #endif
 
     if (local_robot_angle < 0)
@@ -504,7 +508,6 @@ void sensor_calc(uint8_t sensor)
 #ifdef TWO_OPPONENTS
     int16_t d_opp1, d_opp2;
     uint8_t tracking_update = 0;
-    int16_t angle_dif = 0;
 #define OPPONENT_1    1
 #define OPPONENT_2    2
 #endif

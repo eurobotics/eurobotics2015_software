@@ -1,6 +1,6 @@
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2010)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -55,7 +55,7 @@
 #define TWO_OPPONENTS
 #define ROBOT_2ND
 
-/* uart 0 is for cmds and uart 1 is 
+/* uart 0 is for cmds and uart 1 is
  * multiplexed between beacon and slavedspic */
 #define CMDLINE_UART 	0
 #define MUX_UART	1
@@ -96,38 +96,45 @@
 
 /* ROBOT PARAMETERS *************************************************/
 
+#define IM_SECONDARY_ROBOT
+
 /* distance between encoders weels,
  * decrease track to decrease angle */
-#define EXT_TRACK_MM      219.67487845028
+#define EXT_TRACK_MM      202.65952055139
 #define VIRTUAL_TRACK_MM  EXT_TRACK_MM
 
+/* XXX keep synchronized with maindspic/strat.c and maindspic/main.h */
+
 /* robot dimensions */
-#define IM_SECONDARY_ROBOT
-#define ROBOT_LENGTH      	    150.
-#define ROBOT_WIDTH 	    	230.
-#define ROBOT_CENTER_TO_FRONT   75.
-#define ROBOT_CENTER_TO_BACK    75.
+#define ROBOT_LENGTH      	    163.
+#define ROBOT_WIDTH 	    	210.
+#define ROBOT_CENTER_TO_BACK    105.0
+#define ROBOT_CENTER_TO_FRONT   (ROBOT_LENGTH-ROBOT_CENTER_TO_BACK)
 #define ROBOT_HALF_LENGTH_FRONT ROBOT_CENTER_TO_FRONT
 #define ROBOT_HALF_LENGTH_REAR  ROBOT_CENTER_TO_BACK
+#define ROBOT_CENTER_TO_ARM		50.0
 
 /* XXX obstacle clerance */
-#define OBS_CLERANCE            (137.+10.)
+#define OBS_CLERANCE            (149.+10.)
+#define CLEAN_CLERANCE			(240)
 
 /* Some calculus:
  * it is a 5000 imps -> 20000 because we see 1/4 period
- * and diameter: 53mm -> perimeter 166.5mm 
+ * and diameter: 53mm -> perimeter 166.5mm
  * 20000/163.5 -> 1201 imps/10 mm */
 
 /* increase it to go further */
-#define IMP_ENCODERS 		  	    5000.0
-#define WHEEL_DIAMETER_MM 		    53.0
+#define IMP_ENCODERS 		  	    1000.0
+#define WHEEL_DIAMETER_MM 		    109.0
 #define WHEEL_PERIM_MM 	    	    (WHEEL_DIAMETER_MM * M_PI)
-#define IMP_COEF 			        10.0
+#define IMP_COEF 			        50.0 /* XXX HACK for use the same PID gains of last year */
 #define DIST_IMP_MM 		    	(((IMP_ENCODERS*4) / WHEEL_PERIM_MM) * IMP_COEF)
 
+
+
 /* encoders handlers */
-#define LEFT_ENCODER        ((void *)1)
-#define RIGHT_ENCODER       ((void *)2)
+#define LEFT_ENCODER        ((void *)2)
+#define RIGHT_ENCODER       ((void *)1)
 
 /* motor handles */
 #define MOTOR_1     	((void *)&gen.pwm_mc_1)
@@ -135,8 +142,8 @@
 #define MOTOR_3     	((void *)&gen.pwm_mc_3)
 
 #define BEACON_MOTOR	MOTOR_1
-#define LEFT_MOTOR	MOTOR_2
-#define RIGHT_MOTOR	MOTOR_3
+#define LEFT_MOTOR		MOTOR_2
+#define RIGHT_MOTOR		MOTOR_3
 
 
 /** ERROR NUMS */
@@ -156,12 +163,7 @@
 #define EVENT_PRIORITY_CS           100
 #define EVENT_PRIO_BEACON	    	80
 #define EVENT_PRIORITY_STRAT        30
-#define EVENT_PRIORITY_BEACON_POLL  20
-#define EVENT_PRIORITY_CMDLINE      15
-#define EVENT_PRIORITY_STRAT_EVENT	10
-
-
-
+#define EVENT_PRIORITY_CMDLINE      15 /* XXX > trajectory_manager event priority */
 
 
 /* EVENTS PERIODS */
@@ -208,7 +210,7 @@ struct genboard
 	/* servos */
 	struct pwm_servo pwm_servo_oc1;
 	struct pwm_servo pwm_servo_oc2;
-	struct pwm_servo pwm_servo_oc3;	
+	struct pwm_servo pwm_servo_oc3;
 	struct pwm_servo pwm_servo_oc4;
 
 	/* ax12 servos */
@@ -225,10 +227,10 @@ struct genboard
 };
 
 /* maindspic */
-struct mainboard 
+struct mainboard
 {
 	/* events flags */
-	uint8_t flags;                
+	uint8_t flags;
 #define DO_ENCODERS   1
 #define DO_CS         2
 #define DO_RS         4
@@ -257,19 +259,22 @@ struct mainboard
 	int32_t pwm_l;  /* current left dac */
 	int32_t pwm_r;  /* current right dac */
 
-	/* strat events */
-	int8_t  strat_event;
-	int16_t strat_event_data[3];
+	/* strat bt trasks */
+	int8_t  bt_task_id;
+	int8_t  bt_task_id_rqst;
+	int8_t  bt_task_new_rqst;
+	int16_t bt_task_args[5];
+	int8_t  bt_task_interrupt;
 };
 
 
 /* state of beaconboard, synchronized through i2c */
-struct beaconboard 
+struct beaconboard
 {
 	/* status and color */
 	uint8_t status;
 	uint8_t color;
-	
+
 	/* opponent pos */
 	int16_t opponent1_x;
 	int16_t opponent1_y;
@@ -289,10 +294,11 @@ struct robot_2nd
 {
 	/* command requested */
 	//uint8_t cmd_id;					/* for ack test */
-	uint8_t cmd_ret; 					/* for end traj test, 
-												follows END_TRAJ flags rules, 
+	uint8_t cmd_ret; 					/* for end traj test,
+												follows END_TRAJ flags rules,
 												see strat_base.h */
 	//uint8_t cmd_args_checksum;		/* checksum of cmd arguments*/
+
 
 	/* strat info */
 	uint16_t done_flags;
@@ -328,7 +334,7 @@ extern struct robot_2nd robot_2nd;
 //void bootloader(void);
 
 #ifndef HOST_VERSION
-/* swap UART 2 between beacon and slavedspic */ 
+/* swap UART 2 between beacon and slavedspic */
 static inline void set_uart_mux(uint8_t channel)
 {
 #define BEACON_CHANNEL			0
@@ -379,4 +385,3 @@ static inline void set_uart_mux(uint8_t channel)
         __ret;                                                \
 })
 #endif
-

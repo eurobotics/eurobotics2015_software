@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Bali�as Santos <javier@arc-robots.org> and Silvia Santano
+ *  Javier Baliñas Santos <javier@arc-robots.org> and Silvia Santano
  */
 
 #include <stdio.h>
@@ -40,7 +40,6 @@
 #include <quadramp.h>
 #include <control_system_manager.h>
 #include <trajectory_manager.h>
-#include <trajectory_manager_utils.h>
 #include <vect_base.h>
 #include <lines.h>
 #include <polygon.h>
@@ -58,8 +57,8 @@
 #include "main.h"
 #include "strat.h"
 #include "strat_base.h"
-#include "../maindspic/strat_avoid.h"
-#include "../maindspic/strat_utils.h"
+#include "strat_avoid.h"
+#include "strat_utils.h"
 #include "sensor.h"
 #include "actuator.h"
 #include "beacon.h"
@@ -83,34 +82,6 @@ struct strat_infos strat_infos = {
 	.conf = {
 		.flags = 0,
 	},
-
-   /*zones[W] =			     			{type, x, x_down, x_up, y_down, y_up, init_x,init_y, prio, flags };                            */
-   .zones[ZONE_TREE_1]=        {ZONE_TYPE_TREE, TREE_1_X, TREE_1_Y, 2850, 3150,  1150,    1450   , 2600,  1300,   ZONE_PRIO_40, 0 },
-   .zones[ZONE_TREE_2]=        {ZONE_TYPE_TREE, TREE_2_X, TREE_2_Y, 2150, 2450,  1850,    2150   , 2300,  1600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_TREE_3]=        {ZONE_TYPE_TREE, TREE_3_X, TREE_3_Y, 550, 850,  1850,    2150   , 700,  1600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_TREE_4]=        {ZONE_TYPE_TREE, TREE_4_X, TREE_4_Y, -150, 150,  1150,    1450   , 400,  1300,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_HEART_FIRE_1]=  {ZONE_TYPE_HEART_FIRE, HEART_FIRE_1_X, HEART_FIRE_1_Y, 2750, 3000,  1750, 2000   , 2600,  1500,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_HEART_FIRE_2]=  {ZONE_TYPE_HEART_FIRE, HEART_FIRE_2_X, HEART_FIRE_2_Y, 0, 250,  1750,   2000   , 1100,  1050,   ZONE_PRIO_40, 0 },
-     .zones[ZONE_HEART_FIRE_3]= {ZONE_TYPE_HEART_FIRE, HEART_FIRE_3_X, HEART_FIRE_3_Y, 1350, 1650,  900,    1200   , 400,  1500,   ZONE_PRIO_40, 0 },
-     .zones[ZONE_FIRE_1]=       {ZONE_TYPE_FIRE, FIRE_1_X, FIRE_1_Y, 2530, 2670,  1085,  1115   , 2600,  700,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_FIRE_2]=        {ZONE_TYPE_FIRE, FIRE_2_X, FIRE_2_Y, 2085, 2115,  530,    670   , 2500,  600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_FIRE_3]=        {ZONE_TYPE_FIRE, FIRE_3_X, FIRE_3_Y, 2085, 2115,  1530,   1670   , 2500,  1600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_FIRE_4]=        {ZONE_TYPE_FIRE, FIRE_4_X, FIRE_4_Y, 885, 915,  530,    670   , 500,  600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_FIRE_5]=        {ZONE_TYPE_FIRE, FIRE_5_X, FIRE_5_Y, 885, 915,  1530,    1670   , 500,  1600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_FIRE_6]=        {ZONE_TYPE_FIRE, FIRE_6_X, FIRE_6_Y, 330, 470,  1085,    1115   , 400,  700,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_TORCH_1]=        {ZONE_TYPE_TORCH, TORCH_1_X, TORCH_1_Y, 2985, 3000,  730,    870   , 2600,  800,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_TORCH_2]=        {ZONE_TYPE_TORCH, TORCH_2_X, TORCH_2_Y, 1630, 1770,  1985,    2000   , 1700,  1600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_TORCH_3]=        {ZONE_TYPE_FIRE, TORCH_3_X, TORCH_3_Y, 1230, 1370,  1985,    2000   , 1300,  1600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_TORCH_4]=        {ZONE_TYPE_FIRE, TORCH_4_X, TORCH_4_Y, 0, 15,  900,    730   , 400,  800,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_MOBILE_TORCH_1]= {ZONE_TYPE_MOBILE_TORCH, MOBILE_TORCH_1_X, MOBILE_TORCH_1_Y, 820, 980,  1020,   1180   , 2100,  700,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_MOBILE_TORCH_2]= {ZONE_TYPE_MOBILE_TORCH, MOBILE_TORCH_2_X, MOBILE_TORCH_2_Y, 2020, 2180,  1020, 1180   , 900,  700,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_BASKET_1]=        {ZONE_TYPE_BASKET, BASKET_1_X, BASKET_1_Y, 1900, 2600,  0,    300   , 2300,  600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_BASKET_2]=        {ZONE_TYPE_BASKET, BASKET_2_X, BASKET_2_Y, 400, 1100,  0,    300   , 700,  600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_MAMOOTH_1]=       {ZONE_TYPE_MAMOOTH, MAMOOTH_1_X, MAMOOTH_1_Y, 1900, 2600,  0,    300   , 2300,  600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_MAMOOTH_2]=       {ZONE_TYPE_MAMOOTH, MAMOOTH_2_X, MAMOOTH_2_Y, 400, 1100,  0,    300   , 700,  600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_FRESCO]=          {ZONE_TYPE_FRESCO, FRESCO_X, FRESCO_Y, 1100, 1900,  0,    300   , 1500,  300,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_HOME_RED]=        {ZONE_TYPE_HOME, HOME_RED_X, HOME_RED_Y, 0, 400,  0,    690   , 2800,  600,   ZONE_PRIO_40, 0 },
-    .zones[ZONE_HOME_YELLOW]=     {ZONE_TYPE_HOME, HOME_YELLOW_X, HOME_YELLOW_Y, 2600, 3000,  0,   690   , 200,  600,   ZONE_PRIO_40, 0 },
 };
 
 
@@ -124,12 +95,11 @@ void strat_set_bounding_box(uint8_t type)
 
 	if (type == 0)
 	{
-
 		strat_infos.area_bbox.x1 = OBS_CLERANCE;
 		strat_infos.area_bbox.x2 = 3000 - OBS_CLERANCE;
 	
-		strat_infos.area_bbox.y1 = OBS_CLERANCE + 300;
-		strat_infos.area_bbox.y2 = 2000 - OBS_CLERANCE;
+		strat_infos.area_bbox.y1 = OBS_CLERANCE + 100;
+		strat_infos.area_bbox.y2 = 2000 - OBS_CLERANCE-70;
 	}
 	else
 	{
@@ -188,38 +158,6 @@ void strat_dump_conf(void)
 	/* add here configuration dump */
 }
 
-
-char numzone2name[ZONES_MAX + 1][30] = {
-[ZONE_TREE_1]="TREE_1",
-[ZONE_TREE_2]="TREE_2",
-[ZONE_TREE_3]="TREE_3",
-[ZONE_TREE_4]="TREE_4",
-[ZONE_HEART_FIRE_1]="HEART_FIRE_1",
-[ZONE_HEART_FIRE_2]="HEART_FIRE_2",
-[ZONE_HEART_FIRE_3]="HEART_FIRE_3",
-[ZONE_FIRE_1]="FIRE_1",
-[ZONE_FIRE_2]="FIRE_2",
-[ZONE_FIRE_3]="FIRE_3",
-[ZONE_FIRE_4]="FIRE_4",
-[ZONE_FIRE_5]="FIRE_5",
-[ZONE_FIRE_6]="FIRE_6",
-[ZONE_TORCH_1]="TORCH_1",
-[ZONE_TORCH_2]="TORCH_2",
-[ZONE_TORCH_3]="TORCH_3",
-[ZONE_TORCH_4]="TORCH_4",
-[ZONE_MOBILE_TORCH_1]="MOBILE_TORCH_1",
-[ZONE_MOBILE_TORCH_2]="MOBILE_TORCH_2",
-[ZONE_MOBILE_TORCH_3]="MOBILE_TORCH_3",
-[ZONE_BASKET_1]="BASKET_1",
-[ZONE_BASKET_2]="BASKET_2",
-[ZONE_MAMOOTH_1]="MAMOOTH_1",
-[ZONE_MAMOOTH_2]="MAMOOTH_2",
-[ZONE_FRESCO]="FRESCO",
-[ZONE_HOME_RED]="HOME_RED",
-[ZONE_HOME_YELLOW]="HOME_YELLOW",
-[ZONES_MAX] = "NULL",
-};
-
 /* display current information about the state of the game */
 void strat_dump_infos(const char *caller)
 {
@@ -239,9 +177,9 @@ void strat_reset_infos(void)
 	/* bounding box */
 	strat_set_bounding_box(0);
 		
-	strat_infos.current_zone = ZONES_MAX;
-	strat_infos.goto_zone = ZONES_MAX;
-	strat_infos.last_zone = ZONES_MAX;
+//	strat_infos.current_zone = ZONES_MAX;
+//	strat_infos.goto_zone = ZONES_MAX;
+//	strat_infos.last_zone = ZONES_MAX;
 
 	/* add here other infos resets */
 }
@@ -269,7 +207,7 @@ void strat_init(void)
 
 	/* used in strat_base for END_TIMER */
 	mainboard.flags = DO_ENCODERS | DO_CS | DO_RS | 
-		DO_POS | DO_BD | DO_TIMER | DO_POWER | DO_BEACON;
+		DO_POS | DO_BD | DO_TIMER | DO_POWER | DO_BEACON | DO_TIMER;
 }
 
 
@@ -353,78 +291,8 @@ uint8_t strat_main(void)
 #define wait_press_key()
 #endif
 
-#define BEGIN_LINE_Y 	450
-#define BEGIN_FRESCO_X	1295
-#define BEGIN_FRESCO_Y	600
-
     uint8_t err = 0;
-	//uint16_t old_spdd, old_spda;
-	static uint8_t mamooth_done =0;
-	static uint8_t state = 0;
-	
-	switch (state)
-	{
-		/* Go out of home */
-		case 0:
-			trajectory_goto_forward_xy_abs (&mainboard.traj,  position_get_x_s16(&mainboard.pos),	BEGIN_LINE_Y);
-			err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-			if (!TRAJ_SUCCESS(err))
-					ERROUT(err);
-
-			state ++;
-			break;
-
-
-		/* Go to the patrol position */
-		case 1:
-			trajectory_goto_forward_xy_abs (&mainboard.traj, COLOR_X(BEGIN_FRESCO_X),BEGIN_FRESCO_Y);
-			err = wait_traj_end(TRAJ_FLAGS_NO_NEAR);
-			if (!TRAJ_SUCCESS(err))
-					ERROUT(err);
-					
-			state++;
-			break;
-			
-
-		/* Patrol and paint fresco */
-		case 2:
-			printf_P(PSTR("Patrol and paint fresco. Press a key to move to next step\r\n"));
-			
-			#ifndef HOST_VERSION
-				// WHILE (NO COMMAND FROM MASTER ROBOT) 
-				while(!cmdline_keypressed())
-				{	
-					strat_patrol_fresco_mamooth(3,3); 		//XXX
-				}
-			#else
-				while(!cmdline_keypressed())
-				{	
-					strat_patrol_fresco_mamooth(3,3); 		//XXX
-				}
-			#endif
-			beaconboard.opponent1_x = COLOR_X(750);
-			beaconboard.opponent1_y = 600;
-      beaconboard.opponent1_a = 90;
-      beaconboard.opponent1_d = 1000;
-			
-			state ++;			
-			break;
-
-		/* Go to mamooths and shoot */
-		case 3:
-			err=strat_shoot_mamooth(3,3);
-			if (!TRAJ_SUCCESS(err))
-					ERROUT(err);
-					
-			mamooth_done=1;
-			state ++;			
-			break;
-			
-		default:
-			break;
-	}
-
-	return err;
+    goto end;
 
 end:
 	time_wait_ms (500);
@@ -452,7 +320,7 @@ void strat_start_match(uint8_t debug)
 
 	/* get color */
 	mainboard.our_color = sensor_get(S_COLOR);
-	printf_P(PSTR("COLOR is %s\r\n"), mainboard.our_color == I2C_COLOR_RED? "RED" : "YELLOW");
+	printf_P(PSTR("COLOR is %s\r\n"), mainboard.our_color == I2C_COLOR_GREEN? "GREEN" : "YELLOW");
 
 	/* set x,y and angle */
 #define TRESPA_BAR 17

@@ -16,7 +16,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Revision : $Id: cmdline.c,v 1.2 2009/04/07 20:03:48 zer0 Exp $
+ *  Revision : $Id$
  *
  */
 
@@ -53,9 +53,24 @@
 /* See in commands.c for the list of commands. */
 extern parse_pgm_ctx_t main_ctx[];
 
+static uint8_t echo_enable = 0;
+
+void cmdline_echo_enable (void) {
+	echo_enable = 1;
+}
+
+void cmdline_echo_disable (void) {
+	echo_enable = 0;
+}
+
 static void write_char(char c) 
 {
-	uart_send(CMDLINE_UART, c);
+	/* if echo is OFF, returns */
+	if (!echo_enable) {
+		return;
+	}
+
+    uart_send(CMDLINE_UART, c);
 }
 
 /* rdline execute this function when has a line valid */
@@ -63,6 +78,12 @@ static void valid_buffer(const char *buf, uint8_t size)
 {
 	int8_t ret;
 	ret = parse(main_ctx, buf);
+
+	/* if echo is OFF, returns */	
+	if (!echo_enable) {
+		return;
+	}
+
 	if (ret == PARSE_AMBIGUOUS)
 		printf_P(PSTR("Ambiguous command\r\n"));
 	else if (ret == PARSE_NOMATCH)

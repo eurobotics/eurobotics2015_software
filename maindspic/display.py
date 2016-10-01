@@ -11,11 +11,26 @@ AREA_Y = 2000.
 ROBOT_HEIGHT = 350.0
 WALL_HEIGHT = 70.0
 
+#define ROBOT_LENGTH            288.5
+#define ROBOT_WIDTH             330.0
+#define ROBOT_CENTER_TO_FRONT   167.0
+#define ROBOT_CENTER_TO_BACK    121.5
+#define ROBOT_CENTER_TO_MOUTH	105.0
+
 ROBOT_WIDTH  = 330.0
-ROBOT_LENGTH = 282.0
-ROBOT_X_OFFSET = 21.75
-ROBOT2_WIDTH  = 230.0
-ROBOT2_LENGTH = 150.0
+ROBOT_LENGTH = 288.5
+#ROBOT_LENGTH = 210.0 #105.0*2.0
+#ROBOT_X_OFFSET = ROBOT_LENGTH/2.0 - 121.5
+
+
+#define ROBOT_LENGTH      	    163.
+#define ROBOT_WIDTH 	    	210.
+#define ROBOT_CENTER_TO_BACK    105.0
+#define ROBOT_CENTER_TO_FRONT   (ROBOT_LENGTH-ROBOT_CENTER_TO_BACK)
+
+ROBOT2_WIDTH  = 210.0
+ROBOT2_LENGTH = 163.0
+#ROBOT2_X_OFFSET = -ROBOT2_LENGTH/2.0 + (163-105)
 
 area = [ (0.0, 0.0, -0.2), (3000.0, 2000.0, 0.2) ]
 areasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , area)
@@ -27,8 +42,11 @@ scene.autoscale = 1
 save_pos = []
 save_pos2 = []
 
-robot = box(color=(0.4, 0.4, 0.4))
-robot2 = box(color=(0.4, 0.4, 0.4))
+robot = box(color=(1.0, 1.0, 1.0))
+robot.opacity = 0.5
+
+robot2 = box(color=(1.0, 1.0, 1.0))
+robot2.opacity = 0.5
 
 steam_shovel = box(color=(0.6, 0.6, 0.6))
 
@@ -48,17 +66,6 @@ hcenter_line = curve()
 hcenter_line.pos = [(-AREA_X/2, 0., 0.3), (AREA_X/2, 0., 0.3)]
 vcenter_line = curve()
 vcenter_line.pos = [(0., -AREA_Y/2, 0.3), (0., AREA_Y/2, 0.3)]
-
-
-yellowarea = [ (0.0, 0.0, -0.5), (400.0,444.0 , 0.5) ]
-yellowareasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , yellowarea)
-yellowarea_box = box(pos=(-AREA_X/2+200,-AREA_Y/2+1000,0), size=yellowareasize, color=(0.988, 0.741, 0.122))
-
-
-
-greenarea = [ (0.0, 0.0, -0.5), (400.0,444.0 , 0.5) ]
-greenareasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , greenarea)
-greenarea_box = box(pos=(AREA_X/2-200,-AREA_Y/2+1000,0), size=greenareasize, color=(0.31, 0.659, 0.2))
 
 wallx = [ (0.0, 0.0, -0.5), (AREA_X+44, 22, WALL_HEIGHT) ]
 wallxsize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , wallx)
@@ -118,22 +125,16 @@ STEP_1_HEIGHT = 22.0
 STEP_2_HEIGHT = 44.0
 STEP_3_HEIGHT = 66.0
 STEP_4_HEIGHT = 88.0
-MAMUT_HEIGHT =  50.0
-FRESCO_HEIGHT = 200.0
-HEARTFIRE_HEIGHT = 30.0
-TREETRUNK_HEIGHT = 320.0
-TREETOP_HEIGHT = 10.0
-FIRE_HEIGHT= 140.0
-CLAP_HEIGHT= 138.0
-BASKET_HEIGHT = 33.0
-CLAP_STICK_HEIGHT=290.0
-STAND_HEIGHT=150.0
+CLAP_HEIGHT= 30.0
+CLAP_STICK_HEIGHT=150.0
+STAND_HEIGHT=70.0
+CUP_HEIGHT = 150
+
 set_opp_nb = 1
 
 def toggle_obj_disp():
     global area_objects
     if area_objects == []:
-    
 
 		set_home_areas()
 		step_func(1,STEP_1_HEIGHT,YELLOW)
@@ -144,12 +145,12 @@ def toggle_obj_disp():
 		step_func(2,STEP_2_HEIGHT,GREEN)
 		step_func(3,STEP_3_HEIGHT,GREEN)
 		step_func(4,STEP_4_HEIGHT,GREEN)
-		clap(-AREA_X/2+325,-AREA_Y/2,YELLOW,-80)
-		clap(-AREA_X/2+620,-AREA_Y/2,GREEN,-80)
-		clap(-AREA_X/2+920,-AREA_Y/2,YELLOW,-80)
-		clap(+AREA_X/2-325,-AREA_Y/2,YELLOW,+80)
-		clap(+AREA_X/2-620,-AREA_Y/2,GREEN,+80)
-		clap(+AREA_X/2-920,-AREA_Y/2,YELLOW,+80)
+		clap(-AREA_X/2+325,-AREA_Y/2-16,YELLOW,-80)
+		clap(-AREA_X/2+620,-AREA_Y/2-16,GREEN,-80)
+		clap(-AREA_X/2+920,-AREA_Y/2-16,YELLOW,-80)
+		clap(+AREA_X/2-325,-AREA_Y/2-16,YELLOW,+80)
+		clap(+AREA_X/2-620,-AREA_Y/2-16,GREEN,+80)
+		clap(+AREA_X/2-920,-AREA_Y/2-16,YELLOW,+80)
 		stand_yellow(-AREA_X/2+850,+AREA_Y/2-100)
 		stand_yellow(-AREA_X/2+850,+AREA_Y/2-200)
 		stand_yellow(-AREA_X/2+90,+AREA_Y/2-200)
@@ -162,10 +163,10 @@ def toggle_obj_disp():
 		stand_yellow(-AREA_X/2+90,-AREA_Y/2+150)
 		stand_yellow(-AREA_X/2+870,+AREA_Y/2-1355)
 		stand_green(+AREA_X/2-870,+AREA_Y/2-1355)
-		stand_yellow(-250,+AREA_Y/2-1400)
-		stand_green(250,+AREA_Y/2-1400)
-		stand_yellow(-400,-AREA_Y/2+330)
-		stand_green(400,-AREA_Y/2+330)
+		stand_yellow(-200,+AREA_Y/2-1400)
+		stand_green(200,+AREA_Y/2-1400)
+		stand_yellow(-400,-AREA_Y/2+230)
+		stand_green(400,-AREA_Y/2+230)
 		popcorn_func(-590,200)
 		popcorn_func(590,200)
 		popcorn_func(0,-650)
@@ -232,10 +233,21 @@ def set_home_areas():
 	base_size = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]),base)
 	c = box(pos=(AREA_X/2-70,-AREA_Y/2+1000,22), size=base_size,color =(0.31, 0.7, 0.2))
 	area_objects.append(c)
-	c = sphere(pos=(AREA_X/2-70,-AREA_Y/2+1000,22+35), radius=35,color=(0,1,0))
+	c = sphere(pos=(AREA_X/2-70/2,-AREA_Y/2+1000,22+35), radius=35,color=(0,1,0))
 	area_objects.append(c)
-	c = sphere(pos=(-AREA_X/2+70,-AREA_Y/2+1000,22+35), radius=35,color=(0,1,0))
+	c = sphere(pos=(-AREA_X/2+70/2,-AREA_Y/2+1000,22+35), radius=35,color=(0,1,0))
 	area_objects.append(c)
+
+	yellowarea = [ (0.0, 0.0, -0.5), (400.0,444.0 , 0.5) ]
+	yellowareasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , yellowarea)
+	c = box(pos=(-AREA_X/2+200,-AREA_Y/2+1000,0), size=yellowareasize, color=(0.988, 0.741, 0.122))
+	area_objects.append(c)
+
+	greenarea = [ (0.0, 0.0, -0.5), (400.0,444.0 , 0.5) ]
+	greenareasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , greenarea)
+	c = box(pos=(AREA_X/2-200,-AREA_Y/2+1000,0), size=greenareasize, color=(0.31, 0.659, 0.2))
+	area_objects.append(c)
+
 	
 def platform():
 	global area_objects 
@@ -243,13 +255,20 @@ def platform():
 	base_size = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]),base)
 	c = box(pos=(0,-AREA_Y/2+100/2, 0), size=base_size,color =(0.78, 0.09, 0.071))
 	area_objects.append(c)
+
+	green_area = [ (0.0, 0.0, -0.5), (800.0, 200.0, 0.5) ]
+	green_area_size = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , green_area)
+	c = box(pos=(0,-AREA_Y/2+200/2, 0), size=green_area_size, color=(0.9, 0.0, 0.0))
+	area_objects.append(c)
+
 	c = sphere(pos=(250,-AREA_Y/2+100/2,22+35), radius=35,color=(0,1,0))
 	area_objects.append(c)
 	c = sphere(pos=(-250,-AREA_Y/2+100/2,22+35), radius=35,color=(0,1,0))
 	area_objects.append(c)
+
 def clap(x,y,clap_color,offset):
 	global area_objects 
-	clap = [ (0.0, 0.0, -0.5), (160.0, 50.0, CLAP_HEIGHT) ]
+	clap = [ (0.0, 0.0, -0.5), (160.0, 30.0, CLAP_HEIGHT) ]
 	clapsize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , clap)
 	if clap_color == YELLOW:
 		c = box(pos=(x,y, CLAP_HEIGHT/2+70), size=clapsize, color =(0.988, 0.741, 0.122))
@@ -257,17 +276,18 @@ def clap(x,y,clap_color,offset):
 		c = box(pos=(x,y, CLAP_HEIGHT/2+70), size=clapsize, color =(0.31, 0.659, 0.2))
 	area_objects.append(c)
 
-	clap = [ (0.0, 0.0, CLAP_HEIGHT), (20.0, 50.0, CLAP_STICK_HEIGHT) ]
+	clap = [ (0.0, 0.0, CLAP_HEIGHT), (20.0, 30.0, CLAP_STICK_HEIGHT) ]
 	clapsize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , clap)
-	c = box(pos=(x+offset,y, CLAP_STICK_HEIGHT/2+70), size=clapsize, color =(0.5, 0.5, 0.5))
+	c = box(pos=(x+offset,y, CLAP_HEIGHT+CLAP_STICK_HEIGHT/2+70), size=clapsize, color =(0.5, 0.5, 0.5))
 	area_objects.append(c)
 def cinema(x,y,cinema_color):
 	cinemaarea = [ (0.0, 0.0, -0.5), (400.0,378.0,0.5) ]
 	cinemaareasize = reduce(lambda x,y:tuple([abs(x[i])+abs(y[i]) for i in range(len(x))]) , cinemaarea)
 	if cinema_color == YELLOW:
-		cinemaarea_box = box(pos=(x,y), size=cinemaareasize, color=(0.988, 0.741, 0.122))
+		c = box(pos=(x,y), size=cinemaareasize, color=(0.988, 0.741, 0.122))
 	else:
-		cinemaarea_box = box(pos=(x,y), size=cinemaareasize, color=(0.31, 0.659, 0.2))
+		c = box(pos=(x,y), size=cinemaareasize, color=(0.31, 0.659, 0.2))
+	area_objects.append(c)
 
 def step_func(step_nr,height,step_color):
 	global area_objects 
@@ -279,7 +299,6 @@ def step_func(step_nr,height,step_color):
 	else:
 		green_step=266.5*2
 		c = box(pos=(-266.5+green_step,+AREA_Y/2-(580.0-70*(step_nr-1))/2,height/2), size=step_size,color =(0.31, 0.659, 0.2))
-
 	area_objects.append(c)
 
 def stand_green(x,y):
@@ -293,10 +312,10 @@ def stand_yellow(x,y):
 	area_objects.append(c)
 def popcorn_func(x,y):
 	global area_objects
-	c=cone(pos=(x,y, STAND_HEIGHT), axis=(0,0,-STAND_HEIGHT),radius=47.5)
+	c=cone(pos=(x,y, CUP_HEIGHT), axis=(0,0,-2*CUP_HEIGHT),radius=47.5)
 	area_objects.append(c)
-	c = cylinder(axis=(0,0,1),length=STAND_HEIGHT,radius=27,pos=(x,y, 0))
-	area_objects.append(c)
+	#c = cylinder(axis=(0,0,1),length=CUP_HEIGHT,radius=27,pos=(x,y, 0))
+	#area_objects.append(c)
 
 def set_opp(x, y):
     opp.size = (300, 300, ROBOT_HEIGHT)
@@ -391,15 +410,17 @@ def set_robot():
         tmp_y = -robot_y + AREA_Y/2
         tmp_a = robot_a
 
-    robot.pos = (tmp_x+ROBOT_X_OFFSET, tmp_y, ROBOT_HEIGHT/2)
+	
+    robot.pos = (tmp_x, tmp_y, ROBOT_HEIGHT/2)
     axis = (math.cos(tmp_a*math.pi/180),
             math.sin(tmp_a*math.pi/180),
             0)
 
     robot.axis = axis
     robot.size = (ROBOT_LENGTH, ROBOT_WIDTH, ROBOT_HEIGHT)
-    
+	
 
+    """
 	# Left stick
     lstick.pos = (tmp_x + ROBOT_X_OFFSET + (lstick_offset * 60 ) * math.cos((tmp_a-90)*math.pi/180),
                     tmp_y + (lstick_offset * 60) * math.sin((tmp_a-90)*math.pi/180),
@@ -431,6 +452,7 @@ def set_robot():
 		    ROBOT_HEIGHT/4)
 
     harvester.axis = axis 
+    """
     # save position
     save_pos.append((robot.pos.x, robot.pos.y, tmp_a))
 
@@ -442,7 +464,6 @@ def set_robot():
     if robot_trail_l > max_trail:
         robot_trail_list = robot_trail_list[robot_trail_l - max_trail:]
     robot_trail.pos = robot_trail_list
-
 
 
 def set_steam_shovel():
@@ -474,6 +495,7 @@ def set_robot2():
     robot2.axis = axis
     robot2.size = (ROBOT2_LENGTH, ROBOT2_WIDTH, ROBOT_HEIGHT)
     
+    """
     steam_shovel.pos = (tmp_x + (steam_shovel_offset * 15) * math.cos((tmp_a)*math.pi/180),
 		    tmp_y + (steam_shovel_offset * 15) * math.sin((tmp_a)*math.pi/180),
     ROBOT_HEIGHT/6)
@@ -481,7 +503,8 @@ def set_robot2():
             math.sin(tmp_a*math.pi/180),
             0)
     steam_shovel.size=(70, ROBOT2_WIDTH, 15)
-    
+    """
+
     # save position
     save_pos2.append((robot2.pos.x, robot2.pos.y, tmp_a))
 
@@ -512,6 +535,7 @@ def silent_mkfifo(f):
 toggle_obj_disp()
 
 while True:
+
     silent_mkfifo("/tmp/.robot_sim2dis")
     silent_mkfifo("/tmp/.robot_dis2sim")
     silent_mkfifo("/tmp/.robot2_sim2dis")
@@ -524,7 +548,6 @@ while True:
         fw2 = open("/tmp/.robot2_dis2sim", "w", 0)
 
         while True:
-
             # MAIN ROBOT MSGS
             m = None
             l = fr. readline()
@@ -536,7 +559,7 @@ while True:
                 if m:
                     robot_x = int(m.groups()[0])
                     robot_y = int(m.groups()[1])
-                    robot_a = int(m.groups()[2])
+                    robot_a = int(m.groups()[2])                  
                     set_robot()
                     # XXX HACK, send pos robot mate
                     #fw2.write("r2nd %d %d %d"%(int(robot_x), int(robot_y), int(robot_a)))
@@ -549,7 +572,6 @@ while True:
                     set_robot2()
                     # XXX HACK, send pos robot mate
                     #fw.write("r2nd %d %d %d"%(int(robot2_x), int(robot2_y), int(robot2_a)))
-
             """
             # TODO parse slavedspic
             if not m:
@@ -619,6 +641,7 @@ while True:
             #    fw.write("b")
             elif k == "c":
                 robot_trail_list = []
+                robot2_trail_list = []
             elif k == "x":
                 save_pos = []
             elif k == "g":
@@ -653,5 +676,4 @@ while True:
 
         fr.close()
         fw.close()
-
 

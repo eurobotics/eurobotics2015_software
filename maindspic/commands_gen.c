@@ -46,7 +46,6 @@
 #include <quadramp.h>
 #include <control_system_manager.h>
 #include <trajectory_manager.h>
-#include <trajectory_manager_utils.h>
 #include <vect_base.h>
 #include <lines.h>
 #include <polygon.h>
@@ -70,6 +69,8 @@
 #define COMPILE_COMMANDS_GEN_OPTIONALS
 #endif
 
+#ifdef COMPILE_COMMANDS_GEN_OPTIONALS /*--------------------------------*/
+    
 /**********************************************************/
 /* Reset */
 
@@ -91,11 +92,11 @@ static void cmd_reset_parsed(void * parsed_result, void * data)
 prog_char str_reset_arg0[] = "reset";
 parse_pgm_token_string_t cmd_reset_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_reset_result, arg0, str_reset_arg0);
 
-prog_char help_reset[] = "Reset the board";
+//prog_char help_reset[] = "Reset the board";
 parse_pgm_inst_t cmd_reset = {
 	.f = cmd_reset_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_reset,
+//	.help_str = help_reset,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_reset_arg0, 
 		NULL,
@@ -119,16 +120,19 @@ parse_pgm_inst_t cmd_reset = {
 //prog_char str_bootloader_arg0[] = "bootloader";
 //parse_pgm_token_string_t cmd_bootloader_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_bootloader_result, arg0, str_bootloader_arg0);
 //
-//prog_char help_bootloader[] = "Launch the bootloader";
+////prog_char help_bootloader[] = "Launch the bootloader";
 //parse_pgm_inst_t cmd_bootloader = {
 //	.f = cmd_bootloader_parsed,  /* function to call */
 //	.data = NULL,      /* 2nd arg of func */
-//	.help_str = help_bootloader,
+////	.help_str = help_bootloader,
 //	.tokens = {        /* token list, NULL terminated */
 //		(prog_void *)&cmd_bootloader_arg0, 
 //		NULL,
 //	},
 //};
+
+#endif /* COMPILE_COMMANDS_GEN_OPTIONALS --------------------------------*/
+
 
 /**********************************************************/
 /* Encoders tests */
@@ -171,17 +175,19 @@ parse_pgm_token_string_t cmd_encoders_arg0 = TOKEN_STRING_INITIALIZER(struct cmd
 prog_char str_encoders_arg1[] = "show#reset";
 parse_pgm_token_string_t cmd_encoders_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_encoders_result, arg1, str_encoders_arg1);
 
-prog_char help_encoders[] = "Show encoders values";
+//prog_char help_encoders[] = "Show encoders values";
 parse_pgm_inst_t cmd_encoders = {
 	.f = cmd_encoders_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_encoders,
+//	.help_str = help_encoders,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_encoders_arg0, 
 		(prog_void *)&cmd_encoders_arg1, 
 		NULL,
 	},
 };
+
+#ifdef COMPILE_COMMANDS_GEN_OPTIONALS /*--------------------------------*/
 
 /**********************************************************/
 /* Scheduler show */
@@ -203,11 +209,11 @@ parse_pgm_token_string_t cmd_scheduler_arg0 = TOKEN_STRING_INITIALIZER(struct cm
 prog_char str_scheduler_arg1[] = "show";
 parse_pgm_token_string_t cmd_scheduler_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_scheduler_result, arg1, str_scheduler_arg1);
 
-prog_char help_scheduler[] = "Show scheduler events";
+//prog_char help_scheduler[] = "Show scheduler events";
 parse_pgm_inst_t cmd_scheduler = {
 	.f = cmd_scheduler_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_scheduler,
+//	.help_str = help_scheduler,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_scheduler_arg0, 
 		(prog_void *)&cmd_scheduler_arg1, 
@@ -249,7 +255,7 @@ static void cmd_pwm_servo_parsed(void *parsed_result, void *show_range)
 		if (pwm_servo_ptr)
 			pwm_servo_set(pwm_servo_ptr, res->arg2);
 	
-		printf("done\r\n");
+		//printf("done\r\n");
 	}
 #endif
 }
@@ -260,11 +266,11 @@ prog_char str_pwm_servo_arg1[] = "oc1#oc2";
 parse_pgm_token_string_t cmd_pwm_servo_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_pwm_servo_result, arg1, str_pwm_servo_arg1);
 parse_pgm_token_num_t cmd_pwm_servo_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_pwm_servo_result, arg2, INT16);
 
-prog_char help_pwm_servo[] = "Set pwm_servo values";
+//prog_char help_pwm_servo[] = "Set pwm_servo values";
 parse_pgm_inst_t cmd_pwm_servo = {
 	.f = cmd_pwm_servo_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_pwm_servo,
+//	.help_str = help_pwm_servo,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_pwm_servo_arg0, 
 		(prog_void *)&cmd_pwm_servo_arg1, 
@@ -284,11 +290,11 @@ struct cmd_pwm_servo_show_range_result {
 prog_char str_pwm_servo_show_range_arg[] = "show_range";
 parse_pgm_token_string_t cmd_pwm_servo_show_range_arg = TOKEN_STRING_INITIALIZER(struct cmd_pwm_servo_show_range_result, show_range, str_pwm_servo_show_range_arg);
 
-prog_char help_pwm_servo_show_range[] = "Show range values of pwm_servo channel";
+//prog_char help_pwm_servo_show_range[] = "Show range values of pwm_servo channel";
 parse_pgm_inst_t cmd_pwm_servo_show_range = {
 	.f = cmd_pwm_servo_parsed,  /* function to call */
 	.data = (void *)1,      /* 2nd arg of func */
-	.help_str = help_pwm_servo_show_range,
+//	.help_str = help_pwm_servo_show_range,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_pwm_servo_arg0, 
 		(prog_void *)&cmd_pwm_servo_show_range_arg,
@@ -325,7 +331,7 @@ static void cmd_dac_mc_parsed(void * parsed_result, __attribute__((unused)) void
 	if (dac_mc_ptr)
 		dac_mc_set(dac_mc_ptr, res->arg2);
 
-	printf_P(PSTR("done\r\n"));
+	//printf_P(PSTR("done\r\n"));
 #endif
 }
 
@@ -335,11 +341,11 @@ prog_char str_dac_mc_arg1[] = "left#right";
 parse_pgm_token_string_t cmd_dac_mc_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_dac_mc_result, arg1, str_dac_mc_arg1);
 parse_pgm_token_num_t cmd_dac_mc_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_dac_mc_result, arg2, INT32);
 
-prog_char help_dac_mc[] = "Set dac_mc values [-65535 ; 65535]";
+//prog_char help_dac_mc[] = "Set dac_mc values [-65535 ; 65535]";
 parse_pgm_inst_t cmd_dac_mc = {
 	.f = cmd_dac_mc_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_dac_mc,
+//	.help_str = help_dac_mc,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_dac_mc_arg0, 
 		(prog_void *)&cmd_dac_mc_arg1, 
@@ -347,6 +353,7 @@ parse_pgm_inst_t cmd_dac_mc = {
 		NULL,
 	},
 };
+#endif
 
 #ifdef COMPILE_COMMANDS_GEN_OPTIONALS /*--------------------------------*/
 
@@ -387,11 +394,11 @@ parse_pgm_token_string_t cmd_adc_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_adc_
 prog_char str_adc_arg1[] = "show#loop_show";
 parse_pgm_token_string_t cmd_adc_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_adc_result, arg1, str_adc_arg1);
 
-prog_char help_adc[] = "Show adc values";
+//prog_char help_adc[] = "Show adc values";
 parse_pgm_inst_t cmd_adc = {
 	.f = cmd_adc_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_adc,
+//	.help_str = help_adc,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_adc_arg0, 
 		(prog_void *)&cmd_adc_arg1, 
@@ -401,7 +408,7 @@ parse_pgm_inst_t cmd_adc = {
 
 #endif /* COMPILE_COMMANDS_GEN_OPTIONALS --------------------------------*/
 
-
+#ifdef COMPILE_COMMANDS_GEN_OPTIONALS /*--------------------------------*/
 /**********************************************************/
 /* Sensors tests */
 
@@ -419,11 +426,18 @@ static void cmd_sensor_parsed(void *parsed_result, void *data)
 #else
 	struct cmd_sensor_result *res = parsed_result;
 	uint8_t i, loop = 0;
+	uint64_t sensors_saved = 0;
 
 	if (!strcmp_P(res->arg1, PSTR("loop_show")))
 		loop = 1;
 	
 	do {
+		
+		if (sensor_get_all() == sensors_saved)
+		continue;
+
+		sensors_saved = sensor_get_all();	
+
 		printf_P(PSTR("SENSOR values: \r\n"));
 		for (i=0; i<SENSOR_MAX; i++) {
 
@@ -452,11 +466,11 @@ parse_pgm_token_string_t cmd_sensor_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_s
 prog_char str_sensor_arg1[] = "show#loop_show";
 parse_pgm_token_string_t cmd_sensor_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_sensor_result, arg1, str_sensor_arg1);
 
-prog_char help_sensor[] = "Show sensor values";
+//prog_char help_sensor[] = "Show sensor values";
 parse_pgm_inst_t cmd_sensor = {
 	.f = cmd_sensor_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_sensor,
+//	.help_str = help_sensor,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_sensor_arg0, 
 		(prog_void *)&cmd_sensor_arg1, 
@@ -552,11 +566,11 @@ parse_pgm_token_string_t cmd_wt11_arg0 = TOKEN_STRING_INITIALIZER(struct cmd_wt1
 prog_char str_wt11_arg1[] = "raw#reset";
 parse_pgm_token_string_t cmd_wt11_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_wt11_result, arg1, str_wt11_arg1);
 
-prog_char help_wt11[] = "wt11 functions";
+//prog_char help_wt11[] = "wt11 functions";
 parse_pgm_inst_t cmd_wt11 = {
 	.f = cmd_wt11_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_wt11,
+//	.help_str = help_wt11,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_wt11_arg0,
 		(prog_void *)&cmd_wt11_arg1,
@@ -577,17 +591,17 @@ struct cmd_log_result {
 };
 
 /* keep it sync with string choice */
-static const prog_char uart_log[] = "uart";
-static const prog_char rs_log[] = "rs";
-static const prog_char traj_log[] = "traj";
-//static const prog_char i2c_log[] = "i2c";
-static const prog_char oa_log[] = "oa";
-static const prog_char strat_log[] = "strat";
-static const prog_char i2cproto_log[] = "i2cproto";
-static const prog_char sensor_log[] = "sensor";
-static const prog_char block_log[] = "bd";
-static const prog_char cs_log[] = "cs";
-static const prog_char btproto_log[] = "btproto";
+static  prog_char uart_log[] = "uart";
+static  prog_char rs_log[] = "rs";
+static  prog_char traj_log[] = "traj";
+//static  prog_char i2c_log[] = "i2c";
+static  prog_char oa_log[] = "oa";
+static  prog_char strat_log[] = "strat";
+static  prog_char i2cproto_log[] = "i2cproto";
+static  prog_char sensor_log[] = "sensor";
+static  prog_char block_log[] = "bd";
+static  prog_char cs_log[] = "cs";
+static  prog_char btproto_log[] = "btproto";
 
 struct log_name_and_num {
 	const prog_char * name;
@@ -609,7 +623,7 @@ static const struct log_name_and_num log_name_and_num[] = {
 };
 
 static uint8_t
-log_name2num(const char * s)
+log_name2num( char * s)
 {
 	uint8_t i;
 	
@@ -672,11 +686,11 @@ prog_char str_log_arg1[] = "level";
 parse_pgm_token_string_t cmd_log_arg1 = TOKEN_STRING_INITIALIZER(struct cmd_log_result, arg1, str_log_arg1);
 parse_pgm_token_num_t cmd_log_arg2 = TOKEN_NUM_INITIALIZER(struct cmd_log_result, arg2, INT32);
 
-prog_char help_log[] = "Set log options: level (0 -> 5)";
+//prog_char help_log[] = "Set log options: level (0 -> 5)";
 parse_pgm_inst_t cmd_log = {
 	.f = cmd_log_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_log,
+//	.help_str = help_log,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_log_arg0, 
 		(prog_void *)&cmd_log_arg1, 
@@ -688,11 +702,11 @@ parse_pgm_inst_t cmd_log = {
 prog_char str_log_arg1_show[] = "show";
 parse_pgm_token_string_t cmd_log_arg1_show = TOKEN_STRING_INITIALIZER(struct cmd_log_result, arg1, str_log_arg1_show);
 
-prog_char help_log_show[] = "Show configured logs";
+//prog_char help_log_show[] = "Show configured logs";
 parse_pgm_inst_t cmd_log_show = {
 	.f = cmd_log_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_log_show,
+//	.help_str = help_log_show,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_log_arg0, 
 		(prog_void *)&cmd_log_arg1_show, 
@@ -760,11 +774,11 @@ parse_pgm_token_string_t cmd_log_arg2_type = TOKEN_STRING_INITIALIZER(struct cmd
 prog_char str_log_arg3[] = "on#off";
 parse_pgm_token_string_t cmd_log_arg3 = TOKEN_STRING_INITIALIZER(struct cmd_log_type_result, arg3, str_log_arg3);
 
-prog_char help_log_type[] = "Set log type";
+//prog_char help_log_type[] = "Set log type";
 parse_pgm_inst_t cmd_log_type = {
 	.f = cmd_log_type_parsed,  /* function to call */
 	.data = NULL,      /* 2nd arg of func */
-	.help_str = help_log_type,
+//	.help_str = help_log_type,
 	.tokens = {        /* token list, NULL terminated */
 		(prog_void *)&cmd_log_arg0,
 		(prog_void *)&cmd_log_arg1_type,
@@ -774,4 +788,5 @@ parse_pgm_inst_t cmd_log_type = {
 	},
 };
 
+#endif /* COMPILE_COMMANDS_GEN_OPTIONALS --------------------------------*/
 

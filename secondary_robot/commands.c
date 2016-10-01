@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Revision : $Id: commands.c,v 1.8 2009/05/27 20:04:07 zer0 Exp $
+ *  Revision : $Id$
  *
  *  Olivier MATZ <zer0@droids-corp.org> 
  */
@@ -92,6 +92,7 @@ extern parse_pgm_inst_t cmd_log_show;
 extern parse_pgm_inst_t cmd_log_type;
 //TODO extern parse_pgm_inst_t cmd_stack_space;
 extern parse_pgm_inst_t cmd_scheduler;
+extern parse_pgm_inst_t cmd_echo;
 
 #endif /* COMPILE_COMMANDS_GEN */
 
@@ -140,30 +141,28 @@ extern parse_pgm_inst_t cmd_blocking_i_show;
 #endif
 
 extern parse_pgm_inst_t cmd_event;
-// TODO extern parse_pgm_inst_t cmd_spi_test;
 extern parse_pgm_inst_t cmd_opponent;
 extern parse_pgm_inst_t cmd_opponent_set;
 extern parse_pgm_inst_t cmd_start;
 extern parse_pgm_inst_t cmd_color;
-//extern parse_pgm_inst_t cmd_beacon;
 
 #ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
 extern parse_pgm_inst_t cmd_interact;
 extern parse_pgm_inst_t cmd_rs;
+#ifdef TRAJECTORY_MANAGER_V3
 extern parse_pgm_inst_t cmd_clitoid;
+#endif /* TRAJECTORY_MANAGER_V3 */
 extern parse_pgm_inst_t cmd_time_monitor;
 extern parse_pgm_inst_t cmd_sleep;
 #endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
 
 extern parse_pgm_inst_t cmd_strat_event;
 extern parse_pgm_inst_t cmd_status;
+extern parse_pgm_inst_t cmd_beacon;
 
-/* TODO 2014*/
+/* TODO */
 #if 0
-extern parse_pgm_inst_t cmd_balls;
-extern parse_pgm_inst_t cmd_net;
-extern parse_pgm_inst_t cmd_tray;
-extern parse_pgm_inst_t cmd_sensor_robot;
+
 #endif
 
 #endif /* COMPILE_COMMANDS_MAINBOARD */
@@ -183,8 +182,10 @@ extern parse_pgm_inst_t cmd_traj_acc;
 extern parse_pgm_inst_t cmd_traj_acc_show;
 
 #ifdef COMPILE_COMMANDS_TRAJ_OPTIONALS /*-------------------------------------*/
+#ifdef TRAJECTORY_MANAGER_V3
 extern parse_pgm_inst_t cmd_circle_coef;
 extern parse_pgm_inst_t cmd_circle_coef_show;
+#endif /* TRAJECTORY_MANAGER_V3 */
 extern parse_pgm_inst_t cmd_trajectory;
 extern parse_pgm_inst_t cmd_trajectory_show;
 extern parse_pgm_inst_t cmd_rs_gains;
@@ -206,7 +207,7 @@ extern parse_pgm_inst_t cmd_bt_goto2;
 extern parse_pgm_inst_t cmd_position;
 extern parse_pgm_inst_t cmd_position_set;
 
-extern parse_pgm_inst_t cmd_bt_task1;
+extern parse_pgm_inst_t cmd_bt_task;
 extern parse_pgm_inst_t cmd_bt_task2;
 extern parse_pgm_inst_t cmd_bt_task3;
 
@@ -243,6 +244,7 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_log_type,
 //	(parse_pgm_inst_t *)&cmd_stack_space,
 	(parse_pgm_inst_t *)&cmd_scheduler,
+	(parse_pgm_inst_t *)&cmd_echo,
 
 #endif /* COMPILE_COMMANDS_GEN */
 
@@ -285,28 +287,27 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_opponent_set,
 	(parse_pgm_inst_t *)&cmd_start,
 	(parse_pgm_inst_t *)&cmd_color,
-//	(parse_pgm_inst_t *)&cmd_beacon,
 
 #ifdef COMPILE_COMMANDS_MAINBOARD_OPTIONALS /*--------------------------------*/
 
 	(parse_pgm_inst_t *)&cmd_interact,
 	(parse_pgm_inst_t *)&cmd_rs,
+#ifdef TRAJECTORY_MANAGER_V3
 	(parse_pgm_inst_t *)&cmd_clitoid,
+#endif /* TRAJECTORY_MANAGER_V3 */
 	(parse_pgm_inst_t *)&cmd_time_monitor,
 	(parse_pgm_inst_t *)&cmd_sleep,
 #endif /* COMPILE_COMMANDS_MAINBOARD_OPTIONALS -------------------------------*/
 
 	(parse_pgm_inst_t *)&cmd_strat_event,
 	(parse_pgm_inst_t *)&cmd_status,
+	(parse_pgm_inst_t *)&cmd_beacon,
 
-/* TODO 2014*/
-#if 0 
-	(parse_pgm_inst_t *)&cmd_balls,
-	(parse_pgm_inst_t *)&cmd_net
-	(parse_pgm_inst_t *)&cmd_tray,
+/* TODO */
+#if 0
+
 	(parse_pgm_inst_t *)&cmd_sensor_robot,
 #endif
-
 #endif /* COMPILE_COMMANDS_MAINBOARD */
 
 #ifdef COMPILE_COMMANDS_TRAJ
@@ -314,12 +315,14 @@ parse_pgm_ctx_t main_ctx[] = {
 	/* commands_traj.c */
 	(parse_pgm_inst_t *)&cmd_traj_speed,
 	(parse_pgm_inst_t *)&cmd_traj_speed_show,
-	(parse_pgm_inst_t *)&cmd_traj_acc,
-	(parse_pgm_inst_t *)&cmd_traj_acc_show,
 
 #ifdef COMPILE_COMMANDS_TRAJ_OPTIONALS /*-------------------------------------*/
+#ifdef TRAJECTORY_MANAGER_V3
+	(parse_pgm_inst_t *)&cmd_traj_acc,
+	(parse_pgm_inst_t *)&cmd_traj_acc_show,
 	(parse_pgm_inst_t *)&cmd_circle_coef,
 	(parse_pgm_inst_t *)&cmd_circle_coef_show,
+#endif /* TRAJECTORY_MANAGER_V3 */
 	(parse_pgm_inst_t *)&cmd_trajectory,
 	(parse_pgm_inst_t *)&cmd_trajectory_show,
 	(parse_pgm_inst_t *)&cmd_rs_gains,
@@ -340,7 +343,7 @@ parse_pgm_ctx_t main_ctx[] = {
 	(parse_pgm_inst_t *)&cmd_bt_goto2,
 	(parse_pgm_inst_t *)&cmd_position,
 	(parse_pgm_inst_t *)&cmd_position_set,
-	(parse_pgm_inst_t *)&cmd_bt_task1,
+	(parse_pgm_inst_t *)&cmd_bt_task,
 	(parse_pgm_inst_t *)&cmd_bt_task2,
 	(parse_pgm_inst_t *)&cmd_bt_task3,
 

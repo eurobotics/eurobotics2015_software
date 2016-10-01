@@ -633,7 +633,7 @@ void beacon_cmd_color(void)
 	if(mainboard.our_color == I2C_COLOR_YELLOW)
 		size = sprintf((char *)buff,"\n\rcolor yellow");
 	else
-		size = sprintf((char *)buff,"\n\rcolor red");
+		size = sprintf((char *)buff,"\n\rcolor green");
 	
 	beacon_send_cmd(buff, size);
 }

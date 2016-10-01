@@ -1,6 +1,6 @@
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2010)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -19,6 +19,7 @@
  *
  *  Javier Baliñas Santos <javier@arc-robots.org>
  */
+
 
 #ifndef _MAIN_H_
 #define _MAIN_H_
@@ -50,7 +51,7 @@
 #define TWO_OPPONENTS
 #define ROBOT_2ND
 
-/* uart 0 is for cmds and uart 1 is 
+/* uart 0 is for cmds and uart 1 is
  * multiplexed between beacon and slavedspic */
 #define CMDLINE_UART 	0
 #define MUX_UART 		1
@@ -116,26 +117,43 @@
 
 /* ROBOT PARAMETERS *************************************************/
 
+#undef IM_SECONDARY_ROBOT
+
 /* distance between encoders weels,
  * decrease track to decrease angle */
-#define EXT_TRACK_MM      293.51078578114
+#define EXT_TRACK_MM      303.626213203341000 //303.8
 #define VIRTUAL_TRACK_MM  EXT_TRACK_MM
 
+/* XXX keep synchronized with maindspic/strat.c */
+
 /* robot dimensions */
-#define ROBOT_LENGTH            281.5
+#define ROBOT_LENGTH            288.5
 #define ROBOT_WIDTH             330.0
-#define ROBOT_CENTER_TO_FRONT   162.5
-#define ROBOT_CENTER_TO_BACK    119.0
+#define ROBOT_CENTER_TO_FRONT   167.0
+#define ROBOT_CENTER_TO_BACK    121.5
 #define ROBOT_HALF_LENGTH_FRONT ROBOT_CENTER_TO_FRONT
 #define ROBOT_HALF_LENGTH_REAR  ROBOT_CENTER_TO_BACK
 
 /* XXX obstacle clerance */
-#define OBS_CLERANCE            (232.+10.)
+#define OBS_CLERANCE            (235.+10.)
+#define OBS_CLERANCE_BACKWARDS  (205.+10.)
+#define OBS_CLERANCE_SIDE       (117.+20.)
+
+/* XXX keep synchronized with secondary_robot/main.h */
+#define ROBOT_SEC_LENGTH      	    163.
+#define ROBOT_SEC_WIDTH 	    	210.
+#define ROBOT_SEC_CENTER_TO_BACK    105.0
+#define ROBOT_SEC_CENTER_TO_FRONT   (ROBOT_LENGTH-ROBOT_CENTER_TO_BACK)
+#define ROBOT_SEC_HALF_LENGTH_FRONT ROBOT_CENTER_TO_FRONT
+#define ROBOT_SEC_HALF_LENGTH_REAR  ROBOT_CENTER_TO_BACK
+#define ROBOT_SEC_CENTER_TO_ARM		50.0
+
+#define ROBOT_SEC_OBS_CLERANCE      (149.+10.)
 
 
 /* Some calculus:
  * it is a 3600 imps -> 14400 because we see 1/4 period
- * and diameter: 55mm -> perimeter 173mm 
+ * and diameter: 55mm -> perimeter 173mm
  * 14400/173 -> 832 imps/10 mm */
 
 /* increase it to go further */
@@ -164,26 +182,13 @@
 
 
 /* EVENTS PRIORITIES */
-#ifdef old_version
 #define EVENT_PRIORITY_LED 			  170
 #define EVENT_PRIORITY_TIME           160
 #define EVENT_PRIORITY_I2C_POLL       140
 #define EVENT_PRIORITY_SENSORS        120
 #define EVENT_PRIORITY_CS             100
-#define EVENT_PRIORITY_BEACON_POLL    80
-#define EVENT_PRIORITY_STRAT          70
-
-#else
-
-#define EVENT_PRIORITY_LED 			  170
-#define EVENT_PRIORITY_TIME           160
-#define EVENT_PRIORITY_I2C_POLL       140
-#define EVENT_PRIORITY_SENSORS        120
-#define EVENT_PRIORITY_CS             100
-#define EVENT_PRIORITY_STRAT          30
-#define EVENT_PRIORITY_BEACON_POLL    20
-
-#endif
+#define EVENT_PRIORITY_STRAT          80
+#define EVENT_PRIORITY_BEACON_POLL    70
 
 /* EVENTS PERIODS */
 #define EVENT_PERIOD_LED 			1000000L
@@ -239,10 +244,10 @@ struct genboard
 };
 
 /* maindspic */
-struct mainboard 
+struct mainboard
 {
 	/* events flags */
-	uint16_t flags;                
+	uint16_t flags;
 #define DO_ENCODERS   1
 #define DO_CS         2
 #define DO_RS         4
@@ -261,7 +266,7 @@ struct mainboard
 	/* x,y positionning and traj*/
 	struct robot_system rs;
 	struct robot_position pos;
-   struct trajectory traj;
+   	struct trajectory traj;
 
 	/* robot status */
 	uint8_t our_color;
@@ -277,17 +282,32 @@ struct mainboard
 
 
 /* state of slavedspic, synchronized through i2c */
-struct slavedspic 
+struct slavedspic
 {
 	/* infos */
 	uint8_t status;
-    uint8_t nb_stored_fires;
+
+	/* systems */
+	struct {
+		uint8_t mode;
+		uint8_t status;
+		uint8_t cup_front_catched;
+		uint8_t cup_rear_catched;
+		uint8_t machine_popcorns_catched;
+	}popcorn_system;
+
+	struct {
+		uint8_t mode;
+		uint8_t status;
+		uint8_t stored_stands;
+	}stands_system[I2C_SIDE_ALL];
 
 };
 
 /* state of beaconboard, synchronized through i2c */
-struct beaconboard 
+struct beaconboard
 {
+#undef  BEACON_OFFSET
 #define BEACON_OFFSET_D	30
 #define BEACON_OFFSET_A	0
 
@@ -295,7 +315,7 @@ struct beaconboard
 	uint8_t status;
 	uint8_t color;
 	uint8_t link_id;
-	
+
 	/* opponent pos */
 	int16_t opponent1_x;
 	int16_t opponent1_y;
@@ -304,12 +324,19 @@ struct beaconboard
 
 #ifdef TWO_OPPONENTS
 	int16_t opponent2_x;
+
 	int16_t opponent2_y;
 	int16_t opponent2_a;
 	int16_t opponent2_d;
 #endif
 
 };
+
+// 0: Continue with task
+// 1: END
+//uint8_t end_bt_task_flag;
+// Current bt_task code
+//uint8_t current_bt_task;
 
 struct robot_2nd
 {
@@ -318,21 +345,25 @@ struct robot_2nd
 
 	/* running command info */
 	uint8_t cmd_id;					/* for ack test */
-	uint8_t cmd_ret; 					/* for end traj test, 
-												follows END_TRAJ flags rules, 
+	volatile uint8_t cmd_ret; 					/* for end traj test,
+												follows END_TRAJ flags rules,
 												see strat_base.h */
 	/* for cmd ack test */
 	uint8_t cmd_args_checksum_send;	/* checksum of arguments sent */
 	uint8_t cmd_args_checksum_recv;	/* checksum received */
 
-	uint8_t valid_status;
+	volatile uint8_t valid_status;
 
 	/* strat info */
 	uint8_t color;
-	
-#define BT_MAMOOTH_DONE		1
-#define BT_OPP_FIRES_DONE	2
-#define BT_FRESCO_DONE		4
+
+#define BT_TASK_NONE	   		0
+#define BT_TASK_PICK_CUP   		1
+#define BT_TASK_CARPET         	2
+#define BT_TASK_STAIRS         	3
+#define BT_TASK_BRING_CUP       4
+#define BT_TASK_CLAP         	5
+
 	uint16_t done_flags;
 
   	/* robot position */
@@ -367,7 +398,7 @@ extern struct robot_2nd robot_2nd;
 //void bootloader(void);
 
 #ifndef HOST_VERSION
-/* swap UART 2 between beacon and slavedspic */ 
+/* swap UART 2 between beacon and slavedspic */
 static inline void set_uart_mux(uint8_t channel)
 {
 #define BEACON_CHANNEL			0
@@ -418,4 +449,3 @@ static inline void set_uart_mux(uint8_t channel)
         __ret;                                                \
 })
 #endif
-

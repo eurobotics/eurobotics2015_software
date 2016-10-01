@@ -1,6 +1,6 @@
-/*  
+/*
  *  Copyright Robotics Association of Coslada, Eurobotics Engineering (2012)
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -17,7 +17,7 @@
  *
  *  Revision : $Id$
  *
- *  Javier Balias Santos <javier@arc-robots.org> and Silvia Santano
+ *  Javier Baliñas Santos <javier@arc-robots.org> and Silvia Santano
  */
 
 #ifndef _STRAT_H_
@@ -31,59 +31,11 @@
 #define AREA_X 3000
 #define AREA_Y 2000
 
-/* position of the tokens XXX */
-#define TREE_1_X			0
-#define TREE_1_Y			1300
-#define TREE_2_X			700
-#define TREE_2_Y			2000
-#define TREE_3_X			2300
-#define TREE_3_Y			2000
-#define TREE_4_X			3000
-#define TREE_4_Y			1300
-#define HEART_FIRE_1_X		140
-#define HEART_FIRE_1_Y		1860
-#define HEART_FIRE_2_X		1500
-#define HEART_FIRE_2_Y		1050
-#define HEART_FIRE_3_X		2860
-#define HEART_FIRE_3_Y		1860
-#define FIRE_1_X			400
-#define FIRE_1_Y			1100
-#define FIRE_2_X			900
-#define FIRE_2_Y			600
-#define FIRE_3_X			900
-#define FIRE_3_Y			1600
-#define FIRE_4_X			2100
-#define FIRE_4_Y			600
-#define FIRE_5_X			2100
-#define FIRE_5_Y			1600
-#define FIRE_6_X			2600
-#define FIRE_6_Y			1100
-#define TORCH_1_X			0
-#define TORCH_1_Y			800
-#define TORCH_2_X			1300
-#define TORCH_2_Y			2000
-#define TORCH_3_X			1700
-#define TORCH_3_Y			2000
-#define TORCH_4_X			3000
-#define TORCH_4_Y			800
-#define MOBILE_TORCH_1_X		900
-#define MOBILE_TORCH_1_Y		1100
-#define MOBILE_TORCH_2_X		2100
-#define MOBILE_TORCH_2_Y		1100
-#define BASKET_1_X		700
-#define BASKET_1_Y		150
-#define BASKET_2_X		2300
-#define BASKET_2_Y		150
-#define MAMOOTH_1_X		700
-#define MAMOOTH_1_Y		0
-#define MAMOOTH_2_X		2300
-#define MAMOOTH_2_Y		0
-#define FRESCO_X			1500
-#define FRESCO_Y			0
-#define HOME_RED_X		2800
-#define HOME_RED_Y		300
-#define HOME_YELLOW_X		200
-#define HOME_YELLOW_Y		300
+#define LIMIT_BBOX_Y_UP			(2000 - OBS_CLERANCE-70)
+#define LIMIT_BBOX_Y_DOWN		OBS_CLERANCE+100
+#define LIMIT_BBOX_X_UP			3000 - OBS_CLERANCE
+#define LIMIT_BBOX_X_DOWN		OBS_CLERANCE
+
 
 /* convert coords according to our color */
 #define COLOR_Y(y)     (y)
@@ -105,10 +57,10 @@
 #define CENTER_Y 1000
 
 #define SIDE_REAR		I2C_SIDE_REAR
-#define SIDE_FRONT 	I2C_SIDE_FRONT 
+#define SIDE_FRONT 		I2C_SIDE_FRONT
 #define SIDE_MAX		I2C_SIDE_MAX
 
-#define OPPOSITE_SIDE(side) ((side==I2C_SIDE_FRONT)? (I2C_SIDE_REAR) : (I2C_SIDE_FRONT))	
+#define OPPOSITE_SIDE(side) ((side==I2C_SIDE_FRONT)? (I2C_SIDE_REAR) : (I2C_SIDE_FRONT))
 
 #define GO_FORWARD	0
 #define GO_BACKWARD	1
@@ -117,8 +69,8 @@
 #define TRAJ_SUCCESS(f) 				(f & (END_TRAJ|END_NEAR))
 #define TRAJ_BLOCKING(f) 				(f & (END_BLOCKING))
 
-#define TRAJ_FLAGS_STD 					(END_TRAJ|END_BLOCKING|END_NEAR|END_OBSTACLE|END_INTR|END_TIMER)
-#define TRAJ_FLAGS_NO_TIMER 			(END_TRAJ|END_BLOCKING|END_NEAR|END_OBSTACLE|END_INTR)
+#define TRAJ_FLAGS_STD 				(END_TRAJ|END_BLOCKING|END_NEAR|END_OBSTACLE|END_INTR|END_TIMER)
+#define TRAJ_FLAGS_NO_TIMER 		(END_TRAJ|END_BLOCKING|END_NEAR|END_OBSTACLE|END_INTR)
 #define TRAJ_FLAGS_NO_NEAR 			(END_TRAJ|END_BLOCKING|END_OBSTACLE|END_INTR|END_TIMER)
 #define TRAJ_FLAGS_NO_NEAR_NO_TIMER (END_TRAJ|END_BLOCKING|END_OBSTACLE|END_INTR)
 #define TRAJ_FLAGS_SMALL_DIST 		(END_TRAJ|END_BLOCKING|END_INTR)
@@ -130,8 +82,9 @@
 #ifdef CALIBRATION
 
 /* default acc */
-#define ACC_DIST  5.
-#define ACC_ANGLE 5.
+#define ACC_DIST_POS  	5
+#define ACC_DIST_NEG  	4
+#define ACC_ANGLE 		5
 
 /* default speeds */
 #define SPEED_DIST_FAST 			1000.
@@ -139,66 +92,31 @@
 #define SPEED_DIST_SLOW 		  	1000.
 #define SPEED_ANGLE_SLOW 		  	1000.
 #define SPEED_DIST_VERY_SLOW 		1000.
-#define SPEED_ANGLE_VERY_SLOW 	1000.
+#define SPEED_ANGLE_VERY_SLOW 	    1000.
 
 #else
 
 /* default acc */
-#define ACC_DIST  30 //40.
-#define ACC_ANGLE 30 //90.
+#define ACC_DIST_POS  	5	//40
+#define ACC_DIST_NEG  	5
+#define ACC_ANGLE 		10	//90
 
 /* default speeds */
-//#define HOMOLOGATION_SPEED
-#ifdef HOMOLOGATION_SPEED
-#define SPEED_DIST_FAST 			2000.
-#define SPEED_ANGLE_FAST 			2000.
-#else
-
-#define SPEED_DIST_FAST 			5000.
-#define SPEED_ANGLE_FAST 			5000.
-#endif
 
 //Do not change
-#define SPEED_DIST_SLOW 		  	2500.
-#define SPEED_ANGLE_SLOW 		  	2500.
-#define SPEED_DIST_VERY_SLOW 		1000.
-#define SPEED_ANGLE_VERY_SLOW 		1000.
+#define SPEED_DIST_FAST 			2500.
+#define SPEED_ANGLE_FAST 			2500.
+#define SPEED_DIST_SLOW 		  	1000.
+#define SPEED_ANGLE_SLOW 		  	1000.
+#define SPEED_DIST_VERY_SLOW 		500.
+#define SPEED_ANGLE_VERY_SLOW 		500.
 
 #endif
 
-/* zones */
-#define ZONE_TREE_1			    0
-#define ZONE_TREE_2       	1
-#define ZONE_TREE_3			    2
-#define ZONE_TREE_4			    3
-#define ZONE_HEART_FIRE_1		4
-#define ZONE_HEART_FIRE_2  	5
-#define ZONE_HEART_FIRE_3 	6
-#define ZONE_FIRE_1   	    7
-#define ZONE_FIRE_2	        8
-#define ZONE_FIRE_3	        9
-#define ZONE_FIRE_4	        10
-#define ZONE_FIRE_5			    11
-#define ZONE_FIRE_6			    12
-#define ZONE_TORCH_1   			13
-#define ZONE_TORCH_2			  14
-#define ZONE_TORCH_3			  15
-#define ZONE_TORCH_4        16
-#define ZONE_MOBILE_TORCH_1 17
-#define ZONE_MOBILE_TORCH_2 18
-#define ZONE_MOBILE_TORCH_3 19
-#define ZONE_BASKET_1       20
-#define ZONE_BASKET_2       21
-#define ZONE_MAMOOTH_1      22
-#define ZONE_MAMOOTH_2      23
-#define ZONE_FRESCO      	  24
-#define ZONE_HOME_RED       25
-#define ZONE_HOME_YELLOW    26
-#define ZONES_MAX		        27
 
 
-/************************************************************* 
- * Strat data structures 
+/*************************************************************
+ * Strat data structures
  ************************************************************/
 
 /* boulding box */
@@ -213,7 +131,7 @@ struct bbox {
 struct conf {
 
 /* depends on flags the robot
- * do one things or anothers */
+ * will do different things */
 	uint8_t flags;
   #define ENABLE_R2ND_POS				  1 /* TODO: set by command */
 	#define ENABLE_DOWN_SIDE_ZONES	2
@@ -224,20 +142,21 @@ struct conf {
 typedef struct {
 	/* type */
 	uint16_t type;
-	#define ZONE_TYPE_TREE					0
-	#define ZONE_TYPE_FIRE					1
-	#define ZONE_TYPE_HEART_FIRE				2
-	#define ZONE_TYPE_TORCH					3
-	#define ZONE_TYPE_MOBILE_TORCH				4
-	#define ZONE_TYPE_FRESCO					5
-	#define ZONE_TYPE_MAMOOTH					6
-	#define ZONE_TYPE_BASKET					7
-	#define ZONE_TYPE_HOME					8
-	#define ZONE_TYPE_MAX					9
+	#define ZONE_TYPE_STAND							0
+	#define ZONE_TYPE_LIGHTBULB					1
+	#define ZONE_TYPE_POPCORNMAC			2
+	#define ZONE_TYPE_POPCORNCUP				3
+	#define ZONE_TYPE_HOME							4
+	#define ZONE_TYPE_CINEMA						5
+	#define ZONE_TYPE_STAIRS						6
+	#define ZONE_TYPE_STAIRWAY					7
+	#define ZONE_TYPE_CLAP							8
+	#define ZONE_TYPE_BAREA							9
+	#define ZONE_TYPE_MAX								10
 
 	/* target point */
 	int16_t x;
-	int16_t y;	
+	int16_t y;
 
 	/* boundinbox */
 	int16_t x_down;
@@ -269,6 +188,12 @@ typedef struct {
    #define ZONE_CHECKED_OPP		2
    #define ZONE_SEC_ROBOT	   	4
    #define ZONE_AVOID		    	8
+
+	/* which robots can perform this action */
+	uint8_t robot;
+	#define MAIN_ROBOT  0
+	#define SEC_ROBOT   1
+	#define BOTH_ROBOTS 2
 } strat_zones;
 
 
@@ -279,39 +204,32 @@ struct strat_infos {
 	struct bbox area_bbox;
 
 	/* points areas */
-	strat_zones zones[ZONES_MAX];
+	//strat_zones zones[ZONES_MAX];
 
 	/* our zone position */
 	uint8_t current_zone;
 	uint8_t goto_zone;
 	uint8_t last_zone;
 
-	/* opponent zone position */
-	uint8_t opp_current_zone;
-	uint8_t opp2_current_zone;
-
-	/* opponent statistics */
-	uint32_t opp_time_zone_ms;
-
 	/* state of the robot */
-	uint8_t fruits_inside;
-	uint8_t spears_inside;
-	uint8_t net_inside;
-	uint8_t fires_inside;
+	uint8_t lightbulbs;
+	uint8_t stands;
+	uint8_t carpets;
+	uint8_t popcornbaskets;
 };
 
 extern struct strat_infos strat_infos;
 
-extern char numzone2name[ZONES_MAX + 1][30];
+//extern char numzone2name[ZONES_MAX + 1][3];
 
 #ifndef HOST_VERSION_OA_TEST
 
-/************************************************************* 
+/*************************************************************
  * Functions headers of strat files
  ************************************************************/
 
 /********************************************
- * in strat.c 
+ * in strat.c
  *******************************************/
 #define AREA_BBOX_6X5	0
 #define AREA_BBOX_4X4	1
@@ -320,6 +238,9 @@ void strat_set_bounding_box(uint8_t type);
 void strat_dump_infos(const char *caller);
 void strat_dump_conf(void);
 void strat_reset_infos(void);
+
+/* debug state machines step to step */
+void state_debug_wait_key_pressed(void);
 
 void strat_preinit(void);
 void strat_init(void);
@@ -334,63 +255,72 @@ void strat_start_match(uint8_t debug);
 
 
 /********************************************
- * in strat_main.c 
+ * in strat_main.c
+ *******************************************/
+
+/* bt tasks ids */
+#define BT_TASK_NONE	   		0
+#define BT_TASK_PICK_CUP   		1
+#define BT_TASK_CARPET         	2
+#define BT_TASK_STAIRS         	3
+#define BT_TASK_BRING_CUP       4
+#define BT_TASK_CLAP         	5
+#define BT_GOTO         		6
+#define BT_GOTO_AVOID         	7
+#define BT_GOTO_AVOID_FW        8
+#define BT_GOTO_AVOID_BW        9
+#define BT_AUTO_POSITION		10
+
+/* set current bt task */
+void strat_bt_task_rqst (uint8_t task_id, 
+						int16_t a, int16_t b, 
+						int16_t c, int16_t d, int16_t e);
+
+/* never returns */
+void strat_bt_task_scheduler (void);
+
+/********************************************
+ * in strat_main_tasks.c
  *******************************************/
 
 /* auto possition depending on color */
 void strat_auto_position (void);
 
-/* match tasks */
-uint8_t strat_patrol_fresco_mamooth(uint8_t balls_mamooth_1, uint8_t balls_mamooth_2);
-uint8_t strat_paint_fresco(void);
-uint8_t strat_patrol_between(int16_t x1, int16_t y1,int16_t x2, int16_t y2);
-uint8_t strat_shoot_mamooth(uint8_t balls_mamooth_1, uint8_t balls_mamooth_2);
-void strat_initial_move(void);
+/**
+ *	Pickup a popcorn cup
+ *	return END_TRAJ if the work is done, err otherwise
+ */
+uint8_t strat_pickup_cup (int16_t x, int16_t y, uint8_t side);
 
-/********************************************
- * in strat_event.c 
- *******************************************/
+/**
+ *	Release a popcorn cup
+ *	return END_TRAJ if the work is done, err otherwise
+ */
+uint8_t strat_release_cup (int16_t x, int16_t y, uint8_t side);
 
-/*************** STRAT EVENT SCHEDULE FUNCTIONS *******************************/
-
-/* schedule a single strat tevent */
-void strat_event_schedule_single (void (*f)(void *), void * data);
-
-/* schedule a periodical strat tevent */
-void strat_event_schedule_periodical(void (*f)(void *), void * data);
+/**
+ *	Put carpets on stairs
+ *	return END_TRAJ if the work is done, err otherwise
+ */
+uint8_t strat_put_carpets (void);
 
 
-/*************** STRAT EVENT WRAPPER FUNCTIONS  *******************************/
 
-/* auto position event */
-void strat_auto_position_event (void *data);
+/**
+ *	Put carpets on stairs
+ *	return END_TRAJ if the work is done, err otherwise
+ */
+uint8_t strat_close_clapperboard (int16_t x, int16_t y);
 
-/* trajectory functions */
-void strat_goto_xy_abs_event (void *data);
-void strat_goto_forward_xy_abs_event (void *data);
-void strat_goto_backward_xy_abs_event (void *data);
 
-void strat_goto_avoid_event (void *data);
-void strat_goto_avoid_forward_event (void *data);
-void strat_goto_avoid_backward_event (void *data);
-/* match tasks */
-void strat_patrol_and_paint_fresco_event (void *data);
-void strat_fresco_event (void *data);
-void strat_patrol_event (void *data);
-void strat_mamooth_event (void *data);
-void strat_protect_h_event(void *data);
-void strat_patrol_fresco_mamooth_event(void *data);
-void strat_net_event (void *data);
+/**
+ *	Put carpets on stairs
+ *	return END_TRAJ if the work is done, err otherwise
+ */
+uint8_t strat_put_carpets (void);
 
-/* fresco */
-uint8_t strat_goto_fresco (void);
-uint8_t strat_paint_fresco2 (void);
-uint8_t strat_goto_and_paint_fresco (void);
-
-uint8_t strat_goto_mamooth (void);
-
-/* goto mamooth */
-uint8_t __strat_shoot_mamooth (void);
+/* TODO */
+uint8_t climb_stairs(void);
 
 
 #else /* HOST_VERSION_OA_TEST */

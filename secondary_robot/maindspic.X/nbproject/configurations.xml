@@ -38,15 +38,12 @@
         <itemPath>../main.h</itemPath>
         <itemPath>../actuator.h</itemPath>
         <itemPath>../strat.h</itemPath>
-        <itemPath>../strat_utils.h</itemPath>
-        <itemPath>../../maindspic/strat_avoid.h</itemPath>
         <itemPath>../strat_base.h</itemPath>
         <itemPath>../../common/i2c_commands.h</itemPath>
         <itemPath>../sensor.h</itemPath>
         <itemPath>../i2c_protocol.h</itemPath>
         <itemPath>../ax12_user.h</itemPath>
         <itemPath>../bt_protocol.h</itemPath>
-        <itemPath>../strat_event.c</itemPath>
         <itemPath>../beacon.h</itemPath>
         <itemPath>../beacon_calib.h</itemPath>
       </logicalFolder>
@@ -79,7 +76,6 @@
         <itemPath>../../libs/aversive4dspic/modules/base/math/geometry/vect_base.h</itemPath>
         <itemPath>../../libs/aversive4dspic/modules/base/math/geometry/lines.h</itemPath>
         <itemPath>../../libs/aversive4dspic/modules/base/math/geometry/polygon.h</itemPath>
-        <itemPath>../../libs/aversive4dspic/modules/base/math/geometry/circles.h</itemPath>
       </logicalFolder>
       <logicalFolder name="i2c" displayName="i2c" projectFiles="true">
         <itemPath>../i2c_mem.h</itemPath>
@@ -134,8 +130,6 @@
                      displayName="trajectory_manager"
                      projectFiles="true">
         <itemPath>../../libs/aversive4dspic/modules/devices/robot/trajectory_manager/trajectory_manager.h</itemPath>
-        <itemPath>../../libs/aversive4dspic/modules/devices/robot/trajectory_manager/trajectory_manager_core.h</itemPath>
-        <itemPath>../../libs/aversive4dspic/modules/devices/robot/trajectory_manager/trajectory_manager_utils.h</itemPath>
       </logicalFolder>
       <logicalFolder name="uart" displayName="uart" projectFiles="true">
         <itemPath>../../libs/aversive4dspic/modules/comm/dspic/uart/uart.h</itemPath>
@@ -163,19 +157,19 @@
         <itemPath>../cs.c</itemPath>
         <itemPath>../actuator.c</itemPath>
         <itemPath>../sensor.c</itemPath>
-        <itemPath>../strat_utils.c</itemPath>
         <itemPath>../strat_base.c</itemPath>
         <itemPath>../../common/traps.c</itemPath>
         <itemPath>../i2c_protocol.c</itemPath>
         <itemPath>../strat.c</itemPath>
         <itemPath>../strat_begin.c</itemPath>
         <itemPath>../strat_main.c</itemPath>
-        <itemPath>../strat_treasure.c</itemPath>
-        <itemPath>../../maindspic/strat_avoid.c</itemPath>
         <itemPath>../ax12_user.c</itemPath>
         <itemPath>../bt_protocol.c</itemPath>
         <itemPath>../beacon.c</itemPath>
         <itemPath>../beacon_calib.c</itemPath>
+        <itemPath>../strat_avoid.c</itemPath>
+        <itemPath>../strat_utils.c</itemPath>
+        <itemPath>../strat_main_tasks.c</itemPath>
       </logicalFolder>
       <logicalFolder name="ax12" displayName="ax12" projectFiles="true">
         <itemPath>../../libs/aversive4dspic/modules/devices/servo/ax12/ax12.c</itemPath>
@@ -223,7 +217,6 @@
         <itemPath>../../libs/aversive4dspic/modules/base/math/geometry/vect_base.c</itemPath>
         <itemPath>../../libs/aversive4dspic/modules/base/math/geometry/lines.c</itemPath>
         <itemPath>../../libs/aversive4dspic/modules/base/math/geometry/polygon.c</itemPath>
-        <itemPath>../../libs/aversive4dspic/modules/base/math/geometry/circles.c</itemPath>
       </logicalFolder>
       <logicalFolder name="i2c" displayName="i2c" projectFiles="true">
         <itemPath>../i2c_mem.c</itemPath>
@@ -281,8 +274,6 @@
                      displayName="trajectory_manager"
                      projectFiles="true">
         <itemPath>../../libs/aversive4dspic/modules/devices/robot/trajectory_manager/trajectory_manager.c</itemPath>
-        <itemPath>../../libs/aversive4dspic/modules/devices/robot/trajectory_manager/trajectory_manager_core.c</itemPath>
-        <itemPath>../../libs/aversive4dspic/modules/devices/robot/trajectory_manager/trajectory_manager_utils.c</itemPath>
       </logicalFolder>
       <logicalFolder name="uart" displayName="uart" projectFiles="true">
         <itemPath>../../libs/aversive4dspic/modules/comm/dspic/uart/uart_setconf.c</itemPath>
@@ -316,6 +307,7 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>..</Elem>
+    <Elem>../../maindspic</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -522,7 +514,7 @@
         <property key="enable-symbols" value="false"/>
         <property key="enable-unroll-loops" value="false"/>
         <property key="extra-include-directories"
-                  value="..;../../libs/aversive4dspic/include;../../libs/aversive4dspic/include/aversive;../../libs/aversive4dspic/include/aversive/dspic;../../libs/aversive4dspic/modules/base/cirbuf;../../libs/aversive4dspic/modules/base/scheduler;../../libs/aversive4dspic/modules/base/math/fixed_point;../../libs/aversive4dspic/modules/base/math/geometry;../../libs/aversive4dspic/modules/base/math/vect2;../../libs/aversive4dspic/modules/base/time;../../libs/aversive4dspic/modules/debug;../../libs/aversive4dspic/modules/debug/error;../../libs/aversive4dspic/modules/debug/diagnostic;../../libs/aversive4dspic/modules/comm/dspic/uart;../../libs/aversive4dspic/modules/ihm/parse;../../libs/aversive4dspic/modules/ihm/rdline;../../libs/aversive4dspic/modules/ihm/vt100;../../libs/aversive4dspic/modules/hardware/dspic/oscillator;../../libs/aversive4dspic/modules/hardware/dspic/pwm_mc;../../libs/aversive4dspic/modules/hardware/dspic/dac_mc;../../libs/aversive4dspic/modules/hardware/dspic/pwm_servo;../../libs/aversive4dspic/modules/devices/servo/ax12;../../libs/aversive4dspic/modules/devices/control_system/filters/pid;../../libs/aversive4dspic/modules/devices/encoders/dspic/encoders_dspic;../../libs/aversive4dspic/modules/devices/control_system/filters/quadramp;../../libs/aversive4dspic/modules/devices/control_system/control_system_manager;../../libs/aversive4dspic/modules/devices/robot/robot_system;../../libs/aversive4dspic/modules/devices/robot/trajectory_manager;../../libs/aversive4dspic/modules/devices/robot/position_manager;../../libs/aversive4dspic/modules/devices/robot/blocking_detection_manager;../../libs/aversive4dspic/modules/devices/robot/obstacle_avoidance;../../common;../../maindspic;."/>
+                  value="..;../../libs/aversive4dspic/include;../../libs/aversive4dspic/include/aversive;../../libs/aversive4dspic/include/aversive/dspic;../../libs/aversive4dspic/modules/base/cirbuf;../../libs/aversive4dspic/modules/base/scheduler;../../libs/aversive4dspic/modules/base/math/fixed_point;../../libs/aversive4dspic/modules/base/math/geometry;../../libs/aversive4dspic/modules/base/math/vect2;../../libs/aversive4dspic/modules/base/time;../../libs/aversive4dspic/modules/debug;../../libs/aversive4dspic/modules/debug/error;../../libs/aversive4dspic/modules/debug/diagnostic;../../libs/aversive4dspic/modules/comm/dspic/uart;../../libs/aversive4dspic/modules/ihm/parse;../../libs/aversive4dspic/modules/ihm/rdline;../../libs/aversive4dspic/modules/ihm/vt100;../../libs/aversive4dspic/modules/hardware/dspic/oscillator;../../libs/aversive4dspic/modules/hardware/dspic/pwm_mc;../../libs/aversive4dspic/modules/hardware/dspic/dac_mc;../../libs/aversive4dspic/modules/hardware/dspic/pwm_servo;../../libs/aversive4dspic/modules/devices/servo/ax12;../../libs/aversive4dspic/modules/devices/control_system/filters/pid;../../libs/aversive4dspic/modules/devices/encoders/dspic/encoders_dspic;../../libs/aversive4dspic/modules/devices/control_system/filters/quadramp;../../libs/aversive4dspic/modules/devices/control_system/control_system_manager;../../libs/aversive4dspic/modules/devices/robot/robot_system;../../libs/aversive4dspic/modules/devices/robot/trajectory_manager;../../libs/aversive4dspic/modules/devices/robot/position_manager;../../libs/aversive4dspic/modules/devices/robot/blocking_detection_manager;../../libs/aversive4dspic/modules/devices/robot/obstacle_avoidance;../../common;."/>
         <property key="isolate-each-function" value="false"/>
         <property key="optimization-level" value="s"/>
         <property key="post-instruction-scheduling" value="default"/>
@@ -559,7 +551,7 @@
         <property key="enable-default-isr" value="true"/>
         <property key="enable-handles" value="true"/>
         <property key="enable-pack-data" value="true"/>
-        <property key="extra-lib-directories" value="..;;."/>
+        <property key="extra-lib-directories" value="..;."/>
         <property key="general-code-protect" value="no_code_protect"/>
         <property key="general-write-protect" value="no_write_protect"/>
         <property key="generate-cross-reference-file" value="true"/>
