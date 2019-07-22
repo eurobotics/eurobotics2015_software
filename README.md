@@ -6,10 +6,10 @@ They went to Swizeland to the Eurobot finals and reached the fourth-place of fin
 
 <p align="center">
 &nbsp;
-<img src="http://arc-robots.org/wp/wp-content/uploads/2016/02/DSCN1161.jpg"
+<img src="http://arc-robots.org/wp-content/uploads/2016/02/DSCN1161.jpg"
 width=300> 
 &nbsp;
-<img src="http://arc-robots.org/wp/wp-content/uploads/2016/02/IMG_20150428_200040-e1454802150904.jpg" width=300>
+<img src="http://arc-robots.org/wp-content/uploads/2016/02/IMG_20150428_200040-e1454802150904.jpg" width=300>
 &nbsp;
 </p>
 
@@ -21,13 +21,13 @@ Check out more photos and videos of our robots at our [web page](http://arc-robo
 
 * Silvia Santano
 * Javier Rodriguez Puigvert
-* Ruben Espino San José
-* Javier Baliñas Santos
+* Ruben Espino San JosÃ©
+* Javier BaliÃ±as Santos
 
 # Copyright
 
 ![Eurobotics Engineering](./docs/logos/logo_eurobotics_eng.png)
-![Asociación de Robótica de Coslada (ARC)](./docs/logos/logo_arc.png)
+![AsociaciÃ³n de RobÃ³tica de Coslada (ARC)](./docs/logos/logo_arc.png)
 
 # License
 
